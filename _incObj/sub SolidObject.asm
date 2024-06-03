@@ -12,19 +12,19 @@
 
 
 SolidObject:
-		tst.b	obSolid(a0)	; is Sonic standing on the object?
+		tst.b	obSolid(a0)		; is Sonic standing on the object?
 		beq.w	Solid_ChkEnter	; if not, branch
 		move.w	d1,d2
 		add.w	d2,d2
-		lea	(v_player).w,a1
+		lea		(v_player).w,a1
 		btst	#1,obStatus(a1)	; is Sonic in the air?
-		bne.s	.leave		; if yes, branch
+		bne.s	.leave			; if yes, branch
 		move.w	obX(a1),d0
 		sub.w	obX(a0),d0
 		add.w	d1,d0
-		bmi.s	.leave		; if Sonic moves off the left, branch
-		cmp.w	d2,d0		; has Sonic moved off the right?
-		blo.s	.stand		; if not, branch
+		bmi.s	.leave			; if Sonic moves off the left, branch
+		cmp.w	d2,d0			; has Sonic moved off the right?
+		blo.s	.stand			; if not, branch
 
 .leave:
 		bclr	#3,obStatus(a1)	; clear Sonic's standing flag
@@ -114,34 +114,46 @@ Solid_ChkEnter:
 		bpl.w	Solid_Ignore
 
 loc_FAD0:
-		lea	(v_player).w,a1
+		lea		(v_player).w,a1
 		move.w	obX(a1),d0
 		sub.w	obX(a0),d0
 		add.w	d1,d0
-		bmi.w	Solid_Ignore	; if Sonic moves off the left, branch
+		bmi.w	Solid_Ignore				; if Sonic moves off the left, branch
 		move.w	d1,d3
 		add.w	d3,d3
-		cmp.w	d3,d0		; has Sonic moved off the right?
-		bhi.w	Solid_Ignore	; if yes, branch
+		cmp.w	d3,d0						; has Sonic moved off the right?
+		bhi.w	Solid_Ignore				; if yes, branch
 		move.b	obHeight(a1),d3
 		ext.w	d3
 		add.w	d3,d2
 		move.w	obY(a1),d3
+
+	; Mercury Ducking Size Fix	
+		cmpi.b	#id_Duck,obAnim(a1)
+		bne.s	.skip
+		
+.short:
+		subi.w	#5,d2
+		addi.w	#5,d3
+		
+.skip:
+	; Ducking Size Fix end
+
 		sub.w	obY(a0),d3
 		addq.w	#4,d3
 		add.w	d2,d3
-		bmi.w	Solid_Ignore	; if Sonic moves above, branch
+		bmi.w	Solid_Ignore				; if Sonic moves above, branch
 		move.w	d2,d4
 		add.w	d4,d4
-		cmp.w	d4,d3		; has Sonic moved below?
-		bhs.w	Solid_Ignore	; if yes, branch
+		cmp.w	d4,d3						; has Sonic moved below?
+		bhs.w	Solid_Ignore				; if yes, branch
 
 loc_FB0E:
-		tst.b	(f_playerctrl).w ; are object interactions disabled?
-		bmi.w	Solid_Ignore	; if yes, branch
-		cmpi.b	#6,(v_player+obRoutine).w ; is Sonic dying?
+		tst.b	(f_playerctrl).w			; are object interactions disabled?
+		bmi.w	Solid_Ignore				; if yes, branch
+		cmpi.b	#6,(v_player+obRoutine).w	; is Sonic dying?
 		if Revision=0
-		bcc.w	Solid_Ignore	; if yes, branch
+		bcc.w	Solid_Ignore				; if yes, branch
 		else
 			bcc.w	Solid_Debug
 		endif

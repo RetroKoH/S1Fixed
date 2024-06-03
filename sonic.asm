@@ -5645,6 +5645,18 @@ Obj44_SolidWall2:
 		ext.w	d3
 		add.w	d3,d2
 		move.w	obY(a1),d3
+
+	; Mercury Ducking Size Fix	
+		cmpi.b	#id_Duck,obAnim(a1)
+		bne.s	.skip
+		
+.short:
+		subi.w	#5,d2
+		addi.w	#5,d3
+		
+.skip:
+	; Ducking Size Fix end
+
 		sub.w	obY(a0),d3
 		add.w	d2,d3
 		bmi.s	loc_8B48

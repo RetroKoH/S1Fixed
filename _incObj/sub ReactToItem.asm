@@ -14,16 +14,21 @@ ReactToItem:
 		move.b	obHeight(a0),d5	; load Sonic's height
 		subq.b	#3,d5
 		sub.w	d5,d3
-		cmpi.b	#fr_Duck,obFrame(a0) ; is Sonic ducking?
-		bne.s	.notducking	; if not, branch
+
+	; Mercury Ducking Size Fix	
+		cmpi.b	#id_Duck,obAnim(a0)
+		bne.s	.notducking
+		
+.short:
 		addi.w	#$C,d3
 		moveq	#$A,d5
 
 .notducking:
+	; Ducking Size Fix end
 		move.w	#$10,d4
 		add.w	d5,d5
-		lea	(v_lvlobjspace).w,a1 ; set object RAM start address
-		move.w	#(v_lvlobjend-v_lvlobjspace)/$40-1,d6
+		lea		(v_lvlobjspace).w,a1					; set object RAM start address
+		move.w	#(v_lvlobjend-v_lvlobjspace)/$40-1,d6	; (objRAM / objSize) - 1 ($5F)
 
 .loop:
 		tst.b	obRender(a1)
