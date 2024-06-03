@@ -76,3 +76,9 @@
  Function: Fixes an issue that makes demo playback interpret the button being held for more than one frame as continual new presses of the button.
  Date: 2024-06-03
  Modifies: _inc\MoveSonicInDemo.asm
+ 
+ Name: Hidden Bonus Points Fix
+ Credit: 1337Rooster
+ Function: Makes the 100pt Hidden Bonuses actually give Sonic 100pts.
+ Date: 2024-06-03
+ Modifies: _incObj\7D Hidden Bonuses.asm

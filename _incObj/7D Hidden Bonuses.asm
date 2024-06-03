@@ -57,14 +57,12 @@ Bonus_Main:	; Routine 0
 		jmp	(DeleteObject).l
 
 ; ===========================================================================
-.points:	dc.w 0			; Bonus	points array
+.points:
+	; Bonus	points array
+		dc.w 0
 		dc.w 1000
 		dc.w 100
-	if FixBugs
-		dc.w 10
-	else
-		dc.w 1 ; This is the wrong number of points.
-	endif
+		dc.w 10 ; 1337Rooster points fix
 ; ===========================================================================
 
 Bonus_Display:	; Routine 2
