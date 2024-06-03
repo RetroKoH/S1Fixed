@@ -51,14 +51,19 @@ Pow_ChkEggman:
 ; ===========================================================================
 
 Pow_ChkSonic:
-		cmpi.b	#2,d0		; does monitor contain Sonic?
+		cmpi.b	#2,d0				; does monitor contain Sonic?
 		bne.s	Pow_ChkShoes
 
 ExtraLife:
-		addq.b	#1,(v_lives).w	; add 1 to the number of lives you have
-		addq.b	#1,(f_lifecount).w ; update the lives counter
+	; Mercury Lives Over/Underflow Fix
+		cmpi.b	#99,(v_lives).w		; are lives at max?
+		beq.s	.playbgm
+		addq.b	#1,(v_lives).w		; add 1 to number of lives
+		addq.b	#1,(f_lifecount).w	; update the lives counter
+.playbgm:
+	; Lives Over/Underflow Fix End
 		move.w	#bgm_ExtraLife,d0
-		jmp	(PlaySound).l	; play extra life music
+		jmp		(PlaySound).l		; play extra life music
 ; ===========================================================================
 
 Pow_ChkShoes:
@@ -71,7 +76,7 @@ Pow_ChkShoes:
 		move.w	#$18,(v_sonspeedacc).w	; change Sonic's acceleration
 		move.w	#$80,(v_sonspeeddec).w	; change Sonic's deceleration
 		move.w	#bgm_Speedup,d0
-		jmp	(PlaySound).l		; Speed	up the music
+		jmp		(PlaySound).l		; Speed	up the music
 ; ===========================================================================
 
 Pow_ChkShield:

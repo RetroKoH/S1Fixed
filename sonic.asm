@@ -8413,8 +8413,15 @@ AddPoints:
 			addi.l  #5000,(v_scorelife).w ; increase requirement by 50000
 			tst.b   (v_megadrive).w
 			bmi.s   .noextralife ; branch if Mega Drive is Japanese
-			addq.b  #1,(v_lives).w ; give extra life
-			addq.b  #1,(f_lifecount).w
+			
+		; Mercury Lives Over/Underflow Fix
+			cmpi.b	#99,(v_lives).w		; are lives at max?
+			beq.s	.playbgm
+			addq.b	#1,(v_lives).w		; add 1 to number of lives
+			addq.b	#1,(f_lifecount).w	; update the lives counter
+.playbgm:
+		; Lives Over/Underflow Fix end
+			
 			move.w	#bgm_ExtraLife,d0
 			jmp	(PlaySound).l
 		endif

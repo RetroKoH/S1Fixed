@@ -65,9 +65,16 @@ GameOver:
 		move.w	#-$38,obVelY(a0)
 		addq.b	#2,obRoutine(a0)
 		clr.b	(f_timecount).w		; stop time counter
+
+	; Mercury Lives Over/Underflow Fix
+		cmpi.b	#0,(v_lives).w		; are lives at min?
+		beq.s	.skip
 		addq.b	#1,(f_lifecount).w	; update lives counter
 		subq.b	#1,(v_lives).w		; subtract 1 from number of lives
 		bne.s	loc_138D4
+.skip:
+	; Lives Over/Underflow Fix End
+
 		move.w	#0,objoff_3A(a0)
 		move.b	#id_GameOverCard,(v_gameovertext1).w ; load GAME object
 		move.b	#id_GameOverCard,(v_gameovertext2).w ; load OVER object

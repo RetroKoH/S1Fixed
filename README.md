@@ -100,3 +100,9 @@
  Function: Makes the Game/Time Over message timing consistent, rather than waiting for Sonic to fall. Also fixes a Title Screen scrolling bug if getting Game Over after drowning.
  Date: 2024-06-03
  Modifies: _incObj\Sonic (part 2).asm, sonic.asm
+
+ Name: Lives Over/Underflow Fix
+ Credit: Mercury
+ Function: Prevents life count from over-/underflowing when 1 is added/subtracted.
+ Date: 2011-02-12 (Feb)
+ Modifies: _incObj\09 Sonic in Special Stage.asm, _incObj\25 & 37 Rings.asm, _incObj\2E Monitor Content Power-Up.asm, _incObj\Sonic (part 2).asm, sonic.asm
