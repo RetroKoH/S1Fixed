@@ -88,3 +88,9 @@
  Function: Fixes the Sega sound at game start so that it won't garble when code is added to the ROM. Also allows the player to skip it with the Start Button.
  Date: 2024-06-03
  Modifies: s1.sounddriver.asm
+ 
+ Name: Remove Speed Shoes At Signpost Fix
+ Credit: Mercury
+ Function: Removes Speed Shoes when Sonic passes the Signpost so the Level Clear jingle won't play sped up.
+ Date: 2024-06-03
+ Modifies: _incObj\3A Got Through Card.asm
