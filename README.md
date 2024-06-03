@@ -124,3 +124,9 @@
  Function: Prevents an underflow glitch when hitting the Final Zone boss an extra time.
  Date: 2024-06-03
  Modifies: _incObj\85 Boss - Final.asm
+ 
+ Name: Fix Race Condition w/ Pattern Load Cues
+ Credit: FraGag
+ Function: Fixes bug that sometimes crashes the game if roll and look down after passing End Sign in LZ1 and LZ2
+ Date: 2024-06-03
+ Modifies: sonic.asm (RunPLC:)
