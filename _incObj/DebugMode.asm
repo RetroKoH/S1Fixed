@@ -28,16 +28,16 @@ Debug_Main:	; Routine 0
 		clr.w	obVelX(a0)
 		clr.w	obVelY(a0)
 		clr.w	obInertia(a0)
-		btst	#staOnObj,obStatus(a0)		; is Sonic standing on an object?
+		btst	#3,obStatus(a0)				; is Sonic standing on an object?
 		beq.s	.setpos						; if not, branch
-		bclr	#staOnObj,obStatus(a0)		; clear Sonic's standing flag
+		bclr	#3,obStatus(a0)				; clear Sonic's standing flag
 		moveq	#0,d0
 		move.b	obPlatformID(a0),d0			; get object id
 		clr.b	obPlatformID(a0)			; clear object id
 		lsl.w	#6,d0
 		addi.l	#v_objspace&$FFFFFF,d0
 		movea.l	d0,a2
-		bclr	#staOnObj,obStatus(a2)		; clear object's standing flag
+		bclr	#3,obStatus(a2)				; clear object's standing flag
 		clr.b	obSolid(a2)
 .setpos:
 	; Debug Improvements end

@@ -70,3 +70,9 @@
  Function: Makes a slew of improvements to Debug Mode. Sonic's speed and "atop object" flag are cleared when turning into an item, plus rings/monitors can be placed even after collecting one.
  Date: 2024-06-03
  Modifies: _incObj\Debug Mode.asm
+ 
+ Name: Demo Playback Fix
+ Credit: FraGag
+ Function: Fixes an issue that makes demo playback interpret the button being held for more than one frame as continual new presses of the button.
+ Date: 2024-06-03
+ Modifies: _inc\MoveSonicInDemo.asm
