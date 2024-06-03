@@ -35,3 +35,8 @@
  Function: Fixes Sonic using the push animation while walking away from walls, and the airwalk glitch.
  Date: 2024-06-03
  Modifies: 1. _incObj\Sonic Animate.asm; 2. _incObj\sub SolidObject.asm, _incObj\26 Monitor.asm, sonic.asm
+
+ Name: Screen Scroll While Rolling Fix
+ Function: Fixes the bug that prevents the screen from scrolling back to neutral while Sonic is rolling.
+ Date: 2011-02-10 (Feb)
+ Modifies: _incObj\Sonic RollSpeed.asm

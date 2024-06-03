@@ -16,13 +16,13 @@ Sonic_RollSpeed:
 		bne.w	loc_131CC
 		tst.w	objoff_3E(a0)
 		bne.s	.notright
-		btst	#bitL,(v_jpadhold2).w ; is left being pressed?
-		beq.s	.notleft	; if not, branch
+		btst	#bitL,(v_jpadhold2).w	; is left being pressed?
+		beq.s	.notleft				; if not, branch
 		bsr.w	Sonic_RollLeft
 
 .notleft:
-		btst	#bitR,(v_jpadhold2).w ; is right being pressed?
-		beq.s	.notright	; if not, branch
+		btst	#bitR,(v_jpadhold2).w	; is right being pressed?
+		beq.s	.notright				; if not, branch
 		bsr.w	Sonic_RollRight
 
 .notright:
@@ -47,17 +47,28 @@ loc_131A6:
 		move.w	d0,obInertia(a0)
 
 loc_131AA:
-		tst.w	obInertia(a0)	; is Sonic moving?
-		bne.s	loc_131CC	; if yes, branch
+		tst.w	obInertia(a0)		; is Sonic moving?
+		bne.s	loc_131CC			; if yes, branch
 		bclr	#2,obStatus(a0)
 		move.b	#$13,obHeight(a0)
 		move.b	#9,obWidth(a0)
-		move.b	#id_Wait,obAnim(a0) ; use "standing" animation
+		move.b	#id_Wait,obAnim(a0)	; use "standing" animation
 		subq.w	#5,obY(a0)
 
 loc_131CC:
+	; Mercury Screen Scroll While Rolling Fix
+		cmp.w	#$60,(v_lookshift).w
+		beq.s	.cont2
+		bcc.s	.cont1
+		addq.w	#4,(v_lookshift).w
+
+.cont1:
+		subq.w	#2,(v_lookshift).w
+
+.cont2:
+	; Screen Scroll While Rolling Fix End
 		move.b	obAngle(a0),d0
-		jsr	(CalcSine).l
+		jsr		(CalcSine).l
 		muls.w	obInertia(a0),d0
 		asr.l	#8,d0
 		move.w	d0,obVelY(a0)
@@ -88,7 +99,7 @@ Sonic_RollLeft:
 
 loc_1320A:
 		bset	#0,obStatus(a0)
-		move.b	#id_Roll,obAnim(a0) ; use "rolling" animation
+		move.b	#id_Roll,obAnim(a0)	; use "rolling" animation
 		rts	
 ; ===========================================================================
 
