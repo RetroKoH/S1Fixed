@@ -100,7 +100,7 @@ loc_9C02:
 		add.w	d5,d2		; add ring spacing value to d2
 		add.w	d6,d3		; add ring spacing value to d3
 		swap	d1
-		dbf	d1,Ring_MakeRings ; repeat for	number of rings
+		dbf		d1,Ring_MakeRings ; repeat for	number of rings
 
 loc_9C0E:
 		btst	#0,(a2)
@@ -265,10 +265,14 @@ RLoss_Bounce:	; Routine 2
 .chkdel:
 		tst.b	(v_ani3_time).w
 		beq.s	RLoss_Delete
+		; Redhotsonic Ring Deletion Fix
+		cmpi.w	#$FF00,(v_limittop2).w	; is vertical wrapping enabled? ; FFFFF72C
+		beq.w	DisplaySprite			; if so, branch
+		; Ring Deletion Fix End
 		move.w	(v_limitbtm2).w,d0
 		addi.w	#$E0,d0
-		cmp.w	obY(a0),d0	; has object moved below level boundary?
-		blo.s	RLoss_Delete	; if yes, branch
+		cmp.w	obY(a0),d0				; has object moved below level boundary?
+		blo.s	RLoss_Delete			; if yes, branch
 		bra.w	DisplaySprite
 ; ===========================================================================
 

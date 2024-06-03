@@ -131,8 +131,14 @@
  Date: 2024-06-03
  Modifies: sonic.asm (RunPLC:)
  
- Name: Title Screen Tweaks/Fixes
+ Name: Title Screen Tweaks/Fixes ***(Investigate bg shift bug reported by Iso Kilo)***
  Credit: RetroKoH (Original PSB fix by Quickman)
  Function: Some adjustments to the Title Screen to make it look more correct. Under-the-hood tweaks as well. (PSB fix, GHZ palette, Title Screen centered)
  Date: 2024-06-03
  Modifies: sonic.asm, _inc\PaletteCycle.asm, _inc\Palette Pointers.asm, _incObj/0E Title Screen Sonic.asm, _incObj/0F Press Start and TM.asm
+
+ Name: Accidental Deletion of Scattered Rings
+ Credit: Redhotsonic
+ Function: Fixed a bug related to rings deleting themselves incorrectly in a vertically wrapping level (LZ3 or SBZ2)
+ Date: 2024-06-03
+ Modifies: 25 & 37 Rings.asm
