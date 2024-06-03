@@ -25,3 +25,8 @@
  Function: Fixes the missing splash and applies underwater behavior when Sonic hits the water surface while hurt
  Date: 2024-06-03
  Modifies: _incObj\Sonic (part 2).asm
+ 
+ Name: Pushing/Walking Animation Fixes: 1. Pushing While Walking Fix & 2. Walking In Air Fix (Mercury)
+ Function: Fixes Sonic using the push animation while walking away from walls, and the airwalk glitch.
+ Date: 2024-06-03
+ Modifies: 1. _incObj\Sonic Animate.asm; 2. _incObj\sub SolidObject.asm, _incObj\26 Monitor.asm, sonic.asm

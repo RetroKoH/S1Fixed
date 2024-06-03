@@ -24,14 +24,14 @@ Mon_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.b	#3,obPriority(a0)
 		move.b	#$F,obActWid(a0)
-		lea	(v_objstate).w,a2
+		lea		(v_objstate).w,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		bclr	#7,2(a2,d0.w)
-		btst	#0,2(a2,d0.w)	; has monitor been broken?
-		beq.s	.notbroken	; if not, branch
-		move.b	#8,obRoutine(a0) ; run "Mon_Display" routine
-		move.b	#$B,obFrame(a0)	; use broken monitor frame
+		btst	#0,2(a2,d0.w)		; has monitor been broken?
+		beq.s	.notbroken			; if not, branch
+		move.b	#8,obRoutine(a0)	; run "Mon_Display" routine
+		move.b	#$B,obFrame(a0)		; use broken monitor frame
 		rts	
 ; ===========================================================================
 
@@ -40,8 +40,8 @@ Mon_Main:	; Routine 0
 		move.b	obSubtype(a0),obAnim(a0)
 
 Mon_Solid:	; Routine 2
-		move.b	ob2ndRout(a0),d0 ; is monitor set to fall?
-		beq.s	.normal		; if not, branch
+		move.b	ob2ndRout(a0),d0	; is monitor set to fall?
+		beq.s	.normal				; if not, branch
 		subq.b	#2,d0
 		bne.s	.fall
 
@@ -50,8 +50,8 @@ Mon_Solid:	; Routine 2
 		move.b	obActWid(a0),d1
 		addi.w	#$B,d1
 		bsr.w	ExitPlatform
-		btst	#3,obStatus(a1) ; is Sonic on top of the monitor?
-		bne.w	.ontop		; if yes, branch
+		btst	#3,obStatus(a1)		; is Sonic on top of the monitor?
+		bne.w	.ontop				; if yes, branch
 		clr.b	ob2ndRout(a0)
 		bra.w	Mon_Animate
 ; ===========================================================================
@@ -122,7 +122,7 @@ loc_A246:
 loc_A25C:
 		btst	#5,obStatus(a0)
 		beq.s	Mon_Animate
-		move.w	#1,obAnim(a1)	; clear obAnim and set obNextAni to 1
+		; Removed line -- Mercury Walking In Air Fix
 
 loc_A26A:
 		bclr	#5,obStatus(a0)

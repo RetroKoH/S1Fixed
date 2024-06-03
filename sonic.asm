@@ -5605,7 +5605,7 @@ loc_8A92:
 loc_8AA8:
 		btst	#5,obStatus(a0)
 		beq.s	locret_8AC2
-		move.w	#id_Run,obAnim(a1)
+		; Removed line -- Mercury Walking In Air Fix
 
 loc_8AB6:
 		bclr	#5,obStatus(a0)
