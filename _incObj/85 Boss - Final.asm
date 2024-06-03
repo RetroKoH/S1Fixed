@@ -172,7 +172,7 @@ loc_19F2E:
 		move.w	#$14,d2
 		move.w	#$14,d3
 		move.w	obX(a0),d4
-		jsr	(SolidObject).l
+		jsr		(SolidObject).l
 		tst.w	d4
 		bgt.s	loc_19F50
 
@@ -195,10 +195,15 @@ loc_19F6A:
 		move.w	d0,(v_player+obVelX).w
 		tst.b	objoff_35(a0)
 		bne.s	loc_19F88
+	; Mercury FZ Boss Hitcount Fix
+		tst.b	obColProp(a0)	; has the boss been defeated?
+		beq.s	loc_19F9C		; if so, don't let it be hit again.
+	; FZ Boss Hitcount Fix End
+
 		subq.b	#1,obColProp(a0)
 		move.b	#$64,objoff_35(a0)
 		move.w	#sfx_HitBoss,d0
-		jsr	(PlaySound_Special).l	; play boss damage sound
+		jsr		(PlaySound_Special).l	; play boss damage sound
 
 loc_19F88:
 		subq.b	#1,objoff_35(a0)

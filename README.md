@@ -118,3 +118,9 @@
  Function: Correctly positions the Shield/Invincibility sprites when balancing on ledges.
  Date: 2024-06-03
  Modifies: _incObj\38 Shield and Invincibility.asm
+
+ Name: FZ Boss Hit Count Fix
+ Credit: Mercury
+ Function: Prevents an underflow glitch when hitting the Final Zone boss an extra time.
+ Date: 2024-06-03
+ Modifies: _incObj\85 Boss - Final.asm
