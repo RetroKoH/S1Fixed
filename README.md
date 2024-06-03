@@ -16,6 +16,19 @@
  Function: Layout Chunks are now 128x128 in size, akin to Sonic 2 and Sonic 3K
  Date: 2024-04-23
 
+# Visual Changes
+ Name: Title Screen Tweaks
+ Credit: RetroKoH
+ Function: Visual Adjustments to the Title Screen. (GHZ palette, Title Screen centered, Letter E corrected)
+ Date: 2024-06-03
+ Modifies: sonic.asm, _inc\PaletteCycle.asm, _inc\Palette Pointers.asm, _incObj/0E Title Screen Sonic.asm, _incObj/0F Press Start and TM.asm
+
+ Name: Flashing Lost Rings
+ Credit: Mercury
+ Function: Lost rings now flicker before disappearing.
+ Date: 2024-06-03
+ Modifies: 25 & 37 Rings.asm
+
 # Fixes
  Name: Sonic Roll Frame Fix
  Credit: Mercury
@@ -131,8 +144,8 @@
  Date: 2024-06-03
  Modifies: sonic.asm (RunPLC:)
  
- Name: Title Screen Tweaks/Fixes ***(Investigate bg shift bug reported by Iso Kilo)***
- Credit: RetroKoH (Original PSB fix by Quickman)
+ Name: Title Screen PSB Fix ***(Investigate bg shift bug reported by Iso Kilo)***
+ Credit: Quickman
  Function: Some adjustments to the Title Screen to make it look more correct. Under-the-hood tweaks as well. (PSB fix, GHZ palette, Title Screen centered)
  Date: 2024-06-03
  Modifies: sonic.asm, _inc\PaletteCycle.asm, _inc\Palette Pointers.asm, _incObj/0E Title Screen Sonic.asm, _incObj/0F Press Start and TM.asm
@@ -140,5 +153,11 @@
  Name: Accidental Deletion of Scattered Rings
  Credit: Redhotsonic
  Function: Fixed a bug related to rings deleting themselves incorrectly in a vertically wrapping level (LZ3 or SBZ2)
+ Date: 2024-06-03
+ Modifies: 25 & 37 Rings.asm
+ 
+ Name: Fixed Ring Timers
+ Credit: Redhotsonic
+ Function: Fixed lost rings so that they have individual expiration timers
  Date: 2024-06-03
  Modifies: 25 & 37 Rings.asm

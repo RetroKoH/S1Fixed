@@ -174,7 +174,8 @@ RingLoss:
 		move.w	RLoss_Index(pc,d0.w),d1
 		jmp	RLoss_Index(pc,d1.w)
 ; ===========================================================================
-RLoss_Index:	dc.w RLoss_Count-RLoss_Index
+RLoss_Index:
+		dc.w RLoss_Count-RLoss_Index
 		dc.w RLoss_Bounce-RLoss_Index
 		dc.w RLoss_Collect-RLoss_Index
 		dc.w RLoss_Sparkle-RLoss_Index
@@ -213,7 +214,6 @@ RLoss_Count:	; Routine 0
 		move.b	#3,obPriority(a1)
 		move.b	#$47,obColType(a1)
 		move.b	#8,obActWid(a1)
-		move.b	#-1,(v_ani3_time).w
 		tst.w	d4
 		bmi.s	.loc_9D62
 		move.w	d4,d0
@@ -235,14 +235,19 @@ RLoss_Count:	; Routine 0
 		move.w	d3,obVelY(a1)
 		neg.w	d2
 		neg.w	d4
-		dbf	d5,.loop	; repeat for number of rings (max 31)
+		dbf		d5,.loop	; repeat for number of rings (max 31)
 
 .resetcounter:
-		move.w	#0,(v_rings).w	; reset number of rings to zero
-		move.b	#$80,(f_ringcount).w ; update ring counter
+		move.w	#0,(v_rings).w			; reset number of rings to zero
+		move.b	#$80,(f_ringcount).w	; update ring counter
 		move.b	#0,(v_lifecount).w
+		; RHS Ring Timers Fix
+		moveq   #-1,d0					; Move #-1 to d0
+		move.b  d0,obDelayAni(a0)		; Move d0 to new timer
+		move.b  d0,(v_ani3_time).w		; Move d0 to old timer (for animated purposes)
+		; Ring Timers Fix End
 		move.w	#sfx_RingLoss,d0
-		jsr	(PlaySound_Special).l	; play ring loss sound
+		jsr		(PlaySound_Special).l	; play ring loss sound
 
 RLoss_Bounce:	; Routine 2
 		move.b	(v_ani3_frame).w,obFrame(a0)
@@ -253,7 +258,7 @@ RLoss_Bounce:	; Routine 2
 		add.b	d7,d0
 		andi.b	#3,d0
 		bne.s	.chkdel
-		jsr	(ObjFloorDist).l
+		jsr		(ObjFloorDist).l
 		tst.w	d1
 		bpl.s	.chkdel
 		add.w	d1,obY(a0)
@@ -263,17 +268,25 @@ RLoss_Bounce:	; Routine 2
 		neg.w	obVelY(a0)
 
 .chkdel:
-		tst.b	(v_ani3_time).w
-		beq.s	RLoss_Delete
-		; Redhotsonic Ring Deletion Fix
+		; RHS Ring Timers Fix
+		subq.b	#1,obDelayAni(a0)		; Subtract 1
+		beq.w	DeleteObject			; If 0, delete
+		; Ring Timers Fix End
+		; RHS Accidental Ring Deletion Fix
 		cmpi.w	#$FF00,(v_limittop2).w	; is vertical wrapping enabled? ; FFFFF72C
 		beq.w	DisplaySprite			; if so, branch
-		; Ring Deletion Fix End
+		; Accidental Ring Deletion Fix End
 		move.w	(v_limitbtm2).w,d0
 		addi.w	#$E0,d0
 		cmp.w	obY(a0),d0				; has object moved below level boundary?
-		blo.s	RLoss_Delete			; if yes, branch
-		bra.w	DisplaySprite
+		blo.w	DeleteObject			; if yes, branch
+		; Mercury Ring Flashing Effect
+		btst	#0, obDelayAni(a0)		; Test the first bit of the timer, so rings flash every other frame.
+		beq.w	DisplaySprite			; If the bit is 0, the ring will appear.
+		cmpi.b	#80,obDelayAni(a0)		; Rings will flash during last 80 steps of their life.
+		bhi.w	DisplaySprite			; If the timer is higher than 80, obviously the rings will STAY visible.
+		rts
+		; Ring Flashing Effect End
 ; ===========================================================================
 
 RLoss_Collect:	; Routine 4
@@ -283,7 +296,7 @@ RLoss_Collect:	; Routine 4
 		bsr.w	CollectRing
 
 RLoss_Sparkle:	; Routine 6
-		lea	(Ani_Ring).l,a1
+		lea		(Ani_Ring).l,a1
 		bsr.w	AnimateSprite
 		bra.w	DisplaySprite
 ; ===========================================================================
