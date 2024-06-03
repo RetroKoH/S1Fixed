@@ -1040,21 +1040,13 @@ ClearScreen:
 		fillVRAM	0,$1000,vram_fg ; clear foreground namespace
 		fillVRAM	0,$1000,vram_bg ; clear background namespace
 
-		if Revision=0
-		move.l	#0,(v_scrposy_vdp).w
-		move.l	#0,(v_scrposx_vdp).w
-		else
+		; Revision 01
 		clr.l	(v_scrposy_vdp).w
 		clr.l	(v_scrposx_vdp).w
-		endif
 
-	if FixBugs
+		; Fixed
 		clearRAM v_spritetablebuffer,v_spritetablebuffer_end
 		clearRAM v_hscrolltablebuffer,v_hscrolltablebuffer_end_padded
-	else
-		clearRAM v_spritetablebuffer,v_spritetablebuffer_end+4 ; Clears too much RAM, clearing the first 4 bytes of v_pal_water.
-		clearRAM v_hscrolltablebuffer,v_hscrolltablebuffer_end_padded+4 ; Clears too much RAM, clearing the first 4 bytes of v_objspace.
-	endif
 
 		rts	
 ; End of function ClearScreen

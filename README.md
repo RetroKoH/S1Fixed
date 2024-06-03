@@ -104,5 +104,11 @@
  Name: Lives Over/Underflow Fix
  Credit: Mercury
  Function: Prevents life count from over-/underflowing when 1 is added/subtracted.
- Date: 2011-02-12 (Feb)
+ Date: 2024-06-03
  Modifies: _incObj\09 Sonic in Special Stage.asm, _incObj\25 & 37 Rings.asm, _incObj\2E Monitor Content Power-Up.asm, _incObj\Sonic (part 2).asm, sonic.asm
+ 
+ Name: ClearScreen RAM Fix
+ Credit: Unknown (Clownacy?)
+ Function: Fixes a small bug in which too much RAM is cleared when clearing the screen.
+ Date: 2024-06-03
+ Modifies: sonic.asm (ClearScreen:)
