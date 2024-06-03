@@ -1366,14 +1366,14 @@ Qplc_Loop:
 
 		include	"_inc/PaletteCycle.asm"
 
-Pal_TitleCyc:	binclude	"palette/Cycle - Title Screen Water.bin"
-Pal_GHZCyc:	binclude	"palette/Cycle - GHZ.bin"
-Pal_LZCyc1:	binclude	"palette/Cycle - LZ Waterfall.bin"
-Pal_LZCyc2:	binclude	"palette/Cycle - LZ Conveyor Belt.bin"
-Pal_LZCyc3:	binclude	"palette/Cycle - LZ Conveyor Belt Underwater.bin"
+; Title Screen Cycling Palette Removed. Use GHZ's instead. -- RetroKoH Title Screen Adjustment
+Pal_GHZCyc:		binclude	"palette/Cycle - GHZ.bin"
+Pal_LZCyc1:		binclude	"palette/Cycle - LZ Waterfall.bin"
+Pal_LZCyc2:		binclude	"palette/Cycle - LZ Conveyor Belt.bin"
+Pal_LZCyc3:		binclude	"palette/Cycle - LZ Conveyor Belt Underwater.bin"
 Pal_SBZ3Cyc:	binclude	"palette/Cycle - SBZ3 Waterfall.bin"
-Pal_MZCyc:	binclude	"palette/Cycle - MZ (Unused).bin"
-Pal_SLZCyc:	binclude	"palette/Cycle - SLZ.bin"
+Pal_MZCyc:		binclude	"palette/Cycle - MZ (Unused).bin"
+Pal_SLZCyc:		binclude	"palette/Cycle - SLZ.bin"
 Pal_SYZCyc1:	binclude	"palette/Cycle - SYZ1.bin"
 Pal_SYZCyc2:	binclude	"palette/Cycle - SYZ2.bin"
 
@@ -2166,51 +2166,41 @@ Tit_LoadText:
 		bsr.w	PaletteFadeOut
 		disable_ints
 		bsr.w	ClearScreen
-		lea	(vdp_control_port).l,a5
-		lea	(vdp_data_port).l,a6
-		lea	(v_bgscreenposx).w,a3
-		lea	(v_lvllayout+$80).w,a4		; MJ: Load address of layout BG
+		lea		(vdp_control_port).l,a5
+		lea		(vdp_data_port).l,a6
+		lea		(v_bgscreenposx).w,a3
+		lea		(v_lvllayout+$80).w,a4	; MJ: Load address of layout BG
 		move.w	#$6000,d2
 		bsr.w	DrawChunks
-		lea	(v_128x128&$FFFFFF).l,a1
-		lea	(Eni_Title).l,a0 ; load	title screen mappings
+		lea		(v_128x128&$FFFFFF).l,a1
+		lea		(Eni_Title).l,a0		; load title screen mappings
 		move.w	#0,d0
 		bsr.w	EniDec
 
-		copyTilemap	v_128x128&$FFFFFF,$C206,$21,$15
+		copyTilemap	v_128x128&$FFFFFF,$C208,$21,$15		; RetroKoH Title Screen Adjustment
 
 		locVRAM	ArtTile_Level*$20
-		lea	(Nem_GHZ_1st).l,a0 ; load GHZ patterns
+		lea		(Nem_GHZ_1st).l,a0		; load GHZ patterns
 		bsr.w	NemDec
-		moveq	#palid_Title,d0	; load title screen palette
+		moveq	#palid_GHZ,d0			; load GHZ palette first -- RetroKoH Title Screen Adjustment
+		bsr.w	PalLoad1
+		moveq	#palid_Title,d0			; overwrite first 2 lines w/ title screen palette
 		bsr.w	PalLoad1
 		move.b	#bgm_Title,d0
-		bsr.w	PlaySound_Special	; play title screen music
-		move.b	#0,(f_debugmode).w ; disable debug mode
-		move.w	#$178,(v_demolength).w ; run title screen for $178 frames
-		
-	if FixBugs
-		clearRAM v_sonicteam,v_sonicteam+object_size
-	else
-		; Bug: this only clears half of the "SONIC TEAM PRESENTS" slot.
-		; This is responsible for why the "PRESS START BUTTON" text doesn't
-		; show up, as the routine ID isn't reset.
-		clearRAM v_sonicteam,v_sonicteam+object_size/2
-	endif
+		bsr.w	PlaySound_Special		; play title screen music
+		move.b	#0,(f_debugmode).w		; disable debug mode
+		move.w	#$178,(v_demolength).w	; run title screen for $178 frames
 
-		move.b	#id_TitleSonic,(v_titlesonic).w ; load big Sonic object
-		move.b	#id_PSBTM,(v_pressstart).w ; load "PRESS START BUTTON" object
-		;clr.b	(v_pressstart+obRoutine).w ; The 'Mega Games 10' version of Sonic 1 added this line, to fix the 'PRESS START BUTTON' object not appearing
+		clearRAM v_sonicteam,v_sonicteam+object_size	; PRESS START BUTTON FIX (Quickman)
+		move.b	#id_TitleSonic,(v_titlesonic).w			; load big Sonic object
+		move.b	#id_PSBTM,(v_pressstart).w				; load "PRESS START BUTTON" object
 
-		if Revision<>0
-			tst.b   (v_megadrive).w	; is console Japanese?
-			bpl.s   .isjap		; if yes, branch
-		endif
-
-		move.b	#id_PSBTM,(v_titletm).w ; load "TM" object
+		tst.b   (v_megadrive).w					; is console Japanese?
+		bpl.s   .isjap							; if yes, branch
+		move.b	#id_PSBTM,(v_titletm).w			; load "TM" object
 		move.b	#3,(v_titletm+obFrame).w
 .isjap:
-		move.b	#id_PSBTM,(v_ttlsonichide).w ; load object which hides part of Sonic
+		move.b	#id_PSBTM,(v_ttlsonichide).w	; load object which hides part of Sonic
 		move.b	#2,(v_ttlsonichide+obFrame).w
 		jsr	(ExecuteObjects).l
 		bsr.w	DeformLayers

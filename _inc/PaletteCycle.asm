@@ -8,17 +8,18 @@
 PaletteCycle:
 		moveq	#0,d2
 		moveq	#0,d0
-		move.b	(v_zone).w,d0	; get level number
+		move.b	(v_zone).w,d0			; get level number
 		add.w	d0,d0
 		move.w	PalCycle_Index(pc,d0.w),d0
-		jmp	PalCycle_Index(pc,d0.w) ; jump to relevant palette routine
+		jmp		PalCycle_Index(pc,d0.w)	; jump to relevant palette routine
 ; End of function PaletteCycle
 
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Palette cycling routines
 ; ---------------------------------------------------------------------------
-PalCycle_Index:	dc.w PalCycle_GHZ-PalCycle_Index
+PalCycle_Index:
+		dc.w PalCycle_GHZ-PalCycle_Index
 		dc.w PalCycle_LZ-PalCycle_Index
 		dc.w PalCycle_MZ-PalCycle_Index
 		dc.w PalCycle_SLZ-PalCycle_Index
@@ -32,12 +33,12 @@ PalCycle_Index:	dc.w PalCycle_GHZ-PalCycle_Index
 
 
 PalCycle_Title:
-		lea	(Pal_TitleCyc).l,a0
+		lea		(Pal_GHZCyc).l,a0	; RetroKoH Title Screen Adjustment
 		bra.s	PCycGHZ_Go
 ; ===========================================================================
 
 PalCycle_GHZ:
-		lea	(Pal_GHZCyc).l,a0
+		lea		(Pal_GHZCyc).l,a0
 
 PCycGHZ_Go:
 		subq.w	#1,(v_pcyc_time).w ; decrement timer
@@ -48,7 +49,7 @@ PCycGHZ_Go:
 		addq.w	#1,(v_pcyc_num).w ; increment cycle number
 		andi.w	#3,d0		; if cycle > 3, reset to 0
 		lsl.w	#3,d0
-		lea	(v_pal_dry+$50).w,a1
+		lea		(v_pal_dry+$50).w,a1
 		move.l	(a0,d0.w),(a1)+
 		move.l	4(a0,d0.w),(a1)	; copy palette data to RAM
 

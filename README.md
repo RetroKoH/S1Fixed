@@ -130,3 +130,9 @@
  Function: Fixes bug that sometimes crashes the game if roll and look down after passing End Sign in LZ1 and LZ2
  Date: 2024-06-03
  Modifies: sonic.asm (RunPLC:)
+ 
+ Name: Title Screen Tweaks/Fixes
+ Credit: RetroKoH (Original PSB fix by Quickman)
+ Function: Some adjustments to the Title Screen to make it look more correct. Under-the-hood tweaks as well. (PSB fix, GHZ palette, Title Screen centered)
+ Date: 2024-06-03
+ Modifies: sonic.asm, _inc\PaletteCycle.asm, _inc\Palette Pointers.asm, _incObj/0E Title Screen Sonic.asm, _incObj/0F Press Start and TM.asm
