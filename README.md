@@ -44,11 +44,17 @@
  Name: Screen Scroll While Rolling Fix
  Credit: Mercury
  Function: Fixes the bug that prevents the screen from scrolling back to neutral while Sonic is rolling.
- Date: 2011-02-10 (Feb)
+ Date: 2024-06-03
  Modifies: _incObj\Sonic RollSpeed.asm
  
  Name: Ducking Size Fix
  Credit: Mercury
  Function: Makes Sonic's hitbox the correct size in regards to solids when he is ducking
- Date: 2011-02-10 (Feb)
+ Date: 2024-06-03
  Modifies: _incObj\sub SolidObject.asm, _incObj\sub ReactToItem.asm, sonic.asm
+
+ Name: Exit DLE In Special Stage And Title
+ Credit: Mercury
+ Function: Prevents the DLE from running while on the Title Screen and in the Special Stage, preventing serious problems.
+ Date: 2024-06-03
+ Modifies: _inc\DynamicLevelEvents.asm

@@ -6,6 +6,13 @@
 
 
 DynamicLevelEvents:
+	; Mercury Exit DLE In Special Stage And Title
+		cmpi.b	#id_Title,(v_gamemode).w	; exit if on the Title Screen
+		beq.s	DLE_NoChg
+		cmpi.b	#id_Special,(v_gamemode).w	; exit if in a Special Stage
+		beq.s	DLE_NoChg
+	; Exit DLE In Special Stage And Title end
+
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
 		add.w	d0,d0
