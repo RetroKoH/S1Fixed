@@ -82,3 +82,9 @@
  Function: Makes the 100pt Hidden Bonuses actually give Sonic 100pts.
  Date: 2024-06-03
  Modifies: _incObj\7D Hidden Bonuses.asm
+
+ Name: Sega Sound Fix (Will likely be irrelevant once MegaPCM2 is imported)
+ Credit: Puto
+ Function: Fixes the Sega sound at game start so that it won't garble when code is added to the ROM. Also allows the player to skip it with the Start Button.
+ Date: 2024-06-03
+ Modifies: s1.sounddriver.asm
