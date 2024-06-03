@@ -15,3 +15,9 @@
  Function: Changes Sonic's frame immediately when he rolls up in order to fix flickering while in S-Tunnels (and potentially elsewhere)
  Date: 2024-06-03
  Modifies: _incObj\Sonic Roll.asm
+
+ Name: Top Boundary Fix (Mercury)
+ Function: Prevents Sonic from dying when he passes the top boundary while hurt
+ Date: 2024-06-03
+ Modifies: _incObj\Sonic (part 2).asm
+ 
