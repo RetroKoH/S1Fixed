@@ -153,12 +153,28 @@ obAngle:	equ $26	; angle
 obSubtype:	equ $28	; object subtype
 obSolid:	equ ob2ndRout ; solid status flag
 
-; Object variables used by Sonic
-flashtime:	equ $30	; time between flashes after getting hit
-invtime:	equ $32	; time left for invincibility
-shoetime:	equ $34	; time left for speed shoes
+; Object variables used by Sonic (to be removed)
+flashtime:		equ $30	; time between flashes after getting hit
+invtime:		equ $32	; time left for invincibility
+shoetime:		equ $34	; time left for speed shoes
 stick_to_convex:equ objoff_38
 standonobject:	equ $3D	; object Sonic stands on
+
+; Mercury Variable Constants
+obInvuln:		equ $30	; Invulnerable (blinking) timer
+				; $31 reserved as well
+obInvinc:		equ $32	; Invincibility timer
+				; $33 reserved as well
+obShoes:		equ $34	; Speed Shoes timer
+				; $35 reserved as well
+obFrontAngle:	equ $36
+obRearAngle:	equ $37
+obOnWheel:		equ $38	; on convex wheel flag
+obStatus2:		equ $39	; status for abilities such as Spin Dash
+obRestartTimer:	equ $3A ; level restart timer
+obJumping:		equ $3C	; jumping flag
+obPlatformID:	equ $3D	; ost slot of the object Sonic's on top of
+obLRLock:		equ $3E	; flag for preventing left and right input
 
 ; Miscellaneous object scratch-RAM
 objoff_25:	equ $25

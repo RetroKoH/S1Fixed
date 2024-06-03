@@ -58,3 +58,9 @@
  Function: Prevents the DLE from running while on the Title Screen and in the Special Stage, preventing serious problems.
  Date: 2024-06-03
  Modifies: _inc\DynamicLevelEvents.asm
+ 
+ Name: Clear Control Lock When Jumping
+ Credit: Mercury
+ Function: Clears control lock when Sonic jumps, preventing it from lingering when he lands again and causing a frustrating lag in input.
+ Date: 2024-06-03
+ Modifies: _incObj\Sonic Jump.asm
