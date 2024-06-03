@@ -14,8 +14,8 @@ Debug_Index:	dc.w Debug_Main-Debug_Index
 
 Debug_Main:	; Routine 0
 		addq.b	#2,(v_debuguse).w
-		move.w	(v_limittop2).w,(v_limittopdb).w ; buffer level x-boundary
-		move.w	(v_limitbtm1).w,(v_limitbtmdb).w ; buffer level y-boundary
+		move.w	(v_limittop2).w,(v_limittopdb).w	; buffer level x-boundary
+		move.w	(v_limitbtm1).w,(v_limitbtmdb).w	; buffer level y-boundary
 		move.w	#0,(v_limittop2).w
 		move.w	#$720,(v_limitbtm1).w
 		andi.w	#$7FF,(v_player+obY).w
@@ -23,12 +23,31 @@ Debug_Main:	; Routine 0
 		andi.w	#$3FF,(v_bgscreenposy).w
 		move.b	#0,obFrame(a0)
 		move.b	#id_Walk,obAnim(a0)
-		cmpi.b	#id_Special,(v_gamemode).w ; is game mode $10 (special stage)?
-		bne.s	.islevel	; if not, branch
 
-		move.w	#0,(v_ssrotate).w ; stop special stage rotating
-		move.w	#0,(v_ssangle).w ; make	special	stage "upright"
-		moveq	#6,d0		; use 6th debug	item list
+	; Mercury Debug Improvements
+		clr.w	obVelX(a0)
+		clr.w	obVelY(a0)
+		clr.w	obInertia(a0)
+		btst	#staOnObj,obStatus(a0)		; is Sonic standing on an object?
+		beq.s	.setpos						; if not, branch
+		bclr	#staOnObj,obStatus(a0)		; clear Sonic's standing flag
+		moveq	#0,d0
+		move.b	obPlatformID(a0),d0			; get object id
+		clr.b	obPlatformID(a0)			; clear object id
+		lsl.w	#6,d0
+		addi.l	#v_objspace&$FFFFFF,d0
+		movea.l	d0,a2
+		bclr	#staOnObj,obStatus(a2)		; clear object's standing flag
+		clr.b	obSolid(a2)
+.setpos:
+	; Debug Improvements end
+
+		cmpi.b	#id_Special,(v_gamemode).w	; is game mode $10 (special stage)?
+		bne.s	.islevel					; if not, branch
+
+		move.w	#0,(v_ssrotate).w			; stop special stage rotating
+		move.w	#0,(v_ssangle).w			; make special stage "upright"
+		moveq	#6,d0						; use 6th debug	item list
 		bra.s	.selectlist
 ; ===========================================================================
 
@@ -37,13 +56,13 @@ Debug_Main:	; Routine 0
 		move.b	(v_zone).w,d0
 
 .selectlist:
-		lea	(DebugList).l,a2
+		lea		(DebugList).l,a2
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2
 		move.w	(a2)+,d6
-		cmp.b	(v_debugitem).w,d6 ; have you gone past the last item?
-		bhi.s	.noreset	; if not, branch
-		move.b	#0,(v_debugitem).w ; back to start of list
+		cmp.b	(v_debugitem).w,d6	; have you gone past the last item?
+		bhi.s	.noreset			; if not, branch
+		move.b	#0,(v_debugitem).w	; back to start of list
 
 .noreset:
 		bsr.w	Debug_ShowItem
@@ -158,13 +177,14 @@ Debug_ChgItem:
 ; ===========================================================================
 
 .createitem:
-		btst	#bitC,(v_jpadpress1).w ; is button C pressed?
-		beq.s	.backtonormal	; if not, branch
-		jsr	(FindFreeObj).l
+		btst	#bitC,(v_jpadpress1).w	; is button C pressed?
+		beq.s	.backtonormal			; if not, branch
+		jsr		(FindFreeObj).l
 		bne.s	.backtonormal
+		move.b	#0,(v_objstate+2).w		; Mercury Debug Improvements
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		_move.b	obMap(a0),obID(a1)	; create object
+		_move.b	obMap(a0),obID(a1)		; create object
 		move.b	obRender(a0),obRender(a1)
 		move.b	obRender(a0),obStatus(a1)
 		andi.b	#$7F,obStatus(a1)

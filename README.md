@@ -64,3 +64,9 @@
  Function: Clears control lock when Sonic jumps, preventing it from lingering when he lands again and causing a frustrating lag in input.
  Date: 2024-06-03
  Modifies: _incObj\Sonic Jump.asm
+ 
+ Name: Debug Mode Improvements
+ Credit: Mercury
+ Function: Makes a slew of improvements to Debug Mode. Sonic's speed and "atop object" flag are cleared when turning into an item, plus rings/monitors can be placed even after collecting one.
+ Date: 2024-06-03
+ Modifies: _incObj\Debug Mode.asm
