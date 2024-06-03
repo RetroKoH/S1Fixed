@@ -8,7 +8,12 @@
  MarkeyJester - Original S1 One Two-Eight Base
  Mods/Fixes, etc. are credited to the respective authors below
 
-# Elective Mods
+# Mods (Can be enabled or disabled)
+
+# Under-the-Hood Changes/Overhauls
+ Name: 128x128 Chunk Format (Clownacy)
+ Function: Layout Chunks are now 128x128 in size, akin to Sonic 2 and Sonic 3K
+ Date: 2024-04-23
 
 # Fixes
  Name: Sonic Roll Frame Fix (Mercury)
