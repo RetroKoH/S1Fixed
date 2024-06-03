@@ -58,15 +58,15 @@ Sonic_Death:	; Routine 6
 
 
 GameOver:
-		move.w	(v_limitbtm2).w,d0
+		move.w	(v_screenposy).w,d0	; Mercury Game/Time Over Timing Fix
 		addi.w	#$100,d0
 		cmp.w	obY(a0),d0
-		bhs.w	locret_13900
+		bge.w	locret_13900		; Mercury Game/Time Over Timing Fix
 		move.w	#-$38,obVelY(a0)
 		addq.b	#2,obRoutine(a0)
-		clr.b	(f_timecount).w	; stop time counter
-		addq.b	#1,(f_lifecount).w ; update lives counter
-		subq.b	#1,(v_lives).w	; subtract 1 from number of lives
+		clr.b	(f_timecount).w		; stop time counter
+		addq.b	#1,(f_lifecount).w	; update lives counter
+		subq.b	#1,(v_lives).w		; subtract 1 from number of lives
 		bne.s	loc_138D4
 		move.w	#0,objoff_3A(a0)
 		move.b	#id_GameOverCard,(v_gameovertext1).w ; load GAME object

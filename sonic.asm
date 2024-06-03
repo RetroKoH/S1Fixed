@@ -2154,22 +2154,21 @@ GM_Title:
 
 Tit_LoadText:
 		move.w	(a5)+,(a6)
-		dbf	d1,Tit_LoadText	; load level select font
-
-		move.b	#0,(v_lastlamp).w ; clear lamppost counter
-		move.w	#0,(v_debuguse).w ; disable debug item placement mode
-		move.w	#0,(f_demo).w	; disable debug mode
-		move.w	#0,(v_unused2).w ; unused variable
+		dbf		d1,Tit_LoadText			; load level select font
+		move.b	#0,(f_nobgscroll).w		; Mercury Game Over When Drowning Fix
+		move.b	#0,(v_lastlamp).w		; clear lamppost counter
+		move.w	#0,(v_debuguse).w		; disable debug item placement mode
+		move.w	#0,(f_demo).w			; disable debug mode
 		move.w	#(id_GHZ<<8),(v_zone).w	; set level to GHZ (00)
-		move.w	#0,(v_pcyc_time).w ; disable palette cycling
+		move.w	#0,(v_pcyc_time).w		; disable palette cycling
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformLayers
-		lea	(v_16x16).w,a1
-		lea	(Blk16_GHZ).l,a0 ; load	GHZ 16x16 mappings
+		lea		(v_16x16).w,a1
+		lea		(Blk16_GHZ).l,a0		; load GHZ 16x16 mappings
 		move.w	#0,d0
 		bsr.w	EniDec
-		lea	(Blk128_GHZ).l,a0 ; load GHZ 128x128 mappings
-		lea	(v_128x128&$FFFFFF).l,a1
+		lea		(Blk128_GHZ).l,a0		; load GHZ 128x128 mappings
+		lea		(v_128x128&$FFFFFF).l,a1
 		bsr.w	KosDec
 		bsr.w	LevelLayoutLoad
 		bsr.w	PaletteFadeOut
@@ -2178,7 +2177,7 @@ Tit_LoadText:
 		lea	(vdp_control_port).l,a5
 		lea	(vdp_data_port).l,a6
 		lea	(v_bgscreenposx).w,a3
-		lea	(v_lvllayout+$80).w,a4	; MJ: Load address of layout BG
+		lea	(v_lvllayout+$80).w,a4		; MJ: Load address of layout BG
 		move.w	#$6000,d2
 		bsr.w	DrawChunks
 		lea	(v_128x128&$FFFFFF).l,a1

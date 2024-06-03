@@ -83,7 +83,7 @@
  Date: 2024-06-03
  Modifies: _incObj\7D Hidden Bonuses.asm
 
- Name: Sega Sound Fix (Will likely be irrelevant once MegaPCM2 is imported)
+ Name: Sega Sound Fix ***(Will likely be irrelevant once MegaPCM2 is imported)***
  Credit: Puto
  Function: Fixes the Sega sound at game start so that it won't garble when code is added to the ROM. Also allows the player to skip it with the Start Button.
  Date: 2024-06-03
@@ -94,3 +94,9 @@
  Function: Removes Speed Shoes when Sonic passes the Signpost so the Level Clear jingle won't play sped up.
  Date: 2024-06-03
  Modifies: _incObj\3A Got Through Card.asm
+ 
+ Name: Game/Time Over Timing and Drowning Fixes
+ Credit: Mercury
+ Function: Makes the Game/Time Over message timing consistent, rather than waiting for Sonic to fall. Also fixes a Title Screen scrolling bug if getting Game Over after drowning.
+ Date: 2024-06-03
+ Modifies: _incObj\Sonic (part 2).asm, sonic.asm
