@@ -21,3 +21,7 @@
  Date: 2024-06-03
  Modifies: _incObj\Sonic (part 2).asm
  
+ Name: Hurt Splash Fix (Mercury)
+ Function: Fixes the missing splash and applies underwater behavior when Sonic hits the water surface while hurt
+ Date: 2024-06-03
+ Modifies: _incObj\Sonic (part 2).asm

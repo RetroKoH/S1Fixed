@@ -13,6 +13,7 @@ loc_1380C:
 		bsr.w	Sonic_HurtStop
 		bsr.w	Sonic_LevelBound
 		bsr.w	Sonic_RecordPosition
+		bsr.w	Sonic_Water				; Mercury Hurt Splash Fix
 		bsr.w	Sonic_Animate
 		bsr.w	Sonic_LoadGfx
 		jmp	(DisplaySprite).l
