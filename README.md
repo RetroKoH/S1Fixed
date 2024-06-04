@@ -179,3 +179,9 @@
  Function: Removes the unintentional flicker of the GAME OVER object once it reaches center screen.
  Date: 2024-06-04
  Modifies: _incObj/39 Game Over.asm
+
+ Name: Bottom Boundary Death Fix
+ Credit: RetroKoH
+ Function: Prevents accidental sudden deaths by handling the bottom boundary appropriately.
+ Date: 2024-06-04
+ Modifies: _incObj/Sonic LevelBound.asm
