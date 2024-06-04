@@ -201,3 +201,9 @@
  Function: Prevents accidental sudden deaths by handling the bottom boundary appropriately.
  Date: 2024-06-04
  Modifies: _incObj/Sonic LevelBound.asm
+
+ Name: RememberSprite Bugfix
+ Credit: MarkeyJester
+ Function: Fixes a bug in which objects load that are set as destroyed, or vise versa.
+ Date: 2024-06-04
+ Modifies: sonic.asm

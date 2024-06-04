@@ -6500,6 +6500,12 @@ loc_DA02:
 loc_DA10:
 		bsr.w	loc_DA3C
 		beq.s	loc_DA02
+	; MarkeyJester RememberSprite Bugfix
+		; This will ensure the remember counter for moving right is restored correctly if the SST was full.
+		tst.b	$04(a0)		; was this object a remember state?
+		bpl.s	loc_DA16	; if not, branch
+		subq.b	#$01,(a2)	; move right counter back
+	; RememberSprite Bugfix End
 
 loc_DA16:
 		move.l	a0,(v_opl_data).w
@@ -6529,7 +6535,7 @@ locret_DA3A:
 loc_DA3C:
 		tst.b	4(a0)
 		bpl.s	OPL_MakeItem
-		bset	#7,2(a2,d2.w)
+		btst	#7,2(a2,d2.w)	; changed from bset -- MarkeyJester RememberSprite Bugfix
 		beq.s	OPL_MakeItem
 		addq.w	#6,a0
 		moveq	#0,d0
@@ -6550,6 +6556,7 @@ OPL_MakeItem:
 		move.b	d1,obStatus(a1)
 		move.b	(a0)+,d0
 		bpl.s	loc_DA80
+		bset	#7,2(a2,d2.w)	; set as removed -- MarkeyJester RememberSprite Bugfix
 		andi.b	#$7F,d0
 		move.b	d2,obRespawnNo(a1)
 
