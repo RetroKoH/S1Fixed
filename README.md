@@ -109,7 +109,7 @@
  Modifies: _incObj\3A Got Through Card.asm
  
  Name: Game/Time Over Timing and Drowning Fixes
- Credit: Mercury
+ Credit: MarkeyJester and Mercury, respectively
  Function: Makes the Game/Time Over message timing consistent, rather than waiting for Sonic to fall. Also fixes a Title Screen scrolling bug if getting Game Over after drowning.
  Date: 2024-06-03
  Modifies: _incObj\Sonic (part 2).asm, sonic.asm

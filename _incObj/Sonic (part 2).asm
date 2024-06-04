@@ -58,10 +58,10 @@ Sonic_Death:	; Routine 6
 
 
 GameOver:
-		move.w	(v_screenposy).w,d0	; Mercury Game/Time Over Timing Fix
+		move.w	(v_screenposy).w,d0	; MarkeyJester Game/Time Over Timing Fix
 		addi.w	#$100,d0
 		cmp.w	obY(a0),d0
-		bge.w	locret_13900		; Mercury Game/Time Over Timing Fix
+		bge.w	locret_13900		; MarkeyJester Game/Time Over Timing Fix
 		move.w	#-$38,obVelY(a0)
 		addq.b	#2,obRoutine(a0)
 		clr.b	(f_timecount).w		; stop time counter
