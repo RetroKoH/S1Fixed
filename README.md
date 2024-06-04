@@ -167,3 +167,9 @@
  Function: Fixed bugs that occur when drowning in the Hurt State or on a Time Over. Added Drowning routine to Sonic
  Date: 2024-06-04
  Modifies: _incObj/0A - Drowning Countdown.asm, sonic.asm; Added _incObj/Sonic Drowns.asm
+ 
+ Name: Horizontal Camera Scrolling Fixes
+ Credit: MarkeyJester
+ Function: Adds a check for scrolling to the left (Useful fix for those adding cutscenes), and prevents horizontal wrapping glitches.
+ Date: 2024-06-04
+ Modifies: _inc\DeformLayers.asm (MoveScreenHoriz:)
