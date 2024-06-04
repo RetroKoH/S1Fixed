@@ -9,10 +9,11 @@
  Mods/Fixes, etc. are credited to the respective authors below
 
 # Mods (Can be enabled or disabled)
- Name: Dynamic Special Stage Walls
+ Name: Dynamic Special Stage Walls (and Smmoth Rotation)
+ Credit: Mercury/Cinossu
  Function: Dynamically loads the wall art in the Special Stages to free VRAM (for things like the HUD)
  Date: 2024-06-04
- Modifies: sonic.asm, _maps\SS Walls.asm, _inc\Pattern Load Cues.asm,
+ Modifies: sonic.asm, _maps\SS Walls.asm, _inc\Pattern Load Cues.asm, 09 Sonic in Special Stage.asm
  Variables: DynamicSpecialStageWalls, SmoothSpecialStages
 
 # Under-the-Hood Changes/Overhauls
