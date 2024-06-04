@@ -25,7 +25,12 @@
  Name: MegaPCM2 Sound Driver
  Credit: Vladikcomper
  Function: High-quality sound driver
- Date:
+ Date: 2024-06-04
+ 
+ Name: MD Debugger and Error Handler v.2.5
+ Credit: Vladikcomper
+ Function: New Error Handling System and Built-in Debugger
+ Date: 2024-06-04
 
 # Visual Changes
  Name: Title Screen Tweaks
