@@ -10,24 +10,24 @@ DrownCount:
 		jmp	Drown_Index(pc,d1.w)
 ; ===========================================================================
 Drown_Index:
-ptr_Drown_Main:		dc.w Drown_Main-Drown_Index
-ptr_Drown_Animate:	dc.w Drown_Animate-Drown_Index
-ptr_Drown_ChkWater:	dc.w Drown_ChkWater-Drown_Index
-ptr_Drown_Display:	dc.w Drown_Display-Drown_Index
-ptr_Drown_Delete:	dc.w Drown_Delete-Drown_Index
+ptr_Drown_Main:			dc.w Drown_Main-Drown_Index
+ptr_Drown_Animate:		dc.w Drown_Animate-Drown_Index
+ptr_Drown_ChkWater:		dc.w Drown_ChkWater-Drown_Index
+ptr_Drown_Display:		dc.w Drown_Display-Drown_Index
+ptr_Drown_Delete:		dc.w Drown_Delete-Drown_Index
 ptr_Drown_Countdown:	dc.w Drown_Countdown-Drown_Index
-ptr_Drown_AirLeft:	dc.w Drown_AirLeft-Drown_Index
-			dc.w Drown_Display-Drown_Index
-			dc.w Drown_Delete-Drown_Index
+ptr_Drown_AirLeft:		dc.w Drown_AirLeft-Drown_Index
+						dc.w Drown_Display-Drown_Index
+						dc.w Drown_Delete-Drown_Index
 
 drown_origX = objoff_30		; original x-axis position
 drown_time = objoff_38		; time between each number changes
 
-id_Drown_Main = ptr_Drown_Main-Drown_Index		; 0
+id_Drown_Main = ptr_Drown_Main-Drown_Index				; 0
 id_Drown_Animate = ptr_Drown_Animate-Drown_Index		; 2
-id_Drown_ChkWater = ptr_Drown_ChkWater-Drown_Index	; 4
+id_Drown_ChkWater = ptr_Drown_ChkWater-Drown_Index		; 4
 id_Drown_Display = ptr_Drown_Display-Drown_Index		; 6
-id_Drown_Delete = ptr_Drown_Delete-Drown_Index		; 8
+id_Drown_Delete = ptr_Drown_Delete-Drown_Index			; 8
 id_Drown_Countdown = ptr_Drown_Countdown-Drown_Index	; $A
 id_Drown_AirLeft = ptr_Drown_AirLeft-Drown_Index		; $C
 ; ===========================================================================
@@ -39,10 +39,10 @@ Drown_Main:	; Routine 0
 		move.b	#$84,obRender(a0)
 		move.b	#$10,obActWid(a0)
 		move.b	#1,obPriority(a0)
-		move.b	obSubtype(a0),d0 ; get bubble type
-		bpl.s	.smallbubble	; branch if $00-$7F
+		move.b	obSubtype(a0),d0	; get bubble type
+		bpl.s	.smallbubble		; branch if $00-$7F
 
-		addq.b	#8,obRoutine(a0) ; goto Drown_Countdown next
+		addq.b	#8,obRoutine(a0)	; goto Drown_Countdown next
 		move.l	#Map_Drown,obMap(a0)
 		move.w	#make_art_tile(ArtTile_LZ_Sonic_Drowning,0,0),obGfx(a0)
 		andi.w	#$7F,d0
@@ -152,16 +152,6 @@ Drown_ShowNumber:
 		rts	
 ; ===========================================================================
 Drown_WobbleData:
-		if Revision=0
-		dc.b 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2
-		dc.b 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3
-		dc.b 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2
-		dc.b 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0
-		dc.b 0, -1, -1, -1, -1, -1, -2, -2, -2, -2, -2, -3, -3, -3, -3, -3
-		dc.b -3, -3, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4
-		dc.b -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -3
-		dc.b -3, -3, -3, -3, -3, -3, -2, -2, -2, -2, -2, -1, -1, -1, -1, -1
-		else
 		dc.b 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2
 		dc.b 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3
 		dc.b 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2
@@ -178,7 +168,6 @@ Drown_WobbleData:
 		dc.b -3, -3, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4
 		dc.b -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -3
 		dc.b -3, -3, -3, -3, -3, -3, -2, -2, -2, -2, -2, -1, -1, -1, -1, -1
-		endif
 ; ===========================================================================
 
 Drown_Countdown:; Routine $A
@@ -220,48 +209,42 @@ Drown_Countdown:; Routine $A
 
 .warnsound:
 		move.w	#sfx_Warning,d0
-		jsr	(PlaySound_Special).l	; play "ding-ding" warning sound
+		jsr	(PlaySound_Special).l		; play "ding-ding" warning sound
 
 .reduceair:
-		subq.w	#1,(v_air).w	; subtract 1 from air remaining
-		bcc.w	.gotomakenum	; if air is above 0, branch
+		subq.w	#1,(v_air).w			; subtract 1 from air remaining
+		bcc.w	.gotomakenum			; if air is above 0, branch
 
 		; Sonic drowns here
 		bsr.w	ResumeMusic
-		move.b	#$81,(f_playerctrl).w ; lock controls and disable object interaction
+		move.b	#$81,(f_playerctrl).w	; lock controls and disable object interaction
 		move.w	#sfx_Drown,d0
-		jsr	(PlaySound_Special).l	; play drowning sound
+		jsr		(PlaySound_Special).l	; play drowning sound
 		move.b	#$A,objoff_34(a0)
 		move.w	#1,objoff_36(a0)
 		move.w	#$78,objoff_2C(a0)
 		move.l	a0,-(sp)
-		lea	(v_player).w,a0
+		lea		(v_player).w,a0
 		bsr.w	Sonic_ResetOnFloor
 		move.b	#id_Drown,obAnim(a0)	; use Sonic's drowning animation
 		bset	#1,obStatus(a0)
 		bset	#7,obGfx(a0)
-		move.w	#0,obVelY(a0)
-		move.w	#0,obVelX(a0)
-		move.w	#0,obInertia(a0)
+		clr.w	obVelY(a0)
+		clr.w	obVelX(a0)
+		clr.w	obInertia(a0)
+		move.b	#$A,obRoutine(a0)		; Force the character to drown -- RHS Drowning Fix
 		move.b	#1,(f_nobgscroll).w
+		clr.b	(f_timecount).w			; Stop the timer immediately -- RHS Drowning Fix
 		movea.l	(sp)+,a0
 		rts	
 ; ===========================================================================
-
 .loc_13F86:
-		subq.w	#1,objoff_2C(a0)
-		bne.s	.loc_13F94
-		move.b	#6,(v_player+obRoutine).w
-		rts	
-; ===========================================================================
-
-.loc_13F94:
-		move.l	a0,-(sp)
-		lea	(v_player).w,a0
-		jsr	(SpeedToPos).l
-		addi.w	#$10,obVelY(a0)
-		movea.l	(sp)+,a0
-		bra.s	.nochange
+	; RHS Drowning Fix
+				subq.w	#1,$2C(a0)
+				bne.s	.nochange		; Make it jump straight to this location
+				move.b	#6,(v_player+obRoutine).w
+				rts
+	; Drowning Fix End
 ; ===========================================================================
 
 .gotomakenum:
@@ -275,13 +258,13 @@ Drown_Countdown:; Routine $A
 		bpl.w	.nocountdown
 
 .makenum:
-		jsr	(RandomNumber).l
+		jsr		(RandomNumber).l
 		andi.w	#$F,d0
 		move.w	d0,objoff_3A(a0)
-		jsr	(FindFreeObj).l
+		jsr		(FindFreeObj).l
 		bne.w	.nocountdown
-		_move.b	#id_DrownCount,obID(a1) ; load object
-		move.w	(v_player+obX).w,obX(a1) ; match X position to Sonic
+		_move.b	#id_DrownCount,obID(a1)		; load object
+		move.w	(v_player+obX).w,obX(a1)	; match X position to Sonic
 		moveq	#6,d0
 		btst	#0,(v_player+obStatus).w
 		beq.s	.noflip

@@ -154,10 +154,16 @@
  Credit: Redhotsonic
  Function: Fixed a bug related to rings deleting themselves incorrectly in a vertically wrapping level (LZ3 or SBZ2)
  Date: 2024-06-03
- Modifies: 25 & 37 Rings.asm
+ Modifies: _incObj/25 & 37 Rings.asm
  
  Name: Fixed Ring Timers
  Credit: Redhotsonic
  Function: Fixed lost rings so that they have individual expiration timers
  Date: 2024-06-03
- Modifies: 25 & 37 Rings.asm
+ Modifies: _incObj/25 & 37 Rings.asm
+ 
+ Name: Fixed Drowning Bugs
+ Credit: Redhotsonic
+ Function: Fixed bugs that occur when drowning in the Hurt State or on a Time Over. Added Drowning routine to Sonic
+ Date: 2024-06-04
+ Modifies: _incObj/0A - Drowning Countdown.asm, sonic.asm; Added _incObj/Sonic Drowns.asm

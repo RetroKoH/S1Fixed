@@ -2191,7 +2191,7 @@ Tit_LoadText:
 		move.b	#0,(f_debugmode).w		; disable debug mode
 		move.w	#$178,(v_demolength).w	; run title screen for $178 frames
 
-		clearRAM v_sonicteam,v_sonicteam+object_size	; PRESS START BUTTON FIX (Quickman)
+		clearRAM v_sonicteam,v_sonicteam+object_size	; PRESS START BUTTON Fix (Quickman)
 		move.b	#id_TitleSonic,(v_titlesonic).w			; load big Sonic object
 		move.b	#id_PSBTM,(v_pressstart).w				; load "PRESS START BUTTON" object
 
@@ -6149,6 +6149,10 @@ loc_D358:
 ; ===========================================================================
 
 loc_D362:
+	; RHS Drowning Fix
+		cmpi.b	#$A,(v_player+obRoutine).w		; Has Sonic drowned?
+		beq.s	loc_D348						; If so, run objects a little longer
+	; Drowning Fix End
 		moveq	#(v_lvlobjspace-v_objspace)/object_size-1,d7
 		bsr.s	loc_D348
 		moveq	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d7
@@ -6836,20 +6840,22 @@ Map_WFall:	include	"_maps/Waterfalls.asm"
 SonicPlayer:
 		tst.w	(v_debuguse).w	; is debug mode	being used?
 		beq.s	Sonic_Normal	; if not, branch
-		jmp	(DebugMode).l
+		jmp		(DebugMode).l
 ; ===========================================================================
 
 Sonic_Normal:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Sonic_Index(pc,d0.w),d1
-		jmp	Sonic_Index(pc,d1.w)
+		jmp		Sonic_Index(pc,d1.w)
 ; ===========================================================================
-Sonic_Index:	dc.w Sonic_Main-Sonic_Index
+Sonic_Index:
+		dc.w Sonic_Main-Sonic_Index
 		dc.w Sonic_Control-Sonic_Index
 		dc.w Sonic_Hurt-Sonic_Index
 		dc.w Sonic_Death-Sonic_Index
 		dc.w Sonic_ResetLevel-Sonic_Index
+		dc.w Sonic_Drowned-Sonic_Index		; RHS Drowning Fix
 ; ===========================================================================
 
 Sonic_Main:	; Routine 0
@@ -7028,6 +7034,7 @@ locret_13302:
 		include	"_incObj/Sonic ResetOnFloor.asm"
 		include	"_incObj/Sonic (part 2).asm"
 		include	"_incObj/Sonic Loops.asm"
+		include "_incObj/Sonic Drowns.asm" 		; RHS Drowning Fix
 		include	"_incObj/Sonic Animate.asm"
 		include	"_anim/Sonic.asm"
 		include	"_incObj/Sonic LoadGfx.asm"
