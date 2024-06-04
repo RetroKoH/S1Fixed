@@ -46,9 +46,9 @@ Over_UpdatePos:
 ; ===========================================================================
 
 Over_SetWait:
-		move.w	#720,obTimeFrame(a0) ; set time delay to 12 seconds
+		move.w	#720,obTimeFrame(a0)	; set time delay to 12 seconds
 		addq.b	#2,obRoutine(a0)
-		rts	
+		bra.w	DisplaySprite			; RetroKoH GAME OVER Flicker fix	
 ; ===========================================================================
 
 Over_Wait:	; Routine 4

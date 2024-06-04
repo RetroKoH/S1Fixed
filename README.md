@@ -173,3 +173,9 @@
  Function: Adds a check for scrolling to the left (Useful fix for those adding cutscenes), and prevents horizontal wrapping glitches.
  Date: 2024-06-04
  Modifies: _inc\DeformLayers.asm (MoveScreenHoriz:)
+
+ Name: Game Over Flicker Fix
+ Credit: RetroKoH
+ Function: Removes the unintentional flicker of the GAME OVER object once it reaches center screen.
+ Date: 2024-06-04
+ Modifies: _incObj/39 Game Over.asm
