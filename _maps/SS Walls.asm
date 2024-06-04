@@ -1,6 +1,18 @@
 ; ---------------------------------------------------------------------------
-; Sprite mappings - walls of the special stage
+; Sprite mappings - walls of the special stage -- Mercury Dynamic Special Stage Walls
 ; ---------------------------------------------------------------------------
+
+	if DynamicSpecialStageWalls=1
+
+Map_SSWalls_internal:	mappingsTable
+	mappingsTableEntry.w	byte_2C584
+
+byte_2C584:	spriteHeader
+	spritePiece	-$10, -$10, 4, 4, 0, 0, 0, 0, 0
+byte_2C584_End
+
+	else
+
 Map_SSWalls_internal:	mappingsTable
 	mappingsTableEntry.w	byte_2C584
 	mappingsTableEntry.w	byte_2C58A
@@ -82,5 +94,7 @@ byte_2C5D8_End
 byte_2C5DE:	spriteHeader
 	spritePiece	-$10, -$10, 4, 4, $E9, 0, 0, 0, 0
 byte_2C5DE_End
+
+	endif
 
 	even

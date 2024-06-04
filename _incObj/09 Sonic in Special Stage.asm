@@ -208,10 +208,14 @@ locret_1BB54:
 
 Obj09_Jump:
 		move.b	(v_jpadpress2).w,d0
-		andi.b	#btnABC,d0	; is A,	B or C pressed?
+		andi.b	#btnABC,d0		; is A,	B or C pressed?
 		beq.s	Obj09_NoJump	; if not, branch
 		move.b	(v_ssangle).w,d0
-		andi.b	#$FC,d0
+
+	if SmoothSpecialStages=0	; Cinossu Smooth Special Stages
+		andi.b	#$FC,d0		; This is removed in block rotation. Should I remove here too?
+	endif						; Smooth Special Stages End
+
 		neg.b	d0
 		subi.b	#$40,d0
 		jsr	(CalcSine).l

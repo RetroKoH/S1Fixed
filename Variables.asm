@@ -305,10 +305,11 @@ v_anglebuffer2:		ds.b	1		; other angle of collision block that Sonic or object i
 v_opl_routine:		ds.b	1		; ObjPosLoad - routine counter
 			ds.b	1		; unused
 v_opl_screen:		ds.w	1		; ObjPosLoad - screen variable
-v_opl_data:		ds.b	$10		; ObjPosLoad - data buffer
-v_ssangle:		ds.w	1		; Special Stage angle
-v_ssrotate:		ds.w	1		; Special Stage rotation speed
-			ds.b	$C		; unused
+v_opl_data:			ds.b	$10		; ObjPosLoad - data buffer
+v_ssangle:			ds.w	1		; Special Stage angle
+v_ssrotate:			ds.w	1		; Special Stage rotation speed
+v_ssangleprev:		ds.b	1		; Previous Special Stage angle -- Mercury Dynamic Special Stage Walls
+			ds.b	$B		; unused
 v_btnpushtime1:		ds.w	1		; button push duration - in level
 v_btnpushtime2:		ds.w	1		; button push duration - in demo
 v_palchgspeed:		ds.w	1		; palette fade/transition speed (0 is fastest)
@@ -316,13 +317,13 @@ v_collindex:		ds.l	1		; ROM address for collision index of current level
 v_palss_num:		ds.w	1		; palette cycling in Special Stage - reference number
 v_palss_time:		ds.w	1		; palette cycling in Special Stage - time until next change
 v_palss_index:		ds.w	1		; palette cycling in Special Stage - index into palette cycle 2 (unused?)
-v_ssbganim:		ds.w	1		; Special Stage background animation
+v_ssbganim:			ds.w	1		; Special Stage background animation
 			ds.b	2		; unused
 v_obj31ypos:		ds.w	1		; y-position of object 31 (MZ stomper)
 			ds.b	1		; unused
 v_bossstatus:		ds.b	1		; status of boss and prison capsule (01 = boss defeated; 02 = prison opened)
-v_trackpos:		ds.w	1		; position tracking reference number
-v_trackbyte = v_trackpos+1			; low byte for position tracking
+v_trackpos:			ds.w	1		; position tracking reference number
+v_trackbyte = 		v_trackpos+1	; low byte for position tracking
 f_lockscreen:		ds.b	1		; flag set to lock screen during bosses
 			ds.b	5		; unused
 v_lani0_frame:		ds.b	1		; level graphics animation 0 - current frame

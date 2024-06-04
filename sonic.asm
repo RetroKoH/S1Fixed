@@ -30,6 +30,8 @@ zeroOffsetOptimization = 0	; if 1, makes a handful of zero-offset instructions s
 	include	"Macros.asm"
 
 DebugPathSwappers: = 1
+DynamicSpecialStageWalls: = 1
+SmoothSpecialStages: = 1
 
 ; ===========================================================================
 
@@ -751,6 +753,7 @@ VBla_0A:
 		writeVRAM	v_hscrolltablebuffer,$380,vram_hscroll
 		startZ80
 		bsr.w	PalCycle_SS
+		
 		tst.b	(f_sonframechg).w ; has Sonic's sprite changed?
 		beq.s	.nochg		; if not, branch
 
@@ -758,8 +761,17 @@ VBla_0A:
 		move.b	#0,(f_sonframechg).w
 
 .nochg:
+	if DynamicSpecialStageWalls=1 ; Mercury Dynamic Special Stage Walls
+		cmpi.b	#96,(v_hbla_line).w
+		bcc.s	.update
+		bra.w	.end
+		
+.update:
+		jsr	SS_LoadWalls	
+	endif	; Dynamic Special Stage Walls End
+
 		tst.w	(v_demolength).w	; is there time left on the demo?
-		beq.w	.end	; if not, return
+		beq.w	.end				; if not, return
 		subq.w	#1,(v_demolength).w	; subtract 1 from time left in demo
 
 .end:
@@ -822,12 +834,22 @@ VBla_16:
 		writeVRAM	v_spritetablebuffer,$280,vram_sprites
 		writeVRAM	v_hscrolltablebuffer,$380,vram_hscroll
 		startZ80
+		
 		tst.b	(f_sonframechg).w
 		beq.s	.nochg
 		writeVRAM	v_sgfx_buffer,$2E0,ArtTile_Sonic*$20
 		move.b	#0,(f_sonframechg).w
 
 .nochg:
+	if DynamicSpecialStageWalls=1 ; Mercury Dynamic Special Stage Walls
+		cmpi.b	#96,(v_hbla_line).w
+		bcc.s	.update
+		bra.w	.end
+		
+.update:
+		jsr	SS_LoadWalls	
+	endif	; Dynamic Special Stage Walls End
+
 		tst.w	(v_demolength).w
 		beq.w	.end
 		subq.w	#1,(v_demolength).w
@@ -3198,7 +3220,7 @@ GM_Special:
 		bsr.w	PlaySound_Special ; play special stage entry sound
 		bsr.w	PaletteWhiteOut
 		disable_ints
-		lea	(vdp_control_port).l,a6
+		lea		(vdp_control_port).l,a6
 		move.w	#$8B03,(a6)	; line scroll mode
 		move.w	#$8004,(a6)	; 8-colour mode
 		move.w	#$8A00+175,(v_hbla_hreg).w
@@ -3221,18 +3243,23 @@ GM_Special:
 		clr.b	(f_wtr_state).w
 		clr.w	(f_restart).w
 		moveq	#palid_Special,d0
-		bsr.w	PalLoad1	; load special stage palette
-		jsr	(SS_Load).l		; load SS layout data
+		bsr.w	PalLoad1						; load special stage palette
+		jsr		(SS_Load).l						; load SS layout data
 		move.l	#0,(v_screenposx).w
 		move.l	#0,(v_screenposy).w
-		move.b	#id_SonicSpecial,(v_player).w ; load special stage Sonic object
+		move.b	#id_SonicSpecial,(v_player).w	; load special stage Sonic object
+
+	if DynamicSpecialStageWalls=1	; Mercury Dynamic Special Stage Walls
+		move.b	#$FF,(v_ssangleprev).w			; fill previous angle with obviously false value to force an update
+	endif							; Dynamic Special Stage Walls End
+
 		bsr.w	PalCycle_SS
-		clr.w	(v_ssangle).w	; set stage angle to "upright"
-		move.w	#$40,(v_ssrotate).w ; set stage rotation speed
+		clr.w	(v_ssangle).w					; set stage angle to "upright"
+		move.w	#$40,(v_ssrotate).w				; set stage rotation speed
 		move.w	#bgm_SS,d0
-		bsr.w	PlaySound	; play special stage BG	music
+		bsr.w	PlaySound						; play special stage BG	music
 		move.w	#0,(v_btnpushtime1).w
-		lea	(DemoDataPtr).l,a1
+		lea		(DemoDataPtr).l,a1
 		moveq	#6,d0
 		lsl.w	#2,d0
 		movea.l	(a1,d0.w),a1
@@ -7796,7 +7823,11 @@ SS_ShowLayout:
 		move.w	d5,-(sp)
 		lea	(v_ssbuffer3&$FFFFFF).l,a1
 		move.b	(v_ssangle).w,d0
+
+	if SmoothSpecialStages=0	; Cinossu Smooth Special Stages
 		andi.b	#$FC,d0
+	endif						; Smooth Special Stages End
+
 		jsr	(CalcSine).l
 		move.w	d0,d4
 		move.w	d1,d5
@@ -7922,6 +7953,7 @@ loc_1B288:
 
 
 SS_AniWallsRings:
+	if DynamicSpecialStageWalls=0	; Mercury Dynamic Special Stage Walls
 		lea	((v_ssblocktypes+$C)&$FFFFFF).l,a1
 		moveq	#0,d0
 		move.b	(v_ssangle).w,d0
@@ -7933,6 +7965,7 @@ loc_1B2A4:
 		move.w	d0,(a1)
 		addq.w	#8,a1
 		dbf	d1,loc_1B2A4
+	endif	; Dynamic Special Stage Walls End
 
 		lea	((v_ssblocktypes+5)&$FFFFFF).l,a1
 		subq.b	#1,(v_ani1_time).w
@@ -8028,6 +8061,32 @@ loc_1B350:
 		adda.w	#$48,a1
 		rts	
 ; End of function SS_AniWallsRings
+
+	if DynamicSpecialStageWalls=1	; Mercury Dynamic Special Stage Walls
+SS_LoadWalls:
+		moveq	#0,d0
+		move.b	(v_ssangle).w,d0		; get the Special Stage angle
+		lsr.b	#2,d0					; modify so it can be used as a frame ID
+		andi.w	#$F,d0
+		cmp.b	(v_ssangleprev).w,d0	; does the modified angle match the recorded value?
+		beq.s	.return					; if so, branch
+	
+		lea		(vdp_data_port).l,a6
+		lea		(Nem_SSWalls).l,a1		; load wall art
+		move.w	d0,d1
+		lsl.w	#8,d1
+		add.w	d1,d1
+		add.w	d1,a1
+		
+		locVRAM	$2840					; VRAM address
+		
+		move.w	#$F,d1					; number of 8x8 tiles
+		jsr		LoadTiles
+		move.b	d0,(v_ssangleprev).w	; record the modified angle for comparison
+		
+.return:
+		rts
+	endif	; Dynamic Special Stage Walls End
 
 ; ===========================================================================
 SS_WaRiVramSet:	dc.w $142, $6142, $142,	$142, $142, $142, $142,	$6142
@@ -8546,13 +8605,19 @@ Nem_Goggle:	binclude	"artnem/Unused - Goggles.nem" ; unused goggles
 		even
 		endif
 
-Map_SSWalls:	include	"_maps/SS Walls.asm"
+Map_SSWalls:	include	"_maps/SS Walls.asm"	; Now includes dynamic mappings -- Mercury Dynamic Special Stage Walls
 
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - special stage
 ; ---------------------------------------------------------------------------
-Nem_SSWalls:	binclude	"artnem/Special Walls.nem" ; special stage walls
+
+	if DynamicSpecialStageWalls=1	; Mercury Dynamic Special Stage Walls
+Nem_SSWalls:	binclude	"artunc\Special Walls (dynamic).bin"
+	else
+Nem_SSWalls:	binclude	"artnem\Special Walls.nem"
+	endif	; Dynamic Special Stage Walls End
 		even
+
 Eni_SSBg1:	binclude	"tilemaps/SS Background 1.eni" ; special stage background (mappings)
 		even
 Nem_SSBgFish:	binclude	"artnem/Special Birds & Fish.nem" ; special stage birds and fish background

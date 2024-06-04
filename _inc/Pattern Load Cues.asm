@@ -3,42 +3,42 @@
 ; ---------------------------------------------------------------------------
 ArtLoadCues:
 
-ptr_PLC_Main:		dc.w PLC_Main-ArtLoadCues
-ptr_PLC_Main2:		dc.w PLC_Main2-ArtLoadCues
-ptr_PLC_Explode:	dc.w PLC_Explode-ArtLoadCues
-ptr_PLC_GameOver:	dc.w PLC_GameOver-ArtLoadCues
+ptr_PLC_Main:			dc.w PLC_Main-ArtLoadCues
+ptr_PLC_Main2:			dc.w PLC_Main2-ArtLoadCues
+ptr_PLC_Explode:		dc.w PLC_Explode-ArtLoadCues
+ptr_PLC_GameOver:		dc.w PLC_GameOver-ArtLoadCues
 PLC_Levels:
-ptr_PLC_GHZ:		dc.w PLC_GHZ-ArtLoadCues
-ptr_PLC_GHZ2:		dc.w PLC_GHZ2-ArtLoadCues
-ptr_PLC_LZ:		dc.w PLC_LZ-ArtLoadCues
-ptr_PLC_LZ2:		dc.w PLC_LZ2-ArtLoadCues
-ptr_PLC_MZ:		dc.w PLC_MZ-ArtLoadCues
-ptr_PLC_MZ2:		dc.w PLC_MZ2-ArtLoadCues
-ptr_PLC_SLZ:		dc.w PLC_SLZ-ArtLoadCues
-ptr_PLC_SLZ2:		dc.w PLC_SLZ2-ArtLoadCues
-ptr_PLC_SYZ:		dc.w PLC_SYZ-ArtLoadCues
-ptr_PLC_SYZ2:		dc.w PLC_SYZ2-ArtLoadCues
-ptr_PLC_SBZ:		dc.w PLC_SBZ-ArtLoadCues
-ptr_PLC_SBZ2:		dc.w PLC_SBZ2-ArtLoadCues
+ptr_PLC_GHZ:			dc.w PLC_GHZ-ArtLoadCues
+ptr_PLC_GHZ2:			dc.w PLC_GHZ2-ArtLoadCues
+ptr_PLC_LZ:				dc.w PLC_LZ-ArtLoadCues
+ptr_PLC_LZ2:			dc.w PLC_LZ2-ArtLoadCues
+ptr_PLC_MZ:				dc.w PLC_MZ-ArtLoadCues
+ptr_PLC_MZ2:			dc.w PLC_MZ2-ArtLoadCues
+ptr_PLC_SLZ:			dc.w PLC_SLZ-ArtLoadCues
+ptr_PLC_SLZ2:			dc.w PLC_SLZ2-ArtLoadCues
+ptr_PLC_SYZ:			dc.w PLC_SYZ-ArtLoadCues
+ptr_PLC_SYZ2:			dc.w PLC_SYZ2-ArtLoadCues
+ptr_PLC_SBZ:			dc.w PLC_SBZ-ArtLoadCues
+ptr_PLC_SBZ2:			dc.w PLC_SBZ2-ArtLoadCues
 			zonewarning PLC_Levels,4
-ptr_PLC_TitleCard:	dc.w PLC_TitleCard-ArtLoadCues
-ptr_PLC_Boss:		dc.w PLC_Boss-ArtLoadCues
-ptr_PLC_Signpost:	dc.w PLC_Signpost-ArtLoadCues
-ptr_PLC_Warp:		dc.w PLC_Warp-ArtLoadCues
+ptr_PLC_TitleCard:		dc.w PLC_TitleCard-ArtLoadCues
+ptr_PLC_Boss:			dc.w PLC_Boss-ArtLoadCues
+ptr_PLC_Signpost:		dc.w PLC_Signpost-ArtLoadCues
+ptr_PLC_Warp:			dc.w PLC_Warp-ArtLoadCues
 ptr_PLC_SpecialStage:	dc.w PLC_SpecialStage-ArtLoadCues
 PLC_Animals:
-ptr_PLC_GHZAnimals:	dc.w PLC_GHZAnimals-ArtLoadCues
-ptr_PLC_LZAnimals:	dc.w PLC_LZAnimals-ArtLoadCues
-ptr_PLC_MZAnimals:	dc.w PLC_MZAnimals-ArtLoadCues
-ptr_PLC_SLZAnimals:	dc.w PLC_SLZAnimals-ArtLoadCues
-ptr_PLC_SYZAnimals:	dc.w PLC_SYZAnimals-ArtLoadCues
-ptr_PLC_SBZAnimals:	dc.w PLC_SBZAnimals-ArtLoadCues
+ptr_PLC_GHZAnimals:		dc.w PLC_GHZAnimals-ArtLoadCues
+ptr_PLC_LZAnimals:		dc.w PLC_LZAnimals-ArtLoadCues
+ptr_PLC_MZAnimals:		dc.w PLC_MZAnimals-ArtLoadCues
+ptr_PLC_SLZAnimals:		dc.w PLC_SLZAnimals-ArtLoadCues
+ptr_PLC_SYZAnimals:		dc.w PLC_SYZAnimals-ArtLoadCues
+ptr_PLC_SBZAnimals:		dc.w PLC_SBZAnimals-ArtLoadCues
 			zonewarning PLC_Animals,2
-ptr_PLC_SSResult:	dc.w PLC_SSResult-ArtLoadCues
-ptr_PLC_Ending:		dc.w PLC_Ending-ArtLoadCues
-ptr_PLC_TryAgain:	dc.w PLC_TryAgain-ArtLoadCues
-ptr_PLC_EggmanSBZ2:	dc.w PLC_EggmanSBZ2-ArtLoadCues
-ptr_PLC_FZBoss:		dc.w PLC_FZBoss-ArtLoadCues
+ptr_PLC_SSResult:		dc.w PLC_SSResult-ArtLoadCues
+ptr_PLC_Ending:			dc.w PLC_Ending-ArtLoadCues
+ptr_PLC_TryAgain:		dc.w PLC_TryAgain-ArtLoadCues
+ptr_PLC_EggmanSBZ2:		dc.w PLC_EggmanSBZ2-ArtLoadCues
+ptr_PLC_FZBoss:			dc.w PLC_FZBoss-ArtLoadCues
 
 plcm:	macro gfx,vram
 	dc.l gfx
@@ -270,7 +270,14 @@ PLC_Warpend:
 PLC_SpecialStage:	dc.w ((PLC_SpeStageend-PLC_SpecialStage-2)/6)-1
 		plcm	Nem_SSBgCloud,  ArtTile_SS_Background_Clouds ; bubble and cloud background
 		plcm	Nem_SSBgFish,   ArtTile_SS_Background_Fish   ; bird and fish background
-		plcm	Nem_SSWalls,    ArtTile_SS_Wall              ; walls
+
+	if DynamicSpecialStageWalls=1	; Mercury Dynamic Special Stage Walls
+		plcm	Nem_Hud, $3F20/$20								; HUD
+		plcm	Nem_Lives, $45E0/$20							; lives
+	else
+		plcm	Nem_SSWalls, ArtTile_SS_Wall				; $2840	; walls
+	endc	; Dynamic Special Stage Walls End
+
 		plcm	Nem_Bumper,     ArtTile_SS_Bumper            ; bumper
 		plcm	Nem_SSGOAL,     ArtTile_SS_Goal              ; GOAL block
 		plcm	Nem_SSUpDown,   ArtTile_SS_Up_Down           ; UP and DOWN blocks

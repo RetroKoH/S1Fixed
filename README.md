@@ -9,6 +9,11 @@
  Mods/Fixes, etc. are credited to the respective authors below
 
 # Mods (Can be enabled or disabled)
+ Name: Dynamic Special Stage Walls
+ Function: Dynamically loads the wall art in the Special Stages to free VRAM (for things like the HUD)
+ Date: 2024-06-04
+ Modifies: sonic.asm, _maps\SS Walls.asm, _inc\Pattern Load Cues.asm,
+ Variables: DynamicSpecialStageWalls, SmoothSpecialStages
 
 # Under-the-Hood Changes/Overhauls
  Name: 128x128 Chunk Format
