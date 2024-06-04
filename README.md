@@ -21,6 +21,11 @@
  Credit: Clownacy
  Function: Layout Chunks are now 128x128 in size, akin to Sonic 2 and Sonic 3K
  Date: 2024-04-23
+ 
+ Name: MegaPCM2 Sound Driver
+ Credit: Vladikcomper
+ Function: High-quality sound driver
+ Date:
 
 # Visual Changes
  Name: Title Screen Tweaks
