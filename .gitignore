@@ -16,3 +16,4 @@ s1built.debug.prev.bin
 
 # Typical CMake build directory.
 build_tools/s1p2bin/build
+sonic.debug.lst

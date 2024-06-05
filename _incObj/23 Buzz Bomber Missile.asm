@@ -61,17 +61,13 @@ Msl_Animate:	; Routine 2
 Msl_ChkCancel:
 		movea.l	msl_parent(a0),a1
 		_cmpi.b	#id_ExplosionItem,obID(a1) ; has Buzz Bomber been destroyed?
-	if FixBugs
 		; This adds a return value so that we know if the object has
-		; been freed.
+		; been freed. -- Clownacy DisplaySprite Fix
 		bne.s	.return
 		bsr.s	Msl_Delete
 		moveq	#0,d0
 
 .return:
-	else
-		beq.s	Msl_Delete	; if yes, branch
-	endif
 		rts	
 ; End of function Msl_ChkCancel
 
