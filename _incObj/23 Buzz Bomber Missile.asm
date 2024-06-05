@@ -38,7 +38,7 @@ Msl_Main:	; Routine 0
 
 Msl_Animate:	; Routine 2
 		bsr.s	Msl_ChkCancel
-	if FixBugs
+		; Clownacy DisplaySprite Fix
 		; Msl_ChkCancel can call DeleteObject, so we shouldn't queue
 		; this object for display or update the animation state.
 		; Failing to account for this results in a null pointer
@@ -47,7 +47,6 @@ Msl_Animate:	; Routine 2
 		; code in its BuildSprites function for detecting this type
 		; of bug.
 		beq.s	Msl_ChkCancel.return
-	endif
 		lea	(Ani_Missile).l,a1
 		bsr.w	AnimateSprite
 		bra.w	DisplaySprite
@@ -84,27 +83,13 @@ Msl_FromBuzz:	; Routine 4
 		move.b	#$87,obColType(a0)
 		move.b	#1,obAnim(a0)
 		bsr.w	SpeedToPos
-
-	if ~~FixBugs
-		; Object should not call DisplaySprite and DeleteObject on
-		; the same frame, or else cause a null-pointer dereference.
-		lea	(Ani_Missile).l,a1
-		bsr.w	AnimateSprite
-		bsr.w	DisplaySprite
-	endif
-
 		move.w	(v_limitbtm2).w,d0
 		addi.w	#$E0,d0
 		cmp.w	obY(a0),d0	; has object moved below the level boundary?
 		blo.s	Msl_Delete	; if yes, branch
-
-	if FixBugs
-		lea	(Ani_Missile).l,a1
+		lea		(Ani_Missile).l,a1
 		bsr.w	AnimateSprite
-		bra.w	DisplaySprite
-	else
-		rts	
-	endif
+		bra.w	DisplaySprite	; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 .explode:
@@ -114,8 +99,7 @@ Msl_FromBuzz:	; Routine 4
 ; ===========================================================================
 
 Msl_Delete:	; Routine 6
-		bsr.w	DeleteObject
-		rts	
+		bra.w	DeleteObject
 ; ===========================================================================
 
 Msl_FromNewt:	; Routine 8
