@@ -67,7 +67,7 @@ Swing_Main:	; Routine 0
 		subq.w	#1,d1
 
 .makechain:
-		bsr.w	FindFreeObj
+		bsr.w	FindNextFreeObj		; Clownacy DisplaySprite Fix
 		bne.s	.fail
 		addq.b	#1,obSubtype(a0)
 		move.w	a1,d5
