@@ -94,12 +94,10 @@ locret_8308:
 
 Ledge_TimeZero:
 		bsr.w	ObjectFall
-		bsr.w	DisplaySprite
 		tst.b	obRender(a0)
 		bpl.s	Ledge_Delete
-		rts	
+		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 Ledge_Delete:	; Routine 8
-		bsr.w	DeleteObject
-		rts	
+		bra.w	DeleteObject	

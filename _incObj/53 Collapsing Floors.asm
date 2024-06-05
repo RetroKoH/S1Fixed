@@ -111,15 +111,13 @@ locret_843A:
 
 CFlo_TimeZero:
 		bsr.w	ObjectFall
-		bsr.w	DisplaySprite
 		tst.b	obRender(a0)
 		bpl.s	CFlo_Delete
-		rts	
+		bra.w	DisplaySprite	; Clownacy DisplaySprite Fix	
 ; ===========================================================================
 
 CFlo_Delete:	; Routine 8
-		bsr.w	DeleteObject
-		rts	
+		bra.w	DeleteObject
 ; ===========================================================================
 
 CFlo_Fragment:

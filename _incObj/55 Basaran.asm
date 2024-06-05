@@ -81,16 +81,11 @@ Bas_Action:	; Routine 2
 
 .chkdel:
 		tst.b	obRender(a0)
-	if FixBugs
-		; Objects shouldn't call DisplaySprite and DeleteObject on
-		; the same frame or else cause a null-pointer dereference.
+		; Clownacy DisplaySprite Fix
 		bmi.s	.return
 		addq.l	#4,sp
 		bra.w	DeleteObject
 .return:
-	else
-		bpl.w	DeleteObject
-	endif
 		rts	
 ; ===========================================================================
 
@@ -159,11 +154,4 @@ Bas_Action:	; Routine 2
 
 .right:
 		cmp.w	d2,d0
-		rts	
-; ===========================================================================
-; unused crap
-		bsr.w	SpeedToPos
-		bsr.w	DisplaySprite
-		tst.b	obRender(a0)
-		bpl.w	DeleteObject
-		rts	
+		rts
