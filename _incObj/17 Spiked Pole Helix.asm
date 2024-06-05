@@ -78,8 +78,7 @@ Hel_NotCentre:
 
 Hel_Action:	; Routine 2, 4
 		bsr.w	Hel_RotateSpikes
-		bsr.w	DisplaySprite
-		bra.w	Hel_ChkDel
+		bra.w	Hel_ChkDel			; Clownacy DisplaySprite Fix
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
@@ -101,7 +100,7 @@ locret_7DA6:
 
 Hel_ChkDel:
 		out_of_range.w	Hel_DelAll
-		rts	
+		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 Hel_DelAll:
@@ -121,8 +120,7 @@ Hel_DelLoop:
 		dbf	d2,Hel_DelLoop ; repeat d2 times (helix length)
 
 Hel_Delete:	; Routine 6
-		bsr.w	DeleteObject
-		rts	
+		bra.w	DeleteObject
 ; ===========================================================================
 
 Hel_Display:	; Routine 8

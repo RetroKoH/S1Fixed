@@ -64,8 +64,7 @@ loc_7EE0:
 Plat_Action:	; Routine 8
 		bsr.w	Plat_Move
 		bsr.w	Plat_Nudge
-		bsr.w	DisplaySprite
-		bra.w	Plat_ChkDel
+		bra.w	Plat_ChkDel		; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 Plat_Action2:	; Routine 4
@@ -82,10 +81,7 @@ loc_7F06:
 		bsr.w	Plat_Nudge
 		move.w	(sp)+,d2
 		bsr.w	MvSonicOnPtfm2
-		bsr.w	DisplaySprite
-		bra.w	Plat_ChkDel
-
-		rts
+		bra.w	Plat_ChkDel		; Clownacy DisplaySprite Fix
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	move platform slightly when you	stand on it
@@ -292,7 +288,7 @@ Plat_Move:
 
 Plat_ChkDel:
 		out_of_range.s	Plat_Delete,objoff_32(a0)
-		rts	
+		bra.w	DisplaySprite			; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 Plat_Delete:	; Routine 6

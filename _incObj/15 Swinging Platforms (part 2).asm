@@ -80,7 +80,7 @@ loc_7BCE:
 
 Swing_ChkDel:
 		out_of_range.w	Swing_DelAll,objoff_3A(a0)
-		rts	
+		bra.w	DisplaySprite			; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 Swing_DelAll:
@@ -100,8 +100,7 @@ Swing_DelLoop:
 ; ===========================================================================
 
 Swing_Delete:	; Routine 6, 8
-		bsr.w	DeleteObject
-		rts	
+		bra.w	DeleteObject
 ; ===========================================================================
 
 Swing_Display:	; Routine $A

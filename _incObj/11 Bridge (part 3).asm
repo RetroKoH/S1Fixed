@@ -106,7 +106,7 @@ Obj11_BendData2:binclude	"misc/ghzbend2.bin"
 
 Bri_ChkDel:
 		out_of_range.w	.deletebridge
-		rts	
+		bra.w	DisplaySprite			; Clownacy DisplaySprite Fix	
 ; ===========================================================================
 
 .deletebridge:
@@ -130,15 +130,12 @@ Bri_ChkDel:
 		dbf	d2,.loop ; repeat d2 times (bridge length)
 
 .delparent:
-		bsr.w	DeleteObject
-		rts	
+		bra.w	DeleteObject
 ; ===========================================================================
 
 Bri_Delete:	; Routine 6, 8
-		bsr.w	DeleteObject
-		rts	
+		bra.w	DeleteObject	
 ; ===========================================================================
 
 Bri_Display:	; Routine $A
-		bsr.w	DisplaySprite
-		rts	
+		bra.w	DisplaySprite

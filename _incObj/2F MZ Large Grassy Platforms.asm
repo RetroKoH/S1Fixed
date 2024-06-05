@@ -82,11 +82,7 @@ loc_AF8E:
 		bsr.w	SolidObject2F
 
 LGrass_Display:
-	if ~~FixBugs
-		; This has been moved to prevent a display-after-free bug.
-		bsr.w	DisplaySprite
-	endif
-		bra.w	LGrass_ChkDel
+		bra.w	LGrass_ChkDel			; Clownacy DisplaySprite Fix
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
@@ -235,12 +231,7 @@ LGrass_ChkDel:
 
 loc_B0C6:
 		out_of_range.w	DeleteObject,lgrass_origX(a0)
-	if FixBugs
-		; This has been moved to prevent a display-after-free bug.
-		bra.w	DisplaySprite
-	else
-		rts	
-	endif
+		bra.w	DisplaySprite			; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 LGrass_DelFlames:

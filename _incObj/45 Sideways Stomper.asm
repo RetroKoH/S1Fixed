@@ -80,8 +80,7 @@ SStom_Solid:	; Routine 2
 		move.w	#$20,d3
 		move.w	(sp)+,d4
 		bsr.w	SolidObject
-		bsr.w	DisplaySprite
-		bra.w	SStom_ChkDel
+		bra.w	SStom_ChkDel	; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 SStom_Pole:	; Routine 8
@@ -101,11 +100,9 @@ loc_BA8E:	; Routine 4
 		move.w	d0,obX(a0)
 
 SStom_Display:	; Routine 6
-		bsr.w	DisplaySprite
-
 SStom_ChkDel:
 		out_of_range.w	DeleteObject,objoff_3A(a0)
-		rts	
+		bsr.w	DisplaySprite		; Clownacy DisplaySprite Fix
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 

@@ -1,8 +1,7 @@
 
 Bri_Platform:	; Routine 4
 		bsr.s	Bri_WalkOff
-		bsr.w	DisplaySprite
-		bra.w	Bri_ChkDel
+		bra.w	Bri_ChkDel		; Clownacy DisplaySprite Fix
 
 ; ---------------------------------------------------------------------------
 ; Subroutine allowing Sonic to walk off a bridge
