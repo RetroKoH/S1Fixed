@@ -6051,9 +6051,9 @@ BldSpr_ScrPos:	dc.l 0				; blank
 
 
 BuildSprites:
-		lea	(v_spritetablebuffer).w,a2 ; set address for sprite table
+		lea		(v_spritetablebuffer).w,a2 ; set address for sprite table
 		moveq	#0,d5
-		lea	(v_spritequeue).w,a4
+		lea		(v_spritequeue).w,a4
 		moveq	#7,d7
 
 	.priorityLoop:
@@ -6121,12 +6121,13 @@ BuildSprites:
 	.drawObject:
 		movea.l	obMap(a0),a1
 		moveq	#0,d1
-		btst	#5,d4		; is static mappings flag on?
-		bne.s	.drawFrame	; if yes, branch
+		btst	#5,d4				; is static mappings flag on?
+		bne.s	.drawFrame			; if yes, branch
 		move.b	obFrame(a0),d1
-		add.b	d1,d1
-		adda.w	(a1,d1.w),a1	; get mappings frame address
-		move.b	(a1)+,d1	; number of sprite pieces
+		add.w	d1,d1				; changed to .w (we want more than 7F sprites) -- MarkeyJester Art Limit Extensions
+		adda.w	(a1,d1.w),a1		; get mappings frame address
+		moveq	#$00,d1				; clear d1 (because of our byte to word change) -- MarkeyJester Art Limit Extensions
+		move.b	(a1)+,d1			; number of sprite pieces
 		subq.b	#1,d1
 		bmi.s	.setVisible
 

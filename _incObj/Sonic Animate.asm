@@ -33,7 +33,11 @@ Sonic_Animate:
 		moveq	#0,d1
 		move.b	obAniFrame(a0),d1	; load current frame number
 		move.b	1(a1,d1.w),d0		; read sprite number from script
-		bmi.s	.end_FF				; if animation is complete, branch
+		; MarkeyJester Art Limit Extensions
+		; Animations extended from [$00 - $7F] to [$00 - $FC]
+		cmp.b	#$FD,d0				; is it a flag from FD to FF?
+		bhs.s	.end_FF				; if so, branch to flag routines
+		; Art Limit Extensions End
 
 .next:
 		move.b	d0,obFrame(a0)		; load sprite number

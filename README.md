@@ -8,7 +8,7 @@
  MarkeyJester - Original S1 One Two-Eight Base
  Mods/Fixes, etc. are credited to the respective authors below
 
-# Mods (Can be enabled or disabled)
+# Mods (Can be enabled or disabled using the noted variables at the start of sonic.asm)
  Name: Dynamic Special Stage Walls (and Smmoth Rotation)
  Credit: Mercury/Cinossu
  Function: Dynamically loads the wall art in the Special Stages to free VRAM (for things like the HUD)
@@ -31,6 +31,11 @@
  Credit: Vladikcomper
  Function: New Error Handling System and Built-in Debugger
  Date: 2024-06-04
+ 
+ Name: Art Limit Extensions
+ Credit: MarkeyJester
+ Function: Extends limits of animation, sprite mappings, and art tiles for Sonic (as well as animations for other objects)
+ Date: 2024-06-05
 
 # Visual Changes
  Name: Title Screen Tweaks

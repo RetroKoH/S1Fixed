@@ -7,24 +7,28 @@
 
 AnimateSprite:
 		moveq	#0,d0
-		move.b	obAnim(a0),d0	; move animation number	to d0
-		cmp.b	obPrevAni(a0),d0 ; has animation changed?
-		beq.s	Anim_Run	; if not, branch
+		move.b	obAnim(a0),d0			; move animation number	to d0
+		cmp.b	obPrevAni(a0),d0		; has animation changed?
+		beq.s	Anim_Run				; if not, branch
 
 		move.b	d0,obPrevAni(a0)
-		move.b	#0,obAniFrame(a0) ; reset animation
-		move.b	#0,obTimeFrame(a0) ; reset frame duration
+		move.b	#0,obAniFrame(a0)		; reset animation
+		move.b	#0,obTimeFrame(a0)		; reset frame duration
 
 Anim_Run:
-		subq.b	#1,obTimeFrame(a0) ; subtract 1 from frame duration
-		bpl.s	Anim_Wait	; if time remains, branch
+		subq.b	#1,obTimeFrame(a0)		; subtract 1 from frame duration
+		bpl.s	Anim_Wait				; if time remains, branch
 		add.w	d0,d0
-		adda.w	(a1,d0.w),a1	; jump to appropriate animation	script
-		move.b	(a1),obTimeFrame(a0) ; load frame duration
+		adda.w	(a1,d0.w),a1			; jump to appropriate animation	script
+		move.b	(a1),obTimeFrame(a0)	; load frame duration
 		moveq	#0,d1
-		move.b	obAniFrame(a0),d1 ; load current frame number
-		move.b	1(a1,d1.w),d0	; read sprite number from script
-		bmi.s	Anim_End_FF	; if animation is complete, branch
+		move.b	obAniFrame(a0),d1		; load current frame number
+		move.b	1(a1,d1.w),d0			; read sprite number from script
+		; MarkeyJester Art Limit Extensions
+		; Animations extended from [$00 - $7F] to [$00 - $F9]
+		cmp.b	#$FA,d0					; is it a flag from FA to FF?
+		bhs.s	Anim_End_FF				; if animation is complete, branch
+		; Art Limit Extensions End
 
 Anim_Next:
 		move.b	d0,d1
