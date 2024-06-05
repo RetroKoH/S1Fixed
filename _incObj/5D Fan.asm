@@ -94,6 +94,5 @@ Fan_Delay:	; Routine 2
 		move.b	d0,obFrame(a0)
 
 .chkdel:
-		bsr.w	DisplaySprite
 		out_of_range.w	DeleteObject
-		rts	
+		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix	

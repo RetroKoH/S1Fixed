@@ -6,9 +6,10 @@ PurpleRock:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Rock_Index(pc,d0.w),d1
-		jmp	Rock_Index(pc,d1.w)
+		jmp		Rock_Index(pc,d1.w)
 ; ===========================================================================
-Rock_Index:	dc.w Rock_Main-Rock_Index
+Rock_Index:
+		dc.w Rock_Main-Rock_Index
 		dc.w Rock_Solid-Rock_Index
 ; ===========================================================================
 
@@ -26,15 +27,5 @@ Rock_Solid:	; Routine 2
 		move.w	#$10,d3
 		move.w	obX(a0),d4
 		bsr.w	SolidObject
-	if FixBugs
-		; Objects shouldn't call DisplaySprite and DeleteObject in
-		; the same frame or else cause a null-pointer dereference.
-		; This same bugfix can be found in Sonic 2's unused copy of
-		; this object.
 		out_of_range.w	DeleteObject
-		bra.w	DisplaySprite
-	else
-		bsr.w	DisplaySprite
-		out_of_range.w	DeleteObject
-		rts
-	endif
+		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix

@@ -204,5 +204,10 @@
  Name: RememberSprite Bugfix
  Credit: MarkeyJester
  Function: Fixes a bug in which objects load that are set as destroyed, or vise versa.
- Date: 2024-06-04
+ Date: 2024-06-05
  Modifies: sonic.asm
+ 
+ Name: DisplaySprite Bugfix
+ Credit: Clownacy
+ Function: Fixes an absolute mess of a bug that can occur if using newer mappings formats.
+ Date: 2024-06-05

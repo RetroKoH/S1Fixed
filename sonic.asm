@@ -2827,11 +2827,9 @@ Level_MainLoop:
 		addq.w	#1,(v_framecount).w ; add 1 to level timer
 		bsr.w	MoveSonicInDemo
 		bsr.w	LZWaterFeatures
-		jsr	(ExecuteObjects).l
-		if Revision<>0
-			tst.w   (f_restart).w
-			bne     GM_Level
-		endif
+		jsr		(ExecuteObjects).l
+		tst.w	(f_restart).w
+		bne.w	GM_Level
 		tst.w	(v_debuguse).w	; is debug mode being used?
 		bne.s	Level_DoScroll	; if yes, branch
 		cmpi.b	#6,(v_player+obRoutine).w ; has Sonic just died?
@@ -2841,8 +2839,8 @@ Level_DoScroll:
 		bsr.w	DeformLayers
 
 Level_SkipScroll:
-		jsr	(BuildSprites).l
-		jsr	(ObjPosLoad).l
+		jsr		(BuildSprites).l
+		jsr		(ObjPosLoad).l
 		bsr.w	PaletteCycle
 		bsr.w	RunPLC
 		bsr.w	OscillateNumDo
@@ -2851,10 +2849,6 @@ Level_SkipScroll:
 
 		cmpi.b	#id_Demo,(v_gamemode).w
 		beq.s	Level_ChkDemo	; if mode is 8 (demo), branch
-		if Revision=0
-		tst.w	(f_restart).w	; is the level set to restart?
-		bne.w	GM_Level	; if yes, branch
-		endif
 		cmpi.b	#id_Level,(v_gamemode).w
 		beq.w	Level_MainLoop	; if mode is $C (level), branch
 		rts	

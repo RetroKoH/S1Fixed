@@ -36,14 +36,12 @@ Swi_Action:	; Routine 2
 		move.w	d0,(f_switch).w	; set switch 0 as "pressed"
 
 Swi_ChkDel:
-		bsr.w	DisplaySprite
 		out_of_range.w	Swi_Delete
-		rts	
+		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix	
 ; ===========================================================================
 
 Swi_Delete:	; Routine 4
-		bsr.w	DeleteObject
-		rts	
+		bra.w	DeleteObject
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	check if Sonic touches the object

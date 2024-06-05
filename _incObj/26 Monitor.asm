@@ -133,9 +133,8 @@ Mon_Animate:	; Routine 6
 		bsr.w	AnimateSprite
 
 Mon_Display:	; Routine 8
-		bsr.w	DisplaySprite
 		out_of_range.w	DeleteObject
-		rts	
+		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix	
 ; ===========================================================================
 
 Mon_BreakOpen:	; Routine 4

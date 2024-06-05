@@ -6,9 +6,10 @@ MarbleBrick:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Brick_Index(pc,d0.w),d1
-		jmp	Brick_Index(pc,d1.w)
+		jmp		Brick_Index(pc,d1.w)
 ; ===========================================================================
-Brick_Index:	dc.w Brick_Main-Brick_Index
+Brick_Index:
+		dc.w Brick_Main-Brick_Index
 		dc.w Brick_Action-Brick_Index
 
 brick_origY = objoff_30
@@ -34,7 +35,7 @@ Brick_Action:	; Routine 2
 		andi.w	#7,d0		; read only the	1st digit
 		add.w	d0,d0
 		move.w	Brick_TypeIndex(pc,d0.w),d1
-		jsr	Brick_TypeIndex(pc,d1.w)
+		jsr		Brick_TypeIndex(pc,d1.w)
 		move.w	#$1B,d1
 		move.w	#$10,d2
 		move.w	#$11,d3
@@ -42,14 +43,8 @@ Brick_Action:	; Routine 2
 		bsr.w	SolidObject
 
 .chkdel:
-		if Revision=0
-		bsr.w	DisplaySprite
 		out_of_range.w	DeleteObject
-		rts	
-		else
-			out_of_range.w	DeleteObject
-			bra.w	DisplaySprite
-		endif
+		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix
 ; ===========================================================================
 Brick_TypeIndex:dc.w Brick_Type00-Brick_TypeIndex
 		dc.w Brick_Type01-Brick_TypeIndex

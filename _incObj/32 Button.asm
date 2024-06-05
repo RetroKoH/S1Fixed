@@ -78,21 +78,12 @@ loc_BDDE:
 		bchg	#1,obFrame(a0)
 
 But_Display:
-	if FixBugs
-		; Objects shouldn't call DisplaySprite and DeleteObject on
-		; the same frame or else cause a null-pointer dereference.
 		out_of_range.w	But_Delete
-		bra.w	DisplaySprite
-	else
-		bsr.w	DisplaySprite
-		out_of_range.w	But_Delete
-		rts	
-	endif
+		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 But_Delete:
-		bsr.w	DeleteObject
-		rts	
+		bra.w	DeleteObject
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 

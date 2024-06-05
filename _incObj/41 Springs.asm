@@ -7,9 +7,8 @@ Springs:
 		move.b	obRoutine(a0),d0
 		move.w	Spring_Index(pc,d0.w),d1
 		jsr	Spring_Index(pc,d1.w)
-		bsr.w	DisplaySprite
 		out_of_range.w	DeleteObject
-		rts	
+		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix	
 ; ===========================================================================
 Spring_Index:	dc.w Spring_Main-Spring_Index
 		dc.w Spring_Up-Spring_Index

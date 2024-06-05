@@ -6,12 +6,11 @@ Signpost:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Sign_Index(pc,d0.w),d1
-		jsr	Sign_Index(pc,d1.w)
-		lea	(Ani_Sign).l,a1
+		jsr		Sign_Index(pc,d1.w)
+		lea		(Ani_Sign).l,a1
 		bsr.w	AnimateSprite
-		bsr.w	DisplaySprite
 		out_of_range.w	DeleteObject
-		rts	
+		bra.w	DisplaySprite			; Clownacy DisplaySprite Fix
 ; ===========================================================================
 Sign_Index:	dc.w Sign_Main-Sign_Index
 		dc.w Sign_Touch-Sign_Index
