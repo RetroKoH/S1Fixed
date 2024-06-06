@@ -6,14 +6,10 @@ Prison:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Pri_Index(pc,d0.w),d1
-		jsr	Pri_Index(pc,d1.w)
-		out_of_range.s	.delete
-		jmp	(DisplaySprite).l
-
-.delete:
-		jmp	(DeleteObject).l
+		jmp		Pri_Index(pc,d1.w)
 ; ===========================================================================
-Pri_Index:	dc.w Pri_Main-Pri_Index
+Pri_Index:
+		dc.w Pri_Main-Pri_Index
 		dc.w Pri_BodyMain-Pri_Index
 		dc.w Pri_Switched-Pri_Index
 		dc.w Pri_Explosion-Pri_Index
@@ -24,10 +20,12 @@ Pri_Index:	dc.w Pri_Main-Pri_Index
 
 pri_origY = objoff_30		; original y-axis position
 
-Pri_Var:	dc.b 2,	$20, 4,	0	; routine, width, priority, frame
-		dc.b 4,	$C, 5, 1
-		dc.b 6,	$10, 4,	3
-		dc.b 8,	$10, 3,	5
+Pri_Var:
+		; 		routine,	width,	priority,	frame
+		dc.b 	2,			$20,	4,			0		; 0 (subtype 0)
+		dc.b 	4,			$C,		5,			1		; 4 (subtype 1)
+		dc.b 	6,			$10,	4,			3		; 8 (subtype 2)
+		dc.b 	8,			$10,	3,			5		; $C (subtype 3)
 ; ===========================================================================
 
 Pri_Main:	; Routine 0
@@ -38,13 +36,13 @@ Pri_Main:	; Routine 0
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
 		lsl.w	#2,d0
-		lea	Pri_Var(pc,d0.w),a1
+		lea		Pri_Var(pc,d0.w),a1
 		move.b	(a1)+,obRoutine(a0)
 		move.b	(a1)+,obActWid(a0)
 		move.b	(a1)+,obPriority(a0)
 		move.b	(a1)+,obFrame(a0)
-		cmpi.w	#8,d0		; is object type number	02?
-		bne.s	.not02		; if not, branch
+		cmpi.w	#8,d0					; is object type number	02?
+		bne.s	.not02					; if not, branch
 
 		move.b	#6,obColType(a0)
 		move.b	#8,obColProp(a0)
@@ -60,19 +58,27 @@ Pri_BodyMain:	; Routine 2
 		move.w	#$18,d2
 		move.w	#$18,d3
 		move.w	obX(a0),d4
-		jmp	(SolidObject).l
+	; Clownacy DisplaySprite Fix (Alt method by RetroKoH)
+		jsr		(SolidObject).l
+		out_of_range.s	.delete
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 
 .chkopened:
-		tst.b	ob2ndRout(a0)	; has the prison been opened?
-		beq.s	.open		; if yes, branch
+		tst.b	ob2ndRout(a0)		; has the prison been opened?
+		beq.s	.open				; if yes, branch
 		clr.b	ob2ndRout(a0)
 		bclr	#3,(v_player+obStatus).w
 		bset	#1,(v_player+obStatus).w
 
 .open:
-		move.b	#2,obFrame(a0)	; use frame number 2 (destroyed	prison)
-		rts	
+		move.b	#2,obFrame(a0)		; use frame number 2 (destroyed	prison)
+	; Clownacy DisplaySprite Fix (Alt method by RetroKoH)
+		out_of_range.s	.delete
+		jmp		(DisplaySprite).l
+
+.delete:
+		jmp	(DeleteObject).l
 ; ===========================================================================
 
 Pri_Switched:	; Routine 4
@@ -80,38 +86,43 @@ Pri_Switched:	; Routine 4
 		move.w	#8,d2
 		move.w	#8,d3
 		move.w	obX(a0),d4
-		jsr	(SolidObject).l
-		lea	(Ani_Pri).l,a1
-		jsr	(AnimateSprite).l
+		jsr		(SolidObject).l
+		lea		(Ani_Pri).l,a1
+		jsr		(AnimateSprite).l
 		move.w	pri_origY(a0),obY(a0)
-		tst.b	ob2ndRout(a0)	; has prison already been opened?
-		beq.s	.open2		; if yes, branch
+		tst.b	ob2ndRout(a0)					; has prison already been opened?
+		beq.s	.open2							; if yes, branch
 
 		addq.w	#8,obY(a0)
 		move.b	#$A,obRoutine(a0)
-		move.w	#60,obTimeFrame(a0) ; set time between animal spawns
-		clr.b	(f_timecount).w	; stop time counter
-		clr.b	(f_lockscreen).w ; lock screen position
-		move.b	#1,(f_lockctrl).w ; lock controls
-		move.w	#(btnR<<8),(v_jpadhold2).w ; make Sonic run to the right
+		move.w	#60,obTimeFrame(a0)				; set time between animal spawns
+		clr.b	(f_timecount).w					; stop time counter
+		clr.b	(f_lockscreen).w				; lock screen position
+		move.b	#1,(f_lockctrl).w				; lock controls
+		move.w	#(btnR<<8),(v_jpadhold2).w		; make Sonic run to the right
 		clr.b	ob2ndRout(a0)
 		bclr	#3,(v_player+obStatus).w
 		bset	#1,(v_player+obStatus).w
 
 .open2:
-		rts	
+	; Clownacy DisplaySprite Fix (Alt method by RetroKoH)
+		out_of_range.s	.delete2
+		jmp		(DisplaySprite).l
+
+.delete2:
+		jmp	(DeleteObject).l
 ; ===========================================================================
 
 Pri_Explosion:	; Routine 6, 8, $A
 		moveq	#7,d0
 		and.b	(v_vbla_byte).w,d0
 		bne.s	.noexplosion
-		jsr	(FindFreeObj).l
+		jsr		(FindFreeObj).l
 		bne.s	.noexplosion
 		_move.b	#id_ExplosionBomb,obID(a1) ; load explosion object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		jsr	(RandomNumber).l
+		jsr		(RandomNumber).l
 		moveq	#0,d1
 		move.b	d0,d1
 		lsr.b	#2,d1
@@ -157,12 +168,12 @@ Pri_Animals:	; Routine $C
 		moveq	#7,d0
 		and.b	(v_vbla_byte).w,d0
 		bne.s	.noanimal
-		jsr	(FindFreeObj).l
+		jsr		(FindFreeObj).l
 		bne.s	.noanimal
 		_move.b	#id_Animals,obID(a1) ; load animal object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		jsr	(RandomNumber).l
+		jsr		(RandomNumber).l
 		andi.w	#$1F,d0
 		subq.w	#6,d0
 		tst.w	d1
@@ -184,27 +195,19 @@ Pri_Animals:	; Routine $C
 ; ===========================================================================
 
 Pri_EndAct:	; Routine $E
-	if FixBugs
-		moveq	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d0
-	else
-		moveq	#(v_objend-(v_objspace+object_size*1))/object_size/2-1,d0	; Nonsensical length, it only covers the first half of object RAM.
-	endif
+		moveq	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d0	; Bugfix -- Originally it only covered the first half of object RAM.
 		moveq	#id_Animals,d1
 		moveq	#object_size,d2
-	if FixBugs
-		lea	(v_lvlobjspace).w,a1
-	else
-		lea	(v_objspace+object_size*1).w,a1 ; Nonsensical starting point, since dynamic object allocations begin at v_lvlobjspace.
-	endif
+		lea		(v_lvlobjspace).w,a1					; Bugfix -- Originally was v_objspace+object_size*1. Nonsensical starting point, since dynamic object allocations begin at v_lvlobjspace.
 
 .findanimal:
 		cmp.b	obID(a1),d1		; is object $28	(animal) loaded?
-		beq.s	.found		; if yes, branch
-		adda.w	d2,a1		; next object RAM
-		dbf	d0,.findanimal	; repeat $3E times
+		beq.s	.found			; if yes, branch
+		adda.w	d2,a1			; next object RAM
+		dbf		d0,.findanimal	; repeat $3E times
 
-		jsr	(GotThroughAct).l
-		jmp	(DeleteObject).l
+		jsr		(GotThroughAct).l
+		jmp		(DeleteObject).l
 
 .found:
 		rts	
