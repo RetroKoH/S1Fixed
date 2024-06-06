@@ -22,10 +22,10 @@ pri_origY = objoff_30		; original y-axis position
 
 Pri_Var:
 		; 		routine,	width,	priority,	frame
-		dc.b 	2,			$20,	4,			0		; 0 (subtype 0)
-		dc.b 	4,			$C,		5,			1		; 4 (subtype 1)
-		dc.b 	6,			$10,	4,			3		; 8 (subtype 2)
-		dc.b 	8,			$10,	3,			5		; $C (subtype 3)
+		dc.b 	2,			$20,	4,			0		; 0 (subtype 0: body)
+		dc.b 	4,			$C,		5,			1		; 4 (subtype 1: button)
+		dc.b 	6,			$10,	4,			3		; 8 (subtype 2: button 2)
+		dc.b 	8,			$10,	3,			5		; $C (subtype 3: ???)
 ; ===========================================================================
 
 Pri_Main:	; Routine 0
@@ -78,7 +78,7 @@ Pri_BodyMain:	; Routine 2
 		jmp		(DisplaySprite).l
 
 .delete:
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 Pri_Switched:	; Routine 4
@@ -110,7 +110,7 @@ Pri_Switched:	; Routine 4
 		jmp		(DisplaySprite).l
 
 .delete2:
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 Pri_Explosion:	; Routine 6, 8, $A
@@ -119,7 +119,7 @@ Pri_Explosion:	; Routine 6, 8, $A
 		bne.s	.noexplosion
 		jsr		(FindFreeObj).l
 		bne.s	.noexplosion
-		_move.b	#id_ExplosionBomb,obID(a1) ; load explosion object
+		_move.b	#id_ExplosionBomb,obID(a1)	; load explosion object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		jsr		(RandomNumber).l
@@ -135,12 +135,17 @@ Pri_Explosion:	; Routine 6, 8, $A
 .noexplosion:
 		subq.w	#1,obTimeFrame(a0)
 		beq.s	.makeanimal
-		rts	
+	; Clownacy DisplaySprite Fix (Alt method by RetroKoH)
+		out_of_range.s	.delete2
+		jmp		(DisplaySprite).l
+
+.delete2:
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 .makeanimal:
 		move.b	#2,(v_bossstatus).w
-		move.b	#$C,obRoutine(a0)	; replace explosions with animals
+		move.b	#$C,obRoutine(a0)		; replace explosions with animals
 		move.b	#6,obFrame(a0)
 		move.w	#150,obTimeFrame(a0)
 		addi.w	#$20,obY(a0)
@@ -149,19 +154,21 @@ Pri_Explosion:	; Routine 6, 8, $A
 		moveq	#-$1C,d4
 
 .loop:
-		jsr	(FindFreeObj).l
+		jsr		(FindFreeObj).l
 		bne.s	.fail
-		_move.b	#id_Animals,obID(a1) ; load animal object
+		_move.b	#id_Animals,obID(a1)	; load animal object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		add.w	d4,obX(a1)
 		addq.w	#7,d4
 		move.w	d5,objoff_36(a1)
 		subq.w	#8,d5
-		dbf	d6,.loop	; repeat 7 more	times
+		dbf		d6,.loop				; repeat 7 more	times
 
 .fail:
-		rts	
+	; Clownacy DisplaySprite Fix (Alt method by RetroKoH)
+		out_of_range.s	.delete2
+		jmp		(DisplaySprite).l	
 ; ===========================================================================
 
 Pri_Animals:	; Routine $C
@@ -170,7 +177,7 @@ Pri_Animals:	; Routine $C
 		bne.s	.noanimal
 		jsr		(FindFreeObj).l
 		bne.s	.noanimal
-		_move.b	#id_Animals,obID(a1) ; load animal object
+		_move.b	#id_Animals,obID(a1)	; load animal object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		jsr		(RandomNumber).l
