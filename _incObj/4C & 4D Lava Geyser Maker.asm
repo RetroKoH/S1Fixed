@@ -1,21 +1,16 @@
 ; ---------------------------------------------------------------------------
 ; Object 4C - lava geyser / lavafall producer (MZ)
 ; ---------------------------------------------------------------------------
+; Clownacy DisplaySprite Fix (FixBugs solutions implemented as opposed to stack-meddling)
 
 GeyserMaker:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	GMake_Index(pc,d0.w),d1
-	if FixBugs
-		; Deletion has been changed to eliminate potential
-		; double-delete and display-and-delete bugs.
-		jmp	GMake_Index(pc,d1.w)
-	else
-		jsr	GMake_Index(pc,d1.w)
-		bra.w	Geyser_ChkDel
-	endif
+		jmp		GMake_Index(pc,d1.w)	; FixBugs - Deletion has been changed to eliminate potential double-delete and display-and-delete bugs.
 ; ===========================================================================
-GMake_Index:	dc.w GMake_Main-GMake_Index
+GMake_Index:
+		dc.w GMake_Main-GMake_Index
 		dc.w GMake_Wait-GMake_Index
 		dc.w GMake_ChkType-GMake_Index
 		dc.w GMake_MakeLava-GMake_Index
@@ -24,7 +19,7 @@ GMake_Index:	dc.w GMake_Main-GMake_Index
 
 gmake_time = objoff_34		; time delay (2 bytes)
 gmake_timer = objoff_32		; current time remaining (2 bytes)
-gmake_parent = objoff_3C		; address of parent object
+gmake_parent = objoff_3C	; address of parent object
 ; ===========================================================================
 
 GMake_Main:	; Routine 0
@@ -34,11 +29,11 @@ GMake_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.b	#1,obPriority(a0)
 		move.b	#$38,obActWid(a0)
-		move.w	#120,gmake_time(a0) ; set time delay to 2 seconds
+		move.w	#120,gmake_time(a0)	; set time delay to 2 seconds
 
 GMake_Wait:	; Routine 2
-		subq.w	#1,gmake_timer(a0) ; decrement timer
-		bpl.s	.cancel		; if time remains, branch
+		subq.w	#1,gmake_timer(a0)	; decrement timer
+		bpl.s	.cancel				; if time remains, branch
 
 		move.w	gmake_time(a0),gmake_timer(a0) ; reset timer
 		move.w	(v_player+obY).w,d0
@@ -48,14 +43,11 @@ GMake_Wait:	; Routine 2
 		subi.w	#$170,d1
 		cmp.w	d1,d0
 		blo.s	.cancel
-		addq.b	#2,obRoutine(a0) ; if Sonic is within range, goto GMake_ChkType
+		addq.b	#2,obRoutine(a0)	; if Sonic is within range, goto GMake_ChkType
 
 .cancel:
-	if FixBugs
-		; Deletion has been changed to eliminate potential
-		; double-delete and display-and-delete bugs.
+		; FixBugs - Deletion has been changed to eliminate potential double-delete and display-and-delete bugs.
 		out_of_range.w	DeleteObject
-	endif
 		rts	
 ; ===========================================================================
 
@@ -88,20 +80,14 @@ GMake_ChkType:	; Routine 4
 		tst.b	obSubtype(a0)	; is object type 00 (geyser) ?
 		beq.s	GMake_Display	; if yes, branch
 		addq.b	#2,obRoutine(a0)
-	if FixBugs
-		; Deletion has been changed to eliminate potential
-		; double-delete and display-and-delete bugs.
+		; FixBugs - Deletion has been changed to eliminate potential double-delete and display-and-delete bugs.
 		out_of_range.w	DeleteObject
-	endif
 		rts	
 ; ===========================================================================
 
 GMake_Display:	; Routine 8
-	if FixBugs
-		; Deletion has been changed to eliminate potential
-		; double-delete and display-and-delete bugs.
+		; FixBugs - Deletion has been changed to eliminate potential double-delete and display-and-delete bugs.
 		out_of_range.w	DeleteObject
-	endif
 		lea	(Ani_Geyser).l,a1
 		bsr.w	AnimateSprite
 		bsr.w	DisplaySprite
@@ -113,11 +99,8 @@ GMake_Delete:	; Routine $A
 		move.b	#2,obRoutine(a0)
 		tst.b	obSubtype(a0)
 		beq.w	DeleteObject
-	if FixBugs
-		; Deletion has been changed to eliminate potential
-		; double-delete and display-and-delete bugs.
+		; FixBugs - Deletion has been changed to eliminate potential double-delete and display-and-delete bugs.
 		out_of_range.w	DeleteObject
-	endif
 		rts	
 
 
@@ -129,16 +112,10 @@ LavaGeyser:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Geyser_Index(pc,d0.w),d1
-	if FixBugs
-		; The call to DisplaySprite has been moved to prevent a
-		; display-and-delete bug.
-		jmp	Geyser_Index(pc,d1.w)
-	else
-		jsr	Geyser_Index(pc,d1.w)
-		bra.w	DisplaySprite
-	endif
+		jmp		Geyser_Index(pc,d1.w)	; FixBugs - The call to DisplaySprite has been moved to prevent a display-and-delete bug.
 ; ===========================================================================
-Geyser_Index:	dc.w Geyser_Main-Geyser_Index
+Geyser_Index:
+		dc.w Geyser_Main-Geyser_Index
 		dc.w Geyser_Action-Geyser_Index
 		dc.w loc_EFFC-Geyser_Index
 		dc.w Geyser_Delete-Geyser_Index
@@ -184,7 +161,7 @@ Geyser_Main:	; Routine 0
 		move.b	#2,obAnim(a1)
 
 .fail:
-		dbf	d1,.loop
+		dbf		d1,.loop
 		rts	
 ; ===========================================================================
 
@@ -211,33 +188,29 @@ Geyser_Main:	; Routine 0
 
 .sound:
 		move.w	#sfx_Burning,d0
-		jsr	(PlaySound_Special).l	; play flame sound
+		jsr		(PlaySound_Special).l	; play flame sound
 
 Geyser_Action:	; Routine 2
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
 		add.w	d0,d0
 		move.w	Geyser_Types(pc,d0.w),d1
-		jsr	Geyser_Types(pc,d1.w)
+		jsr		Geyser_Types(pc,d1.w)
 		bsr.w	SpeedToPos
-		lea	(Ani_Geyser).l,a1
+		lea		(Ani_Geyser).l,a1
 		bsr.w	AnimateSprite
 
 Geyser_ChkDel:
 		out_of_range.w	DeleteObject
-	if FixBugs
-		; Moved to prevent a delete-and-display bug.
-		bra.w	DisplaySprite
-	else
-		rts	
-	endif
+		bra.w	DisplaySprite		; FixBugs - Moved to prevent a delete-and-display bug.
 ; ===========================================================================
-Geyser_Types:	dc.w Geyser_Type00-Geyser_Types
+Geyser_Types:
+		dc.w Geyser_Type00-Geyser_Types
 		dc.w Geyser_Type01-Geyser_Types
 ; ===========================================================================
 
 Geyser_Type00:
-		addi.w	#$18,obVelY(a0)	; increase object's falling speed
+		addi.w	#$18,obVelY(a0)		; increase object's falling speed
 		move.w	objoff_30(a0),d0
 		cmp.w	obY(a0),d0
 		bhs.s	locret_EFDA
@@ -250,7 +223,7 @@ locret_EFDA:
 ; ===========================================================================
 
 Geyser_Type01:
-		addi.w	#$18,obVelY(a0)	; increase object's falling speed
+		addi.w	#$18,obVelY(a0)		; increase object's falling speed
 		move.w	objoff_30(a0),d0
 		cmp.w	obY(a0),d0
 		bhs.s	locret_EFFA
