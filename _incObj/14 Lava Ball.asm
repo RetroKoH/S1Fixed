@@ -6,18 +6,15 @@ LavaBall:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	LBall_Index(pc,d0.w),d1
-	if FixBugs
-		jmp	LBall_Index(pc,d1.w)
-	else
-		jsr	LBall_Index(pc,d1.w)
-		bra.w	DisplaySprite
-	endif
+		jmp		LBall_Index(pc,d1.w)	; FixBugs: Clownacy DisplaySprite Fix
 ; ===========================================================================
-LBall_Index:	dc.w LBall_Main-LBall_Index
+LBall_Index:
+		dc.w LBall_Main-LBall_Index
 		dc.w LBall_Action-LBall_Index
 		dc.w LBall_Delete-LBall_Index
 
-LBall_Speeds:	dc.w -$400, -$500, -$600, -$700, -$200
+LBall_Speeds:
+		dc.w -$400, -$500, -$600, -$700, -$200
 		dc.w $200, -$200, $200,	0
 ; ===========================================================================
 
@@ -56,27 +53,24 @@ LBall_Main:	; Routine 0
 
 .sound:
 		move.w	#sfx_Fireball,d0
-		jsr	(PlaySound_Special).l	; play lava ball sound
+		jsr		(PlaySound_Special).l	; play lava ball sound
 
 LBall_Action:	; Routine 2
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
 		add.w	d0,d0
 		move.w	LBall_TypeIndex(pc,d0.w),d1
-		jsr	LBall_TypeIndex(pc,d1.w)
+		jsr		LBall_TypeIndex(pc,d1.w)
 		bsr.w	SpeedToPos
-		lea	(Ani_Fire).l,a1
+		lea		(Ani_Fire).l,a1
 		bsr.w	AnimateSprite
 
 LBall_ChkDel:
 		out_of_range.w	DeleteObject
-	if FixBugs
-		bra.w	DisplaySprite
-	else
-		rts	
-	endif
+		bra.w	DisplaySprite	; FixBugs: Clownacy DisplaySprite Fix
 ; ===========================================================================
-LBall_TypeIndex:dc.w LBall_Type00-LBall_TypeIndex, LBall_Type00-LBall_TypeIndex
+LBall_TypeIndex:
+		dc.w LBall_Type00-LBall_TypeIndex, LBall_Type00-LBall_TypeIndex
 		dc.w LBall_Type00-LBall_TypeIndex, LBall_Type00-LBall_TypeIndex
 		dc.w LBall_Type04-LBall_TypeIndex, LBall_Type05-LBall_TypeIndex
 		dc.w LBall_Type06-LBall_TypeIndex, LBall_Type07-LBall_TypeIndex
