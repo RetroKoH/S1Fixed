@@ -5,6 +5,7 @@ SonLVL INI Files/SonLVL.log
 
 # Misc. compiler output.
 sonic.lst
+sonic.debug.lst
 sonic.log
 sonic.p
 
@@ -16,4 +17,3 @@ s1built.debug.prev.bin
 
 # Typical CMake build directory.
 build_tools/s1p2bin/build
-sonic.debug.lst
