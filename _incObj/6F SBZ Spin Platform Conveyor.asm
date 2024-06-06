@@ -6,12 +6,12 @@ SpinConvey:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	SpinC_Index(pc,d0.w),d1
-		jsr	SpinC_Index(pc,d1.w)
-		out_of_range.s	loc_1629A,objoff_30(a0)
-
-SpinC_Display:
-		jmp	(DisplaySprite).l
+		jmp		SpinC_Index(pc,d1.w)
 ; ===========================================================================
+
+; Clownacy DisplaySprite Fix (Alt Method by RetroKoH)
+SpinC_Display:
+		jmp		(DisplaySprite).l
 
 loc_1629A:
 		cmpi.b	#2,(v_act).w	; check if act is 3
@@ -23,17 +23,24 @@ SpinC_Act1or2:
 		move.b	objoff_2F(a0),d0
 		bpl.s	SpinC_Delete
 		andi.w	#$7F,d0
-		lea	(v_obj63).w,a2
+		lea		(v_obj63).w,a2
 		bclr	#0,(a2,d0.w)
 
 SpinC_Delete:
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 ; ===========================================================================
-SpinC_Index:	dc.w SpinC_Main-SpinC_Index
+SpinC_Index:
+		dc.w SpinC_Main-SpinC_Index
 		dc.w loc_163D8-SpinC_Index
 ; ===========================================================================
 
 SpinC_Main:	; Routine 0
+	; Clownacy DisplaySprite Fix (Alt Method by RetroKoH)
+		bsr.s	SpinC_Rout1
+		out_of_range.s	loc_1629A,objoff_30(a0)
+		jmp		(DisplaySprite).l
+
+SpinC_Rout1:
 		move.b	obSubtype(a0),d0
 		bmi.w	loc_16380
 		addq.b	#2,obRoutine(a0)
@@ -47,7 +54,7 @@ SpinC_Main:	; Routine 0
 		move.w	d0,d1
 		lsr.w	#3,d0
 		andi.w	#$1E,d0
-		lea	off_164A6(pc),a2
+		lea		off_164A6(pc),a2
 		adda.w	(a2,d0.w),a2
 		move.w	(a2)+,objoff_38(a0)
 		move.w	(a2)+,objoff_30(a0)
@@ -131,8 +138,14 @@ loc_163D0:
 ; ===========================================================================
 
 loc_163D8:	; Routine 2
-		lea	(Ani_SpinConvey).l,a1
-		jsr	(AnimateSprite).l
+	; Clownacy DisplaySprite Fix (Alt Method by RetroKoH)
+		bsr.s	SpinC_Rout2
+		out_of_range.w	loc_1629A,objoff_30(a0)
+		jmp	(DisplaySprite).l
+
+SpinC_Rout2:
+		lea		(Ani_SpinConvey).l,a1
+		jsr		(AnimateSprite).l
 		tst.b	obFrame(a0)
 		bne.s	loc_16404
 		move.w	obX(a0),-(sp)

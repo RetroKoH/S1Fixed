@@ -6,10 +6,11 @@ SmashBlock:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Smab_Index(pc,d0.w),d1
-		jsr	Smab_Index(pc,d1.w)
+		jsr		Smab_Index(pc,d1.w)
 		bra.w	RememberState
 ; ===========================================================================
-Smab_Index:	dc.w Smab_Main-Smab_Index
+Smab_Index:
+		dc.w Smab_Main-Smab_Index
 		dc.w Smab_Solid-Smab_Index
 		dc.w Smab_Points-Smab_Index
 ; ===========================================================================
