@@ -38,7 +38,8 @@ SmoothSpecialStages: = 1
 ; ===========================================================================
 
 StartOfRom:
-Vectors:	dc.l v_systemstack&$FFFFFF	; Initial stack pointer value
+Vectors:
+		dc.l v_systemstack&$FFFFFF	; Initial stack pointer value
 		dc.l EntryPoint			; Start of program
 		dc.l BusError			; Bus error
 		dc.l AddressError		; Address error (4)
@@ -94,7 +95,6 @@ Vectors:	dc.l v_systemstack&$FFFFFF	; Initial stack pointer value
 		dc.l ErrorTrap			; Unused (reserved)
 		dc.l ErrorTrap			; Unused (reserved)
 		dc.l ErrorTrap			; Unused (reserved)
-	if Revision<>2
 		dc.l ErrorTrap			; Unused (reserved)
 		dc.l ErrorTrap			; Unused (reserved)
 		dc.l ErrorTrap			; Unused (reserved)
@@ -103,38 +103,19 @@ Vectors:	dc.l v_systemstack&$FFFFFF	; Initial stack pointer value
 		dc.l ErrorTrap			; Unused (reserved)
 		dc.l ErrorTrap			; Unused (reserved)
 		dc.l ErrorTrap			; Unused (reserved)
-	else
-loc_E0:
-		; Relocated code from Spik_Hurt. REVXB was a nasty hex-edit.
-		move.l	obY(a0),d3
-		move.w	obVelY(a0),d0
-		ext.l	d0
-		asl.l	#8,d0
-		jmp	(loc_D5A2).l
 
-		dc.w ErrorTrap
-		dc.l ErrorTrap
-		dc.l ErrorTrap
-		dc.l ErrorTrap
-	endif
-		dc.b "SEGA MEGA DRIVE " ; Hardware system ID (Console name)
-		dc.b "(C)SEGA 1991.APR" ; Copyright holder and release date (generally year)
-		dc.b "SONIC THE               HEDGEHOG                " ; Domestic name
-		dc.b "SONIC THE               HEDGEHOG                " ; International name
-		if Revision=0
-		dc.b "GM 00001009-00"   ; Serial/version number (Rev 0)
-		else
-			dc.b "GM 00004049-01" ; Serial/version number (Rev non-0)
-		endif
+		dc.b "SEGA MEGA DRIVE "	; Hardware system ID (Console name)
+		dc.b "(C)SEGA 1991.APR"	; Copyright holder and release date (generally year)
+		dc.b "SONIC THE               HEDGEHOG                "		; Domestic name
+		dc.b "SONIC THE               HEDGEHOG                "		; International name
+		dc.b "GM 00004049-01"	; Serial/version number (Rev non-0)
+
 Checksum:
-		if Revision=0
-		dc.w $264A	; Hardcoded to make it easier to check for ROM correctness
-		else
-		dc.w $AFC7
-		endif
-		dc.b "J               " ; I/O support
-		dc.l StartOfRom		; Start address of ROM
-RomEndLoc:	dc.l EndOfRom-1		; End address of ROM
+		dc.w $AFC7				; Hardcoded to make it easier to check for ROM correctness
+		dc.b "J               "	; I/O support
+		dc.l StartOfRom			; Start address of ROM
+RomEndLoc:
+		dc.l EndOfRom-1		; End address of ROM
 		dc.l $FF0000		; Start address of RAM
 		dc.l $FFFFFF		; End address of RAM
 		if EnableSRAM=1
@@ -164,7 +145,7 @@ EntryPoint:
 
 PortA_Ok:
 		bne.s	SkipSetup ; Skip the VDP and Z80 setup code if port A, B or C is ok...?
-		lea	SetupValues(pc),a5	; Load setup values array address.
+		lea		SetupValues(pc),a5	; Load setup values array address.
 		movem.w	(a5)+,d5-d7
 		movem.l	(a5)+,a0-a4
 		move.b	-$10FF(a1),d0	; get hardware version (from $A10001)
@@ -320,22 +301,41 @@ GameProgram:
 		cmpi.l	#'init',(v_init).w ; has checksum routine already run?
 		beq.w	GameInit	; if yes, branch
 
-CheckSumCheck:
-		movea.l	#EndOfHeader,a0	; start	checking bytes after the header	($200)
-		movea.l	#RomEndLoc,a1	; stop at end of ROM
-		move.l	(a1),d0
-		moveq	#0,d1
+CheckSumCheck: ; FASTER CHECKSUM CHECK BY MARKEYJESTER
+		movea.w	#$0200,a0				; prepare start address
+		move.l	(RomEndLoc).w,d7		; load size
+		sub.l	a0,d7					; minus start address
+		move.b	d7,d5					; copy end nybble
+		andi.w	#$000F,d5				; get only the remaining nybble
+		lsr.l	#$04,d7					; divide the size by 20
+		move.w	d7,d6					; load lower word size
+		swap	d7						; get upper word size
+		moveq	#$00,d0					; clear d0
 
-.loop:
-		add.w	(a0)+,d1
-		cmp.l	a0,d0
-		bhs.s	.loop
-		movea.l	#Checksum,a1	; read the checksum
-		cmp.w	(a1),d1		; compare checksum in header to ROM
-		bne.w	CheckSumError	; if they don't match, branch
+CS_MainBlock:
+		add.w	(a0)+,d0				; modular checksum (8 words)
+		add.w	(a0)+,d0				; ''
+		add.w	(a0)+,d0				; ''
+		add.w	(a0)+,d0				; ''
+		add.w	(a0)+,d0				; ''
+		add.w	(a0)+,d0				; ''
+		add.w	(a0)+,d0				; ''
+		add.w	(a0)+,d0				; ''
+		dbf		d6,CS_MainBlock			; repeat until all main block sections are done
+		dbf		d7,CS_MainBlock			; ''
+		subq.w	#$01,d5					; decrease remaining nybble for dbf
+		bpl.s	CS_Finish				; if there is no remaining nybble, branch
+
+CS_Remains:
+		add.w	(a0)+,d0				; add remaining words
+		dbf		d5,CS_Remains			; repeat until the remaining words are done
+
+CS_Finish:
+		cmp.w	(Checksum).w,d0			; does the checksum match?
+		bne.w	CheckSumError			; if not, branch
 
 CheckSumOk:
-		lea	(v_crossresetram).w,a6
+		lea		(v_crossresetram).w,a6
 		moveq	#0,d7
 		move.w	#(v_ram_end-v_crossresetram)/4-1,d6
 .clearRAM:

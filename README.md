@@ -210,4 +210,10 @@
  Name: DisplaySprite Bugfix
  Credit: Clownacy
  Function: Fixes an absolute mess of a bug that can occur if using newer mappings formats.
- Date: 2024-06-05
+ Date: 2024-06-06
+ 
+ Name: Faster CheckSum Check
+ Credit: MarkeyJester
+ Function: Faster Checksum check
+ Date: 2024-06-06
+ Note: I don't remember WHERE I saw MJ post this... and I'll revisit this later, but I imported it from my old ROM hack project.
