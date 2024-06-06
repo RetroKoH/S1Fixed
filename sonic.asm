@@ -1814,26 +1814,26 @@ PalLoad4_Water:
 ; ---------------------------------------------------------------------------
 ; Palette data
 ; ---------------------------------------------------------------------------
-Pal_SegaBG:	binclude	"palette/Sega Background.bin"
-Pal_Title:	binclude	"palette/Title Screen.bin"
+; Removed SEGA BG palette (RetroKoH)
+Pal_Title:		binclude	"palette/Title Screen.bin"
 Pal_LevelSel:	binclude	"palette/Level Select.bin"
-Pal_Sonic:	binclude	"palette/Sonic.bin"
-Pal_GHZ:	binclude	"palette/Green Hill Zone.bin"
-Pal_LZ:		binclude	"palette/Labyrinth Zone.bin"
+Pal_Sonic:		binclude	"palette/Sonic.bin"
+Pal_GHZ:		binclude	"palette/Green Hill Zone.bin"
+Pal_LZ:			binclude	"palette/Labyrinth Zone.bin"
 Pal_LZWater:	binclude	"palette/Labyrinth Zone Underwater.bin"
-Pal_MZ:		binclude	"palette/Marble Zone.bin"
-Pal_SLZ:	binclude	"palette/Star Light Zone.bin"
-Pal_SYZ:	binclude	"palette/Spring Yard Zone.bin"
-Pal_SBZ1:	binclude	"palette/SBZ Act 1.bin"
-Pal_SBZ2:	binclude	"palette/SBZ Act 2.bin"
+Pal_MZ:			binclude	"palette/Marble Zone.bin"
+Pal_SLZ:		binclude	"palette/Star Light Zone.bin"
+Pal_SYZ:		binclude	"palette/Spring Yard Zone.bin"
+Pal_SBZ1:		binclude	"palette/SBZ Act 1.bin"
+Pal_SBZ2:		binclude	"palette/SBZ Act 2.bin"
 Pal_Special:	binclude	"palette/Special Stage.bin"
-Pal_SBZ3:	binclude	"palette/SBZ Act 3.bin"
+Pal_SBZ3:		binclude	"palette/SBZ Act 3.bin"
 Pal_SBZ3Water:	binclude	"palette/SBZ Act 3 Underwater.bin"
 Pal_LZSonWater:	binclude	"palette/Sonic - LZ Underwater.bin"
 Pal_SBZ3SonWat:	binclude	"palette/Sonic - SBZ3 Underwater.bin"
 Pal_SSResult:	binclude	"palette/Special Stage Results.bin"
 Pal_Continue:	binclude	"palette/Special Stage Continue Bonus.bin"
-Pal_Ending:	binclude	"palette/Ending.bin"
+Pal_Ending:		binclude	"palette/Ending.bin"
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	wait for VBlank routines to complete
@@ -1891,15 +1891,21 @@ GM_Sega:
 		copyTilemap	v_128x128&$FFFFFF,$E510,$17,7
 		copyTilemap	(v_128x128+$180)&$FFFFFF,$C000,$27,$1B
 
-		if Revision<>0
-			tst.b   (v_megadrive).w	; is console Japanese?
-			bmi.s   .loadpal
-			copyTilemap	(v_128x128+$A40)&$FFFFFF,$C53A,2,1 ; hide "TM" with a white rectangle
-		endif
+		tst.b   (v_megadrive).w	; is console Japanese?
+		bmi.s   .loadpal
+		copyTilemap	(v_128x128+$A40)&$FFFFFF,$C53A,2,1 ; hide "TM" with a white rectangle
 
 .loadpal:
-		moveq	#palid_SegaBG,d0
-		bsr.w	PalLoad2						; load Sega logo palette
+	; RetroKoH Fade In SEGA background
+		lea		(v_pal_dry_dup).l,a3
+		moveq	#$3F,d7
+
+.loop:
+		move.w	#cWhite,(a3)+	; move data to RAM
+		dbf		d7,.loop
+
+		bsr.w	PaletteFadeIn
+	; Fade In SEGA Background End
 		move.w	#-$A,(v_pcyc_num).w
 		move.w	#0,(v_pcyc_time).w
 		move.w	#0,(v_pal_buffer+$12).w

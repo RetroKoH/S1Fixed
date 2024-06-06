@@ -217,3 +217,8 @@
  Function: Faster Checksum check
  Date: 2024-06-06
  Note: I don't remember WHERE I saw MJ post this... and I'll revisit this later, but I imported it from my old ROM hack project.
+
+ Name: Fade-In SEGA Screen
+ Credit: RetroKoH
+ Function: The SEGA Screen now fades in.
+ Date: 2024-06-06
