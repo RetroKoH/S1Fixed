@@ -166,24 +166,16 @@ locret_18EA8:
 ; ===========================================================================
 
 loc_18EAA:	; Routine 6
-	if FixBugs
-		lea	(v_lvlobjspace).w,a1
-	else
-		lea	(v_objspace+object_size*1).w,a1 ; Nonsensical starting point, since dynamic object allocations begin at v_lvlobjspace.
-	endif
+		lea		(v_lvlobjspace).w,a1							; FixBugs -- Formerly (v_objspace+object_size*1)
 		moveq	#id_BossStarLight,d0
 		moveq	#object_size,d1
-	if FixBugs
-		moveq	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d2
-	else
-		moveq	#(v_objend-(v_objspace+object_size*1))/object_size/2-1,d2	; Nonsensical length, it only covers the first half of object RAM.
-	endif
+		moveq	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d2	; FixBugs: Normally only covered the first half of object RAM.
 
 loc_18EB4:
 		cmp.b	obID(a1),d0
 		beq.s	loc_18EC0
 		adda.w	d1,a1
-		dbf	d2,loc_18EB4
+		dbf		d2,loc_18EB4
 
 		bra.s	loc_18F38
 ; ===========================================================================
@@ -193,8 +185,8 @@ loc_18EC0:
 		move.w	obY(a1),d1
 		move.w	obX(a0),d2
 		move.w	obY(a0),d3
-		lea	BossSpikeball_BossHitbox(pc),a2
-		lea	BossSpikeball_BallHitbox(pc),a3
+		lea		BossSpikeball_BossHitbox(pc),a2
+		lea		BossSpikeball_BallHitbox(pc),a3
 		move.b	(a2)+,d4
 		ext.w	d4
 		add.w	d4,d0
@@ -374,5 +366,9 @@ BossSpikeball_MoveFrag:	; Routine $A
 		lsr.w	#2,d0
 		move.b	d0,obFrame(a0)
 		tst.b	obRender(a0)
-		bpl.w	BossStarLight_Delete
+	; Clownacy DisplaySprite Fix
+		bmi.s   .locret
+        addq.l  #4,sp
+        bra.w   BossStarLight_Delete
+.locret:
 		rts	

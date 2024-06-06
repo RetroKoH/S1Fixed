@@ -10,7 +10,7 @@ BossFinal:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	BossFinal_Index(pc,d0.w),d0
-		jmp	BossFinal_Index(pc,d0.w)
+		jmp		BossFinal_Index(pc,d0.w)
 ; ===========================================================================
 BossFinal_Index:
 		dc.w BossFinal_Main-BossFinal_Index
@@ -459,6 +459,7 @@ loc_1A248:
 		tst.b	obRender(a0)
 		bmi.s	loc_1A260
 		move.b	#id_Ending,(v_gamemode).w
+		addq.l	#4,sp						; Clownacy DisplaySprite Fix
 		bra.w	BossFinal_Delete
 ; ===========================================================================
 

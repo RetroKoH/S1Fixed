@@ -333,9 +333,9 @@ loc_185A2:
 ; ===========================================================================
 
 BossMarble_ShipDel:
-	if FixBugs
-		addq.l	#4,sp
-	endif
+		; Objects should not queue themselves for display
+		; while also being deleted.
+		addq.l	#4,sp			; Clownacy DisplaySprites Fix
 		jmp	(DeleteObject).l
 ; ===========================================================================
 

@@ -6,15 +6,10 @@ BossFire:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	BossFire_Index(pc,d0.w),d0
-	if FixBugs
-		; DisplaySprite has been moved to avoid a display-after-free bug.
-		jmp	BossFire_Index(pc,d0.w)
-	else
-		jsr	BossFire_Index(pc,d0.w)
-		jmp	(DisplaySprite).l
-	endif
+		jmp		BossFire_Index(pc,d0.w)		; DisplaySprite has been moved to avoid a display-after-free bug -- Clownacy DisplaySprite Fix
 ; ===========================================================================
-BossFire_Index:	dc.w BossFire_Main-BossFire_Index
+BossFire_Index:
+		dc.w BossFire_Main-BossFire_Index
 		dc.w BossFire_Action-BossFire_Index
 		dc.w loc_18886-BossFire_Index
 		dc.w BossFire_Delete3-BossFire_Index
@@ -40,30 +35,26 @@ BossFire_Main:	; Routine 0
 loc_1870A:
 		move.b	#$1E,objoff_29(a0)
 		move.w	#sfx_Fireball,d0
-		jsr	(PlaySound_Special).l	; play lava sound
+		jsr		(PlaySound_Special).l	; play lava sound
 
 BossFire_Action:	; Routine 2
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
 		move.w	BossFire_Index2(pc,d0.w),d0
-		jsr	BossFire_Index2(pc,d0.w)
-		jsr	(SpeedToPos).l
-		lea	(Ani_Fire).l,a1
-		jsr	(AnimateSprite).l
+		jsr		BossFire_Index2(pc,d0.w)
+		jsr		(SpeedToPos).l
+		lea		(Ani_Fire).l,a1
+		jsr		(AnimateSprite).l
 		cmpi.w	#boss_mz_y+$D8,obY(a0)
 		bhi.s	BossFire_Delete
-	if FixBugs
-		; DisplaySprite has been moved to avoid a display-after-free bug.
-		jmp	(DisplaySprite).l
-	else
-		rts	
-	endif
+		jmp		(DisplaySprite).l		; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 BossFire_Delete:
 		jmp	(DeleteObject).l
 ; ===========================================================================
-BossFire_Index2:	dc.w BossFire_Drop-BossFire_Index2
+BossFire_Index2:
+		dc.w BossFire_Drop-BossFire_Index2
 		dc.w BossFire_MakeFlame-BossFire_Index2
 		dc.w BossFire_Duplicate-BossFire_Index2
 		dc.w BossFire_FallEdge-BossFire_Index2
@@ -193,11 +184,9 @@ locret_1887E:
 ; ===========================================================================
 
 BossFire_Delete2:
-	if FixBugs
 		; Do not return to BossFire_Action, to avoid double-delete
 		; and display-and-delete bugs.
-		addq.l	#4,sp
-	endif
+		addq.l	#4,sp			; Clownacy DisplaySprite Fix
 		jmp	(DeleteObject).l
 ; ===========================================================================
 
@@ -211,13 +200,9 @@ loc_18886:	; Routine 4
 
 BossFire_Animate:
 		lea	(Ani_Fire).l,a1
-	if FixBugs
 		; DisplaySprite has been moved to avoid a display-after-free bug.
 		jsr	(AnimateSprite).l
-		jmp	(DisplaySprite).l
-	else
-		jmp	(AnimateSprite).l
-	endif
+		jmp	(DisplaySprite).l	; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 BossFire_Delete3:	; Routine 6

@@ -317,11 +317,9 @@ loc_18166:
 ; ===========================================================================
 
 BossLabyrinth_ShipDel:
-	if FixBugs
 		; Avoid returning to BossLabyrinth_ShipMain to prevent a
 		; display-and-delete bug.
-		addq.l	#4,sp
-	endif
+		addq.l	#4,sp			; Clownacy DisplaySprite Fix
 		jmp	(DeleteObject).l
 ; ===========================================================================
 

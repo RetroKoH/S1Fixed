@@ -55,18 +55,10 @@ BossStarLight_LoadBoss:
 		dbf	d1,BossStarLight_Loop	; repeat sequence 3 more times
 
 loc_1895C:
-	if FixBugs
-		lea	(v_lvlobjspace).w,a1
-	else
-		lea	(v_objspace+object_size*1).w,a1 ; Nonsensical starting point, since dynamic object allocations begin at v_lvlobjspace.
-	endif
-		lea	objoff_2A(a0),a2
+		lea		(v_lvlobjspace).w,a1							; FixBugs -- Formerly (v_objspace+object_size*1)
+		lea		objoff_2A(a0),a2
 		moveq	#id_Seesaw,d0
-	if FixBugs
-		moveq	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d1
-	else
-		moveq	#(v_objend-(v_objspace+object_size*1))/object_size/2-1,d1	; Nonsensical length, it only covers the first half of object RAM.
-	endif
+		moveq	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d1	; FixBugs: Normally only covered the first half of object RAM.
 
 loc_18968:
 		cmp.b	obID(a1),d0
@@ -225,16 +217,11 @@ BossStarLight_MakeBall:
 		subq.w	#2,d0
 		neg.w	d0
 		add.w	d0,d0
-		lea	objoff_2A(a0),a1
+		lea		objoff_2A(a0),a1
 		move.w	(a1,d0.w),d0
 		movea.l	d0,a2
-	if FixBugs
-		lea	(v_lvlobjspace).w,a1
-		moveq	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d1
-	else
-		lea	(v_objspace+object_size*1).w,a1 ; Nonsensical starting point, since dynamic object allocations begin at v_lvlobjspace.
-		moveq	#(v_objend-(v_objspace+object_size*1))/object_size/2-1,d1	; Nonsensical length, it only covers the first half of object RAM.
-	endif
+		lea		(v_lvlobjspace).w,a1							; FixBugs -- Formerly (v_objspace+object_size*1)
+		moveq	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d1	; FixBugs: Normally only covered the first half of object RAM.
 
 loc_18AFA:
 		cmp.l	objoff_3C(a1),d0
@@ -334,23 +321,17 @@ loc_18BC6:
 
 loc_18BE0:
 		tst.b	obRender(a0)
-	if FixBugs
-		bpl.s	BossStarLight_PopAndDelete
-	else
-		bpl.w	BossStarLight_Delete
-	endif
+		bpl.s	BossStarLight_PopAndDelete	; Clownacy DisplaySprite Fix
 
 loc_18BE8:
 		bsr.w	BossMove
 		bra.w	loc_189CA
 
-	if FixBugs
 BossStarLight_PopAndDelete:
 		; Avoid returning to BossStarLight_ShipMain to prevent a
 		; display-and-delete bug.
 		addq.l	#4,sp
 		bra.w	BossStarLight_Delete
-	endif
 ; ===========================================================================
 
 BossStarLight_FaceMain:	; Routine 4
