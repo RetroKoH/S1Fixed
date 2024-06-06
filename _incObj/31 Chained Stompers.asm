@@ -6,12 +6,13 @@ ChainStomp:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	CStom_Index(pc,d0.w),d1
-		jmp	CStom_Index(pc,d1.w)
+		jmp		CStom_Index(pc,d1.w)
 ; ===========================================================================
-CStom_Index:	dc.w CStom_Main-CStom_Index
+CStom_Index:
+		dc.w CStom_Main-CStom_Index
 		dc.w loc_B798-CStom_Index
 		dc.w loc_B7FE-CStom_Index
-		dc.w CStom_Display2-CStom_Index
+		dc.w CStom_ChkDel-CStom_Index
 		dc.w loc_B7E2-CStom_Index
 
 CStom_switch = objoff_3A			; switch number for the current stomper
@@ -36,7 +37,7 @@ CStom_Main:	; Routine 0
 		bpl.s	loc_B6CE
 		andi.w	#$7F,d0
 		add.w	d0,d0
-		lea	CStom_SwchNums(pc,d0.w),a2
+		lea		CStom_SwchNums(pc,d0.w),a2
 		move.b	(a2)+,CStom_switch(a0)
 		move.b	(a2)+,d0
 		move.b	d0,obSubtype(a0)
@@ -120,19 +121,14 @@ loc_B798:	; Routine 2
 		move.w	obX(a0),d4
 		bsr.w	SolidObject
 		btst	#3,obStatus(a0)
-		beq.s	CStom_Display
+		beq.s	CStom_ChkDel
 		cmpi.b	#$10,objoff_32(a0)
-		bhs.s	CStom_Display
+		bhs.s	CStom_ChkDel
 		movea.l	a0,a2
-		lea	(v_player).w,a0
-		jsr	(KillSonic).l
+		lea		(v_player).w,a0
+		jsr		(KillSonic).l
 		movea.l	a2,a0
-
-CStom_Display:
-	if ~~FixBugs
-		bsr.w	DisplaySprite
-	endif
-		bra.w	CStom_ChkDel
+		bra.s	CStom_ChkDel	; FixBugs: Clownacy DisplaySprites Fix
 ; ===========================================================================
 
 loc_B7E2:	; Routine 8
@@ -151,20 +147,9 @@ loc_B7FE:	; Routine 4
 		add.w	objoff_30(a0),d0
 		move.w	d0,obY(a0)
 
-CStom_Display2:	; Routine 6
-	if ~~FixBugs
-		bsr.w	DisplaySprite
-	endif
-
-CStom_ChkDel:
+CStom_ChkDel:	; Routine 6 (Replaced CStom_Display2 as that became a fallthrough)
 		out_of_range.w	DeleteObject
-	if FixBugs
-		; Objects shouldn't call DisplaySprite and DeleteObject on
-		; the same frame or else cause a null-pointer dereference.
-		bra.w	DisplaySprite
-	else
-		rts	
-	endif
+		bra.w	DisplaySprite	; FixBugs: Clownacy DisplaySprites Fix
 ; ===========================================================================
 
 CStom_Types:
