@@ -60,7 +60,7 @@
  Date: 2024-06-07
  
  Name: Optimized Object Movement
- Credit: Redhotsonic
+ Credit: Redhotsonic (and DeltaW w/ BossMove)
  Function: SpeedToPos and ObjectFall are optimized, working akin to their S3K iterations.
  Date: 2024-06-07
 
