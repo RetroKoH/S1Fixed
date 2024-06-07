@@ -7,29 +7,34 @@ ramaddr function x,(-(x&$80000000)<<1)|x
 	phase ramaddr ( $FFFF0000 )
 v_ram_start:
 
-v_128x128:		ds.b	$100*$80	; 128x128 tile mappings ($100 chunks)
+v_128x128:				ds.b	$100*$80		; 128x128 tile mappings ($100 chunks)
 v_128x128_end:
 
-v_lvllayout:		ds.b	$1000		; level and background layouts
-v_collision1:		ds.b	$300
-v_collision2:		ds.b	$300
+v_lvllayout:			ds.b	$1000			; level and background layouts
+v_collision1:			ds.b	$300
+v_collision2:			ds.b	$300
 
-			ds.b	$1200		; unused
-v_bgscroll_buffer:	ds.b	$200		; background scroll buffer
-v_ngfx_buffer:		ds.b	$200		; Nemesis graphics decompression buffer
+						ds.b	$1200			; unused
+
+v_bgscroll_buffer:		ds.b	$200			; background scroll buffer
+v_ngfx_buffer:			ds.b	$200			; Nemesis graphics decompression buffer
 v_ngfx_buffer_end:
-v_spritequeue:		ds.b	$400		; sprite display queue, in order of priority
-v_16x16:		ds.b	$1800		; 16x16 tile mappings
+v_spritequeue:			ds.b	$400			; sprite display queue, in order of priority
+v_16x16:				ds.b	$1800			; 16x16 tile mappings
 
-v_sgfx_buffer:		ds.b	$2E0		; buffered Sonic graphics ($17 cells)
-			ds.b	$20		; unused
-v_tracksonic:		ds.b	$100		; position tracking data for Sonic
-v_hscrolltablebuffer:	ds.b	$380		; scrolling table data
+; Flamewing/MarkeyJester improved DMA Queue
+v_vdp_comm_buffer:		ds.b	$FC				; buffer for DMA Queue replacing the old art buffer.
+v_vdp_comm_buffer_slot:	ds.b	$04				; stores the address of the next open slot for a queued VDP command
+
+						ds.b	$200			; unused (from $20 to $200)
+
+v_tracksonic:			ds.b	$100			; position tracking data for Sonic (CB00)
+v_hscrolltablebuffer:	ds.b	$380			; scrolling table data
 v_hscrolltablebuffer_end:
-			ds.b	$80		; would be unused, but data from v_hscrolltablebuffer can spill into here
+						ds.b	$80				; would be unused, but data from v_hscrolltablebuffer can spill into here
 v_hscrolltablebuffer_end_padded:
 
-v_objspace:		ds.b	object_size*$80	; object variable space ($40 bytes per object)
+v_objspace:				ds.b	object_size*$80	; object variable space ($40 bytes per object)
 
 ; Title screen objects
 v_sonicteam	= v_objspace+object_size*2	; object variable space for the "SONIC TEAM PRESENTS" text ($40 bytes)

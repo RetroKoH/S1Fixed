@@ -42,6 +42,11 @@
  Credit: MarkeyJester
  Function: Extends limits of animation, sprite mappings, and art tiles for Sonic (as well as animations for other objects)
  Date: 2024-06-05
+ 
+ Name: DMA Queue
+ Credit: Mercury (and SCHG)
+ Function: Uses a DMA queue to load Sonic's art, freeing RAM and allowing other dynamic art to function.
+ Date: 2024-06-07
 
 # Visual Changes
  Name: Title Screen Tweaks

@@ -554,13 +554,9 @@ VBla_08:
 
 		writeVRAM	v_hscrolltablebuffer,$380,vram_hscroll
 		writeVRAM	v_spritetablebuffer,$280,vram_sprites
-		tst.b	(f_sonframechg).w ; has Sonic's sprite changed?
-		beq.s	.nochg		; if not, branch
 
-		writeVRAM	v_sgfx_buffer,$2E0,ArtTile_Sonic*$20 ; load new Sonic gfx
-		move.b	#0,(f_sonframechg).w
+		jsr		(ProcessDMAQueue).l	; Mercury Use DMA Queue
 
-.nochg:
 		; removed Z80 macro
 		movem.l	(v_screenposx).w,d0-d7
 		movem.l	d0-d7,(v_screenposx_dup).w
@@ -604,13 +600,8 @@ VBla_0A:
 		; removed Z80 macro
 		bsr.w	PalCycle_SS
 		
-		tst.b	(f_sonframechg).w ; has Sonic's sprite changed?
-		beq.s	.nochg		; if not, branch
+		jsr		(ProcessDMAQueue).l	; Mercury Use DMA Queue
 
-		writeVRAM	v_sgfx_buffer,$2E0,ArtTile_Sonic*$20 ; load new Sonic gfx
-		move.b	#0,(f_sonframechg).w
-
-.nochg:
 	if DynamicSpecialStageWalls=1 ; Mercury Dynamic Special Stage Walls
 		cmpi.b	#96,(v_hbla_line).w
 		bcc.s	.update
@@ -645,12 +636,9 @@ VBla_0C:
 		move.w	(v_hbla_hreg).w,(a5)
 		writeVRAM	v_hscrolltablebuffer,$380,vram_hscroll
 		writeVRAM	v_spritetablebuffer,$280,vram_sprites
-		tst.b	(f_sonframechg).w
-		beq.s	.nochg
-		writeVRAM	v_sgfx_buffer,$2E0,ArtTile_Sonic*$20
-		move.b	#0,(f_sonframechg).w
+		
+		jsr		(ProcessDMAQueue).l	; Mercury Use DMA Queue
 
-.nochg:
 		; removed Z80 macro
 		movem.l	(v_screenposx).w,d0-d7
 		movem.l	d0-d7,(v_screenposx_dup).w
@@ -685,12 +673,8 @@ VBla_16:
 		writeVRAM	v_hscrolltablebuffer,$380,vram_hscroll
 		; removed Z80 macro
 		
-		tst.b	(f_sonframechg).w
-		beq.s	.nochg
-		writeVRAM	v_sgfx_buffer,$2E0,ArtTile_Sonic*$20
-		move.b	#0,(f_sonframechg).w
+		jsr		(ProcessDMAQueue).l	; Mercury Use DMA Queue
 
-.nochg:
 	if DynamicSpecialStageWalls=1 ; Mercury Dynamic Special Stage Walls
 		cmpi.b	#96,(v_hbla_line).w
 		bcc.s	.update
@@ -923,8 +907,6 @@ ClearScreen:
 		rts	
 ; End of function ClearScreen
 
-
-
 		include	"_incObj/sub PlaySound.asm"
 		include	"_inc/PauseGame.asm"
 
@@ -942,23 +924,23 @@ ClearScreen:
 
 
 TilemapToVRAM:
-		lea	(vdp_data_port).l,a6
+		lea		(vdp_data_port).l,a6
 		move.l	#$800000,d4
 
 Tilemap_Line:
-		move.l	d0,4(a6)	; move d0 to VDP_control_port
+		move.l	d0,4(a6)			; move d0 to VDP_control_port
 		move.w	d1,d3
 
 Tilemap_Cell:
-		move.w	(a1)+,(a6)	; write value to namespace
-		dbf	d3,Tilemap_Cell	; next tile
-		add.l	d4,d0		; goto next line
-		dbf	d2,Tilemap_Line	; next line
+		move.w	(a1)+,(a6)			; write value to namespace
+		dbf		d3,Tilemap_Cell		; next tile
+		add.l	d4,d0				; goto next line
+		dbf		d2,Tilemap_Line		; next line
 		rts	
 ; End of function TilemapToVRAM
 
+		include	"_inc/DMA Queue.asm"
 		include	"_inc/Nemesis Decompression.asm"
-
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to load pattern load cues (aka to queue pattern load requests)
@@ -2639,6 +2621,12 @@ Level_ClrRam:
 		move.w	#$8720,(a6)		; set background colour (line 3; colour 0)
 		move.w	#$8A00+223,(v_hbla_hreg).w ; set palette change position (for water)
 		move.w	(v_hbla_hreg).w,(a6)
+
+	; Mercury Use DMA Queue
+		clr.w	(v_vdp_comm_buffer).w
+		move.l	#v_vdp_comm_buffer,(v_vdp_comm_buffer_slot).w
+	; Use DMA Queue End
+
 		cmpi.b	#id_LZ,(v_zone).w ; is level LZ?
 		bne.s	Level_LoadPal	; if not, branch
 
@@ -3183,6 +3171,12 @@ loc_47D4:
 		lea	(Nem_TitleCard).l,a0 ; load title card patterns
 		bsr.w	NemDec
 		jsr	(Hud_Base).l
+
+	; Mercury Use DMA Queue
+		clr.w	(v_vdp_comm_buffer).w
+		move.l	#v_vdp_comm_buffer,(v_vdp_comm_buffer_slot).w
+	; Use DMA Queue End
+
 		enable_ints
 		moveq	#palid_SSResult,d0
 		bsr.w	PalLoad2	; load results screen palette
