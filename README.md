@@ -236,3 +236,8 @@
  Credit: Redhotsonic
  Function: Gives proper underwater physics to scattered rings.
  Date: 2024-06-07
+ 
+ Name: Buzz Bomber Missile Positioning Fix
+ Credit: Clownacy
+ Function: Positions the fired missile to be properly underneath the Buzz Bomber.
+ Date: 2024-06-07

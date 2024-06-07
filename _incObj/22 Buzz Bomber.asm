@@ -60,30 +60,26 @@ Buzz_Action:	; Routine 2
 .fire:
 		bsr.w	FindFreeObj
 		bne.s	.fail
-		_move.b	#id_Missile,obID(a1) ; load missile object
+		_move.b	#id_Missile,obID(a1)	; load missile object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		addi.w	#$1C,obY(a1)
-		move.w	#$200,obVelY(a1) ; move missile downwards
-		move.w	#$200,obVelX(a1) ; move missile to the right
-	if FixBugs
-		moveq	#$18-4,d0
-	else
-		move.w	#$18,d0
-	endif
-		btst	#0,obStatus(a0)	; is Buzz Bomber facing	left?
-		bne.s	.noflip2	; if not, branch
+		move.w	#$200,obVelY(a1)		; move missile downwards
+		move.w	#$200,obVelX(a1)		; move missile to the right
+		moveq	#$14,d0					; Clownacy positioning fix
+		btst	#0,obStatus(a0)			; is Buzz Bomber facing	left?
+		bne.s	.noflip2				; if not, branch
 		neg.w	d0
-		neg.w	obVelX(a1)	; move missile to the left
+		neg.w	obVelX(a1)				; move missile to the left
 
 .noflip2:
 		add.w	d0,obX(a1)
 		move.b	obStatus(a0),obStatus(a1)
 		move.w	#$E,buzz_timedelay(a1)
 		move.l	a0,buzz_parent(a1)
-		move.b	#1,buzz_buzzstatus(a0) ; set to "already fired" to prevent refiring
+		move.b	#1,buzz_buzzstatus(a0)	; set to "already fired" to prevent refiring
 		move.w	#59,buzz_timedelay(a0)
-		move.b	#2,obAnim(a0)	; use "firing" animation
+		move.b	#2,obAnim(a0)			; use "firing" animation
 
 .fail:
 		rts	
