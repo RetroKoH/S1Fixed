@@ -8,7 +8,8 @@ SpinPlatform:
 		move.w	Spin_Index(pc,d0.w),d1
 		jmp	Spin_Index(pc,d1.w)
 ; ===========================================================================
-Spin_Index:	dc.w Spin_Main-Spin_Index
+Spin_Index:
+		dc.w Spin_Main-Spin_Index
 		dc.w Spin_Trapdoor-Spin_Index
 		dc.w Spin_Spinner-Spin_Index
 
@@ -21,7 +22,7 @@ Spin_Main:	; Routine 0
 		move.l	#Map_Trap,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Trap_Door,2,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
-		move.b	#$80,obActWid(a0)
+		move.b	#$40,obActWid(a0)	; Ralakimus Trapdoor Glitch Fix
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
 		andi.w	#$F,d0

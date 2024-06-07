@@ -273,3 +273,8 @@
  Credit: Devon/Ralakimus
  Function: This fixes a minor bug with positioning. The plasma balls work as they do in the 2013 remake.
  Date: 2024-06-07
+
+ Name: SBZ Trapdoor Glitch Fix
+ Credit: Devon/Ralakimus
+ Function: This fixes a minor visual bug where trapdoor sprites can appear on-screen just before despawning.
+ Date: 2024-06-07
