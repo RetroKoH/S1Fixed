@@ -48,8 +48,10 @@
  Function: Uses a DMA queue to load Sonic's art, freeing RAM and allowing other dynamic art to function.
  Date: 2024-06-07
  
- Name: Sonic 2 Priority Manager
+ Name: Sonic 3K Priority Manager
  Credit: Redhotsonic
+ Function: Objects' Priority value is now a word instead of a byte, optimizing DisplaySprite considerably.
+ Date: 2024-06-07
 
 # Visual Changes
  Name: Title Screen Tweaks
