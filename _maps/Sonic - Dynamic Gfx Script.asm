@@ -1,6 +1,8 @@
 ; ---------------------------------------------------------------------------
 ; Uncompressed graphics	loading	array for Sonic
 ; ---------------------------------------------------------------------------
+dplcTiles := Art_Sonic
+
 SonicDynPLC_internal:	mappingsTable
 	mappingsTableEntry.w	SonPLC_Null
 	mappingsTableEntry.w	SonPLC_Stand
@@ -601,5 +603,7 @@ SonPLC_WaterSlide:	dplcHeader
 	dplcEntry	$10, $4F6
 	dplcEntry	3, $506
 SonPLC_WaterSlide_End
+
+dplcTiles := 0
 
 	even

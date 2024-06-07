@@ -43,8 +43,8 @@
  Function: Extends limits of animation, sprite mappings, and art tiles for Sonic (as well as animations for other objects)
  Date: 2024-06-05
  
- Name: DMA Queue
- Credit: Mercury (and SCHG)
+ Name: Ultra DMA Queue
+ Credit: Flamewing and MarkeyJester
  Function: Uses a DMA queue to load Sonic's art, freeing RAM and allowing other dynamic art to function.
  Date: 2024-06-07
 

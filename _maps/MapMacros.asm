@@ -71,6 +71,9 @@ __LABEL__ label *
 __LABEL___Begin label *
     endm
 
+; addendum made to the macro by MainMemory
+dplcTiles := 0
+
 dplcEntry macro tiles,offset
 	if SonicDplcVer=3
 	dc.w	((offset&$FFF)<<4)|((tiles-1)&$F)
@@ -79,4 +82,9 @@ dplcEntry macro tiles,offset
 	else
 	dc.w	(((tiles-1)&$F)<<12)|(offset&$FFF)
 	endif
+	if dplcTiles <> 0
+    if ((dplcTiles+(offset*$20))/131072) <> ((dplcTiles+(offset*$20)+(tiles*$20)-1)/131072)
+    message "Warning: DPLC crosses 128K boundary! line: \{MOMLINE/1.0} start: offset count: tiles overflow: $\{(dplcTiles+(offset*$20)+(tiles*$20))#131072}"
+    endif
+    endif
 	endm
