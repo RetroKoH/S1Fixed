@@ -253,3 +253,8 @@
  Credit: LuigiXHero
  Function: Fixes a minor gap on the left side of the water surface when pausing the game.
  Date: 2024-06-07
+
+ Name: Fixed Special Stage Jump Physics
+ Credit: Mercury
+ Function: Gives Sonic a variable jump height in the special stage.
+ Date: 2024-06-07
