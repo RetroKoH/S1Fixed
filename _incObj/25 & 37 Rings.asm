@@ -23,7 +23,8 @@ id_Ring_Delete = ptr_Ring_Delete-Ring_Index	; 8
 ; ---------------------------------------------------------------------------
 ; Distances between rings (format: horizontal, vertical)
 ; ---------------------------------------------------------------------------
-Ring_PosData:	dc.b $10, 0		; horizontal tight
+Ring_PosData:
+		dc.b $10, 0		; horizontal tight
 		dc.b $18, 0		; horizontal normal
 		dc.b $20, 0		; horizontal wide
 		dc.b 0,	$10		; vertical tight
@@ -81,11 +82,11 @@ Ring_MakeRings:
 		bne.s	loc_9C0E
 
 loc_9BBA:
-		_move.b	#id_Rings,obID(a1)	; load ring object
+		_move.b	#id_Rings,obID(a1)			; load ring object
 		addq.b	#2,obRoutine(a1)
-		move.w	d2,obX(a1)	; set x-axis position based on d2
+		move.w	d2,obX(a1)					; set x-axis position based on d2
 		move.w	obX(a0),objoff_32(a1)
-		move.w	d3,obY(a1)	; set y-axis position based on d3
+		move.w	d3,obY(a1)					; set y-axis position based on d3
 		move.l	#Map_Ring,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Ring,1,0),obGfx(a1)
 		move.b	#4,obRender(a1)
@@ -97,10 +98,10 @@ loc_9BBA:
 
 loc_9C02:
 		addq.w	#1,d1
-		add.w	d5,d2		; add ring spacing value to d2
-		add.w	d6,d3		; add ring spacing value to d3
+		add.w	d5,d2				; add ring spacing value to d2
+		add.w	d6,d3				; add ring spacing value to d3
 		swap	d1
-		dbf		d1,Ring_MakeRings ; repeat for	number of rings
+		dbf		d1,Ring_MakeRings	; repeat for number of rings
 
 loc_9C0E:
 		btst	#0,(a2)
@@ -150,7 +151,7 @@ CollectRing:
 
 .got100:
 	; Mercury Lives Over/Underflow Fix
-		cmpi.b	#99,(v_lives).w	; are lives at max?
+		cmpi.b	#99,(v_lives).w		; are lives at max?
 		beq.s	.playbgm
 		addq.b	#1,(v_lives).w		; add 1 to number of lives
 		addq.b	#1,(f_lifecount).w	; update the lives counter
@@ -171,7 +172,7 @@ RingLoss:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	RLoss_Index(pc,d0.w),d1
-		jmp	RLoss_Index(pc,d1.w)
+		jmp		RLoss_Index(pc,d1.w)
 ; ===========================================================================
 RLoss_Index:
 		dc.w RLoss_Count-RLoss_Index
@@ -186,9 +187,9 @@ RLoss_Count:	; Routine 0
 		moveq	#0,d5
 		move.w	(v_rings).w,d5	; check number of rings you have
 		moveq	#32,d0
-		cmp.w	d0,d5		; do you have 32 or more?
-		blo.s	.belowmax	; if not, branch
-		move.w	d0,d5		; if yes, set d5 to 32
+		cmp.w	d0,d5			; do you have 32 or more?
+		blo.s	.belowmax		; if not, branch
+		move.w	d0,d5			; if yes, set d5 to 32
 
 .belowmax:
 		subq.w	#1,d5
@@ -201,7 +202,7 @@ RLoss_Count:	; Routine 0
 		bne.w	.resetcounter
 
 .makerings:
-		_move.b	#id_RingLoss,obID(a1) ; load bouncing ring object
+		_move.b	#id_RingLoss,obID(a1)	; load bouncing ring object
 		addq.b	#2,obRoutine(a1)
 		move.b	#8,obHeight(a1)
 		move.b	#8,obWidth(a1)
@@ -210,7 +211,7 @@ RLoss_Count:	; Routine 0
 		move.l	#Map_Ring,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Ring,1,0),obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.w	#$180,obPriority(a1)		; RetroKoH S2 Priority Manager
+		move.w	#$180,obPriority(a1)	; RetroKoH S2 Priority Manager
 		move.b	#$47,obColType(a1)
 		move.b	#8,obActWid(a1)
 		tst.w	d4
@@ -292,14 +293,15 @@ RLoss_Bounce:	; Routine 2
 		beq.w	DeleteObject			; If 0, delete
 		; Ring Timers Fix End
 		; RHS Accidental Ring Deletion Fix
-		cmpi.w	#$FF00,(v_limittop2).w	; is vertical wrapping enabled? ; FFFFF72C
-		beq.w	DisplaySprite			; if so, branch
+		cmpi.w	#$FF00,(v_limittop2).w	; is vertical wrapping enabled?
+		beq.w	.chkflash				; if so, branch
 		; Accidental Ring Deletion Fix End
 		move.w	(v_limitbtm2).w,d0
 		addi.w	#$E0,d0
 		cmp.w	obY(a0),d0				; has object moved below level boundary?
 		blo.w	DeleteObject			; if yes, branch
 		; Mercury Ring Flashing Effect
+.chkflash:
 		btst	#0, obDelayAni(a0)		; Test the first bit of the timer, so rings flash every other frame.
 		beq.w	DisplaySprite			; If the bit is 0, the ring will appear.
 		cmpi.b	#80,obDelayAni(a0)		; Rings will flash during last 80 steps of their life.
