@@ -160,7 +160,7 @@ loc_1A9C0:
 		sub.w	objoff_30(a0),d0
 		bcc.s	loc_1A9E6
 		clr.w	obVelX(a0)
-		add.w	d0,obX(a0)
+		sub.w	d0,obX(a0)			; Ralakimus Plasma Ball Fix
 		movea.l	objoff_34(a0),a1
 		subq.w	#1,objoff_32(a1)
 
