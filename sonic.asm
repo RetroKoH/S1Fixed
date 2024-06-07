@@ -356,6 +356,7 @@ GameInit:
 		move.l	d7,(a6)+
 		dbf	d6,.clearRAM	; clear RAM ($0000-$FDFF)
 
+		jsr 	(InitDMAQueue).l	; Flamewing Ultra DMA Queue
 		bsr.w	VDPSetupGame
 		; Removed call to old Sound Driver
 		bsr.w	JoypadInit
@@ -2623,8 +2624,7 @@ Level_ClrRam:
 		move.w	(v_hbla_hreg).w,(a6)
 
 	; Mercury Use DMA Queue
-		clr.w	(v_vdp_comm_buffer).w
-		move.l	#v_vdp_comm_buffer,(v_vdp_comm_buffer_slot).w
+		ResetDMAQueue
 	; Use DMA Queue End
 
 		cmpi.b	#id_LZ,(v_zone).w ; is level LZ?
@@ -3051,6 +3051,9 @@ GM_Special:
 		move.w	(v_vdp_buffer1).w,d0
 		andi.b	#$BF,d0
 		move.w	d0,(vdp_control_port).l
+		
+		ResetDMAQueue		; Flamewing Ultra DMA Queue
+		
 		bsr.w	ClearScreen
 		enable_ints
 		fillVRAM	0,$7000,$5000
@@ -3173,8 +3176,7 @@ loc_47D4:
 		jsr	(Hud_Base).l
 
 	; Mercury Use DMA Queue
-		clr.w	(v_vdp_comm_buffer).w
-		move.l	#v_vdp_comm_buffer,(v_vdp_comm_buffer_slot).w
+		ResetDMAQueue
 	; Use DMA Queue End
 
 		enable_ints
