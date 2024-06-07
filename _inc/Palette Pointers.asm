@@ -11,7 +11,9 @@ PalPointers:
 
 ; palette address, RAM address, colours
 
-; Removed the SEGA palette (RetroKoH)
+	if FadeInSEGA = 0
+ptr_Pal_SegaBG:		palp	Pal_SegaBG,v_pal_dry,$40		; Sega logo palette
+	endif
 ptr_Pal_Title:		palp	Pal_Title,v_pal_dry,$20			; 0 - title screen -- RetroKoH Title Screen Adjustment
 ptr_Pal_LevelSel:	palp	Pal_LevelSel,v_pal_dry,$40		; 1 - level select
 ptr_Pal_Sonic:		palp	Pal_Sonic,v_pal_dry,$10			; 2 - Sonic
@@ -35,6 +37,9 @@ ptr_Pal_Continue:	palp	Pal_Continue,v_pal_dry,$20		; $11 (17) - special stage re
 ptr_Pal_Ending:		palp	Pal_Ending,v_pal_dry,$40		; $12 (18) - ending sequence
 			even
 
+	if FadeInSEGA = 0
+palid_SegaBG:		equ	(ptr_Pal_SegaBG-PalPointers)/8
+	endif
 palid_Title:		equ (ptr_Pal_Title-PalPointers)/8
 palid_LevelSel:		equ (ptr_Pal_LevelSel-PalPointers)/8
 palid_Sonic:		equ (ptr_Pal_Sonic-PalPointers)/8

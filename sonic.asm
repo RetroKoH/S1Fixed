@@ -34,6 +34,7 @@ zeroOffsetOptimization = 0	; if 1, makes a handful of zero-offset instructions s
 DebugPathSwappers: = 1
 DynamicSpecialStageWalls: = 1
 SmoothSpecialStages: = 1
+FadeInSEGA: = 1
 
 ; ===========================================================================
 
@@ -1814,7 +1815,9 @@ PalLoad4_Water:
 ; ---------------------------------------------------------------------------
 ; Palette data
 ; ---------------------------------------------------------------------------
-; Removed SEGA BG palette (RetroKoH)
+	if FadeInSEGA = 0
+Pal_SegaBG:		binclude	"palette/Sega Background.bin"
+	endif
 Pal_Title:		binclude	"palette/Title Screen.bin"
 Pal_LevelSel:	binclude	"palette/Level Select.bin"
 Pal_Sonic:		binclude	"palette/Sonic.bin"
@@ -1897,6 +1900,7 @@ GM_Sega:
 
 .loadpal:
 	; RetroKoH Fade In SEGA background
+	if FadeInSEGA = 1
 		lea		(v_pal_dry_dup).l,a3
 		moveq	#$3F,d7
 
@@ -1905,6 +1909,10 @@ GM_Sega:
 		dbf		d7,.loop
 
 		bsr.w	PaletteFadeIn
+	else
+		moveq	#palid_SegaBG,d0
+		bsr.w	PalLoad2						; load Sega logo palette
+	endif
 	; Fade In SEGA Background End
 		move.w	#-$A,(v_pcyc_num).w
 		move.w	#0,(v_pcyc_time).w

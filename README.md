@@ -15,6 +15,12 @@
  Date: 2024-06-04
  Modifies: sonic.asm, _maps\SS Walls.asm, _inc\Pattern Load Cues.asm, 09 Sonic in Special Stage.asm
  Variables: DynamicSpecialStageWalls, SmoothSpecialStages
+ 
+ Name: Fade-In SEGA Screen
+ Credit: RetroKoH
+ Function: Causes the SEGA Screen to fade in, instead of just popping in.
+ Date: 2024-06-06
+ Variable: FadeInSEGA
 
 # Under-the-Hood Changes/Overhauls
  Name: 128x128 Chunk Format
@@ -217,8 +223,3 @@
  Function: Faster Checksum check
  Date: 2024-06-06
  Note: I don't remember WHERE I saw MJ post this... and I'll revisit this later, but I imported it from my old ROM hack project.
-
- Name: Fade-In SEGA Screen
- Credit: RetroKoH
- Function: The SEGA Screen now fades in.
- Date: 2024-06-06
