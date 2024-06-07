@@ -258,3 +258,8 @@
  Credit: Mercury
  Function: Gives Sonic a variable jump height in the special stage.
  Date: 2024-06-07
+
+ Name: Proper Push Sensors While Rolling
+ Credit: Devon/Ralakimus
+ Function: Sonic's push sensors will be adjusted properly while rolling, much as they are while walking/running.
+ Date: 2024-06-07

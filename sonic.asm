@@ -7128,12 +7128,16 @@ loc_14D24:
 		andi.b	#$38,d1
 		bne.s	loc_14D3C
 		addq.w	#8,d2
+	; Ralakimus Rolling Push Sensor Fix
+		btst	#2,obStatus(a0)		; Is Sonic rolling?
+		beq.s	loc_14D3C			; If not, branch
+		subq.w	#5,d2				; If so, move push sensor up a bit
+	; Rolling Push Sensor Fix End
 
 loc_14D3C:
 		cmpi.b	#$40,d0
 		beq.w	loc_1504A
 		bra.w	loc_14EBC
-
 ; End of function Sonic_WalkSpeed
 
 
