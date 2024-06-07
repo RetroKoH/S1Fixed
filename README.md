@@ -22,7 +22,7 @@
  Date: 2024-06-06
  Variable: FadeInSEGA
 
-# Under-the-Hood Changes/Overhauls
+# Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format
  Credit: Clownacy
  Function: Layout Chunks are now 128x128 in size, akin to Sonic 2 and Sonic 3K
@@ -42,6 +42,12 @@
  Credit: MarkeyJester
  Function: Extends limits of animation, sprite mappings, and art tiles for Sonic (as well as animations for other objects)
  Date: 2024-06-05
+
+ Name: Faster CheckSum Check
+ Credit: MarkeyJester
+ Function: Faster Checksum check
+ Date: 2024-06-06
+ Note: I don't remember WHERE I saw MJ post this... and I'll revisit this later, but I imported it from my old ROM hack project.
  
  Name: Ultra DMA Queue
  Credit: Flamewing and MarkeyJester
@@ -51,6 +57,11 @@
  Name: Sonic 3K Priority Manager
  Credit: Redhotsonic
  Function: Objects' Priority value is now a word instead of a byte, optimizing DisplaySprite considerably.
+ Date: 2024-06-07
+ 
+ Name: Optimized Object Movement
+ Credit: Redhotsonic
+ Function: SpeedToPos and ObjectFall are optimized, working akin to their S3K iterations.
  Date: 2024-06-07
 
 # Visual Changes
@@ -227,12 +238,6 @@
  Credit: Clownacy
  Function: Fixes an absolute mess of a bug that can occur if using newer mappings formats.
  Date: 2024-06-06
- 
- Name: Faster CheckSum Check
- Credit: MarkeyJester
- Function: Faster Checksum check
- Date: 2024-06-06
- Note: I don't remember WHERE I saw MJ post this... and I'll revisit this later, but I imported it from my old ROM hack project.
 
  Name: Fix Scattered Rings Underwater Physics
  Credit: Redhotsonic
