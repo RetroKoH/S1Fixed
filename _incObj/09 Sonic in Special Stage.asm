@@ -214,7 +214,7 @@ Obj09_Jump:
 		move.b	(v_ssangle).w,d0
 
 	if SmoothSpecialStages=0	; Cinossu Smooth Special Stages
-		andi.b	#$FC,d0		; This is removed in block rotation. Should I remove here too?
+		andi.b	#$FC,d0
 	endif						; Smooth Special Stages End
 
 		neg.b	d0
@@ -243,19 +243,6 @@ nullsub_2:
 ; End of function nullsub_2
 
 ; ===========================================================================
-; ---------------------------------------------------------------------------
-; unused subroutine to limit Sonic's upward vertical speed
-; ---------------------------------------------------------------------------
-		move.w	#-$400,d1
-		cmp.w	obVelY(a0),d1
-		ble.s	locret_1BBB4
-		move.b	(v_jpadhold2).w,d0
-		andi.b	#btnABC,d0
-		bne.s	locret_1BBB4
-		move.w	d1,obVelY(a0)
-
-locret_1BBB4:
-		rts	
 ; ---------------------------------------------------------------------------
 ; Subroutine to	fix the	camera on Sonic's position (special stage)
 ; ---------------------------------------------------------------------------
@@ -327,8 +314,12 @@ Obj09_Fall:
 		move.l	obY(a0),d2
 		move.l	obX(a0),d3
 		move.b	(v_ssangle).w,d0
+
+	if SmoothSpecialStages=0	; Cinossu Smooth Special Stages
 		andi.b	#$FC,d0
-		jsr	(CalcSine).l
+	endif						; Smooth Special Stages End
+
+		jsr		(CalcSine).l
 		move.w	obVelX(a0),d4
 		ext.l	d4
 		asl.l	#8,d4
