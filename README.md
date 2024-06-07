@@ -263,3 +263,8 @@
  Credit: Devon/Ralakimus
  Function: Sonic's push sensors will be adjusted properly while rolling, much as they are while walking/running.
  Date: 2024-06-07
+
+ Name: Proper Detection of Invisible Solid Barriers
+ Credit: Devon/Ralakimus
+ Function: This resolves the bugs in MZ and SBZ1 where you can duck through invisible solids while on a solid object.
+ Date: 2024-06-07

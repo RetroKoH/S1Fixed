@@ -29,7 +29,7 @@ Invis_Main:	; Routine 0
 		move.b	d1,obHeight(a0) ; set object height
 
 Invis_Solid:	; Routine 2
-		bsr.w	ChkObjectVisible
+		bsr.w	ChkSizedObjVisible		; Ralakimus Checking For Solids Fix
 		bne.s	.chkdel
 		moveq	#0,d1
 		move.b	obActWid(a0),d1
@@ -45,7 +45,7 @@ Invis_Solid:	; Routine 2
 		out_of_range.s	.delete
 		tst.w	(v_debuguse).w	; are you using	debug mode?
 		beq.s	.nodisplay	; if not, branch
-		jmp	(DisplaySprite).l	; if yes, display the object
+		jmp		(DisplaySprite).l	; if yes, display the object
 
 .nodisplay:
 		rts	
