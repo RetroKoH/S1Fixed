@@ -19,7 +19,7 @@ Rock_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_GHZ_Purple_Rock,3,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.b	#$13,obActWid(a0)
-		move.b	#4,obPriority(a0)
+		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
 
 Rock_Solid:	; Routine 2
 		move.w	#$1B,d1

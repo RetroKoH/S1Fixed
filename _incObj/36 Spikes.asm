@@ -27,7 +27,7 @@ Spik_Main:	; Routine 0
 		move.l	#Map_Spike,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Spikes,0,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
-		move.b	#4,obPriority(a0)
+		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	obSubtype(a0),d0
 		andi.b	#$F,obSubtype(a0)
 		andi.w	#$F0,d0

@@ -32,7 +32,7 @@ ESon_Main2:
 		move.w	#make_art_tile(ArtTile_Ending_Sonic,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		clr.b	obStatus(a0)
-		move.b	#2,obPriority(a0)
+		move.w	#$100,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#0,obFrame(a0)
 		move.w	#80,eson_time(a0) ; set duration for Sonic to pause
 
@@ -103,7 +103,7 @@ Obj87_Leap:	; Routine $10
 		move.w	#make_art_tile(ArtTile_Ending_Sonic,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		clr.b	obStatus(a0)
-		move.b	#2,obPriority(a0)
+		move.w	#$100,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#5,obFrame(a0)
 		move.b	#2,obAnim(a0)	; use "leaping"	animation
 		move.b	#id_EndSTH,(v_endlogo).w ; load "SONIC THE HEDGEHOG" object

@@ -25,7 +25,7 @@ Hel_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_GHZ_Spike_Pole,2,0),obGfx(a0)
 		move.b	#7,obStatus(a0)
 		move.b	#4,obRender(a0)
-		move.b	#3,obPriority(a0)
+		move.w	#$180,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#8,obActWid(a0)
 		move.w	obY(a0),d2
 		move.w	obX(a0),d3
@@ -58,7 +58,7 @@ Hel_Build:
 		move.l	obMap(a0),obMap(a1)
 		move.w	#make_art_tile(ArtTile_GHZ_Spike_Pole,2,0),obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.b	#3,obPriority(a1)
+		move.w	#$180,obPriority(a1)	; RetroKoH S2 Priority Manager
 		move.b	#8,obActWid(a1)
 		move.b	d6,hel_frame(a1)
 		addq.b	#1,d6

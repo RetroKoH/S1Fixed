@@ -22,7 +22,7 @@ CSon_Main:	; Routine 0
 		move.l	#Map_Sonic,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Sonic,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.b	#2,obPriority(a0)
+		move.w	#$100,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#id_Float3,obAnim(a0) ; use "floating" animation
 		move.w	#$400,obVelY(a0) ; make Sonic fall from above
 

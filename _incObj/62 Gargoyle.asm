@@ -22,7 +22,7 @@ Gar_Main:	; Routine 0
 		move.l	#Map_Gar,obMap(a0)
 		move.w	#make_art_tile(ArtTile_LZ_Gargoyle,2,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
-		move.b	#3,obPriority(a0)
+		move.w	#$180,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#$10,obActWid(a0)
 		move.b	obSubtype(a0),d0 ; get object type
 		andi.w	#$F,d0		; read only the	2nd digit
@@ -57,7 +57,7 @@ Gar_FireBall:	; Routine 4
 		move.l	#Map_Gar,obMap(a0)
 		move.w	#make_art_tile(ArtTile_LZ_Gargoyle,0,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
-		move.b	#4,obPriority(a0)
+		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#$98,obColType(a0)
 		move.b	#8,obActWid(a0)
 		move.b	#2,obFrame(a0)

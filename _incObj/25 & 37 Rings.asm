@@ -89,7 +89,7 @@ loc_9BBA:
 		move.l	#Map_Ring,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Ring,1,0),obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.b	#2,obPriority(a1)
+		move.w	#$100,obPriority(a1)		; RetroKoH S2 Priority Manager
 		move.b	#$47,obColType(a1)
 		move.b	#8,obActWid(a1)
 		move.b	obRespawnNo(a0),obRespawnNo(a1)
@@ -115,7 +115,7 @@ Ring_Animate:	; Routine 2
 Ring_Collect:	; Routine 4
 		addq.b	#2,obRoutine(a0)
 		move.b	#0,obColType(a0)
-		move.b	#1,obPriority(a0)
+		move.w	#$80,obPriority(a0)		; RetroKoH S2 Priority Manager
 		bsr.w	CollectRing
 		lea	(v_objstate).w,a2
 		moveq	#0,d0
@@ -210,7 +210,7 @@ RLoss_Count:	; Routine 0
 		move.l	#Map_Ring,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Ring,1,0),obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.b	#3,obPriority(a1)
+		move.w	#$180,obPriority(a1)		; RetroKoH S2 Priority Manager
 		move.b	#$47,obColType(a1)
 		move.b	#8,obActWid(a1)
 		tst.w	d4
@@ -221,7 +221,7 @@ RLoss_Count:	; Routine 0
 		lsr.w	#8,d2
 	; RHS Underwater Rings Physics Fix
 		tst.b	(f_water).w			; Does the level have water?
-		beq.s	@skiphalvingvel		; If not, branch and skip underwater checks
+		beq.s	.skiphalvingvel		; If not, branch and skip underwater checks
 		move.w	(v_waterpos1).w,d6	; Move water level to d6
 		cmp.w	obY(a0),d6			; Is the ring object underneath the water level?
 		bgt.s	.skiphalvingvel		; If not, branch and skip underwater commands
@@ -311,7 +311,7 @@ RLoss_Bounce:	; Routine 2
 RLoss_Collect:	; Routine 4
 		addq.b	#2,obRoutine(a0)
 		move.b	#0,obColType(a0)
-		move.b	#1,obPriority(a0)
+		move.w	#$80,obPriority(a0)		; RetroKoH S2 Priority Manager
 		bsr.w	CollectRing
 
 RLoss_Sparkle:	; Routine 6

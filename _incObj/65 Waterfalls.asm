@@ -21,9 +21,9 @@ WFall_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_LZ_Splash,2,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
 		move.b	#$18,obActWid(a0)
-		move.b	#1,obPriority(a0)
-		move.b	obSubtype(a0),d0 ; get object type
-		bpl.s	.under80	; branch if $00-$7F
+		move.w	#$80,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.b	obSubtype(a0),d0	; get object type
+		bpl.s	.under80			; branch if $00-$7F
 		bset	#7,obGfx(a0)
 
 .under80:
@@ -32,7 +32,7 @@ WFall_Main:	; Routine 0
 		cmpi.b	#9,d0		; is object type $x9 ?
 		bne.s	WFall_ChkDel	; if not, branch
 
-		clr.b	obPriority(a0)	; object is in front of Sonic
+		clr.w	obPriority(a0)	; object is in front of Sonic -- RetroKoH S2 Priority Manager
 		subq.b	#2,obRoutine(a0) ; goto WFall_Animate next
 		btst	#6,obSubtype(a0) ; is object type $49 ?
 		beq.s	.not49		; if not, branch

@@ -21,12 +21,12 @@ Saw_Main:	; Routine 0
 		move.l	#Map_Saw,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Saw,2,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.b	#4,obPriority(a0)
+		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#$20,obActWid(a0)
 		move.w	obX(a0),saw_origX(a0)
 		move.w	obY(a0),saw_origY(a0)
-		cmpi.b	#3,obSubtype(a0) ; is object a ground saw?
-		bhs.s	Saw_Action	; if yes, branch
+		cmpi.b	#3,obSubtype(a0)		; is object a ground saw?
+		bhs.s	Saw_Action				; if yes, branch
 		move.b	#$A2,obColType(a0)
 
 Saw_Action:	; Routine 2
@@ -35,9 +35,9 @@ Saw_Action:	; Routine 2
 		andi.w	#7,d0
 		add.w	d0,d0
 		move.w	.index(pc,d0.w),d1
-		jsr	.index(pc,d1.w)
+		jsr		.index(pc,d1.w)
 		out_of_range.s	.delete,saw_origX(a0)
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 
 .delete:
 		jmp	(DeleteObject).l
@@ -107,7 +107,7 @@ Saw_Action:	; Routine 2
 		cmpi.b	#$18,d0
 		bne.s	.nosound02
 		move.w	#sfx_Saw,d0
-		jsr	(PlaySound_Special).l		; play saw sound
+		jsr		(PlaySound_Special).l		; play saw sound
 
 .nosound02:
 		rts	
@@ -134,7 +134,7 @@ Saw_Action:	; Routine 2
 		move.b	#$A2,obColType(a0)
 		move.b	#2,obFrame(a0)
 		move.w	#sfx_Saw,d0
-		jsr	(PlaySound_Special).l		; play saw sound
+		jsr		(PlaySound_Special).l		; play saw sound
 
 .nosaw03x:
 		addq.l	#4,sp
@@ -144,7 +144,7 @@ Saw_Action:	; Routine 2
 ; ===========================================================================
 
 .here03:
-		jsr	(SpeedToPos).l
+		jsr		(SpeedToPos).l
 		move.w	obX(a0),saw_origX(a0)
 		subq.b	#1,obTimeFrame(a0)
 		bpl.s	.sameframe03

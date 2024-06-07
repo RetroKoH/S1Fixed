@@ -17,7 +17,7 @@ MDis_Main:	; Routine 0
 		move.l	#Map_MisDissolve,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Missile_Disolve,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.b	#1,obPriority(a0)
+		move.w	#$80,obPriority(a0)		; RetroKoH S2 Priority Manager
 		move.b	#0,obColType(a0)
 		move.b	#$C,obActWid(a0)
 		move.b	#9,obTimeFrame(a0)
@@ -66,7 +66,7 @@ ExItem_Main:	; Routine 2
 		move.l	#Map_ExplodeItem,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Explosion,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.b	#1,obPriority(a0)
+		move.w	#$80,obPriority(a0)		; RetroKoH S2 Priority Manager
 		move.b	#0,obColType(a0)
 		move.b	#$C,obActWid(a0)
 		move.b	#7,obTimeFrame(a0) ; set frame duration to 7 frames
@@ -104,10 +104,10 @@ ExBom_Main:	; Routine 0
 		move.l	#Map_ExplodeBomb,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Explosion,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.b	#1,obPriority(a0)
+		move.w	#$80,obPriority(a0)		; RetroKoH S2 Priority Manager
 		move.b	#0,obColType(a0)
 		move.b	#$C,obActWid(a0)
 		move.b	#7,obTimeFrame(a0)
 		move.b	#0,obFrame(a0)
 		move.w	#sfx_Bomb,d0
-		jmp	(PlaySound_Special).l	; play exploding bomb sound
+		jmp		(PlaySound_Special).l	; play exploding bomb sound

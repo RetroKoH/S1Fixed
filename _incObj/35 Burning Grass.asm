@@ -22,11 +22,11 @@ GFire_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_MZ_Fireball,0,0),obGfx(a0)
 		move.w	obX(a0),gfire_origX(a0)
 		move.b	#4,obRender(a0)
-		move.b	#1,obPriority(a0)
+		move.w	#$80,obPriority(a0)		; RetroKoH S2 Priority Manager
 		move.b	#$8B,obColType(a0)
 		move.b	#8,obActWid(a0)
 		move.w	#sfx_Burning,d0
-		jsr	(PlaySound_Special).l	 ; play burning sound
+		jsr	(PlaySound_Special).l	 	; play burning sound
 		tst.b	obSubtype(a0)
 		beq.s	loc_B238
 		addq.b	#2,obRoutine(a0)

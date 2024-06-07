@@ -7,7 +7,7 @@ DrownCount:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Drown_Index(pc,d0.w),d1
-		jmp	Drown_Index(pc,d1.w)
+		jmp		Drown_Index(pc,d1.w)
 ; ===========================================================================
 Drown_Index:
 ptr_Drown_Main:			dc.w Drown_Main-Drown_Index
@@ -38,9 +38,9 @@ Drown_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_LZ_Bubbles,0,1),obGfx(a0)
 		move.b	#$84,obRender(a0)
 		move.b	#$10,obActWid(a0)
-		move.b	#1,obPriority(a0)
-		move.b	obSubtype(a0),d0	; get bubble type
-		bpl.s	.smallbubble		; branch if $00-$7F
+		move.w	#$80,obPriority(a0)		; RetroKoH S2 Priority Manager
+		move.b	obSubtype(a0),d0		; get bubble type
+		bpl.s	.smallbubble			; branch if $00-$7F
 
 		addq.b	#8,obRoutine(a0)	; goto Drown_Countdown next
 		move.l	#Map_Drown,obMap(a0)

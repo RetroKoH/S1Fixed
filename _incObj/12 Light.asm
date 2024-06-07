@@ -18,7 +18,7 @@ Light_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Level,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.b	#$10,obActWid(a0)
-		move.b	#6,obPriority(a0)
+		move.w	#$300,obPriority(a0)	; RetroKoH S2 Priority Manager
 
 Light_Animate:	; Routine 2
 		subq.b	#1,obTimeFrame(a0)

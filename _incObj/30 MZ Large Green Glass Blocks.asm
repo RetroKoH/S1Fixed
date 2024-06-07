@@ -63,13 +63,13 @@ Glass_Main:	; Routine 0
 		move.w	obY(a1),objoff_30(a1)
 		move.b	obSubtype(a0),obSubtype(a1)
 		move.b	#$20,obActWid(a1)
-		move.b	#4,obPriority(a1)
+		move.w	#$200,obPriority(a1)		; RetroKoH S2 Priority Manager
 		move.b	(a2)+,obFrame(a1)
 		move.l	a0,glass_parent(a1)
 		dbf	d1,.Repeat	; repeat once to load "reflection object"
 
 		move.b	#$10,obActWid(a1)
-		move.b	#3,obPriority(a1)
+		move.w	#$180,obPriority(a1)		; RetroKoH S2 Priority Manager
 		addq.b	#8,obSubtype(a1)
 		andi.b	#$F,obSubtype(a1)
 

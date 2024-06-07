@@ -18,7 +18,7 @@ Bas_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Basaran,0,1),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.b	#$C,obHeight(a0)
-		move.b	#2,obPriority(a0)
+		move.w	#$100,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#$B,obColType(a0)
 		move.b	#$10,obActWid(a0)
 

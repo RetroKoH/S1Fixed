@@ -29,7 +29,7 @@ Sign_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Signpost,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.b	#$18,obActWid(a0)
-		move.b	#4,obPriority(a0)
+		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
 
 Sign_Touch:	; Routine 2
 		move.w	(v_player+obX).w,d0
@@ -80,7 +80,7 @@ Sign_Spin:	; Routine 4
 		move.l	#Map_Ring,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Ring,1,0),obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.b	#2,obPriority(a1)
+		move.w	#$100,obPriority(a1)	; RetroKoH S2 Priority Manager
 		move.b	#8,obActWid(a1)
 
 .fail:

@@ -65,11 +65,15 @@ BossFinal_LoadBoss:
 		move.b	(a3)+,obRoutine(a1)
 		move.b	(a3)+,obAnim(a1)
 		move.b	(a3)+,obPriority(a1)
-		if Revision=0
-		move.b	(a3)+,obWidth(a1)
-		else
-			move.b	(a3)+,obActWid(a1)
-		endif
+
+	; RetroKoH S2 Priority Manager
+		move.w  obPriority(a1),d0
+		lsr.w   #1,d0
+		andi.w  #$380,d0
+		move.w  d0,obPriority(a1)
+	; S2 Priority Manager End
+
+		move.b	(a3)+,obActWid(a1)
 		move.b	(a3)+,obHeight(a1)
 		move.b	#4,obRender(a1)
 		bset	#7,obRender(a0)
@@ -529,7 +533,7 @@ loc_1A312:
 		tst.b	obRender(a0)
 		bpl.w	BossFinal_Delete
 		bsr.w	BossDefeated
-		move.b	#2,obPriority(a0)
+		move.w	#$100,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#0,obAnim(a0)
 		move.l	#Map_FZDamaged,obMap(a0)
 		move.w	#make_art_tile(ArtTile_FZ_Eggman_Fleeing,0,0),obGfx(a0)

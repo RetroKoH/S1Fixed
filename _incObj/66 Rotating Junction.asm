@@ -32,7 +32,7 @@ Jun_Main:	; Routine 0
 		addq.b	#4,obRoutine(a1) ; goto Jun_Display next
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		move.b	#3,obPriority(a1)
+		move.w	#$180,obPriority(a1)	; RetroKoH S2 Priority Manager
 		move.b	#$10,obFrame(a1) ; use large circular sprite
 
 .makeitem:
@@ -45,7 +45,7 @@ Jun_Main:	; Routine 0
 		dbf	d1,.repeat
 
 		move.b	#$30,obActWid(a0)
-		move.b	#4,obPriority(a0)
+		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.w	#$3C,objoff_30(a0)
 		move.b	#1,jun_frame(a0)
 		move.b	obSubtype(a0),jun_switch(a0)

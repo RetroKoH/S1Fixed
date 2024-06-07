@@ -17,7 +17,7 @@ Shi_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Shield,obMap(a0)
 		move.b	#4,obRender(a0)
-		move.b	#1,obPriority(a0)
+		move.w	#$80,obPriority(a0)		; RetroKoH S2 Priority Manager
 		move.b	#$10,obActWid(a0)
 		tst.b	obAnim(a0)	; is object a shield?
 		bne.s	.stars		; if not, branch

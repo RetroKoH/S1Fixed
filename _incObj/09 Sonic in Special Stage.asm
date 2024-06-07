@@ -13,9 +13,10 @@ Obj09_Normal:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Obj09_Index(pc,d0.w),d1
-		jmp	Obj09_Index(pc,d1.w)
+		jmp		Obj09_Index(pc,d1.w)
 ; ===========================================================================
-Obj09_Index:	dc.w Obj09_Main-Obj09_Index
+Obj09_Index:
+		dc.w Obj09_Main-Obj09_Index
 		dc.w Obj09_ChkDebug-Obj09_Index
 		dc.w Obj09_ExitStage-Obj09_Index
 		dc.w Obj09_Exit2-Obj09_Index
@@ -28,7 +29,7 @@ Obj09_Main:	; Routine 0
 		move.l	#Map_Sonic,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Sonic,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.b	#0,obPriority(a0)
+		clr.w	obPriority(a0)		; RetroKoH S2 Priority Manager
 		move.b	#id_Roll,obAnim(a0)
 		bset	#2,obStatus(a0)
 		bset	#1,obStatus(a0)
@@ -46,9 +47,9 @@ Obj09_NoDebug:
 		move.b	obStatus(a0),d0
 		andi.w	#2,d0
 		move.w	Obj09_Modes(pc,d0.w),d1
-		jsr	Obj09_Modes(pc,d1.w)
-		jsr	(Sonic_LoadGfx).l
-		jmp	(DisplaySprite).l
+		jsr		Obj09_Modes(pc,d1.w)
+		jsr		(Sonic_LoadGfx).l
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 Obj09_Modes:	dc.w Obj09_OnWall-Obj09_Modes
 		dc.w Obj09_InAir-Obj09_Modes

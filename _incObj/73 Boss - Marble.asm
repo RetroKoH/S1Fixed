@@ -46,6 +46,14 @@ BossMarble_LoadBoss:
 		move.b	(a2)+,obRoutine(a1)
 		move.b	(a2)+,obAnim(a1)
 		move.b	(a2)+,obPriority(a1)
+
+	; RetroKoH S2 Priority Manager
+		move.w  obPriority(a1),d0
+		lsr.w   #1,d0
+		andi.w  #$380,d0
+		move.w  d0,obPriority(a1)
+	; S2 Priority Manager End
+
 		move.l	#Map_Eggman,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)

@@ -7,15 +7,12 @@
 
 DisplaySprite:
 		lea	(v_spritequeue).w,a1
-		move.w	obPriority(a0),d0 ; get sprite priority
-		lsr.w	#1,d0
-		andi.w	#$380,d0
-		adda.w	d0,a1		; jump to position in queue
-		cmpi.w	#$7E,(a1)	; is this part of the queue full?
-		bhs.s	DSpr_Full	; if yes, branch
-		addq.w	#2,(a1)		; increment sprite count
-		adda.w	(a1),a1		; jump to empty position
-		move.w	a0,(a1)		; insert RAM address for object
+		adda.w	obPriority(a0),a1	; jump to position in queue -- RetroKoH S2 Priority Manager
+		cmpi.w	#$7E,(a1)			; is this part of the queue full?
+		bcc.s	DSpr_Full			; if yes, branch
+		addq.w	#2,(a1)				; increment sprite count
+		adda.w	(a1),a1				; jump to empty position
+		move.w	a0,(a1)				; insert RAM address for object
 
 DSpr_Full:
 		rts	
@@ -32,15 +29,12 @@ DSpr_Full:
 
 DisplaySprite1:
 		lea	(v_spritequeue).w,a2
-		move.w	obPriority(a1),d0
-		lsr.w	#1,d0
-		andi.w	#$380,d0
-		adda.w	d0,a2
-		cmpi.w	#$7E,(a2)
-		bhs.s	DSpr1_Full
-		addq.w	#2,(a2)
-		adda.w	(a2),a2
-		move.w	a1,(a2)
+		adda.w	obPriority(a1),a2	; jump to position in queue -- RetroKoH S2 Priority Manager
+		cmpi.w	#$7E,(a2)			; is this part of the queue full?
+		bhs.s	DSpr1_Full			; if yes, branch
+		addq.w	#2,(a2)				; increment sprite count
+		adda.w	(a2),a2				; jump to empty position
+		move.w	a1,(a2)				; insert RAM address for object
 
 DSpr1_Full:
 		rts	

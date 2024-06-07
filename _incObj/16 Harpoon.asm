@@ -20,7 +20,7 @@ Harp_Main:	; Routine 0
 		move.l	#Map_Harp,obMap(a0)
 		move.w	#make_art_tile(ArtTile_LZ_Harpoon,0,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
-		move.b	#4,obPriority(a0)
+		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	obSubtype(a0),obAnim(a0) ; get type (vert/horiz)
 		move.b	#$14,obActWid(a0)
 		move.w	#60,harp_time(a0) ; set time to 1 second

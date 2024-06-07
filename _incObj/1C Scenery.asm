@@ -17,13 +17,21 @@ Scen_Main:	; Routine 0
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0 ; copy object subtype to d0
 		mulu.w	#$A,d0		; multiply by $A
-		lea	Scen_Values(pc,d0.w),a1
+		lea		Scen_Values(pc,d0.w),a1
 		move.l	(a1)+,obMap(a0)
 		move.w	(a1)+,obGfx(a0)
 		ori.b	#4,obRender(a0)
 		move.b	(a1)+,obFrame(a0)
 		move.b	(a1)+,obActWid(a0)
 		move.b	(a1)+,obPriority(a0)
+
+	; RetroKoH S2 Priority Manager
+		move.w  obPriority(a0),d0
+		lsr.w   #1,d0
+		andi.w  #$380,d0
+		move.w  d0,obPriority(a0)
+	; S2 Priority Manager End
+
 		move.b	(a1)+,obColType(a0)
 
 Scen_ChkDel:	; Routine 2
@@ -33,9 +41,10 @@ Scen_ChkDel:	; Routine 2
 ; ---------------------------------------------------------------------------
 ; Variables for	object $1C are stored in an array
 ; ---------------------------------------------------------------------------
-Scen_Values:	dc.l Map_Scen                                     ; mappings address
-		dc.w make_art_tile(ArtTile_SLZ_Fireball_Launcher,2,0) ; VRAM setting
-		dc.b 0,	8, 2, 0                                   ; frame, width, priority, collision response
+Scen_Values:
+		dc.l Map_Scen											; mappings address
+		dc.w make_art_tile(ArtTile_SLZ_Fireball_Launcher,2,0)	; VRAM setting
+		dc.b 0,	8, 2, 0                                   		; frame, width, priority, collision response
 		dc.l Map_Scen
 		dc.w make_art_tile(ArtTile_SLZ_Fireball_Launcher,2,0)
 		dc.b 0,	8, 2, 0

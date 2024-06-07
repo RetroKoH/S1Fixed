@@ -23,7 +23,7 @@ Smash_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_GHZ_SLZ_Smashable_Wall,2,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.b	#$10,obActWid(a0)
-		move.b	#4,obPriority(a0)
+		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	obSubtype(a0),obFrame(a0)
 
 Smash_Solid:	; Routine 2

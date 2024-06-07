@@ -64,7 +64,7 @@ Card_MakeSprite:
 		move.w	#make_art_tile(ArtTile_Title_Card,0,1),obGfx(a1)
 		move.b	#$78,obActWid(a1)
 		move.b	#0,obRender(a1)
-		move.b	#0,obPriority(a1)
+		clr.w	obPriority(a1)	; RetroKoH S2 Priority Manager
 		move.w	#60,obTimeFrame(a1) ; set time delay to 1 second
 		lea	object_size(a1),a1	; next object
 		dbf	d1,Card_Loop	; repeat sequence another 3 times

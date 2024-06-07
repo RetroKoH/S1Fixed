@@ -47,6 +47,9 @@
  Credit: Flamewing and MarkeyJester
  Function: Uses a DMA queue to load Sonic's art, freeing RAM and allowing other dynamic art to function.
  Date: 2024-06-07
+ 
+ Name: Sonic 2 Priority Manager
+ Credit: Redhotsonic
 
 # Visual Changes
  Name: Title Screen Tweaks

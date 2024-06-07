@@ -120,36 +120,37 @@ bitL:		equ 2
 bitDn:		equ 1
 bitUp:		equ 0
 
-; Object variables
-obID:		equ 0	; object ID number
-obRender:	equ 1	; bitfield for x/y flip, display mode
-obGfx:		equ 2	; palette line & VRAM setting (2 bytes)
-obMap:		equ 4	; mappings address (4 bytes)
-obX:		equ 8	; x-axis position (2-4 bytes)
-obScreenY:	equ $A	; y-axis position for screen-fixed items (2 bytes)
-obY:		equ $C	; y-axis position (2-4 bytes)
-obVelX:		equ $10	; x-axis velocity (2 bytes)
-obVelY:		equ $12	; y-axis velocity (2 bytes)
-obInertia:	equ $14	; potential speed (2 bytes)
-obHeight:	equ $16	; height/2
-obWidth:	equ $17	; width/2
-obPriority:	equ $18	; sprite stack priority -- 0 is front
-obActWid:	equ $19	; action width
-obFrame:	equ $1A	; current frame displayed
-obAniFrame:	equ $1B	; current frame in animation script
-obAnim:		equ $1C	; current animation
-obPrevAni:	equ $1D	; previous animation
-obTimeFrame:	equ $1E	; time to next frame
-obDelayAni:	equ $1F	; time to delay animation
-obColType:	equ $20	; collision response type
-obColProp:	equ $21	; collision extra property
-obStatus:	equ $22	; orientation or mode
-obRespawnNo:	equ $23	; respawn list index number
-obRoutine:	equ $24	; routine number
-ob2ndRout:	equ $25	; secondary routine number
-obAngle:	equ $26	; angle
-obSubtype:	equ $28	; object subtype
-obSolid:	equ ob2ndRout ; solid status flag
+; Object variables (Rearranged for S2 Priority Manager -- RetroKoH)
+obID:			equ 0			; object ID number
+obRender:		equ 1			; bitfield for x/y flip, display mode
+obGfx:			equ 2			; palette line & VRAM setting (2 bytes)
+obMap:			equ 4			; mappings address (4 bytes)
+obX:			equ 8			; x-axis position (2-4 bytes)
+obScreenY:		equ $A			; y-axis position for screen-fixed items (2 bytes)
+obY:			equ $C			; y-axis position (2-4 bytes)
+obVelX:			equ $10			; x-axis velocity (2 bytes)
+obVelY:			equ $12			; y-axis velocity (2 bytes)
+obActWid:		equ $14			; action width (formerly obInertia)
+							; $15 is now free
+obHeight:		equ $16			; height/2
+obWidth:		equ $17			; width/2
+obPriority:		equ $18			; sprite stack priority (2 bytes)
+obFrame:		equ $1A			; current frame displayed
+obAniFrame:		equ $1B			; current frame in animation script
+obAnim:			equ $1C			; current animation
+obPrevAni:		equ $1D			; previous animation
+obTimeFrame:	equ $1E			; time to next frame
+obDelayAni:		equ $1F			; time to delay animation
+obInertia:		equ $20			; potential speed (2 bytes) -- Exclusive to players
+obColType:		equ $20			; collision response type
+obColProp:		equ $21			; collision extra property
+obStatus:		equ $22			; orientation or mode
+obRespawnNo:	equ $23			; respawn list index number
+obRoutine:		equ $24			; routine number
+ob2ndRout:		equ $25			; secondary routine number
+obAngle:		equ $26			; angle
+obSubtype:		equ $28			; object subtype
+obSolid:		equ ob2ndRout	; solid status flag
 
 ; Object variables used by Sonic (to be removed)
 flashtime:		equ $30	; time between flashes after getting hit
@@ -159,20 +160,20 @@ stick_to_convex:equ objoff_38
 standonobject:	equ $3D	; object Sonic stands on
 
 ; Mercury Variable Constants
-obInvuln:		equ $30	; Invulnerable (blinking) timer
-				; $31 reserved as well
-obInvinc:		equ $32	; Invincibility timer
-				; $33 reserved as well
-obShoes:		equ $34	; Speed Shoes timer
-				; $35 reserved as well
+obInvuln:		equ $30			; Invulnerable (blinking) timer
+							; $31 reserved as well
+obInvinc:		equ $32			; Invincibility timer
+							; $33 reserved as well
+obShoes:		equ $34			; Speed Shoes timer
+							; $35 reserved as well
 obFrontAngle:	equ $36
 obRearAngle:	equ $37
-obOnWheel:		equ $38	; on convex wheel flag
-obStatus2:		equ $39	; status for abilities such as Spin Dash
-obRestartTimer:	equ $3A ; level restart timer
-obJumping:		equ $3C	; jumping flag
-obPlatformID:	equ $3D	; ost slot of the object Sonic's on top of
-obLRLock:		equ $3E	; flag for preventing left and right input
+obOnWheel:		equ $38			; on convex wheel flag
+obStatus2:		equ $39			; status for abilities such as Spin Dash
+obRestartTimer:	equ $3A			; level restart timer
+obJumping:		equ $3C			; jumping flag
+obPlatformID:	equ $3D			; ost slot of the object Sonic's on top of
+obLRLock:		equ $3E			; flag for preventing left and right input
 
 ; Miscellaneous object scratch-RAM
 objoff_25:	equ $25

@@ -57,7 +57,7 @@ SStom_Main:	; Routine 0
 		move.b	obSubtype(a0),obSubtype(a1)
 		move.b	#$20,obActWid(a1)
 		move.w	d2,objoff_34(a1)
-		move.b	#4,obPriority(a1)
+		move.w	#$200,obPriority(a1)	; RetroKoH S2 Priority Manager
 		cmpi.b	#1,(a2)		; is subobject spikes?
 		bne.s	.notspikes	; if not, branch
 		move.b	#$91,obColType(a1) ; use harmful collision type
@@ -67,7 +67,7 @@ SStom_Main:	; Routine 0
 		move.l	a0,objoff_3C(a1)
 		dbf	d1,.loop	; repeat 3 times
 
-		move.b	#3,obPriority(a1)
+		move.w	#$180,obPriority(a1)	; RetroKoH S2 Priority Manager
 
 .fail:
 		move.b	#$10,obActWid(a0)

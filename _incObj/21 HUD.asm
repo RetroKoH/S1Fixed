@@ -19,7 +19,7 @@ HUD_Main:	; Routine 0
 		move.l	#Map_HUD,obMap(a0)
 		move.w	#make_art_tile(ArtTile_HUD,0,0),obGfx(a0)
 		move.b	#0,obRender(a0)
-		move.b	#0,obPriority(a0)
+		clr.w	obPriority(a0)		; RetroKoH S2 Priority Manager
 
 HUD_Flash:	; Routine 2
 		tst.w	(v_rings).w	; do you have any rings?

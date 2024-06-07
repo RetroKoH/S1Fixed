@@ -18,7 +18,7 @@ Poi_Main:	; Routine 0
 		move.l	#Map_Poi,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Points,1,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.b	#1,obPriority(a0)
+		move.w	#$80,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#8,obActWid(a0)
 		move.w	#-$300,obVelY(a0)	; move object upwards
 

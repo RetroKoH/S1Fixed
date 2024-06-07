@@ -31,7 +31,7 @@ Orb_Main:	; Routine 0
 
 .notlabyrinth:
 		ori.b	#4,obRender(a0)
-		move.b	#4,obPriority(a0)
+		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#$B,obColType(a0)
 		move.b	#$C,obActWid(a0)
 		moveq	#0,d2
@@ -54,7 +54,7 @@ Orb_Main:	; Routine 0
 		move.l	obMap(a0),obMap(a1)
 		move.w	obGfx(a0),obGfx(a1)
 		ori.b	#4,obRender(a1)
-		move.b	#4,obPriority(a1)
+		move.w	#$200,obPriority(a1)	; RetroKoH S2 Priority Manager
 		move.b	#8,obActWid(a1)
 		move.b	#3,obFrame(a1)
 		move.b	#$98,obColType(a1)

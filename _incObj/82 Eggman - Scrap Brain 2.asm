@@ -12,7 +12,8 @@ SEgg_Index:	dc.w SEgg_Main-SEgg_Index
 		dc.w SEgg_Eggman-SEgg_Index
 		dc.w SEgg_Switch-SEgg_Index
 
-SEgg_ObjData:	dc.b 2,	0, 3		; routine number, animation, priority
+SEgg_ObjData:
+		dc.b 2,	0, 3		; routine number, animation, priority
 		dc.b 4,	0, 3
 ; ===========================================================================
 
@@ -27,12 +28,20 @@ SEgg_Main:	; Routine 0
 		move.b	(a2)+,obRoutine(a0)
 		move.b	(a2)+,obAnim(a0)
 		move.b	(a2)+,obPriority(a0)
+
+	; RetroKoH S2 Priority Manager
+		move.w  obPriority(a0),d0
+		lsr.w   #1,d0
+		andi.w  #$380,d0
+		move.w  d0,obPriority(a0)
+	; S2 Priority Manager End
+
 		move.l	#Map_SEgg,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		bset	#7,obRender(a0)
 		move.b	#$20,obActWid(a0)
-		jsr	(FindNextFreeObj).l
+		jsr		(FindNextFreeObj).l
 		bne.s	SEgg_Eggman
 		move.l	a0,objoff_34(a1)
 		move.b	#id_ScrapEggman,obID(a1) ; load switch object
@@ -42,6 +51,14 @@ SEgg_Main:	; Routine 0
 		move.b	(a2)+,obRoutine(a1)
 		move.b	(a2)+,obAnim(a1)
 		move.b	(a2)+,obPriority(a1)
+
+	; RetroKoH S2 Priority Manager
+		move.w  obPriority(a1),d0
+		lsr.w   #1,d0
+		andi.w  #$380,d0
+		move.w  d0,obPriority(a1)
+	; S2 Priority Manager End
+
 		move.l	#Map_But,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman_Button,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)

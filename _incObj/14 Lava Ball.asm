@@ -30,12 +30,12 @@ LBall_Main:	; Routine 0
 
 .notSLZ:
 		move.b	#4,obRender(a0)
-		move.b	#3,obPriority(a0)
+		move.w	#$180,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#$8B,obColType(a0)
 		move.w	obY(a0),objoff_30(a0)
 		tst.b	objoff_29(a0)
 		beq.s	.speed
-		addq.b	#2,obPriority(a0)
+		addq.b	#1,obPriority(a0)		; Add to upper byte, to add $100 to priority value -- RetroKoH S2 Priority Manager
 
 .speed:
 		moveq	#0,d0

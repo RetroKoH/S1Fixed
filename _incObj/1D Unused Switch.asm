@@ -23,7 +23,7 @@ Swi_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.w	obY(a0),swi_origY(a0) ; save position on y-axis
 		move.b	#$10,obActWid(a0)
-		move.b	#5,obPriority(a0)
+		move.w	#$280,obPriority(a0)	; RetroKoH S2 Priority Manager
 
 Swi_Action:	; Routine 2
 		move.w	swi_origY(a0),obY(a0) ; restore position on y-axis

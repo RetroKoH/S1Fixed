@@ -36,7 +36,7 @@ Plat_Main:	; Routine 0
 
 .notSLZ:
 		move.b	#4,obRender(a0)
-		move.b	#4,obPriority(a0)
+		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.w	obY(a0),objoff_2C(a0)
 		move.w	obY(a0),objoff_34(a0)
 		move.w	obX(a0),objoff_32(a0)

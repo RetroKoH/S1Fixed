@@ -27,14 +27,14 @@ Bub_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_LZ_Bubbles,0,1),obGfx(a0)
 		move.b	#$84,obRender(a0)
 		move.b	#$10,obActWid(a0)
-		move.b	#1,obPriority(a0)
-		move.b	obSubtype(a0),d0 ; get bubble type
-		bpl.s	.bubble		; if type is $0-$7F, branch
+		move.w	#$80,obPriority(a0)		; RetroKoH S2 Priority Manager
+		move.b	obSubtype(a0),d0		; get bubble type
+		bpl.s	.bubble					; if type is $0-$7F, branch
 
-		addq.b	#8,obRoutine(a0) ; goto Bub_BblMaker next
-		andi.w	#$7F,d0		; read only last 7 bits	(deduct	$80)
+		addq.b	#8,obRoutine(a0)		; goto Bub_BblMaker next
+		andi.w	#$7F,d0					; read only last 7 bits	(deduct	$80)
 		move.b	d0,bub_time(a0)
-		move.b	d0,bub_freq(a0)	; set bubble frequency
+		move.b	d0,bub_freq(a0)			; set bubble frequency
 		move.b	#6,obAnim(a0)
 		bra.w	Bub_BblMaker
 ; ===========================================================================

@@ -33,7 +33,7 @@ CFlo_Main:	; Routine 0
 
 .notSBZ:
 		ori.b	#4,obRender(a0)
-		move.b	#4,obPriority(a0)
+		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#7,cflo_timedelay(a0)
 		move.b	#$44,obActWid(a0)
 

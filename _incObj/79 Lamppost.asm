@@ -25,7 +25,7 @@ Lamp_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Lamppost,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.b	#8,obActWid(a0)
-		move.b	#5,obPriority(a0)
+		move.w	#$280,obPriority(a0)	; RetroKoH S2 Priority Manager
 		lea	(v_objstate).w,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
@@ -92,7 +92,7 @@ Lamp_Blue:	; Routine 2
 		move.w	#make_art_tile(ArtTile_Lamppost,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.b	#8,obActWid(a1)
-		move.b	#4,obPriority(a1)
+		move.w	#$200,obPriority(a1)	; RetroKoH S2 Priority Manager
 		move.b	#2,obFrame(a1)	; use "ball only" frame
 		move.w	#$20,lamp_time(a1)
 

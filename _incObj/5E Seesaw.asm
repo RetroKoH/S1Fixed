@@ -38,7 +38,7 @@ See_Main:	; Routine 0
 		move.l	#Map_Seesaw,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SLZ_Seesaw,0,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
-		move.b	#4,obPriority(a0)
+		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#$30,obActWid(a0)
 		move.w	obX(a0),see_origX(a0)
 		tst.b	obSubtype(a0)	; is object type 00 ?
@@ -132,7 +132,7 @@ See_Spikeball:	; Routine 6
 		move.l	#Map_SSawBall,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SLZ_Spikeball,0,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
-		move.b	#4,obPriority(a0)
+		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#$8B,obColType(a0)
 		move.b	#$C,obActWid(a0)
 		move.w	obX(a0),see_origX(a0)

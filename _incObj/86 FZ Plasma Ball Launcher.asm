@@ -22,7 +22,7 @@ BossPlasma_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_FZ_Boss,0,0),obGfx(a0)
 		move.l	#Map_PLaunch,obMap(a0)
 		move.b	#0,obAnim(a0)
-		move.b	#3,obPriority(a0)
+		move.w	#$180,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#8,obWidth(a0)
 		move.b	#8,obHeight(a0)
 		move.b	#4,obRender(a0)
@@ -89,7 +89,7 @@ BossPlasma_Loop:
 		move.b	#$C,obHeight(a1)
 		move.b	#$C,obWidth(a1)
 		move.b	#0,obColType(a1)
-		move.b	#3,obPriority(a1)
+		move.w	#$180,obPriority(a1)	; RetroKoH S2 Priority Manager
 		move.w	#$3E,obSubtype(a1)
 		move.b	#4,obRender(a1)
 		bset	#7,obRender(a1)

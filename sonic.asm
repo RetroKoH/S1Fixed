@@ -3542,7 +3542,7 @@ GM_Continue:
 		move.b	#id_ContSonic,(v_player).w ; load Sonic object
 		move.b	#id_ContScrItem,(v_continuetext).w ; load continue screen objects
 		move.b	#id_ContScrItem,(v_continuelight).w
-		move.b	#3,(v_continuelight+obPriority).w
+		move.w	#$180,(v_continuelight+obPriority).w	; RetroKoH S2 Priority Manager
 		move.b	#4,(v_continuelight+obFrame).w
 		move.b	#id_ContScrItem,(v_continueicon).w
 		move.b	#4,(v_continueicon+obRoutine).w
@@ -5328,7 +5328,7 @@ loc_84B2:
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.w	obGfx(a0),obGfx(a1)
-		move.b	obPriority(a0),obPriority(a1)
+		move.w	obPriority(a0),obPriority(a1)	; RetroKoH S2 Priority Manager
 		move.b	obActWid(a0),obActWid(a1)
 		move.b	(a4)+,ledge_timedelay(a1)
 		cmpa.l	a0,a1
@@ -6731,7 +6731,7 @@ Sonic_Main:	; Routine 0
 		move.b	#9,obWidth(a0)
 		move.l	#Map_Sonic,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Sonic,0,0),obGfx(a0)
-		move.b	#2,obPriority(a0)
+		move.w	#$100,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#$18,obActWid(a0)
 		move.b	#4,obRender(a0)
 		move.w	#$600,(v_sonspeedmax).w ; Sonic's top speed

@@ -30,7 +30,7 @@ GRing_Main:	; Routine 0
 
 GRing_Okay:
 		addq.b	#2,obRoutine(a0)
-		move.b	#2,obPriority(a0)
+		move.w	#$100,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#$52,obColType(a0)
 		move.w	#$C40,(v_gfxbigring).w	; Signal that Art_BigRing should be loaded ($C40 is the size of Art_BigRing)
 

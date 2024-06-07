@@ -40,6 +40,12 @@ Pri_Main:	; Routine 0
 		move.b	(a1)+,obRoutine(a0)
 		move.b	(a1)+,obActWid(a0)
 		move.b	(a1)+,obPriority(a0)
+	; RetroKoH S2 Priority Manager
+		move.w  obPriority(a0),d0
+		lsr.w   #1,d0
+		andi.w  #$380,d0
+		move.w  d0,obPriority(a0)
+	; S2 Priority Manager End
 		move.b	(a1)+,obFrame(a0)
 		cmpi.w	#8,d0					; is object type number	02?
 		bne.s	.not02					; if not, branch

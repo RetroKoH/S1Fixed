@@ -17,18 +17,18 @@ Flame_Main:	; Routine 0
 		move.l	#Map_Flame,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Flamethrower,0,1),obGfx(a0)
 		ori.b	#4,obRender(a0)
-		move.b	#1,obPriority(a0)
+		move.w	#$80,obPriority(a0)		; RetroKoH S2 Priority Manager
 		move.w	obY(a0),objoff_30(a0)	; store obY (gets overwritten later though)
 		move.b	#$C,obActWid(a0)
 		move.b	obSubtype(a0),d0
-		andi.w	#$F0,d0		; read 1st digit of object type
-		add.w	d0,d0		; multiply by 2
+		andi.w	#$F0,d0					; read 1st digit of object type
+		add.w	d0,d0					; multiply by 2
 		move.w	d0,objoff_30(a0)
-		move.w	d0,objoff_32(a0)	; set flaming time
+		move.w	d0,objoff_32(a0)		; set flaming time
 		move.b	obSubtype(a0),d0
-		andi.w	#$F,d0		; read 2nd digit of object type
-		lsl.w	#5,d0		; multiply by $20
-		move.w	d0,objoff_34(a0)	; set pause time
+		andi.w	#$F,d0					; read 2nd digit of object type
+		lsl.w	#5,d0					; multiply by $20
+		move.w	d0,objoff_34(a0)		; set pause time
 		move.b	#$A,objoff_36(a0)
 		btst	#1,obStatus(a0)
 		beq.s	Flame_Action

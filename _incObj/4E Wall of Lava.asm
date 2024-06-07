@@ -37,7 +37,7 @@ LWall_Main:	; Routine 0
 		move.b	#$50,obActWid(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		move.b	#1,obPriority(a1)
+		move.w	#$80,obPriority(a1)		; RetroKoH S2 Priority Manager
 		move.b	#0,obAnim(a1)
 		move.b	#$94,obColType(a1)
 		move.l	a0,objoff_3C(a1)

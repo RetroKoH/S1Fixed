@@ -27,7 +27,7 @@ LBlk_Main:	; Routine 0
 		move.l	#Map_LBlock,obMap(a0)
 		move.w	#make_art_tile(ArtTile_LZ_Blocks,2,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.b	#3,obPriority(a0)
+		move.w	#$180,obPriority(a0)	; RetroKoH S2 Priority Manager
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0 ; get block type
 		lsr.w	#3,d0		; read only the 1st digit

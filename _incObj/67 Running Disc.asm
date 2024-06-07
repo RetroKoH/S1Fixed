@@ -23,7 +23,7 @@ Disc_Main:	; Routine 0
 		move.l	#Map_Disc,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Disc,2,1),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.b	#4,obPriority(a0)
+		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#8,obActWid(a0)
 		move.w	obX(a0),disc_origX(a0)
 		move.w	obY(a0),disc_origY(a0)

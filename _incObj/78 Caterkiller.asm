@@ -8,7 +8,8 @@ Caterkiller:
 		move.w	Cat_Index(pc,d0.w),d1
 		jmp	Cat_Index(pc,d1.w)
 ; ===========================================================================
-Cat_Index:	dc.w Cat_Main-Cat_Index
+Cat_Index:
+		dc.w Cat_Main-Cat_Index
 		dc.w Cat_Head-Cat_Index
 		dc.w Cat_BodySeg1-Cat_Index
 		dc.w Cat_BodySeg2-Cat_Index
@@ -16,6 +17,16 @@ Cat_Index:	dc.w Cat_Main-Cat_Index
 		dc.w Cat_Delete-Cat_Index
 		dc.w loc_16CC0-Cat_Index
 
+; SSTs used
+;		0		1		2		3		4		5		6		7		8		9		A		B		C		D		E		F
+;0x		ID		REND	GFX1	GFX2	MAP1	MAP2	MAP3	MAP4	XPOS1	XPOS2	XPOS3	XPOS4	YPOS1	YPOS2	YPOS3	YPOS4
+;1x		VELX1	VELX2	----	----	AcWID	----	
+;2x
+;3x
+
+
+cat_intertia = obVelY		; formerly obInertia. Needed to change after shifting SSTs for the Priority Manager.
+							; Caterkiller uses obXVel but doesn't use obYVel, and this causes no glitches.
 cat_parent = objoff_3C		; address of parent object
 ; ===========================================================================
 
@@ -26,8 +37,8 @@ locret_16950:
 Cat_Main:	; Routine 0
 		move.b	#7,obHeight(a0)
 		move.b	#8,obWidth(a0)
-		jsr	(ObjectFall).l
-		jsr	(ObjFloorDist).l
+		jsr		(ObjectFall).l
+		jsr		(ObjFloorDist).l
 		tst.w	d1
 		bpl.s	locret_16950
 		add.w	d1,obY(a0)
@@ -43,7 +54,7 @@ Cat_Main:	; Routine 0
 		andi.b	#3,obRender(a0)
 		ori.b	#4,obRender(a0)
 		move.b	obRender(a0),obStatus(a0)
-		move.b	#4,obPriority(a0)
+		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#8,obActWid(a0)
 		move.b	#$B,obColType(a0)
 		move.w	obX(a0),d2
@@ -61,17 +72,13 @@ Cat_Main:	; Routine 0
 
 Cat_Loop:
 		jsr	(FindNextFreeObj).l
-		if Revision=0
-		bne.s	.fail
-		else
-			bne.w	Cat_ChkGone
-		endif
+		bne.w	Cat_ChkGone
 		_move.b	#id_Caterkiller,obID(a1) ; load body segment object
 		move.b	d6,obRoutine(a1) ; goto Cat_BodySeg1 or Cat_BodySeg2 next
 		addq.b	#2,d6		; alternate between the two
 		move.l	obMap(a0),obMap(a1)
 		move.w	obGfx(a0),obGfx(a1)
-		move.b	#5,obPriority(a1)
+		move.w	#$280,obPriority(a1)	; RetroKoH S2 Priority Manager
 		move.b	#8,obActWid(a1)
 		move.b	#$CB,obColType(a1)
 		add.w	d5,d2
@@ -147,11 +154,11 @@ Cat_Index2:	dc.w .wait-Cat_Index2
 		addq.b	#2,ob2ndRout(a0)
 		move.b	#$10,objoff_2A(a0)
 		move.w	#-$C0,obVelX(a0)
-		move.w	#$40,obInertia(a0)
+		move.w	#$40,cat_intertia(a0)
 		bchg	#4,objoff_2B(a0)
 		bne.s	loc_16AFC
 		clr.w	obVelX(a0)
-		neg.w	obInertia(a0)
+		neg.w	cat_intertia(a0)
 
 loc_16AFC:
 		bset	#7,objoff_2B(a0)
@@ -159,15 +166,10 @@ loc_16AFC:
 loc_16B02:
 		subq.b	#1,objoff_2A(a0)
 		bmi.s	.loc_16B5E
-		if Revision=0
-		move.l	obX(a0),-(sp)
+		tst.w	obVelX(a0)
+		beq.s	.notmoving
 		move.l	obX(a0),d2
-		else
-			tst.w	obVelX(a0)
-			beq.s	.notmoving
-			move.l	obX(a0),d2
-			move.l	d2,d3
-		endif
+		move.l	d2,d3
 		move.w	obVelX(a0),d0
 		btst	#0,obStatus(a0)
 		beq.s	.noflip
@@ -178,28 +180,15 @@ loc_16B02:
 		asl.l	#8,d0
 		add.l	d0,d2
 		move.l	d2,obX(a0)
-		if Revision=0
+		swap	d3
+		cmp.w	obX(a0),d3
+		beq.s	.notmoving
 		jsr	(ObjFloorDist).l
-		move.l	(sp)+,d2
 		cmpi.w	#-8,d1
 		blt.s	.loc_16B70
 		cmpi.w	#$C,d1
 		bge.s	.loc_16B70
 		add.w	d1,obY(a0)
-		swap	d2
-		cmp.w	obX(a0),d2
-		beq.s	.notmoving
-		else
-			swap	d3
-			cmp.w	obX(a0),d3
-			beq.s	.notmoving
-			jsr	(ObjFloorDist).l
-			cmpi.w	#-8,d1
-			blt.s	.loc_16B70
-			cmpi.w	#$C,d1
-			bge.s	.loc_16B70
-			add.w	d1,obY(a0)
-		endif
 		moveq	#0,d0
 		move.b	cat_parent(a0),d0
 		addq.b	#1,cat_parent(a0)
@@ -213,40 +202,27 @@ loc_16B02:
 .loc_16B5E:
 		subq.b	#2,ob2ndRout(a0)
 		move.b	#7,objoff_2A(a0)
-		if Revision=0
-		move.w	#0,obVelX(a0)
-		else
-			clr.w	obVelX(a0)
-			clr.w	obInertia(a0)
-		endif
+		clr.w	obVelX(a0)
+		clr.w	cat_intertia(a0)
 		rts	
 ; ===========================================================================
 
 .loc_16B70:
-		if Revision=0
-		move.l	d2,obX(a0)
-		bchg	#0,obStatus(a0)
-		move.b	obStatus(a0),obRender(a0)
 		moveq	#0,d0
 		move.b	cat_parent(a0),d0
 		move.b	#$80,objoff_2C(a0,d0.w)
-		else
-			moveq	#0,d0
-			move.b	cat_parent(a0),d0
-			move.b	#$80,objoff_2C(a0,d0.w)
-			neg.w	obX+2(a0)
-			beq.s	.loc_1730A
-			btst	#0,obStatus(a0)
-			beq.s	.loc_1730A
-			subq.w	#1,obX(a0)
-			addq.b	#1,cat_parent(a0)
-			moveq	#0,d0
-			move.b	cat_parent(a0),d0
-			clr.b	objoff_2C(a0,d0.w)
+		neg.w	obX+2(a0)
+		beq.s	.loc_1730A
+		btst	#0,obStatus(a0)
+		beq.s	.loc_1730A
+		subq.w	#1,obX(a0)
+		addq.b	#1,cat_parent(a0)
+		moveq	#0,d0
+		move.b	cat_parent(a0),d0
+		clr.b	objoff_2C(a0,d0.w)
 .loc_1730A:
-			bchg	#0,obStatus(a0)
-			move.b	obStatus(a0),obRender(a0)
-		endif
+		bchg	#0,obStatus(a0)
+		move.b	obStatus(a0),obRender(a0)
 		addq.b	#1,cat_parent(a0)
 		andi.b	#$F,cat_parent(a0)
 		rts	
@@ -276,13 +252,9 @@ Cat_BodySeg1:	; Routine 4, 8
 		move.b	objoff_2B(a1),objoff_2B(a0)
 		move.b	ob2ndRout(a1),ob2ndRout(a0)
 		beq.w	loc_16C64
-		move.w	obInertia(a1),obInertia(a0)
+		move.w	cat_intertia(a1),cat_intertia(a0)
 		move.w	obVelX(a1),d0
-		if Revision=0
-		add.w	obInertia(a1),d0
-		else
-			add.w	obInertia(a0),d0
-		endif
+		add.w	cat_intertia(a0),d0
 		move.w	d0,obVelX(a0)
 		move.l	obX(a0),d2
 		move.l	d2,d3
@@ -304,25 +276,19 @@ loc_16C0C:
 		move.b	objoff_2C(a1,d0.w),d1
 		cmpi.b	#$80,d1
 		bne.s	loc_16C50
-		if Revision=0
-		swap	d3
-		move.l	d3,obX(a0)
 		move.b	d1,objoff_2C(a0,d0.w)
-		else
-			move.b	d1,objoff_2C(a0,d0.w)
-			neg.w	obX+2(a0)
-			beq.s	locj_173E4
-			btst	#0,obStatus(a0)
-			beq.s	locj_173E4
-			cmpi.w	#-$C0,obVelX(a0)
-			bne.s	locj_173E4
-			subq.w	#1,obX(a0)
-			addq.b	#1,cat_parent(a0)
-			moveq	#0,d0
-			move.b	cat_parent(a0),d0
-			clr.b	objoff_2C(a0,d0.w)
+		neg.w	obX+2(a0)
+		beq.s	locj_173E4
+		btst	#0,obStatus(a0)
+		beq.s	locj_173E4
+		cmpi.w	#-$C0,obVelX(a0)
+		bne.s	locj_173E4
+		subq.w	#1,obX(a0)
+		addq.b	#1,cat_parent(a0)
+		moveq	#0,d0
+		move.b	cat_parent(a0),d0
+		clr.b	objoff_2C(a0,d0.w)
 locj_173E4:
-		endif
 		bchg	#0,obStatus(a0)
 		move.b	obStatus(a0),obRender(a0)
 		addq.b	#1,cat_parent(a0)

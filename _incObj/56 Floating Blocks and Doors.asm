@@ -37,7 +37,7 @@ FBlock_Main:	; Routine 0
 
 .notLZ:
 		move.b	#4,obRender(a0)
-		move.b	#3,obPriority(a0)
+		move.w	#$180,obPriority(a0)	; RetroKoH S2 Priority Manager
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0 ; get subtype
 		lsr.w	#3,d0

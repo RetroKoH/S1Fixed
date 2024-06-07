@@ -6,7 +6,7 @@ PathSwapper:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	PSwapper_Index(pc,d0.w),d1
-		jsr	PSwapper_Index(pc,d1.w)
+		jsr		PSwapper_Index(pc,d1.w)
 	if DebugPathSwappers
 		tst.w	(f_debugcheat).w
 		bne.w	RememberState
@@ -16,7 +16,7 @@ PathSwapper:
 		rts
 
 .offscreen:
-		lea	(v_objstate).w,a2
+		lea		(v_objstate).w,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	.delete
@@ -38,7 +38,7 @@ PSwapper_Init:
 		move.w	#$27B2,obGfx(a0)
 		ori.b	#4,obRender(a0)
 		move.b	#$10,obActWid(a0)
-		move.b	#5,obPriority(a0)
+		move.w	#$280,obPriority(a0)		; RetroKoH S2 Priority Manager
 		move.b	obSubtype(a0),d0
 		btst	#2,d0
 		beq.s	PSwapper_Init_CheckX
@@ -50,7 +50,7 @@ PSwapper_Init:
 		add.w	d0,d0
 		move.w	word_1FD68(pc,d0.w),$32(a0)
 		move.w	obY(a0),d1
-		lea	(v_player).w,a1 ; a1=character
+		lea		(v_player).w,a1 ; a1=character
 		cmp.w	obY(a1),d1
 		bhs.w	PSwapper_MainY
 		move.b	#1,$34(a0)
