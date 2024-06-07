@@ -241,3 +241,8 @@
  Credit: Clownacy
  Function: Positions the fired missile to be properly underneath the Buzz Bomber.
  Date: 2024-06-07
+ 
+ Name: Water Surface Gap Fix
+ Credit: LuigiXHero
+ Function: Fixes a minor gap on the left side of the water surface when pausing the game.
+ Date: 2024-06-07

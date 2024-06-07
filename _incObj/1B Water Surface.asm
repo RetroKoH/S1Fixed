@@ -27,8 +27,12 @@ Surf_Action:	; Routine 2
 		move.w	(v_screenposx).w,d1
 		andi.w	#$FFE0,d1
 		add.w	surf_origX(a0),d1
+	; LuigiXHero Water Surface Fix
+		btst	#bitStart,(v_jpadpress1).w	; is Start button pressed?
+		bne.s	.even						; if yes, branch
+	; Water Surface Fix End
 		btst	#0,(v_framebyte).w
-		beq.s	.even		; branch on even frames
+		beq.s	.even						; branch on even frames
 		addi.w	#$20,d1
 
 .even:
