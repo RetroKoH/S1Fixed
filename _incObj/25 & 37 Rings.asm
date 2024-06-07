@@ -219,6 +219,16 @@ RLoss_Count:	; Routine 0
 		bsr.w	CalcSine
 		move.w	d4,d2
 		lsr.w	#8,d2
+	; RHS Underwater Rings Physics Fix
+		tst.b	(f_water).w			; Does the level have water?
+		beq.s	@skiphalvingvel		; If not, branch and skip underwater checks
+		move.w	(v_waterpos1).w,d6	; Move water level to d6
+		cmp.w	obY(a0),d6			; Is the ring object underneath the water level?
+		bgt.s	.skiphalvingvel		; If not, branch and skip underwater commands
+		asr.w	d0					; Half d0. Makes the ring's x_vel bounce to the left/right slower
+		asr.w	d1					; Half d1. Makes the ring's y_vel bounce up/down slower
+.skiphalvingvel:
+	; Underwater Rings Physics Fix End
 		asl.w	d2,d0
 		asl.w	d2,d1
 		move.w	d0,d2
@@ -252,6 +262,16 @@ RLoss_Bounce:	; Routine 2
 		move.b	(v_ani3_frame).w,obFrame(a0)
 		bsr.w	SpeedToPos
 		addi.w	#$18,obVelY(a0)
+	; RHS Underwater Rings Physics Fix
+		tst.b	(f_water).w			; Does the level have water?
+		beq.s	.skipbounceslow		; If not, branch and skip underwater checks
+		move.w	(v_waterpos1).w,d6	; Move water level to d6
+		cmp.w	obY(a0),d6			; Is the ring object underneath the water level?
+		bgt.s	.skipbounceslow		; If not, branch and skip underwater commands
+		subi.w	#$E,obVelY(a0)		; Reduce gravity by $E ($18-$E=$A), giving the underwater effect
+
+.skipbounceslow:
+	; Underwater Rings Physics Fix End
 		bmi.s	.chkdel
 		move.b	(v_vbla_byte).w,d0
 		add.b	d7,d0

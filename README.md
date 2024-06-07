@@ -228,3 +228,8 @@
  Function: Faster Checksum check
  Date: 2024-06-06
  Note: I don't remember WHERE I saw MJ post this... and I'll revisit this later, but I imported it from my old ROM hack project.
+
+ Name: Fix Scattered Rings Underwater Physics
+ Credit: Redhotsonic
+ Function: Gives proper underwater physics to scattered rings.
+ Date: 2024-06-07
