@@ -299,3 +299,8 @@
  Function: This fix allows users to put a full $10 (16) entries into a single PLC queue as intended.
  Date: 2024-06-08
  
+ Name: Spike SFX Fix
+ Credit: Mercury
+ Function: Makes the proper sound effect play when Sonic is harmed by Spikes/LZ Harpoons.
+ Date: 2024-06-08
+ 
