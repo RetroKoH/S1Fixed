@@ -63,6 +63,11 @@
  Credit: Redhotsonic (and DeltaW w/ BossMove)
  Function: SpeedToPos and ObjectFall are optimized, working akin to their S3K iterations.
  Date: 2024-06-07
+ 
+ Name: Optimized In-Air Collision Detection
+ Credit: Devon/Ralakimus
+ Function: Avoiding CalcAngle When Performing Collision in the Air. Based on a design choice utilized in Orbinaut Framework.
+ Date: 2024-06-08
 
 # Visual Changes
  Name: Title Screen Tweaks

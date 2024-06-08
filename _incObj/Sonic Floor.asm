@@ -7,25 +7,30 @@
 
 Sonic_Floor:
 		move.l	#v_collision1&$FFFFFF,(v_collindex).w	; MJ: load first collision data location
-		cmpi.b	#$C,(v_top_solid_bit).w			; MJ: is second collision set to be used?
-		beq.s	.first					; MJ: if not, branch
+		cmpi.b	#$C,(v_top_solid_bit).w					; MJ: is second collision set to be used?
+		beq.s	.first									; MJ: if not, branch
 		move.l	#v_collision2&$FFFFFF,(v_collindex).w	; MJ: load second collision data location
 .first:
-		move.b	(v_lrb_solid_bit).w,d5			; MJ: load L/R/B soldity bit
-		move.w	obVelX(a0),d1
-		move.w	obVelY(a0),d2
-		jsr	(CalcAngle).l
-		move.b	d0,(v_unused3).w
-		subi.b	#$20,d0
-		move.b	d0,(v_unused4).w
-		andi.b	#$C0,d0
-		move.b	d0,(v_unused5).w
-		cmpi.b	#$40,d0
-		beq.w	loc_13680
-		cmpi.b	#$80,d0
-		beq.w	loc_136E2
-		cmpi.b	#$C0,d0
-		beq.w	loc_1373E
+		move.b	(v_lrb_solid_bit).w,d5					; MJ: load L/R/B soldity bit
+	; Devon Air Collision Improvement
+	; Avoiding CalcAngle When Performing Collision in the Air
+		move.w	obVelX(a0),d0
+		move.w	obVelY(a0),d1
+		bpl.s	.airCol_PosY			; If it's positive, branch
+		cmp.w	d0,d1					; Are we moving towards the left?
+		bgt.w	loc_13680				; If so, branch
+		neg.w	d0						; Are we moving towards the right?
+		cmp.w	d0,d1
+		bge.w	loc_1373E				; If so, branch
+		bra.w	loc_136E2				; We are moving upwards
+ 
+.airCol_PosY:
+		cmp.w	d0,d1					; Are we moving towards the right?
+		blt.w	loc_1373E				; If so, branch
+		neg.w	d0						; Are we moving towards the left?
+		cmp.w	d0,d1
+		ble.w	loc_13680				; If so, branch
+	; Air Collision Improvement End
 		bsr.w	Sonic_HitWall
 		tst.w	d1
 		bpl.s	loc_135F0
