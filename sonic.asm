@@ -1196,6 +1196,7 @@ Qplc_Loop:
 
 		include	"_inc/Enigma Decompression.asm"
 		include	"_inc/Kosinski Decompression.asm"
+		include "_inc/Comper Decompression.asm"		; New format ready for use -- Vladikcomper
 
 		include	"_inc/PaletteCycle.asm"
 
