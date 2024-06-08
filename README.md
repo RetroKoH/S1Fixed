@@ -278,3 +278,9 @@
  Credit: Devon/Ralakimus
  Function: This fixes a minor visual bug where trapdoor sprites can appear on-screen just before despawning.
  Date: 2024-06-07
+
+ Name: GHZ Vertical Scrolling Fix
+ Credit: OrionNavattan
+ Function: This fix makes the background scroll in a more "correct" direction vertically.
+ Date: 2024-06-07
+ 

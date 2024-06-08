@@ -25,14 +25,15 @@ DeformLayers:
 		move.b	(v_zone).w,d0
 		add.w	d0,d0
 		move.w	Deform_Index(pc,d0.w),d0
-		jmp	Deform_Index(pc,d0.w)
+		jmp		Deform_Index(pc,d0.w)
 ; End of function DeformLayers
 
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Offset index for background layer deformation	code
 ; ---------------------------------------------------------------------------
-Deform_Index:	dc.w Deform_GHZ-Deform_Index, Deform_LZ-Deform_Index
+Deform_Index:
+		dc.w Deform_GHZ-Deform_Index, Deform_LZ-Deform_Index
 		dc.w Deform_MZ-Deform_Index, Deform_SLZ-Deform_Index
 		dc.w Deform_SYZ-Deform_Index, Deform_SBZ-Deform_Index
 		zonewarning Deform_Index,2
@@ -62,21 +63,22 @@ Deform_GHZ:
 		bsr.w	BGScroll_Block2
 	; calculate Y position
 		lea	(v_hscrolltablebuffer).w,a1
-		move.w	(v_screenposy).w,d0
-		andi.w	#$7FF,d0
-		lsr.w	#5,d0
-		neg.w	d0
-		addi.w	#$20,d0
-		bpl.s	.limitY
-		moveq	#0,d0
-	.limitY:
+		move.w	(v_screenposy).w,d0			; get screen pos
+		andi.w	#$7FF,d0					; maximum $7FF
+		lsr.w	#5,d0						; divide by $20
+	; OrionNavattan GHZ VScroll Fix
+		cmpi.w	#$20,d0
+		bls.s	.limitY						; branch if v_screenposy is between 0 and $400
+		moveq	#$20,d0						; use $20 if greater
+	; GHZ VScroll Fix End
+.limitY:
 		move.w	d0,d4
 		move.w	d0,(v_bgscrposy_vdp).w
 		move.w	(v_screenposx).w,d0
 		cmpi.b	#id_Title,(v_gamemode).w
 		bne.s	.notTitle
 		moveq	#0,d0	; reset foreground position in title screen
-	.notTitle:
+.notTitle:
 		neg.w	d0
 		swap	d0
 	; auto-scroll clouds
@@ -91,16 +93,16 @@ Deform_GHZ:
 		move.w	#$1F,d1
 		sub.w	d4,d1
 		bcs.s	.gotoCloud2
-	.cloudLoop1:		; upper cloud (32px)
+.cloudLoop1:		; upper cloud (32px)
 		move.l	d0,(a1)+
 		dbf	d1,.cloudLoop1
 
-	.gotoCloud2:
+.gotoCloud2:
 		move.w	(v_bgscroll_buffer+4).w,d0
 		add.w	(v_bg3screenposx).w,d0
 		neg.w	d0
 		move.w	#$F,d1
-	.cloudLoop2:		; middle cloud (16px)
+.cloudLoop2:		; middle cloud (16px)
 		move.l	d0,(a1)+
 		dbf	d1,.cloudLoop2
 
@@ -108,21 +110,21 @@ Deform_GHZ:
 		add.w	(v_bg3screenposx).w,d0
 		neg.w	d0
 		move.w	#$F,d1
-	.cloudLoop3:		; lower cloud (16px)
+.cloudLoop3:		; lower cloud (16px)
 		move.l	d0,(a1)+
 		dbf	d1,.cloudLoop3
 
 		move.w	#$2F,d1
 		move.w	(v_bg3screenposx).w,d0
 		neg.w	d0
-	.mountainLoop:		; distant mountains (48px)
+.mountainLoop:		; distant mountains (48px)
 		move.l	d0,(a1)+
 		dbf	d1,.mountainLoop
 
 		move.w	#$27,d1
 		move.w	(v_bg2screenposx).w,d0
 		neg.w	d0
-	.hillLoop:			; hills & waterfalls (40px)
+.hillLoop:			; hills & waterfalls (40px)
 		move.l	d0,(a1)+
 		dbf	d1,.hillLoop
 
@@ -138,7 +140,7 @@ Deform_GHZ:
 		move.w	d0,d3
 		move.w	#$47,d1
 		add.w	d4,d1
-	.waterLoop:			; water deformation
+.waterLoop:			; water deformation
 		move.w	d3,d0
 		neg.w	d0
 		move.l	d0,(a1)+
