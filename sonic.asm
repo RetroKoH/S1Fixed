@@ -6358,23 +6358,15 @@ OPL_Main:
 		move.l	a1,(v_opl_data+$C).w
 		lea	(v_objstate).w,a2
 		move.w	#$101,(a2)+
-	if FixBugs
-		move.w	#(v_objstate_end-v_objstate-2)/4-1,d0
-	else
-		; This clears longwords, but the loop counter is measured in words!
-		; This causes $17C bytes to be cleared instead of $BE.
-		move.w	#(v_objstate_end-v_objstate-2)/2-1,d0
-	endif
+		move.w	#(v_objstate_end-v_objstate-2)/4-1,d0	; Clear $BE bytes instead of $17C.
 
 OPL_ClrList:
 		clr.l	(a2)+
 		dbf	d0,OPL_ClrList	; clear	pre-destroyed object list
 
-	if FixBugs
 		; Clear the last word, since the above loop only does longwords.
 	if (v_objstate_end-v_objstate-2)&2
 		clr.w	(a2)+
-	endif
 	endif
 
 		lea	(v_objstate).w,a2
