@@ -68,6 +68,11 @@
  Credit: Devon/Ralakimus
  Function: Avoiding CalcAngle When Performing Collision in the Air. Based on a design choice utilized in Orbinaut Framework.
  Date: 2024-06-08
+ 
+ Name: Optimized Decompression (Nemesis, Kosinski, Comper*)
+ Credit: Vladikcomper
+ Function: Provides faster decompression for quicker loading.
+ Date: 2024-06-08
 
 # Visual Changes
  Name: Title Screen Tweaks

@@ -1050,7 +1050,7 @@ RunPLC:
 		tst.w	(v_plc_patternsleft).w
 		bne.s	Rplc_Exit
 		movea.l	(v_plc_buffer).w,a0
-		lea	(NemPCD_WriteRowToVDP).l,a3
+		lea	(NemDec_WriteRowToVDP).l,a3
 		lea	(v_ngfx_buffer).w,a1
 		move.w	(a0)+,d2
 		bpl.s	loc_160E
@@ -1058,7 +1058,7 @@ RunPLC:
 
 loc_160E:
 		andi.w	#$7FFF,d2
-		bsr.w	NemDec_BuildCodeTable
+		bsr.w	NemDec4
 		move.b	(a0)+,d5
 		asl.w	#8,d5
 		move.b	(a0)+,d5
@@ -1123,7 +1123,7 @@ loc_1676:
 
 loc_16AA:
 		movea.w	#8,a5
-		bsr.w	NemPCD_NewRow
+		bsr.w	NemDec3
 		subq.w	#1,(v_plc_patternsleft).w
 		beq.s	loc_16DC
 		subq.w	#1,(v_plc_framepatternsleft).w
