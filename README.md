@@ -293,4 +293,9 @@
  Credit: OrionNavattan
  Function: This fix makes the background scroll in a more "correct" direction vertically.
  Date: 2024-06-07
+
+ Name: PLC Queue Shifting Bug Fix
+ Credit: Vladikcomper
+ Function: This fix allows users to put a full $10 (16) entries into a single PLC queue as intended.
+ Date: 2024-06-08
  

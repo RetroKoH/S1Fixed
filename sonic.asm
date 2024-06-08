@@ -1141,29 +1141,21 @@ locret_16DA:
 ; ===========================================================================
 
 loc_16DC:
-		lea	(v_plc_buffer).w,a0
-		moveq	#(v_plc_buffer_only_end-v_plc_buffer-6)/4-1,d0
-
+	; Vladikcomper Pattern Load Cues Queue Shifting Bug fix
+		lea		(v_plc_buffer).w,a0
+		lea 	6(a0),a1
+		moveq   #$E,d0		; do $F cues
+ 
 loc_16E2:
-		move.l	6(a0),(a0)+
-		dbf	d0,loc_16E2
+		move.l  (a1)+,(a0)+
+		move.w  (a1)+,(a0)+
+		dbf 	d0,loc_16E2
 
-	if FixBugs
-		; The above code does not properly 'pop' the 16th PLC entry.
-		; Because of this, occupying the 16th slot will cause it to
-		; be repeatedly decompressed infinitely.
-		; Granted, this could be conisdered more of an optimisation
-		; than a bug: treating the 16th entry as a dummy that
-		; should never be occupied makes this code unnecessary.
-		; Still, the overhead of this code is minimal.
-	if (v_plc_buffer_only_end-v_plc_buffer-6)&2
-		move.w	6(a0),(a0)
-	endif
-
-		clr.l	(v_plc_buffer_only_end-6).w
-	endif
-
-		rts	
+		moveq   #0,d0
+		move.l  d0,(a0)+	; clear the last cue to avoid overcopying it
+		move.w  d0,(a0)+	;
+		rts
+	; Pattern Load Cues Queue Shifting Bug Fix End
 ; End of function ProcessDPLC2
 
 ; ---------------------------------------------------------------------------
@@ -7082,11 +7074,11 @@ ConvertCollisionArray:
 
 Sonic_WalkSpeed:
 		move.l	#v_collision1&$FFFFFF,(v_collindex).w	; MJ: load first collision data location
-		cmpi.b	#$C,(v_top_solid_bit).w			; MJ: is second collision set to be used?
-		beq.s	.first					; MJ: if not, branch
+		cmpi.b	#$C,(v_top_solid_bit).w					; MJ: is second collision set to be used?
+		beq.s	.first									; MJ: if not, branch
 		move.l	#v_collision2&$FFFFFF,(v_collindex).w	; MJ: load second collision data location
 .first:
-		move.b	(v_lrb_solid_bit).w,d5			; MJ: load L/R/B soldity bit
+		move.b	(v_lrb_solid_bit).w,d5					; MJ: load L/R/B soldity bit
 		move.l	obX(a0),d3
 		move.l	obY(a0),d2
 		move.w	obVelX(a0),d1
@@ -7147,11 +7139,11 @@ loc_14D3C:
 
 sub_14D48:
 		move.l	#v_collision1&$FFFFFF,(v_collindex).w	; MJ: load first collision data location
-		cmpi.b	#$C,(v_top_solid_bit).w			; MJ: is second collision set to be used?
-		beq.s	.first					; MJ: if not, branch
+		cmpi.b	#$C,(v_top_solid_bit).w					; MJ: is second collision set to be used?
+		beq.s	.first									; MJ: if not, branch
 		move.l	#v_collision2&$FFFFFF,(v_collindex).w	; MJ: load second collision data location
 .first:
-		move.b	(v_lrb_solid_bit).w,d5			; MJ: load L/R/B soldity bit
+		move.b	(v_lrb_solid_bit).w,d5					; MJ: load L/R/B soldity bit
 		move.b	d0,(v_anglebuffer).w
 		move.b	d0,(v_anglebuffer2).w
 		addi.b	#$20,d0
@@ -7174,11 +7166,11 @@ sub_14D48:
 
 Sonic_HitFloor:
 		move.l	#v_collision1&$FFFFFF,(v_collindex).w	; MJ: load first collision data location
-		cmpi.b	#$C,(v_top_solid_bit).w			; MJ: is second collision set to be used?
-		beq.s	.first					; MJ: if not, branch
+		cmpi.b	#$C,(v_top_solid_bit).w					; MJ: is second collision set to be used?
+		beq.s	.first									; MJ: if not, branch
 		move.l	#v_collision2&$FFFFFF,(v_collindex).w	; MJ: load second collision data location
 .first:
-		move.b	(v_top_solid_bit).w,d5			; MJ: load L/R/B soldity bit
+		move.b	(v_top_solid_bit).w,d5					; MJ: load L/R/B soldity bit
 		move.w	obY(a0),d2
 		move.w	obX(a0),d3
 		moveq	#0,d0
@@ -7188,7 +7180,7 @@ Sonic_HitFloor:
 		move.b	obWidth(a0),d0
 		ext.w	d0
 		add.w	d0,d3
-		lea	(v_anglebuffer).w,a4
+		lea		(v_anglebuffer).w,a4
 		movea.w	#$10,a3
 		move.w	#0,d6
 		bsr.w	FindFloor	; MJ: check solidity
@@ -7202,7 +7194,7 @@ Sonic_HitFloor:
 		move.b	obWidth(a0),d0
 		ext.w	d0
 		sub.w	d0,d3
-		lea	(v_anglebuffer2).w,a4
+		lea		(v_anglebuffer2).w,a4
 		movea.w	#$10,a3
 		move.w	#0,d6
 		bsr.w	FindFloor	; MJ: check solidity
@@ -7214,7 +7206,7 @@ loc_14DD0:
 		cmp.w	d0,d1
 		ble.s	loc_14DDE
 		move.b	(v_anglebuffer).w,d3
-		exg	d0,d1
+		exg		d0,d1
 
 loc_14DDE:
 		btst	#0,d3
@@ -7227,12 +7219,10 @@ locret_14DE6:
 ; End of function Sonic_HitFloor
 
 ; ===========================================================================
-		move.w	obY(a0),d2
-		move.w	obX(a0),d3
 
 loc_14DF0:
 		addi.w	#$A,d2
-		lea	(v_anglebuffer).w,a4
+		lea		(v_anglebuffer).w,a4
 		movea.w	#$10,a3
 		move.w	#0,d6
 		bsr.w	FindFloor	; MJ: check solidity
@@ -7464,7 +7454,7 @@ Sonic_HitWall:
 loc_1504A:
 		subi.w	#$A,d3
 		eori.w	#$F,d3
-		lea	(v_anglebuffer).w,a4
+		lea		(v_anglebuffer).w,a4
 		movea.w	#-$10,a3
 		move.w	#$400,d6	; MJ: $800/2
 		bsr.w	FindWall	; MJ: check solidity
