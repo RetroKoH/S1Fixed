@@ -2019,7 +2019,7 @@ Tit_LoadText:
 		copyTilemap	v_128x128&$FFFFFF,$C208,$21,$15		; RetroKoH Title Screen Adjustment
 
 		locVRAM	ArtTile_Level*$20
-		lea		(Nem_GHZ_1st).l,a0		; load GHZ patterns
+		lea		(Nem_Title).l,a0		; load Title Screen patterns -- Clownacy S2 Level Art Loading
 		bsr.w	NemDec
 		moveq	#palid_GHZ,d0			; load GHZ palette first -- RetroKoH Title Screen Adjustment
 		bsr.w	PalLoad1
@@ -2678,15 +2678,15 @@ Level_PlayBgm:
 Level_TtlCardLoop:
 		move.b	#$C,(v_vbla_routine).w
 		bsr.w	WaitForVBla
-		jsr	(ExecuteObjects).l
-		jsr	(BuildSprites).l
+		jsr		(ExecuteObjects).l
+		jsr		(BuildSprites).l
 		bsr.w	RunPLC
 		move.w	(v_ttlcardact+obX).w,d0
 		cmp.w	(v_ttlcardact+card_mainX).w,d0 ; has title card sequence finished?
 		bne.s	Level_TtlCardLoop ; if not, branch
 		tst.l	(v_plc_buffer).w ; are there any items in the pattern load cue?
 		bne.s	Level_TtlCardLoop ; if yes, branch
-		jsr	(Hud_Base).l	; load basic HUD gfx
+		jsr		(Hud_Base).l	; load basic HUD gfx
 
 Level_SkipTtlCard:
 		moveq	#palid_Sonic,d0
@@ -2694,9 +2694,10 @@ Level_SkipTtlCard:
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformLayers
 		bset	#2,(v_fg_scroll_flags).w
-		bsr.w	LevelDataLoad ; load block mappings and palettes
+		bsr.w	LoadZoneTiles	; load level art -- Clownacy Level Art Loading
+		bsr.w	LevelDataLoad	; load block mappings and palettes
 		bsr.w	LoadTilesFromStart
-		jsr	(ConvertCollisionArray).l
+		jsr		(ConvertCollisionArray).l
 		bsr.w	ColIndexLoad
 		bsr.w	LZWaterFeatures
 		move.b	#id_SonicPlayer,(v_player).w ; load Sonic object
@@ -3635,6 +3636,7 @@ End_LoadData:
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformLayers
 		bset	#2,(v_fg_scroll_flags).w
+		bsr.w	LoadZoneTiles	; load level art -- Clownacy Level Art Loading
 		bsr.w	LevelDataLoad
 		bsr.w	LoadTilesFromStart
 		lea	(Col_GHZ_1).l,a0 ; MJ: Set first collision for ending
@@ -4975,6 +4977,46 @@ locj_72da:
 locj_72EE:
 			rts
 		endif
+
+; ---------------------------------------------------------------------------
+; Subroutine to load level art -- Clownacy Level Art Loading
+; ---------------------------------------------------------------------------
+
+LoadZoneTiles:
+		moveq	#0,d0
+		move.b	(v_zone).w,d0
+		lsl.w	#4,d0
+		lea		(LevelHeaders).l,a2
+		lea		(a2,d0.w),a2
+		move.l	(a2)+,d0
+		andi.l	#$FFFFFF,d0			; 8x8 tile pointer
+		movea.l	d0,a0
+		lea		($FF0000).l,a1
+		bsr.w	KosDec
+		move.w	a1,d3
+		move.w	d3,d7
+		andi.w	#$FFF,d3
+		lsr.w	#1,d3
+		rol.w	#4,d7
+		andi.w	#$F,d7
+ 
+.loop:
+		move.w	d7,d2
+		lsl.w	#7,d2
+		lsl.w	#5,d2
+		move.l	#$FFFFFF,d1
+		move.w	d2,d1
+		jsr		(QueueDMATransfer).l
+		move.w	d7,-(sp)
+		move.b	#$C,(v_vbla_routine).w
+		bsr.w	WaitForVBla
+		bsr.w	RunPLC
+		move.w	(sp)+,d7
+		move.w	#$800,d3
+		dbf		d7,.loop
+
+		rts
+; End of function LoadZoneTiles
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to load basic level data
@@ -8698,21 +8740,21 @@ Nem_Squirrel:	binclude	"artnem/Animal Squirrel.nem"
 ; ---------------------------------------------------------------------------
 Blk16_GHZ:	binclude	"map16/GHZ.eni"
 		even
-Nem_GHZ_1st:	binclude	"artnem/8x8 - GHZ1.nem"	; GHZ primary patterns
+Nem_Title:	binclude	"artnem/8x8 - Title.nem"	; Title Screen GHZ patterns -- Clownacy S2 Level Art Loading
 		even
-Nem_GHZ_2nd:	binclude	"artnem/8x8 - GHZ2.nem"	; GHZ secondary patterns
+ArtKos_GHZ:	binclude	"artkos/8x8 - GHZ.kos"	; GHZ patterns -- Clownacy S2 Level Art Loading
 		even
 Blk128_GHZ:	binclude	"map128/GHZ.kos"
 		even
 Blk16_LZ:	binclude	"map16/LZ.eni"
 		even
-Nem_LZ:		binclude	"artnem/8x8 - LZ.nem"	; LZ primary patterns
+ArtKos_LZ:		binclude	"artkos/8x8 - LZ.kos"	; LZ primary patterns -- Clownacy S2 Level Art Loading
 		even
 Blk128_LZ:	binclude	"map128/LZ.kos"
 		even
 Blk16_MZ:	binclude	"map16/MZ.eni"
 		even
-Nem_MZ:		binclude	"artnem/8x8 - MZ.nem"	; MZ primary patterns
+ArtKos_MZ:		binclude	"artkos/8x8 - MZ.kos"	; MZ primary patterns -- Clownacy S2 Level Art Loading
 		even
 Blk128_MZ:	if Revision=0
 		binclude	"map128/MZ.kos"
@@ -8722,19 +8764,19 @@ Blk128_MZ:	if Revision=0
 		even
 Blk16_SLZ:	binclude	"map16/SLZ.eni"
 		even
-Nem_SLZ:	binclude	"artnem/8x8 - SLZ.nem"	; SLZ primary patterns
+ArtKos_SLZ:	binclude	"artkos/8x8 - SLZ.kos"	; SLZ primary patterns -- Clownacy S2 Level Art Loading
 		even
 Blk128_SLZ:	binclude	"map128/SLZ.kos"
 		even
 Blk16_SYZ:	binclude	"map16/SYZ.eni"
 		even
-Nem_SYZ:	binclude	"artnem/8x8 - SYZ.nem"	; SYZ primary patterns
+ArtKos_SYZ:	binclude	"artkos/8x8 - SYZ.kos"	; SYZ primary patterns -- Clownacy S2 Level Art Loading
 		even
 Blk128_SYZ:	binclude	"map128/SYZ.kos"
 		even
 Blk16_SBZ:	binclude	"map16/SBZ.eni"
 		even
-Nem_SBZ:	binclude	"artnem/8x8 - SBZ.nem"	; SBZ primary patterns
+ArtKos_SBZ:	binclude	"artkos/8x8 - SBZ.kos"	; SBZ primary patterns -- Clownacy S2 Level Art Loading
 		even
 Blk128_SBZ:	if Revision=0
 		binclude	"map128/SBZ.kos"

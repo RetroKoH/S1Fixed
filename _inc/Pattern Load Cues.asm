@@ -79,8 +79,8 @@ PLC_GameOverend:
 ; Pattern load cues - Green Hill
 ; ---------------------------------------------------------------------------
 PLC_GHZ:	dc.w ((PLC_GHZ2-PLC_GHZ-2)/6)-1
-		plcm	Nem_GHZ_1st,   ArtTile_Level                  ; GHZ main patterns
-		plcm	Nem_GHZ_2nd,   ArtTile_Level+$1CD             ; GHZ secondary patterns
+;		plcm	Nem_GHZ_1st,   ArtTile_Level                  ; GHZ main patterns
+;		plcm	Nem_GHZ_2nd,   ArtTile_Level+$1CD             ; GHZ secondary patterns
 		plcm	Nem_Stalk,     ArtTile_GHZ_Flower_Stalk       ; flower stalk
 		plcm	Nem_PplRock,   ArtTile_GHZ_Purple_Rock        ; purple rock
 		plcm	Nem_Crabmeat,  ArtTile_Crabmeat               ; crabmeat enemy
@@ -104,7 +104,7 @@ PLC_GHZ2end:
 ; Pattern load cues - Labyrinth
 ; ---------------------------------------------------------------------------
 PLC_LZ:		dc.w ((PLC_LZ2-PLC_LZ-2)/6)-1
-		plcm	Nem_LZ,          ArtTile_Level              ; LZ main patterns
+;		plcm	Nem_LZ,          ArtTile_Level              ; LZ main patterns
 		plcm	Nem_LzBlock1,    ArtTile_LZ_Block_1         ; block
 		plcm	Nem_LzBlock2,    ArtTile_LZ_Block_2         ; blocks
 		plcm	Nem_Splash,      ArtTile_LZ_Splash          ; waterfalls and splash
@@ -122,9 +122,6 @@ PLC_LZ2:	dc.w ((PLC_LZ2end-PLC_LZ2-2)/6)-1
 		plcm	Nem_LzDoor2,     ArtTile_LZ_Blocks          ; large horizontal door
 		plcm	Nem_LzWheel,     ArtTile_LZ_Conveyor_Belt   ; wheel
 		plcm	Nem_Gargoyle,    ArtTile_LZ_Gargoyle        ; gargoyle head
-	if Revision=0
-		plcm	Nem_LzSonic,     ArtTile_LZ_Sonic_Drowning  ; Sonic holding his breath
-	endif
 		plcm	Nem_LzPlatfm,    ArtTile_LZ_Rising_Platform ; rising platform
 		plcm	Nem_Orbinaut,    ArtTile_LZ_Orbinaut        ; orbinaut enemy
 		plcm	Nem_Jaws,        ArtTile_Jaws               ; jaws enemy
@@ -138,7 +135,7 @@ PLC_LZ2end:
 ; Pattern load cues - Marble
 ; ---------------------------------------------------------------------------
 PLC_MZ:		dc.w ((PLC_MZ2-PLC_MZ-2)/6)-1
-		plcm	Nem_MZ,       ArtTile_Level              ; MZ main patterns
+;		plcm	Nem_MZ,       ArtTile_Level              ; MZ main patterns
 		plcm	Nem_MzMetal,  ArtTile_MZ_Spike_Stomper   ; metal blocks
 		plcm	Nem_MzFire,   ArtTile_MZ_Fireball        ; fireballs
 		plcm	Nem_Swing,    ArtTile_GHZ_MZ_Swing       ; swinging platform
@@ -160,7 +157,7 @@ PLC_MZ2end:
 ; Pattern load cues - Star Light
 ; ---------------------------------------------------------------------------
 PLC_SLZ:	dc.w ((PLC_SLZ2-PLC_SLZ-2)/6)-1
-		plcm	Nem_SLZ,       ArtTile_Level                    ; SLZ main patterns
+;		plcm	Nem_SLZ,       ArtTile_Level                    ; SLZ main patterns
 		plcm	Nem_Bomb,      ArtTile_Bomb                     ; bomb enemy
 		plcm	Nem_Orbinaut,  ArtTile_SLZ_Orbinaut             ; orbinaut enemy
 		plcm	Nem_MzFire,    ArtTile_SLZ_Fireball             ; fireballs
@@ -182,7 +179,7 @@ PLC_SLZ2end:
 ; Pattern load cues - Spring Yard
 ; ---------------------------------------------------------------------------
 PLC_SYZ:	dc.w ((PLC_SYZ2-PLC_SYZ-2)/6)-1
-		plcm	Nem_SYZ,       ArtTile_Level               ; SYZ main patterns
+;		plcm	Nem_SYZ,       ArtTile_Level               ; SYZ main patterns
 		plcm	Nem_Crabmeat,  ArtTile_Crabmeat            ; crabmeat enemy
 		plcm	Nem_Buzz,      ArtTile_Buzz_Bomber         ; buzz bomber enemy
 		plcm	Nem_Yadrin,    ArtTile_Yadrin              ; yadrin enemy
@@ -202,7 +199,7 @@ PLC_SYZ2end:
 ; Pattern load cues - Scrap Brain
 ; ---------------------------------------------------------------------------
 PLC_SBZ:	dc.w ((PLC_SBZ2-PLC_SBZ-2)/6)-1
-		plcm	Nem_SBZ,       ArtTile_Level                   ; SBZ main patterns
+;		plcm	Nem_SBZ,       ArtTile_Level                   ; SBZ main patterns
 		plcm	Nem_Stomper,   ArtTile_SBZ_Moving_Block_Short  ; moving platform and stomper
 		plcm	Nem_SbzDoor1,  ArtTile_SBZ_Door                ; door
 		plcm	Nem_Girder,    ArtTile_SBZ_Girder              ; girder
@@ -350,8 +347,8 @@ PLC_SpeStResultend:
 ; Pattern load cues - ending sequence
 ; ---------------------------------------------------------------------------
 PLC_Ending:	dc.w ((PLC_Endingend-PLC_Ending-2)/6)-1
-		plcm	Nem_GHZ_1st,   ArtTile_Level            ; GHZ main patterns
-		plcm	Nem_GHZ_2nd,   ArtTile_Level+$1CD       ; GHZ secondary patterns
+;		plcm	Nem_GHZ_1st,   ArtTile_Level            ; GHZ main patterns
+;		plcm	Nem_GHZ_2nd,   ArtTile_Level+$1CD       ; GHZ secondary patterns
 		plcm	Nem_Stalk,     ArtTile_GHZ_Flower_Stalk ; flower stalk
 		plcm	Nem_EndFlower, ArtTile_Ending_Flowers   ; flowers
 		plcm	Nem_EndEm,     ArtTile_Ending_Emeralds  ; emeralds
