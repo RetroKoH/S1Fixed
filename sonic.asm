@@ -2956,15 +2956,15 @@ Sync1:
 		subq.b	#1,(v_ani0_frame).w ; next frame
 		andi.b	#7,(v_ani0_frame).w ; max frame is 7
 
-; Used for rings and giant rings
+; Used for 8-frame rings and giant rings -- RetroKoH 8-Frame Rings Change
 Sync2:
-		subq.b	#1,(v_ani1_time).w
-		bpl.s	Sync3
-		move.b	#7,(v_ani1_time).w
-		addq.b	#1,(v_ani1_frame).w
-		andi.b	#3,(v_ani1_frame).w
+		subq.b	#1,(v_ani1_time).w  ; decrement timer
+		bpl.s	Sync4               ; if timer !=0, branch
+		move.b	#3,(v_ani1_time).w  ; reset timer
+		addq.b	#1,(v_ani1_frame).w ; next frame
+		andi.b	#7,(v_ani1_frame).w ; max frame is 7
 
-; Used for nothing
+; Unused
 Sync3:
 		subq.b	#1,(v_ani2_time).w
 		bpl.s	Sync4
@@ -2974,7 +2974,7 @@ Sync3:
 		blo.s	Sync4
 		clr.b	(v_ani2_frame).w
 
-; Used for bouncing rings
+; Used for bouncing rings -- RetroKoH 8-Frame Rings Change
 Sync4:
 		tst.b	(v_ani3_time).w
 		beq.s	SyncEnd
@@ -2983,7 +2983,7 @@ Sync4:
 		add.w	(v_ani3_buf).w,d0
 		move.w	d0,(v_ani3_buf).w
 		rol.w	#7,d0
-		andi.w	#3,d0
+		andi.w	#7,d0
 		move.b	d0,(v_ani3_frame).w
 		subq.b	#1,(v_ani3_time).w
 
@@ -5608,11 +5608,13 @@ Map_Missile:	include	"_maps/Buzz Bomber Missile.asm"
 		include	"_incObj/7C Ring Flash.asm"
 
 		include	"_anim/Rings.asm"
-		if Revision=0
-Map_Ring:	include	"_maps/Rings.asm"
-		else
-Map_Ring:		include	"_maps/Rings (JP1).asm"
-		endif
+
+Map_Ring:	include	"_maps\Rings.asm" ; THESE normal mappings will be for debug rings, lost rings, and SS rings
+
+Map_RingBIN:
+		binclude	"_maps\Rings.bin" ; THESE special mappings are for the upcoming S2 Rings Manager
+		even
+
 Map_GRing:	include	"_maps/Giant Ring.asm"
 Map_Flash:	include	"_maps/Ring Flash.asm"
 		include	"_incObj/26 Monitor.asm"

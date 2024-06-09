@@ -2,35 +2,35 @@
 ; Constants
 ; ---------------------------------------------------------------------------
 
-Size_of_SegaPCM:		equ $6978
+Size_of_SegaPCM:			equ $6978
 Size_of_DAC_driver_guess:	equ $1760
 
 ; VDP addressses
-vdp_data_port:		equ $C00000
-vdp_control_port:	equ $C00004
-vdp_counter:		equ $C00008
+vdp_data_port:			equ $C00000
+vdp_control_port:		equ $C00004
+vdp_counter:			equ $C00008
 
-psg_input:		equ $C00011
+psg_input:				equ $C00011
 
 ; Z80 addresses
-z80_ram:		equ $A00000	; start of Z80 RAM
+z80_ram:				equ $A00000	; start of Z80 RAM
 ; Removed z80 DAC addresses
-z80_ram_end:		equ $A02000	; end of non-reserved Z80 RAM
-z80_version:		equ $A10001
-z80_port_1_data:	equ $A10002
-z80_port_1_control:	equ $A10008
-z80_port_2_control:	equ $A1000A
+z80_ram_end:			equ $A02000	; end of non-reserved Z80 RAM
+z80_version:			equ $A10001
+z80_port_1_data:		equ $A10002
+z80_port_1_control:		equ $A10008
+z80_port_2_control:		equ $A1000A
 z80_expansion_control:	equ $A1000C
-z80_bus_request:	equ $A11100
-z80_reset:		equ $A11200
-ym2612_a0:		equ $A04000
-ym2612_d0:		equ $A04001
-ym2612_a1:		equ $A04002
-ym2612_d1:		equ $A04003
+z80_bus_request:		equ $A11100
+z80_reset:				equ $A11200
+ym2612_a0:				equ $A04000
+ym2612_d0:				equ $A04001
+ym2612_a1:				equ $A04002
+ym2612_d1:				equ $A04003
 
-sram_port:		equ $A130F1
+sram_port:				equ $A130F1
 
-security_addr:		equ $A14000
+security_addr:			equ $A14000
 
 ; Sound driver constants
 TrackPlaybackControl:	equ 0		; All tracks
@@ -514,41 +514,41 @@ ArtTile_FZ_Eggman_Fleeing:	equ $3A0
 ArtTile_FZ_Eggman_No_Vehicle:	equ $470
 
 ; General Level Art
-ArtTile_Level:			equ $000
-ArtTile_Ball_Hog:		equ $302
-ArtTile_Bomb:			equ $400
-ArtTile_Crabmeat:		equ $400
+ArtTile_Level:				equ $000
+ArtTile_Ball_Hog:			equ $302
+ArtTile_Bomb:				equ $400
+ArtTile_Crabmeat:			equ $400
 ArtTile_Missile_Disolve:	equ $41C ; Unused
 ArtTile_Buzz_Bomber:		equ $444
-ArtTile_Chopper:		equ $47B
-ArtTile_Yadrin:			equ $47B
-ArtTile_Jaws:			equ $486
-ArtTile_Newtron:		equ $49B
-ArtTile_Burrobot:		equ $4A6
-ArtTile_Basaran:		equ $4B8
-ArtTile_Roller:			equ $4B8
-ArtTile_Moto_Bug:		equ $4F0
-ArtTile_Button:			equ $50F
-ArtTile_Spikes:			equ $51B
+ArtTile_Chopper:			equ $47B
+ArtTile_Yadrin:				equ $47B
+ArtTile_Jaws:				equ $486
+ArtTile_Newtron:			equ $49B
+ArtTile_Burrobot:			equ $4A6
+ArtTile_Basaran:			equ $4B8
+ArtTile_Roller:				equ $4B8
+ArtTile_Moto_Bug:			equ $4F0
+ArtTile_Button:				equ $50F
+ArtTile_Spikes:				equ $51B
 ArtTile_Spring_Horizontal:	equ $523
 ArtTile_Spring_Vertical:	equ $533
-ArtTile_Shield:			equ $541
+ArtTile_Shield:				equ $541
 ArtTile_Invincibility:		equ $55C
-ArtTile_Game_Over:		equ $55E
-ArtTile_Title_Card:		equ $580
-ArtTile_Animal_1:		equ $580
-ArtTile_Animal_2:		equ $592
-ArtTile_Explosion:		equ $5A0
-ArtTile_Monitor:		equ $680
-ArtTile_HUD:			equ $6CA
-ArtTile_Sonic:			equ $780
-ArtTile_Points:			equ $797
-ArtTile_Lamppost:		equ $7A0
-ArtTile_Ring:			equ $7B2
+ArtTile_Game_Over:			equ $55E
+ArtTile_Title_Card:			equ $580
+ArtTile_Animal_1:			equ $580
+ArtTile_Animal_2:			equ $592
+ArtTile_Explosion:			equ $5A0
+ArtTile_Monitor:			equ $680
+ArtTile_HUD:				equ $6CA
+ArtTile_Sonic:				equ $780
+ArtTile_Points:				equ $797
+ArtTile_Lamppost:			equ $7A0
+ArtTile_Ring:				equ $7AA
 ArtTile_Lives_Counter:		equ $7D4
 
 ; Eggman
-ArtTile_Eggman:			equ $400
+ArtTile_Eggman:				equ $400
 ArtTile_Eggman_Weapons:		equ $46C
 ArtTile_Eggman_Button:		equ $4A4
 ArtTile_Eggman_Spikeball:	equ $518
@@ -556,14 +556,14 @@ ArtTile_Eggman_Trap_Floor:	equ $518
 ArtTile_Eggman_Exhaust:		equ ArtTile_Eggman+$12A
 
 ; End of Level
-ArtTile_Giant_Ring:		equ $400
+ArtTile_Giant_Ring:			equ $400
 ArtTile_Giant_Ring_Flash:	equ $462
 ArtTile_Prison_Capsule:		equ $49D
 ArtTile_Hidden_Points:		equ $4B6
-ArtTile_Warp:			equ $541
-ArtTile_Mini_Sonic:		equ $551
-ArtTile_Bonuses:		equ $570
-ArtTile_Signpost:		equ $680
+ArtTile_Warp:				equ $541
+ArtTile_Mini_Sonic:			equ $551
+ArtTile_Bonuses:			equ $570
+ArtTile_Signpost:			equ $680
 
 ; Title Screen
 ArtTile_Title_Foreground:	equ $200
