@@ -78,6 +78,11 @@
  Credit: RetroKoH
  Function: Minor optimization w/ instruction changes across the entire ROM.
  Date: 2024-06-09
+ 
+ Name: Optimized Ring Loss
+ Credit: Redhotsonic/Spirituinsanum
+ Function: Speeds up ring loss by removing calculation
+ Date: 2024-06-09
 
 # Visual Changes
  Name: Title Screen Tweaks

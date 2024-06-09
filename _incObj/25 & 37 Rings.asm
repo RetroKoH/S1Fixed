@@ -6,7 +6,7 @@ Rings:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Ring_Index(pc,d0.w),d1
-		jmp	Ring_Index(pc,d1.w)
+		jmp		Ring_Index(pc,d1.w)
 ; ===========================================================================
 Ring_Index:
 ptr_Ring_Main:		dc.w Ring_Main-Ring_Index
@@ -30,7 +30,7 @@ Ring_PosData:
 		dc.b 0,	$10		; vertical tight
 		dc.b 0,	$18		; vertical normal
 		dc.b 0,	$20		; vertical wide
-		dc.b $10, $10		; diagonal
+		dc.b $10, $10	; diagonal
 		dc.b $18, $18
 		dc.b $20, $20
 		dc.b $F0, $10
@@ -43,10 +43,10 @@ Ring_PosData:
 ; ===========================================================================
 
 Ring_Main:	; Routine 0
-		lea	(v_objstate).w,a2
+		lea		(v_objstate).w,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
-		lea	2(a2,d0.w),a2
+		lea		2(a2,d0.w),a2
 		move.b	(a2),d4
 		move.b	obSubtype(a0),d1
 		move.b	d1,d0
@@ -185,21 +185,52 @@ RLoss_Index:
 RLoss_Count:	; Routine 0
 		movea.l	a0,a1
 		moveq	#0,d5
-		move.w	(v_rings).w,d5	; check number of rings you have
+		move.w	(v_rings).w,d5			; check number of rings you have
 		moveq	#32,d0
-		cmp.w	d0,d5			; do you have 32 or more?
-		blo.s	.belowmax		; if not, branch
-		move.w	d0,d5			; if yes, set d5 to 32
+	; RHS Ring Loss Speedup
+		lea		SpillRingData,a3		; load the address of the array in a3
+		lea     (v_player).w,a2			; a2=character
+		btst    #6,obStatus(a2)			; is Sonic underwater?
+		beq.s   .abovewater				; if not, branch
+		lea		SpillRingData_Water,a3	; load the address of the array in a3
+
+.abovewater:
+	; Ring Loss Speedup End
+		cmp.w	d0,d5					; do you have 32 or more?
+		blo.s	.belowmax				; if not, branch
+		move.w	d0,d5					; if yes, set d5 to 32
 
 .belowmax:
-		subq.w	#1,d5
-		move.w	#$288,d4
-		bra.s	.makerings
-; ===========================================================================
+		subq.w	#1,d5					; decrease the counter the first time, as we are creating the first ring now.
+
+		; Create the first instance, then loop create the others afterward.
+		move.b	#id_RingLoss,obID(a1) 	; load bouncing ring object
+		addq.b	#2,obRoutine(a1)
+		move.b	#8,obHeight(a1)
+		move.b	#8,obWidth(a1)
+		move.w	obX(a0),obX(a1)
+		move.w	obY(a0),obY(a1)
+		move.l	#Map_Ring,obMap(a1)
+		move.w	#make_art_tile(ArtTile_Ring,1,0),obGfx(a1)
+		move.b	#4,obRender(a1)
+		move.w	#$180,obPriority(a1)	; RetroKoH S2 Priority Manager
+		move.b	#$47,obColType(a1)
+		move.b	#8,obActWid(a1)
+		move.w  (a3)+,obVelX(a1)	; move the data contained in the array to the x velocity and increment the address in a3
+		move.w  (a3)+,obVelY(a1)	; move the data contained in the array to the y velocity and increment the address in a3
+		subq	#1,d5				; decrement for the first ring created
+		bmi.s	.resetcounter		; if only one ring is needed, branch and skip EVERYTHING below altogether
+		; Here we begin what's replacing SingleObjLoad, in order to avoid resetting its d0 every time an object is created.
+		lea		(v_lvlobjspace).w,a1
+		move.w	#$5F,d0
 
 .loop:
-		bsr.w	FindFreeObj
-		bne.w	.resetcounter
+		; REMOVE FindFreeObj. It's the routine that causes such slowdown
+		tst.b	(a1)
+		beq.s	.makerings		; Let's correct the branches. Here we can also skip the bne that was originally after bsr.w FindFreeObj because we already know there's a free object slot in memory.
+		lea		object_size(a1),a1
+		dbf		d0,.loop		; Branch correction again.
+		bne.s	.resetcounter	; We're moving this line here.
 
 .makerings:
 		_move.b	#id_RingLoss,obID(a1)	; load bouncing ring object
@@ -214,38 +245,9 @@ RLoss_Count:	; Routine 0
 		move.w	#$180,obPriority(a1)	; RetroKoH S2 Priority Manager
 		move.b	#$47,obColType(a1)
 		move.b	#8,obActWid(a1)
-		tst.w	d4
-		bmi.s	.loc_9D62
-		move.w	d4,d0
-		bsr.w	CalcSine
-		move.w	d4,d2
-		lsr.w	#8,d2
-	; RHS Underwater Rings Physics Fix
-		tst.b	(f_water).w			; Does the level have water?
-		beq.s	.skiphalvingvel		; If not, branch and skip underwater checks
-		move.w	(v_waterpos1).w,d6	; Move water level to d6
-		cmp.w	obY(a0),d6			; Is the ring object underneath the water level?
-		bgt.s	.skiphalvingvel		; If not, branch and skip underwater commands
-		asr.w	d0					; Half d0. Makes the ring's x_vel bounce to the left/right slower
-		asr.w	d1					; Half d1. Makes the ring's y_vel bounce up/down slower
-.skiphalvingvel:
-	; Underwater Rings Physics Fix End
-		asl.w	d2,d0
-		asl.w	d2,d1
-		move.w	d0,d2
-		move.w	d1,d3
-		addi.b	#$10,d4
-		bcc.s	.loc_9D62
-		subi.w	#$80,d4
-		bcc.s	.loc_9D62
-		move.w	#$288,d4
-
-.loc_9D62:
-		move.w	d2,obVelX(a1)
-		move.w	d3,obVelY(a1)
-		neg.w	d2
-		neg.w	d4
-		dbf		d5,.loop	; repeat for number of rings (max 31)
+		move.w  (a3)+,obVelX(a1)	; move the data contained in the array to the x velocity and increment the address in a3
+		move.w  (a3)+,obVelY(a1)	; move the data contained in the array to the y velocity and increment the address in a3
+		dbf		d5,.loop			; repeat for number of rings (max 31)
 
 .resetcounter:
 		clr.w	(v_rings).w			; reset number of rings to zero
@@ -258,6 +260,7 @@ RLoss_Count:	; Routine 0
 		; Ring Timers Fix End
 		move.w	#sfx_RingLoss,d0
 		jsr		(PlaySound_Special).l	; play ring loss sound
+
 
 RLoss_Bounce:	; Routine 2
 		move.b	(v_ani3_frame).w,obFrame(a0)
@@ -324,3 +327,36 @@ RLoss_Sparkle:	; Routine 6
 
 RLoss_Delete:	; Routine 8
 		bra.w	DeleteObject
+
+; ===========================================================================
+; ---------------------------------------------------------------------------
+; Ring Spawn Array -- RHS Ring Loss Speedup
+; ---------------------------------------------------------------------------
+
+SpillRingData:  dc.w    $FF3C,$FC14, $00C4,$FC14, $FDC8,$FCB0, $0238,$FCB0 ; 4
+                dc.w    $FCB0,$FDC8, $0350,$FDC8, $FC14,$FF3C, $03EC,$FF3C ; 8
+                dc.w    $FC14,$00C4, $03EC,$00C4, $FCB0,$0238, $0350,$0238 ; 12
+                dc.w    $FDC8,$0350, $0238,$0350, $FF3C,$03EC, $00C4,$03EC ; 16
+                dc.w    $FF9E,$FE0A, $0062,$FE0A, $FEE4,$FE58, $011C,$FE58 ; 20
+                dc.w    $FE58,$FEE4, $01A8,$FEE4, $FE0A,$FF9E, $01F6,$FF9E ; 24
+                dc.w    $FE0A,$0062, $01F6,$0062, $FE58,$011C, $01A8,$011C ; 28
+                dc.w    $FEE4,$01A8, $011C,$01A8, $FF9E,$0156, $0062,$0156 ; 32
+                even
+; ===========================================================================
+
+; ===========================================================================
+; ---------------------------------------------------------------------------
+; Ring Spawn Array - Underwater -- RHS Ring Loss Speedup
+; ---------------------------------------------------------------------------
+
+SpillRingData_Water:
+				dc.w    $FF9C,$FE08, $0064,$FE08, $FEE4,$FE58, $011C,$FE58 ; 4
+                dc.w    $FE58,$FEE4, $01A8,$FEE4, $FE08,$FF9C, $01F8,$FF9C ; 8
+                dc.w    $FE08,$0060, $01F8,$0060, $FE58,$011C, $01A8,$011C ; 12
+                dc.w    $FEE4,$01A8, $011C,$01A8, $FF9C,$01F4, $0064,$01F4 ; 16
+                dc.w    $FFCE,$FF04, $0032,$FF04, $FF72,$FF2C, $008E,$FF2C ; 20
+                dc.w    $FF2C,$FF72, $00D4,$FF72, $FF04,$FFCE, $00FC,$FFCE ; 24
+                dc.w    $FF04,$0030, $00FC,$0030, $FF2C,$008E, $00D4,$008E ; 28
+                dc.w    $FF72,$00D4, $008E,$00D4, $FFCE,$00FA, $0032,$00FA ; 32
+                even
+; ===========================================================================
