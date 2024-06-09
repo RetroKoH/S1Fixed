@@ -73,6 +73,11 @@
  Credit: Vladikcomper
  Function: Provides faster decompression for quicker loading.
  Date: 2024-06-08
+ 
+ Name: move.x to clr.x
+ Credit: RetroKoH
+ Function: Minor optimization w/ instruction changes across the entire ROM.
+ Date: 2024-06-09
 
 # Visual Changes
  Name: Title Screen Tweaks
