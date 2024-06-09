@@ -48,7 +48,7 @@ Flame_Action:	; Routine 2
 loc_E57A:
 		lea	(Ani_Flame).l,a1
 		bsr.w	AnimateSprite
-		move.b	#0,obColType(a0)
+		clr.b	obColType(a0)
 		move.b	objoff_36(a0),d0
 		cmp.b	obFrame(a0),d0
 		bne.s	Flame_ChkDel

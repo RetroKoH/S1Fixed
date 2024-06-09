@@ -42,7 +42,7 @@ Chop_ChgSpeed:	; Routine 2
 		subi.w	#$C0,d0
 		cmp.w	obY(a0),d0
 		bhs.s	.nochg
-		move.b	#0,obAnim(a0)	; use slow animation
+		clr.b	obAnim(a0)	; use slow animation
 		tst.w	obVelY(a0)	; is Chopper at	its highest point?
 		bmi.s	.nochg		; if not, branch
 		move.b	#2,obAnim(a0)	; use stationary animation

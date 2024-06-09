@@ -72,7 +72,7 @@ Bas_Action:	; Routine 2
 		cmpi.w	#$10,d0		; is basaran close to Sonic vertically?
 		bhs.s	.dropmore	; if not, branch
 		move.w	d1,obVelX(a0)	; make basaran fly horizontally
-		move.w	#0,obVelY(a0)	; stop basaran falling
+		clr.w	obVelY(a0)	; stop basaran falling
 		move.b	#2,obAnim(a0)
 		addq.b	#2,ob2ndRout(a0)
 

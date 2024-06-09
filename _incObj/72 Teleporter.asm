@@ -59,8 +59,8 @@ loc_1670E:
 		move.b	#$81,(f_playerctrl).w ; lock controls and disable object interaction
 		move.b	#id_Roll,obAnim(a1) ; use Sonic's rolling animation
 		move.w	#$800,obInertia(a1)
-		move.w	#0,obVelX(a1)
-		move.w	#0,obVelY(a1)
+		clr.w	obVelX(a1)
+		clr.w	obVelY(a1)
 		bclr	#5,obStatus(a0)
 		bclr	#5,obStatus(a1)
 		bset	#1,obStatus(a1)
@@ -138,7 +138,7 @@ loc_16800:
 		andi.w	#$7FF,obY(a1)
 		clr.b	obRoutine(a0)
 		clr.b	(f_playerctrl).w
-		move.w	#0,obVelX(a1)
+		clr.w	obVelX(a1)
 		move.w	#$200,obVelY(a1)
 		rts	
 

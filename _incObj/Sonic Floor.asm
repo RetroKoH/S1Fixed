@@ -35,14 +35,14 @@ Sonic_Floor:
 		tst.w	d1
 		bpl.s	loc_135F0
 		sub.w	d1,obX(a0)
-		move.w	#0,obVelX(a0)
+		clr.w	obVelX(a0)
 
 loc_135F0:
 		bsr.w	sub_14EB4
 		tst.w	d1
 		bpl.s	loc_13602
 		add.w	d1,obX(a0)
-		move.w	#0,obVelX(a0)
+		clr.w	obVelX(a0)
 
 loc_13602:
 		bsr.w	Sonic_HitFloor
@@ -75,13 +75,13 @@ loc_1361E:
 ; ===========================================================================
 
 loc_1364E:
-		move.w	#0,obVelY(a0)
+		clr.w	obVelY(a0)
 		move.w	obVelX(a0),obInertia(a0)
 		rts	
 ; ===========================================================================
 
 loc_1365C:
-		move.w	#0,obVelX(a0)
+		clr.w	obVelX(a0)
 		cmpi.w	#$FC0,obVelY(a0)
 		ble.s	loc_13670
 		move.w	#$FC0,obVelY(a0)
@@ -101,7 +101,7 @@ loc_13680:
 		tst.w	d1
 		bpl.s	loc_1369A
 		sub.w	d1,obX(a0)
-		move.w	#0,obVelX(a0)
+		clr.w	obVelX(a0)
 		move.w	obVelY(a0),obInertia(a0)
 		rts	
 ; ===========================================================================
@@ -113,7 +113,7 @@ loc_1369A:
 		sub.w	d1,obY(a0)
 		tst.w	obVelY(a0)
 		bpl.s	locret_136B2
-		move.w	#0,obVelY(a0)
+		clr.w	obVelY(a0)
 
 locret_136B2:
 		rts	
@@ -129,7 +129,7 @@ loc_136B4:
 		move.b	d3,obAngle(a0)
 		bsr.w	Sonic_ResetOnFloor
 		move.b	#id_Walk,obAnim(a0)
-		move.w	#0,obVelY(a0)
+		clr.w	obVelY(a0)
 		move.w	obVelX(a0),obInertia(a0)
 
 locret_136E0:
@@ -141,14 +141,14 @@ loc_136E2:
 		tst.w	d1
 		bpl.s	loc_136F4
 		sub.w	d1,obX(a0)
-		move.w	#0,obVelX(a0)
+		clr.w	obVelX(a0)
 
 loc_136F4:
 		bsr.w	sub_14EB4
 		tst.w	d1
 		bpl.s	loc_13706
 		add.w	d1,obX(a0)
-		move.w	#0,obVelX(a0)
+		clr.w	obVelX(a0)
 
 loc_13706:
 		bsr.w	Sonic_DontRunOnWalls
@@ -159,7 +159,7 @@ loc_13706:
 		addi.b	#$20,d0
 		andi.b	#$40,d0
 		bne.s	loc_13726
-		move.w	#0,obVelY(a0)
+		clr.w	obVelY(a0)
 		rts	
 ; ===========================================================================
 
@@ -180,7 +180,7 @@ loc_1373E:
 		tst.w	d1
 		bpl.s	loc_13758
 		add.w	d1,obX(a0)
-		move.w	#0,obVelX(a0)
+		clr.w	obVelX(a0)
 		move.w	obVelY(a0),obInertia(a0)
 		rts	
 ; ===========================================================================
@@ -192,7 +192,7 @@ loc_13758:
 		sub.w	d1,obY(a0)
 		tst.w	obVelY(a0)
 		bpl.s	locret_13770
-		move.w	#0,obVelY(a0)
+		clr.w	obVelY(a0)
 
 locret_13770:
 		rts	
@@ -208,7 +208,7 @@ loc_13772:
 		move.b	d3,obAngle(a0)
 		bsr.w	Sonic_ResetOnFloor
 		move.b	#id_Walk,obAnim(a0)
-		move.w	#0,obVelY(a0)
+		clr.w	obVelY(a0)
 		move.w	obVelX(a0),obInertia(a0)
 
 locret_1379E:

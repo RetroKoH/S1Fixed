@@ -88,7 +88,7 @@ Bub_ChkWater:	; Routine 4
 		clr.w	obInertia(a1)	; stop Sonic
 		move.b	#id_GetAir,obAnim(a1) ; use bubble-collecting animation
 		move.w	#$23,objoff_3E(a1)
-		move.b	#0,objoff_3C(a1)
+		clr.b	objoff_3C(a1)
 		bclr	#5,obStatus(a1)
 		bclr	#4,obStatus(a1)
 		btst	#2,obStatus(a1)

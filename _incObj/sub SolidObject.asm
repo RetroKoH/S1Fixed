@@ -152,11 +152,7 @@ loc_FB0E:
 		tst.b	(f_playerctrl).w			; are object interactions disabled?
 		bmi.w	Solid_Ignore				; if yes, branch
 		cmpi.b	#6,(v_player+obRoutine).w	; is Sonic dying?
-		if Revision=0
-		bcc.w	Solid_Ignore				; if yes, branch
-		else
-			bcc.w	Solid_Debug
-		endif
+		bcc.w	Solid_Debug					; if yes, branch
 		tst.w	(v_debuguse).w	; is debug mode being used?
 		bne.w	Solid_Debug	; if yes, branch
 		move.w	d0,d5
@@ -195,8 +191,8 @@ Solid_Right:
 		bpl.s	Solid_Centre	; if yes, branch
 
 Solid_Left:
-		move.w	#0,obInertia(a1)
-		move.w	#0,obVelX(a1)	; stop Sonic moving
+		clr.w	obInertia(a1)
+		clr.w	obVelX(a1)	; stop Sonic moving
 
 Solid_Centre:
 		sub.w	d0,obX(a1)	; correct Sonic's position
@@ -243,7 +239,7 @@ Solid_Below:
 		tst.w	d3		; is Sonic above the object?
 		bpl.s	Solid_TopBtmAir	; if yes, branch
 		sub.w	d3,obY(a1)	; correct Sonic's position
-		move.w	#0,obVelY(a1)	; stop Sonic moving
+		clr.w	obVelY(a1)	; stop Sonic moving
 
 Solid_TopBtmAir:
 		moveq	#-1,d4
@@ -310,8 +306,8 @@ Solid_ResetFloor:
 		lsr.w	#object_size_bits,d0
 		andi.w	#$7F,d0
 		move.b	d0,standonobject(a1)	; set object being stood on
-		move.b	#0,obAngle(a1)	; clear Sonic's angle
-		move.w	#0,obVelY(a1)	; stop Sonic
+		clr.b	obAngle(a1)	; clear Sonic's angle
+		clr.w	obVelY(a1)	; stop Sonic
 		move.w	obVelX(a1),obInertia(a1)
 		btst	#1,obStatus(a1)	; is Sonic in the air?
 		beq.s	.notinair	; if not, branch

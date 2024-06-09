@@ -183,7 +183,7 @@ React_Enemy:
 		neg.w	obVelY(a0)
 		asr	obVelX(a0)
 		asr	obVelY(a0)
-		move.b	#0,obColType(a1)
+		clr.b	obColType(a1)
 		subq.b	#1,obColProp(a1)
 		bne.s	.flagnotclear
 		bset	#7,obStatus(a1)
@@ -212,7 +212,7 @@ React_Enemy:
 .lessthan16:
 		bsr.w	AddPoints
 		_move.b	#id_ExplosionItem,obID(a1) ; change object to explosion
-		move.b	#0,obRoutine(a1)
+		clr.b	obRoutine(a1)
 		tst.w	obVelY(a0)
 		bmi.s	.bouncedown
 		move.w	obY(a0),d0
@@ -275,7 +275,7 @@ HurtSonic:
 		move.w	obY(a0),obY(a1)
 
 .hasshield:
-		move.b	#0,(v_shield).w	; remove shield
+		clr.b	(v_shield).w	; remove shield
 		move.b	#4,obRoutine(a0)
 		bsr.w	Sonic_ResetOnFloor
 		bset	#1,obStatus(a0)
@@ -294,7 +294,7 @@ HurtSonic:
 		neg.w	obVelX(a0)	; if Sonic is right of the object, reverse
 
 .isleft:
-		move.w	#0,obInertia(a0)
+		clr.w	obInertia(a0)
 		move.b	#id_Hurt,obAnim(a0)
 		move.w	#120,flashtime(a0)		; set temp invincible time to 2 seconds
 		move.w	#sfx_Death,d0			; load normal damage sound
@@ -328,30 +328,24 @@ HurtSonic:
 KillSonic:
 		tst.w	(v_debuguse).w	; is debug mode	active?
 		bne.s	.dontdie	; if yes, branch
-		move.b	#0,(v_invinc).w	; remove invincibility
+		clr.b	(v_invinc).w	; remove invincibility
 		move.b	#6,obRoutine(a0)
 		bsr.w	Sonic_ResetOnFloor
 		bset	#1,obStatus(a0)
 		move.w	#-$700,obVelY(a0)
-		move.w	#0,obVelX(a0)
-		move.w	#0,obInertia(a0)
+		clr.w	obVelX(a0)
+		clr.w	obInertia(a0)
 		move.w	obY(a0),objoff_38(a0)
 		move.b	#id_Death,obAnim(a0)
 		bset	#7,obGfx(a0)
-	if FixBugs
+	; Mercury Spike SFX Fix
 		move.w	#sfx_HitSpikes,d0 ; play spikes death sound
 		cmpi.b	#id_Spikes,obID(a2)	; check	if you were killed by spikes
 		beq.s	.sound
 		cmpi.b	#id_Harpoon,obID(a2)	; check	if you were killed by a harpoon
 		beq.s	.sound
 		move.w	#sfx_Death,d0	; play normal death sound
-	else
-		; This fails to check for the harpoon object.
-		move.w	#sfx_Death,d0	; play normal death sound
-		cmpi.b	#id_Spikes,obID(a2)	; check	if you were killed by spikes
-		bne.s	.sound
-		move.w	#sfx_HitSpikes,d0 ; play spikes death sound
-	endif
+	; Spike SFX Fix End
 
 .sound:
 		jsr	(PlaySound_Special).l

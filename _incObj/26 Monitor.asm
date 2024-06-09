@@ -108,8 +108,8 @@ loc_A230:
 
 loc_A236:
 		sub.w	d0,obX(a1)
-		move.w	#0,obInertia(a1)
-		move.w	#0,obVelX(a1)
+		clr.w	obInertia(a1)
+		clr.w	obVelX(a1)
 
 loc_A246:
 		btst	#1,obStatus(a1)
@@ -139,7 +139,7 @@ Mon_Display:	; Routine 8
 
 Mon_BreakOpen:	; Routine 4
 		addq.b	#2,obRoutine(a0)
-		move.b	#0,obColType(a0)
+		clr.b	obColType(a0)
 		bsr.w	FindFreeObj
 		bne.s	Mon_Explode
 		_move.b	#id_PowerUp,obID(a1) ; load monitor contents object

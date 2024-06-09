@@ -85,7 +85,7 @@ loc_82D0:
 		move.b	#id_Run,obPrevAni(a1) ; restart Sonic's animation
 
 loc_82FC:
-		move.b	#0,ledge_collapse_flag(a0)
+		clr.b	ledge_collapse_flag(a0)
 		move.b	#6,obRoutine(a0) ; run "Ledge_Display" routine
 
 locret_8308:

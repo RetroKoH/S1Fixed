@@ -266,7 +266,7 @@ loc_18F7E:
 		moveq	#0,d1
 
 loc_18F9C:
-		move.w	#0,obSubtype(a0)
+		clr.w	obSubtype(a0)
 
 loc_18FA2:
 		move.b	d1,objoff_3A(a1)

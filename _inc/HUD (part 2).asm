@@ -138,7 +138,7 @@ Hud_ClrBonus:
 		moveq	#$F,d5
 
 Hud_ClrBonusLoop:
-		move.l	#0,(a6)
+		clr.l	(a6)
 		dbf	d5,Hud_ClrBonusLoop
 
 		bra.s	loc_1CA5A
@@ -207,7 +207,7 @@ Hud_ClrLives:
 		moveq	#7,d5
 
 Hud_ClrLivesLoop:
-		move.l	#0,(a6)
-		dbf	d5,Hud_ClrLivesLoop
+		clr.l	(a6)
+		dbf		d5,Hud_ClrLivesLoop
 		bra.s	loc_1CABC
 ; End of function Hud_Lives

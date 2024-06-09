@@ -95,13 +95,9 @@ Brick_Type03:
 		move.b	#4,obSubtype(a0)
 		move.w	(a1),d0
 		andi.w	#$3FF,d0
-		if Revision=0
-		cmpi.w	#$2E8,d0
-		else
-			cmpi.w	#$16A,d0
-		endif
+		cmpi.w	#$16A,d0		; REV 01 Change
 		bcc.s	locret_E8EE
-		move.b	#0,obSubtype(a0)
+		clr.b	obSubtype(a0)
 
 locret_E8EE:
 		rts	

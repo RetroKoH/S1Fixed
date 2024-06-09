@@ -238,7 +238,7 @@ LGrass_DelFlames:
 		moveq	#0,d2
 
 loc_B0E8:
-		lea	objoff_36(a0),a2
+		lea		objoff_36(a0),a2
 		move.b	(a2),d2
 		clr.b	(a2)+
 		subq.b	#1,d2
@@ -252,17 +252,12 @@ loc_B0F4:
 		addi.w	#v_objspace&$FFFF,d0
 		movea.w	d0,a1
 		bsr.w	DeleteChild
-		dbf	d2,loc_B0F4
-		move.b	#0,objoff_35(a0)
-		move.b	#0,objoff_34(a0)
+		dbf		d2,loc_B0F4
+		clr.b	objoff_35(a0)
+		clr.b	objoff_34(a0)
 
 locret_B116:
-	if FixBugs
-		; This has been moved to prevent a display-after-free bug.
-		bra.w	DisplaySprite
-	else
-		rts	
-	endif
+		bra.w	DisplaySprite	; Clownacy DisplaySprite Fix
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Collision data for large moving platforms (MZ)

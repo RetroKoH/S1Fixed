@@ -21,7 +21,7 @@ BossPlasma_Main:	; Routine 0
 		move.w	#boss_fz_y+$2C,obY(a0)
 		move.w	#make_art_tile(ArtTile_FZ_Boss,0,0),obGfx(a0)
 		move.l	#Map_PLaunch,obMap(a0)
-		move.b	#0,obAnim(a0)
+		clr.b	obAnim(a0)
 		move.w	#$180,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#8,obWidth(a0)
 		move.b	#8,obHeight(a0)
@@ -34,12 +34,12 @@ BossPlasma_Generator:; Routine 2
 		cmpi.b	#6,objoff_34(a1)
 		bne.s	loc_1A850
 		move.b	#id_ExplosionBomb,obID(a0)
-		move.b	#0,obRoutine(a0)
+		clr.b	obRoutine(a0)
 		jmp	(DisplaySprite).l
 ; ===========================================================================
 
 loc_1A850:
-		move.b	#0,obAnim(a0)
+		clr.b	obAnim(a0)
 		tst.b	objoff_29(a0)
 		beq.s	loc_1A86C
 		addq.b	#2,obRoutine(a0)
@@ -88,7 +88,7 @@ BossPlasma_Loop:
 		move.l	#Map_Plasma,obMap(a1)
 		move.b	#$C,obHeight(a1)
 		move.b	#$C,obWidth(a1)
-		move.b	#0,obColType(a1)
+		clr.b	obColType(a1)
 		move.w	#$180,obPriority(a1)	; RetroKoH S2 Priority Manager
 		move.w	#$3E,obSubtype(a1)
 		move.b	#4,obRender(a1)
@@ -165,7 +165,7 @@ loc_1A9C0:
 		subq.w	#1,objoff_32(a1)
 
 loc_1A9E6:
-		move.b	#0,obAnim(a0)
+		clr.b	obAnim(a0)
 		subq.w	#1,obSubtype(a0)
 		bne.s	locret_1AA1C
 		addq.b	#2,ob2ndRout(a0)

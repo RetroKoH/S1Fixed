@@ -10,7 +10,7 @@ Sonic_Display:
 		bcc.s	.chkinvincible
 
 .display:
-		jsr	(DisplaySprite).l
+		jsr		(DisplaySprite).l
 
 .chkinvincible:
 		tst.b	(v_invinc).w	; does Sonic have invincibility?
@@ -30,12 +30,12 @@ Sonic_Display:
 		moveq	#5,d0		; play SBZ music
 
 .music:
-		lea	(MusicList2).l,a1
+		lea		(MusicList2).l,a1
 		move.b	(a1,d0.w),d0
-		jsr	(PlaySound).l	; play normal music
+		jsr		(PlaySound).l	; play normal music
 
 .removeinvincible:
-		move.b	#0,(v_invinc).w ; cancel invincibility
+		clr.b	(v_invinc).w ; cancel invincibility
 
 .chkshoes:
 		tst.b	(v_shoes).w	; does Sonic have speed	shoes?
@@ -47,9 +47,9 @@ Sonic_Display:
 		move.w	#$600,(v_sonspeedmax).w ; restore Sonic's speed
 		move.w	#$C,(v_sonspeedacc).w ; restore Sonic's acceleration
 		move.w	#$80,(v_sonspeeddec).w ; restore Sonic's deceleration
-		move.b	#0,(v_shoes).w	; cancel speed shoes
+		clr.b	(v_shoes).w	; cancel speed shoes
 		move.w	#bgm_Slowdown,d0
-		jmp	(PlaySound).l	; run music at normal speed
+		jmp		(PlaySound).l	; run music at normal speed
 
 .exit:
 		rts	

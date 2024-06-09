@@ -16,12 +16,12 @@ Debug_Main:	; Routine 0
 		addq.b	#2,(v_debuguse).w
 		move.w	(v_limittop2).w,(v_limittopdb).w	; buffer level x-boundary
 		move.w	(v_limitbtm1).w,(v_limitbtmdb).w	; buffer level y-boundary
-		move.w	#0,(v_limittop2).w
+		clr.w	(v_limittop2).w
 		move.w	#$720,(v_limitbtm1).w
 		andi.w	#$7FF,(v_player+obY).w
 		andi.w	#$7FF,(v_screenposy).w
 		andi.w	#$3FF,(v_bgscreenposy).w
-		move.b	#0,obFrame(a0)
+		clr.b	obFrame(a0)
 		move.b	#id_Walk,obAnim(a0)
 
 	; Mercury Debug Improvements
@@ -45,8 +45,8 @@ Debug_Main:	; Routine 0
 		cmpi.b	#id_Special,(v_gamemode).w	; is game mode $10 (special stage)?
 		bne.s	.islevel					; if not, branch
 
-		move.w	#0,(v_ssrotate).w			; stop special stage rotating
-		move.w	#0,(v_ssangle).w			; make special stage "upright"
+		clr.w	(v_ssrotate).w			; stop special stage rotating
+		clr.w	(v_ssangle).w			; make special stage "upright"
 		moveq	#6,d0						; use 6th debug	item list
 		bra.s	.selectlist
 ; ===========================================================================
@@ -62,7 +62,7 @@ Debug_Main:	; Routine 0
 		move.w	(a2)+,d6
 		cmp.b	(v_debugitem).w,d6	; have you gone past the last item?
 		bhi.s	.noreset			; if not, branch
-		move.b	#0,(v_debugitem).w	; back to start of list
+		clr.b	(v_debugitem).w	; back to start of list
 
 .noreset:
 		bsr.w	Debug_ShowItem
@@ -170,7 +170,7 @@ Debug_ChgItem:
 		addq.b	#1,(v_debugitem).w ; go forwards 1 item
 		cmp.b	(v_debugitem).w,d6
 		bhi.s	.display
-		move.b	#0,(v_debugitem).w ; loop back to first item
+		clr.b	(v_debugitem).w ; loop back to first item
 
 .display:
 		bra.w	Debug_ShowItem
@@ -181,7 +181,7 @@ Debug_ChgItem:
 		beq.s	.backtonormal			; if not, branch
 		jsr		(FindFreeObj).l
 		bne.s	.backtonormal
-		move.b	#0,(v_objstate+2).w		; Mercury Debug Improvements
+		clr.b	(v_objstate+2).w		; Mercury Debug Improvements
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		_move.b	obMap(a0),obID(a1)		; create object

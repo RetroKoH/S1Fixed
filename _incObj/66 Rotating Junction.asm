@@ -79,8 +79,8 @@ Jun_Action:	; Routine 2
 		move.b	#1,(f_playerctrl).w ; lock controls
 		move.b	#id_Roll,obAnim(a1) ; make Sonic use "rolling" animation
 		move.w	#$800,obInertia(a1)
-		move.w	#0,obVelX(a1)
-		move.w	#0,obVelY(a1)
+		clr.w	obVelX(a1)
+		clr.w	obVelY(a1)
 		bclr	#5,obStatus(a0)
 		bclr	#5,obStatus(a1)
 		bset	#1,obStatus(a1)
@@ -107,7 +107,7 @@ Jun_Release:	; Routine 6
 		cmp.b	objoff_32(a0),d0
 		beq.s	.dontrelease
 		lea	(v_player).w,a1
-		move.w	#0,obVelX(a1)
+		clr.w	obVelX(a1)
 		move.w	#$800,obVelY(a1)
 		cmpi.b	#4,d0
 		beq.s	.isdown

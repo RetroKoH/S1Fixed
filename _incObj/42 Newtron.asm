@@ -89,7 +89,7 @@ Newt_Action:	; Routine 2
 		bpl.s	.keepfalling	; if not, branch
 
 		add.w	d1,obY(a0)
-		move.w	#0,obVelY(a0)	; stop newtron falling
+		clr.w	obVelY(a0)	; stop newtron falling
 		addq.b	#2,ob2ndRout(a0)
 		move.b	#2,obAnim(a0)
 		btst	#5,obGfx(a0)

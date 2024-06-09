@@ -12,8 +12,8 @@ Sonic_Animate:
 		cmp.b	obPrevAni(a0),d0	; has animation changed?
 		beq.s	.do					; if not, branch
 		move.b	d0,obPrevAni(a0)
-		move.b	#0,obAniFrame(a0)	; reset animation
-		move.b	#0,obTimeFrame(a0)	; reset frame duration
+		clr.b	obAniFrame(a0)	; reset animation
+		clr.b	obTimeFrame(a0)	; reset frame duration
 		bclr	#5,obStatus(a0)		; clear pushing flag -- Mercury Pushing While Walking Fix
 
 .do:
@@ -48,10 +48,10 @@ Sonic_Animate:
 ; ===========================================================================
 
 .end_FF:
-		addq.b	#1,d0				; is the end flag = $FF	?
-		bne.s	.end_FE				; if not, branch
-		move.b	#0,obAniFrame(a0)	; restart the animation
-		move.b	1(a1),d0			; read sprite number
+		addq.b	#1,d0			; is the end flag = $FF	?
+		bne.s	.end_FE			; if not, branch
+		clr.b	obAniFrame(a0)	; restart the animation
+		move.b	1(a1),d0		; read sprite number
 		bra.s	.next
 ; ===========================================================================
 

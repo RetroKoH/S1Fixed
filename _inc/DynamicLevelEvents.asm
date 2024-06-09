@@ -302,7 +302,7 @@ loc_6FEA:
 ; ===========================================================================
 
 loc_6FF8:
-		move.w	#0,(v_limittop2).w
+		clr.w	(v_limittop2).w
 		cmpi.w	#$E00,(v_screenposx).w
 		bhs.s	locret_702C
 		move.w	#$340,(v_limittop2).w
@@ -358,7 +358,7 @@ locj_76CE:
 
 		cmpi.w	#$E70,(v_screenposx).w
 		blo.s	locret_7072
-		move.w	#0,(v_limittop2).w
+		clr.w	(v_limittop2).w
 		move.w	#$500,(v_limitbtm1).w
 		cmpi.w	#$1430,(v_screenposx).w
 		blo.s	locret_7072

@@ -31,7 +31,7 @@ SSR_ChkPLC:	; Routine 0
 
 SSR_Main:
 		movea.l	a0,a1
-		lea	(SSR_Config).l,a2
+		lea		(SSR_Config).l,a2
 		moveq	#3,d1
 		cmpi.w	#50,(v_rings).w	; do you have 50 or more rings?
 		blo.s	SSR_Loop	; if no, branch
@@ -46,9 +46,9 @@ SSR_Loop:
 		move.b	(a2)+,obFrame(a1)
 		move.l	#Map_SSR,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Title_Card,0,1),obGfx(a1)
-		move.b	#0,obRender(a1)
-		lea	object_size(a1),a1
-		dbf	d1,SSR_Loop	; repeat sequence 3 or 4 times
+		clr.b	obRender(a1)
+		lea		object_size(a1),a1
+		dbf		d1,SSR_Loop	; repeat sequence 3 or 4 times
 
 		moveq	#7,d0
 		move.b	(v_emeralds).w,d1

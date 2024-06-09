@@ -5,8 +5,8 @@ BGHZ_MakeBall:
 		bsr.w	BossMove
 		cmpi.w	#boss_ghz_x+$A0,objoff_30(a0)
 		bne.s	loc_17916
-		move.w	#0,obVelX(a0)
-		move.w	#0,obVelY(a0)
+		clr.w	obVelX(a0)
+		clr.w	obVelY(a0)
 		addq.b	#2,ob2ndRout(a0)
 		jsr	(FindNextFreeObj).l
 		bne.s	loc_17910
@@ -53,7 +53,7 @@ loc_17960:
 		bchg	#0,obStatus(a0)
 		move.w	#$40-1,objoff_3C(a0)
 		subq.b	#2,ob2ndRout(a0)
-		move.w	#0,obVelX(a0)
+		clr.w	obVelX(a0)
 
 loc_17976:
 		bra.w	loc_177E6

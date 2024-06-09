@@ -6,9 +6,10 @@ Missile:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Msl_Index(pc,d0.w),d1
-		jmp	Msl_Index(pc,d1.w)
+		jmp		Msl_Index(pc,d1.w)
 ; ===========================================================================
-Msl_Index:	dc.w Msl_Main-Msl_Index
+Msl_Index:
+		dc.w Msl_Main-Msl_Index
 		dc.w Msl_Animate-Msl_Index
 		dc.w Msl_FromBuzz-Msl_Index
 		dc.w Msl_Delete-Msl_Index
@@ -47,7 +48,7 @@ Msl_Animate:	; Routine 2
 		; code in its BuildSprites function for detecting this type
 		; of bug.
 		beq.s	Msl_ChkCancel.return
-		lea	(Ani_Missile).l,a1
+		lea		(Ani_Missile).l,a1
 		bsr.w	AnimateSprite
 		bra.w	DisplaySprite
 
@@ -90,7 +91,7 @@ Msl_FromBuzz:	; Routine 4
 
 .explode:
 		_move.b	#id_MissileDissolve,obID(a0) ; change object to an explosion (Obj24)
-		move.b	#0,obRoutine(a0)
+		clr.b	obRoutine(a0)
 		bra.w	MissileDissolve
 ; ===========================================================================
 
@@ -104,7 +105,6 @@ Msl_FromNewt:	; Routine 8
 		bsr.w	SpeedToPos
 
 Msl_Animate2:
-		lea	(Ani_Missile).l,a1
+		lea		(Ani_Missile).l,a1
 		bsr.w	AnimateSprite
-		bsr.w	DisplaySprite
-		rts	
+		bra.w	DisplaySprite

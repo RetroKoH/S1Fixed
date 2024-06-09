@@ -20,7 +20,7 @@ Roll_Main:	; Routine 0
 		tst.w	d1
 		bpl.s	locret_E052
 		add.w	d1,obY(a0)	; match	roller's position with the floor
-		move.w	#0,obVelY(a0)
+		clr.w	obVelY(a0)
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Roll,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Roller,0,0),obGfx(a0)
@@ -131,7 +131,7 @@ Roll_MatchFloor:
 		bpl.s	locret_E150
 		add.w	d1,obY(a0)	; match	Roller's position with the floor
 		subq.b	#2,ob2ndRout(a0)
-		move.w	#0,obVelY(a0)
+		clr.w	obVelY(a0)
 
 locret_E150:
 		rts	
@@ -146,7 +146,7 @@ Roll_Stop:
 		subi.w	#$30,d0
 		sub.w	obX(a0),d0
 		bcc.s	locret_E188
-		move.b	#0,obAnim(a0)
+		clr.b	obAnim(a0)
 		move.b	#$E,obColType(a0)
 		clr.w	obVelX(a0)
 		move.w	#120,objoff_30(a0)	; set waiting time to 2	seconds

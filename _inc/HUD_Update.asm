@@ -40,11 +40,11 @@ HUD_Update:
 		addq.b	#1,-(a1)	; increment 1/60s counter
 		cmpi.b	#60,(a1)	; check if passed 60
 		blo.s	.chklives
-		move.b	#0,(a1)
+		clr.b	(a1)
 		addq.b	#1,-(a1)	; increment second counter
 		cmpi.b	#60,(a1)	; check if passed 60
 		blo.s	.updatetime
-		move.b	#0,(a1)
+		clr.b	(a1)
 		addq.b	#1,-(a1)	; increment minute counter
 		cmpi.b	#9,(a1)		; check if passed 9
 		blo.s	.updatetime
@@ -181,8 +181,8 @@ loc_1C858:
 ; ===========================================================================
 
 loc_1C85E:
-		move.l	#0,(a6)
-		dbf	d1,loc_1C85E
+		clr.l	(a6)
+		dbf		d1,loc_1C85E
 
 		bra.s	loc_1C858
 ; End of function Hud_Base

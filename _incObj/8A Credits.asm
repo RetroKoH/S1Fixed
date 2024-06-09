@@ -20,7 +20,7 @@ Cred_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Credits_Font,0,0),obGfx(a0)
 		move.w	(v_creditsnum).w,d0 ; load credits index number
 		move.b	d0,obFrame(a0)	; display appropriate sprite
-		move.b	#0,obRender(a0)
+		clr.b	obRender(a0)
 		clr.w	obPriority(a0)		; RetroKoH S2 Priority Manager
 
 		cmpi.b	#id_Title,(v_gamemode).w ; is the mode #4 (title screen)?

@@ -61,7 +61,7 @@ Yad_Main:	; Routine 0
 		tst.w	d1
 		bpl.s	locret_F89E
 		add.w	d1,obY(a0)	; match	object's position with the floor
-		move.w	#0,obVelY(a0)
+		clr.w	obVelY(a0)
 		addq.b	#2,obRoutine(a0)
 		bchg	#0,obStatus(a0)
 
@@ -73,8 +73,8 @@ Yad_Action:	; Routine 2
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
 		move.w	Yad_Index2(pc,d0.w),d1
-		jsr	Yad_Index2(pc,d1.w)
-		lea	(Ani_Yad).l,a1
+		jsr		Yad_Index2(pc,d1.w)
+		lea		(Ani_Yad).l,a1
 		bsr.w	AnimateSprite
 		bra.w	RememberState
 ; ===========================================================================
@@ -112,6 +112,6 @@ Yad_FixToFloor:
 Yad_Pause:
 		subq.b	#2,ob2ndRout(a0)
 		move.w	#59,yad_timedelay(a0) ; set pause time to 1 second
-		move.w	#0,obVelX(a0)
-		move.b	#0,obAnim(a0)
+		clr.w	obVelX(a0)
+		clr.b	obAnim(a0)
 		rts	

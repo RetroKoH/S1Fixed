@@ -129,7 +129,7 @@ PSwapper_MainX:
 PSwapper_MainX_Alt:
 		cmp.w	obX(a1),d1
 		bls.s	.locret
-		move.b	#0,-1(a2)
+		clr.b	-1(a2)
 		move.w	obY(a0),d2
 		move.w	d2,d3
 		move.w	$32(a0),d4
@@ -222,7 +222,7 @@ PSwapper_MainY:
 PSwapper_MainY_Alt:
 		cmp.w	obY(a1),d1
 		bls.s	.locret
-		move.b	#0,-1(a2)
+		clr.b	-1(a2)
 		move.w	obX(a0),d2
 		move.w	d2,d3
 		move.w	$32(a0),d4

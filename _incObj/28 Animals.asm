@@ -173,7 +173,7 @@ loc_9184:
 		move.b	#1,obFrame(a0)
 		tst.w	obVelY(a0)
 		bmi.s	loc_91AE
-		move.b	#0,obFrame(a0)
+		clr.b	obFrame(a0)
 		jsr	(ObjFloorDist).l
 		tst.w	d1
 		bpl.s	loc_91AE
@@ -291,7 +291,7 @@ loc_92D6:
 		move.b	#1,obFrame(a0)
 		tst.w	obVelY(a0)
 		bmi.s	loc_9310
-		move.b	#0,obFrame(a0)
+		clr.b	obFrame(a0)
 		jsr	(ObjFloorDist).l
 		tst.w	d1
 		bpl.s	loc_9310
@@ -328,7 +328,7 @@ loc_9332:
 		move.b	#1,obFrame(a0)
 		tst.w	obVelY(a0)
 		bmi.s	loc_936C
-		move.b	#0,obFrame(a0)
+		clr.b	obFrame(a0)
 		jsr	(ObjFloorDist).l
 		tst.w	d1
 		bpl.s	loc_936C
@@ -375,8 +375,8 @@ loc_93C4:
 		move.b	#1,obFrame(a0)
 		tst.w	obVelY(a0)
 		bmi.s	locret_93EA
-		move.b	#0,obFrame(a0)
-		jsr	(ObjFloorDist).l
+		clr.b	obFrame(a0)
+		jsr		(ObjFloorDist).l
 		tst.w	d1
 		bpl.s	locret_93EA
 		add.w	d1,obY(a0)

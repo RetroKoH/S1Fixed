@@ -332,18 +332,18 @@ loc_C268:
 		move.w	#-$40,d1
 
 loc_C294:
-		lea	(v_player).w,a1
+		lea		(v_player).w,a1
 		add.w	d0,obX(a1)
 		move.w	d1,obInertia(a1)
-		move.w	#0,obVelX(a1)
+		clr.w	obVelX(a1)
 		move.w	d0,-(sp)
 		move.w	#sfx_Push,d0
-		jsr	(PlaySound_Special).l	 ; play pushing sound
+		jsr		(PlaySound_Special).l	 ; play pushing sound
 		move.w	(sp)+,d0
 		tst.b	obSubtype(a0)
 		bmi.s	locret_C2E4
 		move.w	d0,-(sp)
-		jsr	(ObjFloorDist).l
+		jsr		(ObjFloorDist).l
 		move.w	(sp)+,d0
 		cmpi.w	#4,d1
 		ble.s	loc_C2E0

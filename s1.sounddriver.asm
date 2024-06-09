@@ -2053,7 +2053,7 @@ cfJumpReturn:
 		moveq	#0,d0
 		move.b	TrackStackPointer(a5),d0 ; Track stack pointer
 		movea.l	(a5,d0.w),a4		; Set track return address
-		move.l	#0,(a5,d0.w)		; Set 'popped' value to zero
+		clr.l	(a5,d0.w)		; Set 'popped' value to zero
 		addq.w	#2,a4			; Skip jump target address from gosub flag
 		addq.b	#4,d0			; Actually 'pop' value
 		move.b	d0,TrackStackPointer(a5) ; Set new stack pointer

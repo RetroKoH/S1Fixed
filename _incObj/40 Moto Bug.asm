@@ -30,7 +30,7 @@ Moto_Main:	; Routine 0
 		tst.w	d1
 		bpl.s	.notonfloor
 		add.w	d1,obY(a0)	; match	object's position with the floor
-		move.w	#0,obVelY(a0)
+		clr.w	obVelY(a0)
 		addq.b	#2,obRoutine(a0) ; goto Moto_Action next
 		bchg	#0,obStatus(a0)
 
@@ -100,13 +100,13 @@ Moto_ActIndex:	dc.w .move-Moto_ActIndex
 .pause:
 		subq.b	#2,ob2ndRout(a0)
 		move.w	#59,.time(a0)	; set pause time to 1 second
-		move.w	#0,obVelX(a0)	; stop the object moving
-		move.b	#0,obAnim(a0)
+		clr.w	obVelX(a0)	; stop the object moving
+		clr.b	obAnim(a0)
 		rts	
 ; ===========================================================================
 
 Moto_Animate:	; Routine 4
-		lea	(Ani_Moto).l,a1
+		lea		(Ani_Moto).l,a1
 		bsr.w	AnimateSprite
 		bra.w	DisplaySprite
 ; ===========================================================================

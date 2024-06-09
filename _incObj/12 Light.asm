@@ -6,9 +6,10 @@ SpinningLight:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Light_Index(pc,d0.w),d1
-		jmp	Light_Index(pc,d1.w)
+		jmp		Light_Index(pc,d1.w)
 ; ===========================================================================
-Light_Index:	dc.w Light_Main-Light_Index
+Light_Index:
+		dc.w Light_Main-Light_Index
 		dc.w Light_Animate-Light_Index
 ; ===========================================================================
 
@@ -27,7 +28,7 @@ Light_Animate:	; Routine 2
 		addq.b	#1,obFrame(a0)
 		cmpi.b	#6,obFrame(a0)
 		blo.s	.chkdel
-		move.b	#0,obFrame(a0)
+		clr.b	obFrame(a0)
 
 .chkdel:
 		out_of_range.w	DeleteObject

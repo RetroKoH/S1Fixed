@@ -77,7 +77,7 @@ Bom_Action:	; Routine 2
 		subq.b	#2,ob2ndRout(a0)
 		move.w	#179,bom_time(a0) ; set time delay to 3 seconds
 		clr.w	obVelX(a0)	; stop walking
-		move.b	#0,obAnim(a0)	; use waiting animation
+		clr.b	obAnim(a0)	; use waiting animation
 		rts	
 ; ===========================================================================
 
@@ -85,7 +85,7 @@ Bom_Action:	; Routine 2
 		subq.w	#1,bom_time(a0)	; subtract 1 from time delay
 		bpl.s	.noexplode	; if time remains, branch
 		_move.b	#id_ExplosionBomb,obID(a0) ; change bomb into an explosion
-		move.b	#0,obRoutine(a0)
+		clr.b	obRoutine(a0)
 
 .noexplode:
 		rts	

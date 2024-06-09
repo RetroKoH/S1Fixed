@@ -64,7 +64,7 @@ SEgg_Main:	; Routine 0
 		move.b	#4,obRender(a1)
 		bset	#7,obRender(a1)
 		move.b	#$10,obActWid(a1)
-		move.b	#0,obFrame(a1)
+		clr.b	obFrame(a1)
 
 SEgg_Eggman:	; Routine 2
 		moveq	#0,d0

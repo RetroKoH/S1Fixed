@@ -40,7 +40,7 @@ Crab_Main:	; Routine 0
 		bpl.s	.floornotfound
 		add.w	d1,obY(a0)
 		move.b	d3,obAngle(a0)
-		move.w	#0,obVelY(a0)
+		clr.w	obVelY(a0)
 		addq.b	#2,obRoutine(a0)
 
 .floornotfound:
@@ -144,7 +144,7 @@ loc_9654:
 loc_966E:
 		subq.b	#2,ob2ndRout(a0)
 		move.w	#59,crab_timedelay(a0)
-		move.w	#0,obVelX(a0)
+		clr.w	obVelX(a0)
 		bsr.w	Crab_SetAni
 		move.b	d0,obAnim(a0)
 		rts	

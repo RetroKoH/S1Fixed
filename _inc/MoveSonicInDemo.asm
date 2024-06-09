@@ -28,7 +28,7 @@ DemoRecorder:
 
 .next:
 		move.b	d0,2(a1)
-		move.b	#0,3(a1)
+		clr.b	3(a1)
 		addq.w	#2,(v_btnpushtime1).w
 		andi.w	#$3FF,(v_btnpushtime1).w
 		rts	

@@ -95,7 +95,7 @@ GMake_Display:	; Routine 8
 ; ===========================================================================
 
 GMake_Delete:	; Routine $A
-		move.b	#0,obAnim(a0)
+		clr.b	obAnim(a0)
 		move.b	#2,obRoutine(a0)
 		tst.b	obSubtype(a0)
 		beq.w	DeleteObject
@@ -184,7 +184,7 @@ Geyser_Main:	; Routine 0
 		clr.w	obPriority(a1)		; RetroKoH S2 Priority Manager
 		move.w	objoff_30(a0),objoff_30(a1)
 		move.l	objoff_3C(a0),objoff_3C(a1)
-		move.b	#0,obSubtype(a0)
+		clr.b	obSubtype(a0)
 
 .sound:
 		move.w	#sfx_Burning,d0
@@ -261,7 +261,7 @@ loc_F02E:
 		addq.b	#1,obAniFrame(a0)
 		cmpi.b	#2,obAniFrame(a0)
 		blo.s	loc_F04C
-		move.b	#0,obAniFrame(a0)
+		clr.b	obAniFrame(a0)
 
 loc_F04C:
 		move.b	obAniFrame(a0),d0

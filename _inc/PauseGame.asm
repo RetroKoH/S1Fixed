@@ -44,7 +44,7 @@ Pause_EndMusic:
 		move.b	#$80,(v_snddriver_ram+f_pausemusic).w	; unpause the music
 
 Unpause:
-		move.w	#0,(f_pause).w	; unpause the game
+		clr.w	(f_pause).w	; unpause the game
 
 Pause_DoNothing:
 		rts	

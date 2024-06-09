@@ -87,8 +87,8 @@ loc_AD84:
 		beq.s	loc_ADA4
 		subq.b	#2,ob2ndRout(a0)
 		move.w	#59,burro_timedelay(a0)
-		move.w	#0,obVelX(a0)
-		move.b	#0,obAnim(a0)
+		clr.w	obVelX(a0)
+		clr.b	obAnim(a0)
 		rts	
 ; ===========================================================================
 
@@ -108,7 +108,7 @@ Burro_Jump:
 		tst.w	d1
 		bpl.s	locret_ADF0
 		add.w	d1,obY(a0)
-		move.w	#0,obVelY(a0)
+		clr.w	obVelY(a0)
 		move.b	#1,obAnim(a0)
 		move.w	#255,burro_timedelay(a0)
 		subq.b	#2,ob2ndRout(a0)

@@ -57,7 +57,7 @@ Ring_Main:	; Routine 0
 
 loc_9B80:
 		swap	d1
-		move.w	#0,d1
+		clr.w	d1
 		lsr.b	#4,d0
 		add.w	d0,d0
 		move.b	Ring_PosData(pc,d0.w),d5 ; load ring spacing data
@@ -115,17 +115,17 @@ Ring_Animate:	; Routine 2
 
 Ring_Collect:	; Routine 4
 		addq.b	#2,obRoutine(a0)
-		move.b	#0,obColType(a0)
+		clr.b	obColType(a0)
 		move.w	#$80,obPriority(a0)		; RetroKoH S2 Priority Manager
 		bsr.w	CollectRing
-		lea	(v_objstate).w,a2
+		lea		(v_objstate).w,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		move.b	objoff_34(a0),d1
 		bset	d1,2(a2,d0.w)
 
 Ring_Sparkle:	; Routine 6
-		lea	(Ani_Ring).l,a1
+		lea		(Ani_Ring).l,a1
 		bsr.w	AnimateSprite
 		bra.w	DisplaySprite
 ; ===========================================================================
@@ -248,9 +248,9 @@ RLoss_Count:	; Routine 0
 		dbf		d5,.loop	; repeat for number of rings (max 31)
 
 .resetcounter:
-		move.w	#0,(v_rings).w			; reset number of rings to zero
+		clr.w	(v_rings).w			; reset number of rings to zero
 		move.b	#$80,(f_ringcount).w	; update ring counter
-		move.b	#0,(v_lifecount).w
+		clr.b	(v_lifecount).w
 		; RHS Ring Timers Fix
 		moveq   #-1,d0					; Move #-1 to d0
 		move.b  d0,obDelayAni(a0)		; Move d0 to new timer
@@ -312,7 +312,7 @@ RLoss_Bounce:	; Routine 2
 
 RLoss_Collect:	; Routine 4
 		addq.b	#2,obRoutine(a0)
-		move.b	#0,obColType(a0)
+		clr.b	obColType(a0)
 		move.w	#$80,obPriority(a0)		; RetroKoH S2 Priority Manager
 		bsr.w	CollectRing
 

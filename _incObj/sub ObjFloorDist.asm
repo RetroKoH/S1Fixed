@@ -36,14 +36,14 @@ ObjFloorDist2:
 .first:
 .notsonic:
 		lea	(v_anglebuffer).w,a4
-		move.b	#0,(a4)
+		clr.b	(a4)
 		movea.w	#$10,a3		; height of a 16x16 tile
-		move.w	#0,d6
+		clr.w	d6
 		bsr.w	FindFloor		; MJ: check solidity
 		move.b	(v_anglebuffer).w,d3
 		btst	#0,d3
 		beq.s	locret_14E4E
-		move.b	#0,d3
+		clr.b	d3
 
 locret_14E4E:
 		rts	

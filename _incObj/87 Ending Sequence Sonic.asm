@@ -33,7 +33,7 @@ ESon_Main2:
 		move.b	#4,obRender(a0)
 		clr.b	obStatus(a0)
 		move.w	#$100,obPriority(a0)	; RetroKoH S2 Priority Manager
-		move.b	#0,obFrame(a0)
+		clr.b	obFrame(a0)
 		move.w	#80,eson_time(a0) ; set duration for Sonic to pause
 
 ESon_MakeEmeralds:

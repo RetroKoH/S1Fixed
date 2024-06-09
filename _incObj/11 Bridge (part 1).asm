@@ -26,7 +26,7 @@ Bri_Main:	; Routine 0
 		lea	obSubtype(a0),a2
 		moveq	#0,d1
 		move.b	(a2),d1		; copy bridge length to d1
-		move.b	#0,(a2)+	; clear bridge length
+		clr.b	(a2)+	; clear bridge length
 		move.w	d1,d0
 		lsr.w	#1,d0
 		lsl.w	#4,d0

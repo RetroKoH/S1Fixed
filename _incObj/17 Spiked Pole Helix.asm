@@ -8,7 +8,8 @@ Helix:
 		move.w	Hel_Index(pc,d0.w),d1
 		jmp	Hel_Index(pc,d1.w)
 ; ===========================================================================
-Hel_Index:	dc.w Hel_Main-Hel_Index
+Hel_Index:
+		dc.w Hel_Main-Hel_Index
 		dc.w Hel_Action-Hel_Index
 		dc.w Hel_Action-Hel_Index
 		dc.w Hel_Delete-Hel_Index
@@ -33,7 +34,7 @@ Hel_Main:	; Routine 0
 		lea	obSubtype(a0),a2 ; move helix length to a2
 		moveq	#0,d1
 		move.b	(a2),d1		; move helix length to d1
-		move.b	#0,(a2)+	; clear subtype
+		clr.b	(a2)+	; clear subtype
 		move.w	d1,d0
 		lsr.w	#1,d0
 		lsl.w	#4,d0
@@ -85,7 +86,7 @@ Hel_Action:	; Routine 2, 4
 
 Hel_RotateSpikes:
 		move.b	(v_ani0_frame).w,d0
-		move.b	#0,obColType(a0) ; make object harmless
+		clr.b	obColType(a0) ; make object harmless
 		add.b	hel_frame(a0),d0
 		andi.b	#7,d0
 		move.b	d0,obFrame(a0)	; change current frame

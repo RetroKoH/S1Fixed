@@ -76,7 +76,7 @@ BGHZ_ShipStart:
 		bsr.w	BossMove
 		cmpi.w	#boss_ghz_y+$38,objoff_38(a0)
 		bne.s	loc_177E6
-		move.w	#0,obVelY(a0)	; stop ship
+		clr.w	obVelY(a0)	; stop ship
 		addq.b	#2,ob2ndRout(a0) ; goto next routine
 
 loc_177E6:

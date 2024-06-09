@@ -190,9 +190,9 @@ MPCM_stopZ80:	macro OPBUSREQ
 
 MPCM_startZ80:	macro OPBUSREQ
 	if ARGCOUNT==1
-		move.w	#0, OPBUSREQ
+		clr.w	 OPBUSREQ
 	else
-		move.w	#0, MPCM_Z80_BUSREQ
+		clr.w	 MPCM_Z80_BUSREQ
 	endif
 	endm
 

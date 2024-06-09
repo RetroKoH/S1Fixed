@@ -37,7 +37,7 @@ loc_7B9C:
 		add.w	d0,obAngle(a0)
 		cmpi.w	#-$200,d0
 		bne.s	loc_7BB6
-		move.b	#0,objoff_3D(a0)
+		clr.b	objoff_3D(a0)
 
 loc_7BB6:
 		move.b	obAngle(a0),d0

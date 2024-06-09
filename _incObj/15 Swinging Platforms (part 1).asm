@@ -55,7 +55,7 @@ Swing_Main:	; Routine 0
 		move.b	(a2),d1		; move a2 to d1
 		move.w	d1,-(sp)
 		andi.w	#$F,d1
-		move.b	#0,(a2)+
+		clr.b	(a2)+
 		move.w	d1,d3
 		lsl.w	#4,d3
 		addq.b	#8,d3

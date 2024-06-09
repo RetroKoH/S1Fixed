@@ -229,7 +229,7 @@ gotoSRAM:	macro
 		endm
 
 gotoROM:	macro
-		move.b	#0,(sram_port).l
+		clr.b	(sram_port).l
 		endm
 
 ; ---------------------------------------------------------------------------

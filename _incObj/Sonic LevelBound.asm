@@ -53,9 +53,9 @@ Sonic_LevelBound:
 
 .sides:
 		move.w	d0,obX(a0)
-		move.w	#0,obX+2(a0)
-		move.w	#0,obVelX(a0)	; stop Sonic moving
-		move.w	#0,obInertia(a0)
+		clr.w	obX+2(a0)		; clear subpixel (for alignment)
+		clr.w	obVelX(a0)		; stop Sonic moving
+		clr.w	obInertia(a0)	; clear ground inertia
 		bra.s	.chkbottom
 ; ===========================================================================
 

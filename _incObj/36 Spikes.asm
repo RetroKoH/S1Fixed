@@ -152,7 +152,7 @@ Spik_Wait:
 		tst.b	obRender(a0)
 		bpl.s	locret_CFE6
 		move.w	#sfx_SpikesMove,d0
-		jsr	(PlaySound_Special).l	; play "spikes moving" sound
+		jsr		(PlaySound_Special).l	; play "spikes moving" sound
 		bra.s	locret_CFE6
 ; ===========================================================================
 
@@ -161,8 +161,8 @@ loc_CFA4:
 		beq.s	loc_CFC6
 		subi.w	#$800,objoff_34(a0)
 		bcc.s	locret_CFE6
-		move.w	#0,objoff_34(a0)
-		move.w	#0,objoff_36(a0)
+		clr.w	objoff_34(a0)
+		clr.w	objoff_36(a0)
 		move.w	#60,objoff_38(a0)	; set time delay to 1 second
 		bra.s	locret_CFE6
 ; ===========================================================================

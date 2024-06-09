@@ -235,7 +235,7 @@ loc_1B06:
 		tst.b	(v_act).w
 		beq.s	loc_1B2E
 		lea	(Pal_SBZCyc10).l,a0
-		move.w	#0,(v_pcyc_time).w
+		clr.w	(v_pcyc_time).w
 
 loc_1B2E:
 		moveq	#-1,d1

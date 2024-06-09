@@ -116,7 +116,7 @@ loc_12FC2:
 		bmi.s	loc_12FE2
 		sub.w	d5,d0
 		bcc.s	loc_12FDC
-		move.w	#0,d0
+		clr.w	d0
 
 loc_12FDC:
 		move.w	d0,obInertia(a0)
@@ -126,7 +126,7 @@ loc_12FDC:
 loc_12FE2:
 		add.w	d5,d0
 		bcc.s	loc_12FEA
-		move.w	#0,d0
+		clr.w	d0
 
 loc_12FEA:
 		move.w	d0,obInertia(a0)
@@ -169,7 +169,7 @@ loc_13024:
 		beq.s	loc_13060
 		add.w	d1,obVelX(a0)
 		bset	#5,obStatus(a0)
-		move.w	#0,obInertia(a0)
+		clr.w	obInertia(a0)
 		rts	
 ; ===========================================================================
 
@@ -181,7 +181,7 @@ loc_13060:
 loc_13066:
 		sub.w	d1,obVelX(a0)
 		bset	#5,obStatus(a0)
-		move.w	#0,obInertia(a0)
+		clr.w	obInertia(a0)
 		rts	
 ; ===========================================================================
 

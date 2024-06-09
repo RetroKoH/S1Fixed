@@ -63,7 +63,7 @@ loc_14630:
 		add.w	d0,d3
 		lea	(v_anglebuffer).w,a4
 		movea.w	#$10,a3
-		move.w	#0,d6
+		clr.w	d6
 		bsr.w	FindFloor	; MJ: check solidity
 		move.w	d1,-(sp)
 		move.w	obY(a0),d2
@@ -78,7 +78,7 @@ loc_14630:
 		add.w	d0,d3
 		lea	(v_anglebuffer2).w,a4
 		movea.w	#$10,a3
-		move.w	#0,d6
+		clr.w	d6
 		bsr.w	FindFloor	; MJ: check solidity
 		move.w	(sp)+,d0
 		bsr.w	Sonic_Angle
@@ -207,7 +207,7 @@ Sonic_WalkVertR:
 		add.w	d0,d3
 		lea	(v_anglebuffer).w,a4
 		movea.w	#$10,a3
-		move.w	#0,d6
+		clr.w	d6
 		bsr.w	FindWall	; MJ: check solidity
 		move.w	d1,-(sp)
 		move.w	obY(a0),d2
@@ -221,7 +221,7 @@ Sonic_WalkVertR:
 		add.w	d0,d3
 		lea	(v_anglebuffer2).w,a4
 		movea.w	#$10,a3
-		move.w	#0,d6
+		clr.w	d6
 		bsr.w	FindWall	; MJ: check solidity
 		move.w	(sp)+,d0
 		bsr.w	Sonic_Angle

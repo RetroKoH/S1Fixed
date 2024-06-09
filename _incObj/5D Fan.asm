@@ -77,11 +77,11 @@ Fan_Delay:	; Routine 2
 .animate:
 		subq.b	#1,obTimeFrame(a0)
 		bpl.s	.chkdel
-		move.b	#0,obTimeFrame(a0)
+		clr.b	obTimeFrame(a0)
 		addq.b	#1,obAniFrame(a0)
 		cmpi.b	#3,obAniFrame(a0)
 		blo.s	.noreset
-		move.b	#0,obAniFrame(a0) ; reset after 4 frames
+		clr.b	obAniFrame(a0) ; reset after 4 frames
 
 .noreset:
 		moveq	#0,d0

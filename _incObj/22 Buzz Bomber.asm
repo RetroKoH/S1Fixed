@@ -107,19 +107,18 @@ Buzz_Action:	; Routine 2
 ; ===========================================================================
 
 .chgdirection:
-		move.b	#0,buzz_buzzstatus(a0) ; set Buzz Bomber to "normal"
+		clr.b	buzz_buzzstatus(a0) ; set Buzz Bomber to "normal"
 		bchg	#0,obStatus(a0)	; change direction
 		move.w	#59,buzz_timedelay(a0)
 
 .stop:
 		subq.b	#2,ob2ndRout(a0)
-		move.w	#0,obVelX(a0)	; stop Buzz Bomber moving
-		move.b	#0,obAnim(a0)	; use "hovering" animation
+		clr.w	obVelX(a0)	; stop Buzz Bomber moving
+		clr.b	obAnim(a0)	; use "hovering" animation
 
 .keepgoing:
 		rts	
 ; ===========================================================================
 
 Buzz_Delete:	; Routine 4
-		bsr.w	DeleteObject
-		rts	
+		bra.w	DeleteObject

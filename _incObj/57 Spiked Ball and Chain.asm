@@ -33,7 +33,7 @@ SBall_Main:	; Routine 0
 		cmpi.b	#id_LZ,(v_zone).w ; check if level is LZ
 		bne.s	.notlz
 
-		move.b	#0,obColType(a0) ; LZ specific code (chain doesn't hurt)
+		clr.b	obColType(a0) ; LZ specific code (chain doesn't hurt)
 		move.w	#make_art_tile(ArtTile_LZ_Spikeball_Chain,0,0),obGfx(a0)
 		move.l	#Map_SBall2,obMap(a0)
 
@@ -50,7 +50,7 @@ SBall_Main:	; Routine 0
 		lea	sball_childs(a0),a2
 		move.b	obSubtype(a0),d1 ; get object type
 		andi.w	#7,d1		; read only the	2nd digit
-		move.b	#0,(a2)+
+		clr.b	(a2)+
 		move.w	d1,d3
 		lsl.w	#4,d3
 		move.b	d3,sball_radius(a0)

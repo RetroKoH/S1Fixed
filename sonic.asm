@@ -444,7 +444,7 @@ VBlank:
 
 .notPAL:
 		move.b	(v_vbla_routine).w,d0
-		move.b	#0,(v_vbla_routine).w
+		clr.b	(v_vbla_routine).w
 		move.w	#1,(f_hbla_pal).w
 		andi.w	#$3E,d0
 		move.w	VBla_Index(pc,d0.w),d0
@@ -725,7 +725,7 @@ HBlank:
 		disable_ints
 		tst.w	(f_hbla_pal).w	; is palette set to change?
 		beq.s	.nochg		; if not, branch
-		move.w	#0,(f_hbla_pal).w
+		clr.w	(f_hbla_pal).w
 		movem.l	a0-a1,-(sp)
 		lea	(vdp_data_port).l,a1
 		lea	(v_pal_water).w,a0 ; get palette from RAM
@@ -811,7 +811,7 @@ ReadJoypads:
 		addq.w	#2,a1		; do the second	joypad
 
 .read:
-		move.b	#0,(a1)
+		clr.b	(a1)
 		nop	
 		nop	
 		move.b	(a1),d0
@@ -1864,7 +1864,7 @@ GM_Sega:
 		bsr.w	NemDec
 		lea	(v_128x128&$FFFFFF).l,a1
 		lea	(Eni_SegaLogo).l,a0 ; load Sega	logo mappings
-		move.w	#0,d0
+		clr.w	d0
 		bsr.w	EniDec
 
 		copyTilemap	v_128x128&$FFFFFF,$E510,$17,7
@@ -1891,9 +1891,9 @@ GM_Sega:
 	endif
 	; Fade In SEGA Background End
 		move.w	#-$A,(v_pcyc_num).w
-		move.w	#0,(v_pcyc_time).w
-		move.w	#0,(v_pal_buffer+$12).w
-		move.w	#0,(v_pal_buffer+$10).w
+		clr.w	(v_pcyc_time).w
+		clr.w	(v_pal_buffer+$12).w
+		clr.w	(v_pal_buffer+$10).w
 		move.w	(v_vdp_buffer1).w,d0
 		ori.b	#$40,d0
 		move.w	d0,(vdp_control_port).l
@@ -1955,7 +1955,7 @@ GM_Title:
 		bsr.w	NemDec
 		lea	(v_128x128&$FFFFFF).l,a1
 		lea	(Eni_JapNames).l,a0 ; load mappings for	Japanese credits
-		move.w	#0,d0
+		clr.w	d0
 		bsr.w	EniDec
 
 		copyTilemap	v_128x128&$FFFFFF,$C000,$27,$1B
@@ -1986,17 +1986,17 @@ GM_Title:
 Tit_LoadText:
 		move.w	(a5)+,(a6)
 		dbf		d1,Tit_LoadText			; load level select font
-		move.b	#0,(f_nobgscroll).w		; Mercury Game Over When Drowning Fix
-		move.b	#0,(v_lastlamp).w		; clear lamppost counter
-		move.w	#0,(v_debuguse).w		; disable debug item placement mode
-		move.w	#0,(f_demo).w			; disable debug mode
+		clr.b	(f_nobgscroll).w		; Mercury Game Over When Drowning Fix
+		clr.b	(v_lastlamp).w		; clear lamppost counter
+		clr.w	(v_debuguse).w		; disable debug item placement mode
+		clr.w	(f_demo).w			; disable debug mode
 		move.w	#(id_GHZ<<8),(v_zone).w	; set level to GHZ (00)
-		move.w	#0,(v_pcyc_time).w		; disable palette cycling
+		clr.w	(v_pcyc_time).w		; disable palette cycling
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformLayers
 		lea		(v_16x16).w,a1
 		lea		(Blk16_GHZ).l,a0		; load GHZ 16x16 mappings
-		move.w	#0,d0
+		clr.w	d0
 		bsr.w	EniDec
 		lea		(Blk128_GHZ).l,a0		; load GHZ 128x128 mappings
 		lea		(v_128x128&$FFFFFF).l,a1
@@ -2013,7 +2013,7 @@ Tit_LoadText:
 		bsr.w	DrawChunks
 		lea		(v_128x128&$FFFFFF).l,a1
 		lea		(Eni_Title).l,a0		; load title screen mappings
-		move.w	#0,d0
+		clr.w	d0
 		bsr.w	EniDec
 
 		copyTilemap	v_128x128&$FFFFFF,$C208,$21,$15		; RetroKoH Title Screen Adjustment
@@ -2027,7 +2027,7 @@ Tit_LoadText:
 		bsr.w	PalLoad1
 		move.b	#bgm_Title,d0
 		bsr.w	PlaySound_Special		; play title screen music
-		move.b	#0,(f_debugmode).w		; disable debug mode
+		clr.b	(f_debugmode).w		; disable debug mode
 		move.w	#$178,(v_demolength).w	; run title screen for $178 frames
 
 		clearRAM v_sonicteam,v_sonicteam+object_size	; PRESS START BUTTON Fix (Quickman)
@@ -2046,8 +2046,8 @@ Tit_LoadText:
 		jsr	(BuildSprites).l
 		moveq	#plcid_Main,d0
 		bsr.w	NewPLC
-		move.w	#0,(v_title_dcount).w
-		move.w	#0,(v_title_ccount).w
+		clr.w	(v_title_dcount).w
+		clr.w	(v_title_ccount).w
 		move.w	(v_vdp_buffer1).w,d0
 		ori.b	#$40,d0
 		move.w	d0,(vdp_control_port).l
@@ -2113,7 +2113,7 @@ Tit_ResetCheat:
 		beq.s	Tit_CountC
 		cmpi.w	#9,(v_title_dcount).w
 		beq.s	Tit_CountC
-		move.w	#0,(v_title_dcount).w ; reset UDLR counter
+		clr.w	(v_title_dcount).w ; reset UDLR counter
 
 Tit_CountC:
 		move.b	(v_jpadpress1).w,d0
@@ -2198,7 +2198,7 @@ LevSel_Credits:
 		move.b	#id_Credits,(v_gamemode).w ; set screen mode to $1C (Credits)
 		move.b	#bgm_Credits,d0
 		bsr.w	PlaySound_Special ; play credits music
-		move.w	#0,(v_creditsnum).w
+		clr.w	(v_creditsnum).w
 		rts	
 ; ===========================================================================
 
@@ -2344,7 +2344,7 @@ loc_33E4:
 		addq.w	#1,(v_demonum).w ; add 1 to demo number
 		cmpi.w	#4,(v_demonum).w ; is demo number less than 4?
 		blo.s	loc_3422	; if yes, branch
-		move.w	#0,(v_demonum).w ; reset demo number to	0
+		clr.w	(v_demonum).w ; reset demo number to	0
 
 loc_3422:
 		move.w	#1,(f_demo).w	; turn demo mode on
@@ -2525,7 +2525,7 @@ LevSel_LineLoop:
 		moveq	#0,d0
 		move.b	(a1)+,d0	; get character
 		bpl.s	LevSel_CharOk	; branch if valid
-		move.w	#0,(a6)		; use blank character
+		clr.w	(a6)		; use blank character
 		dbf	d2,LevSel_LineLoop
 		rts	
 
@@ -2712,8 +2712,8 @@ Level_ChkDebug:
 		move.b	#1,(f_debugmode).w ; enable debug mode
 
 Level_ChkWater:
-		move.w	#0,(v_jpadhold2).w
-		move.w	#0,(v_jpadhold1).w
+		clr.w	(v_jpadhold2).w
+		clr.w	(v_jpadhold1).w
 		cmpi.b	#id_LZ,(v_zone).w ; is level LZ?
 		bne.s	Level_LoadObj	; if not, branch
 		move.b	#id_WaterSurface,(v_watersurface1).w ; load water surface object
@@ -2745,7 +2745,7 @@ Level_SkipClr:
 		move.b	#1,(f_scorecount).w ; update score counter
 		move.b	#1,(f_ringcount).w ; update rings counter
 		move.b	#1,(f_timecount).w ; update time counter
-		move.w	#0,(v_btnpushtime1).w
+		clr.w	(v_btnpushtime1).w
 		lea	(DemoDataPtr).l,a1 ; load demo data
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
@@ -2971,7 +2971,7 @@ Sync3:
 		addq.b	#1,(v_ani2_frame).w
 		cmpi.b	#6,(v_ani2_frame).w
 		blo.s	Sync4
-		move.b	#0,(v_ani2_frame).w
+		clr.b	(v_ani2_frame).w
 
 ; Used for bouncing rings
 Sync4:
@@ -3064,8 +3064,8 @@ GM_Special:
 		moveq	#palid_Special,d0
 		bsr.w	PalLoad1						; load special stage palette
 		jsr		(SS_Load).l						; load SS layout data
-		move.l	#0,(v_screenposx).w
-		move.l	#0,(v_screenposy).w
+		clr.l	(v_screenposx).w
+		clr.l	(v_screenposy).w
 		move.b	#id_SonicSpecial,(v_player).w	; load special stage Sonic object
 
 	if DynamicSpecialStageWalls=1	; Mercury Dynamic Special Stage Walls
@@ -3077,7 +3077,7 @@ GM_Special:
 		move.w	#$40,(v_ssrotate).w				; set stage rotation speed
 		move.w	#bgm_SS,d0
 		bsr.w	PlaySound						; play special stage BG	music
-		move.w	#0,(v_btnpushtime1).w
+		clr.w	(v_btnpushtime1).w
 		lea		(DemoDataPtr).l,a1
 		moveq	#6,d0
 		lsl.w	#2,d0
@@ -3086,7 +3086,7 @@ GM_Special:
 		subq.b	#1,(v_btnpushtime2).w
 		clr.w	(v_rings).w
 		clr.b	(v_lifecount).w
-		move.w	#0,(v_debuguse).w
+		clr.w	(v_debuguse).w
 		move.w	#1800,(v_demolength).w
 		tst.b	(f_debugcheat).w ; has debug cheat been entered?
 		beq.s	SS_NoDebug	; if not, branch
@@ -3402,7 +3402,7 @@ Pal_SSCyc2:	binclude	"palette/Cycle - Special Stage 2.bin"
 SS_BGAnimate:
 		move.w	(v_ssbganim).w,d0
 		bne.s	loc_4BF6
-		move.w	#0,(v_bgscreenposy).w
+		clr.w	(v_bgscreenposy).w
 		move.w	(v_bgscreenposy).w,(v_bgscrposy_vdp).w
 
 loc_4BF6:
@@ -3679,7 +3679,7 @@ End_LoadSonic:
 		bsr.w	OscillateNumInit
 		move.b	#1,(f_scorecount).w
 		move.b	#1,(f_ringcount).w
-		move.b	#0,(f_timecount).w
+		clr.b	(f_timecount).w
 		move.w	#1800,(v_demolength).w
 		move.b	#$18,(v_vbla_routine).w
 		bsr.w	WaitForVBla
@@ -3712,7 +3712,7 @@ End_MainLoop:
 		move.b	#id_Credits,(v_gamemode).w ; goto credits
 		move.b	#bgm_Credits,d0
 		bsr.w	PlaySound_Special ; play credits music
-		move.w	#0,(v_creditsnum).w ; set credits index number to 0
+		clr.w	(v_creditsnum).w ; set credits index number to 0
 		rts	
 ; ===========================================================================
 
@@ -4993,7 +4993,7 @@ LevelDataLoad:
 		addq.l	#4,a2
 		movea.l	(a2)+,a0
 		lea	(v_16x16).w,a1	; RAM address for 16x16 mappings
-		move.w	#0,d0
+		clr.w	d0
 		bsr.w	EniDec
 		movea.l	(a2)+,a0
 		lea	(v_128x128&$FFFFFF).l,a1 ; RAM address for 128x128 mappings
@@ -5115,8 +5115,8 @@ loc_74DC:
 		lsr.w	#object_size_bits,d0
 		andi.w	#$7F,d0
 		move.b	d0,standonobject(a1)
-		move.b	#0,obAngle(a1)
-		move.w	#0,obVelY(a1)
+		clr.b	obAngle(a1)
+		clr.w	obVelY(a1)
 		move.w	obVelX(a1),obInertia(a1)
 		btst	#1,obStatus(a1)
 		beq.s	loc_7512
@@ -5287,7 +5287,7 @@ Map_GBall:	include	"_maps/GHZ Ball.asm"
 ; ===========================================================================
 
 Ledge_Fragment:
-		move.b	#0,ledge_collapse_flag(a0)
+		clr.b	ledge_collapse_flag(a0)
 
 loc_847A:
 		lea	(CFlo_Data1).l,a4
@@ -5422,8 +5422,8 @@ loc_8A7C:
 
 loc_8A82:
 		sub.w	d0,obX(a1)
-		move.w	#0,obInertia(a1)
-		move.w	#0,obVelX(a1)
+		clr.w	obInertia(a1)
+		clr.w	obVelX(a1)
 
 loc_8A92:
 		btst	#1,obStatus(a1)
@@ -5452,7 +5452,7 @@ loc_8AC4:
 		tst.w	d3
 		bpl.s	locret_8AD8
 		sub.w	d3,obY(a1)
-		move.w	#0,obVelY(a1)
+		clr.w	obVelY(a1)
 
 locret_8AD8:
 		rts	
@@ -6145,12 +6145,12 @@ BuildSprites:
 		move.b	d5,(v_spritecount).w
 		cmpi.b	#$50,d5
 		beq.s	.spriteLimit
-		move.l	#0,(a2)
+		clr.l	(a2)
 		rts	
 ; ===========================================================================
 
 	.spriteLimit:
-		move.b	#0,-5(a2)	; set last sprite link
+		clr.b	-5(a2)	; set last sprite link
 		rts	
 ; End of function BuildSprites
 
@@ -6852,26 +6852,6 @@ loc_12EA6:
 		include	"_incObj/Sonic Move.asm"
 		include	"_incObj/Sonic RollSpeed.asm"
 		include	"_incObj/Sonic JumpDirection.asm"
-
-; ===========================================================================
-; ---------------------------------------------------------------------------
-; Unused subroutine to squash Sonic
-; ---------------------------------------------------------------------------
-		move.b	obAngle(a0),d0
-		addi.b	#$20,d0
-		andi.b	#$C0,d0
-		bne.s	locret_13302
-		bsr.w	Sonic_DontRunOnWalls
-		tst.w	d1
-		bpl.s	locret_13302
-		move.w	#0,obInertia(a0) ; stop Sonic moving
-		move.w	#0,obVelX(a0)
-		move.w	#0,obVelY(a0)
-		move.b	#id_Warp3,obAnim(a0) ; use "warping" animation
-
-locret_13302:
-		rts	
-
 		include	"_incObj/Sonic LevelBound.asm"
 		include	"_incObj/Sonic Roll.asm"
 		include	"_incObj/Sonic Jump.asm"
@@ -7174,7 +7154,7 @@ Sonic_HitFloor:
 		add.w	d0,d3
 		lea		(v_anglebuffer).w,a4
 		movea.w	#$10,a3
-		move.w	#0,d6
+		clr.w	d6
 		bsr.w	FindFloor	; MJ: check solidity
 		move.w	d1,-(sp)
 		move.w	obY(a0),d2
@@ -7188,10 +7168,10 @@ Sonic_HitFloor:
 		sub.w	d0,d3
 		lea		(v_anglebuffer2).w,a4
 		movea.w	#$10,a3
-		move.w	#0,d6
+		clr.w	d6
 		bsr.w	FindFloor	; MJ: check solidity
 		move.w	(sp)+,d0
-		move.b	#0,d2
+		clr.b	d2
 
 loc_14DD0:
 		move.b	(v_anglebuffer2).w,d3
@@ -7216,9 +7196,9 @@ loc_14DF0:
 		addi.w	#$A,d2
 		lea		(v_anglebuffer).w,a4
 		movea.w	#$10,a3
-		move.w	#0,d6
+		clr.w	d6
 		bsr.w	FindFloor	; MJ: check solidity
-		move.b	#0,d2
+		clr.b	d2
 
 loc_14E0A:
 		move.b	(v_anglebuffer).w,d3
@@ -7247,7 +7227,7 @@ sub_14E50:
 		add.w	d0,d3
 		lea	(v_anglebuffer).w,a4
 		movea.w	#$10,a3
-		move.w	#0,d6
+		clr.w	d6
 		bsr.w	FindWall	; MJ: check solidity
 		move.w	d1,-(sp)
 		move.w	obY(a0),d2
@@ -7261,7 +7241,7 @@ sub_14E50:
 		add.w	d0,d3
 		lea	(v_anglebuffer2).w,a4
 		movea.w	#$10,a3
-		move.w	#0,d6
+		clr.w	d6
 		bsr.w	FindWall	; MJ: check solidity
 		move.w	(sp)+,d0
 		move.b	#-$40,d2
@@ -7281,7 +7261,7 @@ loc_14EBC:
 		addi.w	#$A,d3
 		lea	(v_anglebuffer).w,a4
 		movea.w	#$10,a3
-		move.w	#0,d6
+		clr.w	d6
 		bsr.w	FindWall	; MJ: check solidity
 		move.b	#-$40,d2
 		bra.w	loc_14E0A
@@ -7299,9 +7279,9 @@ ObjHitWallRight:
 		add.w	obX(a0),d3
 		move.w	obY(a0),d2
 		lea	(v_anglebuffer).w,a4
-		move.b	#0,(a4)
+		clr.b	(a4)
 		movea.w	#$10,a3
-		move.w	#0,d6
+		clr.w	d6
 		moveq	#$D,d5		; MJ: set solid type to check
 		bsr.w	FindWall	; MJ: check solidity
 		move.b	(v_anglebuffer).w,d3
@@ -7469,7 +7449,7 @@ ObjHitWallLeft:
 		; 16x16 block; this one:
 		;eori.w	#$F,d3
 		lea	(v_anglebuffer).w,a4
-		move.b	#0,(a4)
+		clr.b	(a4)
 		movea.w	#-$10,a3
 		move.w	#$400,d6	; MJ: $800/2
 		moveq	#$D,d5		; MJ: set solid type to check
@@ -7759,12 +7739,12 @@ loc_1B268:
 		move.b	d5,(v_spritecount).w
 		cmpi.b	#$50,d5
 		beq.s	loc_1B288
-		move.l	#0,(a2)
+		clr.l	(a2)
 		rts	
 ; ===========================================================================
 
 loc_1B288:
-		move.b	#0,-5(a2)
+		clr.b	-5(a2)
 		rts	
 ; End of function SS_ShowLayout
 
@@ -8141,7 +8121,7 @@ SS_Load:
 		addq.b	#1,(v_lastspecial).w
 		cmpi.b	#6,(v_lastspecial).w
 		blo.s	SS_ChkEmldNum
-		move.b	#0,(v_lastspecial).w ; reset if higher than 6
+		clr.b	(v_lastspecial).w ; reset if higher than 6
 
 SS_ChkEmldNum:
 		cmpi.b	#6,(v_emeralds).w ; do you have all emeralds?
@@ -8171,7 +8151,7 @@ SS_LoadData:
 		; Load layout data
 		movea.l	SS_LayoutIndex(pc,d0.w),a0
 		lea	(v_ssbuffer2&$FFFFFF).l,a1
-		move.w	#0,d0
+		clr.w	d0
 		jsr	(EniDec).l
 
 		; Clear everything from v_ssbuffer1 to v_ssbuffer2
@@ -8204,7 +8184,7 @@ loc_1B6F8:
 
 loc_1B714:
 		move.l	(a0)+,(a1)+
-		move.w	#0,(a1)+
+		clr.w	(a1)+
 		move.b	-4(a0),-1(a1)
 		move.w	(a0)+,(a1)+
 		dbf	d1,loc_1B714

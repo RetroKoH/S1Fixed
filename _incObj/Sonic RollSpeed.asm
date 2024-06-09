@@ -31,7 +31,7 @@ Sonic_RollSpeed:
 		bmi.s	loc_1319E
 		sub.w	d5,d0
 		bcc.s	loc_13198
-		move.w	#0,d0
+		clr.w	d0
 
 loc_13198:
 		move.w	d0,obInertia(a0)
@@ -41,7 +41,7 @@ loc_13198:
 loc_1319E:
 		add.w	d5,d0
 		bcc.s	loc_131A6
-		move.w	#0,d0
+		clr.w	d0
 
 loc_131A6:
 		move.w	d0,obInertia(a0)

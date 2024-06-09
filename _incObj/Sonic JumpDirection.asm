@@ -53,7 +53,7 @@ loc_132A4:
 		bmi.s	loc_132C6
 		sub.w	d1,d0
 		bcc.s	loc_132C0
-		move.w	#0,d0
+		clr.w	d0
 
 loc_132C0:
 		move.w	d0,obVelX(a0)
@@ -63,7 +63,7 @@ loc_132C0:
 loc_132C6:
 		sub.w	d1,d0
 		bcs.s	loc_132CE
-		move.w	#0,d0
+		clr.w	d0
 
 loc_132CE:
 		move.w	d0,obVelX(a0)

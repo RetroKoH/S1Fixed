@@ -28,7 +28,7 @@ Hog_Main:	; Routine 0
 		tst.w	d1
 		bpl.s	.floornotfound
 		add.w	d1,obY(a0)
-		move.w	#0,obVelY(a0)
+		clr.w	obVelY(a0)
 		addq.b	#2,obRoutine(a0)
 
 .floornotfound:
@@ -60,7 +60,7 @@ Hog_Action:	; Routine 2
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.w	#-$100,obVelX(a1) ; cannonball bounces to the left
-		move.w	#0,obVelY(a1)
+		clr.w	obVelY(a1)
 		moveq	#-4,d0
 		btst	#0,obStatus(a0)	; is Ball Hog facing right?
 		beq.s	.noflip		; if not, branch

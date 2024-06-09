@@ -134,9 +134,9 @@ loc_BADA:
 loc_BAEC:
 		subi.w	#$80,objoff_32(a0)
 		bcc.s	loc_BB3C
-		move.w	#0,objoff_32(a0)
-		move.w	#0,obVelX(a0)
-		move.w	#0,objoff_36(a0)
+		clr.w	objoff_32(a0)
+		clr.w	obVelX(a0)
+		clr.w	objoff_36(a0)
 		bra.s	loc_BB3C
 ; ===========================================================================
 
@@ -150,7 +150,7 @@ loc_BB08:
 		cmp.w	objoff_32(a0),d1
 		bhi.s	loc_BB3C
 		move.w	d1,objoff_32(a0)
-		move.w	#0,obVelX(a0)
+		clr.w	obVelX(a0)
 		move.w	#1,objoff_36(a0)
 		move.w	#$3C,objoff_38(a0)
 

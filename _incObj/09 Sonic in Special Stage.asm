@@ -42,7 +42,7 @@ Obj09_ChkDebug:	; Routine 2
 		move.w	#1,(v_debuguse).w ; change Sonic into a ring
 
 Obj09_NoDebug:
-		move.b	#0,objoff_30(a0)
+		clr.b	objoff_30(a0)
 		moveq	#0,d0
 		move.b	obStatus(a0),d0
 		andi.w	#2,d0
@@ -101,7 +101,7 @@ loc_1BA78:
 		bmi.s	loc_1BA9A
 		subi.w	#$C,d0
 		bcc.s	loc_1BA94
-		move.w	#0,d0
+		clr.w	d0
 
 loc_1BA94:
 		move.w	d0,obInertia(a0)
@@ -111,7 +111,7 @@ loc_1BA94:
 loc_1BA9A:
 		addi.w	#$C,d0
 		bcc.s	loc_1BAA4
-		move.w	#0,d0
+		clr.w	d0
 
 loc_1BAA4:
 		move.w	d0,obInertia(a0)
@@ -134,7 +134,7 @@ loc_1BAA8:
 		movem.l	(sp)+,d0-d1
 		sub.l	d1,obX(a0)
 		sub.l	d0,obY(a0)
-		move.w	#0,obInertia(a0)
+		clr.w	obInertia(a0)
 		rts	
 ; ===========================================================================
 
@@ -328,7 +328,7 @@ Obj09_ExitStage:
 loc_1BBF4:
 		cmpi.w	#$3000,(v_ssrotate).w
 		blt.s	loc_1BC12
-		move.w	#0,(v_ssrotate).w
+		clr.w	(v_ssrotate).w
 		move.w	#$4000,(v_ssangle).w
 		addq.b	#2,obRoutine(a0)
 		move.w	#$3C,objoff_38(a0)
@@ -627,12 +627,12 @@ Obj09_ChkItems2:
 		bne.s	Obj09_ChkBumper
 		subq.b	#1,objoff_36(a0)
 		bpl.s	loc_1BEA0
-		move.b	#0,objoff_36(a0)
+		clr.b	objoff_36(a0)
 
 loc_1BEA0:
 		subq.b	#1,objoff_37(a0)
 		bpl.s	locret_1BEAC
-		move.b	#0,objoff_37(a0)
+		clr.b	objoff_37(a0)
 
 locret_1BEAC:
 		rts	

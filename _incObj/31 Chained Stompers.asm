@@ -193,10 +193,10 @@ loc_B872:
 loc_B892:
 		subi.w	#$80,objoff_32(a0)
 		bcc.s	CStom_Restart
-		move.w	#0,objoff_32(a0)
+		clr.w	objoff_32(a0)
 
 loc_B8A0:
-		move.w	#0,obVelY(a0)
+		clr.w	obVelY(a0)
 		bra.s	CStom_Restart
 ; ===========================================================================
 
@@ -210,7 +210,7 @@ loc_B8A8:
 		cmp.w	objoff_32(a0),d1
 		bhi.s	CStom_Restart
 		move.w	d1,objoff_32(a0)
-		move.w	#0,obVelY(a0)	; stop object falling
+		clr.w	obVelY(a0)	; stop object falling
 		tst.b	obRender(a0)
 		bpl.s	CStom_Restart
 		move.w	#sfx_ChainStomp,d0
@@ -245,9 +245,9 @@ loc_B902:
 loc_B91C:
 		subi.w	#$80,objoff_32(a0)
 		bcc.s	loc_B97C
-		move.w	#0,objoff_32(a0)
-		move.w	#0,obVelY(a0)
-		move.w	#0,objoff_36(a0)
+		clr.w	objoff_32(a0)
+		clr.w	obVelY(a0)
+		clr.w	objoff_36(a0)
 		bra.s	loc_B97C
 ; ===========================================================================
 
@@ -261,7 +261,7 @@ loc_B938:
 		cmp.w	objoff_32(a0),d1
 		bhi.s	loc_B97C
 		move.w	d1,objoff_32(a0)
-		move.w	#0,obVelY(a0)	; stop object falling
+		clr.w	obVelY(a0)	; stop object falling
 		move.w	#1,objoff_36(a0)
 		move.w	#$3C,objoff_38(a0)
 		tst.b	obRender(a0)

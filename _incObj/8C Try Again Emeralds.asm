@@ -25,7 +25,7 @@ TCha_Main:	; Routine 0
 		addq.b	#2,obRoutine(a1)
 		move.l	#Map_ECha,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Try_Again_Emeralds,0,0),obGfx(a1)
-		move.b	#0,obRender(a1)
+		clr.b	obRender(a1)
 		move.w	#$80,obPriority(a1)		; RetroKoH S2 Priority Manager
 		move.w	#$104,obX(a1)
 		move.w	#$120,objoff_38(a1)
