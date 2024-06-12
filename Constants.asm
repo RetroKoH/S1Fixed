@@ -422,201 +422,196 @@ boss_fz_end:	equ boss_fz_x+$2B0
 ; Tile VRAM Locations
 
 ; Shared
-ArtTile_GHZ_MZ_Swing:		equ $380
-ArtTile_MZ_SYZ_Caterkiller:	equ $4FF
-ArtTile_GHZ_SLZ_Smashable_Wall:	equ $50F
+ArtTile_GHZ_MZ_Swing:			equ $39C				; ✓ -- GHZ and MZ
+ArtTile_Fireball:				equ $3AA				; ✓ -- MZ and SLZ
+ArtTile_Crabmeat:				equ $3C2				; ✓ -- GHZ and SYZ
+ArtTile_Buzz_Bomber:			equ $406				; ✓ -- GHZ, MZ, SYZ
+ArtTile_Orbinaut:				equ $40A				; ✓ -- LZ and SLZ
+ArtTile_Button:					equ $43D				; ✓ -- MZ, SYZ, LZ
+ArtTile_Caterkiller:			equ $445				; ✓ -- MZ, SYZ and SBZ
+ArtTile_Yadrin:					equ $455				; ✓ -- MZ and SYZ
+ArtTile_Bomb:					equ $455				; ✓
 
 ; Green Hill Zone
-ArtTile_GHZ_Flower_4:		equ ArtTile_Level+$340
-ArtTile_GHZ_Edge_Wall:		equ $34C
-ArtTile_GHZ_Flower_Stalk:	equ ArtTile_Level+$358
-ArtTile_GHZ_Big_Flower_1:	equ ArtTile_Level+$35C
-ArtTile_GHZ_Small_Flower:	equ ArtTile_Level+$36C
-ArtTile_GHZ_Waterfall:		equ ArtTile_Level+$378
-ArtTile_GHZ_Flower_3:		equ ArtTile_Level+$380
-ArtTile_GHZ_Bridge:		equ $38E
-ArtTile_GHZ_Big_Flower_2:	equ ArtTile_Level+$390
-ArtTile_GHZ_Spike_Pole:		equ $398
-ArtTile_GHZ_Giant_Ball:		equ $3AA
-ArtTile_GHZ_Purple_Rock:	equ $3D0
+ArtTile_GHZ_Flower_4:			equ $340				; ✓ animtiles4
+ArtTile_GHZ_Flower_Stalk:		equ $358				; ✓ 4
+ArtTile_GHZ_Sunflower:			equ $35C				; ✓ Uncompressed: 16
+ArtTile_GHZ_Purple_Flower:		equ $36C				; ✓ Uncompressed: 12
+ArtTile_GHZ_Waterfall:			equ $378				; ✓ Uncompressed: 8
+ArtTile_GHZ_Flower_3:			equ $380				; ✓ animtiles5
+ArtTile_GHZ_Big_Flower_2:		equ $390				; ✓ animtiles6
+; ===== IN-GAME LEVEL OBJECTS ====================
+ArtTile_GHZ_Purple_Rock:		equ $33E				; ✓
+ArtTile_GHZ_Spike_Pole:			equ $380				; ✓
+ArtTile_GHZ_Bridge:				equ $392				; ✓
+ArtTile_GHZ_Smashable_Wall:		equ $3AA				; ✓
+ArtTile_GHZ_Edge_Wall:			equ $3B6				; ✓
+ArtTile_Chopper:				equ $43D				; ✓
+ArtTile_GHZ_Giant_Ball:			equ $462				; ✓
+ArtTile_Newtron:				equ $488				; ✓
+ArtTile_Moto_Bug:				equ $4DD				; ✓
 
 ; Marble Zone
-ArtTile_MZ_Block:		equ $2B8
-ArtTile_MZ_Animated_Magma:	equ ArtTile_Level+$2D2
-ArtTile_MZ_Animated_Lava:	equ ArtTile_Level+$2E2
-ArtTile_MZ_Torch:		equ ArtTile_Level+$2F2
-ArtTile_MZ_Spike_Stomper:	equ $300
-ArtTile_MZ_Fireball:		equ $345
-ArtTile_MZ_Glass_Pillar:	equ $38E
-ArtTile_MZ_Lava:		equ $3A8
+ArtTile_MZ_Animated_Magma:		equ $297				; ✓ Uncompressed: 16
+ArtTile_MZ_Animated_Lava:		equ $2A7				; ✓ Uncompressed: 8
+ArtTile_MZ_Torch:				equ $2AF				; ✓ Uncompressed: 6
+ArtTile_MZ_Lava:				equ $2B5				; ✓
+ArtTile_MZ_Spike_Stomper:		equ $351				; ✓
+ArtTile_Basaran:				equ $3D6				; ✓
+ArtTile_MZ_Glass_Pillar:		equ $492				; ✓
+ArtTile_MZ_Block:				equ $4AC				; ✓
 
 ; Spring Yard Zone
-ArtTile_SYZ_Bumper:		equ $380
-ArtTile_SYZ_Big_Spikeball:	equ $396
-ArtTile_SYZ_Spikeball_Chain:	equ $3BA
+ArtTile_SYZ_Big_Spikeball:		equ $372				; ✓ (Actually also used in SBZ)
+ArtTile_SYZ_Bumper:				equ $38A				; ✓
+ArtTile_SYZ_Spikeball_Chain:	equ $492				; ✓
+ArtTile_Roller:					equ $496				; ✓
 
 ; Labyrinth Zone
-ArtTile_LZ_Block_1:		equ $1E0
-ArtTile_LZ_Block_2:		equ $1F0
-ArtTile_LZ_Splash:		equ $259
-ArtTile_LZ_Gargoyle:		equ $2E9
-ArtTile_LZ_Water_Surface:	equ $300
-ArtTile_LZ_Spikeball_Chain:	equ $310
-ArtTile_LZ_Flapping_Door:	equ $328
-ArtTile_LZ_Bubbles:		equ $348
-ArtTile_LZ_Moving_Block:	equ $3BC
-ArtTile_LZ_Door:		equ $3C4
-ArtTile_LZ_Harpoon:		equ $3CC
-ArtTile_LZ_Pole:		equ $3DE
-ArtTile_LZ_Push_Block:		equ $3DE
-ArtTile_LZ_Blocks:		equ $3E6
-ArtTile_LZ_Conveyor_Belt:	equ $3F6
-ArtTile_LZ_Sonic_Drowning:	equ $440
-ArtTile_LZ_Rising_Platform:	equ ArtTile_LZ_Blocks+$69
-ArtTile_LZ_Orbinaut:		equ $467
-ArtTile_LZ_Cork:		equ ArtTile_LZ_Blocks+$11A
+ArtTile_LZ_Block_1:				equ $1C6				; ✓
+ArtTile_LZ_Block_2:				equ $1D6				; ✓
+ArtTile_LZ_Waterfall:			equ $23E				; ✓
+ArtTile_LZ_Gargoyle:			equ $2AB				; ✓
+ArtTile_LZ_Water_Surface:		equ $2BC				; ✓
+ArtTile_LZ_Spikeball_Chain:		equ $2CC				; ✓
+ArtTile_LZ_Flapping_Door:		equ $2E4				; ✓
+ArtTile_LZ_Bubbles:				equ $304				; ✓
+ArtTile_LZ_Moving_Block:		equ $378				; ✓
+ArtTile_LZ_Door:				equ $380				; ✓
+ArtTile_LZ_Harpoon:				equ $388				; ✓
+ArtTile_LZ_Blocks:				equ $39A				; ✓
+ArtTile_LZ_Conveyor_Belt:		equ $3AA				; ✓
+ArtTile_LZ_Push_Block:			equ $3DE				; ✓ -- Appears to be correct
+ArtTile_LZ_Rising_Platform:		equ $3F2				; ✓
+ArtTile_LZ_Cork:				equ $429				; ✓
+ArtTile_LZ_Sonic_Drowning:		equ $440				; For now, leave this alone.
+ArtTile_LZ_Pole:				equ $443				; ✓
+ArtTile_Jaws:					equ $44B				; ✓
+ArtTile_Burrobot:				equ $46B				; ✓
+ArtTile_Splash:					equ $4C5				; ✓ - Temporary Location
 
 ; Star Light Zone
-ArtTile_SLZ_Seesaw:		equ $374
-ArtTile_SLZ_Fan:		equ $3A0
-ArtTile_SLZ_Pylon:		equ $3CC
-ArtTile_SLZ_Swing:		equ $3DC
-ArtTile_SLZ_Orbinaut:		equ $429
-ArtTile_SLZ_Fireball:		equ $480
-ArtTile_SLZ_Fireball_Launcher:	equ $4D8
-ArtTile_SLZ_Collapsing_Floor:	equ $4E0
-ArtTile_SLZ_Spikeball:		equ $4F0
+ArtTile_SLZ_Pylon:				equ $36A				; ✓
+ArtTile_SLZ_Seesaw:				equ $37A				; ✓
+ArtTile_SLZ_Spikeball:			equ $3D6				; ✓ 
+ArtTile_SLZ_Swing:				equ $3E8				; ✓
+ArtTile_SLZ_Fan:				equ $429				; ✓
+ArtTile_SLZ_Shrapnel:			equ $47C				; ✓ -- For boss
+ArtTile_SLZ_Fireball_Launcher:	equ $47E				; ✓
+ArtTile_SLZ_Smashable_Wall:		equ $486				; ✓
+ArtTile_SLZ_Collapsing_Floor:	equ $48E				; ✓
 
 ; Scrap Brain Zone
-ArtTile_SBZ_Caterkiller:	equ $2B0
-ArtTile_SBZ_Moving_Block_Short:	equ $2C0
-ArtTile_SBZ_Door:		equ $2E8
-ArtTile_SBZ_Girder:		equ $2F0
-ArtTile_SBZ_Disc:		equ $344
-ArtTile_SBZ_Junction:		equ $348
-ArtTile_SBZ_Swing:		equ $391
-ArtTile_SBZ_Saw:		equ $3B5
-ArtTile_SBZ_Flamethrower:	equ $3D9
-ArtTile_SBZ_Collapsing_Floor:	equ $3F5
-ArtTile_SBZ_Orbinaut:		equ $429
-ArtTile_SBZ_Smoke_Puff_1:	equ ArtTile_Level+$448
-ArtTile_SBZ_Smoke_Puff_2:	equ ArtTile_Level+$454
-ArtTile_SBZ_Moving_Block_Long:	equ $460
-ArtTile_SBZ_Horizontal_Door:	equ $46F
-ArtTile_SBZ_Electric_Orb:	equ $47E
-ArtTile_SBZ_Trap_Door:		equ $492
-ArtTile_SBZ_Vanishing_Block:	equ $4C3
-ArtTile_SBZ_Spinning_Platform:	equ $4DF
+ArtTile_SBZ_Smoke_Puff_1:		equ $2A9				; ✓ 448
+ArtTile_SBZ_Smoke_Puff_2:		equ $2B5				; ✓ 454
+ArtTile_SBZ_Moving_Block_Short:	equ $2C1				; ✓
+ArtTile_SBZ_Door:				equ $2E9				; ✓
+ArtTile_SBZ_Girder:				equ $2F1				; ✓
+ArtTile_Ball_Hog:				equ $303				; ✓
+ArtTile_SBZ_Saw:				equ $332				; ✓ SBZCutter
+ArtTile_SBZ_Vanishing_Block:	equ $356				; ✓
+ArtTile_SBZ_Trap_Door:			equ $396				; ✓
+ArtTile_SBZ_Horizontal_Door:	equ $3C7				; ✓
+ArtTile_SBZ_Collapsing_Floor:	equ $3D6				; ✓ Used Twice
+ArtTile_SBZ_Moving_Block_Long:	equ $3DE				; ✓
+ArtTile_SBZ_Electric_Orb:		equ $3ED				; ✓
+ArtTile_SBZ_Spinning_Platform:	equ $401				; ✓
+ArtTile_SBZ_Flamethrower:		equ $47E				; ✓
+ArtTile_SBZ_Disc:				equ $49A				; ✓ SBZWheel1
+ArtTile_SBZ_Junction:			equ $49E				; ✓ SBZWheel2
 
 ; Final Zone
-ArtTile_FZ_Boss:		equ $300
-ArtTile_FZ_Eggman_Fleeing:	equ $3A0
+ArtTile_FZ_Boss:				equ $300
+ArtTile_FZ_Eggman_Fleeing:		equ $3A0
 ArtTile_FZ_Eggman_No_Vehicle:	equ $470
 
 ; General Level Art
-ArtTile_Level:				equ $000
-ArtTile_Ball_Hog:			equ $302
-ArtTile_Bomb:				equ $400
-ArtTile_Crabmeat:			equ $400
-ArtTile_Missile_Disolve:	equ $41C ; Unused
-ArtTile_Buzz_Bomber:		equ $444
-ArtTile_Chopper:			equ $47B
-ArtTile_Yadrin:				equ $47B
-ArtTile_Jaws:				equ $486
-ArtTile_Newtron:			equ $49B
-ArtTile_Burrobot:			equ $4A6
-ArtTile_Basaran:			equ $4B8
-ArtTile_Roller:				equ $4B8
-ArtTile_Moto_Bug:			equ $4F0
-ArtTile_Button:				equ $50F
-ArtTile_Spikes:				equ $51B
-ArtTile_Spring_Horizontal:	equ $523
-ArtTile_Spring_Vertical:	equ $533
-ArtTile_Shield:				equ $541
-ArtTile_Invincibility:		equ $55C
-ArtTile_Game_Over:			equ $55E
-ArtTile_Title_Card:			equ $580
-ArtTile_Animal_1:			equ $580
-ArtTile_Animal_2:			equ $592
-ArtTile_Explosion:			equ $5A0
-ArtTile_Monitor:			equ $680
-ArtTile_HUD:				equ $6CA
-ArtTile_Sonic:				equ $780
-ArtTile_Points:				equ $797
-ArtTile_Lamppost:			equ $7A0
-ArtTile_Ring:				equ $7AA
-ArtTile_Lives_Counter:		equ $7D4
+ArtTile_Level:					equ $000
+ArtTile_Missile_Disolve:		equ $41C ; Unused
+ArtTile_Spring_Horizontal:		equ $4FA				; ✓
+ArtTile_Spring_Vertical:		equ $50A				; ✓
+ArtTile_Lamppost:				equ $518				; ✓
+ArtTile_Points:					equ $522				; ✓
+;ArtTile_Dust:					equ $52B
+ArtTile_Shield:					equ $53B				; ✓ A760
+ArtTile_Game_Over:				equ $550				; ?
+ArtTile_Spikes:					equ $560				; ✓
+ArtTile_Title_Card:				equ $578				; ✓ - Make letters uncompressed?
+ArtTile_Animal_1:				equ $568				; ✓
+ArtTile_Animal_2:				equ $57A				; ✓
+ArtTile_Explosion:				equ $58C				; ✓
+ArtTile_Ring:					equ $5EC				; ✓
+ArtTile_Monitor:				equ $680				; ✓ - Optimize by removing life icon (Use HUD life icon)
+ArtTile_HUD:					equ $6CA				; ✓ - Optimized by removing 1 R
+ArtTile_Sonic:					equ $780				; ✓ - Player 1
+ArtTile_Lives_Counter:			equ $7D4				; ✓
 
 ; Eggman
-ArtTile_Eggman:				equ $400
-ArtTile_Eggman_Weapons:		equ $46C
-ArtTile_Eggman_Button:		equ $4A4
-ArtTile_Eggman_Spikeball:	equ $518
-ArtTile_Eggman_Trap_Floor:	equ $518
-ArtTile_Eggman_Exhaust:		equ ArtTile_Eggman+$12A
+ArtTile_Eggman:					equ $3F0				; ✓
+ArtTile_Eggman_Weapons:			equ $45C				; ✓
+ArtTile_Eggman_Spikeball:		equ $504				; Test this
+ArtTile_Eggman_Exhaust:			equ $51A				; ?
+ArtTile_Eggman_Button:			equ $4A4				; SBZ2 Cutscene. Leave alone for now. < Align this w/ ArtTile_Button?
+ArtTile_Eggman_Trap_Floor:		equ $518				; SBZ2 Cutscene. Leave alone for now.
 
 ; End of Level
-ArtTile_Giant_Ring:			equ $400
-ArtTile_Giant_Ring_Flash:	equ $462
-ArtTile_Prison_Capsule:		equ $49D
-ArtTile_Hidden_Points:		equ $4B6
-ArtTile_Warp:				equ $541
-ArtTile_Mini_Sonic:			equ $551
-ArtTile_Bonuses:			equ $570
-ArtTile_Signpost:			equ $680
+ArtTile_Giant_Ring:				equ $430				; ✓
+ArtTile_Giant_Ring_Flash:		equ $462				; Remove this later and have flash be part of Giant Ring anim.
+ArtTile_Prison_Capsule:			equ $49D				; ✓
+ArtTile_Hidden_Points:			equ $4B6				; ✓
+ArtTile_Warp:					equ $541				; Currently unused. Can overwrite Shield art if used.
+ArtTile_Mini_Sonic:				equ $551				; For continues in SS Screen. Leave alone for now.
+ArtTile_Bonuses:				equ $460				; ✓
+ArtTile_Signpost:				equ $680				; ✓ -- Make Uncompressed
 
-; Title Screen
-ArtTile_Title_Foreground:	equ $200
-ArtTile_Title_Sonic:		equ $300
-ArtTile_Title_Trademark:	equ $510
-ArtTile_Level_Select_Font:	equ $680
+; Title Screen - This is fine as is.
+ArtTile_Title_Foreground:		equ $200
+ArtTile_Title_Sonic:			equ $300
+ArtTile_Title_Trademark:		equ $510
+ArtTile_Level_Select_Font:		equ $680
 
 ; Continue Screen
-ArtTile_Continue_Sonic:		equ $500
+ArtTile_Continue_Sonic:			equ $500
 
 ; Ending
-ArtTile_Ending_Flowers:		equ $3A0
-ArtTile_Ending_Emeralds:	equ $3C5
-ArtTile_Ending_Sonic:		equ $3E1
-ArtTile_Ending_Eggman:		equ $524
-ArtTile_Ending_Rabbit:		equ $553
-ArtTile_Ending_Chicken:		equ $565
-ArtTile_Ending_Penguin:		equ $573
-ArtTile_Ending_Seal:		equ $585
-ArtTile_Ending_Pig:		equ $593
-ArtTile_Ending_Flicky:		equ $5A5
-ArtTile_Ending_Squirrel:	equ $5B3
-ArtTile_Ending_STH:		equ $5C5
+ArtTile_Ending_Flowers:			equ $3A0				; ✓
+ArtTile_Ending_Emeralds:		equ $3C5				; ✓
+ArtTile_Ending_Sonic:			equ $3E1				; ✓
+ArtTile_Ending_Eggman:			equ $524				; Unused
+ArtTile_Ending_Rabbit:			equ $524				; ✓
+ArtTile_Ending_Chicken:			equ $536				; ✓
+ArtTile_Ending_Penguin:			equ $544				; ✓
+ArtTile_Ending_Seal:			equ $556				; ✓
+ArtTile_Ending_Pig:				equ $564				; ✓
+ArtTile_Ending_Flicky:			equ $576				; ✓
+ArtTile_Ending_Squirrel:		equ $584				; ✓
+ArtTile_Ending_STH:				equ $596				; ✓
 
 ; Try Again Screen
-ArtTile_Try_Again_Emeralds:	equ $3C5
-ArtTile_Try_Again_Eggman:	equ $3E1
+ArtTile_Try_Again_Emeralds:		equ $3C5
+ArtTile_Try_Again_Eggman:		equ $3E1
 
 ; Special Stage
 ArtTile_SS_Background_Clouds:	equ $000
-ArtTile_SS_Background_Fish:	equ $051
-ArtTile_SS_Wall:		equ $142
-ArtTile_SS_Bumper:		equ $23B
-ArtTile_SS_Goal:		equ $251
-ArtTile_SS_Up_Down:		equ $263
-ArtTile_SS_R_Block:		equ $2F0
-ArtTile_SS_Extra_Life:		equ $370
-ArtTile_SS_Emerald_Sparkle:	equ $3F0
-ArtTile_SS_Red_White_Block:	equ $470
-ArtTile_SS_Ghost_Block:		equ $4F0
-ArtTile_SS_W_Block:		equ $570
-ArtTile_SS_Glass:		equ $5F0
-ArtTile_SS_Emerald:		equ $770
-ArtTile_SS_Zone_1:		equ $797
-ArtTile_SS_Zone_2:		equ $7A0
-ArtTile_SS_Zone_3:		equ $7A9
-ArtTile_SS_Zone_4:		equ $797
-ArtTile_SS_Zone_5:		equ $7A0
-ArtTile_SS_Zone_6:		equ $7A9
+ArtTile_SS_Background_Fish:		equ $051
+ArtTile_SS_Wall:				equ $142
+ArtTile_SS_Bumper:				equ $23B
+ArtTile_SS_Goal:				equ $251
+ArtTile_SS_Up_Down:				equ $263
+ArtTile_SS_R_Block:				equ $2F0
+ArtTile_SS_Extra_Life:			equ $370
+ArtTile_SS_Emerald_Sparkle:		equ $3F0
+ArtTile_SS_Red_White_Block:		equ $470
+ArtTile_SS_Ghost_Block:			equ $4F0
+ArtTile_SS_W_Block:				equ $570
+ArtTile_SS_Glass:				equ $5F0
+ArtTile_SS_Emerald:				equ $770
+ArtTile_SS_Zone_1:				equ $790				; ✓
+ArtTile_SS_Ring:				equ $799				; ✓
 
 ; Special Stage Results
 ArtTile_SS_Results_Emeralds:	equ $541
 
 ; Font
-ArtTile_Sonic_Team_Font:	equ $0A6
-ArtTile_Credits_Font:		equ $5A0
+ArtTile_Sonic_Team_Font:		equ $0A6
+ArtTile_Credits_Font:			equ $58C				; ✓

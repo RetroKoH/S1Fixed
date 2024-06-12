@@ -23,11 +23,12 @@ Map_CStom_internal:	mappingsTable
 .wideblock_End
 
 .spikes:	spriteHeader
-	spritePiece	-$2C, -$10, 1, 4, $21F, 0, 1, 0, 0
-	spritePiece	-$18, -$10, 1, 4, $21F, 0, 1, 0, 0
-	spritePiece	-4, -$10, 1, 4, $21F, 0, 1, 0, 0
-	spritePiece	$10, -$10, 1, 4, $21F, 0, 1, 0, 0
-	spritePiece	$24, -$10, 1, 4, $21F, 0, 1, 0, 0
+; RetroKoH VRAM Overhaul
+	spritePiece	-$2C, -$10, 1, 4, $213, 0, 1, 0, 0
+	spritePiece	-$18, -$10, 1, 4, $213, 0, 1, 0, 0
+	spritePiece	-4, -$10, 1, 4, $213, 0, 1, 0, 0
+	spritePiece	$10, -$10, 1, 4, $213, 0, 1, 0, 0
+	spritePiece	$24, -$10, 1, 4, $213, 0, 1, 0, 0
 .spikes_End
 
 .ceiling:	spriteHeader

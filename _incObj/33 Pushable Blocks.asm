@@ -35,12 +35,12 @@ PushB_Main:	; Routine 0
 		move.b	obSubtype(a0),d0
 		add.w	d0,d0
 		andi.w	#$E,d0
-		lea	PushB_Var(pc,d0.w),a2
+		lea		PushB_Var(pc,d0.w),a2
 		move.b	(a2)+,obActWid(a0)
 		move.b	(a2)+,obFrame(a0)
 		tst.b	obSubtype(a0)
 		beq.s	.chkgone
-		move.w	#make_art_tile(ArtTile_MZ_Block,2,1),obGfx(a0)
+		move.w	#make_art_tile(ArtTile_MZ_Block,2,1),obGfx(a0)	; MZ long block
 
 .chkgone:
 		lea	(v_objstate).w,a2

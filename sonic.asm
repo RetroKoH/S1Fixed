@@ -377,10 +377,10 @@ GameInit:
 .SampleTableOk:
 
 MainGameLoop:
-		move.b	(v_gamemode).w,d0	; load Game Mode
-		andi.w	#$1C,d0				; limit Game Mode value to $1C max (change to a maximum of 7C to add more game modes)
-		jsr	GameModeArray(pc,d0.w)	; jump to apt location in ROM
-		bra.s	MainGameLoop		; loop indefinitely
+		move.b	(v_gamemode).w,d0		; load Game Mode
+		andi.w	#$1C,d0					; limit Game Mode value to $1C max (change to a maximum of 7C to add more game modes)
+		jsr		GameModeArray(pc,d0.w)	; jump to apt location in ROM
+		bra.s	MainGameLoop			; loop indefinitely
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Main game mode array
@@ -2027,7 +2027,7 @@ Tit_LoadText:
 		bsr.w	PalLoad1
 		move.b	#bgm_Title,d0
 		bsr.w	PlaySound_Special		; play title screen music
-		clr.b	(f_debugmode).w		; disable debug mode
+		clr.b	(f_debugmode).w			; disable debug mode
 		move.w	#$178,(v_demolength).w	; run title screen for $178 frames
 
 		clearRAM v_sonicteam,v_sonicteam+object_size	; PRESS START BUTTON Fix (Quickman)
@@ -3613,7 +3613,7 @@ GM_Ending:
 		andi.b	#$BF,d0
 		move.w	d0,(vdp_control_port).l
 		bsr.w	ClearScreen
-		lea	(vdp_control_port).l,a6
+		lea		(vdp_control_port).l,a6
 		move.w	#$8B03,(a6)	; line scroll mode
 		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
 		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
@@ -3631,23 +3631,22 @@ GM_Ending:
 
 End_LoadData:
 		moveq	#plcid_Ending,d0
-		bsr.w	QuickPLC	; load ending sequence patterns
-		jsr	(Hud_Base).l
+		bsr.w	QuickPLC			; load ending sequence patterns
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformLayers
 		bset	#2,(v_fg_scroll_flags).w
 		bsr.w	LoadZoneTiles	; load level art -- Clownacy Level Art Loading
 		bsr.w	LevelDataLoad
 		bsr.w	LoadTilesFromStart
-		lea	(Col_GHZ_1).l,a0 ; MJ: Set first collision for ending
-		lea	(v_collision1).w,a1
+		lea		(Col_GHZ_1).l,a0 ; MJ: Set first collision for ending
+		lea		(v_collision1).w,a1
 		bsr.w	KosDec
-		lea	(Col_GHZ_2).l,a0 ; MJ: Set second collision for ending
-		lea	(v_collision2).w,a1
+		lea		(Col_GHZ_2).l,a0 ; MJ: Set second collision for ending
+		lea		(v_collision2).w,a1
 		bsr.w	KosDec
 		enable_ints
-		lea	(Kos_EndFlowers).l,a0 ;	load extra flower patterns
-		lea	((v_128x128+$1000)&$FFFFFF).l,a1 ; RAM address to buffer the patterns
+		lea		(Kos_EndFlowers).l,a0 ;	load extra flower patterns
+		lea		((v_128x128+$1000)&$FFFFFF).l,a1 ; RAM address to buffer the patterns
 		bsr.w	KosDec
 		moveq	#palid_Sonic,d0
 		bsr.w	PalLoad1	; load Sonic's palette
@@ -3663,10 +3662,9 @@ End_LoadSonic:
 		move.b	#1,(f_lockctrl).w ; lock controls
 		move.w	#(btnL<<8),(v_jpadhold2).w ; move Sonic to the left
 		move.w	#$F800,(v_player+obInertia).w ; set Sonic's speed
-		move.b	#id_HUD,(v_hud).w ; load HUD object
-		jsr	(ObjPosLoad).l
-		jsr	(ExecuteObjects).l
-		jsr	(BuildSprites).l
+		jsr		(ObjPosLoad).l
+		jsr		(ExecuteObjects).l
+		jsr		(BuildSprites).l
 		moveq	#0,d0
 		move.w	d0,(v_rings).w
 		move.l	d0,(v_time).w
@@ -3674,7 +3672,6 @@ End_LoadSonic:
 		move.b	d0,(v_shield).w
 		move.b	d0,(v_invinc).w
 		move.b	d0,(v_shoes).w
-		move.b	d0,(v_unused1).w
 		move.w	d0,(v_debuguse).w
 		move.w	d0,(f_restart).w
 		move.w	d0,(v_framecount).w
@@ -3701,10 +3698,10 @@ End_MainLoop:
 		bsr.w	WaitForVBla
 		addq.w	#1,(v_framecount).w
 		bsr.w	End_MoveSonic
-		jsr	(ExecuteObjects).l
+		jsr		(ExecuteObjects).l
 		bsr.w	DeformLayers
-		jsr	(BuildSprites).l
-		jsr	(ObjPosLoad).l
+		jsr		(BuildSprites).l
+		jsr		(ObjPosLoad).l
 		bsr.w	PaletteCycle
 		bsr.w	OscillateNumDo
 		bsr.w	SynchroAnimate
@@ -3827,7 +3824,7 @@ Map_ESth:	include	"_maps/Ending Sequence STH.asm"
 GM_Credits:
 		bsr.w	ClearPLC
 		bsr.w	PaletteFadeOut
-		lea	(vdp_control_port).l,a6
+		lea		(vdp_control_port).l,a6
 		move.w	#$8004,(a6)		; 8-colour mode
 		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
 		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
@@ -3841,7 +3838,7 @@ GM_Credits:
 		clearRAM v_objspace,v_objend
 
 		locVRAM	ArtTile_Credits_Font*$20
-		lea	(Nem_CreditText).l,a0 ;	load credits alphabet patterns
+		lea		(Nem_CreditText).l,a0 ;	load credits alphabet patterns
 		bsr.w	NemDec
 
 		clearRAM v_pal_dry_dup,v_pal_dry_dup+16*4*2
@@ -3849,14 +3846,14 @@ GM_Credits:
 		moveq	#palid_Sonic,d0
 		bsr.w	PalLoad1	; load Sonic's palette
 		move.b	#id_CreditsText,(v_credits).w ; load credits object
-		jsr	(ExecuteObjects).l
-		jsr	(BuildSprites).l
+		jsr		(ExecuteObjects).l
+		jsr		(BuildSprites).l
 		bsr.w	EndingDemoLoad
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
 		lsl.w	#4,d0
-		lea	(LevelHeaders).l,a2
-		lea	(a2,d0.w),a2
+		lea		(LevelHeaders).l,a2
+		lea		(a2,d0.w),a2
 		moveq	#0,d0
 		move.b	(a2),d0
 		beq.s	Cred_SkipObjGfx
@@ -5616,6 +5613,7 @@ Map_RingBIN:
 		even
 
 Map_GRing:	include	"_maps/Giant Ring.asm"
+			include "_maps/Giant Ring - Dynamic Gfx Script.asm"
 Map_Flash:	include	"_maps/Ring Flash.asm"
 		include	"_incObj/26 Monitor.asm"
 		include	"_incObj/2E Monitor Content Power-Up.asm"
@@ -6634,9 +6632,10 @@ Map_Light	include	"_maps/Light.asm"
 		include	"_anim/Bumper.asm"
 Map_Bump:	include	"_maps/Bumper.asm"
 
-		include	"_incObj/0D Signpost.asm" ; includes "GotThroughAct" subroutine
-		include	"_anim/Signpost.asm"
+			include	"_incObj/0D Signpost.asm" ; includes "GotThroughAct" subroutine
+			include	"_anim/Signpost.asm"
 Map_Sign:	include	"_maps/Signpost.asm"
+			include	"_maps/Signpost - DPLCs.asm"
 
 		include	"_incObj/4C & 4D Lava Geyser Maker.asm"
 		include	"_incObj/4E Wall of Lava.asm"
@@ -6924,45 +6923,47 @@ loc_12EA6:
 
 
 ResumeMusic:
-		cmpi.w	#12,(v_air).w	; more than 12 seconds of air left?
-		bhi.s	.over12		; if yes, branch
-		move.w	#bgm_LZ,d0	; play LZ music
-		cmpi.w	#(id_LZ<<8)+3,(v_zone).w ; check if level is 0103 (SBZ3)
+		cmpi.w	#12,(v_air).w				; more than 12 seconds of air left?
+		bhi.s	.over12						; if yes, branch
+		move.w	#bgm_LZ,d0					; play LZ music
+		cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; check if level is 0103 (SBZ3)
 		bne.s	.notsbz
-		move.w	#bgm_SBZ,d0	; play SBZ music
+		move.w	#bgm_SBZ,d0					; play SBZ music
 
 .notsbz:
-		if Revision<>0
-			tst.b	(v_invinc).w ; is Sonic invincible?
-			beq.s	.notinvinc ; if not, branch
-			move.w	#bgm_Invincible,d0
-.notinvinc:
-			tst.b	(f_lockscreen).w ; is Sonic at a boss?
-			beq.s	.playselected ; if not, branch
-			move.w	#bgm_Boss,d0
-.playselected:
-		endif
+		tst.b	(v_invinc).w				; is Sonic invincible?
+		beq.s	.notinvinc					; if not, branch
+		move.w	#bgm_Invincible,d0
 
+.notinvinc:
+		tst.b	(f_lockscreen).w			; is Sonic at a boss?
+		beq.s	.playselected				; if not, branch
+		move.w	#bgm_Boss,d0
+
+.playselected:
 		jsr	(PlaySound).l
 
 .over12:
-		move.w	#30,(v_air).w	; reset air to 30 seconds
+		move.w	#30,(v_air).w				; reset air to 30 seconds
 		clr.b	(v_sonicbubbles+$32).w
 		rts	
 ; End of function ResumeMusic
 
 ; ===========================================================================
 
-		include	"_anim/Drowning Countdown.asm"
-Map_Drown:	include	"_maps/Drowning Countdown.asm"
+				include	"_anim/Drowning Countdown.asm"
+Map_Drown:		include	"_maps/Drowning Countdown.asm"
 
-		include	"_incObj/38 Shield and Invincibility.asm"
-		include	"_incObj/4A Special Stage Entry (Unused).asm"
-		include	"_incObj/03 Collision Switcher.asm"
-		include	"_incObj/08 Water Splash.asm"
-		include	"_anim/Shield and Invincibility.asm"
-Map_Shield:	include	"_maps/Shield and Invincibility.asm"
-		include	"_anim/Special Stage Entry (Unused).asm"
+				include	"_incObj/38 Shield and Invincibility.asm"
+				include	"_incObj/4A Special Stage Entry (Unused).asm"
+				include	"_incObj/03 Collision Switcher.asm"
+				include	"_incObj/08 Water Splash.asm"
+
+				include	"_anim/Shield and Invincibility.asm"
+Map_Shield:		include	"_maps/Shield and Invincibility.asm"
+				include "_maps/Shield and Invincibility - DPLCs.asm"		; RetroKoH VRAM Overhaul
+				include	"_anim/Special Stage Entry (Unused).asm"
+
 Map_Vanish:	include	"_maps/Special Stage Entry (Unused).asm"
 Map_PathSwapper: include "_maps/Collision Switcher.asm"
 		include	"_anim/Water Splash.asm"
@@ -7817,9 +7818,9 @@ loc_1B2A4:
 		lea	((v_ssblocktypes+5)&$FFFFFF).l,a1
 		subq.b	#1,(v_ani1_time).w
 		bpl.s	loc_1B2C8
-		move.b	#7,(v_ani1_time).w
+		move.b	#3,(v_ani1_time).w		; Smooth Rings
 		addq.b	#1,(v_ani1_frame).w
-		andi.b	#3,(v_ani1_frame).w
+		andi.b	#7,(v_ani1_frame).w		; Smooth Rings
 
 loc_1B2C8:
 		move.b	(v_ani1_frame).w,$1D0(a1)
@@ -8426,7 +8427,15 @@ SonicDynPLC:	include	"_maps/Sonic - Dynamic Gfx Script.asm"
 ; ---------------------------------------------------------------------------
 ; Uncompressed graphics	- Sonic
 ; ---------------------------------------------------------------------------
-Art_Sonic:	binclude	"artunc/Sonic.bin"	; Sonic
+Art_Sonic:		binclude	"artunc/Sonic.bin"					; Sonic
+		even
+Art_Shield:		binclude	"artunc/Shield.bin"					; Blue Shield -- RetroKoH VRAM Overhaul
+		even
+Art_Stars:		binclude	"artunc/Invincibility Stars.bin"	; Invincibility Stars -- RetroKoH VRAM Overhaul
+		even
+Art_Signpost:	binclude	"artunc/Signpost.bin"				; End-of-level Signpost -- RetroKoH VRAM Overhaul
+		even
+Art_BigRing:	binclude	"artunc/Giant Ring.bin"				; Giant Ring -- RetroKoH VRAM Overhaul
 		even
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - various
@@ -8437,10 +8446,7 @@ Nem_Smoke:	binclude	"artnem/Unused - Smoke.nem"
 Nem_SyzSparkle:	binclude	"artnem/Unused - SYZ Sparkles.nem"
 		even
 		endif
-Nem_Shield:	binclude	"artnem/Shield.nem"
-		even
-Nem_Stars:	binclude	"artnem/Invincibility Stars.nem"
-		even
+
 		if Revision=0
 Nem_LzSonic:	binclude	"artnem/Unused - LZ Sonic.nem" ; Sonic holding his breath
 		even
@@ -8537,7 +8543,9 @@ Nem_GhzWall2:	binclude	"artnem/GHZ Edge Wall.nem"
 ; ---------------------------------------------------------------------------
 Nem_Water:	binclude	"artnem/LZ Water Surface.nem"
 		even
-Nem_Splash:	binclude	"artnem/LZ Water & Splashes.nem"
+Nem_Waterfall:	binclude	"artnem/LZ Waterfall.nem"	; Split Waterfall and Splash -- RetroKoH VRAM Reshuffle
+		even
+Nem_Splash:		binclude	"artnem/Water Splash.nem"	; Make uncompressed and load in dash dust spot -- RetroKoH VRAM Reshuffle
 		even
 Nem_LzSpikeBall:binclude	"artnem/LZ Spiked Ball & Chain.nem"
 		even
@@ -8578,7 +8586,7 @@ Nem_MzGlass:	binclude	"artnem/MZ Green Glass Block.nem"
 		even
 Nem_UnkGrass:	binclude	"artnem/Unused - Grass.nem"
 		even
-Nem_MzFire:	binclude	"artnem/Fireballs.nem"
+Nem_Fireball:	binclude	"artnem/Fireballs.nem"
 		even
 Nem_Lava:	binclude	"artnem/MZ Lava.nem"
 		even
@@ -8705,8 +8713,6 @@ Nem_HSpring:	binclude	"artnem/Spring Horizontal.nem"
 		even
 Nem_VSpring:	binclude	"artnem/Spring Vertical.nem"
 		even
-Nem_SignPost:	binclude	"artnem/Signpost.nem"	; end of level signpost
-		even
 Nem_Lamp:	binclude	"artnem/Lamppost.nem"
 		even
 Nem_BigFlash:	binclude	"artnem/Giant Ring Flash.nem"
@@ -8790,6 +8796,14 @@ Blk128_SBZ:	if Revision=0
 ; Compressed graphics - bosses and ending sequence
 ; ---------------------------------------------------------------------------
 Nem_Eggman:	binclude	"artnem/Boss - Main.nem"
+		even
+Nem_Weapons_GHZ:	binclude	"artnem/Boss - Weapons - GHZ.nem"
+		even
+Nem_Weapons_MZ:	binclude	"artnem/Boss - Weapons - MZ.nem"
+		even
+Nem_Weapons_SYZ:	binclude	"artnem/Boss - Weapons - SYZ.nem"	; Removed 1 unneeded tile
+		even
+Nem_Weapons_SLZ:	binclude	"artnem/Boss - Weapons - SLZ.nem"	; Add Spikeball to this set
 		even
 Nem_Weapons:	binclude	"artnem/Boss - Weapons.nem"
 		even
@@ -8990,9 +9004,6 @@ Level_SBZ2:	binclude	"levels/sbz2.kos"
 		even
 
 Level_End:	binclude	"levels/ending.kos"
-		even
-
-Art_BigRing:	binclude	"artunc/Giant Ring.bin"
 		even
 
 		align	$100

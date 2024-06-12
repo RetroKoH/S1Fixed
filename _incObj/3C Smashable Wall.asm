@@ -20,7 +20,12 @@ smash_speed = objoff_30		; Sonic's horizontal speed
 Smash_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Smash,obMap(a0)
-		move.w	#make_art_tile(ArtTile_GHZ_SLZ_Smashable_Wall,2,0),obGfx(a0)
+		move.w	#make_art_tile(ArtTile_GHZ_Smashable_Wall,2,0),obGfx(a0)
+		cmpi.b	#id_GHZ,(v_zone).w
+		beq.s	.isGHZ
+		move.w	#make_art_tile(ArtTile_SLZ_Smashable_Wall,2,0),obGfx(a0)
+
+.isGHZ:
 		move.b	#4,obRender(a0)
 		move.b	#$10,obActWid(a0)
 		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager

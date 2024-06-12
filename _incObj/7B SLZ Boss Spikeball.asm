@@ -6,7 +6,7 @@ BossSpikeball:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	BossSpikeball_Index(pc,d0.w),d0
-		jsr	BossSpikeball_Index(pc,d0.w)
+		jsr		BossSpikeball_Index(pc,d0.w)
 		move.w	objoff_30(a0),d0
 		andi.w	#$FF80,d0
 		move.w	(v_screenposx).w,d1
@@ -16,7 +16,7 @@ BossSpikeball:
 		bmi.w	BossStarLight_Delete
 		cmpi.w	#$280,d0
 		bhi.w	BossStarLight_Delete
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 BossSpikeball_Index:
 		dc.w BossSpikeball_Main-BossSpikeball_Index
@@ -29,7 +29,7 @@ BossSpikeball_Index:
 
 BossSpikeball_Main:	; Routine 0
 		move.l	#Map_SSawBall,obMap(a0)
-		move.w	#make_art_tile(ArtTile_Eggman_Spikeball,0,0),obGfx(a0)
+		move.w	#make_art_tile(ArtTile_SLZ_Spikeball,0,0),obGfx(a0)
 		move.b	#1,obFrame(a0)
 		ori.b	#4,obRender(a0)
 		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
@@ -330,11 +330,11 @@ BossSpikeball_MakeFrag:
 BossSpikeball_Loop:
 		jsr	(FindFreeObj).l
 		bne.s	loc_1909A
-		move.b	#id_BossSpikeball,obID(a1) ; load shrapnel object
+		move.b	#id_BossSpikeball,obID(a1)			; load shrapnel object
 		move.b	#$A,obRoutine(a1)
 		move.l	#Map_BSBall,obMap(a1)
-		move.w	#$180,obPriority(a1)	; RetroKoH S2 Priority Manager
-		move.w	#make_art_tile(ArtTile_Eggman_Spikeball,0,0),obGfx(a1)
+		move.w	#$180,obPriority(a1)				; RetroKoH S2 Priority Manager
+		move.w	#make_art_tile(ArtTile_SLZ_Shrapnel,0,0),obGfx(a1)	; RetroKoH VRAM Overhaul	
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.w	(a2)+,obVelX(a1)

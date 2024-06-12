@@ -42,7 +42,7 @@ Swing_Main:	; Routine 0
 		bne.s	.length
 
 		move.l	#Map_BBall,obMap(a0) ; SBZ specific code
-		move.w	#make_art_tile(ArtTile_SBZ_Swing,0,0),obGfx(a0)
+		move.w	#make_art_tile(ArtTile_SYZ_Big_Spikeball,0,0),obGfx(a0)
 		move.b	#$18,obActWid(a0)
 		move.b	#$18,obHeight(a0)
 		move.b	#$86,obColType(a0)

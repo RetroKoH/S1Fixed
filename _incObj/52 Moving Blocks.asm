@@ -8,7 +8,8 @@ MovingBlock:
 		move.w	MBlock_Index(pc,d0.w),d1
 		jmp	MBlock_Index(pc,d1.w)
 ; ===========================================================================
-MBlock_Index:	dc.w MBlock_Main-MBlock_Index
+MBlock_Index:
+		dc.w MBlock_Main-MBlock_Index
 		dc.w MBlock_Platform-MBlock_Index
 		dc.w MBlock_StandOn-MBlock_Index
 

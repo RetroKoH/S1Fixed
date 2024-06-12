@@ -163,11 +163,11 @@ loc_6EB0:
 
 loc_6ED0:
 		move.w	#bgm_Boss,d0
-		bsr.w	PlaySound	; play boss music
-		move.b	#1,(f_lockscreen).w ; lock screen
+		bsr.w	PlaySound				; play boss music
+		move.b	#1,(f_lockscreen).w		; lock screen
 		addq.b	#2,(v_dle_routine).w
-		moveq	#plcid_Boss,d0
-		bra.w	AddPLC		; load boss patterns
+		moveq	#plcid_Boss_GHZ,d0		; RetroKoH VRAM Overhaul
+		bra.w	AddPLC					; load boss patterns
 ; ===========================================================================
 
 locret_6EE8:
@@ -403,11 +403,11 @@ DLE_MZ3boss:
 
 loc_70D0:
 		move.w	#bgm_Boss,d0
-		bsr.w	PlaySound	; play boss music
-		move.b	#1,(f_lockscreen).w ; lock screen
+		bsr.w	PlaySound				; play boss music
+		move.b	#1,(f_lockscreen).w		; lock screen
 		addq.b	#2,(v_dle_routine).w
-		moveq	#plcid_Boss,d0
-		bra.w	AddPLC		; load boss patterns
+		moveq	#plcid_Boss_MZ,d0		; RetroKoH VRAM Overhaul
+		bra.w	AddPLC					; load boss patterns
 ; ===========================================================================
 
 locret_70E8:
@@ -468,11 +468,11 @@ DLE_SLZ3boss:
 
 loc_7144:
 		move.w	#bgm_Boss,d0
-		bsr.w	PlaySound	; play boss music
-		move.b	#1,(f_lockscreen).w ; lock screen
+		bsr.w	PlaySound				; play boss music
+		move.b	#1,(f_lockscreen).w		; lock screen
 		addq.b	#2,(v_dle_routine).w
-		moveq	#plcid_Boss,d0
-		bra.w	AddPLC		; load boss patterns
+		moveq	#plcid_Boss_SLZ,d0		; RetroKoH VRAM Overhaul
+		bra.w	AddPLC					; load boss patterns
 ; ===========================================================================
 
 locret_715C:
@@ -551,10 +551,10 @@ DLE_SYZ3boss:
 
 loc_71EC:
 		move.w	#bgm_Boss,d0
-		bsr.w	PlaySound	; play boss music
-		move.b	#1,(f_lockscreen).w ; lock screen
-		moveq	#plcid_Boss,d0
-		bra.w	AddPLC		; load boss patterns
+		bsr.w	PlaySound				; play boss music
+		move.b	#1,(f_lockscreen).w		; lock screen
+		moveq	#plcid_Boss_SYZ,d0		; RetroKoH VRAM Overhaul
+		bra.w	AddPLC					; load boss patterns
 ; ===========================================================================
 
 locret_7200:

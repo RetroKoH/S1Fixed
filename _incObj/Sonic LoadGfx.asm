@@ -19,8 +19,7 @@ Sonic_LoadGfx:
 		move.b	(a2)+,d5				; read "number of entries" value
 		subq.w	#1,d5
 		bmi.s	.nochange				; if zero, branch
-		move.w	#$F000,d4
-		move.l	#Art_Sonic,d6
+		move.w	#(ArtTile_Sonic*$20),d4
 
 .readentry:
 		moveq	#0,d1
@@ -33,7 +32,7 @@ Sonic_LoadGfx:
 		addi.w	#$10,d3
 		andi.w	#$FFF,d1				; clear the counter to remove # of tiles from far left nybble
 		lsl.l	#5,d1					; changed to .l (more than FFFF bytes)
-		add.l	d6,d1
+		add.l	#Art_Sonic,d1
 		move.w	d4,d2
 		add.w	d3,d4
 		add.w	d3,d4

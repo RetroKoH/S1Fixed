@@ -8,7 +8,8 @@ FloatingBlock:
 		move.w	FBlock_Index(pc,d0.w),d1
 		jmp	FBlock_Index(pc,d1.w)
 ; ===========================================================================
-FBlock_Index:	dc.w FBlock_Main-FBlock_Index
+FBlock_Index:
+		dc.w FBlock_Main-FBlock_Index
 		dc.w FBlock_Action-FBlock_Index
 
 fb_origX = objoff_34		; original x-axis position
@@ -42,7 +43,7 @@ FBlock_Main:	; Routine 0
 		move.b	obSubtype(a0),d0 ; get subtype
 		lsr.w	#3,d0
 		andi.w	#$E,d0		; read only the 1st digit
-		lea	FBlock_Var(pc,d0.w),a2 ; get size data
+		lea		FBlock_Var(pc,d0.w),a2 ; get size data
 		move.b	(a2)+,obActWid(a0)
 		move.b	(a2),obHeight(a0)
 		lsr.w	#1,d0

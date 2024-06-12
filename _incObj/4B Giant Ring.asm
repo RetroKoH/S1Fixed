@@ -6,9 +6,10 @@ GiantRing:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	GRing_Index(pc,d0.w),d1
-		jmp	GRing_Index(pc,d1.w)
+		jmp		GRing_Index(pc,d1.w)
 ; ===========================================================================
-GRing_Index:	dc.w GRing_Main-GRing_Index
+GRing_Index:
+		dc.w GRing_Main-GRing_Index
 		dc.w GRing_Animate-GRing_Index
 		dc.w GRing_Collect-GRing_Index
 		dc.w GRing_Delete-GRing_Index
@@ -36,6 +37,7 @@ GRing_Okay:
 
 GRing_Animate:	; Routine 2
 		move.b	(v_ani1_frame).w,obFrame(a0)
+		bsr.w	GRing_LoadGfx					; RetroKoH VRAM Overhaul
 		out_of_range.w	DeleteObject
 		bra.w	DisplaySprite
 ; ===========================================================================
@@ -56,9 +58,48 @@ GRing_Collect:	; Routine 4
 
 GRing_PlaySnd:
 		move.w	#sfx_GiantRing,d0
-		jsr	(PlaySound_Special).l	; play giant ring sound
+		jsr		(PlaySound_Special).l	; play giant ring sound
 		bra.s	GRing_Animate
 ; ===========================================================================
 
 GRing_Delete:	; Routine 6
 		bra.w	DeleteObject
+; ===========================================================================
+
+; ---------------------------------------------------------------------------
+; Giant Ring dynamic pattern loading subroutine
+; RetroKoH VRAM Overhaul
+; ---------------------------------------------------------------------------
+
+GRing_LoadGfx:
+		moveq	#0,d0
+		move.b	obFrame(a0),d0			; load frame number
+		lea		(GRingDynPLC).l,a2
+		add.w	d0,d0
+		adda.w	(a2,d0.w),a2
+		moveq	#0,d5
+		move.b	(a2)+,d5          		; read "number of entries" value
+		subq.w	#1,d5
+		bmi.s	GRingDPLC_Return		; if zero, branch
+		move.w	#(ArtTile_Giant_Ring*$20),d4
+
+GRingDPLC_ReadEntry:
+		moveq	#0,d1
+		move.b	(a2)+,d1
+		lsl.w	#8,d1
+		move.b	(a2)+,d1
+		move.w	d1,d3
+		lsr.w	#8,d3
+		andi.w	#$F0,d3
+		addi.w	#$10,d3
+		andi.w	#$FFF,d1
+		lsl.l	#5,d1
+		add.l	#Art_BigRing,d1
+		move.w	d4,d2
+		add.w	d3,d4
+		add.w	d3,d4
+		jsr		(QueueDMATransfer).l
+		dbf		d5,GRingDPLC_ReadEntry	; repeat for number of entries
+
+GRingDPLC_Return:
+		rts

@@ -58,12 +58,12 @@ specialStageData: macro frame,mappings,palette,vram
 		specialStageData	1, Map_Bump,      0, ArtTile_SS_Bumper
 		specialStageData	2, Map_Bump,      0, ArtTile_SS_Bumper
 		specialStageData	0, Map_SS_R,      0, ArtTile_SS_Zone_1
-		specialStageData	0, Map_SS_R,      0, ArtTile_SS_Zone_2
-		specialStageData	0, Map_SS_R,      0, ArtTile_SS_Zone_3
-		specialStageData	0, Map_SS_R,      0, ArtTile_SS_Zone_4
-		specialStageData	0, Map_SS_R,      0, ArtTile_SS_Zone_5
-		specialStageData	0, Map_SS_R,      0, ArtTile_SS_Zone_6
-		specialStageData	0, Map_Ring,      1, ArtTile_Ring
+		specialStageData	0, Map_SS_R,      0, ArtTile_SS_Zone_1 ;2
+		specialStageData	0, Map_SS_R,      0, ArtTile_SS_Zone_1 ;3
+		specialStageData	0, Map_SS_R,      0, ArtTile_SS_Zone_1 ;4
+		specialStageData	0, Map_SS_R,      0, ArtTile_SS_Zone_1 ;5
+		specialStageData	0, Map_SS_R,      0, ArtTile_SS_Zone_1 ;6
+		specialStageData	0, Map_Ring,      1, ArtTile_SS_Ring	; RetroKoH VRAM Overhaul
 		specialStageData	0, Map_SS_Chaos3, 0, ArtTile_SS_Emerald
 		specialStageData	0, Map_SS_Chaos3, 1, ArtTile_SS_Emerald
 		specialStageData	0, Map_SS_Chaos3, 2, ArtTile_SS_Emerald
@@ -71,10 +71,12 @@ specialStageData: macro frame,mappings,palette,vram
 		specialStageData	0, Map_SS_Chaos1, 0, ArtTile_SS_Emerald
 		specialStageData	0, Map_SS_Chaos2, 0, ArtTile_SS_Emerald
 		specialStageData	0, Map_SS_R,      0, ArtTile_SS_Ghost_Block
-		specialStageData	4, Map_Ring,      1, ArtTile_Ring
-		specialStageData	5, Map_Ring,      1, ArtTile_Ring
-		specialStageData	6, Map_Ring,      1, ArtTile_Ring
-		specialStageData	7, Map_Ring,      1, ArtTile_Ring
+	; RetroKoH VRAM Overhaul
+		specialStageData	8, Map_Ring,      1, ArtTile_SS_Ring
+		specialStageData	9, Map_Ring,      1, ArtTile_SS_Ring
+		specialStageData	$A, Map_Ring,     1, ArtTile_SS_Ring
+		specialStageData	$B, Map_Ring,     1, ArtTile_SS_Ring
+	; RetroKoH VRAM Overhaul End
 		specialStageData	0, Map_SS_Glass,  1, ArtTile_SS_Emerald_Sparkle
 		specialStageData	1, Map_SS_Glass,  1, ArtTile_SS_Emerald_Sparkle
 		specialStageData	2, Map_SS_Glass,  1, ArtTile_SS_Emerald_Sparkle

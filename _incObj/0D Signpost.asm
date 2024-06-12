@@ -9,10 +9,27 @@ Signpost:
 		jsr		Sign_Index(pc,d1.w)
 		lea		(Ani_Sign).l,a1
 		bsr.w	AnimateSprite
-		out_of_range.w	DeleteObject
-		bra.w	DisplaySprite			; Clownacy DisplaySprite Fix
+	; RetroKoH VRAM Overhaul Edit
+	; The code below checks how close to the signpost the camera is,
+	; If the sign is nearly onscreen, the art loads.
+		move.w	(v_player+obX).w,d0		; Get the player's X position.
+		addi.w	#224,d0					; add 224 ($E0).
+		sub.w	obX(a0),d0				; Subtract the signpost's x postion.
+		tst.w	d0						; Check if d0 is 0 or great (Sonic is less than
+		blt.s	.skip					; If d0 is lower than 0, branch.
+
+	; Add this to prevent DPLCs from loading AFTER the signpost stops spinning
+	; This will prevent graphic bugs in the Special Stage
+		cmpi.b	#6,obRoutine(a0)
+		bgt.s	.skip
+		bsr.w	Signpost_LoadGfx
+	.skip:
+	; VRAM Overhaul Edit End
+		out_of_range	DeleteObject
+		bra.w	DisplaySprite		; Clownacy DisplaySprite FIX
 ; ===========================================================================
-Sign_Index:	dc.w Sign_Main-Sign_Index
+Sign_Index:
+		dc.w Sign_Main-Sign_Index
 		dc.w Sign_Touch-Sign_Index
 		dc.w Sign_Spin-Sign_Index
 		dc.w Sign_SonicRun-Sign_Index
@@ -35,12 +52,12 @@ Sign_Touch:	; Routine 2
 		move.w	(v_player+obX).w,d0
 		sub.w	obX(a0),d0
 		bcs.s	.notouch
-		cmpi.w	#$20,d0		; is Sonic within $20 pixels of	the signpost?
-		bhs.s	.notouch	; if not, branch
+		cmpi.w	#$20,d0								; is Sonic within $20 pixels of	the signpost?
+		bhs.s	.notouch							; if not, branch
 		move.w	#sfx_Signpost,d0
-		jsr	(PlaySound).l	; play signpost sound
-		clr.b	(f_timecount).w	; stop time counter
-		move.w	(v_limitright2).w,(v_limitleft2).w ; lock screen position
+		jsr		(PlaySound).l						; play signpost sound
+		clr.b	(f_timecount).w						; stop time counter
+		move.w	(v_limitright2).w,(v_limitleft2).w	; lock screen position
 		addq.b	#2,obRoutine(a0)
 
 .notouch:
@@ -64,7 +81,7 @@ Sign_Spin:	; Routine 4
 		move.b	sparkle_id(a0),d0 ; get sparkle id
 		addq.b	#2,sparkle_id(a0) ; increment sparkle counter
 		andi.b	#$E,sparkle_id(a0)
-		lea	Sign_SparkPos(pc,d0.w),a2 ; load sparkle position data
+		lea		Sign_SparkPos(pc,d0.w),a2 ; load sparkle position data
 		bsr.w	FindFreeObj
 		bne.s	.fail
 		_move.b	#id_Rings,obID(a1)	; load rings object
@@ -86,7 +103,8 @@ Sign_Spin:	; Routine 4
 .fail:
 		rts	
 ; ===========================================================================
-Sign_SparkPos:	dc.b -$18,-$10		; x-position, y-position
+Sign_SparkPos:
+		dc.b -$18,-$10		; x-position, y-position
 		dc.b	8,   8
 		dc.b -$10,   0
 		dc.b  $18,  -8
@@ -99,26 +117,19 @@ Sign_SparkPos:	dc.b -$18,-$10		; x-position, y-position
 Sign_SonicRun:	; Routine 6
 		tst.w	(v_debuguse).w	; is debug mode	on?
 		bne.w	locret_ECEE	; if yes, branch
-	if FixBugs
-		; This function's checks are a mess, creating an edgecase where it's
-		; possible for the player to avoid having their controls locked by
-		; jumping at the right side of the screen just as the score tally
-		; appears.
+	; Signpost Routine Fix
+	; This function's checks are a mess, creating an edgecase where it's
+	; possible for the player to avoid having their controls locked by
+	; jumping at the right side of the screen just as the score tally
+	; appears.
 		tst.b	(v_player+obID).w	; Check if Sonic's object has been deleted (because he entered the giant ring)
 		beq.s	loc_EC86
 		btst	#1,(v_player+obStatus).w
 		bne.w	locret_ECEE
-	else
-		btst	#1,(v_player+obStatus).w
-		bne.s	loc_EC70
-	endif
+	; Signpost Routine Fix End
 		move.b	#1,(f_lockctrl).w ; lock controls
 		move.w	#btnR<<8,(v_jpadhold2).w ; make Sonic run to the right
-	if ~~FixBugs
-loc_EC70:
-		tst.b	(v_player+obID).w	; Check if Sonic's object has been deleted (because he entered the giant ring)
-		beq.s	loc_EC86
-	endif
+	; Old check moved to above -- Signpost Routine Fix
 		move.w	(v_player+obX).w,d0
 		move.w	(v_limitright2).w,d1
 		addi.w	#$128,d1
@@ -178,3 +189,41 @@ TimeBonuses:	dc.w 5000, 5000, 1000, 500, 400, 400, 300, 300,	200, 200
 
 Sign_Exit:	; Routine 8
 		rts	
+; ===========================================================================
+
+; ---------------------------------------------------------------------------
+; Signpost dynamic pattern loading subroutine -- RetroKoH VRAM Overhaul
+; ---------------------------------------------------------------------------
+
+Signpost_LoadGfx:
+		moveq	#0,d0
+		move.b	obFrame(a0),d0				; load frame number
+		lea		(SignpostDynPLC).l,a2
+		add.w	d0,d0
+		adda.w	(a2,d0.w),a2
+		moveq	#0,d5
+		move.b	(a2)+,d5					; read "number of entries" value
+		subq.w	#1,d5
+		bmi.s	SignpostDPLC_Return			; if zero, branch
+		move.w	#(ArtTile_Signpost*$20),d4
+
+SignpostPLC_ReadEntry:
+		moveq	#0,d1
+		move.b	(a2)+,d1
+		lsl.w	#8,d1
+		move.b	(a2)+,d1
+		move.w	d1,d3
+		lsr.w	#8,d3
+		andi.w	#$F0,d3
+		addi.w	#$10,d3
+		andi.w	#$FFF,d1
+		lsl.l	#5,d1
+		add.l	#Art_Signpost,d1
+		move.w	d4,d2
+		add.w	d3,d4
+		add.w	d3,d4
+		jsr		(QueueDMATransfer).l
+		dbf		d5,SignpostPLC_ReadEntry	; repeat for number of entries
+
+SignpostDPLC_Return:
+		rts

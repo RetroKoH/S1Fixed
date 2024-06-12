@@ -25,18 +25,17 @@ Map_BossItems_internal:	mappingsTable
 .cross_End
 
 .widepipe:	spriteHeader
-	spritePiece	-$C, $14, 3, 2, 7, 0, 0, 0, 0	; SLZ boss
+	spritePiece	-$C, $14, 3, 2, 0, 0, 0, 0, 0	; SLZ boss -- RetroKoH VRAM Overhaul
 .widepipe_End
 
 .pipe:	spriteHeader
-	spritePiece	-8, $14, 2, 2, $D, 0, 0, 0, 0	; MZ boss
+	spritePiece	-8, $14, 2, 2, 0, 0, 0, 0, 0	; MZ boss -- RetroKoH VRAM Overhaul
 .pipe_End
 
 .spike:	spriteHeader
-	spritePiece	-8, -$10, 2, 1, $11, 0, 0, 0, 0 ; SYZ boss
-	spritePiece	-8, -8, 1, 2, $13, 0, 0, 0, 0
-	spritePiece	0, -8, 1, 2, $13, 1, 0, 0, 0
-	spritePiece	-8, 8, 2, 1, $15, 0, 0, 0, 0
+	spritePiece	-8, -$10, 2, 1, 0, 0, 0, 0, 0 ; SYZ boss -- RetroKoH VRAM Overhaul
+	spritePiece	-8, -8, 1, 3, 2, 0, 0, 0, 0
+	spritePiece	0, -8, 1, 3, 2, 1, 0, 0, 0
 .spike_End
 		even
 .legmask:	spriteHeader

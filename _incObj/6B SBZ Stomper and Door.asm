@@ -15,33 +15,35 @@ sto_origX = objoff_34		; original x-axis position
 sto_origY = objoff_30		; original y-axis position
 sto_active = objoff_38		; flag set when a switch is pressed
 
-Sto_Var:	dc.b  $40,  $C,	$80,   1 ; width, height, ????,	type number
-		dc.b  $1C, $20,	$38,   3
-		dc.b  $1C, $20,	$40,   4
-		dc.b  $1C, $20,	$60,   4
-		dc.b  $80, $40,	  0,   5
+Sto_Var:
+			; width,	height, ????,	type number
+		dc.b  $40,		$C,		$80,	1
+		dc.b  $1C,		$20,	$38,	3
+		dc.b  $1C,		$20,	$40,	4
+		dc.b  $1C,		$20,	$60,	4
+		dc.b  $80,		$40,	0,		5
 ; ===========================================================================
 
 Sto_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
-		lsr.w	#2,d0
+		lsr.w	#2,d0				; subtype div 4
 		andi.w	#$1C,d0
-		lea	Sto_Var(pc,d0.w),a3
+		lea		Sto_Var(pc,d0.w),a3
 		move.b	(a3)+,obActWid(a0)
 		move.b	(a3)+,obHeight(a0)
 		lsr.w	#2,d0
 		move.b	d0,obFrame(a0)
 		move.l	#Map_Stomp,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Moving_Block_Short,1,0),obGfx(a0)
-		cmpi.b	#id_LZ,(v_zone).w ; check if level is LZ/SBZ3
-		bne.s	.isSBZ12	; if not, branch
+		cmpi.b	#id_LZ,(v_zone).w	; check if level is LZ/SBZ3
+		bne.s	.isSBZ12			; if not, branch
 		bset	#0,(v_obj6B).w
 		beq.s	.isSBZ3
 
 .chkdel:
-		lea	(v_objstate).w,a2
+		lea		(v_objstate).w,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	.delete
@@ -52,10 +54,10 @@ Sto_Main:	; Routine 0
 ; ===========================================================================
 
 .isSBZ3:
-		move.w	#make_art_tile(ArtTile_Level+$1F0,2,0),obGfx(a0)
+		move.w	#make_art_tile($1D6,2,0),obGfx(a0)
 		cmpi.w	#$A80,obX(a0)
 		bne.s	.isSBZ12
-		lea	(v_objstate).w,a2
+		lea		(v_objstate).w,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	.isSBZ12
@@ -84,7 +86,7 @@ Sto_Main:	; Routine 0
 		bset	#4,obRender(a0)
 
 .chkgone:
-		lea	(v_objstate).w,a2
+		lea		(v_objstate).w,a2
 		moveq	#0,d0
 		move.b	obRespawnNo(a0),d0
 		beq.s	Sto_Action

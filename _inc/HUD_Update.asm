@@ -11,8 +11,8 @@ HUD_Update:
 		beq.s	.chkrings	; if not, branch
 
 		clr.b	(f_scorecount).w
-		locVRAM	(ArtTile_HUD+$1A)*$20,d0	; set VRAM address
-		move.l	(v_score).w,d1	; load score
+		locVRAM	(ArtTile_HUD+$18)*$20,d0	; set VRAM address -- RetroKoH VRAM Overhaul
+		move.l	(v_score).w,d1				; load score
 		bsr.w	Hud_Score
 
 .chkrings:
@@ -23,7 +23,7 @@ HUD_Update:
 
 .notzero:
 		clr.b	(f_ringcount).w
-		locVRAM	(ArtTile_HUD+$30)*$20,d0	; set VRAM address
+		locVRAM	(ArtTile_HUD+$2E)*$20,d0	; set VRAM address -- RetroKoH VRAM Overhaul
 		moveq	#0,d1
 		move.w	(v_rings).w,d1	; load number of rings
 		bsr.w	Hud_Rings
@@ -51,11 +51,11 @@ HUD_Update:
 		move.b	#9,(a1)		; keep as 9
 
 .updatetime:
-		locVRAM	(ArtTile_HUD+$28)*$20,d0
+		locVRAM	(ArtTile_HUD+$26)*$20,d0	; set VRAM address -- RetroKoH VRAM Overhaul
 		moveq	#0,d1
 		move.b	(v_timemin).w,d1 ; load	minutes
 		bsr.w	Hud_Mins
-		locVRAM	(ArtTile_HUD+$2C)*$20,d0
+		locVRAM	(ArtTile_HUD+$2A)*$20,d0	; set VRAM address -- RetroKoH VRAM Overhaul
 		moveq	#0,d1
 		move.b	(v_timesec).w,d1 ; load	seconds
 		bsr.w	Hud_Secs
@@ -100,13 +100,13 @@ HudDebug:
 
 .notzero:
 		clr.b	(f_ringcount).w
-		locVRAM	(ArtTile_HUD+$30)*$20,d0	; set VRAM address
+		locVRAM	(ArtTile_HUD+$2E)*$20,d0	; set VRAM address -- RetroKoH VRAM Overhaul
 		moveq	#0,d1
 		move.w	(v_rings).w,d1	; load number of rings
 		bsr.w	Hud_Rings
 
 .objcounter:
-		locVRAM	(ArtTile_HUD+$2C)*$20,d0	; set VRAM address
+		locVRAM	(ArtTile_HUD+$2A)*$20,d0	; set VRAM address -- RetroKoH VRAM Overhaul
 		moveq	#0,d1
 		move.b	(v_spritecount).w,d1 ; load "number of objects" counter
 		bsr.w	Hud_Secs
@@ -139,7 +139,7 @@ HudDebug:
 
 
 Hud_LoadZero:
-		locVRAM	(ArtTile_HUD+$30)*$20
+		locVRAM	(ArtTile_HUD+$2E)*$20	; set VRAM address -- RetroKoH VRAM Overhaul
 		lea	Hud_TilesZero(pc),a2
 		move.w	#2,d2
 		bra.s	loc_1C83E
@@ -155,7 +155,7 @@ Hud_LoadZero:
 Hud_Base:
 		lea	(vdp_data_port).l,a6
 		bsr.w	Hud_Lives
-		locVRAM	(ArtTile_HUD+$18)*$20
+		locVRAM	(ArtTile_HUD+$16)*$20	; set VRAM address -- RetroKoH VRAM Overhaul
 		lea	Hud_TilesBase(pc),a2
 		move.w	#$E,d2
 
@@ -198,7 +198,7 @@ Hud_TilesZero:	dc.b $FF, $FF, 0, 0
 
 
 HudDb_XY:
-		locVRAM	(ArtTile_HUD+$18)*$20		; set VRAM address
+		locVRAM	(ArtTile_HUD+$16)*$20	; set VRAM address -- RetroKoH VRAM Overhaul
 		move.w	(v_screenposx).w,d1 ; load camera x-position
 		swap	d1
 		move.w	(v_player+obX).w,d1 ; load Sonic's x-position
@@ -314,5 +314,4 @@ loc_1C92C:
 		dbf	d6,Hud_ScoreLoop
 
 		rts	
-
 ; End of function Hud_Score

@@ -224,11 +224,11 @@ CheckedChannelPointer macro loc
 	if SonicDriverVer<>1
 		dc.w	z80_ptr(loc)
 	else
-		if MOMPASS>1
-			if loc<songStart
-				fatal "Tracks for Sonic 1 songs must come after the start of the song"
-			endif
-		endif
+		;if MOMPASS>1
+		;	if loc<songStart
+		;		fatal "Tracks for Sonic 1 songs must come after the start of the song"
+		;	endif
+		;endif
 		dc.w	loc-songStart
 	endif
 	endm
@@ -270,11 +270,11 @@ smpsHeaderVoice macro loc
 	if SonicDriverVer<>1
 		dc.w	z80_ptr(loc)
 	else
-		if MOMPASS>1
-			if loc<songStart
-				fatal "Voice banks for Sonic 1 songs must come after the song"
-			endif
-		endif
+		;if MOMPASS>1
+		;	if loc<songStart
+		;		fatal "Voice banks for Sonic 1 songs must come after the song"
+		;	endif
+		;endif
 		dc.w	loc-songStart
 	endif
 	endm

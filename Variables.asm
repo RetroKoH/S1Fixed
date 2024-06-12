@@ -423,12 +423,12 @@ v_invinc:		ds.b	1		; invinciblity status (00 = no; 01 = yes)
 v_shoes:		ds.b	1		; speed shoes status (00 = no; 01 = yes)
 v_unused1:		ds.b	1		; an unused fourth player status (Goggles?)
 
-v_lastlamp:		ds.b	2		; number of the last lamppost you hit
+v_lastlamp:			ds.b	2		; number of the last lamppost you hit
 v_lamp_xpos:		ds.w	1		; x-axis for Sonic to respawn at lamppost
 v_lamp_ypos:		ds.w	1		; y-axis for Sonic to respawn at lamppost
 v_lamp_rings:		ds.w	1		; rings stored at lamppost
 v_lamp_time:		ds.l	1		; time stored at lamppost
-v_lamp_dle:		ds.b	1		; dynamic level event routine counter at lamppost
+v_lamp_dle:			ds.b	1		; dynamic level event routine counter at lamppost
 			ds.b	1		; unused
 v_lamp_limitbtm:	ds.w	1		; level bottom boundary at lamppost
 v_lamp_scrx:		ds.w	1		; x-axis screen at lamppost
@@ -443,14 +443,13 @@ v_lamp_wtrpos:		ds.w	1		; water position at lamppost
 v_lamp_wtrrout:		ds.b	1		; water routine at lamppost
 v_lamp_wtrstat:		ds.b	1		; water state at lamppost
 v_lamp_lives:		ds.b	1		; lives counter at lamppost
-			ds.b	2		; unused
-v_emeralds:		ds.b	1		; number of chaos emeralds
-v_emldlist:		ds.b	6		; which individual emeralds you have (00 = no; 01 = yes)
+				ds.b	2		; unused
+v_emeralds:			ds.b	1		; number of chaos emeralds
+v_emldlist:			ds.b	6		; which individual emeralds you have (00 = no; 01 = yes)
 v_oscillate:		ds.w	1		; oscillation bitfield
 v_timingandscreenvariables:
-v_timingvariables:
-			ds.b	$40		; values which oscillate - for swinging platforms, et al
-			ds.b	$20		; unused
+v_timingvariables:	ds.b	$40		; values which oscillate - for swinging platforms, et al
+				ds.b	$20		; unused
 v_ani0_time:		ds.b	1		; synchronised sprite animation 0 - time until next frame (used for synchronised animations)
 v_ani0_frame:		ds.b	1		; synchronised sprite animation 0 - current frame
 v_ani1_time:		ds.b	1		; synchronised sprite animation 1 - time until next frame

@@ -11,7 +11,8 @@ LabyrinthBlock:
 LBlk_Index:	dc.w LBlk_Main-LBlk_Index
 		dc.w LBlk_Action-LBlk_Index
 
-LBlk_Var:	dc.b $10, $10		; width, height
+LBlk_Var:
+		dc.b $10, $10		; width, height
 		dc.b $20, $C
 		dc.b $10, $10
 		dc.b $10, $10
@@ -29,31 +30,31 @@ LBlk_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.w	#$180,obPriority(a0)	; RetroKoH S2 Priority Manager
 		moveq	#0,d0
-		move.b	obSubtype(a0),d0 ; get block type
-		lsr.w	#3,d0		; read only the 1st digit
+		move.b	obSubtype(a0),d0		; get block type
+		lsr.w	#3,d0					; read only the 1st digit
 		andi.w	#$E,d0
-		lea	LBlk_Var(pc,d0.w),a2
-		move.b	(a2)+,obActWid(a0) ; set width
-		move.b	(a2),obHeight(a0) ; set height
+		lea		LBlk_Var(pc,d0.w),a2
+		move.b	(a2)+,obActWid(a0)		; set width
+		move.b	(a2),obHeight(a0)		; set height
 		lsr.w	#1,d0
 		move.b	d0,obFrame(a0)
 		move.w	obX(a0),lblk_origX(a0)
 		move.w	obY(a0),lblk_origY(a0)
-		move.b	obSubtype(a0),d0 ; get block type
-		andi.b	#$F,d0		; read only the 2nd digit
-		beq.s	LBlk_Action	; branch if 0
+		move.b	obSubtype(a0),d0		; get block type
+		andi.b	#$F,d0					; read only the 2nd digit
+		beq.s	LBlk_Action				; branch if 0
 		cmpi.b	#7,d0
-		beq.s	LBlk_Action	; branch if 7
+		beq.s	LBlk_Action				; branch if 7
 		move.b	#1,lblk_untouched(a0)
 
 LBlk_Action:	; Routine 2
 		move.w	obX(a0),-(sp)
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
-		andi.w	#$F,d0
+		andi.w	#$F,d0					; read only the 2nd digit (it does this EVERY frame. Let's optimize this)
 		add.w	d0,d0
 		move.w	.index(pc,d0.w),d1
-		jsr	.index(pc,d1.w)
+		jsr		.index(pc,d1.w)
 		move.w	(sp)+,d4
 		tst.b	obRender(a0)
 		bpl.s	.chkdel
@@ -72,7 +73,8 @@ LBlk_Action:	; Routine 2
 		out_of_range.w	DeleteObject,lblk_origX(a0)
 		bra.w	DisplaySprite
 ; ===========================================================================
-.index:		dc.w .type00-.index, .type01-.index
+.index:
+		dc.w .type00-.index, .type01-.index
 		dc.w .type02-.index, .type03-.index
 		dc.w .type04-.index, .type05-.index
 		dc.w .type06-.index, .type07-.index
@@ -168,7 +170,7 @@ LBlk_Action:	; Routine 2
 		moveq	#2,d0
 
 .loc_1216A:
-		add.w	d0,obY(a0)	; make the block sink with water level
+		add.w	d0,obY(a0)			; make the block sink with water level
 		bsr.w	ObjFloorDist
 		tst.w	d1
 		bpl.w	.stop07
@@ -180,10 +182,10 @@ LBlk_Action:	; Routine 2
 ; ===========================================================================
 
 loc_12180:
-		tst.b	lblk_untouched(a0) ; has block been stood on or touched?
-		beq.s	locret_121C0	; if yes, branch
-		btst	#3,obStatus(a0)	; is Sonic standing on it now?
-		bne.s	loc_1219A	; if yes, branch
+		tst.b	lblk_untouched(a0)	; has block been stood on or touched?
+		beq.s	locret_121C0		; if yes, branch
+		btst	#3,obStatus(a0)		; is Sonic standing on it now?
+		bne.s	loc_1219A			; if yes, branch
 		tst.b	objoff_3E(a0)
 		beq.s	locret_121C0
 		subq.b	#4,objoff_3E(a0)
@@ -197,7 +199,7 @@ loc_1219A:
 
 loc_121A6:
 		move.b	objoff_3E(a0),d0
-		jsr	(CalcSine).l
+		jsr		(CalcSine).l
 		move.w	#$400,d1
 		muls.w	d1,d0
 		swap	d0

@@ -83,6 +83,11 @@
  Credit: Redhotsonic/Spirituinsanum
  Function: Speeds up ring loss by removing calculation
  Date: 2024-06-09
+ 
+ Name: Reorganized VRAM
+ Credit: RetroKoH
+ Function: Reorganized VRAM to make better use of VRAM space and allow for more art to be loaded, as well as existing art to be loaded more efficiently.
+ Date: 2024-06-09
 
 # Visual Changes
  Name: Title Screen Tweaks

@@ -8,19 +8,20 @@
 AnimateLevelGfx:
 		tst.w	(f_pause).w	; is the game paused?
 		bne.s	.ispaused	; if yes, branch
-		lea	(vdp_data_port).l,a6
+		lea		(vdp_data_port).l,a6
 		bsr.w	AniArt_GiantRing
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
 		add.w	d0,d0
 		move.w	AniArt_Index(pc,d0.w),d0
-		jmp	AniArt_Index(pc,d0.w)
+		jmp		AniArt_Index(pc,d0.w)
 
 .ispaused:
 		rts	
 
 ; ===========================================================================
-AniArt_Index:	dc.w AniArt_GHZ-AniArt_Index, AniArt_none-AniArt_Index
+AniArt_Index:
+		dc.w AniArt_GHZ-AniArt_Index, AniArt_none-AniArt_Index
 		dc.w AniArt_MZ-AniArt_Index, AniArt_none-AniArt_Index
 		dc.w AniArt_none-AniArt_Index, AniArt_SBZ-AniArt_Index
 		zonewarning AniArt_Index,2
@@ -34,71 +35,73 @@ AniArt_GHZ:
 
 AniArt_GHZ_Waterfall:
 
-.size		= 8	; number of tiles per frame
+.size		= 8		; number of tiles per frame
 
-		subq.b	#1,(v_lani0_time).w ; decrement timer
-		bpl.s	AniArt_GHZ_Bigflower ; branch if not 0
+		subq.b	#1,(v_lani0_time).w		; decrement timer
+		bpl.s	AniArt_GHZ_Bigflower	; branch if not 0
 
-		move.b	#5,(v_lani0_time).w ; time to display each frame
-		lea	(Art_GhzWater).l,a1 ; load waterfall patterns
+		move.b	#5,(v_lani0_time).w		; time to display each frame
+		lea		(Art_GhzWater).l,a1		; load waterfall patterns
 		move.b	(v_lani0_frame).w,d0
-		addq.b	#1,(v_lani0_frame).w ; increment frame counter
-		andi.w	#1,d0		; there are only 2 frames
-		beq.s	.isframe0	; branch if frame 0
-		lea	.size*$20(a1),a1 ; use graphics for frame 1
+		addq.b	#1,(v_lani0_frame).w	; increment frame counter
+		andi.w	#1,d0					; there are only 2 frames
+		beq.s	.isframe0				; branch if frame 0
+		lea		.size*$20(a1),a1		; use graphics for frame 1
 
 .isframe0:
-		locVRAM	ArtTile_GHZ_Waterfall*$20		; VRAM address
-		move.w	#.size-1,d1	; number of 8x8	tiles
+		locVRAM	ArtTile_GHZ_Waterfall*$20	; VRAM address
+		move.w	#.size-1,d1					; number of 8x8	tiles
 		bra.w	LoadTiles
 ; ===========================================================================
 
+; Sunflower -- Increase from 2 to 4 frames
 AniArt_GHZ_Bigflower:
 
 .size		= 16	; number of tiles per frame
 
-		subq.b	#1,(v_lani1_time).w
-		bpl.s	AniArt_GHZ_Smallflower
+		subq.b	#1,(v_lani1_time).w		; decrement timer
+		bpl.s	AniArt_GHZ_Smallflower	; branch if not 0
 
-		move.b	#$F,(v_lani1_time).w
-		lea	(Art_GhzFlower1).l,a1 ;	load big flower	patterns
+		move.b	#$F,(v_lani1_time).w	; time to display each frame
+		lea		(Art_GhzFlower1).l,a1	; load big flower patterns
 		move.b	(v_lani1_frame).w,d0
-		addq.b	#1,(v_lani1_frame).w
-		andi.w	#1,d0
-		beq.s	.isframe0
-		lea	.size*$20(a1),a1
+		addq.b	#1,(v_lani1_frame).w	; increment frame counter
+		andi.w	#1,d0					; there are only 2 frames
+		beq.s	.isframe0				; branch if frame 0
+		lea		.size*$20(a1),a1		; use graphics for frame 1
 
 .isframe0:
-		locVRAM	ArtTile_GHZ_Big_Flower_1*$20
-		move.w	#.size-1,d1
+		locVRAM	ArtTile_GHZ_Sunflower*$20	; VRAM address
+		move.w	#.size-1,d1					; number of 8x8	tiles
 		bra.w	LoadTiles
 ; ===========================================================================
 
+; Purple flower -- Increase frames
 AniArt_GHZ_Smallflower:
 
 .size		= 12	; number of tiles per frame
 
-		subq.b	#1,(v_lani2_time).w
-		bpl.s	.end
+		subq.b	#1,(v_lani2_time).w		; decrement timer
+		bpl.s	.end					; branch if not 0
 
-		move.b	#7,(v_lani2_time).w
+		move.b	#7,(v_lani2_time).w		; time to display each frame
 		move.b	(v_lani2_frame).w,d0
-		addq.b	#1,(v_lani2_frame).w ; increment frame counter
-		andi.w	#3,d0		; there are 4 frames
+		addq.b	#1,(v_lani2_frame).w	; increment frame counter
+		andi.w	#3,d0					; there are 4 frames
 		move.b	.sequence(pc,d0.w),d0
-		btst	#0,d0		; is frame 0 or 2? (actual frame, not frame counter)
-		bne.s	.isframe1	; if not, branch
-		move.b	#$7F,(v_lani2_time).w ; set longer duration for frames 0 and 2
+		btst	#0,d0					; is frame 0 or 2? (actual frame, not frame counter)
+		bne.s	.isframe1				; if not, branch
+		move.b	#$7F,(v_lani2_time).w	; set longer duration for frames 0 and 2
 
 .isframe1:
-		lsl.w	#7,d0		; multiply frame num by $80
+		lsl.w	#7,d0					; multiply frame num by $80
 		move.w	d0,d1
 		add.w	d0,d0
-		add.w	d1,d0		; multiply that by 3 (i.e. frame num times 12 * $20)
-		locVRAM	ArtTile_GHZ_Small_Flower*$20
-		lea	(Art_GhzFlower2).l,a1 ;	load small flower patterns
-		lea	(a1,d0.w),a1	; jump to appropriate tile
-		move.w	#.size-1,d1
+		add.w	d1,d0					; multiply that by 3 (i.e. frame num times 12 * $20)
+		locVRAM	ArtTile_GHZ_Purple_Flower*$20
+		lea		(Art_GhzFlower2).l,a1	; load small flower patterns
+		lea		(a1,d0.w),a1			; jump to appropriate tile
+		move.w	#.size-1,d1				; number of 8x8	tiles
 		bsr.w	LoadTiles
 
 .end:
@@ -112,62 +115,65 @@ AniArt_GHZ_Smallflower:
 
 AniArt_MZ:
 
+; Lava Surface
 AniArt_MZ_Lava:
 
 .size		= 8	; number of tiles per frame
 
-		subq.b	#1,(v_lani0_time).w ; decrement timer
-		bpl.s	AniArt_MZ_Magma	; branch if not 0
+		subq.b	#1,(v_lani0_time).w		; decrement timer
+		bpl.s	AniArt_MZ_Magma			; branch if not 0
 
-		move.b	#$13,(v_lani0_time).w ; time to display each frame
-		lea	(Art_MzLava1).l,a1 ; load lava surface patterns
+		move.b	#$13,(v_lani0_time).w	; time to display each frame
+		lea		(Art_MzLava1).l,a1		; load lava surface patterns
 		moveq	#0,d0
 		move.b	(v_lani0_frame).w,d0
-		addq.b	#1,d0		; increment frame counter
-		cmpi.b	#3,d0		; there are 3 frames
-		bne.s	.frame01or2	; branch if frame 0, 1 or 2
+		addq.b	#1,d0					; increment frame counter
+		cmpi.b	#3,d0					; there are 3 frames
+		bne.s	.frame01or2				; branch if frame 0, 1 or 2
 		moveq	#0,d0
 
 .frame01or2:
 		move.b	d0,(v_lani0_frame).w
 		mulu.w	#.size*$20,d0
-		adda.w	d0,a1		; jump to appropriate tile
+		adda.w	d0,a1					; jump to appropriate tile
 		locVRAM	ArtTile_MZ_Animated_Lava*$20
 		move.w	#.size-1,d1
 		bsr.w	LoadTiles
 
+; Flowing Lava
 AniArt_MZ_Magma:
-		subq.b	#1,(v_lani1_time).w ; decrement timer
-		bpl.s	AniArt_MZ_Torch	; branch if not 0
+		subq.b	#1,(v_lani1_time).w		; decrement timer
+		bpl.s	AniArt_MZ_Torch			; branch if not 0
 		
-		move.b	#1,(v_lani1_time).w ; time between each gfx change
+		move.b	#1,(v_lani1_time).w		; time between each gfx change
 		moveq	#0,d0
-		move.b	(v_lani0_frame).w,d0 ; get surface lava frame number
-		lea	(Art_MzLava2).l,a4 ; load magma gfx
-		ror.w	#7,d0		; multiply frame num by $200
-		adda.w	d0,a4		; jump to appropriate tile
+		move.b	(v_lani0_frame).w,d0	; get surface lava frame number
+		lea		(Art_MzLava2).l,a4		; load magma gfx
+		ror.w	#7,d0					; multiply frame num by $200
+		adda.w	d0,a4					; jump to appropriate tile
 		locVRAM	ArtTile_MZ_Animated_Magma*$20
 		moveq	#0,d3
 		move.b	(v_lani1_frame).w,d3
-		addq.b	#1,(v_lani1_frame).w ; increment frame counter (unused)
-		move.b	(v_oscillate+$A).w,d3 ; get oscillating value
+		addq.b	#1,(v_lani1_frame).w	; increment frame counter (unused)
+		move.b	(v_oscillate+$A).w,d3	; get oscillating value
 		move.w	#3,d2
 
 .loop:
 		move.w	d3,d0
 		add.w	d0,d0
 		andi.w	#$1E,d0
-		lea	(AniArt_MZextra).l,a3
+		lea		(AniArt_MZextra).l,a3
 		move.w	(a3,d0.w),d0
-		lea	(a3,d0.w),a3
+		lea		(a3,d0.w),a3
 		movea.l	a4,a1
 		move.w	#$1F,d1
-		jsr	(a3)
+		jsr		(a3)
 		addq.w	#4,d3
-		dbf	d2,.loop
+		dbf		d2,.loop
 		rts	
 ; ===========================================================================
 
+; Torch
 AniArt_MZ_Torch:
 
 .size		= 6	; number of tiles per frame
@@ -292,12 +298,12 @@ AniArt_Ending_BigFlower:
 		lea	.size*$20(a2),a2
 
 .isframe0:
-		locVRAM	ArtTile_GHZ_Big_Flower_1*$20
-		move.w	#.size-1,d1
+		locVRAM	ArtTile_GHZ_Sunflower*$20		; VRAM address
+		move.w	#.size-1,d1						; number of 8x8	tiles
 		bsr.w	LoadTiles
 		movea.l	a2,a1
-		locVRAM	ArtTile_GHZ_Big_Flower_2*$20
-		move.w	#.size-1,d1
+		locVRAM	ArtTile_GHZ_Big_Flower_2*$20	; VRAM address
+		move.w	#.size-1,d1						; number of 8x8	tiles
 		bra.w	LoadTiles
 ; ===========================================================================
 
@@ -317,10 +323,10 @@ AniArt_Ending_SmallFlower:
 		move.w	d0,d1
 		add.w	d0,d0
 		add.w	d1,d0		; multiply by 3
-		locVRAM	ArtTile_GHZ_Small_Flower*$20
-		lea	(Art_GhzFlower2).l,a1 ;	load small flower patterns
-		lea	(a1,d0.w),a1	; jump to appropriate tile
-		move.w	#.size-1,d1
+		locVRAM	ArtTile_GHZ_Purple_Flower*$20
+		lea	(Art_GhzFlower2).l,a1				; load small flower patterns
+		lea	(a1,d0.w),a1						; jump to appropriate tile
+		move.w	#.size-1,d1						; number of 8x8	tiles
 		bra.w	LoadTiles
 ; ===========================================================================
 .sequence:	dc.b 0,	0, 0, 1, 2, 2, 2, 1

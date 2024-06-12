@@ -17,15 +17,18 @@ CStom_Index:
 
 CStom_switch = objoff_3A			; switch number for the current stomper
 
-CStom_SwchNums:	dc.b 0,	0		; switch number, obj number
+CStom_SwchNums:
+		dc.b 0,	0		; switch number, obj number
 		dc.b 1,	0
 
-CStom_Var:	dc.b 2,	0, 0		; routine number, y-position, frame number
+CStom_Var:
+		dc.b 2,	0, 0		; routine number, y-position, frame number
 		dc.b 4,	$1C, 1
 		dc.b 8,	$CC, 3
 		dc.b 6,	$F0, 2
 
-word_B6A4:	dc.w $7000, $A000
+word_B6A4:
+		dc.w $7000, $A000
 		dc.w $5000, $7800
 		dc.w $3800, $5800
 		dc.w $B800
@@ -91,7 +94,7 @@ CStom_MakeStomper:
 
 loc_B76A:
 		move.l	a0,objoff_3C(a1)
-		dbf	d1,CStom_Loop
+		dbf		d1,CStom_Loop
 
 		move.w	#$180,obPriority(a1)		; RetroKoH S2 Priority Manager
 

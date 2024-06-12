@@ -45,12 +45,7 @@ Cat_Main:	; Routine 0
 		clr.w	obVelY(a0)
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Cat,obMap(a0)
-		move.w	#make_art_tile(ArtTile_SBZ_Caterkiller,1,0),obGfx(a0)
-		cmpi.b	#id_SBZ,(v_zone).w ; if level is SBZ, branch
-		beq.s	.isscrapbrain
-		move.w	#make_art_tile(ArtTile_MZ_SYZ_Caterkiller,1,0),obGfx(a0) ; MZ/SYZ specific code
-
-.isscrapbrain:
+		move.w	#make_art_tile(ArtTile_Caterkiller,1,0),obGfx(a0)	; RetroKoH VRAM Overhaul
 		andi.b	#3,obRender(a0)
 		ori.b	#4,obRender(a0)
 		move.b	obRender(a0),obStatus(a0)

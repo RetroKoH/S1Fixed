@@ -50,10 +50,10 @@ Map_FBlock_internal:	mappingsTable
 .lzvert_End
 
 .lzhoriz:	spriteHeader
-	spritePiece	-$40, -$10, 4, 4, $22, 0, 0, 0, 0 ; LZ - large horizontal door
-	spritePiece	-$20, -$10, 4, 4, $22, 0, 0, 0, 0
-	spritePiece	0, -$10, 4, 4, $22, 0, 0, 0, 0
-	spritePiece	$20, -$10, 4, 4, $22, 0, 0, 0, 0
+	spritePiece	-$40, -$10, 4, 4, $1A, 0, 0, 0, 0	; LZ - large horizontal door
+	spritePiece	-$20, -$10, 4, 4, $1A, 0, 0, 0, 0	; RetroKoH VRAM Overhaul
+	spritePiece	0, -$10, 4, 4, $1A, 0, 0, 0, 0
+	spritePiece	$20, -$10, 4, 4, $1A, 0, 0, 0, 0
 .lzhoriz_End
 
 	even
