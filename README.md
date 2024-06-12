@@ -87,7 +87,12 @@
  Name: Reorganized VRAM
  Credit: RetroKoH
  Function: Reorganized VRAM to make better use of VRAM space and allow for more art to be loaded, as well as existing art to be loaded more efficiently.
- Date: 2024-06-09
+ Date: 2024-06-12
+ 
+ Name: S3K Game Mode Array
+ Credit: RetroKoH
+ Function: Slight optimization to game mode handling, ported from S3K
+ Date: 2024-06-12
 
 # Visual Changes
  Name: Title Screen Tweaks
@@ -101,6 +106,11 @@
  Function: Lost rings now flicker before disappearing.
  Date: 2024-06-03
  Modifies: 25 & 37 Rings.asm
+ 
+ Name: Smooth Ring Rotation
+ Credit: RetroKoH (Giant Ring Sprite from Sonic 1 iOS)
+ Function: Rings and Giant Rings now use smooth rotation akin to the remakes.
+ Date: 2024-06-12
 
 # Fixes
  Name: Sonic Roll Frame Fix
