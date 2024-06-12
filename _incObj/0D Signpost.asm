@@ -154,8 +154,16 @@ GotThroughAct:
 		clr.b	(v_invinc).w	; disable invincibility
 		clr.b	(f_timecount).w	; stop time counter
 		move.b	#id_GotThroughCard,(v_endcard).w
-		moveq	#plcid_TitleCard,d0
-		jsr	(NewPLC).l	; load title card patterns
+		
+	; AURORA☆FIELDS Title Card Optimization
+		move.l	a0,-(sp)										; save object address to stack
+		locVRAM	ArtTile_Title_Card*$20
+		lea		Art_TitleCard,a0								; load title card patterns
+		move.l	#((Art_TitleCard_End-Art_TitleCard)/$20)-1,d0	; the title card art lenght, in tiles
+		jsr		LoadUncArt										; load uncompressed art
+		move.l	(sp)+,a0										; get object address from stack
+	; Title Card Optimization End
+		
 		move.b	#1,(f_endactbonus).w
 		moveq	#0,d0
 		move.b	(v_timemin).w,d0

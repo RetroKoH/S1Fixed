@@ -23,7 +23,6 @@ ptr_PLC_SBZ:			dc.w PLC_SBZ-ArtLoadCues
 ptr_PLC_SBZ2:			dc.w PLC_SBZ2-ArtLoadCues
 			zonewarning PLC_Levels,4
 
-ptr_PLC_TitleCard:		dc.w PLC_TitleCard-ArtLoadCues
 ptr_PLC_Boss:			dc.w PLC_Boss-ArtLoadCues
 ptr_PLC_Boss_GHZ:		dc.w PLC_Boss_GHZ-ArtLoadCues
 ptr_PLC_Boss_MZ:		dc.w PLC_Boss_MZ-ArtLoadCues
@@ -227,12 +226,6 @@ PLC_SBZ2:	dc.w ((PLC_SBZ2end-PLC_SBZ2-2)/6)-1
 		plcm	Nem_VSpring,		ArtTile_Spring_Vertical			; vertical spring
 PLC_SBZ2end:
 ; ---------------------------------------------------------------------------
-; Pattern load cues - title card
-; ---------------------------------------------------------------------------
-PLC_TitleCard:	dc.w ((PLC_TitleCardend-PLC_TitleCard-2)/6)-1
-		plcm	Nem_TitleCard,		ArtTile_Title_Card
-PLC_TitleCardend:
-; ---------------------------------------------------------------------------
 ; Pattern load cues - LZ act 3 boss -- RetroKoH VRAM Overhaul
 ; ---------------------------------------------------------------------------
 PLC_Boss:	dc.w ((PLC_Bossend-PLC_Boss-2)/6)-1
@@ -432,7 +425,6 @@ plcid_SYZ:			equ (ptr_PLC_SYZ-ArtLoadCues)/2				; $C
 plcid_SYZ2:			equ (ptr_PLC_SYZ2-ArtLoadCues)/2			; $D
 plcid_SBZ:			equ (ptr_PLC_SBZ-ArtLoadCues)/2				; $E
 plcid_SBZ2:			equ (ptr_PLC_SBZ2-ArtLoadCues)/2			; $F
-plcid_TitleCard:	equ (ptr_PLC_TitleCard-ArtLoadCues)/2		; $10
 plcid_Boss:			equ (ptr_PLC_Boss-ArtLoadCues)/2			; $11
 plcid_Boss_GHZ:		equ (ptr_PLC_Boss_GHZ-ArtLoadCues)/2		; NEW
 plcid_Boss_MZ:		equ (ptr_PLC_Boss_MZ-ArtLoadCues)/2			; NEW

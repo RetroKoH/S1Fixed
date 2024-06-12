@@ -935,6 +935,34 @@ Tilemap_Cell:
 		include	"_inc/DMA Queue.asm"
 		include	"_inc/Nemesis Decompression.asm"
 
+
+; ---------------------------------------------------------------
+; uncompressed art to VRAM loader -- AURORA☆FIELDS Title Card Optimization
+; ---------------------------------------------------------------
+; INPUT:
+;       a0      - Source Offset
+;       d0      - length in tiles
+; ---------------------------------------------------------------
+LoadUncArt:
+		disable_ints
+		lea		$C00000.l,a6    ; get VDP data port
+
+LoadArt_Loop:
+		move.l	(a0)+,(a6)		; transfer 4 bytes
+		move.l	(a0)+,(a6)		; transfer 4 more bytes
+		move.l	(a0)+,(a6)		; and so on and so forth
+		move.l	(a0)+,(a6)		;
+		move.l	(a0)+,(a6)		;
+		move.l	(a0)+,(a6)		;
+		move.l	(a0)+,(a6)		; in total transfer 32 bytes
+		move.l	(a0)+,(a6)		; which is 1 full tile
+
+		dbf		d0,LoadArt_Loop	; loop until d0 = 0
+		enable_ints
+		rts
+; ===========================================================================
+
+
 ; ---------------------------------------------------------------------------
 ; Subroutine to load pattern load cues (aka to queue pattern load requests)
 ; ---------------------------------------------------------------------------
@@ -2572,8 +2600,13 @@ Level_NoMusicFade:
 		bmi.s	Level_ClrRam	; if yes, branch
 		disable_ints
 		locVRAM	ArtTile_Title_Card*$20
-		lea	(Nem_TitleCard).l,a0 ; load title card patterns
-		bsr.w	NemDec
+		
+	; AURORA☆FIELDS Title Card Optimization
+		lea		Art_TitleCard,a0								; load title card patterns
+		move.l	#((Art_TitleCard_End-Art_TitleCard)/$20)-1,d0	; # of tiles
+		jsr		LoadUncArt
+	; Title Card Optimization End
+		
 		enable_ints
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
@@ -3157,8 +3190,13 @@ loc_47D4:
 		move.w	#$9001,(a6)		; 64-cell hscroll size
 		bsr.w	ClearScreen
 		locVRAM	ArtTile_Title_Card*$20
-		lea	(Nem_TitleCard).l,a0 ; load title card patterns
-		bsr.w	NemDec
+
+	; AURORA☆FIELDS Title Card Optimization
+		lea		Art_TitleCard,a0								; load title card patterns
+		move.l	#((Art_TitleCard_End-Art_TitleCard)/$20)-1,d0	; # of tiles
+		jsr		LoadUncArt
+	; Title Card Optimization End
+		
 		jsr	(Hud_Base).l
 
 	; Mercury Use DMA Queue
@@ -3508,8 +3546,13 @@ GM_Continue:
 		clearRAM v_objspace,v_objend
 
 		locVRAM	ArtTile_Title_Card*$20
-		lea	(Nem_TitleCard).l,a0 ; load title card patterns
-		bsr.w	NemDec
+
+	; AURORA☆FIELDS Title Card Optimization
+		lea		Art_TitleCard,a0								; load title card patterns
+		move.l	#((Art_TitleCard_End-Art_TitleCard)/$20)-1,d0	; # of tiles
+		jsr		LoadUncArt
+	; Title Card Optimization End
+
 		locVRAM	ArtTile_Continue_Sonic*$20
 		lea	(Nem_ContSonic).l,a0 ; load Sonic patterns
 		bsr.w	NemDec
@@ -8429,6 +8472,10 @@ Art_Signpost:	binclude	"artunc/Signpost.bin"				; End-of-level Signpost -- Retro
 		even
 Art_BigRing:	binclude	"artunc/Giant Ring.bin"				; Giant Ring -- RetroKoH VRAM Overhaul
 		even
+
+; AURORA☆FIELDS Title Card Optimization
+Art_TitleCard:	binclude	"artunc/Title Cards.bin"			; Title Card patterns
+Art_TitleCard_End:	even
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - various
 ; ---------------------------------------------------------------------------
@@ -8685,8 +8732,6 @@ Nem_Cater:	binclude	"artnem/Enemy Caterkiller.nem"
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - various
 ; ---------------------------------------------------------------------------
-Nem_TitleCard:	binclude	"artnem/Title Cards.nem"
-		even
 Nem_Hud:	binclude	"artnem/HUD.nem"	; HUD (rings, time, score)
 		even
 Nem_Lives:	binclude	"artnem/HUD - Life Counter Icon.nem"

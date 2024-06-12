@@ -93,6 +93,11 @@
  Credit: RetroKoH
  Function: Slight optimization to game mode handling, ported from S3K
  Date: 2024-06-12
+ 
+ Name: Uncompressed Title Cards
+ Credit: AURORA☆FIELDS/Natsumi
+ Function: Uses uncompressed art to optimize Title Card processing.
+ Date 2024-06-12
 
 # Visual Changes
  Name: Title Screen Tweaks

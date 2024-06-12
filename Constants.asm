@@ -536,7 +536,7 @@ ArtTile_Points:					equ $522				; ✓
 ArtTile_Shield:					equ $53B				; ✓ A760
 ArtTile_Game_Over:				equ $550				; ?
 ArtTile_Spikes:					equ $560				; ✓
-ArtTile_Title_Card:				equ $578				; ✓ - Make letters uncompressed?
+ArtTile_Title_Card:				equ $568				; ✓ - Make letters uncompressed?
 ArtTile_Animal_1:				equ $568				; ✓
 ArtTile_Animal_2:				equ $57A				; ✓
 ArtTile_Explosion:				equ $58C				; ✓
@@ -562,7 +562,7 @@ ArtTile_Hidden_Points:			equ $4B6				; ✓
 ArtTile_Warp:					equ $541				; Currently unused. Can overwrite Shield art if used.
 ArtTile_Mini_Sonic:				equ $551				; For continues in SS Screen. Leave alone for now.
 ArtTile_Bonuses:				equ $460				; ✓
-ArtTile_Signpost:				equ $680				; ✓ -- Make Uncompressed
+ArtTile_Signpost:				equ $680				; ✓
 
 ; Title Screen - This is fine as is.
 ArtTile_Title_Foreground:		equ $200
