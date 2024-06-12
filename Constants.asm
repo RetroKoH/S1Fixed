@@ -560,9 +560,9 @@ ArtTile_Giant_Ring_Flash:		equ $462				; Remove this later and have flash be par
 ArtTile_Prison_Capsule:			equ $49D				; ✓
 ArtTile_Hidden_Points:			equ $4B6				; ✓
 ArtTile_Warp:					equ $541				; Currently unused. Can overwrite Shield art if used.
-ArtTile_Mini_Sonic:				equ $551				; For continues in SS Screen. Leave alone for now.
-ArtTile_Bonuses:				equ $460				; ✓
+ArtTile_Mini_Sonic:				equ $770				; Based on S1 Complete
 ArtTile_Signpost:				equ $680				; ✓
+ArtTile_Bonuses:				equ $6B0				; ✓ - Moved to overwrite some monitor art.
 
 ; Title Screen - This is fine as is.
 ArtTile_Title_Foreground:		equ $200

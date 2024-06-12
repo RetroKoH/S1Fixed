@@ -5881,32 +5881,32 @@ M_Got_Passed:	spriteHeader		; PASSED
 M_Got_Passed_End
 
 M_Got_Score:	spriteHeader		; SCORE
-	spritePiece	-$50, -8, 4, 2, $14A, 0, 0, 0, 0
-	spritePiece	-$30, -8, 1, 2, $162, 0, 0, 0, 0
-	spritePiece	$18, -8, 3, 2, $164, 0, 0, 0, 0
-	spritePiece	$30, -8, 4, 2, $16A, 0, 0, 0, 0
-	spritePiece	-$33, -9, 2, 1, $6E, 0, 0, 0, 0
-	spritePiece	-$33, -1, 2, 1, $6E, 1, 1, 0, 0
+	spritePiece	-$50, -8, 4, 2, $162, 0, 0, 0, 0	; SCOR
+	spritePiece	-$30, -8, 1, 2, $176, 0, 0, 0, 0	; E - USE TIME's E SO IT WONT GET OVERWRITTEN BY DEBUG
+	spritePiece	$18, -8, 3, 2, $17A, 0, 0, 0, 0		; SCORE VALUE
+	spritePiece	$30, -8, 4, 2, $180, 0, 0, 0, 0		; SCORE VALUE
+	spritePiece	-$33, -9, 2, 1, $6E, 0, 0, 0, 0		; Small oval
+	spritePiece	-$33, -1, 2, 1, $6E, 1, 1, 0, 0		; Small oval
 M_Got_Score_End
 
 M_Got_TBonus:	spriteHeader		; TIME BONUS
-	spritePiece	-$50, -8, 4, 2, $15A, 0, 0, 0, 0
-	spritePiece	-$27, -8, 4, 2, $66, 0, 0, 0, 0
-	spritePiece	-7, -8, 1, 2, $14A, 0, 0, 0, 0
-	spritePiece	-$A, -9, 2, 1, $6E, 0, 0, 0, 0
-	spritePiece	-$A, -1, 2, 1, $6E, 1, 1, 0, 0
-	spritePiece	$28, -8, 4, 2, -$10, 0, 0, 0, 0
-	spritePiece	$48, -8, 1, 2, $170, 0, 0, 0, 0
+	spritePiece	-$50, -8, 4, 2, $170, 0, 0, 0, 0	; TIME
+	spritePiece	-$27, -8, 4, 2, $66, 0, 0, 0, 0		; BONU
+	spritePiece	-7, -8, 1, 2, $162, 0, 0, 0, 0		; S - USE SCORE's S
+	spritePiece	-$A, -9, 2, 1, $6E, 0, 0, 0, 0		; Small oval
+	spritePiece	-$A, -1, 2, 1, $6E, 1, 1, 0, 0		; Small oval
+	spritePiece	$28, -8, 4, 2, $148, 0, 0, 0, 0		; TIME BONUS VALUE
+	spritePiece	$48, -8, 1, 2, $186, 0, 0, 0, 0		; 0
 M_Got_TBonus_End
 
 M_Got_RBonus:	spriteHeader		; RING BONUS
-	spritePiece	-$50, -8, 4, 2, $152, 0, 0, 0, 0
-	spritePiece	-$27, -8, 4, 2, $66, 0, 0, 0, 0
-	spritePiece	-7, -8, 1, 2, $14A, 0, 0, 0, 0
-	spritePiece	-$A, -9, 2, 1, $6E, 0, 0, 0, 0
-	spritePiece	-$A, -1, 2, 1, $6E, 1, 1, 0, 0
-	spritePiece	$28, -8, 4, 2, -8, 0, 0, 0, 0
-	spritePiece	$48, -8, 1, 2, $170, 0, 0, 0, 0
+	spritePiece	-$50, -8, 4, 2, $168, 0, 0, 0, 0	; RING
+	spritePiece	-$27, -8, 4, 2, $66, 0, 0, 0, 0		; BONU
+	spritePiece	-7, -8, 1, 2, $162, 0, 0, 0, 0		; S - USE SCORE's S
+	spritePiece	-$A, -9, 2, 1, $6E, 0, 0, 0, 0		; Small oval
+	spritePiece	-$A, -1, 2, 1, $6E, 1, 1, 0, 0		; Small oval
+	spritePiece	$28, -8, 4, 2, $150, 0, 0, 0, 0		; RING BONUS VALUE
+	spritePiece	$48, -8, 1, 2, $186, 0, 0, 0, 0		; 0
 M_Got_RBonus_End
 	even
 ; ---------------------------------------------------------------------------
@@ -5940,42 +5940,42 @@ M_SSR_Chaos:	spriteHeader		; "CHAOS EMERALDS"
 M_SSR_Chaos_End
 
 M_SSR_Score:	spriteHeader		; "SCORE"
-	spritePiece	-$50, -8, 4, 2, $14A, 0, 0, 0, 0
-	spritePiece	-$30, -8, 1, 2, $162, 0, 0, 0, 0
-	spritePiece	$18, -8, 3, 2, $164, 0, 0, 0, 0
-	spritePiece	$30, -8, 4, 2, $16A, 0, 0, 0, 0
-	spritePiece	-$33, -9, 2, 1, $6E, 0, 0, 0, 0
-	spritePiece	-$33, -1, 2, 1, $6E, 1, 1, 0, 0
+	spritePiece	-$50, -8, 4, 2, $162, 0, 0, 0, 0	; SCOR
+	spritePiece	-$30, -8, 1, 2, $176, 0, 0, 0, 0	; E - USE TIME's E SO IT WONT GET OVERWRITTEN BY DEBUG
+	spritePiece	$18, -8, 3, 2, $17A, 0, 0, 0, 0		; SCORE VALUE
+	spritePiece	$30, -8, 4, 2, $180, 0, 0, 0, 0		; SCORE VALUE
+	spritePiece	-$33, -9, 2, 1, $6E, 0, 0, 0, 0		; Small oval
+	spritePiece	-$33, -1, 2, 1, $6E, 1, 1, 0, 0		; Small oval
 M_SSR_Score_End
 
 M_SSR_Ring:	spriteHeader
-	spritePiece	-$50, -8, 4, 2, $152, 0, 0, 0, 0
-	spritePiece	-$27, -8, 4, 2, $66, 0, 0, 0, 0
-	spritePiece	-7, -8, 1, 2, $14A, 0, 0, 0, 0
-	spritePiece	-$A, -9, 2, 1, $6E, 0, 0, 0, 0
-	spritePiece	-$A, -1, 2, 1, $6E, 1, 1, 0, 0
-	spritePiece	$28, -8, 4, 2, -8, 0, 0, 0, 0
-	spritePiece	$48, -8, 1, 2, $170, 0, 0, 0, 0
+	spritePiece	-$50, -8, 4, 2, $168, 0, 0, 0, 0	; RING
+	spritePiece	-$27, -8, 4, 2, $66, 0, 0, 0, 0		; BONU
+	spritePiece	-7, -8, 1, 2, $162, 0, 0, 0, 0		; S - USE SCORE's S
+	spritePiece	-$A, -9, 2, 1, $6E, 0, 0, 0, 0		; Small oval
+	spritePiece	-$A, -1, 2, 1, $6E, 1, 1, 0, 0		; Small oval
+	spritePiece	$28, -8, 4, 2, $150, 0, 0, 0, 0		; RING BONUS VALUE
+	spritePiece	$48, -8, 1, 2, $186, 0, 0, 0, 0		; 0
 M_SSR_Ring_End
 
 M_SSR_ContSonic1:	spriteHeader
-	spritePiece	-$50, -8, 4, 2, -$2F, 0, 0, 0, 0
-	spritePiece	-$30, -8, 4, 2, -$27, 0, 0, 0, 0
-	spritePiece	-$10, -8, 1, 2, -$1F, 0, 0, 0, 0
-	spritePiece	$40, -8, 2, 3, -$1D, 0, 0, 1, 0
+	spritePiece	-$50, -8, 4, 2, $208, 0, 0, 0, 0
+	spritePiece	-$30, -8, 4, 2, $210, 0, 0, 0, 0
+	spritePiece	-$10, -8, 1, 2, $218, 0, 0, 0, 0
+	spritePiece	$40, -8, 2, 3, $21A, 0, 0, 1, 0
 M_SSR_ContSonic1_End
 
 M_SSR_ContSonic2:	spriteHeader
-	spritePiece	-$50, -8, 4, 2, -$2F, 0, 0, 0, 0
-	spritePiece	-$30, -8, 4, 2, -$27, 0, 0, 0, 0
-	spritePiece	-$10, -8, 1, 2, -$1F, 0, 0, 0, 0
-	spritePiece	$40, -8, 2, 3, -$17, 0, 0, 1, 0
+	spritePiece	-$50, -8, 4, 2, $208, 0, 0, 0, 0
+	spritePiece	-$30, -8, 4, 2, $210, 0, 0, 0, 0
+	spritePiece	-$10, -8, 1, 2, $218, 0, 0, 0, 0
+	spritePiece	$40, -8, 2, 3, $220, 0, 0, 1, 0
 M_SSR_ContSonic2_End
 
 M_SSR_Continue:	spriteHeader
-	spritePiece	-$50, -8, 4, 2, -$2F, 0, 0, 0, 0
-	spritePiece	-$30, -8, 4, 2, -$27, 0, 0, 0, 0
-	spritePiece	-$10, -8, 1, 2, -$1F, 0, 0, 0, 0
+	spritePiece	-$50, -8, 4, 2, $208, 0, 0, 0, 0
+	spritePiece	-$30, -8, 4, 2, $210, 0, 0, 0, 0
+	spritePiece	-$10, -8, 1, 2, $218, 0, 0, 0, 0
 M_SSR_Continue_End
 
 M_SSR_SpecStage:	spriteHeader		; "SPECIAL STAGE"
