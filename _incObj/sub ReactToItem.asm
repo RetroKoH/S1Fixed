@@ -6,12 +6,14 @@
 
 
 ReactToItem:
-		nop	
-		move.w	obX(a0),d2	; load Sonic's x-axis position
-		move.w	obY(a0),d3	; load Sonic's y-axis position
+		nop
+		jsr		Touch_Rings			; RetroKoH S2 Rings Manager
+
+		move.w	obX(a0),d2			; load Sonic's x-axis position
+		move.w	obY(a0),d3			; load Sonic's y-axis position
 		subq.w	#8,d2
 		moveq	#0,d5
-		move.b	obHeight(a0),d5	; load Sonic's height
+		move.b	obHeight(a0),d5		; load Sonic's height
 		subq.b	#3,d5
 		sub.w	d5,d3
 
@@ -33,12 +35,12 @@ ReactToItem:
 .loop:
 		tst.b	obRender(a1)
 		bpl.s	.next
-		move.b	obColType(a1),d0 ; load collision type
-		bne.s	.proximity	; if nonzero, branch
+		move.b	obColType(a1),d0	; load collision type
+		bne.s	.proximity			; if nonzero, branch
 
 .next:
-		lea	object_size(a1),a1	; next object RAM
-		dbf	d6,.loop	; repeat $5F more times
+		lea		object_size(a1),a1	; next object RAM
+		dbf		d6,.loop			; repeat $5F more times
 
 		moveq	#0,d0
 		rts	

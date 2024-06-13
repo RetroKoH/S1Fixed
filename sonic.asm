@@ -1954,18 +1954,20 @@ GM_Title:
 		bsr.w	PaletteFadeOut
 		disable_ints
 		; Removed call to old Sound Driver (This call was redundant anyway)
-		lea	(vdp_control_port).l,a6
-		move.w	#$8004,(a6)	; 8-colour mode
-		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
-		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
-		move.w	#$9001,(a6)	; 64-cell hscroll size
-		move.w	#$9200,(a6)	; window vertical position
+		lea		(vdp_control_port).l,a6
+		move.w	#$8004,(a6)					; 8-colour mode
+		move.w	#$8200+(vram_fg>>10),(a6)	; set foreground nametable address
+		move.w	#$8400+(vram_bg>>13),(a6)	; set background nametable address
+		move.w	#$9001,(a6)					; 64-cell hscroll size
+		move.w	#$9200,(a6)					; window vertical position
 		move.w	#$8B03,(a6)
-		move.w	#$8720,(a6)	; set background colour (palette line 2, entry 0)
+		move.w	#$8720,(a6)					; set background colour (palette line 2, entry 0)
 		clr.b	(f_wtr_state).w
 		bsr.w	ClearScreen
-
-		clearRAM v_objspace,v_objend
+		
+		clr.w	(f_levelstarted).w			; clear flag AND HUD scrolling byte (once implemented) -- RetroKoH S2 Rings Manager
+		clearRAM v_ringpos,v_ringend		; clear ring RAM -- RetroKoH S2 Rings Manager
+		clearRAM v_objspace,v_objend		; clear object RAM
 
 		locVRAM	0
 		lea	(Nem_JapNames).l,a0 ; load Japanese credits
@@ -2007,11 +2009,11 @@ Tit_LoadText:
 		move.w	(a5)+,(a6)
 		dbf		d1,Tit_LoadText			; load level select font
 		clr.b	(f_nobgscroll).w		; Mercury Game Over When Drowning Fix
-		clr.b	(v_lastlamp).w		; clear lamppost counter
-		clr.w	(v_debuguse).w		; disable debug item placement mode
-		clr.w	(f_demo).w			; disable debug mode
+		clr.b	(v_lastlamp).w			; clear lamppost counter
+		clr.w	(v_debuguse).w			; disable debug item placement mode
+		clr.w	(f_demo).w				; disable debug mode
 		move.w	#(id_GHZ<<8),(v_zone).w	; set level to GHZ (00)
-		clr.w	(v_pcyc_time).w		; disable palette cycling
+		clr.w	(v_pcyc_time).w			; disable palette cycling
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformLayers
 		lea		(v_16x16).w,a1
@@ -2623,9 +2625,10 @@ loc_37FC:
 		bsr.w	AddPLC		; load standard	patterns
 
 Level_ClrRam:
-		clearRAM v_objspace,v_objend
+		clearRAM v_ringpos,v_ringend					; clear ring RAM -- RetroKoH S2 Rings Manager
+		clearRAM v_objspace,v_objend					; clear object RAM
 		clearRAM v_misc_variables,v_misc_variables_end
-		clearRAM v_levelvariables,v_levelvariables_end
+		clearRAM v_levelvariables,v_levelvariables_end	; f_levelstarted should clear here
 		clearRAM v_timingandscreenvariables,v_timingandscreenvariables_end
 
 		disable_ints
@@ -2641,9 +2644,7 @@ Level_ClrRam:
 		move.w	#$8A00+223,(v_hbla_hreg).w ; set palette change position (for water)
 		move.w	(v_hbla_hreg).w,(a6)
 
-	; Mercury Use DMA Queue
-		ResetDMAQueue
-	; Use DMA Queue End
+		ResetDMAQueue	; Mercury Use DMA Queue
 
 		cmpi.b	#id_LZ,(v_zone).w ; is level LZ?
 		bne.s	Level_LoadPal	; if not, branch
@@ -2740,39 +2741,39 @@ Level_ChkDebug:
 Level_ChkWater:
 		clr.w	(v_jpadhold2).w
 		clr.w	(v_jpadhold1).w
-		cmpi.b	#id_LZ,(v_zone).w ; is level LZ?
-		bne.s	Level_LoadObj	; if not, branch
-		move.b	#id_WaterSurface,(v_watersurface1).w ; load water surface object
+		clr.b	(f_levelstarted).w						; RetroKoH S2 Rings Manager
+		cmpi.b	#id_LZ,(v_zone).w						; is level LZ?
+		bne.s	Level_LoadObj							; if not, branch
+		move.b	#id_WaterSurface,(v_watersurface1).w	; load water surface object
 		move.w	#$60,(v_watersurface1+obX).w
 		move.b	#id_WaterSurface,(v_watersurface2).w
 		move.w	#$120,(v_watersurface2+obX).w
 
 Level_LoadObj:
-		jsr	(ObjPosLoad).l
-		jsr	(ExecuteObjects).l
-		jsr	(BuildSprites).l
-		moveq	#0,d0
-		tst.b	(v_lastlamp).w	; are you starting from	a lamppost?
-		bne.s	Level_SkipClr	; if yes, branch
-		move.w	d0,(v_rings).w	; clear rings
-		move.l	d0,(v_time).w	; clear time
-		move.b	d0,(v_lifecount).w ; clear lives counter
+		jsr		(ObjPosLoad).l
+		jsr		(RingsManager).l	; RetroKoH S2 Rings Manager
+		jsr		(ExecuteObjects).l
+		jsr		(BuildSprites).l
+		tst.b	(v_lastlamp).w		; are you starting from	a lamppost?
+		bne.s	Level_SkipClr		; if yes, branch
+		clr.w	(v_rings).w			; clear rings
+		clr.l	(v_time).w			; clear time
+		clr.b	(v_lifecount).w		; clear lives counter
 
 Level_SkipClr:
-		move.b	d0,(f_timeover).w
-		move.b	d0,(v_shield).w	; clear shield
-		move.b	d0,(v_invinc).w	; clear invincibility
-		move.b	d0,(v_shoes).w	; clear speed shoes
-		move.b	d0,(v_unused1).w
-		move.w	d0,(v_debuguse).w
-		move.w	d0,(f_restart).w
-		move.w	d0,(v_framecount).w
+		clr.b	(f_timeover).w
+		clr.b	(v_shield).w		; clear shield
+		clr.b	(v_invinc).w		; clear invincibility
+		clr.b	(v_shoes).w			; clear speed shoes
+		clr.w	(v_debuguse).w
+		clr.w	(f_restart).w
+		clr.w	(v_framecount).w
 		bsr.w	OscillateNumInit
-		move.b	#1,(f_scorecount).w ; update score counter
-		move.b	#1,(f_ringcount).w ; update rings counter
-		move.b	#1,(f_timecount).w ; update time counter
+		move.b	#1,(f_scorecount).w	; update score counter
+		move.b	#1,(f_ringcount).w	; update rings counter
+		move.b	#1,(f_timecount).w	; update time counter
 		clr.w	(v_btnpushtime1).w
-		lea	(DemoDataPtr).l,a1 ; load demo data
+		lea		(DemoDataPtr).l,a1	; load demo data
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
 		lsl.w	#2,d0
@@ -2835,6 +2836,10 @@ Level_ClrCardArt:
 		jsr	(AddPLC).l	; load animal gfx (level no. + $15)
 
 Level_StartGame:
+		tst.w	(f_demo).w
+		bmi.s	.demo
+		move.b	#1,(f_levelstarted).w ; RetroKoH S2 Rings Manager
+.demo:
 		bclr	#7,(v_gamemode).w ; subtract $80 from mode to end pre-level stuff
 
 ; ---------------------------------------------------------------------------
@@ -2845,16 +2850,17 @@ Level_MainLoop:
 		bsr.w	PauseGame
 		move.b	#8,(v_vbla_routine).w
 		bsr.w	WaitForVBla
-		addq.w	#1,(v_framecount).w ; add 1 to level timer
+		addq.w	#1,(v_framecount).w			; add 1 to level timer
 		bsr.w	MoveSonicInDemo
 		bsr.w	LZWaterFeatures
 		jsr		(ExecuteObjects).l
 		tst.w	(f_restart).w
 		bne.w	GM_Level
-		tst.w	(v_debuguse).w	; is debug mode being used?
-		bne.s	Level_DoScroll	; if yes, branch
-		cmpi.b	#6,(v_player+obRoutine).w ; has Sonic just died?
-		bhs.s	Level_SkipScroll ; if yes, branch
+		jsr		(RingsManager).l			; RetroKoH S2 Rings Manager
+		tst.w	(v_debuguse).w				; is debug mode being used?
+		bne.s	Level_DoScroll				; if yes, branch
+		cmpi.b	#6,(v_player+obRoutine).w	; has Sonic just died?
+		bhs.s	Level_SkipScroll			; if yes, branch
 
 Level_DoScroll:
 		bsr.w	DeformLayers
@@ -2869,9 +2875,9 @@ Level_SkipScroll:
 		bsr.w	SignpostArtLoad
 
 		cmpi.b	#id_Demo,(v_gamemode).w
-		beq.s	Level_ChkDemo	; if mode is 8 (demo), branch
+		beq.s	Level_ChkDemo				; if mode is 8 (demo), branch
 		cmpi.b	#id_Level,(v_gamemode).w
-		beq.w	Level_MainLoop	; if mode is $C (level), branch
+		beq.w	Level_MainLoop				; if mode is $C (level), branch
 		rts	
 ; ===========================================================================
 
@@ -3542,6 +3548,7 @@ GM_Continue:
 		move.w	#$8004,(a6)	; 8 colour mode
 		move.w	#$8700,(a6)	; background colour
 		bsr.w	ClearScreen
+		clr.b	(f_levelstarted).w		; RetroKoH S2 Rings Manager
 
 		clearRAM v_objspace,v_objend
 
@@ -3869,6 +3876,7 @@ GM_Credits:
 		move.w	#$8720,(a6)		; set background colour (line 3; colour 0)
 		clr.b	(f_wtr_state).w
 		bsr.w	ClearScreen
+		clr.b	(f_levelstarted).w	; RetroKoH S2 Rings Manager
 
 		clearRAM v_objspace,v_objend
 
@@ -5644,7 +5652,7 @@ Map_Missile:	include	"_maps/Buzz Bomber Missile.asm"
 Map_Ring:	include	"_maps\Rings.asm" ; THESE normal mappings will be for debug rings, lost rings, and SS rings
 
 Map_RingBIN:
-		binclude	"_maps\Rings.bin" ; THESE special mappings are for the upcoming S2 Rings Manager
+		binclude	"_maps\Rings.bin" ; RetroKoH S2 Rings Manager
 		even
 
 Map_GRing:	include	"_maps/Giant Ring.asm"
@@ -6125,12 +6133,24 @@ BldSpr_ScrPos:	dc.l 0				; blank
 
 
 BuildSprites:
-		lea		(v_spritetablebuffer).w,a2 ; set address for sprite table
+		lea		(v_spritetablebuffer).w,a2	; set address for sprite table
 		moveq	#0,d5
+		moveq	#0,d4						; RetroKoH S2 Rings Manager
 		lea		(v_spritequeue).w,a4
 		moveq	#7,d7
 
 	.priorityLoop:
+	; RetroKoH S2 Rings Manager
+		cmpi.b	#2,d7					; Only draw rings at a specific priority.
+		bne.s	.cont
+		tst.b	(f_levelstarted).w		; Skip drawing rings if flag is not set.
+		beq.s	.cont
+		move.l	a4,-(sp)
+		jsr		BuildRings
+		move.l	(sp)+,a4
+
+	.cont:
+	; S2 Rings Manager End
 		tst.w	(a4)	; are there objects left to draw?
 		beq.w	.nextPriority	; if not, branch
 		moveq	#2,d6
@@ -6217,8 +6237,8 @@ BuildSprites:
 		bne.w	.objectLoop
 
 	.nextPriority:
-		lea	$80(a4),a4
-		dbf	d7,.priorityLoop
+		lea		$80(a4),a4
+		dbf		d7,.priorityLoop
 		move.b	d5,(v_spritecount).w
 		cmpi.b	#$50,d5
 		beq.s	.spriteLimit
@@ -6399,6 +6419,7 @@ BuildSpr_FlipXY:
 	.return:
 		rts	
 
+		include "_inc\Rings Manager.asm"
 		include	"_incObj/sub ChkObjectVisible.asm"
 
 ; ---------------------------------------------------------------------------
@@ -9202,17 +9223,94 @@ ObjPos_SBZ1pf6:	binclude	"objpos/sbz1pf6.bin"
 		even
 ObjPos_End:		binclude	"objpos/ending.bin"
 		even
-ObjPos_Null:	dc.b $FF, $FF, 0, 0, 0,	0
+ObjPos_Null:	dc.b $FF, $FF, 0, 0, 0, 0
 
-		if Revision=0
-		rept $62A
-		dc.b $FF
-		endm
-		else
 		rept $63C
 		dc.b $FF
 		endm
-		endif
+
+; --------------------------------------------------------------------------------------
+; Offset index of ring locations - RetroKoH S2 Rings Manager
+; --------------------------------------------------------------------------------------
+RingPos_Index:
+		; GHZ
+		dc.w RingPos_GHZ1-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.w RingPos_GHZ2-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.w RingPos_GHZ3-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.w RingPos_GHZ1-RingPos_Index, RingPos_Null-RingPos_Index
+		; LZ
+		dc.w RingPos_LZ1-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.w RingPos_LZ2-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.w RingPos_LZ3-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.w RingPos_SBZ3-RingPos_Index, RingPos_Null-RingPos_Index
+		; MZ
+		dc.w RingPos_MZ1-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.w RingPos_MZ2-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.w RingPos_MZ3-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.w RingPos_MZ1-RingPos_Index, RingPos_Null-RingPos_Index
+		; SLZ
+		dc.w RingPos_SLZ1-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.w RingPos_SLZ2-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.w RingPos_SLZ3-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.w RingPos_SLZ1-RingPos_Index, RingPos_Null-RingPos_Index
+		; SYZ
+		dc.w RingPos_SYZ1-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.w RingPos_SYZ2-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.w RingPos_SYZ3-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.w RingPos_SYZ1-RingPos_Index, RingPos_Null-RingPos_Index
+		; SBZ
+		dc.w RingPos_SBZ1-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.w RingPos_SBZ2-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.w RingPos_Null-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.w RingPos_SBZ1-RingPos_Index, RingPos_Null-RingPos_Index
+		; Ending
+		dc.w RingPos_Null-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.w RingPos_Null-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.w RingPos_Null-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.w RingPos_Null-RingPos_Index, RingPos_Null-RingPos_Index
+		; --- Put extra ring data here. ---
+		dc.b $FF, $FF, 0, 0, 0,	0
+RingPos_GHZ1:	binclude	"ringpos/ghz1.bin"
+		even
+RingPos_GHZ2:	binclude	"ringpos/ghz2.bin"
+		even
+RingPos_GHZ3:	binclude	"ringpos/ghz3.bin"
+		even
+RingPos_LZ1:	binclude	"ringpos/lz1.bin"
+		even
+RingPos_LZ2:	binclude	"ringpos/lz2.bin"
+		even
+RingPos_LZ3:	binclude	"ringpos/lz3.bin"
+		even
+RingPos_SBZ3:	binclude	"ringpos/sbz3.bin"
+		even
+RingPos_MZ1:	binclude	"ringpos/mz1.bin"
+		even
+RingPos_MZ2:	binclude	"ringpos/mz2.bin"
+		even
+RingPos_MZ3:	binclude	"ringpos/mz3.bin"
+		even
+RingPos_SLZ1:	binclude	"ringpos/slz1.bin"
+		even
+RingPos_SLZ2:	binclude	"ringpos/slz2.bin"
+		even
+RingPos_SLZ3:	binclude	"ringpos/slz3.bin"
+		even
+RingPos_SYZ1:	binclude	"ringpos/syz1.bin"
+		even
+RingPos_SYZ2:	binclude	"ringpos/syz2.bin"
+		even
+RingPos_SYZ3:	binclude	"ringpos/syz3.bin"
+		even
+RingPos_SBZ1:	binclude	"ringpos/sbz1.bin"
+		even
+RingPos_SBZ2:	binclude	"ringpos/sbz2.bin"
+		even
+RingPos_Null:	dc.b $FF, $FF, 0, 0, 0, 0
+
+		rept $63C
+		dc.b $FF
+		endm
 
 				include "MegaPCM.asm"
 				include "SampleTable.asm"
