@@ -9,10 +9,10 @@ Map_Stomp_internal:	mappingsTable
 	mappingsTableEntry.w	.bigdoor
 
 .door:	spriteHeader
-	spritePiece	-$40, -$C, 4, 3, $EA, 0, 0, 1, 0	; horizontal sliding door
-	spritePiece	-$20, -$C, 4, 3, $ED, 0, 0, 1, 0	; RetroKoH VRAM Overhaul
-	spritePiece	0, -$C, 4, 3, $ED, 0, 0, 1, 0
-	spritePiece	$20, -$C, 4, 3, $EA, 1, 0, 1, 0
+	spritePiece	-$40, -$C, 4, 3, $106, 0, 0, 1, 0	; horizontal sliding door
+	spritePiece	-$20, -$C, 4, 3, $109, 0, 0, 1, 0	; RetroKoH VRAM Overhaul
+	spritePiece	0, -$C, 4, 3, $109, 0, 0, 1, 0
+	spritePiece	$20, -$C, 4, 3, $106, 1, 0, 1, 0
 .door_End
 
 .stomper:	spriteHeader

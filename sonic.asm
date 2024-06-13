@@ -6402,7 +6402,18 @@ BuildSpr_FlipXY:
 		include	"_incObj/sub ChkObjectVisible.asm"
 
 ; ---------------------------------------------------------------------------
-; Subroutine to	load a level's objects
+; SONIC 2 OBJECT MANAGER -- RetroKoH
+; Subroutine to	load a level's objects and keep track
+; of any objects that need to remember their state,
+; such as monitors or enemies.
+;
+; writes:
+;  d0, d1
+;  d2 = respawn index of object to load
+;  d6 = camera position
+;
+;  a0 = address in object placement list
+;  a2 = respawn table
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -6412,11 +6423,12 @@ ObjPosLoad:
 		moveq	#0,d0
 		move.b	(v_opl_routine).w,d0
 		move.w	OPL_Index(pc,d0.w),d0
-		jmp	OPL_Index(pc,d0.w)
+		jmp		OPL_Index(pc,d0.w)
 ; End of function ObjPosLoad
 
 ; ===========================================================================
-OPL_Index:	dc.w OPL_Main-OPL_Index
+OPL_Index:
+		dc.w OPL_Main-OPL_Index
 		dc.w OPL_Next-OPL_Index
 ; ===========================================================================
 
@@ -6425,211 +6437,240 @@ OPL_Main:
 		move.w	(v_zone).w,d0
 		lsl.b	#6,d0
 		lsr.w	#4,d0
-		lea	(ObjPos_Index).l,a0
-		movea.l	a0,a1
-		adda.w	(a0,d0.w),a0
-		move.l	a0,(v_opl_data).w
-		move.l	a0,(v_opl_data+4).w
-		adda.w	2(a1,d0.w),a1
-		move.l	a1,(v_opl_data+8).w
-		move.l	a1,(v_opl_data+$C).w
-		lea	(v_objstate).w,a2
-		move.w	#$101,(a2)+
-		move.w	#(v_objstate_end-v_objstate-2)/4-1,d0	; Clear $BE bytes instead of $17C.
+		lea		(ObjPos_Index).l,a0		; Next, we load the first pointer in the object layout list pointer index,
+		movea.l	a0,a1					; then copy it for quicker use later.
+		adda.w	(a0,d0.w),a0			; (Point1 * 2) + d0
+	; initialize each object load address with the first object in the layout
+		move.l	a0,(v_opl_data).w		; obj_load_addr_right
+		move.l	a0,(v_opl_data+4).w		; obj_load_addr_left
+		lea		(v_objstate).w,a2		; obj respawn table
+		move.w	#$101,(a2)+				; the first two bytes are not used as respawn values
+	; instead, they are used to keep track of the current respawn indexes
+		move.w	#(v_objstate_end-v_objstate-2)/4-1,d0	; Set loop counter (Clear $BE bytes instead of $17C)
 
 OPL_ClrList:
 		clr.l	(a2)+
-		dbf	d0,OPL_ClrList	; clear	pre-destroyed object list
+		dbf		d0,OPL_ClrList	; clear	pre-destroyed object list
 
-		; Clear the last word, since the above loop only does longwords.
+		; FixBugs: Clear the last word, since the above loop only does longwords.
 	if (v_objstate_end-v_objstate-2)&2
 		clr.w	(a2)+
 	endif
 
-		lea	(v_objstate).w,a2
+		lea		(v_objstate).w,a2		; reset a2
 		moveq	#0,d2
 		move.w	(v_screenposx).w,d6
-		subi.w	#$80,d6
-		bhs.s	loc_D93C
-		moveq	#0,d6
+		subi.w	#$80,d6					; look one chunk to the left
+		bcc.s	loc_D93C				; if the result was negative,
+		moveq	#0,d6					; cap at zero
 
 loc_D93C:
-		andi.w	#$FF80,d6
-		movea.l	(v_opl_data).w,a0
+		andi.w	#$FF80,d6				; limit to increments of $80 (width of a chunk)
+		movea.l	(v_opl_data).w,a0		; load address of object placement list
 
 loc_D944:
-		cmp.w	(a0),d6
-		bls.s	loc_D956
-		tst.b	4(a0)
-		bpl.s	loc_D952
+	; at the beginning of a level this gives respawn table entries to any object that is one chunk
+	; behind the left edge of the screen that needs to remember its state (Monitors, Badniks, etc.)
+		cmp.w	(a0),d6					; is object's x position >= d6?
+		bls.s	loc_D956				; if yes, branch
+		tst.b	2(a0)					; does the object get a respawn table entry? -- S2 OBJ MANAGER: WAS 4(a0)
+		bpl.s	loc_D952				; if not, branch
 		move.b	(a2),d2
-		addq.b	#1,(a2)
+		addq.b	#1,(a2)					; respawn index of next object to the right
 
 loc_D952:
 		addq.w	#6,a0
-		bra.s	loc_D944
+		bra.s	loc_D944				; continue with next object
 ; ===========================================================================
 
 loc_D956:
-		move.l	a0,(v_opl_data).w
-		movea.l	(v_opl_data+4).w,a0
-		subi.w	#$80,d6
-		blo.s	loc_D976
+		move.l	a0,(v_opl_data).w		; remember rightmost object that has been processed, so far (we still need to look forward)
+		movea.l	(v_opl_data+4).w,a0		; reset a0
+		subi.w	#$80,d6					; look even farther left (any object behind this is out of range)
+		bcs.s	loc_D976				; branch, if camera position would be behind level's left boundary
 
 loc_D964:
-		cmp.w	(a0),d6
-		bls.s	loc_D976
-		tst.b	4(a0)
-		bpl.s	loc_D972
-		addq.b	#1,1(a2)
+	; count how many objects are behind the screen that are not in range and need to remember their state
+		cmp.w	(a0),d6					; is object's x position >= d6?
+		bls.s	loc_D976				; if yes, branch
+		tst.b	2(a0)					; does the object get a respawn table entry? -- S2 OBJ MANAGER: WAS 4(a0)
+		bpl.s	loc_D972				; if not, branch
+		addq.b	#1,1(a2)				; respawn index of current object to the left
 
 loc_D972:
 		addq.w	#6,a0
-		bra.s	loc_D964
+		bra.s	loc_D964				; continue with next object
 ; ===========================================================================
 
 loc_D976:
-		move.l	a0,(v_opl_data+4).w
-		move.w	#-1,(v_opl_screen).w
+		; remember current object from the left
+		move.l	a0,(v_opl_data+4).w		; obj_load_addr_left
+		move.w	#-1,(v_opl_screen).w	; make sure ObjectsManager_GoingForward is run
 
 OPL_Next:
-		lea	(v_objstate).w,a2
+	; NEW -- S2 Objects Manager
+		move.w	(v_screenposx).w,d1
+		subi.w	#$80,d1
+		andi.w	#$FF80,d1
+		move.w	d1,(v_screenposx_coarse).w
+	; S2 Objects Manager End
+
+		lea		(v_objstate).w,a2
 		moveq	#0,d2
 		move.w	(v_screenposx).w,d6
 		andi.w	#$FF80,d6
-		cmp.w	(v_opl_screen).w,d6
-		beq.w	locret_DA3A
-		bge.s	loc_D9F6
-		move.w	d6,(v_opl_screen).w
-		movea.l	(v_opl_data+4).w,a0
-		subi.w	#$80,d6
-		blo.s	loc_D9D2
+		cmp.w	(v_opl_screen).w,d6		; is the X range the same as last time?
+		beq.w	locret_DA3A				; if yes, branch (rts)
+		bge.s	loc_D9F6				; if new pos is greater than old pos, branch
+	; if the player is moving back
+		move.w	d6,(v_opl_screen).w		; remember current position for next time
+		movea.l	(v_opl_data+4).w,a0		; get current object from the left
+		subi.w	#$80,d6					; look one chunk to the left
+		bcs.s	loc_D9D2				; branch, if camera position would be behind level's left boundary
 
 loc_D9A6:
-		cmp.w	-6(a0),d6
-		bge.s	loc_D9D2
-		subq.w	#6,a0
-		tst.b	4(a0)
-		bpl.s	loc_D9BC
-		subq.b	#1,1(a2)
+	; load all objects left of the screen that are now in range
+		cmp.w	-6(a0),d6				; is the previous object's X pos less than d6?
+		bge.s	loc_D9D2				; if it is, branch
+		subq.w	#6,a0					; get object's address
+		tst.b	2(a0)					; does the object get a respawn table entry? -- S2 OBJ MANAGER: WAS 4(a0)
+		bpl.s	loc_D9BC				; if not, branch
+		subq.b	#1,1(a2)				; respawn index of this object
 		move.b	1(a2),d2
 
 loc_D9BC:
-		bsr.w	loc_DA3C
-		bne.s	loc_D9C6
+		bsr.w	ChkLoadObj				; load object
+		bne.s	loc_D9C6				; branch, if SST is full
 		subq.w	#6,a0
-		bra.s	loc_D9A6
+		bra.s	loc_D9A6				; continue with previous object
 ; ===========================================================================
 
 loc_D9C6:
-		tst.b	4(a0)
-		bpl.s	loc_D9D0
-		addq.b	#1,1(a2)
+	; undo a few things, if the object couldn't load
+		tst.b	2(a0)					; does the object get a respawn table entry? -- S2 OBJ MANAGER: WAS 4(a0)
+		bpl.s	loc_D9D0				; if not, branch
+		addq.b	#1,1(a2)				; since we didn't load the object, undo last change
 
 loc_D9D0:
-		addq.w	#6,a0
+		addq.w	#6,a0					; go back to last object
 
 loc_D9D2:
-		move.l	a0,(v_opl_data+4).w
-		movea.l	(v_opl_data).w,a0
-		addi.w	#$300,d6
+		move.l	a0,(v_opl_data+4).w		; remember current object from the left
+		movea.l	(v_opl_data).w,a0		; get next object from the right
+		addi.w	#$300,d6				; look two chunks beyond the right edge of the screen
 
 loc_D9DE:
-		cmp.w	-6(a0),d6
-		bgt.s	loc_D9F0
-		tst.b	-2(a0)
-		bpl.s	loc_D9EC
-		subq.b	#1,(a2)
+	; subtract number of objects that have been moved out of range (from the right side)
+		cmp.w	-6(a0),d6				; is the previous object's X pos less than d6?
+		bgt.s	loc_D9F0				; if it is, branch
+		tst.b	-4(a0)					; does the previous object get a respawn table entry? -- S2 OBJ MANAGER: WAS -2(a0)
+		bpl.s	loc_D9EC				; if not, branch
+		subq.b	#1,(a2)					; respawn index of next object to the right
 
 loc_D9EC:
 		subq.w	#6,a0
-		bra.s	loc_D9DE
+		bra.s	loc_D9DE				; continue with previous object
 ; ===========================================================================
 
 loc_D9F0:
-		move.l	a0,(v_opl_data).w
+		move.l	a0,(v_opl_data).w		; remember next object from the right
 		rts	
 ; ===========================================================================
 
 loc_D9F6:
 		move.w	d6,(v_opl_screen).w
-		movea.l	(v_opl_data).w,a0
-		addi.w	#$280,d6
+		movea.l	(v_opl_data).w,a0		; get next object from the right
+		addi.w	#$280,d6				; look two chunks forward
 
 loc_DA02:
-		cmp.w	(a0),d6
-		bls.s	loc_DA16
-		tst.b	4(a0)
-		bpl.s	loc_DA10
-		move.b	(a2),d2
-		addq.b	#1,(a2)
+	; load all objects right of the screen that are now in range
+		cmp.w	(a0),d6					; is object's x position >= d6?
+		bls.s	loc_DA16				; if yes, branch
+		tst.b	2(a0)					; does the object get a respawn table entry? -- S2 OBJ MANAGER: WAS 4(a0)
+		bpl.s	loc_DA10				; if not, branch
+		move.b	(a2),d2					; respawn index of this object
+		addq.b	#1,(a2)					; respawn index of next object to the right
 
 loc_DA10:
-		bsr.w	loc_DA3C
-		beq.s	loc_DA02
+		bsr.w	ChkLoadObj				; load object (and get address of next object)
+		beq.s	loc_DA02				; continue loading objects, if the SST isn't full
 	; MarkeyJester RememberSprite Bugfix
 		; This will ensure the remember counter for moving right is restored correctly if the SST was full.
-		tst.b	$04(a0)		; was this object a remember state?
-		bpl.s	loc_DA16	; if not, branch
-		subq.b	#$01,(a2)	; move right counter back
+		tst.b	2(a0)					; was this object a remember state? -- S2 OBJ MANAGER: WAS 4(a0)
+		bpl.s	loc_DA16				; if not, branch
+		subq.b	#1,(a2)					; move right counter back
 	; RememberSprite Bugfix End
 
 loc_DA16:
-		move.l	a0,(v_opl_data).w
-		movea.l	(v_opl_data+4).w,a0
-		subi.w	#$300,d6
-		blo.s	loc_DA36
+		move.l	a0,(v_opl_data).w		; remember next object from the right
+		movea.l	(v_opl_data+4).w,a0		; get current object from the left
+		subi.w	#$300,d6				; look one chunk behind the left edge of the screen
+		bcs.s	loc_DA36				; branch, if camera position would be behind level's left boundary
 
 loc_DA24:
-		cmp.w	(a0),d6
-		bls.s	loc_DA36
-		tst.b	4(a0)
-		bpl.s	loc_DA32
-		addq.b	#1,1(a2)
+	; subtract number of objects that have been moved out of range (from the left)
+		cmp.w	(a0),d6					; is object's x position >= d6?
+		bls.s	loc_DA36				; if yes, branch
+		tst.b	2(a0)					; does the object get a respawn table entry? -- S2 OBJ MANAGER: WAS 4(a0)
+		bpl.s	loc_DA32				; if not, branch
+		addq.b	#1,1(a2)				; respawn index of next object to the left
 
 loc_DA32:
 		addq.w	#6,a0
-		bra.s	loc_DA24
+		bra.s	loc_DA24				; continue with previous object
 ; ===========================================================================
 
 loc_DA36:
-		move.l	a0,(v_opl_data+4).w
+		move.l	a0,(v_opl_data+4).w		; remember current object from the left
 
 locret_DA3A:
 		rts	
 ; ===========================================================================
-
-loc_DA3C:
-		tst.b	4(a0)
-		bpl.s	OPL_MakeItem
-		btst	#7,2(a2,d2.w)	; changed from bset -- MarkeyJester RememberSprite Bugfix
+; ---------------------------------------------------------------------------
+; Subroutine to check if an object needs to be loaded.
+;
+; input variables:
+;  d2 = respawn index of object to be loaded
+;
+;  a0 = address in object placement list
+;  a2 = object respawn table
+;
+; writes:
+;  d0, d1
+;  a1 = object
+; ---------------------------------------------------------------------------
+ChkLoadObj: ;loc_DA3C:
+		tst.b	2(a0)					; does the object get a respawn table entry?
+		bpl.s	OPL_MakeItem			; if not, branch
+		btst	#7,2(a2,d2.w)			; changed from bset -- MarkeyJester RememberSprite Bugfix
 		beq.s	OPL_MakeItem
-		addq.w	#6,a0
-		moveq	#0,d0
+		addq.w	#6,a0					; next object
+		moveq	#0,d0					; let the objects manager know that it can keep going
 		rts	
 ; ===========================================================================
 
 OPL_MakeItem:
-		bsr.w	FindFreeObj
-		bne.s	locret_DA8A
+		bsr.w	FindFreeObj				; find empty slot
+		bne.s	locret_DA8A				; branch, if there is none
 		move.w	(a0)+,obX(a1)
-		move.w	(a0)+,d0
-		move.w	d0,d1
-		andi.w	#$FFF,d0
-		move.w	d0,obY(a1)
-		rol.w	#2,d1
-		andi.b	#3,d1
-		move.b	d1,obRender(a1)
-		move.b	d1,obStatus(a1)
-		move.b	(a0)+,d0
-		bpl.s	loc_DA80
-		bset	#7,2(a2,d2.w)	; set as removed -- MarkeyJester RememberSprite Bugfix
-		andi.b	#$7F,d0
+		move.w	(a0)+,d0				; there are three things stored in this word
+		bpl.s	loc_DA80				; branch, if the object doesn't get a respawn table entry
+		bset	#7,2(a2,d2.w)			; set as removed -- MarkeyJester RememberSprite Bugfix
+;		andi.b	#$7F,d0
 		move.b	d2,obRespawnNo(a1)
 
 loc_DA80:
-		_move.b	d0,obID(a1)
-		move.b	(a0)+,obSubtype(a1)
+	; NEW -- S2 Objects Manager: Moved this code from OPL_MakeIteM:
+		move.w	d0,d1					; copy for later
+		andi.w	#$FFF,d0				; get y-position
+		move.w	d0,obY(a1)
+		rol.w	#3,d1					; adjust bits -- S2 Objects Manager: was 2
+		andi.b	#3,d1					; get render flags
+		move.b	d1,obRender(a1)
+		move.b	d1,obStatus(a1)
+	; NEW -- S2 Objects Manager End
+		move.b	(a0)+,obID(a1)			; load object
+		move.b	(a0)+,obSubtype(a1)		; load object subtype
 		moveq	#0,d0
 
 locret_DA8A:
@@ -9101,25 +9142,13 @@ ObjPos_GHZ1:	binclude	"objpos/ghz1.bin"
 		even
 ObjPos_GHZ2:	binclude	"objpos/ghz2.bin"
 		even
-ObjPos_GHZ3:	if Revision=0
-		binclude	"objpos/ghz3.bin"
-		else
-		binclude	"objpos/ghz3 (JP1).bin"
-		endif
+ObjPos_GHZ3:	binclude	"objpos/ghz3.bin"
 		even
-ObjPos_LZ1:	if Revision=0
-		binclude	"objpos/lz1.bin"
-		else
-		binclude	"objpos/lz1 (JP1).bin"
-		endif
+ObjPos_LZ1:		binclude	"objpos/lz1.bin"
 		even
-ObjPos_LZ2:	binclude	"objpos/lz2.bin"
+ObjPos_LZ2:		binclude	"objpos/lz2.bin"
 		even
-ObjPos_LZ3:	if Revision=0
-		binclude	"objpos/lz3.bin"
-		else
-		binclude	"objpos/lz3 (JP1).bin"
-		endif
+ObjPos_LZ3:		binclude	"objpos/lz3.bin"
 		even
 ObjPos_SBZ3:	binclude	"objpos/sbz3.bin"
 		even
@@ -9135,15 +9164,11 @@ ObjPos_LZ3pf1:	binclude	"objpos/lz3pf1.bin"
 		even
 ObjPos_LZ3pf2:	binclude	"objpos/lz3pf2.bin"
 		even
-ObjPos_MZ1:	if Revision=0
-		binclude	"objpos/mz1.bin"
-		else
-		binclude	"objpos/mz1 (JP1).bin"
-		endif
+ObjPos_MZ1:		binclude	"objpos/mz1.bin"
 		even
-ObjPos_MZ2:	binclude	"objpos/mz2.bin"
+ObjPos_MZ2:		binclude	"objpos/mz2.bin"
 		even
-ObjPos_MZ3:	binclude	"objpos/mz3.bin"
+ObjPos_MZ3:		binclude	"objpos/mz3.bin"
 		even
 ObjPos_SLZ1:	binclude	"objpos/slz1.bin"
 		even
@@ -9155,17 +9180,9 @@ ObjPos_SYZ1:	binclude	"objpos/syz1.bin"
 		even
 ObjPos_SYZ2:	binclude	"objpos/syz2.bin"
 		even
-ObjPos_SYZ3:	if Revision=0
-		binclude	"objpos/syz3.bin"
-		else
-		binclude	"objpos/syz3 (JP1).bin"
-		endif
+ObjPos_SYZ3:	binclude	"objpos/syz3.bin"
 		even
-ObjPos_SBZ1:	if Revision=0
-		binclude	"objpos/sbz1.bin"
-		else
-		binclude	"objpos/sbz1 (JP1).bin"
-		endif
+ObjPos_SBZ1:	binclude	"objpos/sbz1.bin"
 		even
 ObjPos_SBZ2:	binclude	"objpos/sbz2.bin"
 		even
