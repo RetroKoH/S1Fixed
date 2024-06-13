@@ -2727,9 +2727,7 @@ Level_SkipTtlCard:
 		bsr.w	ColIndexLoad
 		bsr.w	LZWaterFeatures
 		move.b	#id_SonicPlayer,(v_player).w ; load Sonic object
-		tst.w	(f_demo).w
-		bmi.s	Level_ChkDebug
-		move.b	#id_HUD,(v_hud).w ; load HUD object
+		; No longer using a HUD object
 
 Level_ChkDebug:
 		tst.b	(f_debugcheat).w ; has debug cheat been entered?
@@ -2836,6 +2834,7 @@ Level_ClrCardArt:
 		jsr	(AddPLC).l	; load animal gfx (level no. + $15)
 
 Level_StartGame:
+		; The above check is for the S2 HUD Manager (RetroKoH)
 		tst.w	(f_demo).w
 		bmi.s	.demo
 		move.b	#1,(f_levelstarted).w ; RetroKoH S2 Rings Manager
@@ -6136,6 +6135,13 @@ BuildSprites:
 		lea		(v_spritetablebuffer).w,a2	; set address for sprite table
 		moveq	#0,d5
 		moveq	#0,d4						; RetroKoH S2 Rings Manager
+	; RetroKoH S2 HUD Manager
+		tst.b	(f_levelstarted).w
+		beq.s	.noHUD
+		bsr.w	BuildHUD					
+
+	.noHUD:
+	; S2 HUD Manager End
 		lea		(v_spritequeue).w,a4
 		moveq	#7,d7
 
@@ -6419,7 +6425,8 @@ BuildSpr_FlipXY:
 	.return:
 		rts	
 
-		include "_inc\Rings Manager.asm"
+		include "_inc/Rings Manager.asm"
+		include "_inc/BuildHUD.asm"
 		include	"_incObj/sub ChkObjectVisible.asm"
 
 ; ---------------------------------------------------------------------------

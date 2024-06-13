@@ -98,6 +98,19 @@
  Credit: AURORA☆FIELDS/Natsumi
  Function: Uses uncompressed art to optimize Title Card processing.
  Date 2024-06-12
+ 
+ Name: S2 Object Manager
+ Credit: RetroKoH
+ Date 2014-06-13
+ 
+ Name: S2 Rings Manager
+ Credit: RetroKoH
+ Date 2014-06-13
+ 
+ Name: S2 HUD Display
+ Credit: RetroKoH
+ Function: HUD is drawn as a non-object entity
+ Date 2014-06-13
 
 # Visual Changes
  Name: Title Screen Tweaks
