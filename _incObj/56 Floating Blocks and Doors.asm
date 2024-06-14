@@ -54,21 +54,19 @@ FBlock_Main:	; Routine 0
 		move.b	(a2),d0
 		add.w	d0,d0
 		move.w	d0,fb_height(a0)
-		if Revision<>0
-			cmpi.b	#$37,obSubtype(a0)
-			bne.s	.dontdelete
-			cmpi.w	#$1BB8,obX(a0)
-			bne.s	.notatpos
-			tst.b	(f_obj56).w
-			beq.s	.dontdelete
-			jmp	(DeleteObject).l
+		cmpi.b	#$37,obSubtype(a0)
+		bne.s	.dontdelete
+		cmpi.w	#$1BB8,obX(a0)
+		bne.s	.notatpos
+		tst.b	(f_obj56).w
+		beq.s	.dontdelete
+		jmp	(DeleteObject).l
 .notatpos:
-			clr.b	obSubtype(a0)
-			tst.b	(f_obj56).w
-			bne.s	.dontdelete
-			jmp	(DeleteObject).l
+		clr.b	obSubtype(a0)
+		tst.b	(f_obj56).w
+		bne.s	.dontdelete
+		jmp	(DeleteObject).l
 .dontdelete:
-		endif
 		moveq	#0,d0
 		cmpi.b	#id_LZ,(v_zone).w ; check if level is LZ
 		beq.s	.stillnotLZ
@@ -126,21 +124,16 @@ FBlock_Action:	; Routine 2
 		bsr.w	SolidObject
 
 .chkdel:
-		if Revision=0
-		out_of_range.w	DeleteObject,fb_origX(a0)
-		bra.w	DisplaySprite
-		else
-			out_of_range.s	.chkdel2,fb_origX(a0)
+		out_of_range.s	.chkdel2,fb_origX(a0)
 .display:
-			bra.w	DisplaySprite
+		bra.w	DisplaySprite
 .chkdel2:
-			cmpi.b	#$37,obSubtype(a0)
-			bne.s	.delete
-			tst.b	objoff_38(a0)
-			bne.s	.display
+		cmpi.b	#$37,obSubtype(a0)
+		bne.s	.delete
+		tst.b	objoff_38(a0)
+		bne.s	.display
 .delete:
-			jmp	(DeleteObject).l
-		endif
+		jmp	(DeleteObject).l
 ; ===========================================================================
 .index:		dc.w .type00-.index, .type01-.index
 		dc.w .type02-.index, .type03-.index
@@ -324,10 +317,8 @@ FBlock_Action:	; Routine 2
 		addq.w	#1,fb_height(a0)
 		cmpi.w	#$380,fb_height(a0)
 		bne.s	.locret_10578
-		if Revision<>0
-			move.b	#1,(f_obj56).w
-			clr.b	objoff_38(a0)
-		endif
+		move.b	#1,(f_obj56).w
+		clr.b	objoff_38(a0)
 		clr.b	obSubtype(a0)
 
 .locret_10578:

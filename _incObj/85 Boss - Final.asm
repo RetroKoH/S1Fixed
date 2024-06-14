@@ -234,10 +234,8 @@ loc_19FA6:
 ; ===========================================================================
 
 loc_19FBC:
-		if Revision<>0
-			moveq	#100,d0
-			bsr.w	AddPoints
-		endif
+		moveq	#100,d0
+		bsr.w	AddPoints
 		move.b	#6,objoff_34(a0)
 		move.w	#boss_fz_x+$170,obX(a0)
 		move.w	#boss_fz_y+$2C,obY(a0)
@@ -280,11 +278,7 @@ loc_1A020:
 ; ===========================================================================
 
 loc_1A02A:
-		if Revision=0
-		move.b	#$30,obWidth(a0)
-		else
-			move.b	#$30,obActWid(a0)
-		endif
+		move.b	#$30,obActWid(a0)
 		bset	#0,obStatus(a0)
 		jsr	(SpeedToPos).l
 		move.b	#6,obFrame(a0)
@@ -293,11 +287,7 @@ loc_1A02A:
 		blo.s	loc_1A070
 		move.w	#boss_fz_y+$8C,obY(a0)
 		addq.b	#2,objoff_34(a0)
-		if Revision=0
-		move.b	#$20,obWidth(a0)
-		else
-			move.b	#$20,obActWid(a0)
-		endif
+		move.b	#$20,obActWid(a0)
 		move.w	#$100,obVelX(a0)
 		move.w	#-$100,obVelY(a0)
 		addq.b	#2,(v_dle_routine).w

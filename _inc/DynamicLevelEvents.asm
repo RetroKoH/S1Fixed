@@ -328,10 +328,8 @@ loc_702E:
 loc_703C:
 		cmpi.w	#$500,(v_screenposy).w
 		blo.s	locret_704E
-		if Revision<>0
-			cmpi.w	#$B80,(v_screenposx).w
-			bcs.s	locret_704E
-		endif
+		cmpi.w	#$B80,(v_screenposx).w
+		bcs.s	locret_704E
 		move.w	#$500,(v_limittop2).w
 		addq.b	#2,(v_dle_routine).w
 
@@ -340,22 +338,19 @@ locret_704E:
 ; ===========================================================================
 
 loc_7050:
-		if Revision<>0
-			cmpi.w	#$B80,(v_screenposx).w
-			bcc.s	locj_76B8
-			cmpi.w	#$340,(v_limittop2).w
-			beq.s	locret_7072
-			subq.w	#2,(v_limittop2).w
-			rts
+		cmpi.w	#$B80,(v_screenposx).w
+		bcc.s	locj_76B8
+		cmpi.w	#$340,(v_limittop2).w
+		beq.s	locret_7072
+		subq.w	#2,(v_limittop2).w
+		rts
 locj_76B8:
-			cmpi.w	#$500,(v_limittop2).w
-			beq.s	locj_76CE
-			cmpi.w	#$500,(v_screenposy).w
-			bcs.s	locret_7072
-			move.w	#$500,(v_limittop2).w
+		cmpi.w	#$500,(v_limittop2).w
+		beq.s	locj_76CE
+		cmpi.w	#$500,(v_screenposy).w
+		bcs.s	locret_7072
+		move.w	#$500,(v_limittop2).w
 locj_76CE:
-		endif
-
 		cmpi.w	#$E70,(v_screenposx).w
 		blo.s	locret_7072
 		clr.w	(v_limittop2).w

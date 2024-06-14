@@ -9,8 +9,8 @@ SpinningLight:
 		jmp		Light_Index(pc,d1.w)
 ; ===========================================================================
 Light_Index:
-		dc.w Light_Main-Light_Index
-		dc.w Light_Animate-Light_Index
+		dc.w 	Light_Main-Light_Index
+		dc.w 	Light_Animate-Light_Index
 ; ===========================================================================
 
 Light_Main:	; Routine 0

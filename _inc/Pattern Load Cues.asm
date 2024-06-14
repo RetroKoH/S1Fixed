@@ -29,7 +29,6 @@ ptr_PLC_Boss_MZ:		dc.w PLC_Boss_MZ-ArtLoadCues
 ptr_PLC_Boss_SYZ:		dc.w PLC_Boss_SYZ-ArtLoadCues
 ptr_PLC_Boss_SLZ:		dc.w PLC_Boss_SLZ-ArtLoadCues
 ptr_PLC_Signpost:		dc.w PLC_Signpost-ArtLoadCues
-ptr_PLC_Warp:			dc.w PLC_Warp-ArtLoadCues
 ptr_PLC_SpecialStage:	dc.w PLC_SpecialStage-ArtLoadCues
 
 PLC_Animals:
@@ -277,15 +276,6 @@ PLC_Signpost:	dc.w ((PLC_Signpostend-PLC_Signpost-2)/6)-1
 		plcm	Nem_BigFlash,		ArtTile_Giant_Ring_Flash		; giant ring flash effect -- Will make uncompressed
 PLC_Signpostend:
 ; ---------------------------------------------------------------------------
-; Pattern load cues - beta special stage warp effect
-; ---------------------------------------------------------------------------
-PLC_Warp:
-	if Revision=0
-		dc.w ((PLC_Warpend-PLC_Warp-2)/6)-1
-		plcm	Nem_Warp, ArtTile_Warp
-	endif
-PLC_Warpend:
-; ---------------------------------------------------------------------------
 ; Pattern load cues - special stage
 ; ---------------------------------------------------------------------------
 PLC_SpecialStage:	dc.w ((PLC_SpeStageend-PLC_SpecialStage-2)/6)-1
@@ -431,7 +421,6 @@ plcid_Boss_MZ:		equ (ptr_PLC_Boss_MZ-ArtLoadCues)/2			; NEW
 plcid_Boss_SYZ:		equ (ptr_PLC_Boss_SYZ-ArtLoadCues)/2		; NEW
 plcid_Boss_SLZ:		equ (ptr_PLC_Boss_SLZ-ArtLoadCues)/2		; NEW
 plcid_Signpost:		equ (ptr_PLC_Signpost-ArtLoadCues)/2		; $12
-plcid_Warp:			equ (ptr_PLC_Warp-ArtLoadCues)/2			; $13
 plcid_SpecialStage:	equ (ptr_PLC_SpecialStage-ArtLoadCues)/2	; $14
 plcid_GHZAnimals:	equ (ptr_PLC_GHZAnimals-ArtLoadCues)/2		; $15
 plcid_LZAnimals:	equ (ptr_PLC_LZAnimals-ArtLoadCues)/2		; $16

@@ -179,28 +179,6 @@ dbug:	macro map,object,subtype,frame,vram
 
 ;		mappings	object		subtype	frame	VRAM setting
 	dbug 	Map_Ring,	id_Rings,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
-    if Revision=0
-	dbug	Map_Bump,	id_Bumper,	0,	0,	make_art_tile(ArtTile_SYZ_Bumper,0,0)
-    if FixBugs
-	dbug	Map_Animal2,	id_Animals,	$A,	0,	make_art_tile(ArtTile_Ending_Flicky,0,0)
-	dbug	Map_Animal2,	id_Animals,	$B,	0,	make_art_tile(ArtTile_Ending_Flicky,0,0)
-	dbug	Map_Animal2,	id_Animals,	$C,	0,	make_art_tile(ArtTile_Ending_Flicky,0,0)
-    else
-	dbug	Map_Animal2,	id_Animals,	$A,	0,	make_art_tile(ArtTile_Ending_Flicky-5,0,0)
-	dbug	Map_Animal2,	id_Animals,	$B,	0,	make_art_tile(ArtTile_Ending_Flicky-5,0,0)
-	dbug	Map_Animal2,	id_Animals,	$C,	0,	make_art_tile(ArtTile_Ending_Flicky-5,0,0)
-    endif
-	dbug	Map_Animal1,	id_Animals,	$D,	0,	make_art_tile(ArtTile_Ending_Rabbit,0,0)
-	dbug	Map_Animal1,	id_Animals,	$E,	0,	make_art_tile(ArtTile_Ending_Rabbit,0,0)
-	dbug	Map_Animal1,	id_Animals,	$F,	0,	make_art_tile(ArtTile_Ending_Penguin,0,0)
-	dbug	Map_Animal1,	id_Animals,	$10,	0,	make_art_tile(ArtTile_Ending_Penguin,0,0)
-	dbug	Map_Animal2,	id_Animals,	$11,	0,	make_art_tile(ArtTile_Ending_Seal,0,0)
-	dbug	Map_Animal3,	id_Animals,	$12,	0,	make_art_tile(ArtTile_Ending_Pig,0,0)
-	dbug	Map_Animal2,	id_Animals,	$13,	0,	make_art_tile(ArtTile_Ending_Chicken,0,0)
-	dbug	Map_Animal3,	id_Animals,	$14,	0,	make_art_tile(ArtTile_Ending_Squirrel,0,0)
-    else
-	dbug 	Map_Ring,	id_Rings,	0,	8,	make_art_tile(ArtTile_Ring,1,0)
-    endif
 .Endingend:
 
 	even
