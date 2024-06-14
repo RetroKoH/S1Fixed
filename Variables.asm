@@ -2,6 +2,15 @@
 ; all RAM addresses are run through this function to allow them to work in both 16-bit and 32-bit addressing modes
 ramaddr function x,(-(x&$80000000)<<1)|x
 
+; RetroKoH/Shobiz S3K Rings Manager
+Max_Rings = 511 ; default. maximum number possible is 759
+    if Max_Rings > 759
+    fatal "Maximum number of rings possible is 759"
+    endif
+
+Rings_Space = (Max_Rings+1)*2
+; S3K Rings Manager End
+
 ; Variables (v) and Flags (f)
 
 	phase ramaddr ( $FFFF0000 )
@@ -14,19 +23,23 @@ v_lvllayout:			ds.b	$1000			; level and background layouts
 v_collision1:			ds.b	$300
 v_collision2:			ds.b	$300
 
-; RetroKoH S2 Rings Manager RAM Variables
-v_ringpos:				ds.b	$600			; $9600
+; RetroKoH/Shobiz S3K Rings Manager RAM Variables
+v_ringpos:				ds.b	Rings_Space		; $9600 (Ring_status_table) one word per ring = $400 bytes
 v_ringposend:
-v_ringconsumedata:		ds.b	$80				; $9C00
-v_ringstart_addr:		ds.w	1				; $9C80
-v_ringend_addr:			ds.w	1				; $9C82
-v_ringsroutine:			ds.b	1				; $9C84
-v_ringend:
-; S2 Rings Manager End
-						
-						ds.b	$B7B			; unused -- $9C85
+v_ringstart_addr_ROM:	ds.l	1				; $9A00 (Ring_start_addr_ROM) address in the ring layout of the first ring whose X position is >= camera X position - 8
+v_ringend_addr_ROM:		ds.l	1				; $9A04 (Ring_end_addr_ROM) address in the ring layout of the first ring whose X position is >= camera X position + 328
+v_ringstart_addr_RAM:	ds.w	1				; $9A08 (Ring_start_addr_RAM) address in the ring status table of the first ring whose X position is >= camera X position - 8
 
-v_bgscroll_buffer:		ds.b	$200			; background scroll buffer
+v_ringconsumedata:								; $9A0A (Ring_consumption_table) ; stores the addresses of all rings currently being consumed
+v_ringconsumecount:		ds.w	1				; the number of rings being consumed currently
+v_ringconsumelist:		ds.w	$3F				; the remaining part of the ring consumption table
+v_ringsroutine:			ds.b	1				; $9A8A (Rings_manager_routine)
+v_ringend:
+; S3K Rings Manager End
+						
+						ds.b	$D75			; unused -- $9A8B
+
+v_bgscroll_buffer:		ds.b	$200			; $A800 - background scroll buffer
 v_ngfx_buffer:			ds.b	$200			; Nemesis graphics decompression buffer
 v_ngfx_buffer_end:
 v_spritequeue:			ds.b	$400			; sprite display queue, in order of priority
