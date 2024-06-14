@@ -1,5 +1,7 @@
 # S1Fixed
  A successor to ReadySonic (Bugfixes, Optimizations, Changes)
+ Base: Updated Sonic One Two-Eight disassembly for AS by Clownacy
+ Version: REV01. Revision options removed.
 
 # Credits
  RetroKoH - S1Fixed
@@ -103,14 +105,14 @@
  Credit: RetroKoH
  Date 2014-06-13
  
- Name: S2 Rings Manager
- Credit: RetroKoH
- Date 2014-06-13
- 
  Name: S2 HUD Display
  Credit: RetroKoH
  Function: HUD is drawn as a non-object entity
  Date 2014-06-13
+
+ Name: S3K Rings Manager
+ Credit: RetroKoH (Initial S2 Port), Shobiz, Pokepunch, ProjectFM, MarkeyJester (bugfix)
+ Date 2014-06-14
 
 # Visual Changes
  Name: Title Screen Tweaks

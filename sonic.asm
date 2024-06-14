@@ -5886,23 +5886,23 @@ BuildSprites:
 
 	.priorityLoop:
 	; RetroKoH S2 Rings Manager
-		cmpi.b	#2,d7					; Only draw rings at a specific priority.
+		cmpi.b	#$07-$02,d7				; Only draw rings at a specific priority.
 		bne.s	.cont
 		tst.b	(f_levelstarted).w		; Skip drawing rings if flag is not set.
 		beq.s	.cont
-		move.l	a4,-(sp)
+		movem.l	d7/a4,-(sp)
 		jsr		BuildRings
-		move.l	(sp)+,a4
+		movem.l	(sp)+,d7/a4
 
 	.cont:
 	; S2 Rings Manager End
-		tst.w	(a4)	; are there objects left to draw?
+		tst.w	(a4)			; are there objects left to draw?
 		beq.w	.nextPriority	; if not, branch
 		moveq	#2,d6
 
 	.objectLoop:
 		movea.w	(a4,d6.w),a0	; load object ID
-		tst.b	(a0)		; if null, branch
+		tst.b	(a0)			; if null, branch
 		beq.w	.skipObject
 		bclr	#7,obRender(a0)		; set as not visible
 
@@ -5924,7 +5924,6 @@ BuildSprites:
 		cmpi.w	#320,d1
 		bge.s	.skipObject	; right edge out of bounds
 		addi.w	#128,d3		; VDP sprites start at 128px
-
 		btst	#4,d4		; is assume height flag on?
 		beq.s	.assumeHeight	; if yes, branch
 		moveq	#0,d0
