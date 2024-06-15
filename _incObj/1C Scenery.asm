@@ -35,7 +35,7 @@ Scen_Main:	; Routine 0
 		move.b	(a1)+,obColType(a0)
 
 Scen_ChkDel:	; Routine 2
-		out_of_range.w	DeleteObject
+		offscreen.w	DeleteObject		; ProjectFM S3K Objects Manager
 		bra.w	DisplaySprite
 ; ===========================================================================
 ; ---------------------------------------------------------------------------

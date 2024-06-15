@@ -11,7 +11,7 @@ Elevator:
 		move.b	obRoutine(a0),d0
 		move.w	Elev_Index(pc,d0.w),d1
 		jsr	Elev_Index(pc,d1.w)
-		out_of_range.w	DeleteObject,elev_origX(a0)
+		offscreen.w	DeleteObject,elev_origX(a0)	; PFM S3K Obj
 		bra.w	DisplaySprite
 ; ===========================================================================
 Elev_Index:	dc.w Elev_Main-Elev_Index

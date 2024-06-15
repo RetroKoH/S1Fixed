@@ -43,10 +43,10 @@ Flame_Action:	; Routine 2
 		beq.s	loc_E57A
 		move.w	objoff_32(a0),objoff_30(a0)	; begin	flaming	time
 		move.w	#sfx_Flamethrower,d0
-		jsr	(PlaySound_Special).l ; play flame sound
+		jsr		(PlaySound_Special).l ; play flame sound
 
 loc_E57A:
-		lea	(Ani_Flame).l,a1
+		lea		(Ani_Flame).l,a1
 		bsr.w	AnimateSprite
 		clr.b	obColType(a0)
 		move.b	objoff_36(a0),d0
@@ -55,5 +55,5 @@ loc_E57A:
 		move.b	#$A3,obColType(a0)
 
 Flame_ChkDel:
-		out_of_range.w	DeleteObject
+		offscreen.w	DeleteObject	; ProjectFM S3K Object Manager
 		bra.w	DisplaySprite

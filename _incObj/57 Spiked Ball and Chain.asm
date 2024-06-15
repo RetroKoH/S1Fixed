@@ -140,7 +140,7 @@ SBall_Move:	; Routine 2
 ; ===========================================================================
 
 .chkdel:
-		out_of_range.w	.delete,sball_origX(a0)
+		offscreen.s	.delete,sball_origX(a0)	; ProjectFM S3K Object Manager
 		bra.w	DisplaySprite
 ; ===========================================================================
 

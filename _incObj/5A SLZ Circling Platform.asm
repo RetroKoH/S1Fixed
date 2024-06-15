@@ -9,8 +9,8 @@ CirclingPlatform:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Circ_Index(pc,d0.w),d1
-		jsr	Circ_Index(pc,d1.w)
-		out_of_range.w	DeleteObject,circ_origX(a0)
+		jsr		Circ_Index(pc,d1.w)
+		offscreen.w	DeleteObject,circ_origX(a0)	; PFM S3K Obj
 		bra.w	DisplaySprite
 ; ===========================================================================
 Circ_Index:	dc.w Circ_Main-Circ_Index

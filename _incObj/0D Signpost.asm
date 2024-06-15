@@ -25,8 +25,8 @@ Signpost:
 		bsr.w	Signpost_LoadGfx
 	.skip:
 	; VRAM Overhaul Edit End
-		out_of_range	DeleteObject
-		bra.w	DisplaySprite		; Clownacy DisplaySprite FIX
+		offscreen.w	DeleteObject	; ProjectFM S3K Object Manager
+		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix
 ; ===========================================================================
 Sign_Index:
 		dc.w Sign_Main-Sign_Index

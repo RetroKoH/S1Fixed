@@ -36,8 +36,8 @@ Swi_Action:	; Routine 2
 		move.w	d0,(f_switch).w	; set switch 0 as "pressed"
 
 Swi_ChkDel:
-		out_of_range.w	Swi_Delete
-		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix	
+		offscreen.s	Swi_Delete	; ProjectFM S3K Objects Manager
+		bra.w	DisplaySprite	; Clownacy DisplaySprite Fix	
 ; ===========================================================================
 
 Swi_Delete:	; Routine 4

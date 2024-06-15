@@ -151,8 +151,8 @@ loc_B7FE:	; Routine 4
 		move.w	d0,obY(a0)
 
 CStom_ChkDel:	; Routine 6 (Replaced CStom_Display2 as that became a fallthrough)
-		out_of_range.w	DeleteObject
-		bra.w	DisplaySprite	; FixBugs: Clownacy DisplaySprites Fix
+		offscreen.w	DeleteObject	; ProjectFM S3K Objects Manager
+		bra.w	DisplaySprite		; Clownacy DisplaySprites Fix
 ; ===========================================================================
 
 CStom_Types:

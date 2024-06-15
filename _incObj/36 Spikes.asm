@@ -98,8 +98,8 @@ loc_CF20:
 		movea.l	(sp)+,a0
 
 Spik_Display:
-		out_of_range.w	DeleteObject,spik_origX(a0)
-		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix
+		offscreen.w	DeleteObject,spik_origX(a0)	; ProjectFM S3K Object Manager
+		bra.w		DisplaySprite				; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 Spik_Type0x:

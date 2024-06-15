@@ -34,5 +34,5 @@ Edge_Solid:	; Routine 2
 		bsr.w	Obj44_SolidWall
 
 Edge_Display:	; Routine 4
-		out_of_range.w	DeleteObject
+		offscreen.w	DeleteObject	; ProjectFM S3K Object Manager
 		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix

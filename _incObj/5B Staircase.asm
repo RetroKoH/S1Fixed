@@ -11,8 +11,8 @@ Staircase:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Stair_Index(pc,d0.w),d1
-		jsr	Stair_Index(pc,d1.w)
-		out_of_range.w	DeleteObject,stair_origX(a0)
+		jsr		Stair_Index(pc,d1.w)
+		offscreen.w	DeleteObject,stair_origX(a0)	; PFM S3K Obj
 		bra.w	DisplaySprite
 ; ===========================================================================
 Stair_Index:	dc.w Stair_Main-Stair_Index

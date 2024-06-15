@@ -101,18 +101,18 @@
  Function: Uses uncompressed art to optimize Title Card processing.
  Date 2024-06-12
  
- Name: S2 Object Manager
- Credit: RetroKoH
- Date 2014-06-13
- 
  Name: S2 HUD Display
  Credit: RetroKoH
  Function: HUD is drawn as a non-object entity
  Date 2014-06-13
 
  Name: S3K Rings Manager
- Credit: RetroKoH (Initial S2 Port), Shobiz, Pokepunch, ProjectFM, MarkeyJester (bugfix)
+ Credit: Shobiz and Pokepunch (SCHG), ProjectFM (Hivebrain guide), MarkeyJester (bugfix), RetroKoH (Initial S2 Port)
  Date 2014-06-14
+
+ Name: S3K Object Manager -- (Needs further testing)
+ Credit: ProjectFM (Hivebrain guide), MoDule (SCHG S2 guide), RetroKoH (Initial S2 Port)
+ Date 2014-06-15
 
 # Visual Changes
  Name: Title Screen Tweaks

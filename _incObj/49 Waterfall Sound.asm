@@ -6,9 +6,10 @@ WaterSound:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	WSnd_Index(pc,d0.w),d1
-		jmp	WSnd_Index(pc,d1.w)
+		jmp		WSnd_Index(pc,d1.w)
 ; ===========================================================================
-WSnd_Index:	dc.w WSnd_Main-WSnd_Index
+WSnd_Index:
+		dc.w WSnd_Main-WSnd_Index
 		dc.w WSnd_PlaySnd-WSnd_Index
 ; ===========================================================================
 
@@ -24,5 +25,5 @@ WSnd_PlaySnd:	; Routine 2
 		jsr	(PlaySound_Special).l	; play waterfall sound
 
 WSnd_ChkDel:
-		out_of_range.w	DeleteObject
+		offscreen.w	DeleteObject	; ProjectFM S3K Objects Manager
 		rts	

@@ -35,8 +35,10 @@ Ring_Main:	; Routine 0 -- Stripped down init routine -- RetroKoH S2 Rings Manage
 
 Ring_Animate:	; Routine 2
 		move.b	(v_ani1_frame).w,obFrame(a0)		; set frame
-		out_of_range.s	Ring_Delete,objoff_32(a0)
-		bra.w	DisplaySprite						; Clownacy DisplaySprite Fix
+	; ProjectFM S3K Objects Manager
+		move.w	objoff_32(a0),d0
+		bra.w	RememberState
+	; S3K Objects Manager End
 ; ===========================================================================
 
 Ring_Collect:	; Routine 4
@@ -44,13 +46,9 @@ Ring_Collect:	; Routine 4
 		clr.b	obColType(a0)
 		move.w	#$80,obPriority(a0)		; RetroKoH S2 Priority Manager
 		bsr.w	CollectRing
-		lea		(v_objstate).w,a2
-		moveq	#0,d0
-		move.b	obRespawnNo(a0),d0
-		move.b	objoff_34(a0),d1
-		bset	d1,2(a2,d0.w)
+		; Code Removed -- ProjectFM S3K Objects Manager
 
-Ring_Sparkle:	; Routine 6
+Ring_Sparkle:	; fallthrough / Routine 6
 		lea		(Ani_Ring).l,a1
 		bsr.w	AnimateSprite
 		bra.w	DisplaySprite

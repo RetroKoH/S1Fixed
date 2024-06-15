@@ -26,11 +26,9 @@ Lamp_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.b	#8,obActWid(a0)
 		move.w	#$280,obPriority(a0)	; RetroKoH S2 Priority Manager
-		lea	(v_objstate).w,a2
-		moveq	#0,d0
-		move.b	obRespawnNo(a0),d0
-		bclr	#7,2(a2,d0.w)
-		btst	#0,2(a2,d0.w)
+		move.w	obRespawnNo(a0),d0		; get address in respawn table --  ProjectFM
+		movea.w	d0,a2					; load address into a2 -- ProjectFM
+		btst	#0,(a2)					;  ProjectFM
 		bne.s	.red
 		move.b	(v_lastlamp).w,d1
 		andi.b	#$7F,d1
@@ -40,7 +38,7 @@ Lamp_Main:	; Routine 0
 		blo.s	Lamp_Blue	; if yes, branch
 
 .red:
-		bset	#0,2(a2,d0.w)
+		bset	#0,(a2)				; ProjectFM
 		move.b	#4,obRoutine(a0) ; goto Lamp_Finish next
 		move.b	#3,obFrame(a0)	; use red lamppost frame
 		rts	
@@ -57,10 +55,9 @@ Lamp_Blue:	; Routine 2
 		andi.b	#$7F,d2
 		cmp.b	d2,d1		; is this a "new" lamppost?
 		blo.s	.chkhit		; if yes, branch
-		lea	(v_objstate).w,a2
-		moveq	#0,d0
-		move.b	obRespawnNo(a0),d0
-		bset	#0,2(a2,d0.w)
+		move.w	obRespawnNo(a0),d0	; get address in respawn table -- ProjectFM
+		movea.w	d0,a2				; load address into a2 -- ProjectFM
+		bset	#0,(a2)				; ProjectFM
 		move.b	#4,obRoutine(a0)
 		move.b	#3,obFrame(a0)
 		bra.w	.donothing
@@ -99,10 +96,11 @@ Lamp_Blue:	; Routine 2
 .fail:
 		move.b	#1,obFrame(a0)	; use "post only" frame
 		bsr.w	Lamp_StoreInfo
-		lea	(v_objstate).w,a2
-		moveq	#0,d0
-		move.b	obRespawnNo(a0),d0
-		bset	#0,2(a2,d0.w)
+	; ProjectFM
+		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		movea.w	d0,a2				; load address into a2
+		bset	#0,(a2)
+	; ProjectFM
 
 .donothing:
 		rts	

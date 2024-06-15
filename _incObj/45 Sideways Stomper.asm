@@ -103,8 +103,8 @@ loc_BA8E:	; Routine 4
 
 SStom_Display:	; Routine 6
 SStom_ChkDel:
-		out_of_range.w	DeleteObject,objoff_3A(a0)
-		bsr.w	DisplaySprite		; Clownacy DisplaySprite Fix
+		offscreen.w	DeleteObject,objoff_3A(a0)	; ProjectFM S3K Objects Manager
+		bsr.w	DisplaySprite					; Clownacy DisplaySprite Fix
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 

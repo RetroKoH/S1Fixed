@@ -6,8 +6,8 @@ Teleport:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Tele_Index(pc,d0.w),d1
-		jsr	Tele_Index(pc,d1.w)
-		out_of_range.s	.delete
+		jsr		Tele_Index(pc,d1.w)
+		offscreen.s	.delete
 		rts	
 
 .delete:

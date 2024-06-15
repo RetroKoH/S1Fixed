@@ -50,7 +50,7 @@ Bonus_Main:	; Routine 0
 		jsr	(AddPoints).l
 
 .chkdel:
-		out_of_range.s	.delete
+		offscreen.s	.delete
 		rts	
 
 .delete:

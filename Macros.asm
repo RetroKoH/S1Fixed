@@ -220,6 +220,31 @@ out_of_range:	macro exit,pos
 		endm
 
 ; ---------------------------------------------------------------------------
+; Modified version for the S3K Object Manager (Will retain the old one just in case)
+; ---------------------------------------------------------------------------
+offscreen:	macro exit,pos
+		if ("pos"<>"")
+		move.w	pos,d0				; get object position (specified as not obX)
+		else
+		move.w	obX(a0),d0			; get object position
+		endif
+		andi.w	#$FF80,d0			; round down to nearest $80
+		move.w	(v_screenposx).w,d1	; get screen position
+		subi.w	#128,d1
+		andi.w	#$FF80,d1
+		sub.w	d1,d0				; approx distance between object and screen
+		cmpi.w	#128+320+192,d0
+		bls.s	.notOff				; if not offscreen, exit here
+		
+		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		beq.ATTRIBUTE	exit		; if it's zero, don't remember object
+		movea.w	d0,a2				; load address into a2
+		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again
+		bra.ATTRIBUTE	exit		; and delete object
+	.notOff:
+		endm
+
+; ---------------------------------------------------------------------------
 ; bankswitch between SRAM and ROM
 ; (remember to enable SRAM in the header first!)
 ; ---------------------------------------------------------------------------

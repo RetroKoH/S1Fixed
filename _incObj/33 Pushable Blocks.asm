@@ -43,12 +43,13 @@ PushB_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_MZ_Block,2,1),obGfx(a0)	; MZ long block
 
 .chkgone:
-		lea	(v_objstate).w,a2
-		moveq	#0,d0
-		move.b	obRespawnNo(a0),d0
-		beq.s	loc_BF6E
-		bclr	#7,2(a2,d0.w)
-		bset	#0,2(a2,d0.w)
+	; ProjectFM S3K Objects Manager
+		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		beq.s	loc_BF6E			; if it's zero, don't remember object
+		movea.w	d0,a2				; load address into a2
+		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again
+		bset	#0,(a2)
+	; S3K Objects Manager End
 		bne.w	DeleteObject
 
 loc_BF6E:	; Routine 2
@@ -75,13 +76,14 @@ loc_BF6E:	; Routine 2
 		bset	#7,(v_obj31ypos).w
 		bset	#7,obSubtype(a0)
 
+; Investigate this object further...
 loc_BFC6:
-		out_of_range.s	loc_ppppp
+		offscreen.s	loc_ppppp	; ProjectFM S3K Object Manager
 		bra.w	DisplaySprite
 ; ===========================================================================
 
 loc_ppppp:
-		out_of_range.s	loc_C016,objoff_34(a0)
+		out_of_range.s	loc_C016,objoff_34(a0)	; We will actually retain the old macro here
 		move.w	objoff_34(a0),obX(a0)
 		move.w	objoff_36(a0),obY(a0)
 		move.b	#4,obRoutine(a0)
@@ -89,13 +91,12 @@ loc_ppppp:
 ; ===========================================================================
 
 loc_C016:
-		lea	(v_objstate).w,a2
-		moveq	#0,d0
-		move.b	obRespawnNo(a0),d0
-		beq.s	loc_C028
-		bclr	#0,2(a2,d0.w)
-
-loc_C028:
+	; ProjectFM S3K Object Manager
+		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		beq.w	DeleteObject		; if it's zero, don't remember object
+		movea.w	d0,a2				; load address into a2
+		bclr	#0,(a2)
+	; S3K Object Manager End
 		bra.w	DeleteObject
 ; ===========================================================================
 

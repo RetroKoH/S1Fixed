@@ -201,7 +201,7 @@ Geyser_Action:	; Routine 2
 		bsr.w	AnimateSprite
 
 Geyser_ChkDel:
-		out_of_range.w	DeleteObject
+		offscreen.w	DeleteObject	; ProjectFM S3k OBject Manager
 		bra.w	DisplaySprite		; FixBugs - Moved to prevent a delete-and-display bug.
 ; ===========================================================================
 Geyser_Types:

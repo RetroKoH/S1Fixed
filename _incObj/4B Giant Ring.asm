@@ -38,7 +38,7 @@ GRing_Okay:
 GRing_Animate:	; Routine 2
 		move.b	(v_ani1_frame).w,obFrame(a0)
 		bsr.w	GRing_LoadGfx					; RetroKoH VRAM Overhaul
-		out_of_range.w	DeleteObject
+		offscreen.w	DeleteObject				; ProjectFM S3K Objects Manager
 		bra.w	DisplaySprite
 ; ===========================================================================
 

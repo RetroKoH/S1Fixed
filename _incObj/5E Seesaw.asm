@@ -12,17 +12,21 @@ Seesaw:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	See_Index(pc,d0.w),d1
-		jsr	See_Index(pc,d1.w)
+		jsr		See_Index(pc,d1.w)
 		move.w	see_origX(a0),d0
 		andi.w	#$FF80,d0
 		move.w	(v_screenposx).w,d1
 		subi.w	#$80,d1
 		andi.w	#$FF80,d1
 		sub.w	d1,d0
-		bmi.w	DeleteObject
+		; Deleted first call to DeleteObject
 		cmpi.w	#$280,d0
-		bhi.w	DeleteObject
-		bra.w	DisplaySprite
+		bls.w	DisplaySprite
+		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		beq.w	DeleteObject		; if it's zero, don't remember object
+		movea.w	d0,a2				; load address into a2
+		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again
+		bra.w	DeleteObject		; and delete object	
 ; ===========================================================================
 See_Index:	dc.w See_Main-See_Index
 		dc.w See_Slope-See_Index
@@ -30,7 +34,6 @@ See_Index:	dc.w See_Main-See_Index
 		dc.w See_Spikeball-See_Index
 		dc.w See_MoveSpike-See_Index
 		dc.w See_SpikeFall-See_Index
-
 ; ===========================================================================
 
 See_Main:	; Routine 0

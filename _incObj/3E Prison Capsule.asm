@@ -66,7 +66,7 @@ Pri_BodyMain:	; Routine 2
 		move.w	obX(a0),d4
 	; Clownacy DisplaySprite Fix (Alt method by RetroKoH)
 		jsr		(SolidObject).l
-		out_of_range.s	.delete
+		offscreen.s	.delete
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 
@@ -80,7 +80,7 @@ Pri_BodyMain:	; Routine 2
 .open:
 		move.b	#2,obFrame(a0)		; use frame number 2 (destroyed	prison)
 	; Clownacy DisplaySprite Fix (Alt method by RetroKoH)
-		out_of_range.s	.delete
+		offscreen.s	.delete
 		jmp		(DisplaySprite).l
 
 .delete:
@@ -112,7 +112,7 @@ Pri_Switched:	; Routine 4
 
 .open2:
 	; Clownacy DisplaySprite Fix (Alt method by RetroKoH)
-		out_of_range.s	.delete2
+		offscreen.s	.delete2
 		jmp		(DisplaySprite).l
 
 .delete2:
@@ -142,7 +142,7 @@ Pri_Explosion:	; Routine 6, 8, $A
 		subq.w	#1,obTimeFrame(a0)
 		beq.s	.makeanimal
 	; Clownacy DisplaySprite Fix (Alt method by RetroKoH)
-		out_of_range.s	.delete2
+		offscreen.s	.delete2
 		jmp		(DisplaySprite).l
 
 .delete2:
@@ -173,7 +173,7 @@ Pri_Explosion:	; Routine 6, 8, $A
 
 .fail:
 	; Clownacy DisplaySprite Fix (Alt method by RetroKoH)
-		out_of_range.s	.delete2
+		offscreen.s	.delete2
 		jmp		(DisplaySprite).l	
 ; ===========================================================================
 

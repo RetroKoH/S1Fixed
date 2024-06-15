@@ -77,12 +77,10 @@ loc_BDDE:
 		bchg	#1,obFrame(a0)
 
 But_Display:
-		out_of_range.w	But_Delete
+		offscreen.w	DeleteObject	; ProjectFM S3K Objects Manager
 		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
-But_Delete:
-		bra.w	DeleteObject
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 

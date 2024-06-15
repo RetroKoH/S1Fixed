@@ -36,8 +36,13 @@ v_ringconsumelist:		ds.w	$3F				; the remaining part of the ring consumption tab
 v_ringsroutine:			ds.b	1				; $9A8A (Rings_manager_routine)
 v_ringend:
 ; S3K Rings Manager End
-						
-						ds.b	$D75			; unused -- $9A8B
+
+						ds.b	1	; unused
+
+v_objstate:				ds.w	$C0				; object state list (Moved and Expanded -- ProjectFM/MoDule S3K Objects Manager)
+v_objstate_end:
+
+						ds.b	$BF4			; unused -- $9C0C
 
 v_bgscroll_buffer:		ds.b	$200			; $A800 - background scroll buffer
 v_ngfx_buffer:			ds.b	$200			; Nemesis graphics decompression buffer
@@ -292,10 +297,10 @@ v_limittop2:		ds.w	1		; top level boundary
 v_limitbtm2:		ds.w	1		; bottom level boundary
 v_unused11:			ds.w	1		; unused
 v_limitleft3:		ds.w	1		; left level boundary, at the end of an act
-v_screenposx_coarse:
-					ds.w	1		; RetroKoH S2 Object Manager
+v_screenposx_last:	ds.w	1		; ProjectFM S3K Object Manager
+v_screenposy_last:	ds.w	1		; ProjectFM S3K Object Manager
 
-			ds.b	4		; unused
+			ds.b	2		; unused
 v_scrshiftx:		ds.w	1		; x-screen shift (new - last) * $100
 v_scrshifty:		ds.w	1		; y-screen shift (new - last) * $100
 v_lookshift:		ds.w	1		; screen shift when Sonic looks up/down
@@ -405,8 +410,6 @@ v_pal_water_dup = v_spritetablebuffer_end-$80	; duplicate underwater palette, us
 v_pal_water:		ds.b	$80		; main underwater palette
 v_pal_dry:		ds.b	$80		; main palette
 v_pal_dry_dup:		ds.b	$80		; duplicate palette, used for transitions
-v_objstate:		ds.b	$C0		; object state list
-v_objstate_end:
 			ds.b	$140		; stack
 v_systemstack:
 v_crossresetram:				; RAM beyond this point is only cleared on a cold-boot

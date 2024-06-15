@@ -84,7 +84,7 @@ MBlock_StandOn:	; Routine 4
 		jsr	(MvSonicOnPtfm2).l
 
 MBlock_ChkDel:
-		out_of_range.w	DeleteObject,mblock_origX(a0)
+		offscreen.w	DeleteObject,mblock_origX(a0)	; ProjectFM S3K Object Manager
 		bra.w	DisplaySprite
 ; ===========================================================================
 

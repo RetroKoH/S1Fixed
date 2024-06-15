@@ -36,7 +36,7 @@ Saw_Action:	; Routine 2
 		add.w	d0,d0
 		move.w	.index(pc,d0.w),d1
 		jsr		.index(pc,d1.w)
-		out_of_range.s	.delete,saw_origX(a0)
+		offscreen.s	.delete,saw_origX(a0)	; PFM S3K OBJ
 		jmp		(DisplaySprite).l
 
 .delete:

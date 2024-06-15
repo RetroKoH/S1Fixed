@@ -70,7 +70,7 @@ LBlk_Action:	; Routine 2
 		bsr.w	loc_12180
 
 .chkdel:
-		out_of_range.w	DeleteObject,lblk_origX(a0)
+		offscreen.w	DeleteObject,lblk_origX(a0)	; PFM S3K OBJ
 		bra.w	DisplaySprite
 ; ===========================================================================
 .index:

@@ -61,8 +61,8 @@ LBall_Action:	; Routine 2
 		bsr.w	AnimateSprite
 
 LBall_ChkDel:
-		out_of_range.w	DeleteObject
-		bra.w	DisplaySprite	; FixBugs: Clownacy DisplaySprite Fix
+		offscreen.w	DeleteObject	; ProjectFM S3K Object Manager
+		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix
 ; ===========================================================================
 LBall_TypeIndex:
 		dc.w LBall_Type00-LBall_TypeIndex, LBall_Type00-LBall_TypeIndex

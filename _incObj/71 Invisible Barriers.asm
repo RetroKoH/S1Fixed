@@ -42,9 +42,9 @@ Invis_Solid:	; Routine 2
 		bsr.w	SolidObject71
 
 .chkdel:
-		out_of_range.s	.delete
-		tst.w	(v_debuguse).w	; are you using	debug mode?
-		beq.s	.nodisplay	; if not, branch
+		offscreen.s	.delete			; ProjectFM S3K Object Manager
+		tst.w	(v_debuguse).w		; are you using	debug mode?
+		beq.s	.nodisplay			; if not, branch
 		jmp		(DisplaySprite).l	; if yes, display the object
 
 .nodisplay:

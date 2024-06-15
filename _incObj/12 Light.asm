@@ -31,5 +31,5 @@ Light_Animate:	; Routine 2
 		clr.b	obFrame(a0)
 
 .chkdel:
-		out_of_range.w	DeleteObject
+		offscreen.w	DeleteObject	; ProjectFM S3K Object Manager
 		bra.w	DisplaySprite

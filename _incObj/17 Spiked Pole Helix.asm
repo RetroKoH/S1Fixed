@@ -100,7 +100,7 @@ locret_7DA6:
 ; ===========================================================================
 
 Hel_ChkDel:
-		out_of_range.w	Hel_DelAll
+		offscreen.s	Hel_DelAll		; ProjectFM S3K Objects Manager
 		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix
 ; ===========================================================================
 

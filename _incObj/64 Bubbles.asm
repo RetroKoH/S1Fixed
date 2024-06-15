@@ -209,7 +209,7 @@ Bub_BblMaker:	; Routine $A
 		jsr	(AnimateSprite).l
 
 .chkdel:
-		out_of_range.w	DeleteObject
+		offscreen.w	DeleteObject		; PFM S3K OBJ
 		move.w	(v_waterpos1).w,d0
 		cmp.w	obY(a0),d0
 		blo.w	DisplaySprite

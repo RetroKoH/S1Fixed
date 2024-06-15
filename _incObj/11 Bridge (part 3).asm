@@ -105,7 +105,7 @@ Obj11_BendData2:binclude	"misc/ghzbend2.bin"
 ; ===========================================================================
 
 Bri_ChkDel:
-		out_of_range.w	.deletebridge
+		offscreen.s	.deletebridge		; ProjectFM S3K Objects Manager
 		bra.w	DisplaySprite			; Clownacy DisplaySprite Fix	
 ; ===========================================================================
 

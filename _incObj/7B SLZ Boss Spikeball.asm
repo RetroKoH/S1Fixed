@@ -13,9 +13,16 @@ BossSpikeball:
 		subi.w	#$80,d1
 		andi.w	#$FF80,d1
 		sub.w	d1,d0
-		bmi.w	BossStarLight_Delete
+		; Removed first call to _Delete
 		cmpi.w	#$280,d0
-		bhi.w	BossStarLight_Delete
+		bls.s	BossStarLight_NoDel
+		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		beq.w	BossStarLight_Delete ; if it's zero, don't remember object
+		movea.w	d0,a2				; load address into a2
+		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again
+		jmp		DeleteObject		; and delete object
+
+BossStarLight_NoDel:
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 BossSpikeball_Index:

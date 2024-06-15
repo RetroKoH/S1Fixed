@@ -6,8 +6,8 @@ Springs:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Spring_Index(pc,d0.w),d1
-		jsr	Spring_Index(pc,d1.w)
-		out_of_range.w	DeleteObject
+		jsr		Spring_Index(pc,d1.w)
+		offscreen.w	DeleteObject
 		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix	
 ; ===========================================================================
 Spring_Index:	dc.w Spring_Main-Spring_Index
@@ -23,7 +23,8 @@ Spring_Index:	dc.w Spring_Main-Spring_Index
 
 spring_pow = objoff_30			; power of current spring
 
-Spring_Powers:	dc.w -$1000		; power	of red spring
+Spring_Powers:
+		dc.w -$1000		; power	of red spring
 		dc.w -$A00		; power	of yellow spring
 ; ===========================================================================
 

@@ -287,8 +287,8 @@ Plat_Move:
 ; ===========================================================================
 
 Plat_ChkDel:
-		out_of_range.s	Plat_Delete,objoff_32(a0)
-		bra.w	DisplaySprite			; Clownacy DisplaySprite Fix
+		offscreen.s	Plat_Delete,objoff_32(a0)	; ProjectFM S3K Objects Manager
+		bra.w	DisplaySprite					; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 Plat_Delete:	; Routine 6

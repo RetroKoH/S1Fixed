@@ -8,7 +8,7 @@
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-FindFreeObj:
+FindFreeObj: ; SingleObjLoad
 		lea	(v_lvlobjspace).w,a1 ; start address for object RAM
 		move.w	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d0
 
@@ -34,7 +34,7 @@ FFree_Found:
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-FindNextFreeObj:
+FindNextFreeObj: ;SingleObjLoad2
 		movea.l	a0,a1
 		move.w	#v_lvlobjend&$FFFF,d0
 		sub.w	a0,d0

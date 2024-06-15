@@ -79,8 +79,8 @@ loc_7BCE:
 ; ===========================================================================
 
 Swing_ChkDel:
-		out_of_range.w	Swing_DelAll,objoff_3A(a0)
-		bra.w	DisplaySprite			; Clownacy DisplaySprite Fix
+		offscreen.s	Swing_DelAll,objoff_3A(a0)	; ProjectFM S3K Objects Manager
+		bra.w	DisplaySprite					; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 Swing_DelAll:

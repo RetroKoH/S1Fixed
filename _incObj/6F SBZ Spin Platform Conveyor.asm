@@ -37,7 +37,7 @@ SpinC_Index:
 SpinC_Main:	; Routine 0
 	; Clownacy DisplaySprite Fix (Alt Method by RetroKoH)
 		bsr.s	SpinC_Rout1
-		out_of_range.s	loc_1629A,objoff_30(a0)
+		offscreen.s	loc_1629A,objoff_30(a0)	; ProjectFM
 		jmp		(DisplaySprite).l
 
 SpinC_Rout1:

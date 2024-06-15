@@ -130,8 +130,7 @@ obScreenY:		equ $A			; y-axis position for screen-fixed items (2 bytes)
 obY:			equ $C			; y-axis position (2-4 bytes)
 obVelX:			equ $10			; x-axis velocity (2 bytes)
 obVelY:			equ $12			; y-axis velocity (2 bytes)
-obActWid:		equ $14			; action width (formerly obInertia)
-							; $15 is now free
+obRespawnNo:	equ $14			; respawn list index number (now 2 bytes; Swapped w/ obActWid)
 obHeight:		equ $16			; height/2
 obWidth:		equ $17			; width/2
 obPriority:		equ $18			; sprite stack priority (2 bytes)
@@ -145,7 +144,7 @@ obInertia:		equ $20			; potential speed (2 bytes) -- Exclusive to players
 obColType:		equ $20			; collision response type
 obColProp:		equ $21			; collision extra property
 obStatus:		equ $22			; orientation or mode
-obRespawnNo:	equ $23			; respawn list index number
+obActWid:		equ $23			; action width (formerly obInertia); swapped with obRespawnNo 
 obRoutine:		equ $24			; routine number
 ob2ndRout:		equ $25			; secondary routine number
 obAngle:		equ $26			; angle

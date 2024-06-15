@@ -6,8 +6,8 @@ LabyrinthConvey:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	LCon_Index(pc,d0.w),d1
-		jsr	LCon_Index(pc,d1.w)
-		out_of_range.s	loc_1236A,objoff_30(a0)
+		jsr		LCon_Index(pc,d1.w)
+		offscreen.s	loc_1236A,objoff_30(a0)	; PFM S3K OBJ
 
 LCon_Display:
 		bra.w	DisplaySprite

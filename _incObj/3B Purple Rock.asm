@@ -27,5 +27,5 @@ Rock_Solid:	; Routine 2
 		move.w	#$10,d3
 		move.w	obX(a0),d4
 		bsr.w	SolidObject
-		out_of_range.w	DeleteObject
+		offscreen.w	DeleteObject	; ProjectFM S3K Object Manager
 		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix

@@ -57,7 +57,7 @@ Gird_Action:	; Routine 2
 		bsr.w	SolidObject
 
 .chkdel:
-		out_of_range.s	.delete,gird_origX(a0)
+		offscreen.s	.delete,gird_origX(a0)	; ProjectFM
 		jmp	(DisplaySprite).l
 
 .delete:

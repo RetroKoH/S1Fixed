@@ -111,11 +111,10 @@ Orb_ChkDel:
 		bra.w	DisplaySprite
 
 .chkgone:
-		lea	(v_objstate).w,a2
-		moveq	#0,d0
-		move.b	obRespawnNo(a0),d0
-		beq.s	loc_11E34
-		bclr	#7,2(a2,d0.w)
+		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		beq.s	loc_11E34			; if it's zero, don't remember object
+		movea.w	d0,a2				; load address into a2
+		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again
 
 loc_11E34:
 		lea	objoff_37(a0),a2

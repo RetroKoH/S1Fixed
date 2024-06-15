@@ -230,8 +230,8 @@ LGrass_ChkDel:
 		bpl.s	LGrass_DelFlames
 
 loc_B0C6:
-		out_of_range.w	DeleteObject,lgrass_origX(a0)
-		bra.w	DisplaySprite			; Clownacy DisplaySprite Fix
+		offscreen.w	DeleteObject,lgrass_origX(a0)	; ProjectFM S3K Objects Manager
+		bra.w	DisplaySprite						; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 LGrass_DelFlames:

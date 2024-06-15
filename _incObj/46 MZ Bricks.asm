@@ -43,7 +43,7 @@ Brick_Action:	; Routine 2
 		bsr.w	SolidObject
 
 .chkdel:
-		out_of_range.w	DeleteObject
+		offscreen.w	DeleteObject	; ProjectFM S3K Object Manager
 		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix
 ; ===========================================================================
 Brick_TypeIndex:dc.w Brick_Type00-Brick_TypeIndex
