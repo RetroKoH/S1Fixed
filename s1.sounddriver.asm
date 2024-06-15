@@ -424,6 +424,10 @@ NoteTimeoutUpdate:
 
 ; sub_71DC6:
 DoModulation:
+	; ValleyBell Sound Driver Fixes: Fix modulation during rests
+		btst	#1,(a5)				; Is note playing?
+		bne.s	.locret				; no - return
+	; Sound Driver Fixes End
 		addq.w	#4,sp				; Do not return to caller (but see below)
 		btst	#3,TrackPlaybackControl(a5)	; Is modulation active?
 		beq.s	.locret				; Return if not
@@ -749,14 +753,16 @@ Sound_PlayBGM:
 		moveq	#0,d1
 		movea.l	a4,a3
 		addq.w	#6,a4			; Point past header
+	; ValleyBell Sound Driver Fixes: Fix for 0 FM/DAC channels (Lines moved up slightly)
+		move.b	4(a3),d4		; load tempo dividing timing
+		moveq	#TrackSz,d6		; load F8 gosub coord. flag pointer
+		move.b	#1,d5			; Note duration for first "note"
+	; Sound Driver Fixes End
 		moveq	#0,d7
 		move.b	2(a3),d7		; load number of FM+DAC tracks
 		beq.w	.bgm_fmdone		; branch if zero
 		subq.b	#1,d7
 		move.b	#$C0,d1			; Default AMS+FMS+Panning
-		move.b	4(a3),d4		; load tempo dividing timing
-		moveq	#TrackSz,d6
-		move.b	#1,d5			; Note duration for first "note"
 		lea	v_music_fmdac_tracks(a6),a1
 		lea	FMDACInitBytes(pc),a2
 ; loc_72098:
@@ -1553,11 +1559,7 @@ DoFadeIn:
 		bpl.s	.nextpsg		; Branch if not
 		subq.b	#1,TrackVolume(a5)	; Reduce volume attenuation
 		move.b	TrackVolume(a5),d6	; Get value
-		cmpi.b	#$10,d6			; Is it is < $10?
-		blo.s	.sendpsgvol		; Branch if yes
-		moveq	#$F,d6			; Limit to $F (maximum attenuation)
-; loc_726C8:
-.sendpsgvol:
+		; Removed unnecessary code -- ValleyBell Sound Driver Fixes
 		jsr	SetPSGVolume(pc)
 ; loc_726CC:
 .nextpsg:
@@ -1851,9 +1853,7 @@ PSGDoVolFX:	; This can actually be made a bit more efficient, see the comments f
 ; loc_72960:
 .gotflutter:
 		add.w	d0,d6		; Add volume envelope value to volume
-		cmpi.b	#$10,d6		; Is volume $10 or higher?
-		blo.s	SetPSGVolume	; Branch if not
-		moveq	#$F,d6		; Limit to silence and fall through
+		; Removed unnecessary code used below -- ValleyBell Sound Driver Fixes
 ; End of function PSGUpdateVolFX
 
 
@@ -1869,6 +1869,12 @@ SetPSGVolume:
 		bne.s	PSGCheckNoteTimeout ; Branch if yes
 ; loc_7297C:
 PSGSendVolume:
+	; ValleyBell Sound Driver Fixes: Fix PSG fading bug (1-up bug, part 1)
+		cmpi.b	#$10,d6		; Is volume $10 or higher?
+		blo.s	.psgsendvol	; Branch if not
+		moveq	#$F,d6		; Limit to silence and fall through
+.psgsendvol:
+	; Sound Driver Fixes End
 		or.b	TrackVoiceControl(a5),d6 ; Add in track selector bits
 		addi.b	#$10,d6			; Mark it as a volume command
 		move.b	d6,(psg_input).l
@@ -2100,6 +2106,11 @@ cfFadeInToPrevious:
 		bset	#1,TrackPlaybackControl(a5)	; Set 'track at rest' bit
 		jsr	PSGNoteOff(pc)
 		add.b	d6,TrackVolume(a5)	; Apply current volume fade-in
+		; ValleyBell Sound Driver Fixes: Fix PSG noise bug (1-up bug, part 2)
+		cmpi.b	#$E0,1(a5)			; is this the Noise Channel?
+		bne.s	.nextpsg			; no - skip
+		move.b	$1F(a5),($C00011).l	; restore Noise setting
+		; Sound Driver Fixes End
 ; loc_72B78:
 .nextpsg:
 		adda.w	#TrackSz,a5
@@ -2267,10 +2278,10 @@ FMSlotMask:	dc.b 8,	8, 8, 8, $A, $E, $E, $F
 ; sub_72CB4:
 SendVoiceTL:
 		btst	#2,TrackPlaybackControl(a5)	; Is SFX overriding?
-		bne.s	.locret				; Return if so
+		bne.s	.locret					; Return if so
 		moveq	#0,d0
 		move.b	TrackVoiceIndex(a5),d0	; Current voice
-		movea.l	v_voice_ptr(a6),a1	; Voice pointer
+		movea.l	v_voice_ptr(a5),a1		; Voice pointer (Changed from a6) Vladikcomper Sound Driver Fix
 		tst.b	f_voice_selector(a6)
 		beq.s	.gotvoiceptr
 	if FixBugs

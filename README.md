@@ -348,4 +348,8 @@
  Credit: Mercury
  Function: Makes the proper sound effect play when Sonic is harmed by Spikes/LZ Harpoons.
  Date: 2024-06-08
- 
+
+ Name: Sound Driver Fixes
+ Credit: ValleyBell/Vladikcomper/Clownacy
+ Function: Small fixes to the Sound Driver. More to come later.
+ Date: 2024-06-15
