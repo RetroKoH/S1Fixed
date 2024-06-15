@@ -131,7 +131,8 @@ RLoss_Count:	; Routine 0
 .belowmax:
 		subq.w	#1,d5					; decrease the counter the first time, as we are creating the first ring now.
 
-		; Create the first instance, then loop create the others afterward.
+	; Spirituinsanum Mass Object Load Optimization
+	; Create the first instance, then loop create the others afterward.
 		move.b	#id_RingLoss,obID(a1) 	; load bouncing ring object
 		addq.b	#2,obRoutine(a1)
 		move.b	#8,obHeight(a1)
@@ -150,11 +151,11 @@ RLoss_Count:	; Routine 0
 		bmi.s	.resetcounter		; if only one ring is needed, branch and skip EVERYTHING below altogether
 		; Here we begin what's replacing SingleObjLoad, in order to avoid resetting its d0 every time an object is created.
 		lea		(v_lvlobjspace).w,a1
-		move.w	#$5F,d0
+		move.w	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d0
 
 .loop:
 		; REMOVE FindFreeObj. It's the routine that causes such slowdown
-		tst.b	(a1)
+		tst.b	obID(a1)		; is object RAM	slot empty?
 		beq.s	.makerings		; Let's correct the branches. Here we can also skip the bne that was originally after bsr.w FindFreeObj because we already know there's a free object slot in memory.
 		lea		object_size(a1),a1
 		dbf		d0,.loop		; Branch correction again.
@@ -178,7 +179,8 @@ RLoss_Count:	; Routine 0
 		dbf		d5,.loop			; repeat for number of rings (max 31)
 
 .resetcounter:
-		clr.w	(v_rings).w			; reset number of rings to zero
+	; Mass Object Load Optimization End
+		clr.w	(v_rings).w				; reset number of rings to zero
 		move.b	#$80,(f_ringcount).w	; update ring counter
 		clr.b	(v_lifecount).w
 		; RHS Ring Timers Fix

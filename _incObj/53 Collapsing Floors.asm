@@ -6,9 +6,10 @@ CollapseFloor:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	CFlo_Index(pc,d0.w),d1
-		jmp	CFlo_Index(pc,d1.w)
+		jmp		CFlo_Index(pc,d1.w)
 ; ===========================================================================
-CFlo_Index:	dc.w CFlo_Main-CFlo_Index, CFlo_Touch-CFlo_Index
+CFlo_Index:
+		dc.w CFlo_Main-CFlo_Index, CFlo_Touch-CFlo_Index
 		dc.w CFlo_Collapse-CFlo_Index, CFlo_Display-CFlo_Index
 		dc.w CFlo_Delete-CFlo_Index, CFlo_WalkOff-CFlo_Index
 
@@ -92,7 +93,7 @@ CFlo_Display:	; Routine 6
 loc_8402:
 		subq.b	#1,cflo_timedelay(a0)
 		bsr.w	CFlo_WalkOff
-		lea	(v_player).w,a1
+		lea		(v_player).w,a1
 		btst	#3,obStatus(a1)
 		beq.s	loc_842E
 		tst.b	cflo_timedelay(a0)

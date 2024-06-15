@@ -6,9 +6,10 @@ CollapseLedge:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Ledge_Index(pc,d0.w),d1
-		jmp	Ledge_Index(pc,d1.w)
+		jmp		Ledge_Index(pc,d1.w)
 ; ===========================================================================
-Ledge_Index:	dc.w Ledge_Main-Ledge_Index, Ledge_Touch-Ledge_Index
+Ledge_Index:
+		dc.w Ledge_Main-Ledge_Index, Ledge_Touch-Ledge_Index
 		dc.w Ledge_Collapse-Ledge_Index, Ledge_Display-Ledge_Index
 		dc.w Ledge_Delete-Ledge_Index, Ledge_WalkOff-Ledge_Index
 
@@ -37,7 +38,7 @@ Ledge_Touch:	; Routine 2
 
 .slope:
 		move.w	#$30,d1
-		lea	(Ledge_SlopeData).l,a2
+		lea		(Ledge_SlopeData).l,a2
 		bsr.w	SlopeObject
 		bra.w	RememberState
 ; ===========================================================================
@@ -55,7 +56,7 @@ Ledge_WalkOff:	; Routine $A
 		move.w	#$30,d1
 		bsr.w	ExitPlatform
 		move.w	#$30,d1
-		lea	(Ledge_SlopeData).l,a2
+		lea		(Ledge_SlopeData).l,a2
 		move.w	obX(a0),d2
 		bsr.w	SlopeObject2
 		bra.w	RememberState
@@ -75,7 +76,7 @@ Ledge_Display:	; Routine 6
 loc_82D0:
 		subq.b	#1,ledge_timedelay(a0)
 		bsr.w	Ledge_WalkOff
-		lea	(v_player).w,a1
+		lea		(v_player).w,a1
 		btst	#3,obStatus(a1)
 		beq.s	loc_82FC
 		tst.b	ledge_timedelay(a0)

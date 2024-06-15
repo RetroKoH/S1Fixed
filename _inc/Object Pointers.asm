@@ -1,39 +1,39 @@
 ; ---------------------------------------------------------------------------
 ; Object pointers
 ; ---------------------------------------------------------------------------
-ptr_SonicPlayer:	dc.l SonicPlayer	; $01
-ptr_Obj02:		dc.l NullObject
-ptr_PathSwapper:	dc.l PathSwapper
-ptr_Obj04:		dc.l NullObject
-ptr_Obj05:		dc.l NullObject
-ptr_Obj06:		dc.l NullObject
-ptr_Obj07:		dc.l NullObject
-ptr_Splash:		dc.l Splash		; $08
-ptr_SonicSpecial:	dc.l SonicSpecial
-ptr_DrownCount:		dc.l DrownCount
-ptr_Pole:		dc.l Pole
-ptr_FlapDoor:		dc.l FlapDoor
-ptr_Signpost:		dc.l Signpost
-ptr_TitleSonic:		dc.l TitleSonic
-ptr_PSBTM:		dc.l PSBTM
-ptr_Obj10:		dc.l Obj10		; $10
-ptr_Bridge:		dc.l Bridge
-ptr_SpinningLight:	dc.l SpinningLight
-ptr_LavaMaker:		dc.l LavaMaker
-ptr_LavaBall:		dc.l LavaBall
+ptr_SonicPlayer:		dc.l SonicPlayer	; $01
+ptr_Obj02:				dc.l NullObject
+ptr_PathSwapper:		dc.l PathSwapper
+ptr_Obj04:				dc.l NullObject
+ptr_Obj05:				dc.l NullObject
+ptr_Obj06:				dc.l NullObject
+ptr_Obj07:				dc.l NullObject
+ptr_Splash:				dc.l Splash		; $08
+ptr_SonicSpecial:		dc.l SonicSpecial
+ptr_DrownCount:			dc.l DrownCount
+ptr_Pole:				dc.l Pole
+ptr_FlapDoor:			dc.l FlapDoor
+ptr_Signpost:			dc.l Signpost
+ptr_TitleSonic:			dc.l TitleSonic
+ptr_PSBTM:				dc.l PSBTM
+ptr_Obj10:				dc.l Obj10		; $10
+ptr_Bridge:				dc.l Bridge
+ptr_SpinningLight:		dc.l SpinningLight
+ptr_LavaMaker:			dc.l LavaMaker
+ptr_LavaBall:			dc.l LavaBall
 ptr_SwingingPlatform:	dc.l SwingingPlatform
-ptr_Harpoon:		dc.l Harpoon
-ptr_Helix:		dc.l Helix
-ptr_BasicPlatform:	dc.l BasicPlatform	; $18
-ptr_Obj19:		dc.l Obj19
-ptr_CollapseLedge:	dc.l CollapseLedge
-ptr_WaterSurface:	dc.l WaterSurface
-ptr_Scenery:		dc.l Scenery
-ptr_MagicSwitch:	dc.l MagicSwitch
-ptr_BallHog:		dc.l BallHog
-ptr_Crabmeat:		dc.l Crabmeat
-ptr_Cannonball:		dc.l Cannonball		; $20
-ptr_HUD:		dc.l HUD
+ptr_Harpoon:			dc.l Harpoon
+ptr_Helix:				dc.l Helix
+ptr_BasicPlatform:		dc.l BasicPlatform	; $18
+ptr_Obj19:				dc.l Obj19
+ptr_CollapseLedge:		dc.l CollapseLedge
+ptr_WaterSurface:		dc.l WaterSurface
+ptr_Scenery:			dc.l Scenery
+ptr_MagicSwitch:		dc.l MagicSwitch
+ptr_BallHog:			dc.l BallHog
+ptr_Crabmeat:			dc.l Crabmeat
+ptr_Cannonball:			dc.l Cannonball		; $20
+ptr_HUD:				dc.l HUD
 ptr_BuzzBomber:		dc.l BuzzBomber
 ptr_Missile:		dc.l Missile
 ptr_MissileDissolve:	dc.l MissileDissolve
@@ -146,35 +146,35 @@ NullObject:
 		;jmp	(DeleteObject).l	; It would be safer to have this instruction here, but instead it just falls through to ObjectFall
 
 id_SonicPlayer:		equ ((ptr_SonicPlayer-Obj_Index)/4)+1		; $01
-id_Obj02:		equ ((ptr_Obj02-Obj_Index)/4)+1
+id_Obj02:			equ ((ptr_Obj02-Obj_Index)/4)+1
 id_PathSwapper:		equ ((ptr_PathSwapper-Obj_Index)/4)+1
-id_Obj04:		equ ((ptr_Obj04-Obj_Index)/4)+1
-id_Obj05:		equ ((ptr_Obj05-Obj_Index)/4)+1
-id_Obj06:		equ ((ptr_Obj06-Obj_Index)/4)+1
-id_Obj07:		equ ((ptr_Obj07-Obj_Index)/4)+1
-id_Splash:		equ ((ptr_Splash-Obj_Index)/4)+1		; $08
+id_Obj04:			equ ((ptr_Obj04-Obj_Index)/4)+1
+id_Obj05:			equ ((ptr_Obj05-Obj_Index)/4)+1
+id_Obj06:			equ ((ptr_Obj06-Obj_Index)/4)+1
+id_Obj07:			equ ((ptr_Obj07-Obj_Index)/4)+1
+id_Splash:			equ ((ptr_Splash-Obj_Index)/4)+1		; $08
 id_SonicSpecial:	equ ((ptr_SonicSpecial-Obj_Index)/4)+1
 id_DrownCount:		equ ((ptr_DrownCount-Obj_Index)/4)+1
-id_Pole:		equ ((ptr_Pole-Obj_Index)/4)+1
+id_Pole:			equ ((ptr_Pole-Obj_Index)/4)+1
 id_FlapDoor:		equ ((ptr_FlapDoor-Obj_Index)/4)+1
 id_Signpost:		equ ((ptr_Signpost-Obj_Index)/4)+1
 id_TitleSonic:		equ ((ptr_TitleSonic-Obj_Index)/4)+1
-id_PSBTM:		equ ((ptr_PSBTM-Obj_Index)/4)+1
-id_Obj10:		equ ((ptr_Obj10-Obj_Index)/4)+1			; $10
-id_Bridge:		equ ((ptr_Bridge-Obj_Index)/4)+1
+id_PSBTM:			equ ((ptr_PSBTM-Obj_Index)/4)+1
+id_Obj10:			equ ((ptr_Obj10-Obj_Index)/4)+1			; $10
+id_Bridge:			equ ((ptr_Bridge-Obj_Index)/4)+1
 id_SpinningLight:	equ ((ptr_SpinningLight-Obj_Index)/4)+1
 id_LavaMaker:		equ ((ptr_LavaMaker-Obj_Index)/4)+1
 id_LavaBall:		equ ((ptr_LavaBall-Obj_Index)/4)+1
 id_SwingingPlatform:	equ ((ptr_SwingingPlatform-Obj_Index)/4)+1
-id_Harpoon:		equ ((ptr_Harpoon-Obj_Index)/4)+1
-id_Helix:		equ ((ptr_Helix-Obj_Index)/4)+1
-id_BasicPlatform:	equ ((ptr_BasicPlatform-Obj_Index)/4)+1		; $18
-id_Obj19:		equ ((ptr_Obj19-Obj_Index)/4)+1
-id_CollapseLedge:	equ ((ptr_CollapseLedge-Obj_Index)/4)+1
-id_WaterSurface:	equ ((ptr_WaterSurface-Obj_Index)/4)+1
-id_Scenery:		equ ((ptr_Scenery-Obj_Index)/4)+1
-id_MagicSwitch:		equ ((ptr_MagicSwitch-Obj_Index)/4)+1
-id_BallHog:		equ ((ptr_BallHog-Obj_Index)/4)+1
+id_Harpoon:				equ ((ptr_Harpoon-Obj_Index)/4)+1
+id_Helix:				equ ((ptr_Helix-Obj_Index)/4)+1
+id_BasicPlatform:		equ ((ptr_BasicPlatform-Obj_Index)/4)+1		; $18
+id_Obj19:				equ ((ptr_Obj19-Obj_Index)/4)+1
+id_CollapseLedge:		equ ((ptr_CollapseLedge-Obj_Index)/4)+1
+id_WaterSurface:		equ ((ptr_WaterSurface-Obj_Index)/4)+1
+id_Scenery:				equ ((ptr_Scenery-Obj_Index)/4)+1
+id_MagicSwitch:			equ ((ptr_MagicSwitch-Obj_Index)/4)+1
+id_BallHog:			equ ((ptr_BallHog-Obj_Index)/4)+1
 id_Crabmeat:		equ ((ptr_Crabmeat-Obj_Index)/4)+1
 id_Cannonball:		equ ((ptr_Cannonball-Obj_Index)/4)+1		; $20
 id_HUD:			equ ((ptr_HUD-Obj_Index)/4)+1
