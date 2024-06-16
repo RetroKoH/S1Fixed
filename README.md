@@ -349,3 +349,7 @@
  Function: Makes the proper sound effect play when Sonic is harmed by Spikes/LZ Harpoons.
  Date: 2024-06-08
  
+ Name: Various Sound Driver Fixes
+ Credit: Clownacy, ValleyBell, et al.
+ Function: Fixed various issues including a corrupted roll sfx.
+ Date: 2024-06-15

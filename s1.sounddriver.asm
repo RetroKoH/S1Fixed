@@ -127,14 +127,11 @@ UpdateMusic:
 		jsr	DoFadeIn(pc)
 ; loc_71BB2:
 .skipfadein:
-	if FixBugs
+	; Sound driver bugfixes
 		moveq	#0,d0
-		or.b	v_soundqueue2(a6),d0
-		or.w	v_soundqueue0(a6),d0
-	else
-		; DANGER! The following line only checks v_soundqueue0 and v_soundqueue1, breaking v_soundqueue2.
-		tst.w	v_soundqueue0(a6)	; is a music or sound queued for playing?
-	endif
+		or.b	v_soundqueue2(a6),d0	; Also check v_soundqueue2
+		or.w	v_soundqueue0(a6),d0	; is a music or sound queued for playing?
+	; Sound driver bugfixes end
 		beq.s	.nosndinput		; if not, branch
 		jsr	CycleSoundQueue(pc)
 ; loc_71BBC:
@@ -625,34 +622,22 @@ PlaySoundID:
 		moveq	#0,d7
 		move.b	v_sound_id(a6),d7
 		beq.w	StopAllSound
-		bpl.s	.locret			; If >= 0, return (not a valid sound, bgm or command)
+		bpl.s	.locret				; If >= 0, return (not a valid sound, bgm or command)
 		move.b	#$80,v_sound_id(a6)	; reset	music flag
-	if FixBugs
-		cmpi.b	#bgm__Last,d7	; Is this music ($81-$93)?
-	else
-		; DANGER! Music ends at $93, yet this checks until $9F; attempting to
-		; play sounds $94-$9F will cause a crash!
-		; See LevSel_NoCheat for more.
-		cmpi.b	#bgm__Last+$C,d7	; Is this music ($81-$9F)?
-	endif
+		cmpi.b	#bgm__Last,d7		; Is this music ($81-$93)? -- Sound driver bugfixes: Playing sounds $94-$9F will cause a crash!
 		bls.w	Sound_PlayBGM		; Branch if yes
 		cmpi.b	#sfx__First,d7		; Is this after music but before sfx? (redundant check)
-		blo.w	.locret			; Return if yes
+		blo.w	.locret				; Return if yes
 		cmpi.b	#sfx__Last,d7		; Is this sfx ($A0-$CF)?
 		bls.w	Sound_PlaySFX		; Branch if yes
 		cmpi.b	#spec__First,d7		; Is this after sfx but before special sfx? (redundant check)
-		blo.w	.locret			; Return if yes
-	if FixBugs
-		cmpi.b	#spec__Last,d7		; Is this special sfx ($D0-$D0)?
+		blo.w	.locret				; Return if yes
+	; Sound driver bugfixes
+		cmpi.b	#spec__Last,d7		; Is this special sfx ($D0-$D0)? -- Playing sounds $D1-$DF will cause a crash!
 		bls.w	Sound_PlaySpecial	; Branch if yes
 		cmpi.b	#flg__First,d7		; Is this after special sfx but before $E0?
-		blo.w	.locret			; Return if yes
-	else
-		; DANGER! Special SFXes end at $D0, yet this checks until $DF; attempting to
-		; play sounds $D1-$DF will cause a crash!
-		cmpi.b	#spec__Last+$10,d7	; Is this special sfx ($D0-$DF)?
-		blo.w	Sound_PlaySpecial	; Branch if yes
-	endif
+		blo.w	.locret				; Return if yes
+	; Sound driver bugfixes end
 		cmpi.b	#flg__Last,d7		; Is this $E0-$E4?
 		bls.s	Sound_E0toE4		; Branch if yes
 ; locret_71F8C:
@@ -926,14 +911,8 @@ Sound_PlaySFX:
 		move.w	(a1)+,d1		; Voice pointer
 		add.l	a3,d1			; Relative pointer
 		move.b	(a1)+,d5		; Dividing timing
-	if FixBugs
-		moveq	#0,d7
-	else
-		; DANGER! there is a missing 'moveq #0,d7' here, without which SFXes whose
-		; index entry is above $3F will cause a crash.
-		; This bug is fixed in Ristar's driver.
-	endif
-		move.b	(a1)+,d7	; Number of tracks (FM + PSG)
+		moveq	#0,d7			; Sound driver bugfixes: prevent SFXes indexed above $3F crashing the game
+		move.b	(a1)+,d7		; Number of tracks (FM + PSG)
 		subq.b	#1,d7
 		moveq	#TrackSz,d6
 ; loc_72228:
@@ -1051,12 +1030,7 @@ Sound_PlaySpecial:
 		add.l	a3,d0				; Relative pointer
 		move.l	d0,v_special_voice_ptr(a6)	; Store voice pointer
 		move.b	(a1)+,d5			; Dividing timing
-	if FixBugs
-		moveq	#0,d7
-	else
-		; DANGER! there is a missing 'moveq #0,d7' here, without which special SFXes whose
-		; index entry is above $3F will cause a crash. This instance was not fixed in Ristar's driver.
-	endif
+		moveq	#0,d7				; Sound driver bugfixes: prevent SFXes indexed above $3F crashing the game
 		move.b	(a1)+,d7			; Number of tracks (FM + PSG)
 		subq.b	#1,d7
 		moveq	#TrackSz,d6
@@ -1162,13 +1136,8 @@ StopSFX:
 		bne.s	.getfmpointer					; Branch if not
 		tst.b	v_spcsfx_fm4_track+TrackPlaybackControl(a6)	; Is special SFX playing?
 		bpl.s	.getfmpointer					; Branch if not
-	if FixBugs
-		movea.l	a5,a3
-	else
-		; DANGER! there is a missing 'movea.l a5,a3' here, without which the
-		; code is broken. It is dangerous to do a fade out when a GHZ waterfall
-		; is playing its sound!
-	endif
+		movea.l	a5,a3						; Sound driver fixes: Without this, the code is broken.
+											; It is dangerous to do a fade out when a GHZ waterfall is playing its sound!
 		lea	v_spcsfx_fm4_track(a6),a5
 		movea.l	v_special_voice_ptr(a6),a1	; Get special voice pointer
 		bra.s	.gotfmpointer
@@ -1194,11 +1163,10 @@ StopSFX:
 .trackpsg:
 		jsr	PSGNoteOff(pc)
 		lea	v_spcsfx_psg3_track(a6),a0
-	if FixBugs
-		; cfStopTrack does this check but this function oddly lacks it.
+	; Sound driver fixes: Added missing check
 		tst.b	TrackPlaybackControl(a0)	; Is track playing?
 		bpl.s	.getchannelptr			; Branch if not
-	endif
+	; Sound driver fixes end
 		cmpi.b	#$E0,d3			; Is this a noise channel:
 		beq.s	.gotpsgpointer		; Branch if yes
 		cmpi.b	#$C0,d3			; Is this PSG 3?
@@ -1382,12 +1350,7 @@ StopAllSound:
 		moveq	#0,d1		; FM3/FM6 normal mode, disable timers
 		jsr	WriteFMI(pc)
 		movea.l	a6,a0
-	if FixBugs
-		move.w	#((v_spcsfx_track_ram_end-v_startofvariables)/4)-1,d0	; Clear $400 bytes: all variables and track data
-	else
-		; DANGER! This should be clearing all variables and track data, but misses the last $10 bytes of v_spcsfx_psg3_Track.
-		move.w	#((v_spcsfx_track_ram_end-v_startofvariables-$10)/4)-1,d0	; Clear $390 bytes: all variables and most track data
-	endif
+		move.w	#((v_spcsfx_track_ram_end-v_startofvariables)/4)-1,d0	; Clear $400 bytes: all variables and track data -- Sound driver fixes: Only cleared $390 before
 ; loc_725B6:
 .clearramloop:
 		clr.l	(a0)+
@@ -1408,11 +1371,7 @@ InitMusicPlayback:
 		move.b	f_speedup(a6),d3
 		move.b	v_fadein_counter(a6),d4
 		move.w	v_soundqueue0(a6),d5
-	if FixBugs
-		move.b	v_soundqueue2(a6),d6
-	else
-		; DANGER! Only v_soundqueue0 and v_soundqueue1 are backed up, once again breaking v_soundqueue2
-	endif
+		move.b	v_soundqueue2(a6),d6	; Sound driver fixes: back up soundqueue2 as well.
 		move.w	#((v_music_track_ram_end-v_startofvariables)/4)-1,d0	; Clear $220 bytes: all variables and music track data
 ; loc_725E4:
 .clearramloop:
@@ -1425,13 +1384,9 @@ InitMusicPlayback:
 		move.b	d3,f_speedup(a6)
 		move.b	d4,v_fadein_counter(a6)
 		move.w	d5,v_soundqueue0(a6)
-	if FixBugs
-		move.b	d6,v_soundqueue2(a6)
-	else
-		; DANGER! Only v_soundqueue0 and v_soundqueue1 are restored, once again breaking v_soundqueue2
-	endif
-		move.b	#$80,v_sound_id(a6)	; set music to $80 (silence)
-	if FixBugs
+		move.b	d6,v_soundqueue2(a6)	; Sound driver fixes: restore soundqueue2 as well.
+		move.b	#$80,v_sound_id(a6)		; set music to $80 (silence)
+	; Sound driver fixes
 		lea	v_music_track_ram+TrackVoiceControl(a6),a1
 		lea	FMDACInitBytes(pc),a2
 		moveq	#((v_music_fmdac_tracks_end-v_music_fmdac_tracks)/TrackSz)-1,d1		; 7 DAC/FM tracks
@@ -1445,20 +1400,7 @@ InitMusicPlayback:
 		dbf	d1,.writeloop		; Loop for all DAC/FM/PSG tracks
 
 		rts
-	else
-		; DANGER! This silences ALL channels, even the ones being used
-		; by SFX, and not music! .sendfmnoteoff does this already, and
-		; doesn't affect SFX channels, either.
-		; DANGER! InitMusicPlayback, and Sound_PlayBGM for that matter,
-		; don't do a very good job of setting up the music tracks.
-		; Tracks that aren't defined in a music file's header don't have
-		; their channels defined, meaning .sendfmnoteoff won't silence
-		; hardware properly. In combination with removing the above
-		; calls to FMSilenceAll/PSGSilenceAll, this will cause hanging
-		; notes.
-		jsr	FMSilenceAll(pc)
-		bra.w	PSGSilenceAll
-	endif
+	; Sound driver fixes end
 	
 ; End of function InitMusicPlayback
 
@@ -1902,16 +1844,11 @@ SendPSGNoteOff:
 		move.b	TrackVoiceControl(a5),d0	; PSG channel to change
 		ori.b	#$1F,d0				; Maximum volume attenuation
 		move.b	d0,(psg_input).l
-	if FixBugs
-		; This is the same fix that S&K's driver uses:
+	; Sound driver fixes: Noise prevention. This is the same fix that S&K's driver uses:
 		cmpi.b	#$DF,d0				; Are stopping PSG3?
 		bne.s	locret_729B4
 		move.b	#$FF,(psg_input).l		; If so, stop noise channel while we're at it
-	else
-		; DANGER! If InitMusicPlayback doesn't silence all channels, there's the
-		; risk of music accidentally playing noise because it can't detect if
-		; the PSG4/noise channel needs muting on track initialisation.
-	endif
+	; Sound driver fixes end
 
 locret_729B4:
 		rts	
@@ -2273,14 +2210,7 @@ SendVoiceTL:
 		movea.l	v_voice_ptr(a6),a1	; Voice pointer
 		tst.b	f_voice_selector(a6)
 		beq.s	.gotvoiceptr
-	if FixBugs
-		movea.l	TrackVoicePtr(a5),a1
-	else
-		; DANGER! This uploads the wrong voice! It should have been a5 instead of a6!
-		; In Sonic 1's prototype, TrackVoicePtr was a global variable instead of a
-		; per-track variable, explaining why this uses a6 instead of a5.
-		movea.l	TrackVoicePtr(a6),a1
-	endif
+		movea.l	TrackVoicePtr(a5),a1	; Sound driver fixes: upload the correct voice instead of (a6)
 		tst.b	f_voice_selector(a6)
 		bmi.s	.gotvoiceptr
 		movea.l	v_special_voice_ptr(a6),a1
@@ -2516,7 +2446,6 @@ cfOpF9:
 ; ---------------------------------------------------------------------------
 ; SMPS2ASM - A collection of macros that make SMPS's bytecode human-readable.
 ; ---------------------------------------------------------------------------
-FixMusicAndSFXDataBugs = FixBugs
 SonicDriverVer = 1 ; Tell SMPS2ASM that we're using Sonic 1's driver.
 		include "sound/_smps2asm_inc.asm"
 
