@@ -31,6 +31,8 @@ DynamicSpecialStageWalls: = 1
 SmoothSpecialStages: = 1
 FadeInSEGA: = 1
 PaletteFadeSetting: = 6			; 0 - Blue (Original), 1 - Green, 2 - Red, 3 - Cyan (B+G), 4 - Pink (B+R), 5 - Yellow (G+R), 6 - Full
+GroundSpeedCapEnabled: = 0		; if set to 1, the ground speed cap is active (includes Roll Speed Cap fix by Devon)
+AirSpeedCapEnabled: = 0			; if set to 1, the air speed cap is active
 RollJumpLockActive: = 0			; if set to 1, the original roll jump lock is maintained
 
 ; ===========================================================================

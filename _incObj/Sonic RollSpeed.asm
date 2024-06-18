@@ -69,22 +69,27 @@ loc_131CC:
 	; Screen Scroll While Rolling Fix End
 		move.b	obAngle(a0),d0
 		jsr		(CalcSine).l
-		muls.w	obInertia(a0),d0
-		asr.l	#8,d0
-		move.w	d0,obVelY(a0)
-		muls.w	obInertia(a0),d1
-		asr.l	#8,d1
-		cmpi.w	#$1000,d1
-		ble.s	loc_131F0
-		move.w	#$1000,d1
+	; Devon Rolling speed cap fix
+		move.w  obInertia(a0),d2
+	if GroundSpeedCapEnabled=1 ; RetroKoH Disable Rolling Speed Cap
+		cmpi.w  #$1000,d2
+		ble.s   loc_131F0
+		move.w  #$1000,d2
 
 loc_131F0:
-		cmpi.w	#-$1000,d1
-		bge.s	loc_131FA
-		move.w	#-$1000,d1
+		cmpi.w  #-$1000,d2
+		bge.s   loc_131FA
+		move.w  #-$1000,d2
 
 loc_131FA:
-		move.w	d1,obVelX(a0)
+	endif ; Disable Rolling Speed Cap End
+		muls.w  d2,d0
+		asr.l   #8,d0
+		move.w  d0,obVelY(a0)
+		muls.w  d2,d1
+		asr.l   #8,d1
+		move.w  d1,obVelX(a0)
+	; Devon Rolling speed cap fix
 		bra.w	loc_1300C
 ; End of function Sonic_RollSpeed
 

@@ -35,6 +35,12 @@
  Function: When turned on, Sonic retains his original roll jump lock (See _incObj/Sonic Jump.asm)
  Date: 2024-06-18
  Variable: RollJumpLockActive
+ 
+ Name: Disable Speed Caps
+ Credit: Mercury, RetroKoH (Applied to Devon's Rolling Speed Cap Fix)
+ Function: Disables the speed cap in the air and on the ground.
+ Date: 2024-06-18
+ Variable: GroundSpeedCapEnabled, AirSpeedCapEnabled
 
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format
@@ -401,3 +407,9 @@
  Function: Fixes a bug with landing in air from a rolling jump
  Date: 2024-06-18
  Modifies: _incObj/Sonic Jump.asm
+
+ Name: Rolling Speed Cap Fix
+ Credit: Devon
+ Function: Fixes an inconsistency with the rolling speed cap. (Only applied if GroundSpeedCapEnabled=1)
+ Date: 2024-06-18
+ Modifies: _incObj/Sonic RollSpeed.asm
