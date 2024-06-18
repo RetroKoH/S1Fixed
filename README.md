@@ -379,6 +379,13 @@
  Modifies: artnem\Continue Screen Sonic.nem
 
  Name: Special Stage Palette Fix
+ Credit: Mercury
  Function: Fixed the base palette to prevent clouds flickering when first fading in, plus altered the fading palette to not have ugly clashing purples
  Date: 2024-06-18
  Modifies: palette\Cycle - Special Stage 1.bin, palette\Special Stage.bin
+
+ Name: Sonic Shoe Stripe Fix
+ Credit: Mercury
+ Function: Adds stripe to Sonic's shoe for the sprites it's missing in (using Sonic 2's tiles)
+ Date: 2024-06-18
+ Modifies: artunc\Sonic.bin
