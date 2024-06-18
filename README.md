@@ -437,3 +437,8 @@
  Function: Fixes an incorrectly flipped red spring on the lower route of GHZ2
  Date: 2024-06-18
  Modifies: objpos\GHZ2.bin
+ 
+ Name: GHZ BG Mountain Fix
+ Function: Fixes a tile in the GHZ mountain background that makes it looks like there's a hole in the biggest peaks.
+ Date: 2024-06-18
+ Modifies: map128\GHZ.bin
