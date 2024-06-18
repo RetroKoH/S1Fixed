@@ -79,21 +79,41 @@ loc_12F70:
 ; ===========================================================================
 
 Sonic_LookUp:
-		btst	#bitUp,(v_jpadhold2).w ; is up being pressed?
-		beq.s	Sonic_Duck	; if not, branch
-		move.b	#id_LookUp,obAnim(a0) ; use "looking up" animation
-		cmpi.w	#$C8,(v_lookshift).w
-		beq.s	loc_12FC2
+		btst	#bitUp,(v_jpadhold2).w	; is up being pressed?
+		beq.s	Sonic_Duck				; if not, branch
+		move.b	#id_LookUp,obAnim(a0)	; use "looking up" animation
+		; Mercury Look Shift Fix
+		move.w	(v_screenposy).w,d0		; get camera top coordinate
+		sub.w	(v_limittop2).w,d0		; subtract zone's top bound from it
+		add.w	(v_lookshift).w,d0		; add default offset
+		cmpi.w	#$C8,d0					; is offset <= $C8?
+		ble.s	.skip					; if so, branch
+		move.w	#$C8,d0					; set offset to $C8
+		
+	.skip:
+		cmp.w	(v_lookshift).w,d0
+		ble.s	loc_12FC2
+		; Look Shift Fix end
 		addq.w	#2,(v_lookshift).w
 		bra.s	loc_12FC2
 ; ===========================================================================
 
 Sonic_Duck:
-		btst	#bitDn,(v_jpadhold2).w ; is down being pressed?
-		beq.s	Sonic_ResetScr	; if not, branch
-		move.b	#id_Duck,obAnim(a0) ; use "ducking" animation
-		cmpi.w	#8,(v_lookshift).w
-		beq.s	loc_12FC2
+		btst	#bitDn,(v_jpadhold2).w	; is down being pressed?
+		beq.s	Sonic_ResetScr			; if not, branch
+		move.b	#id_Duck,obAnim(a0)		; use "ducking" animation
+		; Mercury Look Shift Fix
+		move.w	(v_screenposy).w,d0		; get camera top coordinate
+		sub.w	(v_limitbtm2).w,d0		; subtract zone's bottom bound from it (creating a negative number)
+		add.w	(v_lookshift).w,d0		; add default offset
+		cmpi.w	#8,d0					; is offset > 8?
+		bgt.s	.skip					; if greater than 8, branch
+		move.w	#8,d0					; set offset to 8
+
+	.skip:
+		cmp.w	(v_lookshift).w,d0
+		bge.s	loc_12FC2
+		; Look Shift Fix End
 		subq.w	#2,(v_lookshift).w
 		bra.s	loc_12FC2
 ; ===========================================================================

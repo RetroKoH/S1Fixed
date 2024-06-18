@@ -359,3 +359,10 @@
  Credit: Clownacy, ValleyBell, et al.
  Function: Fixed various issues including a corrupted roll sfx.
  Date: 2024-06-15
+ 
+ Name: Look Shift Fix
+ Credit: Mercury
+ Function: Fixing the looking up/down camera shift so that it stops at zone boundaries, preventing a delay when returning to the neutral position.
+ Date: 2024-06-18
+ Modifies: _incObj/Sonic Move.asm
+ 
