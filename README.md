@@ -439,6 +439,13 @@
  Modifies: objpos\GHZ2.bin
  
  Name: GHZ BG Mountain Fix
+ Credit: Mercury
  Function: Fixes a tile in the GHZ mountain background that makes it looks like there's a hole in the biggest peaks.
  Date: 2024-06-18
  Modifies: map128\GHZ.bin
+
+ Name: Low End Signs Fix
+ Credit: Mercury
+ Function: Some End Signs have been raised to rest properly on the ground.
+ Date: 2024-06-18
+; Modifies: objpos\SYZ1.bin, objpos\LZ1.bin, objpos\LZ2.bin, objpos\SBZ1.bin, objpos\SBZ2.bin
