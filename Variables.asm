@@ -57,6 +57,7 @@ v_vdp_comm_buffer_slot:	ds.b	$04				; stores the address of the next open slot f
 						ds.b	$200			; unused (from $20 to $200)
 
 v_tracksonic:			ds.b	$100			; position tracking data for Sonic (CB00)
+
 v_hscrolltablebuffer:	ds.b	$380			; scrolling table data
 v_hscrolltablebuffer_end:
 						ds.b	$80				; would be unused, but data from v_hscrolltablebuffer can spill into here
@@ -345,63 +346,63 @@ v_opl_data:			ds.b	$10		; ObjPosLoad - data buffer
 v_ssangle:			ds.w	1		; Special Stage angle
 v_ssrotate:			ds.w	1		; Special Stage rotation speed
 v_ssangleprev:		ds.b	1		; Previous Special Stage angle -- Mercury Dynamic Special Stage Walls
-			ds.b	$9		; unused
-f_levelstarted:		ds.w	1		; level start flag (for drawing non-objects) -- RetroKoH S2 Rings Manager
+					ds.b	$9		; unused
+f_levelstarted:			ds.w	1		; level start flag (for drawing non-objects) -- RetroKoH S2 Rings Manager
 								; Second byte reserved for now
-v_btnpushtime1:		ds.w	1		; button push duration - in level
-v_btnpushtime2:		ds.w	1		; button push duration - in demo
-v_palchgspeed:		ds.w	1		; palette fade/transition speed (0 is fastest)
-v_collindex:		ds.l	1		; ROM address for collision index of current level
-v_palss_num:		ds.w	1		; palette cycling in Special Stage - reference number
-v_palss_time:		ds.w	1		; palette cycling in Special Stage - time until next change
-v_palss_index:		ds.w	1		; palette cycling in Special Stage - index into palette cycle 2 (unused?)
-v_ssbganim:			ds.w	1		; Special Stage background animation
-			ds.b	2		; unused
-v_obj31ypos:		ds.w	1		; y-position of object 31 (MZ stomper)
-			ds.b	1		; unused
-v_bossstatus:		ds.b	1		; status of boss and prison capsule (01 = boss defeated; 02 = prison opened)
-v_trackpos:			ds.w	1		; position tracking reference number
-v_trackbyte = 		v_trackpos+1	; low byte for position tracking
-f_lockscreen:		ds.b	1		; flag set to lock screen during bosses
-			ds.b	5		; unused
-v_lani0_frame:		ds.b	1		; level graphics animation 0 - current frame
-v_lani0_time:		ds.b	1		; level graphics animation 0 - time until next frame
-v_lani1_frame:		ds.b	1		; level graphics animation 1 - current frame
-v_lani1_time:		ds.b	1		; level graphics animation 1 - time until next frame
-v_lani2_frame:		ds.b	1		; level graphics animation 2 - current frame
-v_lani2_time:		ds.b	1		; level graphics animation 2 - time until next frame
-v_lani3_frame:		ds.b	1		; level graphics animation 3 - current frame
-v_lani3_time:		ds.b	1		; level graphics animation 3 - time until next frame
-v_lani4_frame:		ds.b	1		; level graphics animation 4 - current frame
-v_lani4_time:		ds.b	1		; level graphics animation 4 - time until next frame
-v_lani5_frame:		ds.b	1		; level graphics animation 5 - current frame
-v_lani5_time:		ds.b	1		; level graphics animation 5 - time until next frame
-			ds.b	2		; unused
-v_gfxbigring:		ds.w	1		; settings for giant ring graphics loading
-f_conveyrev:		ds.b	1		; flag set to reverse conveyor belts in LZ/SBZ
-v_obj63:		ds.b	6		; object 63 (LZ/SBZ platforms) variables
-f_wtunnelmode:		ds.b	1		; LZ water tunnel mode
-f_playerctrl:		ds.b	1		; Player control override flags (object ineraction, control enable)
-f_wtunnelallow:		ds.b	1		; LZ water tunnels (00 = enabled; 01 = disabled)
-f_slidemode:		ds.b	1		; LZ water slide mode
-v_obj6B:		ds.b	1		; object 6B (SBZ stomper) variable
-f_lockctrl:		ds.b	1		; flag set to lock controls during ending sequence
-f_bigring:		ds.b	1		; flag set when Sonic collects the giant ring
-f_obj56:		ds.b	1		; object 56 flag
-			ds.b	1		; unused
-v_itembonus:		ds.w	1		; item bonus from broken enemies, blocks etc.
-v_timebonus:		ds.w	1		; time bonus at the end of an act
-v_ringbonus:		ds.w	1		; ring bonus at the end of an act
-f_endactbonus:		ds.b	1		; time/ring bonus update flag at the end of an act
-v_sonicend:		ds.b	1		; routine counter for Sonic in the ending sequence
-v_lz_deform:		ds.w	1		; LZ deformation offset, in units of $80
-			ds.b	6		; unused
-f_switch:		ds.b	$10		; flags set when Sonic stands on a switch
+v_btnpushtime1:			ds.w	1		; button push duration - in level
+v_btnpushtime2:			ds.w	1		; button push duration - in demo
+v_palchgspeed:			ds.w	1		; palette fade/transition speed (0 is fastest)
+v_collindex:			ds.l	1		; ROM address for collision index of current level
+v_palss_num:			ds.w	1		; palette cycling in Special Stage - reference number
+v_palss_time:			ds.w	1		; palette cycling in Special Stage - time until next change
+v_palss_index:			ds.w	1		; palette cycling in Special Stage - index into palette cycle 2 (unused?)
+v_ssbganim:				ds.w	1		; Special Stage background animation
+					ds.b	2		; unused
+v_obj31ypos:			ds.w	1		; y-position of object 31 (MZ stomper)
+					ds.b	1		; unused
+v_bossstatus:			ds.b	1		; status of boss and prison capsule (01 = boss defeated; 02 = prison opened)
+v_trackpos:				ds.w	1		; position tracking reference number
+v_trackbyte = 			v_trackpos+1	; low byte for position tracking
+f_lockscreen:			ds.b	1		; flag set to lock screen during bosses
+					ds.b	5		; unused
+v_lani0_frame:			ds.b	1		; level graphics animation 0 - current frame
+v_lani0_time:			ds.b	1		; level graphics animation 0 - time until next frame
+v_lani1_frame:			ds.b	1		; level graphics animation 1 - current frame
+v_lani1_time:			ds.b	1		; level graphics animation 1 - time until next frame
+v_lani2_frame:			ds.b	1		; level graphics animation 2 - current frame
+v_lani2_time:			ds.b	1		; level graphics animation 2 - time until next frame
+v_lani3_frame:			ds.b	1		; level graphics animation 3 - current frame
+v_lani3_time:			ds.b	1		; level graphics animation 3 - time until next frame
+v_lani4_frame:			ds.b	1		; level graphics animation 4 - current frame
+v_lani4_time:			ds.b	1		; level graphics animation 4 - time until next frame
+v_lani5_frame:			ds.b	1		; level graphics animation 5 - current frame
+v_lani5_time:			ds.b	1		; level graphics animation 5 - time until next frame
+					ds.b	2		; unused
+v_gfxbigring:			ds.w	1		; settings for giant ring graphics loading
+f_conveyrev:			ds.b	1		; flag set to reverse conveyor belts in LZ/SBZ
+v_obj63:				ds.b	6		; object 63 (LZ/SBZ platforms) variables
+f_wtunnelmode:			ds.b	1		; LZ water tunnel mode
+f_playerctrl:			ds.b	1		; Player control override flags (object ineraction, control enable)
+f_wtunnelallow:			ds.b	1		; LZ water tunnels (00 = enabled; 01 = disabled)
+f_slidemode:			ds.b	1		; LZ water slide mode
+v_obj6B:				ds.b	1		; object 6B (SBZ stomper) variable
+f_lockctrl:				ds.b	1		; flag set to lock controls during ending sequence
+f_bigring:				ds.b	1		; flag set when Sonic collects the giant ring
+f_obj56:				ds.b	1		; object 56 flag
+					ds.b	1		; unused
+v_itembonus:			ds.w	1		; item bonus from broken enemies, blocks etc.
+v_timebonus:			ds.w	1		; time bonus at the end of an act
+v_ringbonus:			ds.w	1		; ring bonus at the end of an act
+f_endactbonus:			ds.b	1		; time/ring bonus update flag at the end of an act
+v_sonicend:				ds.b	1		; routine counter for Sonic in the ending sequence
+v_lz_deform:			ds.w	1		; LZ deformation offset, in units of $80
+					ds.b	6		; unused
+f_switch:				ds.b	$10		; flags set when Sonic stands on a switch
 v_scroll_block_1_size:	ds.w	1
 v_scroll_block_2_size:	ds.w	1		; unused
 v_scroll_block_3_size:	ds.w	1		; unused
 v_scroll_block_4_size:	ds.w	1		; unused
-			ds.b	8		; unused
+					ds.b	8		; unused
 v_levelvariables_end:
 
 v_spritetablebuffer:	ds.b	$280		; sprite table (last $80 bytes are overwritten by v_pal_water_dup)
@@ -410,6 +411,7 @@ v_pal_water_dup = v_spritetablebuffer_end-$80	; duplicate underwater palette, us
 v_pal_water:		ds.b	$80		; main underwater palette
 v_pal_dry:		ds.b	$80		; main palette
 v_pal_dry_dup:		ds.b	$80		; duplicate palette, used for transitions
+
 			ds.b	$140		; stack
 v_systemstack:
 v_crossresetram:				; RAM beyond this point is only cleared on a cold-boot

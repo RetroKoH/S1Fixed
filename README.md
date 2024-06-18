@@ -23,6 +23,12 @@
  Function: Causes the SEGA Screen to fade in, instead of just popping in.
  Date: 2024-06-06
  Variable: FadeInSEGA
+ 
+ Name: Screen Fading Options
+ Credit: RetroKoH/MarkeyJester
+ Function: Screens now fade in/out in one of 7 different ways: (Blue, Green, Red, Cyan, Magenta, Yellow, and Full)
+ Date: 2024-06-18
+ Variable: PaletteFadeSetting
 
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format

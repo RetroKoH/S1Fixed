@@ -1,0 +1,97 @@
+Fade Modes:
+
+; ---------------------------------------------------------------------------
+  00 Blue
+; ---------------------------------------------------------------------------
+
+Fade In from Black
+	Blue Add > Green Add > Red Add
+
+Fade Out to Black
+	Red Dec > Green Dec > Blue Dec
+
+Fade In from White
+	Blue Dec > Green Dec > Red Dec
+
+Fade Out to White
+	Red Add > Green Add > Blue Add
+
+; ---------------------------------------------------------------------------
+  01 Green (Consider Swapping Blue and Red order)
+; ---------------------------------------------------------------------------
+
+Fade In from Black
+	Green Add > Blue Add > Red Add
+
+Fade Out to Black
+	Red Dec > Blue Dec > Green Dec
+
+Fade In from White
+	Green Dec > Blue Dec > Red Dec
+
+Fade Out to White
+	Red Add > Blue Add > Green Add
+
+; ---------------------------------------------------------------------------
+  02 Red
+; ---------------------------------------------------------------------------
+
+Fade In from Black
+	Red Add > Blue Add > Green Add
+
+Fade Out to Black
+	Green Dec > Blue Dec > Red Dec
+
+Fade In from White
+	Red Dec > Blue Dec > Green Dec
+
+Fade Out to White
+	Green Add > Blue Add > Red Add
+
+; ---------------------------------------------------------------------------
+  03 Blue+Green (Cyan)
+; ---------------------------------------------------------------------------
+
+Fade In from Black
+	Blue/Green Add > Red Add
+
+Fade Out to Black
+	Red Dec > Blue/Green Dec
+
+Fade In from White
+	Blue/Green Dec > Red Dec
+
+Fade Out to White
+	Red Add > Blue/Green Add
+
+; ---------------------------------------------------------------------------
+  04 Blue+Red (Magenta)
+; ---------------------------------------------------------------------------
+
+Fade In from Black
+	Blue/Red Add > Green Add
+
+Fade Out to Black
+	Green Dec > Blue/Red Dec
+
+Fade In from White
+	Blue/Red Dec > Green Dec
+
+Fade Out to White
+	Green Add > Blue/Red Add
+
+; ---------------------------------------------------------------------------
+  05 Green+Red
+; ---------------------------------------------------------------------------
+
+Fade In from Black
+	Green/Red Add > Blue Add
+
+Fade Out to Black
+	Blue Dec > Green/Red Dec
+
+Fade In from White
+	Green/Red Dec > Blue Dec
+
+Fade Out to White
+	Blue Add > Green/Red Add
