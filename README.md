@@ -371,3 +371,9 @@
  Function: Fixes an issue where Caterkiller would sometimes hurt you if you roll into its head quickly.
  Date 2024-06-18
  Modifies: _incObj/ReactToItem.asm, _incObj/78 Caterkiller.asm
+
+ Name: Continue Sonic Art Fix
+ Credit: Mercury
+ Function: Fixes some incorrect pixels in Sonic's Continue screen sprite.
+ Date: 2024-06-18
+ Modifies: artnem\Continue Screen Sonic.bin

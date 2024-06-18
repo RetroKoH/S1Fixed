@@ -11,15 +11,15 @@ Map_ContScr_internal:	mappingsTable
 	mappingsTableEntry.w	M_Cont_Mini1
 	mappingsTableEntry.w	M_Cont_Mini2
 
-M_Cont_text:	spriteHeader
-	spritePiece	-$3C, -8, 2, 2, $88, 0, 0, 0, 0 ; "CONTINUE", stars and countdown
-	spritePiece	-$2C, -8, 2, 2, $B2, 0, 0, 0, 0
-	spritePiece	-$1C, -8, 2, 2, $AE, 0, 0, 0, 0
-	spritePiece	-$C, -8, 2, 2, $C2, 0, 0, 0, 0
-	spritePiece	4, -8, 1, 2, $A0, 0, 0, 0, 0
-	spritePiece	$C, -8, 2, 2, $AE, 0, 0, 0, 0
-	spritePiece	$1C, -8, 2, 2, $C6, 0, 0, 0, 0
-	spritePiece	$2C, -8, 2, 2, $90, 0, 0, 0, 0
+M_Cont_text:	spriteHeader	; "CONTINUE", stars and countdown
+	spritePiece	-$3C, -8, 2, 2, $70, 0, 0, 0, 0	; C
+	spritePiece	-$2C, -8, 2, 2, $9A, 0, 0, 0, 0	; O
+	spritePiece	-$1C, -8, 2, 2, $96, 0, 0, 0, 0	; N
+	spritePiece	-$C, -8, 2, 2, $AA, 0, 0, 0, 0	; T
+	spritePiece	4, -8, 1, 2, $88, 0, 0, 0, 0	; I
+	spritePiece	$C, -8, 2, 2, $96, 0, 0, 0, 0	; N
+	spritePiece	$1C, -8, 2, 2, $AE, 0, 0, 0, 0	; U
+	spritePiece	$2C, -8, 2, 2, $78, 0, 0, 0, 0	; E
 	spritePiece	-$18, $38, 2, 2, $21, 0, 0, 1, 0
 	spritePiece	8, $38, 2, 2, $21, 0, 0, 1, 0
 	spritePiece	-8, $36, 2, 2, $1FC, 0, 0, 0, 0

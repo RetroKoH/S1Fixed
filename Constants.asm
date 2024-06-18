@@ -540,7 +540,7 @@ ArtTile_Animal_1:				equ $568				; ✓
 ArtTile_Animal_2:				equ $57A				; ✓
 ArtTile_Explosion:				equ $58C				; ✓
 ArtTile_Ring:					equ $5EC				; ✓
-ArtTile_Monitor:				equ $680				; ✓ - Optimize by removing life icon (Use HUD life icon)
+ArtTile_Monitor:				equ $680				; ✓ - Optimized by removing life icon (Use HUD life icon)
 ArtTile_HUD:					equ $6CA				; ✓ - Optimized by removing 1 R
 ArtTile_Sonic:					equ $780				; ✓ - Player 1
 ArtTile_Lives_Counter:			equ $7D4				; ✓
@@ -559,7 +559,7 @@ ArtTile_Giant_Ring_Flash:		equ $462				; Remove this later and have flash be par
 ArtTile_Prison_Capsule:			equ $49D				; ✓
 ArtTile_Hidden_Points:			equ $4B6				; ✓
 ArtTile_Warp:					equ $541				; Currently unused. Can overwrite Shield art if used.
-ArtTile_Mini_Sonic:				equ $770				; Based on S1 Complete
+ArtTile_Mini_Sonic:				equ ArtTile_Monitor		; ✓
 ArtTile_Signpost:				equ $680				; ✓
 ArtTile_Bonuses:				equ $6B0				; ✓ - Moved to overwrite some monitor art.
 

@@ -1864,7 +1864,7 @@ LevSel_Level:
 
 PlayLevel:
 		move.b	#id_Level,(v_gamemode).w ; set screen mode to $0C (level)
-		move.b	#3,(v_lives).w	; set lives to 3
+		move.b	#1,(v_lives).w	; set lives to 3
 		clr.w	(v_rings).w	; clear rings
 		clr.l	(v_time).w	; clear time
 		clr.l	(v_score).w	; clear score
@@ -1872,7 +1872,7 @@ PlayLevel:
 		clr.b	(v_emeralds).w ; clear emeralds
 		clr.l	(v_emldlist).w ; clear emeralds
 		clr.l	(v_emldlist+4).w ; clear emeralds
-		clr.b	(v_continues).w ; clear continues
+		move.b	#3,(v_continues).w ; clear continues
 		move.l	#5000,(v_scorelife).w ; extra life is awarded at 50000 points
 		move.b	#bgm_Fade,d0
 		bsr.w	PlaySound_Special ; fade out music
@@ -3115,9 +3115,9 @@ GM_Continue:
 		move.w	(v_vdp_buffer1).w,d0
 		andi.b	#$BF,d0
 		move.w	d0,(vdp_control_port).l
-		lea	(vdp_control_port).l,a6
-		move.w	#$8004,(a6)	; 8 colour mode
-		move.w	#$8700,(a6)	; background colour
+		lea		(vdp_control_port).l,a6
+		move.w	#$8004,(a6)				; 8 colour mode
+		move.w	#$8700,(a6)				; background colour
 		bsr.w	ClearScreen
 		clr.b	(f_levelstarted).w		; RetroKoH S2 Rings Manager
 
@@ -3132,29 +3132,29 @@ GM_Continue:
 	; Title Card Optimization End
 
 		locVRAM	ArtTile_Continue_Sonic*$20
-		lea	(Nem_ContSonic).l,a0 ; load Sonic patterns
+		lea		(Nem_ContSonic).l,a0	; load Sonic patterns
 		bsr.w	NemDec
 		locVRAM	ArtTile_Mini_Sonic*$20
-		lea	(Nem_MiniSonic).l,a0 ; load continue screen patterns
+		lea		(Nem_MiniSonic).l,a0	; load continue() and Mini Sonic patterns
 		bsr.w	NemDec
 		moveq	#10,d1
-		jsr	(ContScrCounter).l	; run countdown	(start from 10)
+		jsr		(ContScrCounter).l		; run countdown	(start from 10)
 		moveq	#palid_Continue,d0
-		bsr.w	PalLoad1	; load continue	screen palette
+		bsr.w	PalLoad1				; load continue	screen palette
 		move.b	#bgm_Continue,d0
-		bsr.w	PlaySound	; play continue	music
-		move.w	#659,(v_demolength).w ; set time delay to 11 seconds
+		bsr.w	PlaySound				; play continue	music
+		move.w	#659,(v_demolength).w	; set time delay to 11 seconds
 		clr.l	(v_screenposx).w
 		move.l	#$1000000,(v_screenposy).w
-		move.b	#id_ContSonic,(v_player).w ; load Sonic object
-		move.b	#id_ContScrItem,(v_continuetext).w ; load continue screen objects
+		move.b	#id_ContSonic,(v_player).w				; load Sonic object
+		move.b	#id_ContScrItem,(v_continuetext).w		; load continue screen objects
 		move.b	#id_ContScrItem,(v_continuelight).w
 		move.w	#$180,(v_continuelight+obPriority).w	; RetroKoH S2 Priority Manager
 		move.b	#4,(v_continuelight+obFrame).w
 		move.b	#id_ContScrItem,(v_continueicon).w
 		move.b	#4,(v_continueicon+obRoutine).w
-		jsr	(ExecuteObjects).l
-		jsr	(BuildSprites).l
+		jsr		(ExecuteObjects).l
+		jsr		(BuildSprites).l
 		move.w	(v_vdp_buffer1).w,d0
 		ori.b	#$40,d0
 		move.w	d0,(vdp_control_port).l
@@ -3173,7 +3173,7 @@ Cont_MainLoop:
 		move.w	(v_demolength).w,d1
 		divu.w	#$3C,d1
 		andi.l	#$F,d1
-		jsr	(ContScrCounter).l
+		jsr		(ContScrCounter).l
 		enable_ints
 
 loc_4DF2:
@@ -5355,23 +5355,23 @@ M_SSR_Ring:	spriteHeader
 M_SSR_Ring_End
 
 M_SSR_ContSonic1:	spriteHeader
-	spritePiece	-$50, -8, 4, 2, $208, 0, 0, 0, 0
-	spritePiece	-$30, -8, 4, 2, $210, 0, 0, 0, 0
-	spritePiece	-$10, -8, 1, 2, $218, 0, 0, 0, 0
-	spritePiece	$40, -8, 2, 3, $21A, 0, 0, 1, 0
+	spritePiece	-$50, -8, 4, 2, $118, 0, 0, 0, 0
+	spritePiece	-$30, -8, 4, 2, $120, 0, 0, 0, 0
+	spritePiece	-$10, -8, 1, 2, $128, 0, 0, 0, 0
+	spritePiece	$40, -8, 2, 3, $12A, 0, 0, 1, 0
 M_SSR_ContSonic1_End
 
 M_SSR_ContSonic2:	spriteHeader
-	spritePiece	-$50, -8, 4, 2, $208, 0, 0, 0, 0
-	spritePiece	-$30, -8, 4, 2, $210, 0, 0, 0, 0
-	spritePiece	-$10, -8, 1, 2, $218, 0, 0, 0, 0
-	spritePiece	$40, -8, 2, 3, $220, 0, 0, 1, 0
+	spritePiece	-$50, -8, 4, 2, $118, 0, 0, 0, 0
+	spritePiece	-$30, -8, 4, 2, $120, 0, 0, 0, 0
+	spritePiece	-$10, -8, 1, 2, $128, 0, 0, 0, 0
+	spritePiece	$40, -8, 2, 3, $130, 0, 0, 1, 0
 M_SSR_ContSonic2_End
 
 M_SSR_Continue:	spriteHeader
-	spritePiece	-$50, -8, 4, 2, $208, 0, 0, 0, 0
-	spritePiece	-$30, -8, 4, 2, $210, 0, 0, 0, 0
-	spritePiece	-$10, -8, 1, 2, $218, 0, 0, 0, 0
+	spritePiece	-$50, -8, 4, 2, $118, 0, 0, 0, 0
+	spritePiece	-$30, -8, 4, 2, $120, 0, 0, 0, 0
+	spritePiece	-$10, -8, 1, 2, $128, 0, 0, 0, 0
 M_SSR_Continue_End
 
 M_SSR_SpecStage:	spriteHeader		; "SPECIAL STAGE"
