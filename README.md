@@ -376,4 +376,9 @@
  Credit: Mercury
  Function: Fixes some incorrect pixels in Sonic's Continue screen sprite.
  Date: 2024-06-18
- Modifies: artnem\Continue Screen Sonic.bin
+ Modifies: artnem\Continue Screen Sonic.nem
+
+ Name: Special Stage Palette Fix
+ Function: Fixed the base palette to prevent clouds flickering when first fading in, plus altered the fading palette to not have ugly clashing purples
+ Date: 2024-06-18
+ Modifies: palette\Cycle - Special Stage 1.bin, palette\Special Stage.bin
