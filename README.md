@@ -425,3 +425,10 @@
  Function: Fixes an inconsistency with the rolling speed cap. (Only applied if GroundSpeedCapEnabled=1)
  Date: 2024-06-18
  Modifies: _incObj/Sonic RollSpeed.asm
+ 
+ Name: GHZ3 Wall Solidity
+ Credit: Mercury
+ Function: Fixes a wall object in GHZ3 after the Lamppost that was set to be solid. (It was, of course, solid for a reason: to fix a bug with the platform right next to it. However, the platform could be moved to the right by 16 pixels to solve the problem, too, so that's what I did.)
+ Date: 2024-06-18
+ Modifies: objpos\GHZ3 (JP1).bin
+ 
