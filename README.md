@@ -42,11 +42,17 @@
  Date: 2024-06-18
  Variable: GroundSpeedCapEnabled, AirSpeedCapEnabled
 
- Name: Spike Fix
+ Name: Spike Fix Mod
  Credit: FraGag
  Function: Prevents spikes from harming Sonic while he's flashing.
  Date: 2024-06-18
  Variable: SpikeBugFix
+
+ Name: GHZ Water Palette Mod
+ Credit: Sonic 1 Forever Team
+ Function: Toggles GHZ palette between original and Sonic 1 Forever's altered bg water.
+ Date: 2024-06-18
+ Variable: GHZForeverPal
 
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format

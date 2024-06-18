@@ -35,6 +35,7 @@ GroundSpeedCapEnabled: = 0		; if set to 1, the ground speed cap is active (inclu
 AirSpeedCapEnabled: = 0			; if set to 1, the air speed cap is active
 RollJumpLockActive: = 0			; if set to 1, the original roll jump lock is maintained
 SpikeBugFix: = 1				; if set to 1, the spike "bug" is fixed
+GHZForeverPal: = 1				; if set to 1, GHZ is set to Sonic 1 Forever's palette
 
 ; ===========================================================================
 
@@ -1443,7 +1444,11 @@ Pal_SegaBG:		binclude	"palette/Sega Background.bin"
 Pal_Title:		binclude	"palette/Title Screen.bin"
 Pal_LevelSel:	binclude	"palette/Level Select.bin"
 Pal_Sonic:		binclude	"palette/Sonic.bin"
-Pal_GHZ:		binclude	"palette/Green Hill Zone.bin"
+	if GHZForeverPal = 1
+Pal_GHZ:		binclude	"palette/Green Hill Zone - Forever.bin"
+	else
+Pal_GHZ:		binclude	"palette/Green Hill Zone - Original.bin"
+	endif
 Pal_LZ:			binclude	"palette/Labyrinth Zone.bin"
 Pal_LZWater:	binclude	"palette/Labyrinth Zone Underwater.bin"
 Pal_MZ:			binclude	"palette/Marble Zone.bin"
