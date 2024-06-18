@@ -448,4 +448,10 @@
  Credit: Mercury
  Function: Some End Signs have been raised to rest properly on the ground.
  Date: 2024-06-18
-; Modifies: objpos\SYZ1.bin, objpos\LZ1.bin, objpos\LZ2.bin, objpos\SBZ1.bin, objpos\SBZ2.bin
+ Modifies: objpos\SYZ1.bin, objpos\LZ1.bin, objpos\LZ2.bin, objpos\SBZ1.bin, objpos\SBZ2.bin
+
+ Name: SLZ Pylons Fix
+ Credit: Mercury
+ Function: Removes the SLZ pylons from the object layout files and instead loads them manually when the zone starts. This allows them to appear even when respawning at a Lamppost.
+ Date: 2024-06-18
+ Modifies: objpos\SLZ1.bin, objpos\SLZ2.bin, objpos\SLZ3.bin

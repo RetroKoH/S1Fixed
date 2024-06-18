@@ -33,9 +33,17 @@ OPL_Main:
 
 		lea     (v_objstate).w,a0
 		move.w  #$BF,d1					; set loop counter
+
 OPL_ClrList:
 		clr.l	(a0)+
 		dbf     d1,OPL_ClrList			; clear	pre-destroyed object list
+
+	;Mercury SLZ Pylons Fix
+		cmpi.b	#id_SLZ,(v_zone).w			; are we currently in Star Light Zone?
+		bne.s	.notSLZ						; if not, branch
+		move.b	#id_Pylon,(v_lvlobjspace).w	; Manually load the pylon object.
+.notSLZ:
+	; SLZ Pylons Fix End
 		
 		move.w	(v_zone).w,d0
 		lsl.b	#6,d0
