@@ -39,10 +39,10 @@ loc_1341C:
 		clr.w	obLRLock(a0)			; Mercury Clear Control Lock When Jump
 		move.w	#sfx_Jump,d0
 		jsr		(PlaySound_Special).l	; play jumping sound
-		move.b	#$13,obHeight(a0)
-		move.b	#9,obWidth(a0)
-		btst	#2,obStatus(a0)
+	; Removed code expanding Sonic's radius -- RetroKoH Rolling Jump Fix
+		btst	#2,obStatus(a0)			; Is Sonic already in a ball?
 		bne.s	loc_13490
+	; If not already in a ball, convert Sonic into a ball
 		move.b	#$E,obHeight(a0)
 		move.b	#7,obWidth(a0)
 		move.b	#id_Roll,obAnim(a0)		; use "jumping" animation
@@ -54,6 +54,8 @@ locret_1348E:
 ; ===========================================================================
 
 loc_13490:
-		bset	#4,obStatus(a0)
+	if RollJumpLockActive<>0	; Mercury Rolling Jump Lock Toggle
+		bset	#4,obStatus(a0)			; set the roll jump lock.
+	endif
 		rts	
 ; End of function Sonic_Jump

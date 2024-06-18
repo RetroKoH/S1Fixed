@@ -31,6 +31,7 @@ DynamicSpecialStageWalls: = 1
 SmoothSpecialStages: = 1
 FadeInSEGA: = 1
 PaletteFadeSetting: = 6			; 0 - Blue (Original), 1 - Green, 2 - Red, 3 - Cyan (B+G), 4 - Pink (B+R), 5 - Yellow (G+R), 6 - Full
+RollJumpLockActive: = 0			; if set to 1, the original roll jump lock is maintained
 
 ; ===========================================================================
 
@@ -1864,7 +1865,7 @@ LevSel_Level:
 
 PlayLevel:
 		move.b	#id_Level,(v_gamemode).w ; set screen mode to $0C (level)
-		move.b	#1,(v_lives).w	; set lives to 3
+		move.b	#3,(v_lives).w	; set lives to 3
 		clr.w	(v_rings).w	; clear rings
 		clr.l	(v_time).w	; clear time
 		clr.l	(v_score).w	; clear score
@@ -1872,7 +1873,7 @@ PlayLevel:
 		clr.b	(v_emeralds).w ; clear emeralds
 		clr.l	(v_emldlist).w ; clear emeralds
 		clr.l	(v_emldlist+4).w ; clear emeralds
-		move.b	#3,(v_continues).w ; clear continues
+		clr.b	(v_continues).w ; clear continues
 		move.l	#5000,(v_scorelife).w ; extra life is awarded at 50000 points
 		move.b	#bgm_Fade,d0
 		bsr.w	PlaySound_Special ; fade out music

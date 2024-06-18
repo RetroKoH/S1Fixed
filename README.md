@@ -30,6 +30,12 @@
  Date: 2024-06-18
  Variable: PaletteFadeSetting
 
+ Name: Original Roll Jump Toggle
+ Credit: Mercury
+ Function: When turned on, Sonic retains his original roll jump lock (See _incObj/Sonic Jump.asm)
+ Date: 2024-06-18
+ Variable: RollJumpLockActive
+
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format
  Credit: Clownacy
@@ -389,3 +395,9 @@
  Function: Adds stripe to Sonic's shoe for the sprites it's missing in (using Sonic 2's tiles)
  Date: 2024-06-18
  Modifies: artunc\Sonic.bin
+
+ Name: Rolling Jump Fix
+ Credit: RetroKoH
+ Function: Fixes a bug with landing in air from a rolling jump
+ Date: 2024-06-18
+ Modifies: _incObj/Sonic Jump.asm
