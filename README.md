@@ -366,3 +366,8 @@
  Date: 2024-06-18
  Modifies: _incObj/Sonic Move.asm
  
+ Name: Caterkiller Fix
+ Credit: Mercury
+ Function: Fixes an issue where Caterkiller would sometimes hurt you if you roll into its head quickly.
+ Date 2024-06-18
+ Modifies: _incObj/ReactToItem.asm, _incObj/78 Caterkiller.asm

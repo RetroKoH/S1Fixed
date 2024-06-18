@@ -237,6 +237,26 @@ React_Enemy:
 ; ===========================================================================
 
 React_Caterkiller:
+	; Mercury Caterkiller Fix
+		move.b	#1,d0
+		move.w	obInertia(a0),d1
+		bmi.s	.skip
+		move.b	#0,d0
+		
+	.skip:
+		move.b	obStatus(a1),d1
+		andi.b	#1,d1
+		cmp.b	d0,d1					; are Sonic and the Caterkiller facing the same way?
+		bne.s	.hurt					; if not, branch
+		btst	#1,obStatus(a0)			; is Sonic in the air?
+		bne.s	.hurt					; if so, branch
+		btst	#2,obStatus(a0)			; is Sonic spinning?
+		beq.s	.hurt					; if not, branch
+		moveq	#-1,d0					; else, he shouldn't be hurt
+		rts				
+	
+	.hurt:
+	; Caterkiller Fix End
 		bset	#7,obStatus(a1)
 
 React_ChkHurt:
