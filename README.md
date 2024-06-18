@@ -432,3 +432,8 @@
  Date: 2024-06-18
  Modifies: objpos\GHZ3 (JP1).bin
  
+ Name: GHZ2 Spring Fix
+ Credit: Mercury
+ Function: Fixes an incorrectly flipped red spring on the lower route of GHZ2
+ Date: 2024-06-18
+ Modifies: objpos\GHZ2.bin
