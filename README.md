@@ -11,8 +11,8 @@
  Mods/Fixes, etc. are credited to the respective authors below
 
 # Mods (Can be enabled or disabled using the noted variables at the start of sonic.asm)
- Name: Dynamic Special Stage Walls (and Smmoth Rotation)
- Credit: Mercury/Cinossu
+ Name: Dynamic Special Stage Walls (and Smmoth Rotation/Jumping)
+ Credit: Mercury/Cinossu and Devon
  Function: Dynamically loads the wall art in the Special Stages to free VRAM (for things like the HUD)
  Date: 2024-06-04
  Modifies: sonic.asm, _maps\SS Walls.asm, _inc\Pattern Load Cues.asm, 09 Sonic in Special Stage.asm
@@ -41,6 +41,12 @@
  Function: Disables the speed cap in the air and on the ground.
  Date: 2024-06-18
  Variable: GroundSpeedCapEnabled, AirSpeedCapEnabled
+
+ Name: Spike Fix
+ Credit: FraGag
+ Function: Prevents spikes from harming Sonic while he's flashing.
+ Date: 2024-06-18
+ Variable: SpikeBugFix
 
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format

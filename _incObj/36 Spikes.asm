@@ -6,15 +6,17 @@ Spikes:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Spik_Index(pc,d0.w),d1
-		jmp	Spik_Index(pc,d1.w)
+		jmp		Spik_Index(pc,d1.w)
 ; ===========================================================================
-Spik_Index:	dc.w Spik_Main-Spik_Index
+Spik_Index:
+		dc.w Spik_Main-Spik_Index
 		dc.w Spik_Solid-Spik_Index
 
 spik_origX = objoff_30		; start X position
 spik_origY = objoff_32		; start Y position
 
-Spik_Var:	dc.b 0,	$14		; frame	number,	object width
+Spik_Var:
+		dc.b 0,	$14		; frame	number,	object width
 		dc.b 1,	$10
 		dc.b 2,	4
 		dc.b 3,	$1C
@@ -31,7 +33,7 @@ Spik_Main:	; Routine 0
 		move.b	obSubtype(a0),d0
 		andi.b	#$F,obSubtype(a0)
 		andi.w	#$F0,d0
-		lea	(Spik_Var).l,a1
+		lea		(Spik_Var).l,a1
 		lsr.w	#3,d0
 		adda.w	d0,a1
 		move.b	(a1)+,obFrame(a0)
@@ -79,11 +81,15 @@ Spik_Upright:
 		bpl.s	Spik_Display
 
 Spik_Hurt:
-		tst.b	(v_invinc).w	; is Sonic invincible?
-		bne.s	Spik_Display	; if yes, branch
+		tst.b	(v_invinc).w			; is Sonic invincible?
+		bne.s	Spik_Display			; if yes, branch
+	if SpikeBugFix=1	; Mercury Spike Bug Fix
+		tst.w	(v_player+flashtime).w	; is Sonic invulnerable?
+		bne.s	Spik_Display			; if yes, branch
+	endif	; Spike Bug Fix End
 		move.l	a0,-(sp)
 		movea.l	a0,a2
-		lea	(v_player).w,a0
+		lea		(v_player).w,a0
 		cmpi.b	#4,obRoutine(a0)
 		bhs.s	loc_CF20
 		move.l	obY(a0),d3
@@ -92,14 +98,14 @@ Spik_Hurt:
 		asl.l	#8,d0
 		sub.l	d0,d3
 		move.l	d3,obY(a0)
-		jsr	(HurtSonic).l
+		jsr		(HurtSonic).l
 
 loc_CF20:
 		movea.l	(sp)+,a0
 
 Spik_Display:
 		offscreen.w	DeleteObject,spik_origX(a0)	; ProjectFM S3K Object Manager
-		bra.w		DisplaySprite				; Clownacy DisplaySprite Fix
+		bra.w	DisplaySprite					; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 Spik_Type0x:
@@ -107,9 +113,10 @@ Spik_Type0x:
 		move.b	obSubtype(a0),d0
 		add.w	d0,d0
 		move.w	Spik_TypeIndex(pc,d0.w),d1
-		jmp	Spik_TypeIndex(pc,d1.w)
+		jmp		Spik_TypeIndex(pc,d1.w)
 ; ===========================================================================
-Spik_TypeIndex:	dc.w Spik_Type00-Spik_TypeIndex
+Spik_TypeIndex:
+		dc.w Spik_Type00-Spik_TypeIndex
 		dc.w Spik_Type01-Spik_TypeIndex
 		dc.w Spik_Type02-Spik_TypeIndex
 ; ===========================================================================
