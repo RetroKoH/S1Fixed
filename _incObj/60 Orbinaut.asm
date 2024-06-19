@@ -6,9 +6,10 @@ Orbinaut:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Orb_Index(pc,d0.w),d1
-		jmp	Orb_Index(pc,d1.w)
+		jmp		Orb_Index(pc,d1.w)
 ; ===========================================================================
-Orb_Index:	dc.w Orb_Main-Orb_Index
+Orb_Index:
+		dc.w Orb_Main-Orb_Index
 		dc.w Orb_ChkSonic-Orb_Index
 		dc.w Orb_Display-Orb_Index
 		dc.w Orb_MoveOrb-Orb_Index
@@ -29,22 +30,32 @@ Orb_Main:	; Routine 0
 		move.b	#$B,obColType(a0)
 		move.b	#$C,obActWid(a0)
 		moveq	#0,d2
-		lea	objoff_37(a0),a2
+		lea		objoff_37(a0),a2
 		movea.l	a2,a3
 		addq.w	#1,a2
-		moveq	#3,d1
+		moveq	#3,d1					; create 4 spike objects
+
+		; RetroKoH Object Load Optimization -- Based on Spirituinsanum Guides
+		; Here we begin what's replacing FindNextFreeObj. It'll be quicker to loop through here.
+		lea		(v_lvlobjspace).w,a1
+		move.w	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d0
+
+.loop:
+		tst.b	obID(a1)				; is object RAM	slot empty?
+		beq.s	.makesatellites			; if so, create object piece
+		lea		object_size(a1),a1
+		dbf		d0,.loop				; loop through object RAM
+		bne.s	.fail					; We're moving this line here.
 
 .makesatellites:
-		bsr.w	FindNextFreeObj
-		bne.s	.fail
 		addq.b	#1,(a3)
 		move.w	a1,d5
 		subi.w	#v_objspace&$FFFF,d5
 		lsr.w	#object_size_bits,d5
 		andi.w	#$7F,d5
 		move.b	d5,(a2)+
-		_move.b	obID(a0),obID(a1)	; load spiked orb object
-		move.b	#6,obRoutine(a1) ; use Orb_MoveOrb routine
+		_move.b	obID(a0),obID(a1)		; load spiked orb object
+		move.b	#6,obRoutine(a1)		; use Orb_MoveOrb routine
 		move.l	obMap(a0),obMap(a1)
 		move.w	obGfx(a0),obGfx(a1)
 		ori.b	#4,obRender(a1)
@@ -55,12 +66,12 @@ Orb_Main:	; Routine 0
 		move.b	d2,obAngle(a1)
 		addi.b	#$40,d2
 		move.l	a0,orb_parent(a1)
-		dbf	d1,.makesatellites ; repeat sequence 3 more times
+		dbf		d1,.loop				; repeat sequence 3 more times
 
 .fail:
 		moveq	#1,d0
 		btst	#0,obStatus(a0)	; is orbinaut facing left?
-		beq.s	.noflip		; if not, branch
+		beq.s	.noflip			; if not, branch
 		neg.w	d0
 
 .noflip:
@@ -98,7 +109,7 @@ Orb_ChkSonic:	; Routine 2
 		move.b	#1,obAnim(a0)	; use "angry" animation
 
 .animate:
-		lea	(Ani_Orb).l,a1
+		lea		(Ani_Orb).l,a1
 		bsr.w	AnimateSprite
 		bra.w	Orb_ChkDel
 ; ===========================================================================
@@ -117,7 +128,7 @@ Orb_ChkDel:
 		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again
 
 loc_11E34:
-		lea	objoff_37(a0),a2
+		lea		objoff_37(a0),a2
 		moveq	#0,d2
 		move.b	(a2)+,d2
 		subq.w	#1,d2
@@ -130,7 +141,7 @@ loc_11E40:
 		addi.l	#v_objspace&$FFFFFF,d0
 		movea.l	d0,a1
 		bsr.w	DeleteChild
-		dbf	d2,loc_11E40
+		dbf		d2,loc_11E40
 
 Orb_Delete:
 		bra.w	DeleteObject
@@ -161,7 +172,7 @@ Orb_MoveOrb:	; Routine 6
 
 .circle:
 		move.b	obAngle(a0),d0
-		jsr	(CalcSine).l
+		jsr		(CalcSine).l
 		asr.w	#4,d1
 		add.w	obX(a1),d1
 		move.w	d1,obX(a0)
