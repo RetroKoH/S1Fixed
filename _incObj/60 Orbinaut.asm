@@ -35,8 +35,8 @@ Orb_Main:	; Routine 0
 		addq.w	#1,a2
 		moveq	#3,d1					; create 4 spike objects
 
-		; RetroKoH Object Load Optimization -- Based on Spirituinsanum Guides
-		; Here we begin what's replacing FindNextFreeObj. It'll be quicker to loop through here.
+	; RetroKoH Object Load Optimization -- Based on Spirituinsanum Guides
+	; Here we begin what's replacing FindNextFreeObj. It'll be quicker to loop through here.
 		lea		(v_lvlobjspace).w,a1
 		move.w	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d0
 

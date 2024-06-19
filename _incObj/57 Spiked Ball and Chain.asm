@@ -29,41 +29,55 @@ SBall_Main:	; Routine 0
 		move.b	#8,obActWid(a0)
 		move.w	obX(a0),sball_origX(a0)
 		move.w	obY(a0),sball_origY(a0)
-		move.b	#$98,obColType(a0) ; SYZ specific code (chain hurts Sonic)
-		cmpi.b	#id_LZ,(v_zone).w ; check if level is LZ
+		move.b	#$98,obColType(a0)		; SYZ specific code (chain hurts Sonic)
+		cmpi.b	#id_LZ,(v_zone).w		; check if level is LZ
 		bne.s	.notlz
 
-		clr.b	obColType(a0) ; LZ specific code (chain doesn't hurt)
+		clr.b	obColType(a0)			; LZ specific code (chain doesn't hurt)
 		move.w	#make_art_tile(ArtTile_LZ_Spikeball_Chain,0,0),obGfx(a0)
 		move.l	#Map_SBall2,obMap(a0)
 
 .notlz:
-		move.b	obSubtype(a0),d1 ; get object type
-		andi.b	#$F0,d1		; read only the	1st digit
+		move.b	obSubtype(a0),d1		; get object type
+		andi.b	#$F0,d1					; read only the	1st digit
 		ext.w	d1
-		asl.w	#3,d1		; multiply by 8
-		move.w	d1,sball_speed(a0) ; set object twirl speed
+		asl.w	#3,d1					; multiply by 8
+		move.w	d1,sball_speed(a0)		; set object twirl speed
 		move.b	obStatus(a0),d0
 		ror.b	#2,d0
 		andi.b	#$C0,d0
 		move.b	d0,obAngle(a0)
-		lea	sball_childs(a0),a2
-		move.b	obSubtype(a0),d1 ; get object type
-		andi.w	#7,d1		; read only the	2nd digit
+		lea		sball_childs(a0),a2		; a2 = (a0)'s child address array
+		move.b	obSubtype(a0),d1		; get object type
+		andi.w	#7,d1					; read only the	2nd digit
 		clr.b	(a2)+
 		move.w	d1,d3
 		lsl.w	#4,d3
 		move.b	d3,sball_radius(a0)
-		subq.w	#1,d1		; set chain length (type-1)
-		bcs.s	.fail
+		subq.w	#1,d1					; set chain length (type-1)
+		bcs.w	.fail					; if length of 0, branch ahead
 		btst	#3,obSubtype(a0)
-		beq.s	.makechain
+		beq.s	.startmaking
 		subq.w	#1,d1
 		bcs.s	.fail
 
+	; RetroKoH Object Load Optimization -- Based on Spirituinsanum Guides
+	; Here we begin what's replacing FindNextFreeObj. It'll be quicker to loop through here.
+.startmaking
+		lea		(v_lvlobjspace).w,a1
+		move.w	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d0
+
+.loop:
+		tst.b	obID(a1)				; is object RAM	slot empty?
+		beq.s	.makechain				; if so, create object piece
+		lea		object_size(a1),a1
+		dbf		d0,.loop				; loop through object RAM
+		bne.w	.fail					; We're moving this line here.
+
+
 .makechain:
-		bsr.w	FindNextFreeObj		; Clownacy DisplaySprite Fix
-		bne.s	.fail
+		;bsr.w	FindNextFreeObj		; Clownacy DisplaySprite Fix
+		;bne.s	.fail
 		addq.b	#1,sball_childs(a0) ; increment child object counter
 		move.w	a1,d5		; get child object RAM address
 		subi.w	#v_objspace&$FFFF,d5 ; subtract base address
@@ -88,7 +102,7 @@ SBall_Main:	; Routine 0
 		move.b	#2,obFrame(a1)	; use different frame for LZ chain
 
 .notlzagain:
-		dbf	d1,.makechain ; repeat for length of chain
+		dbf		d1,.loop 		; repeat for length of chain
 
 .fail:
 		move.w	a0,d5

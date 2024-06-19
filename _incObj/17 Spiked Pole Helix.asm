@@ -43,8 +43,8 @@ Hel_Main:	; Routine 0
 		bcs.w	Hel_Action				; skip to action if length is only 1 (The one piece has already been created!)
 		moveq	#0,d6
 
-		; RetroKoH Mass Object Load Optimization -- Based on Spirituinsanum Guides
-		; Here we begin what's replacing SingleObjLoad, in order to avoid resetting its d0 every time an object is created.
+	; RetroKoH Mass Object Load Optimization -- Based on Spirituinsanum Guides
+	; Here we begin what's replacing SingleObjLoad, in order to avoid resetting its d0 every time an object is created.
 		lea		(v_lvlobjspace).w,a1
 		move.w	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d0
 

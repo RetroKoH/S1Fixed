@@ -65,8 +65,8 @@ Cat_Main:	; Routine 0
 		movea.l	a0,a2	; Move head's address to a2, as it will be the first body part's parent
 		moveq	#2,d1	; create 3 body parts to go along with the head
 
-		; RetroKoH Object Load Optimization -- Based on Spirituinsanum Guides
-		; Here we begin what's replacing FindNextFreeObj. It'll be quicker to loop through here.
+	; RetroKoH Object Load Optimization -- Based on Spirituinsanum Guides
+	; Here we begin what's replacing FindNextFreeObj. It'll be quicker to loop through here.
 		lea		(v_lvlobjspace).w,a1
 		move.w	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d0
 
