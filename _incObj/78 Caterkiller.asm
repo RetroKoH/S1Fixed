@@ -62,18 +62,28 @@ Cat_Main:	; Routine 0
 		move.b	#4,d6
 		moveq	#0,d3
 		moveq	#4,d4
-		movea.l	a0,a2
-		moveq	#2,d1
+		movea.l	a0,a2	; Move head's address to a2, as it will be the first body part's parent
+		moveq	#2,d1	; create 3 body parts to go along with the head
 
-Cat_Loop:
-		jsr	(FindNextFreeObj).l
-		bne.w	Cat_ChkGone
-		_move.b	#id_Caterkiller,obID(a1) ; load body segment object
-		move.b	d6,obRoutine(a1) ; goto Cat_BodySeg1 or Cat_BodySeg2 next
-		addq.b	#2,d6		; alternate between the two
+		; RetroKoH Object Load Optimization -- Based on Spirituinsanum Guides
+		; Here we begin what's replacing FindNextFreeObj. It'll be quicker to loop through here.
+		lea		(v_lvlobjspace).w,a1
+		move.w	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d0
+
+.loop:
+		tst.b	obID(a1)				; is object RAM	slot empty?
+		beq.s	.makebody				; if so, create object piece
+		lea		object_size(a1),a1
+		dbf		d0,.loop				; loop through object RAM
+		bne.w	Cat_ChkGone				; We're moving this line here.
+
+.makebody:
+		_move.b	#id_Caterkiller,obID(a1)	; load body segment object
+		move.b	d6,obRoutine(a1)			; goto Cat_BodySeg1 or Cat_BodySeg2 next
+		addq.b	#2,d6						; alternate between the two
 		move.l	obMap(a0),obMap(a1)
 		move.w	obGfx(a0),obGfx(a1)
-		move.w	#$280,obPriority(a1)	; RetroKoH S2 Priority Manager
+		move.w	#$280,obPriority(a1)		; RetroKoH S2 Priority Manager
 		move.b	#8,obActWid(a1)
 		move.b	#$CB,obColType(a1)
 		add.w	d5,d2
@@ -85,10 +95,8 @@ Cat_Loop:
 		move.l	a2,cat_parent(a1)
 		move.b	d4,cat_parent(a1)
 		addq.b	#4,d4
-		movea.l	a1,a2
-
-.fail:
-		dbf	d1,Cat_Loop	; repeat sequence 2 more times
+		movea.l	a1,a2						; Move this part's address to a2, as it will be the next body part's parent
+		dbf		d1,.loop					; repeat sequence 2 more times
 
 		move.b	#7,objoff_2A(a0)
 		clr.b	cat_parent(a0)
@@ -99,10 +107,10 @@ Cat_Head:	; Routine 2
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
 		move.w	Cat_Index2(pc,d0.w),d1
-		jsr	Cat_Index2(pc,d1.w)
+		jsr		Cat_Index2(pc,d1.w)
 		move.b	objoff_2B(a0),d1
 		bpl.s	.display
-		lea	(Ani_Cat).l,a1
+		lea		(Ani_Cat).l,a1
 		move.b	obAngle(a0),d0
 		andi.w	#$7F,d0
 		addq.b	#4,obAngle(a0)
@@ -118,7 +126,7 @@ Cat_Head:	; Routine 2
 
 .display:
 		out_of_range.s	Cat_ChkGone
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 
 Cat_ChkGone:
 		move.w	obRespawnNo(a0),d0	; get address in respawn table
