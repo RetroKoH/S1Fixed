@@ -31,27 +31,37 @@ Hel_Main:	; Routine 0
 		move.w	obY(a0),d2
 		move.w	obX(a0),d3
 		_move.b	obID(a0),d4
-		lea	obSubtype(a0),a2 ; move helix length to a2
+		lea		obSubtype(a0),a2		; move helix length to a2
 		moveq	#0,d1
-		move.b	(a2),d1		; move helix length to d1
-		clr.b	(a2)+	; clear subtype
+		move.b	(a2),d1					; move helix length to d1
+		clr.b	(a2)+					; clear subtype
 		move.w	d1,d0
 		lsr.w	#1,d0
 		lsl.w	#4,d0
-		sub.w	d0,d3		; d3 is x-axis position of leftmost spike
+		sub.w	d0,d3					; d3 is x-axis position of leftmost spike
 		subq.b	#2,d1
-		bcs.s	Hel_Action	; skip to action if length is only 1
+		bcs.w	Hel_Action				; skip to action if length is only 1 (The one piece has already been created!)
 		moveq	#0,d6
 
-Hel_Build:
-		bsr.w	FindFreeObj
-		bne.s	Hel_Action
+		; RetroKoH Mass Object Load Optimization -- Based on Spirituinsanum Guides
+		; Here we begin what's replacing SingleObjLoad, in order to avoid resetting its d0 every time an object is created.
+		lea		(v_lvlobjspace).w,a1
+		move.w	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d0
+
+.loop:
+		tst.b	obID(a1)	; is object RAM	slot empty?
+		beq.s	.makehelix	; if so, create object piece
+		lea		object_size(a1),a1
+		dbf		d0,.loop	; loop through object RAM
+		bne.s	Hel_Action	; We're moving this line here.
+
+.makehelix:
 		addq.b	#1,obSubtype(a0)
 		move.w	a1,d5
 		subi.w	#v_objspace&$FFFF,d5
 		lsr.w	#object_size_bits,d5
 		andi.w	#$7F,d5
-		move.b	d5,(a2)+	; copy child address to parent RAM
+		move.b	d5,(a2)+				; copy child address to parent RAM
 		move.b	#8,obRoutine(a1)
 		_move.b	d4,obID(a1)
 		move.w	d2,obY(a1)
@@ -65,17 +75,17 @@ Hel_Build:
 		addq.b	#1,d6
 		andi.b	#7,d6
 		addi.w	#$10,d3
-		cmp.w	obX(a0),d3	; is this spike in the centre?
-		bne.s	Hel_NotCentre	; if not, branch
+		cmp.w	obX(a0),d3				; is this spike in the centre?
+		bne.s	.notCentre				; if not, branch
 
-		move.b	d6,hel_frame(a0) ; set parent spike frame
+		move.b	d6,hel_frame(a0)		; set parent spike frame
 		addq.b	#1,d6
 		andi.b	#7,d6
-		addi.w	#$10,d3		; skip to next spike
+		addi.w	#$10,d3					; skip to next spike
 		addq.b	#1,obSubtype(a0)
 
-Hel_NotCentre:
-		dbf	d1,Hel_Build ; repeat d1 times (helix length)
+.notCentre:
+		dbf		d1,.loop				; repeat d1 times (helix length)
 
 Hel_Action:	; Routine 2, 4
 		bsr.w	Hel_RotateSpikes
