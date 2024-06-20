@@ -93,8 +93,8 @@ But_MZBlock:
 		subq.w	#8,d3
 		move.w	#$20,d4
 		move.w	#$10,d5
-		lea	(v_lvlobjspace).w,a1 ; begin checking object RAM
-		move.w	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d6
+		lea		(v_lvlobjspace).w,a1 ; begin checking object RAM
+		move.w	#v_lvlobjcount,d6
 
 But_MZLoop:
 		tst.b	obRender(a1)

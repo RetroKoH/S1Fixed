@@ -65,7 +65,7 @@ SBall_Main:	; Routine 0
 	; Here we begin what's replacing FindNextFreeObj. It'll be quicker to loop through here.
 .startmaking
 		lea		(v_lvlobjspace).w,a1
-		move.w	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d0
+		move.w	#v_lvlobjcount,d0
 
 .loop:
 		tst.b	obID(a1)				; is object RAM	slot empty?
@@ -73,7 +73,6 @@ SBall_Main:	; Routine 0
 		lea		object_size(a1),a1
 		dbf		d0,.loop				; loop through object RAM
 		bne.w	.fail					; We're moving this line here.
-
 
 .makechain:
 		;bsr.w	FindNextFreeObj		; Clownacy DisplaySprite Fix

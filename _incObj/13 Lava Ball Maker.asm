@@ -6,12 +6,13 @@ LavaMaker:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	LavaM_Index(pc,d0.w),d1
-		jsr	LavaM_Index(pc,d1.w)
+		jsr		LavaM_Index(pc,d1.w)
 		; FixBugs: Clownacy DisplaySprite Fix; See LavaBall.
-		out_of_range.w	DeleteObject
+		offscreen.w	DeleteObject
 		rts
 ; ===========================================================================
-LavaM_Index:	dc.w LavaM_Main-LavaM_Index
+LavaM_Index:
+		dc.w LavaM_Main-LavaM_Index
 		dc.w LavaM_MakeLava-LavaM_Index
 ; ---------------------------------------------------------------------------
 ;

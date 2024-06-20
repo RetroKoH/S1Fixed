@@ -46,7 +46,7 @@ Hel_Main:	; Routine 0
 	; RetroKoH Mass Object Load Optimization -- Based on Spirituinsanum Guides
 	; Here we begin what's replacing SingleObjLoad, in order to avoid resetting its d0 every time an object is created.
 		lea		(v_lvlobjspace).w,a1
-		move.w	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d0
+		move.w	#v_lvlobjcount,d0
 
 .loop:
 		tst.b	obID(a1)	; is object RAM	slot empty?

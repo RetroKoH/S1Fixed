@@ -63,10 +63,10 @@ BossStarLight_LoadBoss:
 		dbf	d1,BossStarLight_Loop	; repeat sequence 3 more times
 
 loc_1895C:
-		lea		(v_lvlobjspace).w,a1							; FixBugs -- Formerly (v_objspace+object_size*1)
+		lea		(v_lvlobjspace).w,a1	; FixBugs -- Formerly (v_objspace+object_size*1)
 		lea		objoff_2A(a0),a2
 		moveq	#id_Seesaw,d0
-		moveq	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d1	; FixBugs: Normally only covered the first half of object RAM.
+		moveq	#v_lvlobjcount,d1		; FixBugs: Normally only covered the first half of object RAM.
 
 loc_18968:
 		cmp.b	obID(a1),d0
@@ -228,18 +228,18 @@ BossStarLight_MakeBall:
 		lea		objoff_2A(a0),a1
 		move.w	(a1,d0.w),d0
 		movea.l	d0,a2
-		lea		(v_lvlobjspace).w,a1							; FixBugs -- Formerly (v_objspace+object_size*1)
-		moveq	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d1	; FixBugs: Normally only covered the first half of object RAM.
+		lea		(v_lvlobjspace).w,a1	; FixBugs -- Formerly (v_objspace+object_size*1)
+		moveq	#v_lvlobjcount,d1		; FixBugs: Normally only covered the first half of object RAM.
 
 loc_18AFA:
 		cmp.l	objoff_3C(a1),d0
 		beq.s	loc_18B40
 		adda.w	#object_size,a1
-		dbf	d1,loc_18AFA
+		dbf		d1,loc_18AFA
 
 		move.l	a0,-(sp)
-		lea	(a2),a0
-		jsr	(FindNextFreeObj).l
+		lea		(a2),a0
+		jsr		(FindNextFreeObj).l
 		movea.l	(sp)+,a0
 		bne.s	loc_18B40
 		move.b	#id_BossSpikeball,obID(a1) ; load spiked ball object

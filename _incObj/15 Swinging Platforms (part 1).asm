@@ -71,7 +71,7 @@ Swing_Main:	; Routine 0
 	; Instead of calling FindNextFreeObj, we're going to do one pass from the start.
 .startloop
 		lea		(v_lvlobjspace).w,a1
-		move.w	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d0
+		move.w	#v_lvlobjcount,d0
 
 .makechain:
 		tst.b	obID(a1)				; is object RAM	slot empty?

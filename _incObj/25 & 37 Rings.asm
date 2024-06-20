@@ -151,7 +151,7 @@ RLoss_Count:	; Routine 0
 		bmi.s	.resetcounter		; if only one ring is needed, branch and skip EVERYTHING below altogether
 		; Here we begin what's replacing SingleObjLoad, in order to avoid resetting its d0 every time an object is created.
 		lea		(v_lvlobjspace).w,a1
-		move.w	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d0
+		move.w	#v_lvlobjcount,d0
 
 .loop:
 		; REMOVE FindFreeObj. It's the routine that causes such slowdown

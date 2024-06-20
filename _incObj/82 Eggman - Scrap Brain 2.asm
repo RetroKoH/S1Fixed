@@ -135,22 +135,17 @@ SEgg_FindBlocks:
 		or.w	obVelY(a0),d0
 		bne.s	loc_199D0
 
-	if FixBugs
-		lea	(v_lvlobjspace-object_size).w,a1
-		moveq	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d0
-	else
-		lea	(v_objspace).w,a1 ; Nonsensical starting point, since dynamic object allocations begin at v_lvlobjspace.
-		moveq	#(v_objend-(v_objspace+object_size*1))/object_size/2-1,d0	; Nonsensical length, it only covers the first half of object RAM.
-	endif
+		lea		(v_lvlobjspace-object_size).w,a1	; FixBugs
+		moveq	#v_lvlobjcount,d0					; FixBugs - Normally only covered the first half of object RAM.
 		moveq	#object_size,d1
 
 SEgg_FindLoop:
-		adda.w	d1,a1		; jump to next object RAM
-		cmpi.b	#id_FalseFloor,obID(a1) ; is object a block? (object $83)
-		dbeq	d0,SEgg_FindLoop ; if not, repeat (max	$3E times)
+		adda.w	d1,a1							; jump to next object RAM
+		cmpi.b	#id_FalseFloor,obID(a1)			; is object a block? (object $83)
+		dbeq	d0,SEgg_FindLoop				; if not, repeat (max	$3E times)
 
 		bne.s	loc_199D0
-		move.w	#"GO",obSubtype(a1) ; set block to disintegrate
+		move.w	#"GO",obSubtype(a1)				; set block to disintegrate
 		addq.b	#2,ob2ndRout(a0)
 		move.b	#1,obAnim(a0)
 

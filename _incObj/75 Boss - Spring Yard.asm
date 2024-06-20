@@ -353,8 +353,8 @@ loc_19446:
 
 BossSpringYard_FindBlocks:
 		clr.w	objoff_36(a0)
-		lea		(v_lvlobjspace).w,a1							; Fixed from (v_objspace+object_size*1)
-		moveq	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d0	; Fixed. Originally only covered the first half of object RAM.
+		lea		(v_lvlobjspace).w,a1	; Fixed from (v_objspace+object_size*1)
+		moveq	#v_lvlobjcount,d0		; Fixed. Originally only covered the first half of object RAM.
 		moveq	#id_BossBlock,d1
 		move.b	objoff_34(a0),d2
 

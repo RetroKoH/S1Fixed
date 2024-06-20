@@ -104,8 +104,8 @@ OPL_ClrList:
 ; ---------------------------------------------------------------------------
 
 OPL_Next:
-		cmpi.w	#$FF00,(v_limittop2).w	; is vertical wrapping enabled?
-		bne.s	ObjMan_Main_NoYWrap		; if not, branch
+		tst.w	(v_limitbtm1).w			; does this level y-wrap?
+		bpl.s	ObjMan_Main_NoYWrap		; if not, branch
 		lea		(ChkLoadObj_YWrap).l,a6	; set object loading routine
 		move.w	(v_screenposy).w,d3
 		andi.w	#$FF80,d3				; get coarse value
@@ -244,7 +244,7 @@ ObjPosLoad_SameXRange:
 		bge.s	ObjPosLoad_GoingDown		; if the player is moving down
  
 	; if the player is moving up
-		cmpi.w	#$FF00,(v_limittop2).w	; is vertical wrapping enabled?
+		tst.w	(v_limittop2).w	; does the level y-wrap?
 		bne.s	ObjMan_GoingUp_NoYWrap	; if not, branch
 		tst.w	d6
 		bne.s	ObjMan_GoingUp_YWrap
@@ -266,8 +266,8 @@ ObjMan_GoingUp_NoYWrap:
 ; ---------------------------------------------------------------------------
  
 ObjPosLoad_GoingDown:
-		cmpi.w	#$FF00,(v_limittop2).w		; is vertical wrapping enabled?
-		bne.s	ObjMan_GoingDown_NoYWrap	; if not, branch
+		tst.w	(v_limittop2).w				; does the level y-wrap?
+		bpl.s	ObjMan_GoingDown_NoYWrap	; if not, branch
 		tst.w	(v_screenposy_last).w
 		bne.s	ObjMan_GoingDown_YWrap
 		cmpi.w	#$80,d6
@@ -319,10 +319,12 @@ OPLBack8:	; check, if current object needs to be loaded
 		andi.w	#3,d2			; get object's render flags and status
 		move.b	d2,obRender(a1)
 		move.b	d2,obStatus(a1)
-		move.b	2(a0),obID(a1)
+		move.b	2(a0),d0
+		andi.b	#$7F,d0
+		move.b	d0,obID(a1)
 		move.b	3(a0),obSubtype(a1)
 		move.w	a3,obRespawnNo(a1)
-		jsr		(FindFreeObj).l			; find new object slot
+		bra.w	FindFreeObj				; find new object slot
 		bne.s	ObjPosLoad_SameYRange	; brach, if there are none left
 OPL8:
 		addq.w	#6,a0					; address of next object
@@ -385,7 +387,9 @@ LoadObj_YWrap:
 	andi.w	#3,d2	; get render flags and status
 	move.b	d2,obRender(a1)
 	move.b	d2,obStatus(a1)
-	move.b	(a0)+,obID(a1)
+	move.b	(a0)+,d0
+	andi.b	#$7F,d0
+	move.b	d0,obID(a1)
 	move.b	(a0)+,obSubtype(a1)
 	move.w	a3,obRespawnNo(a1)
 	bra.s	FindFreeObj		; find new object slot
@@ -426,7 +430,9 @@ LoadObj:
 	andi.w	#3,d2		; get render flags and status
 	move.b	d2,obRender(a1)
 	move.b	d2,obStatus(a1)
-    move.b	(a0)+,obID(a1)
+    move.b	(a0)+,d0
+	andi.b	#$7F,d0
+	move.b	d0,obID(a1)
 	move.b	(a0)+,obSubtype(a1)
 	move.w	a3,obRespawnNo(a1)
 	; continue straight to FindFreeObj

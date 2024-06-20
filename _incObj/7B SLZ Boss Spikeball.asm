@@ -173,10 +173,10 @@ locret_18EA8:
 ; ===========================================================================
 
 loc_18EAA:	; Routine 6
-		lea		(v_lvlobjspace).w,a1							; FixBugs -- Formerly (v_objspace+object_size*1)
+		lea		(v_lvlobjspace).w,a1	; FixBugs -- Formerly (v_objspace+object_size*1)
 		moveq	#id_BossStarLight,d0
 		moveq	#object_size,d1
-		moveq	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d2	; FixBugs: Normally only covered the first half of object RAM.
+		moveq	#v_lvlobjcount,d2		; FixBugs: Normally only covered the first half of object RAM.
 
 loc_18EB4:
 		cmp.b	obID(a1),d0

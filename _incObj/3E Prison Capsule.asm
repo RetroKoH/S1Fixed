@@ -208,10 +208,10 @@ Pri_Animals:	; Routine $C
 ; ===========================================================================
 
 Pri_EndAct:	; Routine $E
-		moveq	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d0	; Bugfix -- Originally it only covered the first half of object RAM.
+		moveq	#v_lvlobjcount,d0		; Bugfix -- Originally it only covered the first half of object RAM.
 		moveq	#id_Animals,d1
 		moveq	#object_size,d2
-		lea		(v_lvlobjspace).w,a1					; Bugfix -- Originally was v_objspace+object_size*1. Nonsensical starting point, since dynamic object allocations begin at v_lvlobjspace.
+		lea		(v_lvlobjspace).w,a1	; Bugfix -- Originally was v_objspace+object_size*1. Nonsensical starting point, since dynamic object allocations begin at v_lvlobjspace.
 
 .findanimal:
 		cmp.b	obID(a1),d1		; is object $28	(animal) loaded?

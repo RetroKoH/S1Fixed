@@ -4779,7 +4779,7 @@ loc_8486:
 		subq.w	#1,d1				; decrement for the first ring created
 	; Here we begin what's replacing SingleObjLoad, in order to avoid resetting its d0 every time an object is created.
 		lea		(v_lvlobjspace).w,a1
-		move.w	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d0
+		move.w	#v_lvlobjcount,d0
 
 	; REMOVE FindFreeObj. It's the routine that causes such slowdown
 .loop:
@@ -5459,8 +5459,8 @@ Map_Smash:	include	"_maps/Smashable Walls.asm"
 
 
 ExecuteObjects:
-		lea	(v_objspace).w,a0 ; set address for object RAM
-		moveq	#(v_objend-v_objspace)/object_size-1,d7
+		lea		(v_objspace).w,a0 ; set address for object RAM
+		moveq	#v_allobjcount,d7
 		moveq	#0,d0
 		cmpi.b	#6,(v_player+obRoutine).w
 		bhs.s	loc_D362
@@ -5485,9 +5485,9 @@ loc_D362:
 		cmpi.b	#$A,(v_player+obRoutine).w		; Has Sonic drowned?
 		beq.s	loc_D348						; If so, run objects a little longer
 	; Drowning Fix End
-		moveq	#(v_lvlobjspace-v_objspace)/object_size-1,d7
+		moveq	#v_rsvobjcount,d7	; Run through reserved obj space (before level objects)
 		bsr.s	loc_D348
-		moveq	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d7
+		moveq	#v_lvlobjcount,d7	; Run through level obj space
 
 loc_D368:
 		moveq	#0,d0

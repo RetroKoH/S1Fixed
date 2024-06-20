@@ -38,7 +38,7 @@ Orb_Main:	; Routine 0
 	; RetroKoH Object Load Optimization -- Based on Spirituinsanum Guides
 	; Here we begin what's replacing FindNextFreeObj. It'll be quicker to loop through here.
 		lea		(v_lvlobjspace).w,a1
-		move.w	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d0
+		move.w	#v_lvlobjcount,d0
 
 .loop:
 		tst.b	obID(a1)				; is object RAM	slot empty?

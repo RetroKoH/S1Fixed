@@ -29,8 +29,8 @@ ReactToItem:
 	; Ducking Size Fix end
 		move.w	#$10,d4
 		add.w	d5,d5
-		lea		(v_lvlobjspace).w,a1					; set object RAM start address
-		move.w	#(v_lvlobjend-v_lvlobjspace)/$40-1,d6	; (objRAM / objSize) - 1 ($5F)
+		lea		(v_lvlobjspace).w,a1	; set object RAM start address
+		move.w	#v_lvlobjcount,d6		; (objRAM / objSize) - 1 ($5F)
 
 .loop:
 		tst.b	obRender(a1)

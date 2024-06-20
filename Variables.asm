@@ -105,9 +105,13 @@ v_endcardtime	= v_endcard+object_size*4	; object variable space for the level re
 v_endcardring	= v_endcard+object_size*5	; object variable space for the level results card ring bonus tally ($40 bytes)
 v_endcardoval	= v_endcard+object_size*6	; object variable space for the level results card oval ($40 bytes)
 
-v_lvlobjspace	= v_objspace+object_size*32	; level object variable space ($1800 bytes)
+v_lvlobjspace	= v_objspace+object_size*32	; level object variable space ($60 objects, $1800 bytes)
 v_lvlobjend		= v_lvlobjspace+object_size*96
 v_objend		= v_lvlobjend
+
+v_rsvobjcount	= (v_lvlobjspace-v_objspace)/object_size-1
+v_lvlobjcount	= (v_lvlobjend-v_lvlobjspace)/object_size-1	; $5F
+v_allobjcount	= (v_objend-v_objspace)/object_size-1
 
 ; Special Stage objects
 v_ssrescard		= v_objspace+object_size*23	; object variable space for the Special Stage results card ($140 bytes)
