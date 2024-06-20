@@ -5991,16 +5991,15 @@ Sonic_Main:	; Routine 0
 		move.w	#$100,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#$18,obActWid(a0)
 		move.b	#4,obRender(a0)
-		move.w	#$600,(v_sonspeedmax).w ; Sonic's top speed
-		move.w	#$C,(v_sonspeedacc).w ; Sonic's acceleration
-		move.w	#$80,(v_sonspeeddec).w ; Sonic's deceleration
+		lea     (v_sonspeedmax).w,a2	; Load Sonic_top_speed into a2
+		bsr.w   ApplySpeedSettings		; Fetch Speed settings
 
 Sonic_Control:	; Routine 2
-		tst.w	(f_debugmode).w	; is debug cheat enabled?
-		beq.s	loc_12C58	; if not, branch
-		btst	#bitB,(v_jpadpress1).w ; is button B pressed?
-		beq.s	loc_12C58	; if not, branch
-		move.w	#1,(v_debuguse).w ; change Sonic into a ring/item
+		tst.w	(f_debugmode).w			; is debug cheat enabled?
+		beq.s	loc_12C58				; if not, branch
+		btst	#bitB,(v_jpadpress1).w	; is button B pressed?
+		beq.s	loc_12C58				; if not, branch
+		move.w	#1,(v_debuguse).w		; change Sonic into a ring/item
 		clr.b	(f_lockctrl).w
 		rts	
 ; ===========================================================================
@@ -6140,6 +6139,7 @@ loc_12EA6:
 		include	"_anim/Sonic.asm"
 		include	"_incObj/Sonic LoadGfx.asm"
 
+		include "_incObj/sub ApplySpeedSettings.asm"
 		include	"_incObj/0A Drowning Countdown.asm"
 
 

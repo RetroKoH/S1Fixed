@@ -22,26 +22,24 @@ Sonic_Water:
 		bsr.w	ResumeMusic
 		move.b	#id_DrownCount,(v_sonicbubbles).w ; load bubbles object from Sonic's mouth
 		move.b	#$81,(v_sonicbubbles+obSubtype).w
-		move.w	#$300,(v_sonspeedmax).w ; change Sonic's top speed
-		move.w	#6,(v_sonspeedacc).w ; change Sonic's acceleration
-		move.w	#$40,(v_sonspeeddec).w ; change Sonic's deceleration
-		asr	obVelX(a0)
-		asr	obVelY(a0)
-		asr	obVelY(a0)	; slow Sonic
+		lea     (v_sonspeedmax).w,a2	; Load Sonic_top_speed into a2
+		bsr.w   ApplySpeedSettings		; Fetch Speed settings
+		asr		obVelX(a0)
+		asr		obVelY(a0)
+		asr		obVelY(a0)	; slow Sonic
 		beq.s	.exit		; branch if Sonic stops moving
 		move.b	#id_Splash,(v_splash).w ; load splash object
 		move.w	#sfx_Splash,d0
-		jmp	(PlaySound_Special).l	 ; play splash sound
+		jmp		(PlaySound_Special).l	 ; play splash sound
 ; ===========================================================================
 
 .abovewater:
 		bclr	#6,obStatus(a0)
 		beq.s	.exit
 		bsr.w	ResumeMusic
-		move.w	#$600,(v_sonspeedmax).w ; restore Sonic's speed
-		move.w	#$C,(v_sonspeedacc).w ; restore Sonic's acceleration
-		move.w	#$80,(v_sonspeeddec).w ; restore Sonic's deceleration
-		asl	obVelY(a0)
+		lea     (v_sonspeedmax).w,a2	; Load Sonic_top_speed into a2
+		bsr.w   ApplySpeedSettings		; Fetch Speed settings
+		asl		obVelY(a0)
 		beq.w	.exit
 		move.b	#id_Splash,(v_splash).w ; load splash object
 		cmpi.w	#-$1000,obVelY(a0)

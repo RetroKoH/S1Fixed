@@ -182,7 +182,7 @@ Debug_ChgItem:
 		beq.s	.backtonormal			; if not, branch
 		jsr		(FindFreeObj).l
 		bne.s	.backtonormal
-		clr.b	(v_objstate+2).w		; Mercury Debug Improvements
+		clr.b	(v_objstate+2).w		; Mercury Debug Improvements -- Allows us to place more rings/boxes, etc.
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		_move.b	obMap(a0),obID(a1)		; create object
@@ -218,6 +218,8 @@ Debug_ChgItem:
 		move.b	#2,obRoutine(a1)
 		move.b	#$13,obHeight(a1)
 		move.b	#9,obWidth(a1)
+		lea     (v_sonspeedmax).w,a2				; Load Sonic_top_speed into a2
+		jsr		(ApplySpeedSettings).l				; Fetch Speed settings
 		move.w	(v_limittopdb).w,(v_limittop2).w	; restore level boundaries
 		move.w	(v_limitbtmdb).w,(v_limitbtm1).w
 .stayindebug:

@@ -140,15 +140,20 @@
  Name: S2 HUD Display
  Credit: RetroKoH
  Function: HUD is drawn as a non-object entity
- Date 2014-06-13
+ Date 2024-06-13
 
  Name: S3K Rings Manager
  Credit: Shobiz and Pokepunch (SCHG), ProjectFM (Hivebrain guide), MarkeyJester (bugfix), RetroKoH (Initial S2 Port)
- Date 2014-06-14
+ Date 2024-06-14
 
  Name: S3K Object Manager -- (Needs further testing)
- Credit: ProjectFM (Hivebrain guide), MoDule (SCHG S2 guide), RetroKoH (Initial S2 Port)
- Date 2014-06-15
+ Credit: ProjectFM (Hivebrain guide), MoDule (SCHG S2 guide), DeltaWooloo (Bugfixes), RetroKoH (Initial S2 Port)
+ Date 2024-06-15
+ 
+ Name: Speed Settings Table
+ Credit: Redhotsonic/MoDule
+ Function: Resolves Speed Setting issues such as having Speed Shoes underwater, or select instances of Debug Mode usage.
+ Date: 2024-06-20
 
 # Visual Changes
  Name: Title Screen Tweaks

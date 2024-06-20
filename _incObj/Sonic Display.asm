@@ -44,9 +44,8 @@ Sonic_Display:
 		beq.s	.exit
 		subq.w	#1,shoetime(a0)	; subtract 1 from time
 		bne.s	.exit
-		move.w	#$600,(v_sonspeedmax).w ; restore Sonic's speed
-		move.w	#$C,(v_sonspeedacc).w ; restore Sonic's acceleration
-		move.w	#$80,(v_sonspeeddec).w ; restore Sonic's deceleration
+		lea     (v_sonspeedmax).w,a2	; Load Sonic_top_speed into a2
+		bsr.w   ApplySpeedSettings		; Fetch Speed settings
 		clr.b	(v_shoes).w	; cancel speed shoes
 		move.w	#bgm_Slowdown,d0
 		jmp		(PlaySound).l	; run music at normal speed

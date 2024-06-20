@@ -76,9 +76,11 @@ Pow_ChkShoes:
 
 		move.b	#1,(v_shoes).w	; speed up the BG music
 		move.w	#$4B0,(v_player+$34).w	; time limit for the power-up
-		move.w	#$C00,(v_sonspeedmax).w ; change Sonic's top speed
-		move.w	#$18,(v_sonspeedacc).w	; change Sonic's acceleration
-		move.w	#$80,(v_sonspeeddec).w	; change Sonic's deceleration
+		movem.l a0-a2,-(sp)				; Move a0, a1 and a2 onto stack
+		lea     (v_player).w,a0			; Load Sonic to a0
+		lea	(v_sonspeedmax).w,a2		; Load Sonic_top_speed into a2
+		jsr	ApplySpeedSettings			; Fetch Speed settings
+		movem.l (sp)+,a0-a2				; Move a0, a1 and a2 from stack
 		move.w	#bgm_Speedup,d0
 		jmp		(PlaySound).l		; Speed	up the music
 ; ===========================================================================
