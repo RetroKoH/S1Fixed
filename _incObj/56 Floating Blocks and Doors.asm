@@ -365,7 +365,7 @@ FBlock_Action:	; Routine 2
 		move.w	obRespawnNo(a0),d0	; get address in respawn table
 		beq.s	.loc_105A2			; if it's zero, don't remember object
 		movea.w	d0,a2				; load address into a2
-		bclr	#0,(a2)
+		bset	#0,(a2)
 	; End
 		bra.s	.loc_105A2
 ; ===========================================================================

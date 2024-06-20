@@ -245,7 +245,7 @@ ObjPosLoad_SameXRange:
  
 	; if the player is moving up
 		tst.w	(v_limittop2).w	; does the level y-wrap?
-		bne.s	ObjMan_GoingUp_NoYWrap	; if not, branch
+		bpl.s	ObjMan_GoingUp_NoYWrap	; if not, branch
 		tst.w	d6
 		bne.s	ObjMan_GoingUp_YWrap
 		cmpi.w	#$80,(v_screenposy_last).w
