@@ -1,1 +1,0 @@
-After implementing the S3K Object Manager, A Caterkiller and the two lava falls in MZ2 (after the breakable blocks) sometimes fail to spawn in. The far left lava fall always fails to spawn.

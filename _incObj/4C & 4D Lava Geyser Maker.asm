@@ -47,7 +47,7 @@ GMake_Wait:	; Routine 2
 
 .cancel:
 		; FixBugs - Deletion has been changed to eliminate potential double-delete and display-and-delete bugs.
-		out_of_range.w	DeleteObject
+		offscreen.w	DeleteObject
 		rts	
 ; ===========================================================================
 
@@ -81,13 +81,13 @@ GMake_ChkType:	; Routine 4
 		beq.s	GMake_Display	; if yes, branch
 		addq.b	#2,obRoutine(a0)
 		; FixBugs - Deletion has been changed to eliminate potential double-delete and display-and-delete bugs.
-		out_of_range.w	DeleteObject
+		offscreen.w	DeleteObject
 		rts	
 ; ===========================================================================
 
 GMake_Display:	; Routine 8
 		; FixBugs - Deletion has been changed to eliminate potential double-delete and display-and-delete bugs.
-		out_of_range.w	DeleteObject
+		offscreen.w	DeleteObject
 		lea	(Ani_Geyser).l,a1
 		bsr.w	AnimateSprite
 		bsr.w	DisplaySprite
@@ -100,7 +100,7 @@ GMake_Delete:	; Routine $A
 		tst.b	obSubtype(a0)
 		beq.w	DeleteObject
 		; FixBugs - Deletion has been changed to eliminate potential double-delete and display-and-delete bugs.
-		out_of_range.w	DeleteObject
+		offscreen.w	DeleteObject
 		rts	
 
 
