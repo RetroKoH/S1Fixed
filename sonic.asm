@@ -36,6 +36,7 @@ AirSpeedCapEnabled: = 0			; if set to 1, the air speed cap is active
 RollJumpLockActive: = 0			; if set to 1, the original roll jump lock is maintained
 SpikeBugFix: = 1				; if set to 1, the spike "bug" is fixed
 GHZForeverPal: = 1				; if set to 1, GHZ is set to Sonic 1 Forever's palette
+EndLevelFadeMusic: = 1			; if set to 1, music will fade out as the level ends (Signpost or Prison Capsule)
 
 ; ===========================================================================
 

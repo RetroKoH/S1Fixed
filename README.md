@@ -53,6 +53,12 @@
  Function: Toggles GHZ palette between original and Sonic 1 Forever's altered bg water.
  Date: 2024-06-18
  Variable: GHZForeverPal
+ 
+ Name: End-of-Level Music Fade
+ Credit: RetroKoH
+ Function: Toggles whether music will fade out after the level ends.
+ Date: 2024-06-20
+ Variable: EndLevelFadeMusic
 
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format

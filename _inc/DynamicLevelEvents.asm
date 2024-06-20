@@ -238,6 +238,7 @@ locret_6F64:
 ; ===========================================================================
 
 DLE_SBZ3:
+; Would this warrant a music fade mod???
 		cmpi.w	#$D00,(v_screenposx).w
 		blo.s	locret_6F8C
 		cmpi.w	#$18,(v_player+obY).w ; has Sonic reached the top of the level?
