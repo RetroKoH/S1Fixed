@@ -324,7 +324,7 @@ OPLBack8:	; check, if current object needs to be loaded
 		move.b	d0,obID(a1)
 		move.b	3(a0),obSubtype(a1)
 		move.w	a3,obRespawnNo(a1)
-		bra.w	FindFreeObj				; find new object slot
+		bsr.w	FindFreeObj				; find new object slot
 		bne.s	ObjPosLoad_SameYRange	; brach, if there are none left
 OPL8:
 		addq.w	#6,a0					; address of next object
