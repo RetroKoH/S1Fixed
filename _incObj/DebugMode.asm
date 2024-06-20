@@ -6,9 +6,10 @@ DebugMode:
 		moveq	#0,d0
 		move.b	(v_debuguse).w,d0
 		move.w	Debug_Index(pc,d0.w),d1
-		jmp	Debug_Index(pc,d1.w)
+		jmp		Debug_Index(pc,d1.w)
 ; ===========================================================================
-Debug_Index:	dc.w Debug_Main-Debug_Index
+Debug_Index:
+		dc.w Debug_Main-Debug_Index
 		dc.w Debug_Action-Debug_Index
 ; ===========================================================================
 
@@ -45,8 +46,8 @@ Debug_Main:	; Routine 0
 		cmpi.b	#id_Special,(v_gamemode).w	; is game mode $10 (special stage)?
 		bne.s	.islevel					; if not, branch
 
-		clr.w	(v_ssrotate).w			; stop special stage rotating
-		clr.w	(v_ssangle).w			; make special stage "upright"
+		clr.w	(v_ssrotate).w				; stop special stage rotating
+		clr.w	(v_ssangle).w				; make special stage "upright"
 		moveq	#6,d0						; use 6th debug	item list
 		bra.s	.selectlist
 ; ===========================================================================
@@ -60,9 +61,9 @@ Debug_Main:	; Routine 0
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2
 		move.w	(a2)+,d6
-		cmp.b	(v_debugitem).w,d6	; have you gone past the last item?
-		bhi.s	.noreset			; if not, branch
-		clr.b	(v_debugitem).w	; back to start of list
+		cmp.b	(v_debugitem).w,d6			; have you gone past the last item?
+		bhi.s	.noreset					; if not, branch
+		clr.b	(v_debugitem).w				; back to start of list
 
 .noreset:
 		bsr.w	Debug_ShowItem
@@ -78,12 +79,12 @@ Debug_Action:	; Routine 2
 		move.b	(v_zone).w,d0
 
 .isntlevel:
-		lea	(DebugList).l,a2
+		lea		(DebugList).l,a2
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2
 		move.w	(a2)+,d6
 		bsr.w	Debug_Control
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
@@ -154,23 +155,23 @@ loc_1D066:
 		move.l	d3,obX(a0)
 
 Debug_ChgItem:
-		btst	#bitA,(v_jpadhold1).w ; is button A pressed?
-		beq.s	.createitem	; if not, branch
-		btst	#bitC,(v_jpadpress1).w ; is button C pressed?
-		beq.s	.nextitem	; if not, branch
-		subq.b	#1,(v_debugitem).w ; go back 1 item
+		btst	#bitA,(v_jpadhold1).w	; is button A pressed?
+		beq.s	.createitem				; if not, branch
+		btst	#bitC,(v_jpadpress1).w	; is button C pressed?
+		beq.s	.nextitem				; if not, branch
+		subq.b	#1,(v_debugitem).w		; go back 1 item
 		bcc.s	.display
 		add.b	d6,(v_debugitem).w
 		bra.s	.display
 ; ===========================================================================
 
 .nextitem:
-		btst	#bitA,(v_jpadpress1).w ; is button A pressed?
-		beq.s	.createitem	; if not, branch
-		addq.b	#1,(v_debugitem).w ; go forwards 1 item
+		btst	#bitA,(v_jpadpress1).w	; is button A pressed?
+		beq.s	.createitem				; if not, branch
+		addq.b	#1,(v_debugitem).w		; go forwards 1 item
 		cmp.b	(v_debugitem).w,d6
 		bhi.s	.display
-		clr.b	(v_debugitem).w ; loop back to first item
+		clr.b	(v_debugitem).w			; loop back to first item
 
 .display:
 		bra.w	Debug_ShowItem
@@ -196,29 +197,40 @@ Debug_ChgItem:
 ; ===========================================================================
 
 .backtonormal:
-		btst	#bitB,(v_jpadpress1).w ; is button B pressed?
-		beq.s	.stayindebug	; if not, branch
-		moveq	#0,d0
-		move.w	d0,(v_debuguse).w ; deactivate debug mode
-		move.l	#Map_Sonic,(v_player+obMap).w
-		move.w	#$780,(v_player+obGfx).w
-		move.b	d0,(v_player+obAnim).w
-		move.w	d0,obX+2(a0)
-		move.w	d0,obY+2(a0)
-		move.w	(v_limittopdb).w,(v_limittop2).w ; restore level boundaries
+	; RetroKoH Debug Mode Fix
+		btst	#bitB,(v_jpadpress1).w				; is button B pressed?
+		beq.s	.stayindebug						; if not, branch
+		clr.w	(v_debuguse).w						; deactivate debug mode
+		lea		(v_player).w,a1
+		cmpi.b	#id_Special,(v_gamemode).w			; are you in the special stage?
+		beq.s	.special							; if yes, branch
+
+		move.l	#Map_Sonic,obMap(a1)
+		move.w	#ArtTile_Sonic,obGfx(a1)
+		clr.b	obAnim(a1)
+		clr.w	obX+2(a1)
+		clr.w	obY+2(a1)
+		clr.b	(f_playerctrl).w					; unlock player in case of drowning
+		clr.w	obVelX(a1)
+		clr.w	obVelY(a1)
+		clr.w	obInertia(a1)
+		move.b	#2,obStatus(a1)
+		move.b	#2,obRoutine(a1)
+		move.b	#$13,obHeight(a1)
+		move.b	#9,obWidth(a1)
+		move.w	(v_limittopdb).w,(v_limittop2).w	; restore level boundaries
 		move.w	(v_limitbtmdb).w,(v_limitbtm1).w
-		cmpi.b	#id_Special,(v_gamemode).w ; are you in the special stage?
-		bne.s	.stayindebug	; if not, branch
-
-		clr.w	(v_ssangle).w
-		move.w	#$40,(v_ssrotate).w ; set new level rotation speed
-		move.l	#Map_Sonic,(v_player+obMap).w
-		move.w	#$780,(v_player+obGfx).w
-		move.b	#id_Roll,(v_player+obAnim).w
-		bset	#2,(v_player+obStatus).w
-		bset	#1,(v_player+obStatus).w
-
 .stayindebug:
+		rts
+
+.special
+		clr.w	(v_ssangle).w
+		move.w	#$40,(v_ssrotate).w					; set new level rotation speed
+		move.l	#Map_Sonic,obMap(a1)
+		move.w	#ArtTile_Sonic,obGfx(a1)
+		move.b	#id_Roll,obAnim(a1)
+		bset	#2,obStatus(a1)
+		bset	#1,obStatus(a1)
 		rts	
 ; End of function Debug_Control
 
@@ -230,8 +242,8 @@ Debug_ShowItem:
 		moveq	#0,d0
 		move.b	(v_debugitem).w,d0
 		lsl.w	#3,d0
-		move.l	(a2,d0.w),obMap(a0) ; load mappings for item
-		move.w	6(a2,d0.w),obGfx(a0) ; load VRAM setting for item
-		move.b	5(a2,d0.w),obFrame(a0) ; load frame number for item
+		move.l	(a2,d0.w),obMap(a0)		; load mappings for item
+		move.w	6(a2,d0.w),obGfx(a0)	; load VRAM setting for item
+		move.b	5(a2,d0.w),obFrame(a0)	; load frame number for item
 		rts	
 ; End of function Debug_ShowItem

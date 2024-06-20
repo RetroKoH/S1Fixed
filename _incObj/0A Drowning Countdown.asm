@@ -240,10 +240,10 @@ Drown_Countdown:; Routine $A
 ; ===========================================================================
 .loc_13F86:
 	; RHS Drowning Fix
-				subq.w	#1,$2C(a0)
-				bne.s	.nochange		; Make it jump straight to this location
-				move.b	#6,(v_player+obRoutine).w
-				rts
+		subq.w	#1,$2C(a0)
+		bne.s	.nochange		; Make it jump straight to this location
+		move.b	#6,(v_player+obRoutine).w
+		rts
 	; Drowning Fix End
 ; ===========================================================================
 

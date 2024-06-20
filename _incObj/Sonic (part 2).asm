@@ -3,7 +3,18 @@
 ; ---------------------------------------------------------------------------
 
 Sonic_Hurt:	; Routine 4
-		jsr	(SpeedToPos).l
+	; RetroKoH Debug Mode Addition
+		tst.w	(f_debugmode).w			; is debug cheat enabled?
+		beq.s	Sonic_Hurt_Normal		; if not, branch
+		btst	#bitB,(v_jpadpress1).w	; is button B pressed?
+		beq.s	Sonic_Hurt_Normal		; if not, branch
+		move.w	#1,(v_debuguse).w		; change Sonic into a ring/item
+		clr.b	(f_lockctrl).w
+		rts
+
+Sonic_Hurt_Normal:
+	; Debug Mode Addition End
+		jsr		(SpeedToPos).l
 		addi.w	#$30,obVelY(a0)
 		btst	#6,obStatus(a0)
 		beq.s	loc_1380C
@@ -16,7 +27,7 @@ loc_1380C:
 		bsr.w	Sonic_Water				; Mercury Hurt Splash Fix
 		bsr.w	Sonic_Animate
 		bsr.w	Sonic_LoadGfx
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	stop Sonic falling after he's been hurt
@@ -30,10 +41,9 @@ Sonic_HurtStop:
 		bsr.w	Sonic_Floor
 		btst	#1,obStatus(a0)
 		bne.s	locret_13860
-		moveq	#0,d0
-		move.w	d0,obVelY(a0)
-		move.w	d0,obVelX(a0)
-		move.w	d0,obInertia(a0)
+		clr.w	obVelY(a0)
+		clr.w	obVelX(a0)
+		clr.w	obInertia(a0)
 		move.b	#id_Walk,obAnim(a0)
 		subq.b	#2,obRoutine(a0)
 		move.w	#$78,objoff_30(a0)
@@ -47,12 +57,23 @@ locret_13860:
 ; ---------------------------------------------------------------------------
 
 Sonic_Death:	; Routine 6
+	; RetroKoH Debug Mode Addition
+		tst.w	(f_debugmode).w			; is debug cheat enabled?
+		beq.s	Sonic_Death_Normal		; if not, branch
+		btst	#bitB,(v_jpadpress1).w	; is button B pressed?
+		beq.s	Sonic_Death_Normal		; if not, branch
+		move.w	#1,(v_debuguse).w		; change Sonic into a ring/item
+		clr.b	(f_lockctrl).w
+		rts
+
+Sonic_Death_Normal:
+	; Debug Mode Addition End
 		bsr.w	GameOver
-		jsr	(ObjectFall).l
+		jsr		(ObjectFall).l
 		bsr.w	Sonic_RecordPosition
 		bsr.w	Sonic_Animate
 		bsr.w	Sonic_LoadGfx
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
@@ -67,7 +88,7 @@ GameOver:
 		clr.b	(f_timecount).w		; stop time counter
 
 	; Mercury Lives Over/Underflow Fix
-		cmpi.b	#0,(v_lives).w		; are lives at min?
+		tst.b	(v_lives).w			; are lives at 0?
 		beq.s	.skip
 		addq.b	#1,(f_lifecount).w	; update lives counter
 		subq.b	#1,(v_lives).w		; subtract 1 from number of lives
@@ -116,4 +137,32 @@ Sonic_ResetLevel:; Routine 8
 		move.w	#1,(f_restart).w ; restart the level
 
 locret_13914:
-		rts	
+		rts
+
+; ---------------------------------------------------------------------------
+; Sonic when he's drowning -- RHS Drowning Fix
+; ---------------------------------------------------------------------------
+
+; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
+
+
+Sonic_Drowned:
+	; RetroKoH Debug Mode Addition
+		tst.w	(f_debugmode).w			; is debug cheat enabled?
+		beq.s	Sonic_Drowned_Normal	; if not, branch
+		btst	#bitB,(v_jpadpress1).w	; is button B pressed?
+		beq.s	Sonic_Drowned_Normal	; if not, branch
+		move.w	#1,(v_debuguse).w		; change Sonic into a ring/item
+		clr.b	(f_lockctrl).w
+		clr.b	(f_nobgscroll).w  		; unlock the screen to reacquire control
+		movea.l	a0,a1
+		bra.w	ResumeMusic
+
+Sonic_Drowned_Normal:
+	; Debug Mode Addition End
+		bsr.w	SpeedToPos				; Make Sonic able to move
+		addi.w	#$10,obVelY(a0)			; Apply gravity
+		bsr.w	Sonic_RecordPosition	; Record position
+		bsr.s	Sonic_Animate			; Animate Sonic
+		bsr.w	Sonic_LoadGfx			; Load Sonic's DPLCs
+		bra.w	DisplaySprite			; And finally, display Sonic

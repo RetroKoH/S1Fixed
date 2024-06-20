@@ -2317,11 +2317,11 @@ Level_SkipTtlCard:
 		; No longer using a HUD object
 
 Level_ChkDebug:
-		tst.b	(f_debugcheat).w ; has debug cheat been entered?
-		beq.s	Level_ChkWater	; if not, branch
-		btst	#bitA,(v_jpadhold1).w ; is A button held?
-		beq.s	Level_ChkWater	; if not, branch
-		move.b	#1,(f_debugmode).w ; enable debug mode
+;		tst.b	(f_debugcheat).w		; has debug cheat been entered?
+;		beq.s	Level_ChkWater			; if not, branch
+;		btst	#bitA,(v_jpadhold1).w	; is A button held?
+;		beq.s	Level_ChkWater			; if not, branch
+		move.b	#1,(f_debugmode).w		; enable debug mode
 
 Level_ChkWater:
 		clr.w	(v_jpadhold2).w
@@ -6136,7 +6136,6 @@ loc_12EA6:
 		include	"_incObj/Sonic ResetOnFloor.asm"
 		include	"_incObj/Sonic (part 2).asm"
 		include	"_incObj/Sonic Loops.asm"
-		include "_incObj/Sonic Drowns.asm" 		; RHS Drowning Fix
 		include	"_incObj/Sonic Animate.asm"
 		include	"_anim/Sonic.asm"
 		include	"_incObj/Sonic LoadGfx.asm"
