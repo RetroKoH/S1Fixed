@@ -69,7 +69,7 @@ Bub_ChkWater:	; Routine 4
 		move.b	obAngle(a0),d0
 		addq.b	#1,obAngle(a0)
 		andi.w	#$7F,d0
-		lea	(Drown_WobbleData).l,a1
+		lea		(Drown_WobbleData).l,a1
 		move.b	(a1,d0.w),d0
 		ext.w	d0
 		add.w	bub_origX(a0),d0
@@ -81,12 +81,12 @@ Bub_ChkWater:	; Routine 4
 
 		bsr.w	ResumeMusic	; cancel countdown music
 		move.w	#sfx_Bubble,d0
-		jsr	(PlaySound_Special).l	; play collecting bubble sound
-		lea	(v_player).w,a1
+		jsr		(PlaySound_Special).l	; play collecting bubble sound
+		lea		(v_player).w,a1
 		clr.w	obVelX(a1)
 		clr.w	obVelY(a1)
 		clr.w	obInertia(a1)	; stop Sonic
-		move.b	#id_GetAir,obAnim(a1) ; use bubble-collecting animation
+		move.b	#aniID_GetAir,obAnim(a1) ; use bubble-collecting animation
 		move.w	#$23,objoff_3E(a1)
 		clr.b	objoff_3C(a1)
 		bclr	#5,obStatus(a1)
@@ -104,15 +104,15 @@ Bub_ChkWater:	; Routine 4
 		bsr.w	SpeedToPos
 		tst.b	obRender(a0)
 		bpl.s	.delete
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 
 .delete:
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 Bub_Display:	; Routine 6
-		lea	(Ani_Bub).l,a1
-		jsr	(AnimateSprite).l
+		lea		(Ani_Bub).l,a1
+		jsr		(AnimateSprite).l
 		tst.b	obRender(a0)
 		bpl.s	.delete
 		jmp	(DisplaySprite).l

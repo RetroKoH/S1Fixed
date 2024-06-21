@@ -3410,8 +3410,8 @@ End_MoveSon2:
 		move.w	d0,(v_jpadhold2).w ; stop Sonic moving
 		move.w	d0,(v_player+obInertia).w
 		move.b	#$81,(f_playerctrl).w ; lock controls and disable object interaction
-		move.b	#fr_Wait2,(v_player+obFrame).w
-		move.w	#(id_Wait<<8)+id_Wait,(v_player+obAnim).w ; use "standing" animation
+		move.b	#fr_SonWait2,(v_player+obFrame).w
+		move.w	#(aniID_Wait<<8)+aniID_Wait,(v_player+obAnim).w ; use "standing" animation
 		move.b	#3,(v_player+obTimeFrame).w
 		rts	
 ; ===========================================================================
@@ -4957,7 +4957,7 @@ Obj44_SolidWall2:
 		move.w	obY(a1),d3
 
 	; Mercury Ducking Size Fix	
-		cmpi.b	#id_Duck,obAnim(a1)
+		cmpi.b	#aniID_Duck,obAnim(a1)
 		bne.s	.skip
 		
 .short:
@@ -7736,7 +7736,7 @@ Nem_JapNames:	binclude	"artnem/Hidden Japanese Credits.nem"
 		even
 
 Map_Sonic:	include	"_maps/Sonic.asm"
-SonicDynPLC:	include	"_maps/Sonic - Dynamic Gfx Script.asm"
+SonicDynPLC:	include	"_maps/Sonic - DPLCs.asm"
 
 ; ---------------------------------------------------------------------------
 ; Uncompressed graphics	- Sonic

@@ -52,7 +52,7 @@ loc_131AA:
 		bclr	#2,obStatus(a0)
 		move.b	#$13,obHeight(a0)
 		move.b	#9,obWidth(a0)
-		move.b	#id_Wait,obAnim(a0)	; use "standing" animation
+		move.b	#aniID_Wait,obAnim(a0)	; use "standing" animation
 		subq.w	#5,obY(a0)
 
 loc_131CC:
@@ -104,7 +104,7 @@ Sonic_RollLeft:
 
 loc_1320A:
 		bset	#0,obStatus(a0)
-		move.b	#id_Roll,obAnim(a0)	; use "rolling" animation
+		move.b	#aniID_Roll,obAnim(a0)	; use "rolling" animation
 		rts	
 ; ===========================================================================
 
@@ -126,7 +126,7 @@ Sonic_RollRight:
 		move.w	obInertia(a0),d0
 		bmi.s	loc_1323A
 		bclr	#0,obStatus(a0)
-		move.b	#id_Roll,obAnim(a0) ; use "rolling" animation
+		move.b	#aniID_Roll,obAnim(a0) ; use "rolling" animation
 		rts	
 ; ===========================================================================
 

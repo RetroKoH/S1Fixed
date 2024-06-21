@@ -21,7 +21,7 @@ loc_137AE:
 		bclr	#2,obStatus(a0)
 		move.b	#$13,obHeight(a0)
 		move.b	#9,obWidth(a0)
-		move.b	#id_Walk,obAnim(a0) ; use running/walking animation
+		move.b	#aniID_Walk,obAnim(a0) ; use running/walking animation
 		subq.w	#5,obY(a0)
 
 loc_137E4:

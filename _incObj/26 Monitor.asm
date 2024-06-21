@@ -84,8 +84,8 @@ Mon_Solid:	; Routine 2
 		beq.w	loc_A25C
 		tst.w	obVelY(a1)
 		bmi.s	loc_A20A
-		cmpi.b	#id_Roll,obAnim(a1) ; is Sonic rolling?
-		beq.s	loc_A25C	; if yes, branch
+		cmpi.b	#aniID_Roll,obAnim(a1)	; is Sonic rolling?
+		beq.s	loc_A25C				; if yes, branch
 
 loc_A20A:
 		tst.w	d1
@@ -132,7 +132,7 @@ loc_A26A:
 		bclr	#5,obStatus(a1)
 
 Mon_Animate:	; Routine 6
-		lea	(Ani_Monitor).l,a1
+		lea		(Ani_Monitor).l,a1
 		bsr.w	AnimateSprite
 
 Mon_Display:	; Routine 8

@@ -63,7 +63,7 @@ Jun_Action:	; Routine 2
 		btst	#5,obStatus(a0)	; is Sonic pushing the disc?
 		beq.w	Jun_Display	; if not, branch
 
-		lea	(v_player).w,a1
+		lea		(v_player).w,a1
 		moveq	#$E,d1
 		move.w	obX(a1),d0
 		cmp.w	obX(a0),d0	; is Sonic to the left of the disc?
@@ -77,7 +77,7 @@ Jun_Action:	; Routine 2
 		move.b	d1,objoff_32(a0)
 		addq.b	#4,obRoutine(a0) ; goto Jun_Release next
 		move.b	#1,(f_playerctrl).w ; lock controls
-		move.b	#id_Roll,obAnim(a1) ; make Sonic use "rolling" animation
+		move.b	#aniID_Roll,obAnim(a1) ; make Sonic use "rolling" animation
 		move.w	#$800,obInertia(a1)
 		clr.w	obVelX(a1)
 		clr.w	obVelY(a1)
@@ -89,8 +89,8 @@ Jun_Action:	; Routine 2
 		bsr.w	Jun_ChgPos
 		add.w	d2,obX(a1)
 		add.w	d3,obY(a1)
-		asr	obX(a1)
-		asr	obY(a1)
+		asr		obX(a1)
+		asr		obY(a1)
 
 Jun_Display:	; Routine 4
 		bra.w	RememberState

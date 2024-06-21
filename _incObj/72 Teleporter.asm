@@ -57,7 +57,7 @@ loc_166E0:
 loc_1670E:
 		addq.b	#2,obRoutine(a0)
 		move.b	#$81,(f_playerctrl).w ; lock controls and disable object interaction
-		move.b	#id_Roll,obAnim(a1) ; use Sonic's rolling animation
+		move.b	#aniID_Roll,obAnim(a1) ; use Sonic's rolling animation
 		move.w	#$800,obInertia(a1)
 		clr.w	obVelX(a1)
 		clr.w	obVelY(a1)
@@ -68,7 +68,7 @@ loc_1670E:
 		move.w	obY(a0),obY(a1)
 		clr.b	objoff_32(a0)
 		move.w	#sfx_Roll,d0
-		jsr	(PlaySound_Special).l	; play Sonic rolling sound
+		jsr		(PlaySound_Special).l	; play Sonic rolling sound
 
 locret_1675C:
 		rts	

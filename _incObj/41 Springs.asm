@@ -80,7 +80,7 @@ Spring_BounceUp:
 		move.w	spring_pow(a0),obVelY(a1) ; move Sonic upwards
 		bset	#1,obStatus(a1)
 		bclr	#3,obStatus(a1)
-		move.b	#id_Spring,obAnim(a1) ; use "bouncing" animation
+		move.b	#aniID_Spring,obAnim(a1) ; use "bouncing" animation
 		move.b	#2,obRoutine(a1)
 		bclr	#3,obStatus(a0)
 		clr.b	obSolid(a0)
@@ -129,7 +129,7 @@ Spring_Flipped:
 		bchg	#0,obStatus(a1)
 		btst	#2,obStatus(a1)
 		bne.s	loc_DC56
-		move.b	#id_Walk,obAnim(a1)	; use walking animation
+		move.b	#aniID_Walk,obAnim(a1)	; use walking animation
 
 loc_DC56:
 		bclr	#5,obStatus(a0)

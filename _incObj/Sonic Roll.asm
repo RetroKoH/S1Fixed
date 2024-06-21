@@ -35,8 +35,8 @@ Sonic_ChkRoll:
 		bset	#2,obStatus(a0)
 		move.b	#$E,obHeight(a0)
 		move.b	#7,obWidth(a0)
-		move.b	#id_Roll,obAnim(a0)		; use "rolling" animation
-		move.b	#fr_Roll1,obFrame(a0)	; hard sets frame so no flicker when roll in tunnels - Mercury Roll Frame Fix
+		move.b	#aniID_Roll,obAnim(a0)		; use "rolling" animation
+		move.b	#fr_SonRoll1,obFrame(a0)	; hard sets frame so no flicker when roll in tunnels - Mercury Roll Frame Fix
 		addq.w	#5,obY(a0)
 		move.w	#sfx_Roll,d0
 		jsr		(PlaySound_Special).l	; play rolling sound

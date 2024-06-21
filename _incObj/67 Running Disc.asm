@@ -94,7 +94,7 @@ Disc_MoveSonic:
 
 loc_155D0:
 		bclr	#5,obStatus(a1)
-		move.b	#id_Run,obPrevAni(a1) ; restart Sonic's animation
+		move.b	#aniID_Run,obPrevAni(a1) ; restart Sonic's animation
 		move.b	#1,obOnWheel(a1)
 
 loc_155E2:

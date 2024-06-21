@@ -29,17 +29,17 @@ Obj09_Main:	; Routine 0
 		move.l	#Map_Sonic,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Sonic,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		clr.w	obPriority(a0)		; RetroKoH S2 Priority Manager
-		move.b	#id_Roll,obAnim(a0)
+		clr.w	obPriority(a0)			; RetroKoH S2 Priority Manager
+		move.b	#aniID_Roll,obAnim(a0)
 		bset	#2,obStatus(a0)
 		bset	#1,obStatus(a0)
 
 Obj09_ChkDebug:	; Routine 2
-		tst.w	(f_debugmode).w	; is debug mode	cheat enabled?
-		beq.s	Obj09_NoDebug	; if not, branch
-		btst	#bitB,(v_jpadpress1).w ; is button B pressed?
-		beq.s	Obj09_NoDebug	; if not, branch
-		move.w	#1,(v_debuguse).w ; change Sonic into a ring
+		tst.w	(f_debugmode).w			; is debug mode	cheat enabled?
+		beq.s	Obj09_NoDebug			; if not, branch
+		btst	#bitB,(v_jpadpress1).w	; is button B pressed?
+		beq.s	Obj09_NoDebug			; if not, branch
+		move.w	#1,(v_debuguse).w		; change Sonic into a ring
 
 Obj09_NoDebug:
 		clr.b	objoff_30(a0)

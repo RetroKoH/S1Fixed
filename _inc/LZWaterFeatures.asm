@@ -341,7 +341,7 @@ LZWindTunnels:
 		addq.w	#4,obX(a1)
 		move.w	#$400,obVelX(a1) ; move Sonic horizontally
 		clr.w	obVelY(a1)
-		move.b	#id_Float2,obAnim(a1)	; use floating animation
+		move.b	#aniID_Float2,obAnim(a1)	; use floating animation
 		bset	#1,obStatus(a1)
 		btst	#0,(v_jpadhold2).w ; is up pressed?
 		beq.s	.down		; if not, branch
@@ -358,10 +358,10 @@ LZWindTunnels:
 
 .chknext:
 		addq.w	#8,a2		; use second set of values (act 1 only)
-		dbf	d1,.chksonic	; on act 1, repeat for a second tunnel
+		dbf		d1,.chksonic	; on act 1, repeat for a second tunnel
 		tst.b	(f_wtunnelmode).w ; is Sonic still in a tunnel?
 		beq.s	.quit		; if yes, branch
-		move.b	#id_Walk,obAnim(a1)	; use walking animation
+		move.b	#aniID_Walk,obAnim(a1)	; use walking animation
 
 .clrquit:
 		clr.b	(f_wtunnelmode).w ; finish tunnel
@@ -388,7 +388,7 @@ LZWind_Data:	dc.w $A80, $300, $C10,  $380 ; act 1 values (set 1)
 
 
 LZWaterSlides:
-		lea	(v_player).w,a1
+		lea		(v_player).w,a1
 		btst	#1,obStatus(a1)	; is Sonic jumping?
 		bne.s	loc_3F6A	; if not, branch
 		move.w	obY(a1),d0		; MJ: Load Y position
@@ -398,9 +398,9 @@ LZWaterSlides:
 		lsr.w	#7,d1			; MJ: divide X position by 80 (00 = 0, 80 = 1, etc)
 		andi.w	#$7F,d1			; MJ: keep within 4000 pixels (4000 / 80 = 80)
 		add.w	d1,d0			; MJ: add together
-		lea	(v_lvllayout).w,a2	; MJ: Load address of layout
+		lea		(v_lvllayout).w,a2	; MJ: Load address of layout
 		move.b	(a2,d0.w),d0		; MJ: collect correct chunk ID based on the position of Sonic
-		lea	Slide_Chunks_End(pc),a2
+		lea		Slide_Chunks_End(pc),a2
 		moveq	#Slide_Chunks_End-Slide_Chunks-1,d1
 
 loc_3F62:
@@ -432,7 +432,7 @@ loc_3F84:
 
 loc_3F9A:
 		clr.b	obInertia+1(a1)
-		move.b	#id_WaterSlide,obAnim(a1) ; use Sonic's "sliding" animation
+		move.b	#aniID_WaterSlide,obAnim(a1) ; use Sonic's "sliding" animation
 		move.b	#1,(f_slidemode).w	; set water slide flag
 		move.b	(v_vbla_byte).w,d0
 		andi.b	#$1F,d0

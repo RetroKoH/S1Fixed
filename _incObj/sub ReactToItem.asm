@@ -18,7 +18,7 @@ ReactToItem:
 		sub.w	d5,d3
 
 	; Mercury Ducking Size Fix	
-		cmpi.b	#id_Duck,obAnim(a0)
+		cmpi.b	#aniID_Duck,obAnim(a0)
 		bne.s	.notducking
 		
 .short:
@@ -163,7 +163,7 @@ React_Monitor:
 ; ===========================================================================
 
 .movingdown:
-		cmpi.b	#id_Roll,obAnim(a0) ; is Sonic rolling/jumping?
+		cmpi.b	#aniID_Roll,obAnim(a0) ; is Sonic rolling/jumping?
 		bne.s	.donothing
 		neg.w	obVelY(a0)	; reverse Sonic's y-motion
 		addq.b	#2,obRoutine(a1) ; advance the monitor's routine counter
@@ -175,7 +175,7 @@ React_Monitor:
 React_Enemy:
 		tst.b	(v_invinc).w	; is Sonic invincible?
 		bne.s	.donthurtsonic	; if yes, branch
-		cmpi.b	#id_Roll,obAnim(a0) ; is Sonic rolling/jumping?
+		cmpi.b	#aniID_Roll,obAnim(a0) ; is Sonic rolling/jumping?
 		bne.w	React_ChkHurt	; if not, branch
 
 .donthurtsonic:
@@ -318,7 +318,7 @@ HurtSonic:
 
 .isleft:
 		clr.w	obInertia(a0)
-		move.b	#id_Hurt,obAnim(a0)
+		move.b	#aniID_Hurt,obAnim(a0)
 		move.b	#120,obInvuln(a0)		; set temp invincible time to 2 seconds -- RetroKoH Sonic SST Compaction
 		move.w	#sfx_Death,d0			; load normal damage sound
 		cmpi.b	#id_Spikes,obID(a2)		; was damage caused by spikes?
@@ -353,13 +353,13 @@ KillSonic:
 		bne.s	.dontdie	; if yes, branch
 		clr.b	(v_invinc).w	; remove invincibility
 		move.b	#6,obRoutine(a0)
-		bsr.w	Sonic_ResetOnFloor
+		jsr		(Sonic_ResetOnFloor).l
 		bset	#1,obStatus(a0)
 		move.w	#-$700,obVelY(a0)
 		clr.w	obVelX(a0)
 		clr.w	obInertia(a0)
 		move.w	obY(a0),objoff_38(a0)
-		move.b	#id_Death,obAnim(a0)
+		move.b	#aniID_Death,obAnim(a0)
 		bset	#7,obGfx(a0)
 	; Mercury Spike SFX Fix
 		move.w	#sfx_HitSpikes,d0 ; play spikes death sound

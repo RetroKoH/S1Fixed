@@ -44,13 +44,13 @@ sonicAniFrame = objoff_32		; Sonic's current animation number
 ; ===========================================================================
 
 .smash:
-		cmpi.b	#id_Roll,sonicAniFrame(a0) ; is Sonic rolling/jumping?
+		cmpi.b	#aniID_Roll,sonicAniFrame(a0) ; is Sonic rolling/jumping?
 		bne.s	.notspinning	; if not, branch
 		move.w	.count(a0),(v_itembonus).w
 		bset	#2,obStatus(a1)
 		move.b	#$E,obHeight(a1)
 		move.b	#7,obWidth(a1)
-		move.b	#id_Roll,obAnim(a1) ; make Sonic roll
+		move.b	#aniID_Roll,obAnim(a1) ; make Sonic roll
 		move.w	#-$300,obVelY(a1) ; rebound Sonic
 		bset	#1,obStatus(a1)
 		bclr	#3,obStatus(a1)

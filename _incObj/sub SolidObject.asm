@@ -129,7 +129,7 @@ loc_FAD0:
 		move.w	obY(a1),d3
 
 	; Mercury Ducking Size Fix	
-		cmpi.b	#id_Duck,obAnim(a1)
+		cmpi.b	#aniID_Duck,obAnim(a1)
 		bne.s	.skip
 		
 .short:

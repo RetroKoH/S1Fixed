@@ -23,7 +23,7 @@ Debug_Main:	; Routine 0
 		andi.w	#$7FF,(v_screenposy).w
 		andi.w	#$3FF,(v_bgscreenposy).w
 		clr.b	obFrame(a0)
-		move.b	#id_Walk,obAnim(a0)
+		move.b	#aniID_Walk,obAnim(a0)
 
 	; Mercury Debug Improvements
 		clr.w	obVelX(a0)
@@ -207,7 +207,7 @@ Debug_ChgItem:
 
 		move.l	#Map_Sonic,obMap(a1)
 		move.w	#ArtTile_Sonic,obGfx(a1)
-		clr.b	obAnim(a1)
+		move.b	#aniID_Walk,obAnim(a1)
 		clr.w	obX+2(a1)
 		clr.w	obY+2(a1)
 		clr.b	(f_playerctrl).w					; unlock player in case of drowning
@@ -231,7 +231,7 @@ Debug_ChgItem:
 		move.w	#$40,(v_ssrotate).w					; set new level rotation speed
 		move.l	#Map_Sonic,obMap(a1)
 		move.w	#ArtTile_Sonic,obGfx(a1)
-		move.b	#id_Roll,obAnim(a1)
+		move.b	#aniID_Roll,obAnim(a1)
 		bset	#2,obStatus(a1)
 		bset	#1,obStatus(a1)
 		rts	

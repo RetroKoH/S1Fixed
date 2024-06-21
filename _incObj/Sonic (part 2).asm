@@ -44,7 +44,7 @@ Sonic_HurtStop:
 		clr.w	obVelY(a0)
 		clr.w	obVelX(a0)
 		clr.w	obInertia(a0)
-		move.b	#id_Walk,obAnim(a0)
+		move.b	#aniID_Walk,obAnim(a0)
 		subq.b	#2,obRoutine(a0)
 		move.b	#$78,obInvuln(a0)	; RetroKoH Sonic SST Compaction
 

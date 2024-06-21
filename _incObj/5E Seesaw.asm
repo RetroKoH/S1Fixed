@@ -256,7 +256,7 @@ See_Spring:
 		bset	#1,obStatus(a2)
 		bclr	#3,obStatus(a2)
 		clr.b	objoff_3C(a2)
-		move.b	#id_Spring,obAnim(a2) ; change Sonic's animation to "spring" ($10)
+		move.b	#aniID_Spring,obAnim(a2) ; change Sonic's animation to "spring"
 		move.b	#2,obRoutine(a2)
 		move.w	#sfx_Spring,d0
 		jsr	(PlaySound_Special).l	; play spring sound
