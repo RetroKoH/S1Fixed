@@ -154,6 +154,11 @@
  Credit: Redhotsonic/MoDule
  Function: Resolves Speed Setting issues such as having Speed Shoes underwater, or select instances of Debug Mode usage.
  Date: 2024-06-20
+ 
+ Name: Subsprites System
+ Credit: Devon
+ Function: Allows one object to draw out multiple sprites. This paves the way for various optimizations.
+ Date: 2024-06-21
 
 # Visual Changes
  Name: Title Screen Tweaks

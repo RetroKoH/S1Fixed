@@ -1615,22 +1615,22 @@ GM_Title:
 		moveq	#palid_Sonic,d0	; load Sonic's palette
 		bsr.w	PalLoad1
 		move.b	#id_CreditsText,(v_sonicteam).w ; load "SONIC TEAM PRESENTS" object
-		jsr	(ExecuteObjects).l
-		jsr	(BuildSprites).l
+		jsr		(ExecuteObjects).l
+		jsr		(BuildSprites).l
 		bsr.w	PaletteFadeIn
 		disable_ints
 		locVRAM	ArtTile_Title_Foreground*$20
-		lea	(Nem_TitleFg).l,a0 ; load title	screen patterns
+		lea		(Nem_TitleFg).l,a0 ; load title	screen patterns
 		bsr.w	NemDec
 		locVRAM	ArtTile_Title_Sonic*$20
-		lea	(Nem_TitleSonic).l,a0 ;	load Sonic title screen	patterns
+		lea		(Nem_TitleSonic).l,a0 ;	load Sonic title screen	patterns
 		bsr.w	NemDec
 		locVRAM	ArtTile_Title_Trademark*$20
-		lea	(Nem_TitleTM).l,a0 ; load "TM" patterns
+		lea		(Nem_TitleTM).l,a0 ; load "TM" patterns
 		bsr.w	NemDec
-		lea	(vdp_data_port).l,a6
+		lea		(vdp_data_port).l,a6
 		locVRAM	ArtTile_Level_Select_Font*$20,4(a6)
-		lea	(Art_Text).l,a5	; load level select font
+		lea		(Art_Text).l,a5	; load level select font
 		move.w	#$28F,d1
 
 Tit_LoadText:
@@ -1691,9 +1691,9 @@ Tit_LoadText:
 .isjap:
 		move.b	#id_PSBTM,(v_ttlsonichide).w	; load object which hides part of Sonic
 		move.b	#2,(v_ttlsonichide+obFrame).w
-		jsr	(ExecuteObjects).l
+		jsr		(ExecuteObjects).l
 		bsr.w	DeformLayers
-		jsr	(BuildSprites).l
+		jsr		(BuildSprites).l
 		moveq	#plcid_Main,d0
 		bsr.w	NewPLC
 		clr.w	(v_title_dcount).w
@@ -1706,9 +1706,9 @@ Tit_LoadText:
 Tit_MainLoop:
 		move.b	#4,(v_vbla_routine).w
 		bsr.w	WaitForVBla
-		jsr	(ExecuteObjects).l
+		jsr		(ExecuteObjects).l
 		bsr.w	DeformLayers
-		jsr	(BuildSprites).l
+		jsr		(BuildSprites).l
 		bsr.w	PalCycle_Title
 		bsr.w	RunPLC
 		move.w	(v_player+obX).w,d0
@@ -5523,6 +5523,7 @@ BldSpr_ScrPos:	dc.l 0				; blank
 		dc.l v_screenposx&$FFFFFF	; main screen x-position
 		dc.l v_bgscreenposx&$FFFFFF	; background x-position	1
 		dc.l v_bg3screenposx&$FFFFFF	; background x-position	2
+
 ; ---------------------------------------------------------------------------
 ; Subroutine to	convert	mappings (etc) to proper Megadrive sprites
 ; ---------------------------------------------------------------------------
@@ -5568,8 +5569,13 @@ BuildSprites:
 
 		move.b	obRender(a0),d0
 		move.b	d0,d4
-		andi.w	#$C,d0		; get drawing coordinates
-		beq.s	.screenCoords	; branch if 0 (screen coordinates)
+	; Devon Subsprites
+		btst	#6,d0					; is the multi-draw flag set?
+		bne.w	BuildSprites_MultiDraw	; if it is, branch
+	; Devon Subsprites End
+		andi.w	#$C,d0 					; is this to be positioned by screen coordinates?
+		beq.s	.screenCoords			; if yes, branch
+
 		movea.l	BldSpr_ScrPos(pc,d0.w),a1
 	; check object bounds
 		moveq	#0,d0
@@ -5602,7 +5608,7 @@ BuildSprites:
 ; ===========================================================================
 
 	.screenCoords:
-		move.w	$A(a0),d2	; special variable for screen Y
+		move.w	obScreenY(a0),d2	; special variable for screen Y
 		move.w	obX(a0),d3
 		bra.s	.drawObject
 ; ===========================================================================
@@ -5656,11 +5662,116 @@ BuildSprites:
 ; End of function BuildSprites
 
 
+; Devon Subsprites
+BuildSprites_MultiDraw:
+		movea.w	obGfx(a0),a3
+		movea.l	obMap(a0),a5
+		moveq	#0,d0
+
+		; check if object is within X bounds
+		move.b	mainspr_width(a0),d0			; load pixel width
+		move.w	obX(a0),d3
+		sub.w	(v_screenposx).w,d3
+		move.w	d3,d1
+		add.w	d0,d1							; is the object's right edge to the left of the screen?
+		bmi.w	BuildSprites_MultiDraw_NextObj	; if yes, branch
+		move.w	d3,d1
+		sub.w	d0,d1
+		cmpi.w	#320,d1							; is the object's left edge to the right of the screen?
+		bge.w	BuildSprites_MultiDraw_NextObj	; if yes, branch
+		addi.w	#128,d3
+
+		; check if object is within Y bounds
+		btst	#4,d4							; is the accurate Y check flag set?
+		beq.s	BuildSpritesMulti_ApproxYCheck	; if not, branch
+		moveq	#0,d0
+		move.b	mainspr_height(a0),d0			; load pixel height
+		sub.w	(v_screenposy).w,d2
+		move.w	d2,d1
+		add.w	d0,d1							; is the object above the screen?
+		bmi.w	BuildSprites_MultiDraw_NextObj	; if yes, branch
+		move.w	d2,d1
+		sub.w	d0,d1
+		cmpi.w	#224,d1							; is the object below the screen?
+		bge.w	BuildSprites_MultiDraw_NextObj	; if yes, branch
+		addi.w	#128,d2
+		bra.s	BuildSpritesMulti_DrawSprite
+
+BuildSpritesMulti_ApproxYCheck:
+; this doesn't take into account the height of the sprite/object when checking
+; if it's onscreen vertically or not.
+		move.w	obY(a0),d2
+		sub.w	(v_screenposy).w,d2
+		addi.w	#128,d2
+		andi.w	#$7FF,d2					; Could remove to remain faithful to Sonic 1
+		cmpi.w	#-32+128,d2
+		blo.s	BuildSprites_MultiDraw_NextObj
+		cmpi.w	#32+128+224,d2
+		bhs.s	BuildSprites_MultiDraw_NextObj
+
+BuildSpritesMulti_DrawSprite:
+		moveq	#0,d1
+		move.b	mainspr_mapframe(a0),d1			; get current frame
+		beq.s	.noparenttodraw
+		add.b	d1,d1
+		movea.l	a5,a1							; a5 is obMap(a0), copy to a1
+		adda.w	(a1,d1.w),a1
+		moveq	#0,d1
+		move.b	(a1)+,d1
+		subq.b	#1,d1							; get number of pieces
+		bmi.s	.noparenttodraw					; if there are 0 pieces, branch
+		move.w	d4,-(sp)
+		bsr.w	ChkDrawSprite					; draw the sprite
+		move.w	(sp)+,d4
+
+	.noparenttodraw:
+		ori.b	#$80,obRender(a0)				; set onscreen flag
+		lea		sub2_x_pos(a0),a6				; address of first child sprite info
+		moveq	#0,d0
+		move.b	mainspr_childsprites(a0),d0		; get child sprite count
+		subq.w	#1,d0							; if there are 0, go to next object
+		bcs.s	BuildSprites_MultiDraw_NextObj
+
+	.drawchildloop:
+		swap	d0
+		move.w	(a6)+,d3						; get X pos
+		sub.w	(v_screenposx).w,d3				; subtract the screen's x position
+		addi.w	#128,d3
+		move.w	(a6)+,d2						; get Y pos
+		sub.w	(v_screenposy).w,d2				; subtract the screen's y position
+		addi.w	#128,d2
+		andi.w	#$7FF,d2
+		addq.w	#1,a6
+		moveq	#0,d1
+		move.b	(a6)+,d1						; get mapping frame
+		add.b	d1,d1
+		movea.l	a5,a1
+		adda.w	(a1,d1.w),a1
+		moveq	#0,d1
+		move.b	(a1)+,d1
+		subq.b	#1,d1                            ; get number of pieces
+		bmi.s	.nochildleft                     ; if there are 0 pieces, branch
+		move.w	d4,-(sp)
+		bsr.s	ChkDrawSprite
+		move.w	(sp)+,d4
+
+.nochildleft:
+		swap	d0
+		dbf	d0,.drawchildloop	         ; repeat for number of child sprites
+
+; loc_16804:
+BuildSprites_MultiDraw_NextObj:
+		bra.w	BuildSprites.skipObject
+; End of function BuildSprites_MultiDraw
+
+
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-BuildSpr_Draw:
+BuildSpr_Draw: ; sub_D750
 		movea.w	obGfx(a0),a3
+
+ChkDrawSprite:		; New label -- Devon Subsprites
 		btst	#0,d4
 		bne.s	BuildSpr_FlipX
 		btst	#1,d4

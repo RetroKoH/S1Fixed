@@ -6,9 +6,10 @@ Harpoon:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Harp_Index(pc,d0.w),d1
-		jmp	Harp_Index(pc,d1.w)
+		jmp		Harp_Index(pc,d1.w)
 ; ===========================================================================
-Harp_Index:	dc.w Harp_Main-Harp_Index
+Harp_Index:
+		dc.w Harp_Main-Harp_Index
 		dc.w Harp_Move-Harp_Index
 		dc.w Harp_Wait-Harp_Index
 
@@ -26,8 +27,8 @@ Harp_Main:	; Routine 0
 		move.w	#60,harp_time(a0) ; set time to 1 second
 
 Harp_Move:	; Routine 2
-		lea	(Ani_Harp).l,a1
-		bsr.w	AnimateSprite
+		lea		(Ani_Harp).l,a1
+		jsr		(AnimateSprite).l
 		moveq	#0,d0
 		move.b	obFrame(a0),d0	; get frame number
 		move.b	.types(pc,d0.w),obColType(a0) ; get collision type

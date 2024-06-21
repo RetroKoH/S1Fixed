@@ -6,7 +6,7 @@
 
 
 DisplaySprite:
-		lea	(v_spritequeue).w,a1
+		lea		(v_spritequeue).w,a1
 		adda.w	obPriority(a0),a1	; jump to position in queue -- RetroKoH S2 Priority Manager
 		cmpi.w	#$7E,(a1)			; is this part of the queue full?
 		bcc.s	DSpr_Full			; if yes, branch
@@ -28,7 +28,7 @@ DSpr_Full:
 
 
 DisplaySprite1:
-		lea	(v_spritequeue).w,a2
+		lea		(v_spritequeue).w,a2
 		adda.w	obPriority(a1),a2	; jump to position in queue -- RetroKoH S2 Priority Manager
 		cmpi.w	#$7E,(a2)			; is this part of the queue full?
 		bhs.s	DSpr1_Full			; if yes, branch
@@ -40,3 +40,24 @@ DSpr1_Full:
 		rts	
 
 ; End of function DisplaySprite1
+
+; ---------------------------------------------------------------------------
+; Devon Subsprites
+; ---------------------------------------------------------------------------
+
+; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+
+
+DisplaySprite2:
+	lea		(v_spritequeue).w,a1
+	adda.w	d0,a1
+	cmpi.w	#$7E,(a1)
+	bhs.s	DSpr2_Full
+	addq.w	#2,(a1)
+	adda.w	(a1),a1
+	move.w	a0,(a1)
+
+DSpr2_Full:
+	rts	
+
+; End of function DisplaySprite2
