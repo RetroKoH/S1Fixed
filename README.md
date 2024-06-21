@@ -64,6 +64,13 @@
  Credit: Mercury/RetroKoH
  Function: Gives the game a Chaotix-like feel.
  Date: 2024-06-21
+ Variable: WarmPalettes
+ 
+ Name: Objects Don't Freeze
+ Credit: RetroKoH
+ Function: Objects will not freeze when the player dies.
+ Date: 2024-06-21
+ Variable: ObjectsFreeze
 
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format

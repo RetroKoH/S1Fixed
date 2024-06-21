@@ -7,13 +7,13 @@
 ; Initialise the values
 
 OscillateNumInit:
-		lea	(v_oscillate).w,a1
-		lea	(.baselines).l,a2
+		lea		(v_oscillate).w,a1
+		lea		.baselines(pc),a2	; Optimization
 		moveq	#$20,d1
 
 .loop:
 		move.w	(a2)+,(a1)+	; copy baseline values to RAM
-		dbf	d1,.loop
+		dbf		d1,.loop
 		rts	
 
 
@@ -42,11 +42,13 @@ OscillateNumInit:
 ; Oscillate values
 
 OscillateNumDo:
-		cmpi.b	#6,(v_player+obRoutine).w ; has Sonic just died?
-		bhs.s	.end		; if yes, branch
-		lea	(v_oscillate).w,a1
-		lea	(.settings).l,a2
-		move.w	(a1)+,d3	; get oscillation direction bitfield
+	if ObjectsFreeze=1				; RetroKoH Object Freeze Mod
+		cmpi.b	#6,(v_player+obRoutine).w	; has Sonic just died?
+		bhs.s	.end						; if yes, branch
+	endif
+		lea		(v_oscillate).w,a1
+		lea		.settings(pc),a2			; Optimization
+		move.w	(a1)+,d3					; get oscillation direction bitfield
 		moveq	#$F,d1
 
 .loop:
@@ -76,7 +78,7 @@ OscillateNumDo:
 
 .next:
 		addq.w	#4,a1
-		dbf	d1,.loop
+		dbf		d1,.loop
 		move.w	d3,(v_oscillate).w
 
 .end:
@@ -84,7 +86,8 @@ OscillateNumDo:
 ; End of function OscillateNumDo
 
 ; ===========================================================================
-.settings:	dc.w 2,	$10	; frequency, amplitude
+.settings:
+		dc.w 2,	$10	; frequency, amplitude
 		dc.w 2,	$18
 		dc.w 2,	$20
 		dc.w 2,	$30

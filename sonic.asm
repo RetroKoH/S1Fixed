@@ -37,7 +37,8 @@ RollJumpLockActive: = 0			; if set to 1, the original roll jump lock is maintain
 SpikeBugFix: = 1				; if set to 1, the spike "bug" is fixed
 GHZForeverPal: = 1				; if set to 1, GHZ is set to Sonic 1 Forever's palette
 EndLevelFadeMusic: = 1			; if set to 1, music will fade out as the level ends (Signpost or Prison Capsule)
-WarmPalettes: = 1				; if set to 1, palettes take on a warmer hue (Continuation of Mercury's mod)
+WarmPalettes: = 0				; if set to 1, palettes take on a warmer hue (Continuation of Mercury's mod)
+ObjectsFreeze: = 0				; if set to 1, objects freeze on death as normal
 
 ; ===========================================================================
 
@@ -5491,24 +5492,26 @@ Map_Smash:	include	"_maps/Smashable Walls.asm"
 
 
 ExecuteObjects:
-		lea		(v_objspace).w,a0 ; set address for object RAM
+		lea		(v_objspace).w,a0	; set address for object RAM
 		moveq	#v_allobjcount,d7
 		moveq	#0,d0
+	if ObjectsFreeze=1				; RetroKoH Object Freeze Mod
 		cmpi.b	#6,(v_player+obRoutine).w
 		bhs.s	loc_D362
+	endif
 
 loc_D348:
-		move.b	obID(a0),d0		; load object number from RAM
+		move.b	obID(a0),d0			; load object number from RAM
 		beq.s	loc_D358
 		add.w	d0,d0
 		add.w	d0,d0
 		movea.l	Obj_Index-4(pc,d0.w),a1
-		jsr	(a1)		; run the object's code
+		jsr		(a1)				; run the object's code
 		moveq	#0,d0
 
 loc_D358:
-		lea	object_size(a0),a0	; next object
-		dbf	d7,loc_D348
+		lea		object_size(a0),a0	; next object
+		dbf		d7,loc_D348
 		rts	
 ; ===========================================================================
 
@@ -5530,10 +5533,10 @@ loc_D368:
 		bsr.w	DisplaySprite
 
 loc_D378:
-		lea	object_size(a0),a0
+		lea		object_size(a0),a0
 
 loc_D37C:
-		dbf	d7,loc_D368
+		dbf		d7,loc_D368
 		rts	
 ; End of function ExecuteObjects
 
