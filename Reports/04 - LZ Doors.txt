@@ -1,1 +1,0 @@
-Need to ensure that the new Object Manager doesn't interfere with Switch activated doors.

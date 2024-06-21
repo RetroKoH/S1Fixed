@@ -37,6 +37,7 @@ RollJumpLockActive: = 0			; if set to 1, the original roll jump lock is maintain
 SpikeBugFix: = 1				; if set to 1, the spike "bug" is fixed
 GHZForeverPal: = 1				; if set to 1, GHZ is set to Sonic 1 Forever's palette
 EndLevelFadeMusic: = 1			; if set to 1, music will fade out as the level ends (Signpost or Prison Capsule)
+WarmPalettes: = 1				; if set to 1, palettes take on a warmer hue (Continuation of Mercury's mod)
 
 ; ===========================================================================
 
@@ -1439,13 +1440,40 @@ PalLoad4_Water:
 ; ---------------------------------------------------------------------------
 ; Palette data
 ; ---------------------------------------------------------------------------
-	if FadeInSEGA = 0
+	if FadeInSEGA=0
 Pal_SegaBG:		binclude	"palette/Sega Background.bin"
 	endif
 Pal_Title:		binclude	"palette/Title Screen.bin"
 Pal_LevelSel:	binclude	"palette/Level Select.bin"
+
+	if WarmPalettes=1
+
+; ---------------------------------------------------------------------------
+Pal_Sonic:		binclude	"palette/Sonic - Warm.bin"
+	if GHZForeverPal=1
+Pal_GHZ:		binclude	"palette/Green Hill Zone - Forever - Warm.bin"
+	else
+Pal_GHZ:		binclude	"palette/Green Hill Zone - Original - Warm.bin"
+	endif
+Pal_LZ:			binclude	"palette/Labyrinth Zone - Warm.bin"
+Pal_LZWater:	binclude	"palette/Labyrinth Zone Underwater - Warm.bin"
+Pal_MZ:			binclude	"palette/Marble Zone - Warm.bin"
+Pal_SLZ:		binclude	"palette/Star Light Zone - Warm.bin"
+Pal_SYZ:		binclude	"palette/Spring Yard Zone - Warm.bin"
+Pal_SBZ1:		binclude	"palette/SBZ Act 1 - Warm.bin"
+Pal_SBZ2:		binclude	"palette/SBZ Act 2 - Warm.bin"
+Pal_Special:	binclude	"palette/Special Stage.bin"
+Pal_SBZ3:		binclude	"palette/SBZ Act 3 - Warm.bin"
+Pal_SBZ3Water:	binclude	"palette/SBZ Act 3 Underwater - Warm.bin"
+Pal_LZSonWater:	binclude	"palette/Sonic - LZ Underwater.bin"
+Pal_SBZ3SonWat:	binclude	"palette/Sonic - SBZ3 Underwater.bin"
+; ---------------------------------------------------------------------------
+
+	else
+
+; ---------------------------------------------------------------------------
 Pal_Sonic:		binclude	"palette/Sonic.bin"
-	if GHZForeverPal = 1
+	if GHZForeverPal=1
 Pal_GHZ:		binclude	"palette/Green Hill Zone - Forever.bin"
 	else
 Pal_GHZ:		binclude	"palette/Green Hill Zone - Original.bin"
@@ -1462,6 +1490,10 @@ Pal_SBZ3:		binclude	"palette/SBZ Act 3.bin"
 Pal_SBZ3Water:	binclude	"palette/SBZ Act 3 Underwater.bin"
 Pal_LZSonWater:	binclude	"palette/Sonic - LZ Underwater.bin"
 Pal_SBZ3SonWat:	binclude	"palette/Sonic - SBZ3 Underwater.bin"
+; ---------------------------------------------------------------------------
+
+	endif
+
 Pal_SSResult:	binclude	"palette/Special Stage Results.bin"
 Pal_Continue:	binclude	"palette/Special Stage Continue Bonus.bin"
 Pal_Ending:		binclude	"palette/Ending.bin"

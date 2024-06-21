@@ -1,0 +1,1 @@
+First noticed after optimizing the Orbinaut object, it seems that one specific Orbinaut sometimes cannot be damaged, though his spikeballs can still hurt you. This doesn't seem to occur with other Orbinauts.

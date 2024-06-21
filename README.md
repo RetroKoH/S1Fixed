@@ -59,6 +59,11 @@
  Function: Toggles whether music will fade out after the level ends.
  Date: 2024-06-20
  Variable: EndLevelFadeMusic
+ 
+ Name: Warm Palette Mod (Incomplete)
+ Credit: Mercury/RetroKoH
+ Function: Gives the game a Chaotix-like feel.
+ Date: 2024-06-21
 
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format

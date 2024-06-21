@@ -90,7 +90,7 @@ Disc_MoveSonic:
 		move.b	#1,disc_sonic_attached(a0)
 		btst	#2,obStatus(a1)
 		bne.s	loc_155D0
-		clr.b	obAnim(a1)
+		move.b	#aniID_Walk,obAnim(a1)
 
 loc_155D0:
 		bclr	#5,obStatus(a1)
