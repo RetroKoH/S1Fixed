@@ -476,3 +476,9 @@
  Credit: RetroKoH
  Function: User can now enter/exit Debug Mode in non-normal control states properly.
  Date: 2024-06-20
+ 
+ Name: Angled Animation Improvement
+ Credit: Mercury
+ Function: Makes Sonic appear correctly when running down certain angles (notably GHZ1) akin to the remakes.
+ Date: 2024-06-21
+ 

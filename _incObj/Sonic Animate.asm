@@ -81,6 +81,13 @@ Sonic_Animate:
 		bne.w	.rolljump			; if not, branch
 		moveq	#0,d1
 		move.b	obAngle(a0),d0		; get Sonic's angle
+ 	; Mercury Better handling of angles
+		bmi.s	.ble
+		beq.s	.ble
+		subq.b	#1,d0
+
+.ble:
+	; Better handling of angles end
 		move.b	obStatus(a0),d2
 		andi.b	#1,d2				; is Sonic mirrored horizontally?
 		bne.s	.flip				; if yes, branch
