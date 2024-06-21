@@ -71,6 +71,12 @@
  Function: Objects will not freeze when the player dies.
  Date: 2024-06-21
  Variable: ObjectsFreeze
+ 
+ Name: Speed Up/Instant Score Tally
+ Credit: Mercury/RetroKoH
+ Function: Allows the player to hold a button to speed up the score tally, or just have it occur immediately
+ Date: 2024-06-21
+ Variable: SpeedUpScoreTally
 
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format

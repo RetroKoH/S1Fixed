@@ -98,26 +98,77 @@ Got_Display:
 		bra.w	DisplaySprite
 ; ===========================================================================
 
+	if SpeedUpScoreTally<>2
+
+	if SpeedUpScoreTally=1	; Mercury Speed Up Score Tally
 Got_TimeBonus:	; Routine 6
 		bsr.w	DisplaySprite
-		move.b	#1,(f_endactbonus).w ; set time/ring bonus update flag
+		moveq	#10,d1					; set score decrement to 10
+		move.b	(v_jpadhold1).w,d0
+		andi.b	#btnABC,d0				; is A, B or C pressed?
+		beq.w	.dontspeedup			; if not, branch
+		move.b	#100,d1					; increase score decrement to 100
+		
+.dontspeedup:
+		move.b	#1,(f_endactbonus).w	; set time/ring bonus update flag
 		moveq	#0,d0
-		tst.w	(v_timebonus).w	; is time bonus	= zero?
-		beq.s	Got_RingBonus	; if yes, branch
-		addi.w	#10,d0		; add 10 to score
-		subi.w	#10,(v_timebonus).w ; subtract 10 from time bonus
+		tst.w	(v_timebonus).w			; is time bonus	= zero?
+		beq.s	Got_RingBonus			; if yes, branch
+		cmp.w	(v_timebonus).w,d1		; compare time bonus to score decrement
+		blt.s	.skip					; if it's greater or equal, branch
+		move.w	(v_timebonus).w,d1		; else, set the decrement to the remaining bonus
+.skip:
+		add.w	d1,d0					; add decrement to score
+		sub.w	d1,(v_timebonus).w		; subtract decrement from time bonus
 
 Got_RingBonus:
-		tst.w	(v_ringbonus).w	; is ring bonus	= zero?
-		beq.s	Got_ChkBonus	; if yes, branch
-		addi.w	#10,d0		; add 10 to score
-		subi.w	#10,(v_ringbonus).w ; subtract 10 from ring bonus
+		tst.w	(v_ringbonus).w			; is ring bonus	= zero?
+		beq.s	Got_ChkBonus			; if yes, branch
+		cmp.w	(v_ringbonus).w,d1		; compare ring bonus to score decrement
+		blt.s	.skip					; if it's greater or equal, branch
+		move.w	(v_ringbonus).w,d1		; else, set the decrement to the remaining bonus
+.skip:
+		add.w	d1,d0					; add decrement to score
+		sub.w	d1,(v_ringbonus).w		; subtract decrement from ring bonus
+
+	else
+
+Got_TimeBonus:	; Routine 6
+		bsr.w	DisplaySprite
+		move.b	#1,(f_endactbonus).w	; set time/ring bonus update flag
+		moveq	#0,d0
+		tst.w	(v_timebonus).w			; is time bonus	= zero?
+		beq.s	Got_RingBonus			; if yes, branch
+		addi.w	#10,d0					; add 10 to score
+		subi.w	#10,(v_timebonus).w		; subtract 10 from time bonus
+
+Got_RingBonus:
+		tst.w	(v_ringbonus).w			; is ring bonus	= zero?
+		beq.s	Got_ChkBonus			; if yes, branch
+		addi.w	#10,d0					; add 10 to score
+		subi.w	#10,(v_ringbonus).w		; subtract 10 from ring bonus
+	endif	;end Speed Up Score Tally
 
 Got_ChkBonus:
-		tst.w	d0		; is there any bonus?
-		bne.s	Got_AddBonus	; if yes, branch
+		tst.w	d0					; is there any bonus?
+		bne.s	Got_AddBonus		; if yes, branch
+
+	else	; RetroKoH Instant Score Tally
+
+Got_TimeBonus:	; Routine 6
+		bsr.w	DisplaySprite
+		move.b	#1,(f_endactbonus).w	; set time/ring bonus update flag
+		moveq	#0,d0
+		move.w	(v_timebonus).w,d0		; load time bonus to d0
+		clr.w	(v_timebonus).w			; clear time bonus
+		add.w	(v_ringbonus).w,d0		; load ring bonus to d0
+		clr.w	(v_ringbonus).w			; clear ring bonus
+		jsr		(AddPoints).l			; add to score
+
+	endif	;end Instant Score Tally
+
 		move.w	#sfx_Cash,d0
-		jsr	(PlaySound_Special).l	; play "ker-ching" sound
+		jsr		(PlaySound_Special).l	; play "ker-ching" sound
 		addq.b	#2,obRoutine(a0)
 		cmpi.w	#(id_SBZ<<8)+1,(v_zone).w
 		bne.s	Got_SetDelay
@@ -129,14 +180,15 @@ Got_SetDelay:
 locret_C692:
 		rts	
 ; ===========================================================================
-
+	if SpeedUpScoreTally<>2
 Got_AddBonus:
-		jsr	(AddPoints).l
+		jsr		(AddPoints).l
 		move.b	(v_vbla_byte).w,d0
 		andi.b	#3,d0
 		bne.s	locret_C692
 		move.w	#sfx_Switch,d0
-		jmp	(PlaySound_Special).l	; play "blip" sound
+		jmp		(PlaySound_Special).l	; play "blip" sound
+	endif
 ; ===========================================================================
 
 Got_NextLevel:	; Routine $A

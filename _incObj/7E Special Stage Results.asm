@@ -6,9 +6,10 @@ SSResult:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	SSR_Index(pc,d0.w),d1
-		jmp	SSR_Index(pc,d1.w)
+		jmp		SSR_Index(pc,d1.w)
 ; ===========================================================================
-SSR_Index:	dc.w SSR_ChkPLC-SSR_Index
+SSR_Index:
+		dc.w SSR_ChkPLC-SSR_Index
 		dc.w SSR_Move-SSR_Index
 		dc.w SSR_Wait-SSR_Index
 		dc.w SSR_RingBonus-SSR_Index
@@ -102,24 +103,53 @@ SSR_Display:
 		bra.w	DisplaySprite
 ; ===========================================================================
 
+	if SpeedUpScoreTally<>2
 SSR_RingBonus:	; Routine 6
 		bsr.w	DisplaySprite
-		move.b	#1,(f_endactbonus).w ; set ring bonus update flag
-		tst.w	(v_ringbonus).w	; is ring bonus	= zero?
-		beq.s	loc_C8C4	; if yes, branch
-		subi.w	#10,(v_ringbonus).w ; subtract 10 from ring bonus
-		moveq	#10,d0		; add 10 to score
-		jsr	(AddPoints).l
+		move.b	#1,(f_endactbonus).w	; set ring bonus update flag
+		tst.w	(v_ringbonus).w			; is ring bonus	= zero?
+		beq.s	loc_C8C4				; if yes, branch
+
+	if SpeedUpScoreTally=1	; Mercury Speed Up Score Tally
+		moveq	#10,d1			; set score decrement to 10
+		move.b	(v_jpadhold1).w,d0
+		andi.b	#btnABC,d0		; is A, B or C pressed?
+		beq.w	.dontspeedup	; if not, branch
+		move.b	#100,d1			; increase score decrement to 100
+		
+.dontspeedup:
+		moveq	#0,d0
+		cmp.w	(v_ringbonus).w,d1	; compare ring bonus to score decrement
+		blt.s	.skip				; if it's greater or equal, branch
+		move.w	(v_ringbonus).w,d1	; else, set the decrement to the remaining bonus
+.skip:
+		add.w	d1,d0				; add decrement to score
+		sub.w	d1,(v_ringbonus).w	; subtract decrement from ring bonus
+	else
+		subi.w	#10,(v_ringbonus).w	; subtract 10 from ring bonus
+		moveq	#10,d0				; add 10 to score
+	endc	;end Speed Up Score Tally
+
+		jsr		(AddPoints).l
 		move.b	(v_vbla_byte).w,d0
 		andi.b	#3,d0
 		bne.s	locret_C8EA
 		move.w	#sfx_Switch,d0
-		jmp	(PlaySound_Special).l	; play "blip" sound
+		jmp		(PlaySound_Special).l	; play "blip" sound
 ; ===========================================================================
 
 loc_C8C4:
+	else
+SSR_RingBonus:	; Routine 6
+		bsr.w	DisplaySprite
+		move.b	#1,(f_endactbonus).w	; set time/ring bonus update flag
+		moveq	#0,d0
+		move.w	(v_ringbonus).w,d0		; load ring bonus to d0
+		clr.w	(v_ringbonus).w			; clear ring bonus
+		jsr		(AddPoints).l			; add to score
+	endif
 		move.w	#sfx_Cash,d0
-		jsr	(PlaySound_Special).l	; play "ker-ching" sound
+		jsr		(PlaySound_Special).l	; play "ker-ching" sound
 		addq.b	#2,obRoutine(a0)
 		move.w	#180,obTimeFrame(a0) ; set time delay to 3 seconds
 		cmpi.w	#50,(v_rings).w	; do you have at least 50 rings?

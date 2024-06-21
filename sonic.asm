@@ -39,6 +39,7 @@ GHZForeverPal: = 1				; if set to 1, GHZ is set to Sonic 1 Forever's palette
 EndLevelFadeMusic: = 1			; if set to 1, music will fade out as the level ends (Signpost or Prison Capsule)
 WarmPalettes: = 0				; if set to 1, palettes take on a warmer hue (Continuation of Mercury's mod)
 ObjectsFreeze: = 0				; if set to 1, objects freeze on death as normal
+SpeedUpScoreTally: = 2			; if set to 1, score tally can be sped up w/ ABC. If 2, it automatically tallies immediately.
 
 ; ===========================================================================
 
