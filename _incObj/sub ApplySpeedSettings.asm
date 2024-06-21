@@ -12,7 +12,7 @@
 
 ApplySpeedSettings:
 		moveq   #0,d0								; Quickly clear d0
-		tst.b   shoetime(a0)						; Does character have speedshoes?
+		tst.b   obShoes(a0)							; Does character have speedshoes? -- RetroKoH Sonic SST Compaction
 		beq.s   .noshoes							; If not, branch
 		addq.b  #8,d0
 

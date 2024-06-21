@@ -103,7 +103,7 @@ loc_146C6:
 ; ===========================================================================
 
 loc_146CC:
-		tst.b	stick_to_convex(a0)
+		tst.b	obOnWheel(a0)
 		bne.s	loc_146C6
 		bset	#1,obStatus(a0)
 		bclr	#5,obStatus(a0)
@@ -246,7 +246,7 @@ loc_147F8:
 ; ===========================================================================
 
 loc_147FE:
-		tst.b	stick_to_convex(a0)
+		tst.b	obOnWheel(a0)
 		bne.s	loc_147F8
 		bset	#1,obStatus(a0)
 		bclr	#5,obStatus(a0)
@@ -314,7 +314,7 @@ loc_1489A:
 ; ===========================================================================
 
 loc_148A0:
-		tst.b	stick_to_convex(a0)
+		tst.b	obOnWheel(a0)
 		bne.s	loc_1489A
 		bset	#1,obStatus(a0)
 		bclr	#5,obStatus(a0)
@@ -382,7 +382,7 @@ loc_1493C:
 ; ===========================================================================
 
 loc_14942:
-		tst.b	stick_to_convex(a0)
+		tst.b	obOnWheel(a0)
 		bne.s	loc_1493C
 		bset	#1,obStatus(a0)
 		bclr	#5,obStatus(a0)

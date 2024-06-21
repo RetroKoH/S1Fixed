@@ -77,7 +77,7 @@ Disc_MoveSonic:
 .detach:
 		tst.b	disc_sonic_attached(a0)
 		beq.s	.return
-		clr.b	stick_to_convex(a1)
+		clr.b	obOnWheel(a1)
 		clr.b	disc_sonic_attached(a0)
 ; locret_155B6:
 .return:
@@ -95,7 +95,7 @@ Disc_MoveSonic:
 loc_155D0:
 		bclr	#5,obStatus(a1)
 		move.b	#id_Run,obPrevAni(a1) ; restart Sonic's animation
-		move.b	#1,stick_to_convex(a1)
+		move.b	#1,obOnWheel(a1)
 
 loc_155E2:
 		move.w	obInertia(a1),d0

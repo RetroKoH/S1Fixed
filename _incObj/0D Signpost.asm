@@ -56,6 +56,7 @@ Sign_Touch:	; Routine 2
 		bhs.s	.notouch							; if not, branch
 		move.w	#sfx_Signpost,d0
 		jsr		(PlaySound).l						; play signpost sound
+		clr.b	(v_player+obShoes).w				; Mercury Remove Speed Shoes At Signpost Fix (Moved from the Got_Through Card and improved) -- RetroKoH Sonic SST Compaction
 		clr.b	(f_timecount).w						; stop time counter
 		move.w	(v_limitright2).w,(v_limitleft2).w	; lock screen position
 		addq.b	#2,obRoutine(a0)

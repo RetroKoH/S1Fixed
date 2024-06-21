@@ -71,18 +71,18 @@ ExtraLife:
 ; ===========================================================================
 
 Pow_ChkShoes:
-		cmpi.b	#3,d0		; does monitor contain speed shoes?
+		cmpi.b	#3,d0			; does monitor contain speed shoes?
 		bne.s	Pow_ChkShield
 
-		move.b	#1,(v_shoes).w	; speed up the BG music
-		move.w	#$4B0,(v_player+$34).w	; time limit for the power-up
-		movem.l a0-a2,-(sp)				; Move a0, a1 and a2 onto stack
-		lea     (v_player).w,a0			; Load Sonic to a0
-		lea	(v_sonspeedmax).w,a2		; Load Sonic_top_speed into a2
-		jsr	ApplySpeedSettings			; Fetch Speed settings
-		movem.l (sp)+,a0-a2				; Move a0, a1 and a2 from stack
+		move.b	#1,(v_shoes).w				; speed up the BG music
+		move.b	#$96,(v_player+obShoes).w	; time limit for the power-up -- RetroKoH Sonic SST Compaction
+		movem.l a0-a2,-(sp)					; Move a0, a1 and a2 onto stack
+		lea     (v_player).w,a0				; Load Sonic to a0
+		lea		(v_sonspeedmax).w,a2		; Load Sonic_top_speed into a2
+		jsr		ApplySpeedSettings			; Fetch Speed settings
+		movem.l (sp)+,a0-a2					; Move a0, a1 and a2 from stack
 		move.w	#bgm_Speedup,d0
-		jmp		(PlaySound).l		; Speed	up the music
+		jmp		(PlaySound).l				; Speed	up the music
 ; ===========================================================================
 
 Pow_ChkShield:
@@ -96,25 +96,25 @@ Pow_ChkShield:
 ; ===========================================================================
 
 Pow_ChkInvinc:
-		cmpi.b	#5,d0		; does monitor contain invincibility?
+		cmpi.b	#5,d0				; does monitor contain invincibility?
 		bne.s	Pow_ChkRings
 
-		move.b	#1,(v_invinc).w	; make Sonic invincible
-		move.w	#$4B0,(v_player+$32).w ; time limit for the power-up
-		move.b	#id_ShieldItem,(v_starsobj1).w ; load stars object ($3801)
+		move.b	#1,(v_invinc).w					; make Sonic invincible
+		move.b	#$96,(v_player+obInvinc).w		; time limit for the power-up -- RetroKoH Sonic SST Compaction
+		move.b	#id_ShieldItem,(v_starsobj1).w	; load stars object ($3801)
 		move.b	#1,(v_starsobj1+obAnim).w
-		move.b	#id_ShieldItem,(v_starsobj2).w ; load stars object ($3802)
+		move.b	#id_ShieldItem,(v_starsobj2).w	; load stars object ($3802)
 		move.b	#2,(v_starsobj2+obAnim).w
-		move.b	#id_ShieldItem,(v_starsobj3).w ; load stars object ($3803)
+		move.b	#id_ShieldItem,(v_starsobj3).w	; load stars object ($3803)
 		move.b	#3,(v_starsobj3+obAnim).w
-		move.b	#id_ShieldItem,(v_starsobj4).w ; load stars object ($3804)
+		move.b	#id_ShieldItem,(v_starsobj4).w	; load stars object ($3804)
 		move.b	#4,(v_starsobj4+obAnim).w
-		tst.b	(f_lockscreen).w ; is boss mode on?
-		bne.s	Pow_NoMusic	; if yes, branch
+		tst.b	(f_lockscreen).w	; is boss mode on?
+		bne.s	Pow_NoMusic			; if yes, branch
 		cmpi.w	#$C,(v_air).w
 		bls.s	Pow_NoMusic
 		move.w	#bgm_Invincible,d0
-		jmp	(PlaySound).l ; play invincibility music
+		jmp		(PlaySound).l		; play invincibility music
 ; ===========================================================================
 
 Pow_NoMusic:

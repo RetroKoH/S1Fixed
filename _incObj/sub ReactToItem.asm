@@ -135,11 +135,12 @@ ReactToItem:
 
 		move.b	obColType(a1),d0
 		andi.b	#$3F,d0
-		cmpi.b	#6,d0		; is collision type $46	?
-		beq.s	React_Monitor	; if yes, branch
-		cmpi.w	#90,flashtime(a0)	; is Sonic invincible?
-		bhs.w	.invincible	; if yes, branch
-		addq.b	#2,obRoutine(a1) ; advance the object's routine counter
+		cmpi.b	#6,d0				; is collision type $46?
+		beq.s	React_Monitor		; if yes, branch
+	; Otherwise, check if Sonic is able to collect rings
+		cmpi.b	#90,obInvuln(a0)	; is Sonic too early in invuln frames to collect rings? -- RetroKoH Sonic SST Compaction
+		bhs.w	.invincible			; if yes, branch
+		addq.b	#2,obRoutine(a1)	; advance the object's routine counter (CollectRing)
 
 .invincible:
 		rts	
@@ -270,8 +271,8 @@ React_ChkHurt:
 
 .notinvincible:
 		nop	
-		tst.w	flashtime(a0)		; is Sonic flashing?
-		bne.s	.isflashing	; if yes, branch
+		tst.b	obInvuln(a0)	; is Sonic flashing? -- RetroKoH Sonic SST Compaction
+		bne.s	.isflashing		; if yes, branch
 		movea.l	a1,a2
 
 ; End of function ReactToItem
@@ -297,16 +298,16 @@ HurtSonic:
 		move.w	obY(a0),obY(a1)
 
 .hasshield:
-		clr.b	(v_shield).w	; remove shield
+		clr.b	(v_shield).w		; remove shield
 		move.b	#4,obRoutine(a0)
 		bsr.w	Sonic_ResetOnFloor
 		bset	#1,obStatus(a0)
-		move.w	#-$400,obVelY(a0) ; make Sonic bounce away from the object
+		move.w	#-$400,obVelY(a0)	; make Sonic bounce away from the object
 		move.w	#-$200,obVelX(a0)
-		btst	#6,obStatus(a0)	; is Sonic underwater?
-		beq.s	.isdry		; if not, branch
+		btst	#6,obStatus(a0)		; is Sonic underwater?
+		beq.s	.isdry				; if not, branch
 
-		move.w	#-$200,obVelY(a0) ; slower bounce
+		move.w	#-$200,obVelY(a0)	; slower bounce
 		move.w	#-$100,obVelX(a0)
 
 .isdry:
@@ -318,7 +319,7 @@ HurtSonic:
 .isleft:
 		clr.w	obInertia(a0)
 		move.b	#id_Hurt,obAnim(a0)
-		move.w	#120,flashtime(a0)		; set temp invincible time to 2 seconds
+		move.b	#120,obInvuln(a0)		; set temp invincible time to 2 seconds -- RetroKoH Sonic SST Compaction
 		move.w	#sfx_Death,d0			; load normal damage sound
 		cmpi.b	#id_Spikes,obID(a2)		; was damage caused by spikes?
 	; Mercury Spike SFX Fix

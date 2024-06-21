@@ -34,8 +34,8 @@ loc_1341C:
 		bset	#1,obStatus(a0)
 		bclr	#5,obStatus(a0)
 		addq.l	#4,sp
-		move.b	#1,objoff_3C(a0)
-		clr.b	stick_to_convex(a0)
+		move.b	#1,obJumping(a0)
+		clr.b	obOnWheel(a0)
 		clr.w	obLRLock(a0)			; Mercury Clear Control Lock When Jump
 		move.w	#sfx_Jump,d0
 		jsr		(PlaySound_Special).l	; play jumping sound

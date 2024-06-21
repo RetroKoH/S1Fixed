@@ -131,7 +131,7 @@ RM_Next:
 
 ; loc_170BA:
 Touch_Rings:
-		cmpi.b	#$5A,obInvuln(a0)			; does the player have three or more seconds of invulnerability left?
+		cmpi.b	#90,obInvuln(a0)			; is Sonic too early in invuln frames to collect rings? -- RetroKoH Sonic SST Compaction
 		bhs.w	Touch_Rings_Done			; if so, return
 		movea.l	(v_ringstart_addr_ROM).w,a1
 		movea.l	(v_ringend_addr_ROM).w,a2

@@ -34,10 +34,10 @@ Sonic_Move:
 		btst	#3,obStatus(a0)			; is Sonic on an object?
 		beq.s	Sonic_Balance
 		moveq	#0,d0
-		move.b	standonobject(a0),d0
+		move.b	obPlatformID(a0),d0
 		lsl.w	#object_size_bits,d0
-		lea	(v_objspace).w,a1
-		lea	(a1,d0.w),a1
+		lea		(v_objspace).w,a1
+		lea		(a1,d0.w),a1
 		tst.b	obStatus(a1)
 		bmi.s	Sonic_LookUp
 		moveq	#0,d1

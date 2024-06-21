@@ -4557,7 +4557,7 @@ loc_74AE:
 		btst	#3,obStatus(a1)
 		beq.s	loc_74DC
 		moveq	#0,d0
-		move.b	standonobject(a1),d0
+		move.b	obPlatformID(a1),d0
 		lsl.w	#object_size_bits,d0
 		addi.l	#v_objspace&$FFFFFF,d0
 		movea.l	d0,a2
@@ -4572,7 +4572,7 @@ loc_74DC:
 		subi.w	#v_objspace&$FFFF,d0
 		lsr.w	#object_size_bits,d0
 		andi.w	#$7F,d0
-		move.b	d0,standonobject(a1)
+		move.b	d0,obPlatformID(a1)
 		clr.b	obAngle(a1)
 		clr.w	obVelY(a1)
 		move.w	obVelX(a1),obInertia(a1)
