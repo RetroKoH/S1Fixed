@@ -2119,7 +2119,7 @@ LevSel_ChgSnd:
 		andi.w	#$F,d0
 		cmpi.b	#$A,d0		; is digit $A-$F?
 		blo.s	LevSel_Numb	; if not, branch
-		addi.b	#7,d0		; use alpha characters
+		addq.b	#7,d0		; use alpha characters
 
 LevSel_Numb:
 		add.w	d3,d0
@@ -2295,11 +2295,11 @@ Level_TtlCardLoop:
 		jsr		(BuildSprites).l
 		bsr.w	RunPLC
 		move.w	(v_ttlcardact+obX).w,d0
-		cmp.w	(v_ttlcardact+card_mainX).w,d0 ; has title card sequence finished?
-		bne.s	Level_TtlCardLoop ; if not, branch
-		tst.l	(v_plc_buffer).w ; are there any items in the pattern load cue?
-		bne.s	Level_TtlCardLoop ; if yes, branch
-		jsr		(Hud_Base).l	; load basic HUD gfx
+		cmp.w	(v_ttlcardact+card_mainX).w,d0	; has title card sequence finished?
+		bne.s	Level_TtlCardLoop				; if not, branch
+		tst.l	(v_plc_buffer).w				; are there any items in the pattern load cue?
+		bne.s	Level_TtlCardLoop				; if yes, branch
+		jsr		(Hud_Base).l					; load basic HUD gfx
 
 Level_SkipTtlCard:
 		moveq	#palid_Sonic,d0
@@ -2365,7 +2365,7 @@ Level_SkipClr:
 		movea.l	(a1,d0.w),a1
 		tst.w	(f_demo).w	; is demo mode on?
 		bpl.s	Level_Demo	; if yes, branch
-		lea	(DemoEndDataPtr).l,a1 ; load ending demo data
+		lea		(DemoEndDataPtr).l,a1 ; load ending demo data
 		move.w	(v_creditsnum).w,d0
 		subq.w	#1,d0
 		lsl.w	#2,d0
@@ -3288,16 +3288,15 @@ End_LoadSonic:
 		jsr		(ObjPosLoad).l
 		jsr		(ExecuteObjects).l
 		jsr		(BuildSprites).l
-		moveq	#0,d0
-		move.w	d0,(v_rings).w
-		move.l	d0,(v_time).w
-		move.b	d0,(v_lifecount).w
-		move.b	d0,(v_shield).w
-		move.b	d0,(v_invinc).w
-		move.b	d0,(v_shoes).w
-		move.w	d0,(v_debuguse).w
-		move.w	d0,(f_restart).w
-		move.w	d0,(v_framecount).w
+		clr.w	(v_rings).w
+		clr.l	(v_time).w
+		clr.b	(v_lifecount).w
+		clr.b	(v_shield).w
+		clr.b	(v_invinc).w
+		clr.b	(v_shoes).w
+		clr.w	(v_debuguse).w
+		clr.w	(f_restart).w
+		clr.w	(v_framecount).w
 		bsr.w	OscillateNumInit
 		move.b	#1,(f_scorecount).w
 		move.b	#1,(f_ringcount).w

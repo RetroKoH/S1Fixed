@@ -16,7 +16,7 @@ Hud_1:		dc.l 1
 
 
 Hud_Mins:
-		lea	(Hud_1).l,a2
+		lea		Hud_1(pc),a2	; Optimized from (Hud_1).l
 		moveq	#0,d6
 		bra.s	loc_1C9BA
 ; End of function Hud_Mins
@@ -26,7 +26,7 @@ Hud_Mins:
 
 
 Hud_Secs:
-		lea	(Hud_10).l,a2
+		lea		Hud_10(pc),a2	; Optimized from (Hud_10).l
 		moveq	#1,d6
 
 loc_1C9BA:
@@ -48,7 +48,7 @@ loc_1C9CC:
 		add.l	d3,d1
 		tst.w	d2
 		beq.s	loc_1C9D6
-		move.w	#1,d4
+		moveq	#1,d4			; Optimized from move.w
 
 loc_1C9D6:
 		lsl.w	#6,d2
@@ -84,10 +84,10 @@ loc_1C9D6:
 
 
 Hud_TimeRingBonus:
-		lea	(Hud_1000).l,a2
+		lea		Hud_1000(pc),a2	; Optimized from (Hud_1000).l
 		moveq	#3,d6
 		moveq	#0,d4
-		lea	Art_Hud(pc),a1
+		lea		Art_Hud(pc),a1
 
 Hud_BonusLoop:
 		moveq	#0,d2
@@ -104,7 +104,7 @@ loc_1CA26:
 		add.l	d3,d1
 		tst.w	d2
 		beq.s	loc_1CA30
-		move.w	#1,d4
+		moveq	#1,d4			; Optimized from move.w
 
 loc_1CA30:
 		tst.w	d4
@@ -139,7 +139,7 @@ Hud_ClrBonus:
 
 Hud_ClrBonusLoop:
 		clr.l	(a6)
-		dbf	d5,Hud_ClrBonusLoop
+		dbf		d5,Hud_ClrBonusLoop
 
 		bra.s	loc_1CA5A
 ; End of function Hud_TimeRingBonus
@@ -155,10 +155,10 @@ Hud_Lives:
 		locVRAM	(ArtTile_Lives_Counter+9)*$20,d0	; set VRAM address
 		moveq	#0,d1
 		move.b	(v_lives).w,d1	; load number of lives
-		lea	(Hud_10).l,a2
+		lea		Hud_10(pc),a2	; Optimized from (Hud_10).l
 		moveq	#1,d6
 		moveq	#0,d4
-		lea	Art_LivesNums(pc),a1
+		lea		Art_LivesNums(pc),a1
 
 Hud_LivesLoop:
 		move.l	d0,4(a6)

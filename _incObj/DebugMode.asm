@@ -222,6 +222,7 @@ Debug_ChgItem:
 		jsr		(ApplySpeedSettings).l				; Fetch Speed settings
 		move.w	(v_limittopdb).w,(v_limittop2).w	; restore level boundaries
 		move.w	(v_limitbtmdb).w,(v_limitbtm1).w
+		jsr		(Hud_Base).l						; reload basic HUD gfx	-- RetroKoH Debug Mode Improvement
 .stayindebug:
 		rts
 
