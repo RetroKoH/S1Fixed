@@ -40,6 +40,7 @@ EndLevelFadeMusic: = 1			; if set to 1, music will fade out as the level ends (S
 WarmPalettes: = 0				; if set to 1, palettes take on a warmer hue (Continuation of Mercury's mod)
 ObjectsFreeze: = 0				; if set to 1, objects freeze on death as normal
 SpeedUpScoreTally: = 2			; if set to 1, score tally can be sped up w/ ABC. If 2, it automatically tallies immediately.
+SpinDashEnabled: = 0			; if set to 1, Spin dashing is enabled for Sonic.
 
 ; ===========================================================================
 
@@ -6183,10 +6184,11 @@ loc_12CB6:
 		bsr.w	Sonic_LoadGfx
 		rts	
 ; ===========================================================================
-Sonic_Modes:	dc.w Sonic_MdNormal-Sonic_Modes
-		dc.w Sonic_MdJump-Sonic_Modes
+Sonic_Modes:
+		dc.w Sonic_MdNormal-Sonic_Modes
+		dc.w Sonic_MdAir-Sonic_Modes
 		dc.w Sonic_MdRoll-Sonic_Modes
-		dc.w Sonic_MdJump2-Sonic_Modes
+		dc.w Sonic_MdJump-Sonic_Modes
 ; ---------------------------------------------------------------------------
 ; Music	to play	after invincibility wears off
 ; ---------------------------------------------------------------------------
@@ -6211,56 +6213,59 @@ MusicList2:
 ; ---------------------------------------------------------------------------
 
 Sonic_MdNormal:
+	; Neither in air or rolling
+	;if SpinDashEnabled=1
+	;	bsr.w	Sonic_Spindash
+	;endif
 		bsr.w	Sonic_Jump
 		bsr.w	Sonic_SlopeResist
 		bsr.w	Sonic_Move
 		bsr.w	Sonic_Roll
 		bsr.w	Sonic_LevelBound
-		jsr	(SpeedToPos).l
+		jsr		(SpeedToPos).l
 		bsr.w	Sonic_AnglePos
-		bsr.w	Sonic_SlopeRepel
-		rts	
+		bra.w	Sonic_SlopeRepel
 ; ===========================================================================
 
-Sonic_MdJump:
+Sonic_MdAir:
+	; in the air, not in a ball (thus, not jumping)
 		bsr.w	Sonic_JumpHeight
 		bsr.w	Sonic_JumpDirection
 		bsr.w	Sonic_LevelBound
-		jsr	(ObjectFall).l
+		jsr		(ObjectFall).l
 		btst	#6,obStatus(a0)
 		beq.s	loc_12E5C
 		subi.w	#$28,obVelY(a0)
 
 loc_12E5C:
 		bsr.w	Sonic_JumpAngle
-		bsr.w	Sonic_Floor
-		rts	
+		bra.w	Sonic_Floor
 ; ===========================================================================
 
 Sonic_MdRoll:
+	; in a ball, not in the air
 		bsr.w	Sonic_Jump
 		bsr.w	Sonic_RollRepel
 		bsr.w	Sonic_RollSpeed
 		bsr.w	Sonic_LevelBound
-		jsr	(SpeedToPos).l
+		jsr		(SpeedToPos).l
 		bsr.w	Sonic_AnglePos
-		bsr.w	Sonic_SlopeRepel
-		rts	
+		bra.w	Sonic_SlopeRepel
 ; ===========================================================================
 
-Sonic_MdJump2:
+Sonic_MdJump:
+	; in the air, in a ball (jumping or falling mid-roll)
 		bsr.w	Sonic_JumpHeight
 		bsr.w	Sonic_JumpDirection
 		bsr.w	Sonic_LevelBound
-		jsr	(ObjectFall).l
+		jsr		(ObjectFall).l
 		btst	#6,obStatus(a0)
 		beq.s	loc_12EA6
 		subi.w	#$28,obVelY(a0)
 
 loc_12EA6:
 		bsr.w	Sonic_JumpAngle
-		bsr.w	Sonic_Floor
-		rts	
+		bra.w	Sonic_Floor
 
 		include	"_incObj/Sonic Move.asm"
 		include	"_incObj/Sonic RollSpeed.asm"

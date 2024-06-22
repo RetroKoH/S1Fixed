@@ -77,6 +77,12 @@
  Function: Allows the player to hold a button to speed up the score tally, or just have it occur immediately
  Date: 2024-06-21
  Variable: SpeedUpScoreTally
+ 
+ Name: Spin Dash
+ Credit: SCHG
+ Function: Spin Dash
+ Date: 2024-06-22
+ Variable: SpinDashEnabled
 
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format
