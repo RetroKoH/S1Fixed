@@ -500,3 +500,9 @@
  Function: Makes Sonic appear correctly when running down certain angles (notably GHZ1) akin to the remakes.
  Date: 2024-06-21
  
+ Name: Rolling Turn Around Fix
+ Credit: Mercury
+ Function: Prevents Sonic from turning around while rolling (which without this fix could be abused to roll in place forever).
+ Date: 2024-06-22
+ Modifies: Sonic RollSpeed.asm
+ 

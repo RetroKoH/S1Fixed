@@ -111,7 +111,7 @@ loc_1320A:
 loc_13218:
 		sub.w	d4,d0
 		bcc.s	loc_13220
-		move.w	#-$80,d0
+		clr.w	d0				; Mercury Rolling Turn Around Fix
 
 loc_13220:
 		move.w	d0,obInertia(a0)
@@ -133,7 +133,7 @@ Sonic_RollRight:
 loc_1323A:
 		add.w	d4,d0
 		bcc.s	loc_13242
-		move.w	#$80,d0
+		clr.w	d0				; Mercury Rolling Turn Around Fix
 
 loc_13242:
 		move.w	d0,obInertia(a0)

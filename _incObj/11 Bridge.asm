@@ -1,10 +1,10 @@
 ; ---------------------------------------------------------------------------
-; Object 11 - GHZ bridge
+; Object 11 - GHZ bridge - Ported from Sonic 2 (Credit: DeltaWooloo)
 ; ---------------------------------------------------------------------------
 ; OST Variables:
 obBriChild1		= objoff_30	; pointer to first set of bridge segments
 obBriChild2		= objoff_34	; pointer to second set of bridge segments, if applicable
-
+; ===========================================================================
 
 Bridge:
 		btst	#6,obRender(a0)	; Is this object set to render sub sprites?
@@ -317,9 +317,9 @@ Bri_Delete:
 		bra.w	DeleteObject
 ; ===========================================================================
 
-; In DeltaW's this is placed above ExitPlatform
 ; ---------------------------------------------------------------------------
 ; Subroutine to collide Sonic with the top of a bridge
+; Ported from Sonic 2 (Credit: DeltaWooloo)
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
