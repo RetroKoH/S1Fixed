@@ -4539,7 +4539,8 @@ LevelLayoutLoad:
 
 		include	"_inc/DynamicLevelEvents.asm"
 
-		include	"_incObj/11 Bridge (part 1).asm"
+		include	"_incObj/11 Bridge.asm"
+Map_Bri:	include	"_maps/Bridge.asm"
 
 ; ---------------------------------------------------------------------------
 ; Platform subroutine
@@ -4548,7 +4549,7 @@ LevelLayoutLoad:
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 PlatformObject:
-		lea	(v_player).w,a1
+		lea		(v_player).w,a1
 		tst.w	obVelY(a1)	; is Sonic moving up/jumping?
 		bmi.w	Plat_Exit	; if yes, branch
 
@@ -4678,8 +4679,6 @@ Swing_Solid:
 
 ; ===========================================================================
 
-		include	"_incObj/11 Bridge (part 2).asm"
-
 ; ---------------------------------------------------------------------------
 ; Subroutine allowing Sonic to walk or jump off	a platform
 ; ---------------------------------------------------------------------------
@@ -4692,7 +4691,7 @@ ExitPlatform:
 
 ExitPlatform2:
 		add.w	d2,d2
-		lea	(v_player).w,a1
+		lea		(v_player).w,a1
 		btst	#1,obStatus(a1)
 		bne.s	loc_75E0
 		move.w	obX(a1),d0
@@ -4710,9 +4709,6 @@ loc_75E0:
 locret_75F2:
 		rts	
 ; End of function ExitPlatform
-
-		include	"_incObj/11 Bridge (part 3).asm"
-Map_Bri:	include	"_maps/Bridge.asm"
 
 		include	"_incObj/15 Swinging Platforms (part 1).asm"
 
