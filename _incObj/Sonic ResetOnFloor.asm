@@ -1,5 +1,6 @@
 ; ---------------------------------------------------------------------------
 ; Subroutine to	reset Sonic's mode when he lands on the floor
+; Going to apply a rewrite from DeltaWooloo, Hitaxas, and Sonic 1 Complete
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||

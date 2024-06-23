@@ -78,6 +78,11 @@ Bub_ChkWater:	; Routine 4
 		beq.s	.display
 		bsr.w	Bub_ChkSonic	; has Sonic touched the	bubble?
 		beq.s	.display	; if not, branch
+		
+	if SpinDashEnabled=1	; Mercury Spin Dash
+		cmpi.b	#aniID_SpinDash,obAnim(a1)
+		beq.s	.display
+	endif	; Spin Dash End
 
 		bsr.w	ResumeMusic	; cancel countdown music
 		move.w	#sfx_Bubble,d0

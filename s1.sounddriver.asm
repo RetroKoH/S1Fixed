@@ -141,10 +141,17 @@ UpdateMusic:
 		jsr	PlaySoundID(pc)
 ; loc_71BC8:
 .nonewsound:
-		lea	v_music_dac_track(a6),a5
-		tst.b	TrackPlaybackControl(a5) ; Is DAC track playing?
-		bpl.s	.dacdone		; Branch if not
-		jsr	DACUpdateTrack(pc)
+	if SpinDashEnabled=1
+		tst.b	(v_spindashsfx2).w
+		beq.s	.cont
+		subq.b	#1,(v_spindashsfx2).w
+
+.cont:
+	endif
+		lea		v_music_dac_track(a6),a5
+		tst.b	TrackPlaybackControl(a5)	; Is DAC track playing?
+		bpl.s	.dacdone					; Branch if not
+		jsr		DACUpdateTrack(pc)
 ; loc_71BD4:
 .dacdone:
 		clr.b	f_updating_dac(a6)
@@ -621,22 +628,29 @@ CycleSoundQueue:
 PlaySoundID:
 		moveq	#0,d7
 		move.b	v_sound_id(a6),d7
-		beq.w	StopAllSound
-		bpl.s	.locret				; If >= 0, return (not a valid sound, bgm or command)
+		beq.w	StopAllSound		; if 0, stop all sounds
+		bpl.s	.locret				; If >= 0 and < $80, return (not a valid sound, bgm or command)
 		move.b	#$80,v_sound_id(a6)	; reset	music flag
 		cmpi.b	#bgm__Last,d7		; Is this music ($81-$93)? -- Sound driver bugfixes: Playing sounds $94-$9F will cause a crash!
-		bls.w	Sound_PlayBGM		; Branch if yes
-		cmpi.b	#sfx__First,d7		; Is this after music but before sfx? (redundant check)
-		blo.w	.locret				; Return if yes
+		bls.w	Sound_PlayBGM		; Branch and play if yes
+		cmpi.b	#sfx__First,d7		; Is this after music but before sfx? ($94-$9F)
+		blo.w	.locret				; Return if yes. Playing sounds $94-$9F will cause a crash!
 		cmpi.b	#sfx__Last,d7		; Is this sfx ($A0-$CF)?
-		bls.w	Sound_PlaySFX		; Branch if yes
-		cmpi.b	#spec__First,d7		; Is this after sfx but before special sfx? (redundant check)
-		blo.w	.locret				; Return if yes
+		bls.w	Sound_PlaySFX		; Branch and play if yes
 	; Sound driver bugfixes
+
+	if SpinDashEnabled=1
+		cmpi.b	#sfx_Waterfall,d7	; Is this special sfx ($D0)?
+		beq.w	Sound_PlaySpecial	; Branch and play if yes
+		cmpi.b	#sfx_SpinDash,d7	; Is this special sfx ($D1)?
+		beq.w	Sound_PlaySpinDash	; Branch and play if yes
+	else
 		cmpi.b	#spec__Last,d7		; Is this special sfx ($D0-$D0)? -- Playing sounds $D1-$DF will cause a crash!
 		bls.w	Sound_PlaySpecial	; Branch if yes
+	endif
+
 		cmpi.b	#flg__First,d7		; Is this after special sfx but before $E0?
-		blo.w	.locret				; Return if yes
+		blo.w	.locret				; Return if yes. Playing sounds after spec__Last will cause a crash!
 	; Sound driver bugfixes end
 		cmpi.b	#flg__Last,d7		; Is this $E0-$E4?
 		bls.s	Sound_E0toE4		; Branch if yes
@@ -879,40 +893,67 @@ PSGInitBytes:	dc.b $80, $A0, $C0	; Specifically, these configure writes to the P
 ; ---------------------------------------------------------------------------
 ; Sound_A0toCF:
 Sound_PlaySFX:
-		tst.b	f_1up_playing(a6)	; Is 1-up playing?
-		bne.w	.clear_sndprio		; Exit is it is
+		tst.b	f_1up_playing(a6)		; Is 1-up playing?
+		bne.w	Sound_ClearPriority		; Exit is it is
 		tst.b	v_fadeout_counter(a6)	; Is music being faded out?
-		bne.w	.clear_sndprio		; Exit if it is
-		tst.b	f_fadein_flag(a6)	; Is music being faded in?
-		bne.w	.clear_sndprio		; Exit if it is
-		cmpi.b	#sfx_Ring,d7		; is ring sound	effect played?
-		bne.s	.sfx_notRing		; if not, branch
-		tst.b	v_ring_speaker(a6)	; Is the ring sound playing on right speaker?
-		bne.s	.gotringspeaker		; Branch if not
-		move.b	#sfx_RingLeft,d7	; play ring sound in left speaker
+		bne.w	Sound_ClearPriority		; Exit if it is
+		tst.b	f_fadein_flag(a6)		; Is music being faded in?
+		bne.w	Sound_ClearPriority		; Exit if it is
+	if SpinDashEnabled=1
+		clr.b	(v_spindashsfx1).w
+	endif
+		cmpi.b	#sfx_Ring,d7			; is ring sound	effect played?
+		bne.s	.sfx_notRing			; if not, branch
+		tst.b	v_ring_speaker(a6)		; Is the ring sound playing on right speaker?
+		bne.s	.gotringspeaker			; Branch if not
+		move.b	#sfx_RingLeft,d7		; play ring sound in left speaker
 ; loc_721EE:
 .gotringspeaker:
 		bchg	#0,v_ring_speaker(a6)	; change speaker
 ; Sound_notB5:
 .sfx_notRing:
-		cmpi.b	#sfx_Push,d7		; is "pushing" sound played?
-		bne.s	.sfx_notPush		; if not, branch
-		tst.b	f_push_playing(a6)	; Is pushing sound already playing?
-		bne.w	.locret			; Return if not
+		cmpi.b	#sfx_Push,d7			; is "pushing" sound played?
+		bne.s	.sfx_notPush			; if not, branch
+		tst.b	f_push_playing(a6)		; Is pushing sound already playing?
+		bne.w	Sound_SFXCommon_Ret		; Return if not
 		move.b	#$80,f_push_playing(a6)	; Mark it as playing
 ; Sound_notA7:
 .sfx_notPush:
+	if SpinDashEnabled=1
+		cmp.b	#sfx_SpinDash,d7		; is this the Spin Dash sound?
+		bne.s	.cont3					; if not, branch
+		move.w	d0,-(sp)
+		move.b	(v_spindashsfx3).w,d0	; store extra frequency
+		tst.b	(v_spindashsfx2).w		; is the Spin Dash timer active?
+		bne.s	.cont1					; if it is, branch
+		move.b	#-1,d0					; otherwise, reset frequency (becomes 0 on next line)
+
+.cont1:
+		addq.b	#1,d0
+		cmp.b	#$C,d0					; has the limit been reached?
+		bcc.s	.cont2					; if it has, branch
+		move.b	d0,(v_spindashsfx3).w	; otherwise, set new frequency
+
+.cont2:
+		move.b	#1,(v_spindashsfx1).w	; set flag
+		move.b	#60,(v_spindashsfx2).w	; set timer
+		move.w	(sp)+,d0
+
+.cont3:
+	endif ; Spin Dash SFX End
 		movea.l	(Go_SoundIndex).l,a0
 		subi.b	#sfx__First,d7		; Make it 0-based
-		lsl.w	#2,d7			; Convert sfx ID into index
+
+SoundEffects_Common:
+		lsl.w	#2,d7				; Convert sfx ID into index
 		movea.l	(a0,d7.w),a3		; SFX data pointer
 		movea.l	a3,a1
 		moveq	#0,d1
-		move.w	(a1)+,d1		; Voice pointer
-		add.l	a3,d1			; Relative pointer
-		move.b	(a1)+,d5		; Dividing timing
-		moveq	#0,d7			; Sound driver bugfixes: prevent SFXes indexed above $3F crashing the game
-		move.b	(a1)+,d7		; Number of tracks (FM + PSG)
+		move.w	(a1)+,d1			; Voice pointer
+		add.l	a3,d1				; Relative pointer
+		move.b	(a1)+,d5			; Dividing timing
+		moveq	#0,d7				; Sound driver bugfixes: prevent SFXes indexed above $3F crashing the game
+		move.b	(a1)+,d7			; Number of tracks (FM + PSG)
 		subq.b	#1,d7
 		moveq	#TrackSz,d6
 ; loc_72228:
@@ -943,7 +984,8 @@ Sound_PlaySFX:
 		move.b	d0,(psg_input).l
 ; loc_7226E:
 .sfxoverridedone:
-		movea.l	SFX_SFXChannelRAM(pc,d3.w),a5
+		lea		SFX_SFXChannelRAM(pc),a5
+		movea.l	(a5,d3.w),a5
 		movea.l	a5,a2
 		moveq	#(TrackSz/4)-1,d0	; $30 bytes
 ; loc_72276:
@@ -958,6 +1000,18 @@ Sound_PlaySFX:
 		add.l	a3,d0				; Relative pointer
 		move.l	d0,TrackDataPointer(a5)	; Store track pointer
 		move.w	(a1)+,TrackTranspose(a5)	; load FM/PSG channel modifier
+
+	if SpinDashEnabled=1
+		tst.b	(v_spindashsfx1).w	; is the Spin Dash sound playing?
+		beq.s	.cont		; if not, branch
+		move.w	d0,-(sp)
+		move.b	(v_spindashsfx3).w,d0
+		add.b	d0,8(a5)
+		move.w	(sp)+,d0
+
+	.cont:
+	endif ; Spin Dash SFX End
+
 		move.b	#1,TrackDurationTimeout(a5)	; Set duration of first "note"
 		move.b	d6,TrackStackPointer(a5)	; set "gosub" (coord flag $F8) stack init value
 		tst.b	d4				; Is this a PSG channel?
@@ -966,22 +1020,22 @@ Sound_PlaySFX:
 		move.l	d1,TrackVoicePtr(a5)		; Voice pointer
 ; loc_722A8:
 .sfxpsginitdone:
-		dbf	d7,.sfx_loadloop
+		dbf		d7,.sfx_loadloop
 
 		tst.b	v_sfx_fm4_track+TrackPlaybackControl(a6)	; Is special SFX being played?
 		bpl.s	.doneoverride					; Branch if not
 		bset	#2,v_spcsfx_fm4_track+TrackPlaybackControl(a6)	; Set 'SFX is overriding' bit
 ; loc_722B8:
 .doneoverride:
-		tst.b	v_sfx_psg3_track+TrackPlaybackControl(a6)	; Is SFX being played?
-		bpl.s	.locret						; Branch if not
+		tst.b	v_sfx_psg3_track+TrackPlaybackControl(a6)		; Is SFX being played?
+		bpl.s	Sound_SFXCommon_Ret								; Branch if not
 		bset	#2,v_spcsfx_psg3_track+TrackPlaybackControl(a6)	; Set 'SFX is overriding' bit
 ; locret_722C4:
-.locret:
+Sound_SFXCommon_Ret:
 		rts	
 ; ===========================================================================
 ; loc_722C6:
-.clear_sndprio:
+Sound_ClearPriority:
 		_clr.b	v_sndprio(a6)	; Clear priority
 		rts	
 ; ===========================================================================
@@ -1087,7 +1141,45 @@ Sound_PlaySpecial:
 ; locret_723C6:
 .locret:
 		rts	
-; End of function PlaySoundID
+; End of function Sound_PlaySpecial
+
+	if SpinDashEnabled=1
+; ---------------------------------------------------------------------------
+; Play Spin Dash sound effect
+; ---------------------------------------------------------------------------
+Sound_PlaySpinDash:
+	tst.b	$27(a6)
+	bne.w	Sound_ClearPriority
+	tst.b	4(a6)
+	bne.w	Sound_ClearPriority
+	tst.b	$24(a6)
+	bne.w	Sound_ClearPriority
+	clr.b	(v_spindashsfx1).w
+	cmp.b	#sfx_SpinDash,d7		; is this the Spin Dash sound?
+	bne.s	.cont3					; if not, branch
+	move.w	d0,-(sp)
+	move.b	(v_spindashsfx3).w,d0	; store extra frequency
+	tst.b	(v_spindashsfx2).w		; is the Spin Dash timer active?
+	bne.s	.cont1					; if it is, branch
+	move.b	#-1,d0					; otherwise, reset frequency (becomes 0 on next line)
+
+.cont1:
+	addq.b	#1,d0
+	cmp.b	#$C,d0					; has the limit been reached?
+	bcc.s	.cont2					; if it has, branch
+	move.b	d0,(v_spindashsfx3).w	; otherwise, set new frequency
+
+.cont2:
+	move.b	#1,(v_spindashsfx1).w	; set flag
+	move.b	#60,(v_spindashsfx2).w	; set timer
+	move.w	(sp)+,d0
+
+.cont3:
+	movea.l	(Go_SoundIndex).l,a0
+	sub.b	#$A0,d7
+	bra.w	SoundEffects_Common
+; End of function Sound_PlaySpinDash
+	endif
 
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -2550,6 +2642,11 @@ ptr_sndend
 ; ---------------------------------------------------------------------------
 SpecSoundIndex:
 ptr_sndD0:	dc.l SoundD0
+
+	if SpinDashEnabled=1
+ptr_sndD1:	dc.l SoundD1
+	endif
+
 ptr_specend
 
 ; ---------------------------------------------------------------------------
@@ -2657,3 +2754,8 @@ SoundCF:	include	"sound/sfx/SndCF - Signpost.asm"
 ; ---------------------------------------------------------------------------
 SoundD0:	include	"sound/sfx/SndD0 - Waterfall.asm"
 		even
+
+	if SpinDashEnabled=1
+SoundD1:	binclude	"sound/sfx/SndD1 - SpinDash.bin"		; Ported from S2 - From Caverns4/IkeyIlex
+		even
+	endif

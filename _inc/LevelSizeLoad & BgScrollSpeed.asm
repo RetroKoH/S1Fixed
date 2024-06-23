@@ -98,7 +98,9 @@ LevSz_StartLoc:
 		move.w	(v_zone).w,d0
 		lsl.b	#6,d0
 		lsr.w	#4,d0
-		lea	StartLocArray(pc,d0.w),a1 ; load Sonic's start location address
+		;lea		StartLocArray(pc,d0.w),a1	; MJ: load Sonic's start location address
+		lea		StartLocArray,a1
+		adda.w	d0,a1 							; MJ: load Sonic's start location address
 		tst.w	(f_demo).w	; is ending demo mode on?
 		bpl.s	LevSz_SonicPos	; if not, branch
 
@@ -110,29 +112,40 @@ LevSz_StartLoc:
 LevSz_SonicPos:
 		moveq	#0,d1
 		move.w	(a1)+,d1
-		move.w	d1,(v_player+obX).w ; set Sonic's position on x-axis
+		move.w	d1,(v_player+obX).w		; set Sonic's position on x-axis
 		moveq	#0,d0
 		move.w	(a1),d0
-		move.w	d0,(v_player+obY).w ; set Sonic's position on y-axis
-		move.b	(v_gamemode).w,d2			; MJ: load game mode
+		move.w	d0,(v_player+obY).w		; set Sonic's position on y-axis
+		move.b	(v_gamemode).w,d2		; MJ: load game mode
 		andi.w	#$FC,d2					; MJ: keep in range
 		cmpi.b	#4,d2					; MJ: is screen mode at title?
 		bne.s	SetScreen				; MJ: if not, branch
 		move.w	#$50,d1					; MJ: set positions for title screen
 		move.w	#$3B0,d0				; MJ: ''
-		move.w	d1,(v_player+obX).w			; MJ: save to object 1 so title screen follows
-		move.w	d0,(v_player+obY).w			; MJ: ''
+		move.w	d1,(v_player+obX).w		; MJ: save to object 1 so title screen follows
+		move.w	d0,(v_player+obY).w		; MJ: ''
 
 SetScreen:
 LevSz_SkipStartPos:
-		subi.w	#160,d1		; is Sonic more than 160px from left edge?
-		bcc.s	SetScr_WithinLeft ; if yes, branch
+	if SpinDashEnabled=1	; Spin Dash Enabled
+		clr.b	(v_cameralag).w
+		clr.w	(v_trackpos).w			; reset Sonic's position tracking index
+		lea		(v_tracksonic).w,a2		; load the tracking array into a2
+		moveq	#63,d2					; begin a 64-step loop
+	.looppoint:
+		move.w	d1,(a2)+				; fill in X
+		move.w	d0,(a2)+				; fill in Y
+		dbf		d2,.looppoint			; loop
+	endif					; Spin Dash Enabled End
+
+		subi.w	#160,d1					; is Sonic more than 160px from left edge?
+		bcc.s	SetScr_WithinLeft		; if yes, branch
 		moveq	#0,d1
 
 SetScr_WithinLeft:
 		move.w	(v_limitright2).w,d2
-		cmp.w	d2,d1		; is Sonic inside the right edge?
-		blo.s	SetScr_WithinRight ; if yes, branch
+		cmp.w	d2,d1					; is Sonic inside the right edge?
+		blo.s	SetScr_WithinRight		; if yes, branch
 		move.w	d2,d1
 
 SetScr_WithinRight:

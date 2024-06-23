@@ -49,11 +49,29 @@ loc_131A6:
 loc_131AA:
 		tst.w	obInertia(a0)		; is Sonic moving?
 		bne.s	loc_131CC			; if yes, branch
+
+	if SpinDashEnabled=1
+		tst.b	obSpinDashFlag(a0)
+		bne.s	Sonic_KeepRolling
+	endif
+
 		bclr	#2,obStatus(a0)
 		move.b	#$13,obHeight(a0)
 		move.b	#9,obWidth(a0)
 		move.b	#aniID_Wait,obAnim(a0)	; use "standing" animation
 		subq.w	#5,obY(a0)
+
+	if SpinDashEnabled=1
+		bra.s	loc_131CC
+
+; ---------------------------------------------------------------------------
+; DeltaWooloo: This part is from Sonic 2
+Sonic_KeepRolling:
+		move.w	#$400,obInertia(a0)
+		btst	#0,obStatus(a0)
+		beq.s	loc_131CC
+		neg.w	obInertia(a0)
+	endif
 
 loc_131CC:
 	; Mercury Screen Scroll While Rolling Fix

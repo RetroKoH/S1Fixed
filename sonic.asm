@@ -19,28 +19,31 @@ FixBugs		  = 0	; change to 1 to enable bugfixes
 
 zeroOffsetOptimization = 0	; if 1, makes a handful of zero-offset instructions smaller
 
+; S1Fixed Variables
+DebugPathSwappers: = 1
+DynamicSpecialStageWalls: = 1			; If set to 1, Special Stage walls are dynamically loaded. (might make this permanent)
+SmoothSpecialStages: = 1				; if set to 1, stage scrolls smoothly. Jump angles are also affected.
+FadeInSEGA: = 1							; if set to 1, the SEGA screen smoothly fades in
+PaletteFadeSetting: = 6					; 0 - Blue (Original), 1 - Green, 2 - Red, 3 - Cyan (B+G), 4 - Pink (B+R), 5 - Yellow (G+R), 6 - Full
+GroundSpeedCapEnabled: = 0				; if set to 1, the ground speed cap is active (includes Roll Speed Cap fix by Devon)
+AirSpeedCapEnabled: = 0					; if set to 1, the air speed cap is active
+RollJumpLockActive: = 0					; if set to 1, the original roll jump lock is maintained
+SpikeBugFix: = 1						; if set to 1, the spike "bug" is fixed
+GHZForeverPal: = 1						; if set to 1, GHZ is set to Sonic 1 Forever's palette
+EndLevelFadeMusic: = 1					; if set to 1, music will fade out as the level ends (Signpost or Prison Capsule)
+WarmPalettes: = 0						; if set to 1, palettes take on a warmer hue (Continuation of Mercury's mod)
+ObjectsFreeze: = 0						; if set to 1, objects freeze on death as normal
+SpeedUpScoreTally: = 2					; if set to 1, score tally can be sped up w/ ABC. If 2, it automatically tallies immediately.
+SpinDashEnabled: = 1					; if set to 1, Spin dashing is enabled for Sonic.
+SkidDustEnabled: = 1					; if set to 1, Skid dust will occur when coming to a stop.
+SpinDashCancel: = SpinDashEnabled*1		; if set to 1, Spin Dash can be cancelled by not pressing ABC
+SpinDashNoRevDown: = SpinDashEnabled*1	; if set to 1, Spin Dash will not rev down so long as ABC is held down
+
 	include "MacroSetup.asm"
 	include	"Constants.asm"
 	include	"Variables.asm"
 	include	"Macros.asm"
 	include	"Debugger.asm"
-
-; S1 Fixed Variables
-DebugPathSwappers: = 1
-DynamicSpecialStageWalls: = 1	; If set to 1, Special Stage walls are dynamically loaded. (might make this permanent)
-SmoothSpecialStages: = 1		; if set to 1, stage scrolls smoothly. Jump angles are also affected.
-FadeInSEGA: = 1					; if set to 1, the SEGA screen smoothly fades in
-PaletteFadeSetting: = 6			; 0 - Blue (Original), 1 - Green, 2 - Red, 3 - Cyan (B+G), 4 - Pink (B+R), 5 - Yellow (G+R), 6 - Full
-GroundSpeedCapEnabled: = 0		; if set to 1, the ground speed cap is active (includes Roll Speed Cap fix by Devon)
-AirSpeedCapEnabled: = 0			; if set to 1, the air speed cap is active
-RollJumpLockActive: = 0			; if set to 1, the original roll jump lock is maintained
-SpikeBugFix: = 1				; if set to 1, the spike "bug" is fixed
-GHZForeverPal: = 1				; if set to 1, GHZ is set to Sonic 1 Forever's palette
-EndLevelFadeMusic: = 1			; if set to 1, music will fade out as the level ends (Signpost or Prison Capsule)
-WarmPalettes: = 0				; if set to 1, palettes take on a warmer hue (Continuation of Mercury's mod)
-ObjectsFreeze: = 0				; if set to 1, objects freeze on death as normal
-SpeedUpScoreTally: = 2			; if set to 1, score tally can be sped up w/ ABC. If 2, it automatically tallies immediately.
-SpinDashEnabled: = 0			; if set to 1, Spin dashing is enabled for Sonic.
 
 ; ===========================================================================
 
@@ -4988,6 +4991,10 @@ Obj44_SolidWall2:
 		move.w	obY(a1),d3
 
 	; Mercury Ducking Size Fix	
+	if SpinDashEnabled=1
+		cmpi.b	#aniID_SpinDash,obAnim(a1)
+		beq.s	.short
+	endif
 		cmpi.b	#aniID_Duck,obAnim(a1)
 		bne.s	.skip
 		
@@ -5077,10 +5084,10 @@ Map_Missile:	include	"_maps/Buzz Bomber Missile.asm"
 
 		include	"_anim/Rings.asm"
 
-Map_Ring:	include	"_maps\Rings.asm" ; THESE normal mappings will be for debug rings, lost rings, and SS rings
+Map_Ring:	include	"_maps/Rings.asm" ; THESE normal mappings will be for debug rings, lost rings, and SS rings
 
 Map_RingBIN:
-		binclude	"_maps\Rings.bin" ; RetroKoH S2 Rings Manager
+		binclude	"_maps/Rings.bin" ; RetroKoH S2 Rings Manager
 		even
 
 Map_GRing:	include	"_maps/Giant Ring.asm"
@@ -6097,6 +6104,10 @@ Map_Bub:	include	"_maps/Bubbles.asm"
 		include	"_anim/Waterfalls.asm"
 Map_WFall:	include	"_maps/Waterfalls.asm"
 
+	if (SpinDashEnabled|SkidDustEnabled)=1
+		include "_incObj/07 Effects.asm"	; Skid Dust and/or Spindash Dust
+	endif
+
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Object 01 - Sonic
@@ -6136,6 +6147,10 @@ Sonic_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		lea     (v_sonspeedmax).w,a2	; Load Sonic_top_speed into a2
 		bsr.w   ApplySpeedSettings		; Fetch Speed settings
+
+	if (SpinDashEnabled|SkidDustEnabled)=1
+		move.b	#id_Effects,(v_playerdust).w
+	endif
 
 Sonic_Control:	; Routine 2
 		tst.w	(f_debugmode).w			; is debug cheat enabled?
@@ -6214,9 +6229,9 @@ MusicList2:
 
 Sonic_MdNormal:
 	; Neither in air or rolling
-	;if SpinDashEnabled=1
-	;	bsr.w	Sonic_Spindash
-	;endif
+	if SpinDashEnabled=1
+		bsr.w	Sonic_ChkSpinDash
+	endif
 		bsr.w	Sonic_Jump
 		bsr.w	Sonic_SlopeResist
 		bsr.w	Sonic_Move
@@ -6244,7 +6259,15 @@ loc_12E5C:
 
 Sonic_MdRoll:
 	; in a ball, not in the air
+	if SpinDashEnabled=1
+		tst.b	obSpinDashFlag(a0)
+		bne.s	.skip
 		bsr.w	Sonic_Jump
+
+.skip:
+	else
+		bsr.w	Sonic_Jump
+	endif
 		bsr.w	Sonic_RollRepel
 		bsr.w	Sonic_RollSpeed
 		bsr.w	Sonic_LevelBound
@@ -6274,6 +6297,11 @@ loc_12EA6:
 		include	"_incObj/Sonic Roll.asm"
 		include	"_incObj/Sonic Jump.asm"
 		include	"_incObj/Sonic JumpHeight.asm"
+	
+	if SpinDashEnabled=1
+		include	"_incObj/Sonic SpinDash.asm"
+	endif
+
 		include	"_incObj/Sonic SlopeResist.asm"
 		include	"_incObj/Sonic RollRepel.asm"
 		include	"_incObj/Sonic SlopeRepel.asm"
@@ -7789,6 +7817,15 @@ Art_Signpost:	binclude	"artunc/Signpost.bin"				; End-of-level Signpost -- Retro
 Art_BigRing:	binclude	"artunc/Giant Ring.bin"				; Giant Ring -- RetroKoH VRAM Overhaul
 		even
 
+	if (SpinDashEnabled|SkidDustEnabled)=1
+Art_Effects:	binclude	"artunc/Dust Effects.bin"			; Spindash/Skid Dust
+		even
+	endif
+
+		include "_maps/Effects.asm"
+		include "_maps/Effects - DPLCs.asm"
+		include "_anim/Effects.asm"
+
 ; AURORA☆FIELDS Title Card Optimization
 Art_TitleCard:	binclude	"artunc/Title Cards.bin"			; Title Card patterns
 Art_TitleCard_End:	even
@@ -7800,9 +7837,9 @@ Map_SSWalls:	include	"_maps/SS Walls.asm"	; Now includes dynamic mappings -- Mer
 ; ---------------------------------------------------------------------------
 
 	if DynamicSpecialStageWalls=1	; Mercury Dynamic Special Stage Walls
-Nem_SSWalls:	binclude	"artunc\Special Walls (dynamic).bin"
+Nem_SSWalls:	binclude	"artunc/Special Walls (dynamic).bin"
 	else
-Nem_SSWalls:	binclude	"artnem\Special Walls.nem"
+Nem_SSWalls:	binclude	"artnem/Special Walls.nem"
 	endif	; Dynamic Special Stage Walls End
 		even
 

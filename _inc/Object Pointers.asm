@@ -7,7 +7,13 @@ ptr_PathSwapper:		dc.l PathSwapper
 ptr_Obj04:				dc.l NullObject
 ptr_Obj05:				dc.l NullObject
 ptr_Obj06:				dc.l NullObject
+
+	if (SpinDashEnabled|SkidDustEnabled)=1
+ptr_Effects:			dc.l Effects
+	else
 ptr_Obj07:				dc.l NullObject
+	endif
+
 ptr_Splash:				dc.l Splash		; $08
 ptr_SonicSpecial:		dc.l SonicSpecial
 ptr_DrownCount:			dc.l DrownCount
@@ -34,27 +40,27 @@ ptr_BallHog:			dc.l BallHog
 ptr_Crabmeat:			dc.l Crabmeat
 ptr_Cannonball:			dc.l Cannonball		; $20
 ptr_HUD:				dc.l HUD
-ptr_BuzzBomber:		dc.l BuzzBomber
-ptr_Missile:		dc.l Missile
+ptr_BuzzBomber:			dc.l BuzzBomber
+ptr_Missile:			dc.l Missile
 ptr_MissileDissolve:	dc.l MissileDissolve
-ptr_Rings:		dc.l Rings
+ptr_Rings:			dc.l Rings
 ptr_Monitor:		dc.l Monitor
 ptr_ExplosionItem:	dc.l ExplosionItem
 ptr_Animals:		dc.l Animals		; $28
-ptr_Points:		dc.l Points
+ptr_Points:			dc.l Points
 ptr_AutoDoor:		dc.l AutoDoor
 ptr_Chopper:		dc.l Chopper
-ptr_Jaws:		dc.l Jaws
+ptr_Jaws:			dc.l Jaws
 ptr_Burrobot:		dc.l Burrobot
 ptr_PowerUp:		dc.l PowerUp
 ptr_LargeGrass:		dc.l LargeGrass
 ptr_GlassBlock:		dc.l GlassBlock		; $30
 ptr_ChainStomp:		dc.l ChainStomp
-ptr_Button:		dc.l Button
+ptr_Button:			dc.l Button
 ptr_PushBlock:		dc.l PushBlock
 ptr_TitleCard:		dc.l TitleCard
 ptr_GrassFire:		dc.l GrassFire
-ptr_Spikes:		dc.l Spikes
+ptr_Spikes:			dc.l Spikes
 ptr_RingLoss:		dc.l RingLoss
 ptr_ShieldItem:		dc.l ShieldItem		; $38
 ptr_GameOverCard:	dc.l GameOverCard
@@ -143,7 +149,7 @@ ptr_EndEggman:		dc.l EndEggman
 ptr_TryChaos:		dc.l TryChaos
 
 NullObject:
-		;jmp	(DeleteObject).l	; It would be safer to have this instruction here, but instead it just falls through to ObjectFall
+		jmp	(DeleteObject).l	; Any invalid objects will delete themselves immediately.
 
 id_SonicPlayer:		equ ((ptr_SonicPlayer-Obj_Index)/4)+1		; $01
 id_Obj02:			equ ((ptr_Obj02-Obj_Index)/4)+1
@@ -151,7 +157,13 @@ id_PathSwapper:		equ ((ptr_PathSwapper-Obj_Index)/4)+1
 id_Obj04:			equ ((ptr_Obj04-Obj_Index)/4)+1
 id_Obj05:			equ ((ptr_Obj05-Obj_Index)/4)+1
 id_Obj06:			equ ((ptr_Obj06-Obj_Index)/4)+1
+
+	if (SpinDashEnabled|SkidDustEnabled)=1
+id_Effects:			equ ((ptr_Effects-Obj_Index)/4)+1
+	else
 id_Obj07:			equ ((ptr_Obj07-Obj_Index)/4)+1
+	endif
+
 id_Splash:			equ ((ptr_Splash-Obj_Index)/4)+1		; $08
 id_SonicSpecial:	equ ((ptr_SonicSpecial-Obj_Index)/4)+1
 id_DrownCount:		equ ((ptr_DrownCount-Obj_Index)/4)+1

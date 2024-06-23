@@ -22,7 +22,11 @@ Sonic_Roll:
 		neg.w	d0
 
 .ispositive:
+	if SpinDashEnabled=1	; Mercury Spin Dash
+		cmpi.w	#$100,d0				; is Sonic moving at $100 speed or faster?
+	else
 		cmpi.w	#$80,d0					; is Sonic moving at $80 speed or faster?
+	endif	; Spin Dash End
 		bhs.s	Sonic_ChkRoll			; if so, branch
 		move.b	#aniID_Duck,obAnim(a0) 	; use "ducking" animation
 

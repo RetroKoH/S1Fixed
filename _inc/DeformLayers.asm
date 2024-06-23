@@ -687,7 +687,33 @@ ScrollHoriz:
 
 
 MoveScreenHoriz:
+	if SpinDashEnabled=1	; Spin Dash Enabled
+		move.b	(v_cameralag).w,d1
+		beq.s	.cont1
+		tst.w	(v_player+obVelX).w	; is Sonic moving horizontally?
+		bne.s	.cont0
+		clr.b	(v_cameralag).w	; clear lag
+		bra.s	.cont1
+
+	.cont0:
+		sub.b	#1,d1
+		move.b	d1,(v_cameralag).w
+		lsl.b	#2,d1
+		addq.b	#4,d1
+		move.w	(v_trackpos).w,d0
+		sub.b	d1,d0
+		lea		(v_tracksonic).w,a1
+		move.w	(a1,d0.w),d0
+		and.w	#$3FFF,d0
+		bra.s	.cont2
+
+	.cont1:
 		move.w	(v_player+obX).w,d0
+
+	.cont2:
+	else
+		move.w	(v_player+obX).w,d0
+	endif	; Spin Dash Enabled End
 		sub.w	(v_screenposx).w,d0 ; Sonic's distance from left edge of screen
 		subi.w	#144,d0				; is distance less than 144px?
 		bmi.s	SH_BehindMid		; if yes, branch	<---- cs to mi (for negative) MarkeyJester Horizontal Screen Scrolling Fix

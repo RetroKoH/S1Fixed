@@ -6,9 +6,10 @@ Junction:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Jun_Index(pc,d0.w),d1
-		jmp	Jun_Index(pc,d1.w)
+		jmp		Jun_Index(pc,d1.w)
 ; ===========================================================================
-Jun_Index:	dc.w Jun_Main-Jun_Index
+Jun_Index:
+		dc.w Jun_Main-Jun_Index
 		dc.w Jun_Action-Jun_Index
 		dc.w Jun_Display-Jun_Index
 		dc.w Jun_Release-Jun_Index
@@ -26,7 +27,7 @@ Jun_Main:	; Routine 0
 ; ===========================================================================
 
 .repeat:
-		bsr.w	FindFreeObj
+		jsr		(FindFreeObj).l
 		bne.s	.fail
 		_move.b	#id_Junction,obID(a1)
 		addq.b	#4,obRoutine(a1) ; goto Jun_Display next

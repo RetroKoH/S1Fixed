@@ -102,8 +102,20 @@ Sonic_Animate:
 		andi.b	#$FC,obRender(a0)
 		eor.b	d1,d2
 		or.b	d2,obRender(a0)
+
+	if SpinDashEnabled=1
+	; DeltaWooloo/Gio Spindash check
+		tst.b   obSpinDashFlag(a0)	; GIO: Check if the Spin Dash is being charged
+		bne.s   .skip				; GIO: If yes, skip the check for the pushing status.
+	; Spindash check end
 		btst	#5,obStatus(a0)		; is Sonic pushing something?
 		bne.w	.push				; if yes, branch
+
+.skip:
+	else
+		btst	#5,obStatus(a0)		; is Sonic pushing something?
+		bne.w	.push				; if yes, branch
+	endif
 
 		lsr.b	#4,d0				; divide angle by $10
 		andi.b	#6,d0				; angle	must be	0, 2, 4	or 6

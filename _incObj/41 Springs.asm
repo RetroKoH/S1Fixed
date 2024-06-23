@@ -10,7 +10,8 @@ Springs:
 		offscreen.w	DeleteObject
 		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix	
 ; ===========================================================================
-Spring_Index:	dc.w Spring_Main-Spring_Index
+Spring_Index:
+		dc.w Spring_Main-Spring_Index
 		dc.w Spring_Up-Spring_Index
 		dc.w Spring_AniUp-Spring_Index
 		dc.w Spring_ResetUp-Spring_Index
@@ -77,18 +78,25 @@ Spring_Up:	; Routine 2
 Spring_BounceUp:
 		addq.b	#2,obRoutine(a0)
 		addq.w	#8,obY(a1)
-		move.w	spring_pow(a0),obVelY(a1) ; move Sonic upwards
+		move.w	spring_pow(a0),obVelY(a1)	; move Sonic upwards
 		bset	#1,obStatus(a1)
 		bclr	#3,obStatus(a1)
-		move.b	#aniID_Spring,obAnim(a1) ; use "bouncing" animation
+		clr.b	obJumping(a1)
+		; Clear the spin flag?
+
+	if SpinDashEnabled=1
+		clr.b	obSpinDashFlag(a1)			; clear spin dash flag
+	endif
+
+		move.b	#aniID_Spring,obAnim(a1)	; use "bouncing" animation
 		move.b	#2,obRoutine(a1)
 		bclr	#3,obStatus(a0)
 		clr.b	obSolid(a0)
 		move.w	#sfx_Spring,d0
-		jsr	(PlaySound_Special).l	; play spring sound
+		jsr		(PlaySound_Special).l		; play spring sound
 
 Spring_AniUp:	; Routine 4
-		lea	(Ani_Spring).l,a1
+		lea		(Ani_Spring).l,a1
 		bra.w	AnimateSprite
 ; ===========================================================================
 
@@ -134,11 +142,16 @@ Spring_Flipped:
 loc_DC56:
 		bclr	#5,obStatus(a0)
 		bclr	#5,obStatus(a1)
+
+	if SpinDashEnabled=1
+		clr.b	(v_cameralag).w 	; clear camera lag
+	endif
+
 		move.w	#sfx_Spring,d0
-		jsr	(PlaySound_Special).l	; play spring sound
+		jsr		(PlaySound_Special).l	; play spring sound
 
 Spring_AniLR:	; Routine $A
-		lea	(Ani_Spring).l,a1
+		lea		(Ani_Spring).l,a1
 		bra.w	AnimateSprite
 ; ===========================================================================
 

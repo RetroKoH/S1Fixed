@@ -79,10 +79,14 @@
  Variable: SpeedUpScoreTally
  
  Name: Spin Dash
- Credit: SCHG
- Function: Spin Dash
- Date: 2024-06-22
+ Credit: SCHG, DeltaWooloo, Mercury
+ Function: Enables the Sonic 2 Spin Dash
+ Date: 2024-06-23
  Variable: SpinDashEnabled
+ Also:
+	SkiddustEnabled: Toggle this for S2 skid dust clouds
+	SpinDashCancel: Makes Sonic stop Spin Dashing if the A/B/C button is let up for long enough
+	SpinDashNoRevDown: Makes the Spin Dash not rev down so long as A/B/C button is held down
 
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format

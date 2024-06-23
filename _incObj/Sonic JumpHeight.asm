@@ -6,7 +6,7 @@
 
 
 Sonic_JumpHeight:
-		tst.b	objoff_3C(a0)
+		tst.b	obJumping(a0)
 		beq.s	loc_134C4
 		move.w	#-$400,d1
 		btst	#6,obStatus(a0)
@@ -26,6 +26,10 @@ locret_134C2:
 ; ===========================================================================
 
 loc_134C4:
+	if SpinDashEnabled=1
+		tst.b	obSpinDashFlag(a0)	; is Sonic charging his spin dash?
+		bne.w	locret_134D2		; if yes, branch
+	endif
 		cmpi.w	#-$FC0,obVelY(a0)
 		bge.s	locret_134D2
 		move.w	#-$FC0,obVelY(a0)

@@ -28,7 +28,8 @@ Seesaw:
 		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again
 		bra.w	DeleteObject		; and delete object	
 ; ===========================================================================
-See_Index:	dc.w See_Main-See_Index
+See_Index:
+		dc.w See_Main-See_Index
 		dc.w See_Slope-See_Index
 		dc.w See_Slope2-See_Index
 		dc.w See_Spikeball-See_Index
@@ -250,7 +251,12 @@ See_Spring:
 		beq.s	loc_1192C
 		clr.b	ob2ndRout(a1)
 		move.b	#2,obRoutine(a1)
-		lea	(v_player).w,a2
+		lea		(v_player).w,a2
+		
+	if SpinDashEnabled=1
+		clr.b	obSpinDashFlag(a2)
+	endif
+
 		move.w	obVelY(a0),obVelY(a2)
 		neg.w	obVelY(a2)
 		bset	#1,obStatus(a2)
@@ -259,7 +265,7 @@ See_Spring:
 		move.b	#aniID_Spring,obAnim(a2) ; change Sonic's animation to "spring"
 		move.b	#2,obRoutine(a2)
 		move.w	#sfx_Spring,d0
-		jsr	(PlaySound_Special).l	; play spring sound
+		jsr		(PlaySound_Special).l	; play spring sound
 
 loc_1192C:
 		clr.w	obVelX(a0)

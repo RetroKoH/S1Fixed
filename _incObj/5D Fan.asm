@@ -72,7 +72,11 @@ Fan_Delay:	; Routine 2
 		neg.w	d0
 
 .movesonic:
-		add.w	d0,obX(a1)	; push Sonic away from the fan
+		add.w	d0,obX(a1)			; push Sonic away from the fan
+	
+	if SpinDashEnabled=1
+		clr.b	(v_cameralag).w		; Spin Dash Enabled
+	endif
 
 .animate:
 		subq.b	#1,obTimeFrame(a0)

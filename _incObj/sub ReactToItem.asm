@@ -17,7 +17,11 @@ ReactToItem:
 		subq.b	#3,d5
 		sub.w	d5,d3
 
-	; Mercury Ducking Size Fix	
+	; Mercury Ducking Size Fix
+	if SpinDashEnabled=1	; Mercury Spin Dash
+		cmpi.b	#aniID_SpinDash,obAnim(a0)
+		beq.s	.short
+	endif	; Spin Dash End
 		cmpi.b	#aniID_Duck,obAnim(a0)
 		bne.s	.notducking
 		
@@ -173,10 +177,16 @@ React_Monitor:
 ; ===========================================================================
 
 React_Enemy:
-		tst.b	(v_invinc).w	; is Sonic invincible?
-		bne.s	.donthurtsonic	; if yes, branch
-		cmpi.b	#aniID_Roll,obAnim(a0) ; is Sonic rolling/jumping?
-		bne.w	React_ChkHurt	; if not, branch
+		tst.b	(v_invinc).w				; is Sonic invincible?
+		bne.s	.donthurtsonic				; if yes, branch
+
+	if SpinDashEnabled=1	; Mercury Spin Dash
+		cmpi.b	#aniID_SpinDash,obAnim(a0)	; is Sonic Spin Dashing?
+		beq.w	.breakenemy					; if yes, branch
+	endif	; Spin Dash End
+
+		cmpi.b	#aniID_Roll,obAnim(a0)		; is Sonic rolling/jumping?
+		bne.w	React_ChkHurt				; if not, branch
 
 .donthurtsonic:
 		tst.b	obColProp(a1)
@@ -184,8 +194,8 @@ React_Enemy:
 
 		neg.w	obVelX(a0)	; repel Sonic
 		neg.w	obVelY(a0)
-		asr	obVelX(a0)
-		asr	obVelY(a0)
+		asr		obVelX(a0)
+		asr		obVelY(a0)
 		clr.b	obColType(a1)
 		subq.b	#1,obColProp(a1)
 		bne.s	.flagnotclear
@@ -222,16 +232,16 @@ React_Enemy:
 		cmp.w	obY(a1),d0
 		bhs.s	.bounceup
 		neg.w	obVelY(a0)
-		rts	
+		rts
 ; ===========================================================================
 
 .bouncedown:
 		addi.w	#$100,obVelY(a0)
-		rts	
+		rts
 
 .bounceup:
 		subi.w	#$100,obVelY(a0)
-		rts	
+		rts
 
 .points:	dc.w 10, 20, 50, 100	; points awarded div 10
 
@@ -317,6 +327,9 @@ HurtSonic:
 		neg.w	obVelX(a0)	; if Sonic is right of the object, reverse
 
 .isleft:
+	if SpinDashEnabled=1
+		clr.b	obSpinDashFlag(a0)
+	endif
 		clr.w	obInertia(a0)
 		move.b	#aniID_Hurt,obAnim(a0)
 		move.b	#120,obInvuln(a0)		; set temp invincible time to 2 seconds -- RetroKoH Sonic SST Compaction

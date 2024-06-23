@@ -14,6 +14,9 @@ Sonic_Hurt:	; Routine 4
 
 Sonic_Hurt_Normal:
 	; Debug Mode Addition End
+	if SpinDashEnabled=1
+		clr.b	(v_cameralag).w			; Spin Dash Enabled
+	endif
 		jsr		(SpeedToPos).l
 		addi.w	#$30,obVelY(a0)
 		btst	#6,obStatus(a0)
@@ -68,6 +71,9 @@ Sonic_Death:	; Routine 6
 
 Sonic_Death_Normal:
 	; Debug Mode Addition End
+	if SpinDashEnabled=1
+		clr.b	(v_cameralag).w			; Spin Dash Enabled
+	endif
 		bsr.w	GameOver
 		jsr		(ObjectFall).l
 		bsr.w	Sonic_RecordPosition

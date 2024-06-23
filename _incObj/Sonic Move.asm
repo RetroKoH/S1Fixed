@@ -75,13 +75,21 @@ loc_12F6A:
 
 loc_12F70:
 		move.b	#aniID_Balance,obAnim(a0)	; use "balancing" animation
-		bra.s	Sonic_ResetScr
+		bra.w	Sonic_ResetScr
 ; ===========================================================================
 
 Sonic_LookUp:
-		btst	#bitUp,(v_jpadhold2).w	; is up being pressed?
-		beq.s	Sonic_Duck				; if not, branch
+		btst	#bitUp,(v_jpadhold2).w		; is up being pressed?
+		beq.s	Sonic_Duck					; if not, branch
 		move.b	#aniID_LookUp,obAnim(a0)	; use "looking up" animation
+
+	if SpinDashEnabled=1	; S2 Scroll Delay -- Spin Dash Enabled
+		addq.b	#1,(v_scrolldelay).w		; add 1 to the scroll timer
+		cmpi.b	#120,(v_scrolldelay).w		; is it equal to or greater than the scroll delay?
+		bcs.s	Sonic_LookReset				; if not, skip ahead without looking up
+		move.b	#120,(v_scrolldelay).w 		; move the scroll delay value into the scroll timer so it won't continue to count higher
+	endif	; S2 Scroll Delay -- Spin Dash Enabled End
+
 		; Mercury Look Shift Fix
 		move.w	(v_screenposy).w,d0		; get camera top coordinate
 		sub.w	(v_limittop2).w,d0		; subtract zone's top bound from it
@@ -102,6 +110,14 @@ Sonic_Duck:
 		btst	#bitDn,(v_jpadhold2).w	; is down being pressed?
 		beq.s	Sonic_ResetScr			; if not, branch
 		move.b	#aniID_Duck,obAnim(a0)		; use "ducking" animation
+
+	if SpinDashEnabled=1	; S2 Scroll Delay -- Spin Dash Enabled
+		addq.b	#1,(v_scrolldelay).w		; add 1 to the scroll timer
+		cmpi.b	#120,(v_scrolldelay).w		; is it equal to or greater than the scroll delay?
+		bcs.s	Sonic_LookReset				; if not, skip ahead without looking down
+		move.b	#120,(v_scrolldelay).w 		; move the scroll delay value into the scroll timer so it won't continue to count higher
+	endif	; S2 Scroll Delay -- Spin Dash Enabled End
+
 		; Mercury Look Shift Fix
 		move.w	(v_screenposy).w,d0		; get camera top coordinate
 		sub.w	(v_limitbtm2).w,d0		; subtract zone's bottom bound from it (creating a negative number)
@@ -119,6 +135,11 @@ Sonic_Duck:
 ; ===========================================================================
 
 Sonic_ResetScr:
+	if SpinDashEnabled=1	; S2 Scroll Delay -- Spin Dash Enabled
+		move.b	#0,(v_scrolldelay).w	; clear the scroll timer, because up/down are not being held
+
+Sonic_LookReset:	; added branch point that the new scroll delay code skips ahead to
+	endif
 		cmpi.w	#$60,(v_lookshift).w ; is screen in its default position?
 		beq.s	loc_12FC2	; if yes, branch
 		bcc.s	loc_12FBE
@@ -152,8 +173,12 @@ loc_12FEA:
 		move.w	d0,obInertia(a0)
 
 loc_12FEE:
+	if SpinDashEnabled=1
+		tst.b	obSpinDashFlag(a0) 	
+		bne.s	loc_1300C
+	endif
 		move.b	obAngle(a0),d0
-		jsr	(CalcSine).l
+		jsr		(CalcSine).l
 		muls.w	obInertia(a0),d1
 		asr.l	#8,d1
 		move.w	d1,obVelX(a0)
@@ -261,10 +286,15 @@ loc_130BA:
 		bne.s	locret_130E8
 		cmpi.w	#$400,d0
 		blt.s	locret_130E8
-		move.b	#aniID_Stop,obAnim(a0) ; use "stopping" animation
+		move.b	#aniID_Stop,obAnim(a0)	; use "stopping" animation
 		bclr	#0,obStatus(a0)
 		move.w	#sfx_Skid,d0
-		jsr	(PlaySound_Special).l	; play stopping sound
+		jsr		(PlaySound_Special).l	; play stopping sound
+	if SkidDustEnabled=1
+		;cmpi.b	#$C,(v_air)
+		;bcs.s	locret_130E8			; if he's drowning, branch to not make dust
+		move.b	#6,(v_playerdust+obRoutine).w
+	endif
 
 locret_130E8:
 		rts	
@@ -317,7 +347,12 @@ loc_13120:
 		move.b	#aniID_Stop,obAnim(a0) ; use "stopping" animation
 		bset	#0,obStatus(a0)
 		move.w	#sfx_Skid,d0
-		jsr	(PlaySound_Special).l	; play stopping sound
+		jsr		(PlaySound_Special).l	; play stopping sound
+	if SkidDustEnabled=1
+		;cmpi.b	#$C,(v_air)
+		;bcs.s	locret_1314E			; if he's drowning, branch to not make dust
+		move.b	#6,(v_playerdust+obRoutine).w
+	endif
 
 locret_1314E:
 		rts	

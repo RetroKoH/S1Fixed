@@ -73,37 +73,42 @@ v_titletm		= v_objspace+object_size*3	; object variable space for the trademark 
 v_ttlsonichide	= v_objspace+object_size*4	; object variable space for hiding part of Sonic ($40 bytes)
 
 ; Level objects
-v_player		= v_objspace+object_size*0	; object variable space for Sonic ($40 bytes)
-v_hud			= v_objspace+object_size*1	; object variable space for the HUD ($40 bytes)
+v_player		= v_objspace+object_size*0	; ($D000) object variable space for Sonic ($40 bytes)
+v_playerdust	= v_objspace+object_size*1	; ($D040) object variable space for the HUD ($40 bytes)
 
-v_titlecard		= v_objspace+object_size*2	; object variable space for the title card ($100 bytes)
-v_ttlcardname	= v_titlecard+object_size*0		; object variable space for the title card zone name text ($40 bytes)
-v_ttlcardzone	= v_titlecard+object_size*1	; object variable space for the title card "ZONE" text ($40 bytes)
-v_ttlcardact	= v_titlecard+object_size*2	; object variable space for the title card act text ($40 bytes)
-v_ttlcardoval	= v_titlecard+object_size*3	; object variable space for the title card oval ($40 bytes)
+v_titlecard		= v_objspace+object_size*2	; ($D080) object variable space for the title card ($100 bytes)
+v_ttlcardname	= v_titlecard+object_size*0	; ($D080) object variable space for the title card zone name text ($40 bytes)
+v_ttlcardzone	= v_titlecard+object_size*1	; ($D0C0) object variable space for the title card "ZONE" text ($40 bytes)
+v_ttlcardact	= v_titlecard+object_size*2	; ($D100) object variable space for the title card act text ($40 bytes)
+v_ttlcardoval	= v_titlecard+object_size*3	; ($D140) object variable space for the title card oval ($40 bytes)
 
-v_gameovertext1	= v_objspace+object_size*2	; object variable space for the "GAME"/"TIME" in "GAME OVER"/"TIME OVER" text ($40 bytes)
-v_gameovertext2	= v_objspace+object_size*3	; object variable space for the "OVER" in "GAME OVER"/"TIME OVER" text ($40 bytes)
+v_gameovertext1	= v_objspace+object_size*2	; ($D080) object variable space for the "GAME"/"TIME" in "GAME OVER"/"TIME OVER" text ($40 bytes)
+v_gameovertext2	= v_objspace+object_size*3	; ($D0C0) object variable space for the "OVER" in "GAME OVER"/"TIME OVER" text ($40 bytes)
 
-v_shieldobj		= v_objspace+object_size*6	; object variable space for the shield ($40 bytes)
-v_starsobj1		= v_objspace+object_size*8	; object variable space for the invincibility stars #1 ($40 bytes)
-v_starsobj2		= v_objspace+object_size*9	; object variable space for the invincibility stars #2 ($40 bytes)
-v_starsobj3		= v_objspace+object_size*10	; object variable space for the invincibility stars #3 ($40 bytes)
-v_starsobj4		= v_objspace+object_size*11	; object variable space for the invincibility stars #4 ($40 bytes)
+v_shieldobj		= v_objspace+object_size*6	; ($D180) object variable space for the shield ($40 bytes)
+; ($D1C0) - 1 Slot Unused?
+; Use subsprites and free up some v_stars slots
+v_starsobj1		= v_objspace+object_size*8	; ($D200) object variable space for the invincibility stars #1 ($40 bytes)
+v_starsobj2		= v_objspace+object_size*9	; ($D240) object variable space for the invincibility stars #2 ($40 bytes)
+v_starsobj3		= v_objspace+object_size*10	; ($D280) object variable space for the invincibility stars #3 ($40 bytes)
+v_starsobj4		= v_objspace+object_size*11	; ($D2C0) object variable space for the invincibility stars #4 ($40 bytes)
 
-v_splash		= v_objspace+object_size*12	; object variable space for the water splash ($40 bytes)
-v_sonicbubbles	= v_objspace+object_size*13	; object variable space for the bubbles that come out of Sonic's mouth/drown countdown ($40 bytes)
-v_watersurface1	= v_objspace+object_size*30	; object variable space for the water surface #1 ($40 bytes)
-v_watersurface2	= v_objspace+object_size*31	; object variable space for the water surface #1 ($40 bytes)
+v_splash		= v_objspace+object_size*12	; ($D300) object variable space for the water splash ($40 bytes)
+v_sonicbubbles	= v_objspace+object_size*13	; ($D340) object variable space for the bubbles that come out of Sonic's mouth/drown countdown ($40 bytes)
 
-v_endcard		= v_objspace+object_size*23	; object variable space for the level results card ($1C0 bytes)
-v_endcardsonic	= v_endcard+object_size*0	; object variable space for the level results card "SONIC HAS" text ($40 bytes)
-v_endcardpassed	= v_endcard+object_size*1	; object variable space for the level results card "PASSED" text ($40 bytes)
-v_endcardact	= v_endcard+object_size*2	; object variable space for the level results card act text ($40 bytes)
-v_endcardscore	= v_endcard+object_size*3	; object variable space for the level results card score tally ($40 bytes)
-v_endcardtime	= v_endcard+object_size*4	; object variable space for the level results card time bonus tally ($40 bytes)
-v_endcardring	= v_endcard+object_size*5	; object variable space for the level results card ring bonus tally ($40 bytes)
-v_endcardoval	= v_endcard+object_size*6	; object variable space for the level results card oval ($40 bytes)
+; ($D380-D5BF) - 10 Slots Unused?
+
+v_endcard		= v_objspace+object_size*23	; ($D5C0) object variable space for the level results card ($1C0 bytes)
+v_endcardsonic	= v_endcard+object_size*0	; ($D5C0) object variable space for the level results card "SONIC HAS" text ($40 bytes)
+v_endcardpassed	= v_endcard+object_size*1	; ($D600) object variable space for the level results card "PASSED" text ($40 bytes)
+v_endcardact	= v_endcard+object_size*2	; ($D640) object variable space for the level results card act text ($40 bytes)
+v_endcardscore	= v_endcard+object_size*3	; ($D680) object variable space for the level results card score tally ($40 bytes)
+v_endcardtime	= v_endcard+object_size*4	; ($D6C0) object variable space for the level results card time bonus tally ($40 bytes)
+v_endcardring	= v_endcard+object_size*5	; ($D700) object variable space for the level results card ring bonus tally ($40 bytes)
+v_endcardoval	= v_endcard+object_size*6	; ($D740) object variable space for the level results card oval ($40 bytes)
+
+v_watersurface1	= v_objspace+object_size*30	; ($D780) object variable space for the water surface #1 ($40 bytes)
+v_watersurface2	= v_objspace+object_size*31	; ($D7C0) object variable space for the water surface #1 ($40 bytes)
 
 v_lvlobjspace	= v_objspace+object_size*32	; level object variable space ($60 objects, $1800 bytes)
 v_lvlobjend		= v_lvlobjspace+object_size*96
@@ -486,7 +491,19 @@ v_emldlist:			ds.b	6		; which individual emeralds you have (00 = no; 01 = yes)
 v_oscillate:		ds.w	1		; oscillation bitfield
 v_timingandscreenvariables:
 v_timingvariables:	ds.b	$40		; values which oscillate - for swinging platforms, et al
-				ds.b	$20		; unused
+
+				ds.b	$1A		; unused
+	if SpinDashEnabled=1
+v_spindashsfx1:		ds.b	1
+v_spindashsfx2:		ds.b	1
+v_spindashsfx3:		ds.b	1
+v_cameralag:		ds.b	1		; camera lag after launching Spin Dash (1 byte)
+v_scrolldelay:		ds.b	1		; scroll delay timer (1 byte)
+				ds.b	1		; unused
+	else
+				ds.b	6		; unused
+	endif
+
 v_ani0_time:		ds.b	1		; synchronised sprite animation 0 - time until next frame (used for synchronised animations)
 v_ani0_frame:		ds.b	1		; synchronised sprite animation 0 - current frame
 v_ani1_time:		ds.b	1		; synchronised sprite animation 1 - time until next frame
