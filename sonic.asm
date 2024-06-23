@@ -38,6 +38,7 @@ SpinDashEnabled: = 1					; if set to 1, Spin dashing is enabled for Sonic.
 SkidDustEnabled: = 1					; if set to 1, Skid dust will occur when coming to a stop.
 SpinDashCancel: = SpinDashEnabled*1		; if set to 1, Spin Dash can be cancelled by not pressing ABC
 SpinDashNoRevDown: = SpinDashEnabled*1	; if set to 1, Spin Dash will not rev down so long as ABC is held down
+PeeloutEnabled: = 1						; if set to 1, Peelout is enabled for Sonic
 
 	include "MacroSetup.asm"
 	include	"Constants.asm"
@@ -6229,9 +6230,14 @@ MusicList2:
 
 Sonic_MdNormal:
 	; Neither in air or rolling
+	if PeeloutEnabled=1
+		bsr.w	Sonic_ChkPeelout
+	endif
+	
 	if SpinDashEnabled=1
 		bsr.w	Sonic_ChkSpinDash
 	endif
+
 		bsr.w	Sonic_Jump
 		bsr.w	Sonic_SlopeResist
 		bsr.w	Sonic_Move
@@ -6297,6 +6303,10 @@ loc_12EA6:
 		include	"_incObj/Sonic Roll.asm"
 		include	"_incObj/Sonic Jump.asm"
 		include	"_incObj/Sonic JumpHeight.asm"
+	
+	if PeeloutEnabled=1
+		include	"_incObj/Sonic Peelout.asm"
+	endif
 	
 	if SpinDashEnabled=1
 		include	"_incObj/Sonic SpinDash.asm"

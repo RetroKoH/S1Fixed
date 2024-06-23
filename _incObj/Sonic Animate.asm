@@ -124,6 +124,12 @@ Sonic_Animate:
 		neg.w	d2					; modulus speed
 
 .nomodspeed:
+	if PeeloutEnabled=1
+		lea		(SonAni_Dash).l,a1 ; use Dashing animation
+		cmpi.w	#$A00,d2	; is Sonic at Dashing speed?
+		bcc.s	.running	; if yes, branch
+	endif
+
 		lea		(SonAni_Run).l,a1	; use running animation
 		cmpi.w	#$600,d2			; is Sonic at running speed?
 		bhs.s	.running			; if yes, branch

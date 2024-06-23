@@ -88,6 +88,12 @@
 	SpinDashCancel: Makes Sonic stop Spin Dashing if the A/B/C button is let up for long enough
 	SpinDashNoRevDown: Makes the Spin Dash not rev down so long as A/B/C button is held down
 
+ Name: Peelout
+ Credit: DeltaWooloo, Mercury
+ Function: Enables the Sonic CD Peelout. Also enables the dashing animation while running.
+ Date: 2024-06-23
+ Variable: PeeloutEnabled
+
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format
  Credit: Clownacy

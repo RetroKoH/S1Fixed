@@ -141,13 +141,13 @@ UpdateMusic:
 		jsr	PlaySoundID(pc)
 ; loc_71BC8:
 .nonewsound:
-	if SpinDashEnabled=1
+	; Spin Dash SFX
 		tst.b	(v_spindashsfx2).w
 		beq.s	.cont
 		subq.b	#1,(v_spindashsfx2).w
 
 .cont:
-	endif
+	; Spin Dash SFX end
 		lea		v_music_dac_track(a6),a5
 		tst.b	TrackPlaybackControl(a5)	; Is DAC track playing?
 		bpl.s	.dacdone					; Branch if not
@@ -626,32 +626,31 @@ CycleSoundQueue:
 
 ; Sound_ChkValue:
 PlaySoundID:
+	; Refactored by DeltaWooloo
 		moveq	#0,d7
 		move.b	v_sound_id(a6),d7
 		beq.w	StopAllSound		; if 0, stop all sounds
 		bpl.s	.locret				; If >= 0 and < $80, return (not a valid sound, bgm or command)
 		move.b	#$80,v_sound_id(a6)	; reset	music flag
+	; Music
 		cmpi.b	#bgm__Last,d7		; Is this music ($81-$93)? -- Sound driver bugfixes: Playing sounds $94-$9F will cause a crash!
 		bls.w	Sound_PlayBGM		; Branch and play if yes
 		cmpi.b	#sfx__First,d7		; Is this after music but before sfx? ($94-$9F)
 		blo.w	.locret				; Return if yes. Playing sounds $94-$9F will cause a crash!
+
+	; SFX
 		cmpi.b	#sfx__Last,d7		; Is this sfx ($A0-$CF)?
 		bls.w	Sound_PlaySFX		; Branch and play if yes
-	; Sound driver bugfixes
+		cmpi.b	#spec__First,d7		; Is this after sfx but before special sfx?
+		blo.w	.locret			; Return if yes
 
-	if SpinDashEnabled=1
+	; Special SFX
 		cmpi.b	#sfx_Waterfall,d7	; Is this special sfx ($D0)?
-		beq.w	Sound_PlaySpecial	; Branch and play if yes
-		cmpi.b	#sfx_SpinDash,d7	; Is this special sfx ($D1)?
-		beq.w	Sound_PlaySpinDash	; Branch and play if yes
-	else
-		cmpi.b	#spec__Last,d7		; Is this special sfx ($D0-$D0)? -- Playing sounds $D1-$DF will cause a crash!
-		bls.w	Sound_PlaySpecial	; Branch if yes
-	endif
+		bcs.w	Sound_PlaySpecial	; Branch and play if yes
+		cmpi.b	#spec__Last,d7		; Is this other new special sfx?
+		ble.w	Sound_PlayD1Onward	; Branch and play if yes
 
-		cmpi.b	#flg__First,d7		; Is this after special sfx but before $E0?
-		blo.w	.locret				; Return if yes. Playing sounds after spec__Last will cause a crash!
-	; Sound driver bugfixes end
+	; Sound Commands
 		cmpi.b	#flg__Last,d7		; Is this $E0-$E4?
 		bls.s	Sound_E0toE4		; Branch if yes
 ; locret_71F8C:
@@ -899,9 +898,7 @@ Sound_PlaySFX:
 		bne.w	Sound_ClearPriority		; Exit if it is
 		tst.b	f_fadein_flag(a6)		; Is music being faded in?
 		bne.w	Sound_ClearPriority		; Exit if it is
-	if SpinDashEnabled=1
-		clr.b	(v_spindashsfx1).w
-	endif
+		clr.b	(v_spindashsfx1).w		; Spin Dash SFX
 		cmpi.b	#sfx_Ring,d7			; is ring sound	effect played?
 		bne.s	.sfx_notRing			; if not, branch
 		tst.b	v_ring_speaker(a6)		; Is the ring sound playing on right speaker?
@@ -919,7 +916,7 @@ Sound_PlaySFX:
 		move.b	#$80,f_push_playing(a6)	; Mark it as playing
 ; Sound_notA7:
 .sfx_notPush:
-	if SpinDashEnabled=1
+	; Spin Dash SFX
 		cmp.b	#sfx_SpinDash,d7		; is this the Spin Dash sound?
 		bne.s	.cont3					; if not, branch
 		move.w	d0,-(sp)
@@ -940,7 +937,7 @@ Sound_PlaySFX:
 		move.w	(sp)+,d0
 
 .cont3:
-	endif ; Spin Dash SFX End
+	; Spin Dash SFX End
 		movea.l	(Go_SoundIndex).l,a0
 		subi.b	#sfx__First,d7		; Make it 0-based
 
@@ -1000,8 +997,7 @@ SoundEffects_Common:
 		add.l	a3,d0				; Relative pointer
 		move.l	d0,TrackDataPointer(a5)	; Store track pointer
 		move.w	(a1)+,TrackTranspose(a5)	; load FM/PSG channel modifier
-
-	if SpinDashEnabled=1
+	; Spin Dash SFX
 		tst.b	(v_spindashsfx1).w	; is the Spin Dash sound playing?
 		beq.s	.cont		; if not, branch
 		move.w	d0,-(sp)
@@ -1010,8 +1006,7 @@ SoundEffects_Common:
 		move.w	(sp)+,d0
 
 	.cont:
-	endif ; Spin Dash SFX End
-
+	; Spin Dash SFX End
 		move.b	#1,TrackDurationTimeout(a5)	; Set duration of first "note"
 		move.b	d6,TrackStackPointer(a5)	; set "gosub" (coord flag $F8) stack init value
 		tst.b	d4				; Is this a PSG channel?
@@ -1143,43 +1138,41 @@ Sound_PlaySpecial:
 		rts	
 ; End of function Sound_PlaySpecial
 
-	if SpinDashEnabled=1
 ; ---------------------------------------------------------------------------
-; Play Spin Dash sound effect
+; Play more sound effects from $D1 onwards
 ; ---------------------------------------------------------------------------
-Sound_PlaySpinDash:
-	tst.b	$27(a6)
-	bne.w	Sound_ClearPriority
-	tst.b	4(a6)
-	bne.w	Sound_ClearPriority
-	tst.b	$24(a6)
-	bne.w	Sound_ClearPriority
-	clr.b	(v_spindashsfx1).w
-	cmp.b	#sfx_SpinDash,d7		; is this the Spin Dash sound?
-	bne.s	.cont3					; if not, branch
-	move.w	d0,-(sp)
-	move.b	(v_spindashsfx3).w,d0	; store extra frequency
-	tst.b	(v_spindashsfx2).w		; is the Spin Dash timer active?
-	bne.s	.cont1					; if it is, branch
-	move.b	#-1,d0					; otherwise, reset frequency (becomes 0 on next line)
+Sound_PlayD1Onward:
+		tst.b	$27(a6)
+		bne.w	Sound_ClearPriority
+		tst.b	4(a6)
+		bne.w	Sound_ClearPriority
+		tst.b	$24(a6)
+		bne.w	Sound_ClearPriority
+		clr.b	(v_spindashsfx1).w
+		cmp.b	#sfx_SpinDash,d7		; is this the Spin Dash sound?
+		bne.s	.cont3					; if not, branch
+		move.w	d0,-(sp)
+		move.b	(v_spindashsfx3).w,d0	; store extra frequency
+		tst.b	(v_spindashsfx2).w		; is the Spin Dash timer active?
+		bne.s	.cont1					; if it is, branch
+		move.b	#-1,d0					; otherwise, reset frequency (becomes 0 on next line)
 
 .cont1:
-	addq.b	#1,d0
-	cmp.b	#$C,d0					; has the limit been reached?
-	bcc.s	.cont2					; if it has, branch
-	move.b	d0,(v_spindashsfx3).w	; otherwise, set new frequency
+		addq.b	#1,d0
+		cmp.b	#$C,d0					; has the limit been reached?
+		bcc.s	.cont2					; if it has, branch
+		move.b	d0,(v_spindashsfx3).w	; otherwise, set new frequency
 
 .cont2:
-	move.b	#1,(v_spindashsfx1).w	; set flag
-	move.b	#60,(v_spindashsfx2).w	; set timer
-	move.w	(sp)+,d0
+		move.b	#1,(v_spindashsfx1).w	; set flag
+		move.b	#60,(v_spindashsfx2).w	; set timer
+		move.w	(sp)+,d0
 
 .cont3:
-	movea.l	(Go_SoundIndex).l,a0
-	sub.b	#$A0,d7
-	bra.w	SoundEffects_Common
-; End of function Sound_PlaySpinDash
-	endif
+		movea.l	Go_SoundIndex(pc),a0
+		sub.b	#$A0,d7
+		bra.w	SoundEffects_Common
+; End of function Sound_PlayD1Onward
 
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -2642,11 +2635,10 @@ ptr_sndend
 ; ---------------------------------------------------------------------------
 SpecSoundIndex:
 ptr_sndD0:	dc.l SoundD0
-
-	if SpinDashEnabled=1
 ptr_sndD1:	dc.l SoundD1
-	endif
-
+ptr_sndD2:	dc.l SoundD2
+ptr_sndD3:	dc.l SoundD3
+ptr_sndD4:	dc.l SoundD4
 ptr_specend
 
 ; ---------------------------------------------------------------------------
@@ -2754,8 +2746,11 @@ SoundCF:	include	"sound/sfx/SndCF - Signpost.asm"
 ; ---------------------------------------------------------------------------
 SoundD0:	include	"sound/sfx/SndD0 - Waterfall.asm"
 		even
-
-	if SpinDashEnabled=1
 SoundD1:	binclude	"sound/sfx/SndD1 - SpinDash.bin"		; Ported from S2 - From Caverns4/IkeyIlex
 		even
-	endif
+SoundD2:	include	"sound/sfx/SndD2 - CDCharge.asm"
+		even
+SoundD3:	include	"sound/sfx/SndD3 - CDRelease.asm"
+		even
+SoundD4:	include	"sound/sfx/SndD4 - CDStop.asm"
+		even

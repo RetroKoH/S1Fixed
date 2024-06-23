@@ -186,9 +186,9 @@ obJumping:		equ $3C			; jumping flag
 obPlatformID:	equ $3D			; ost slot of the object Sonic's on top of
 obLRLock:		equ $3E			; flag for preventing left and right input (2 bytes)
 
-	if SpinDashEnabled=1
-obSpinDashFlag:	equ $2A			; spin dash flag - if toggled off, this is unused.
-obSpinDashCounter:	equ obRestartTimer	; Counter used for the Spin Dash (2 bytes) - if toggled off, this is unused.
+	if (SpinDashEnabled|PeeloutEnabled)=1
+obSpinDashFlag:	equ $2A					; spin dash/peelout flag - if toggled off, this is unused.
+obSpinDashCounter:	equ obRestartTimer	; Counter used for the Spin Dash and/or Peelout (2 bytes) - if toggled off, this is unused.
 	endif
 ; ---------------------------------------------------------------------------
 
@@ -357,10 +357,11 @@ sfx__Last:		equ ((ptr_sndend-SoundIndex-4)/4)+sfx__First
 spec__First:	equ $D0
 sfx_Waterfall:	equ ((ptr_sndD0-SpecSoundIndex)/4)+spec__First
 
-	if SpinDashEnabled=1
+; Additional SFX will not be toggled in/out. They will instead stay in ROM.
 sfx_SpinDash:	equ ((ptr_sndD1-SpecSoundIndex)/4)+spec__First
-	endif
-
+sfx_Charge:		equ ((ptr_sndD2-SoundIndex)/4)+sfx__First
+sfx_Release:	equ ((ptr_sndD3-SoundIndex)/4)+sfx__First
+sfx_Stop:		equ ((ptr_sndD4-SoundIndex)/4)+sfx__First
 spec__Last:		equ ((ptr_specend-SpecSoundIndex-4)/4)+spec__First
 
 flg__First:		equ $E0
@@ -401,6 +402,7 @@ aniID_Drown:		equ $19		; Drown animation
 aniID_Shrink:		equ $1A		; Shrink animation
 aniID_Hurt:			equ $1B		; Hurt animation
 aniID_WaterSlide:	equ $1C		; Water Slide animation
+aniID_Peelout:		equ $1D		; Peelout
 
 ; Frame IDs moved to mappings file
 

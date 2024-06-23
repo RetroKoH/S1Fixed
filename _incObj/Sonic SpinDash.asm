@@ -6,18 +6,18 @@
 
 
 Sonic_ChkSpinDash:
-		tst.b	obSpinDashFlag(a0)		; already Spin Dashing?
+		btst	#0,obSpinDashFlag(a0)	; already Spin Dashing?
 		bne.s	Sonic_UpdateSpinDash	; if yes, branch to updating spin dash
 		cmpi.b	#aniID_Duck,obAnim(a0)
-		bne.s	.exit					; if not ducking down, return
+		bne.s	.return					; if not ducking down, return
 		move.b	(v_jpadpress2).w,d0
 		andi.b	#btnABC,d0
-		beq.w	.exit					; if not pressing ABC, return
+		beq.w	.return					; if not pressing ABC, return
 		move.b	#aniID_SpinDash,obAnim(a0)
 		move.w	#sfx_SpinDash,d0
 		jsr		(PlaySound_Special).l
 		addq.l	#4,sp
-		move.b	#1,obSpinDashFlag(a0)
+		bset	#0,obSpinDashFlag(a0)
 
 	if SpinDashCancel=1	; Mercury Spin Dash Cancel
 		move.w	#$80,obSpinDashCounter(a0)
@@ -32,7 +32,7 @@ Sonic_ChkSpinDash:
 		bsr.w	Sonic_LevelBound
 		bra.w	Sonic_AnglePos
 
-.exit:
+.return:
 		rts
 ; ---------------------------------------------------------------------------
 
@@ -47,7 +47,7 @@ Sonic_UpdateSpinDash:
 		move.b	#7,obWidth(a0)
 		move.b	#aniID_Roll,obAnim(a0)
 		addq.w	#5,obY(a0)
-		bclr	#0,obSpinDashFlag(a0)
+		clr.b	obSpinDashFlag(a0)
 		moveq	#0,d0
 		move.b	obSpinDashCounter(a0),d0
 		add.w	d0,d0

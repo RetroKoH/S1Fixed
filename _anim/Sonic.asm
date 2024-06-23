@@ -31,8 +31,8 @@ Ani_Sonic:
 		dc.w SonAni_Shrink-Ani_Sonic
 		dc.w SonAni_Hurt-Ani_Sonic
 		dc.w SonAni_WaterSlide-Ani_Sonic
-		dc.w SonAni_Transform-Ani_Sonic
 		dc.w SonAni_Peelout-Ani_Sonic
+		dc.w SonAni_Transform-Ani_Sonic
 
 SonAni_Null:	dc.b $77, fr_SonNull, afChange, aniID_Walk
 		even
@@ -92,14 +92,14 @@ SonAni_Hurt:	dc.b 3,	fr_SonHurt, afEnd
 		even
 SonAni_WaterSlide: dc.b 7, fr_SonHurt, fr_SonWaterSlide, afEnd
 		even
-SonAni_Transform:	dc.b 2, fr_SonTransform1, fr_SonTransform1, fr_SonTransform2, fr_SonTransform2, fr_SonTransform3
-					dc.b fr_SonTransform4, fr_SonTransform5, fr_SonTransform4, fr_SonTransform5, fr_SonTransform4
-					dc.b fr_SonTransform5, fr_SonTransform4, fr_SonTransform5, $FD,  aniID_Walk
-		even
 SonAni_Peelout:	dc.b 0,  fr_SonWalk13, fr_SonWalk13, fr_SonWalk13, fr_SonWalk13, fr_SonWalk13, fr_SonWalk13, fr_SonWalk13, fr_SonWalk13
 		dc.b	fr_SonWalk14, fr_SonWalk14, fr_SonWalk14, fr_SonWalk14, fr_SonWalk15, fr_SonWalk15, fr_SonRun14, fr_SonRun14
 		dc.b	fr_SonRun11,  fr_SonRun12,  fr_SonRun13,  fr_SonRun14, fr_SonRun11,  fr_SonRun12,  fr_SonRun13,  fr_SonRun14
 		dc.b	fr_SonDash11,  fr_SonDash12,  fr_SonDash13,  fr_SonDash14, afBack, 4
+		even
+SonAni_Transform:	dc.b 2, fr_SonTransform1, fr_SonTransform1, fr_SonTransform2, fr_SonTransform2, fr_SonTransform3
+					dc.b fr_SonTransform4, fr_SonTransform5, fr_SonTransform4, fr_SonTransform5, fr_SonTransform4
+					dc.b fr_SonTransform5, fr_SonTransform4, fr_SonTransform5, $FD,  aniID_Walk
 		even
 
 ;Ani_SuperSonic:
