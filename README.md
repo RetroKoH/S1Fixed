@@ -79,7 +79,7 @@
  Variable: SpeedUpScoreTally
  
  Name: Spin Dash
- Credit: SCHG, DeltaWooloo, Mercury
+ Credit: SCHG, DeltaW, Mercury
  Function: Enables the Sonic 2 Spin Dash
  Date: 2024-06-23
  Variable: SpinDashEnabled
@@ -89,7 +89,7 @@
 	SpinDashNoRevDown: Makes the Spin Dash not rev down so long as A/B/C button is held down
 
  Name: Peelout
- Credit: DeltaWooloo, Mercury
+ Credit: DeltaW, Mercury
  Function: Enables the Sonic CD Peelout. Also enables the dashing animation while running.
  Date: 2024-06-23
  Variable: PeeloutEnabled
@@ -181,7 +181,7 @@
  Date 2024-06-14
 
  Name: S3K Object Manager -- (Needs further testing)
- Credit: ProjectFM (Hivebrain guide), MoDule (SCHG S2 guide), DeltaWooloo (Bugfixes), RetroKoH (Initial S2 Port)
+ Credit: ProjectFM (Hivebrain guide), MoDule (SCHG S2 guide), DeltaW (Bugfixes), RetroKoH (Initial S2 Port)
  Date 2024-06-15
  
  Name: Speed Settings Table
@@ -193,7 +193,7 @@
  Credit: Devon
  Function: Allows one object to draw out multiple sprites. This paves the way for various optimizations.
  Date: 2024-06-21
-
+ 
 # Visual Changes
  Name: Title Screen Tweaks
  Credit: RetroKoH
@@ -522,3 +522,14 @@
  Date: 2024-06-22
  Modifies: Sonic RollSpeed.asm
  
+ Name: Fix modulation during rests
+ Credit: ValleyBell
+ Function: Sound driver applies the modulation effect on rests where the frequency is set to 0, so it sort of corrupts the frequency.
+ Date: 2024-06-23
+  Modifies: s1.sounddriver.asm
+  
+ Name: Fix Modulation Frequency bug on note-on
+ Credit: AURORA☆FIELDS/Natsumi
+ Function: Sound driver forgets to include modulation frequency when updating frequency just after reading the tracker
+ Date: 2024-06-23
+ Modifies: s1.sounddriver.asm

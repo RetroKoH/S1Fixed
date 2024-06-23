@@ -89,6 +89,7 @@ ptr_musend
 ; will only override special SFX and music will only override music.
 ; ---------------------------------------------------------------------------
 ; SoundTypes:
+; Extended sound priority to play all sounds without reading garbage data
 SoundPriorities:
 		dc.b     $90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90	; $81
 		dc.b $90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90	; $90
@@ -97,6 +98,7 @@ SoundPriorities:
 		dc.b $60,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70	; $C0
 		dc.b $80,$80,$80,$80,$80,$80,$80,$80,$80,$80,$80,$80,$80,$80,$80,$80	; $D0
 		dc.b $90,$90,$90,$90,$90                                            	; $E0
+		even
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to update music more than once per frame
@@ -429,6 +431,10 @@ NoteTimeoutUpdate:
 ; sub_71DC6:
 DoModulation:
 		addq.w	#4,sp				; Do not return to caller (but see below)
+		; Bugfix - Fix modulation during rests - ValleyBell
+        btst	#1,(a5)			; Is note playing?
+        bne.s	.locret			; no - return		
+		; Fix End
 		btst	#3,TrackPlaybackControl(a5)	; Is modulation active?
 		beq.s	.locret				; Return if not
 		tst.b	TrackModulationWait(a5)	; Has modulation wait expired?
@@ -475,6 +481,11 @@ FMPrepareNote:
 		bne.s	locret_71E48			; Return if so
 		move.w	TrackFreq(a5),d6		; Get current note frequency
 		beq.s	FMSetRest			; Branch if zero
+		; Bugfix: Fix Modulation Frequency bug on note-on - AURORA☆FIELDS
+		btst	#3,(a5)			; check if modulation is active
+		beq.s	FMUpdateFreq		; if not, branch
+		add.w	TrackModulationVal(a5),d6		; add modulation frequency to d6		
+		; Bugfix end
 ; loc_71E24:
 FMUpdateFreq:
 		move.b	TrackDetune(a5),d0 	; Get detune value
@@ -602,13 +613,13 @@ CycleSoundQueue:
 		bra.s	.nextinput
 ; ===========================================================================
 ; loc_71F2C:
-.havesound:
+.havesound:		
 		andi.w	#$7F,d0			; Clear high byte and sign bit
 		move.b	(a0,d0.w),d2		; Get sound type
 		cmp.b	d3,d2			; Is it a lower priority sound?
 		blo.s	.nextinput		; Branch if yes
 		move.b	d2,d3			; Store new priority
-		move.b	d1,v_sound_id(a6)	; Queue sound for playing
+		move.b	d1,v_sound_id(a6)	; Queue sound for play
 ; loc_71F3E:
 .nextinput:
 		dbf	d4,.inputloop
@@ -626,12 +637,12 @@ CycleSoundQueue:
 
 ; Sound_ChkValue:
 PlaySoundID:
-	; Refactored by DeltaWooloo
 		moveq	#0,d7
 		move.b	v_sound_id(a6),d7
 		beq.w	StopAllSound		; if 0, stop all sounds
-		bpl.s	.locret				; If >= 0 and < $80, return (not a valid sound, bgm or command)
+		bpl.s	.locret				; If >= 0 and < $80, return (not a valid sound, bgm or command)		
 		move.b	#$80,v_sound_id(a6)	; reset	music flag
+
 	; Music
 		cmpi.b	#bgm__Last,d7		; Is this music ($81-$93)? -- Sound driver bugfixes: Playing sounds $94-$9F will cause a crash!
 		bls.w	Sound_PlayBGM		; Branch and play if yes
@@ -653,9 +664,10 @@ PlaySoundID:
 	; Sound Commands
 		cmpi.b	#flg__Last,d7		; Is this $E0-$E4?
 		bls.s	Sound_E0toE4		; Branch if yes
+		
 ; locret_71F8C:
 .locret:
-		rts	
+		rts
 ; ===========================================================================
 
 Sound_E0toE4:
@@ -887,6 +899,41 @@ FMDACInitBytes:	dc.b 6,	0, 1, 2, 4, 5, 6	; first byte is for DAC; then notice th
 PSGInitBytes:	dc.b $80, $A0, $C0	; Specifically, these configure writes to the PSG port for each channel
 		even
 ; ===========================================================================
+; ===========================================================================
+; ---------------------------------------------------------------------------
+; Add more sound effects between $D1 onwards
+; ---------------------------------------------------------------------------
+Sound_D1_onwards:
+		tst.b	f_1up_playing(a6)
+		bne.w	Sound_ClearPriority
+		tst.b	v_fadeout_counter(a6)
+		bne.w	Sound_ClearPriority
+		tst.b	f_fadein_flag(a6)
+		bne.w	Sound_ClearPriority
+		clr.b	(v_spindashsfx1).w
+		cmp.b	#sfx_SpinDash,d7		; is this the Spin Dash sound?
+		bne.s	.cont3	; if not, branch
+		move.w	d0,-(sp)
+		move.b	(v_spindashsfx3).w,d0	; store extra frequency
+		tst.b	(v_spindashsfx2).w	; is the Spin Dash timer active?
+		bne.s	.cont1		; if it is, branch
+		move.b	#-1,d0		; otherwise, reset frequency (becomes 0 on next line)
+
+.cont1:
+		addq.b	#1,d0
+		cmp.b	#$C,d0		; has the limit been reached?
+		bcc.s	.cont2		; if it has, branch
+		move.b	d0,(v_spindashsfx3).w	; otherwise, set new frequency
+
+.cont2:
+		move.b	#1,(v_spindashsfx1).w	; set flag
+		move.b	#60,(v_spindashsfx2).w	; set timer
+		move.w	(sp)+,d0
+
+.cont3:
+		movea.l	Go_SoundIndex(pc),a0
+		sub.b	#$A0,d7
+		bra.w	SoundEffects_Common
 ; ---------------------------------------------------------------------------
 ; Play normal sound effect
 ; ---------------------------------------------------------------------------
@@ -1814,6 +1861,11 @@ PSGSetFreq:
 PSGDoNoteOn:
 		move.w	TrackFreq(a5),d6	; Get note frequency
 		bmi.s	PSGSetRest		; If invalid, branch
+		; Bugfix: Fix Modulation Frequency bug on note-on - AURORA☆FIELDS
+		btst	#3,(a5)			; check if modulation is active
+		beq.s	PSGUpdateFreq		; if not, branch
+		add.w	TrackModulationVal(a5),d6		; add modulation frequency to d6		
+		; Bugfix end		
 ; End of function PSGDoNoteOn
 
 
