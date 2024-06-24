@@ -69,6 +69,7 @@ Sonic_DashCharge:				; If still charging the dash...
 		cmpi.w	#$1E,obSpinDashCounter(a0)
 		beq.s	Sonic_DashResetScr
 		addi.w	#1,obSpinDashCounter(a0)
+		bra.s	Sonic_DashResetScr
 
 Sonic_DashStopSound:
 		move.w	#sfx_Stop,d0

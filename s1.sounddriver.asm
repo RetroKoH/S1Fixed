@@ -653,13 +653,13 @@ PlaySoundID:
 		cmpi.b	#sfx__Last,d7		; Is this sfx ($A0-$CF)?
 		bls.w	Sound_PlaySFX		; Branch and play if yes
 		cmpi.b	#spec__First,d7		; Is this after sfx but before special sfx?
-		blo.w	.locret			; Return if yes
+		blo.w	.locret				; Return if yes
 
 	; Special SFX
 		cmpi.b	#sfx_Waterfall,d7	; Is this special sfx ($D0)?
 		bcs.w	Sound_PlaySpecial	; Branch and play if yes
 		cmpi.b	#spec__Last,d7		; Is this other new special sfx?
-		ble.w	Sound_PlayD1Onward	; Branch and play if yes
+		ble.w	Sound_D1_onwards	; Branch and play if yes
 
 	; Sound Commands
 		cmpi.b	#flg__Last,d7		; Is this $E0-$E4?
@@ -1184,42 +1184,6 @@ Sound_PlaySpecial:
 .locret:
 		rts	
 ; End of function Sound_PlaySpecial
-
-; ---------------------------------------------------------------------------
-; Play more sound effects from $D1 onwards
-; ---------------------------------------------------------------------------
-Sound_PlayD1Onward:
-		tst.b	$27(a6)
-		bne.w	Sound_ClearPriority
-		tst.b	4(a6)
-		bne.w	Sound_ClearPriority
-		tst.b	$24(a6)
-		bne.w	Sound_ClearPriority
-		clr.b	(v_spindashsfx1).w
-		cmp.b	#sfx_SpinDash,d7		; is this the Spin Dash sound?
-		bne.s	.cont3					; if not, branch
-		move.w	d0,-(sp)
-		move.b	(v_spindashsfx3).w,d0	; store extra frequency
-		tst.b	(v_spindashsfx2).w		; is the Spin Dash timer active?
-		bne.s	.cont1					; if it is, branch
-		move.b	#-1,d0					; otherwise, reset frequency (becomes 0 on next line)
-
-.cont1:
-		addq.b	#1,d0
-		cmp.b	#$C,d0					; has the limit been reached?
-		bcc.s	.cont2					; if it has, branch
-		move.b	d0,(v_spindashsfx3).w	; otherwise, set new frequency
-
-.cont2:
-		move.b	#1,(v_spindashsfx1).w	; set flag
-		move.b	#60,(v_spindashsfx2).w	; set timer
-		move.w	(sp)+,d0
-
-.cont3:
-		movea.l	Go_SoundIndex(pc),a0
-		sub.b	#$A0,d7
-		bra.w	SoundEffects_Common
-; End of function Sound_PlayD1Onward
 
 ; ===========================================================================
 ; ---------------------------------------------------------------------------

@@ -38,7 +38,7 @@ SpinDashEnabled: = 1					; if set to 1, Spin dashing is enabled for Sonic.
 SkidDustEnabled: = 1					; if set to 1, Skid dust will occur when coming to a stop.
 SpinDashCancel: = SpinDashEnabled*1		; if set to 1, Spin Dash can be cancelled by not pressing ABC
 SpinDashNoRevDown: = SpinDashEnabled*1	; if set to 1, Spin Dash will not rev down so long as ABC is held down
-PeeloutEnabled: = 1						; if set to 1, Peelout is enabled for Sonic
+PeeloutEnabled: = 1						; if set to 1, Peelout is enabled for Sonic (SFX still don't work properly)
 
 	include "MacroSetup.asm"
 	include	"Constants.asm"
@@ -3710,26 +3710,26 @@ LoadTilesAsYouMove:
 		lea	(vdp_data_port).l,a6
 		; First, update the background
 		lea	(v_bg1_scroll_flags_dup).w,a2	; Scroll block 1 scroll flags
-		lea	(v_bgscreenposx_dup).w,a3	; Scroll block 1 X coordinate
-		lea	(v_lvllayout+$80).w,a4		; MJ: Load address of layout BG
-		move.w	#$6000,d2			; VRAM thing for selecting Plane B
+		lea	(v_bgscreenposx_dup).w,a3		; Scroll block 1 X coordinate
+		lea	(v_lvllayout+$80).w,a4			; MJ: Load address of layout BG
+		move.w	#$6000,d2					; VRAM thing for selecting Plane B
 		bsr.w	DrawBGScrollBlock1
 		lea	(v_bg2_scroll_flags_dup).w,a2	; Scroll block 2 scroll flags
-		lea	(v_bg2screenposx_dup).w,a3	; Scroll block 2 X coordinate
+		lea	(v_bg2screenposx_dup).w,a3		; Scroll block 2 X coordinate
 		bsr.w	DrawBGScrollBlock2
 		; REV01 added a third scroll block, though, technically,
 		; the RAM for it was already there in REV00
 		lea	(v_bg3_scroll_flags_dup).w,a2	; Scroll block 3 scroll flags
-		lea	(v_bg3screenposx_dup).w,a3	; Scroll block 3 X coordinate
+		lea	(v_bg3screenposx_dup).w,a3		; Scroll block 3 X coordinate
 		bsr.w	DrawBGScrollBlock3
 		; Then, update the foreground
 		lea	(v_fg_scroll_flags_dup).w,a2	; Foreground scroll flags
-		lea	(v_screenposx_dup).w,a3		; Foreground X coordinate
-		lea	(v_lvllayout).w,a4		; MJ: Load address of layout
-		move.w	#$4000,d2			; VRAM thing for selecting Plane A
+		lea	(v_screenposx_dup).w,a3			; Foreground X coordinate
+		lea	(v_lvllayout).w,a4				; MJ: Load address of layout
+		move.w	#$4000,d2					; VRAM thing for selecting Plane A
 		; The FG's update function is inlined here
 		tst.b	(a2)
-		beq.s	locret_6952	; If there are no flags set, nothing needs updating
+		beq.s	locret_6952					; If there are no flags set, nothing needs updating
 		bclr	#0,(a2)
 		beq.s	loc_6908
 		; Draw new tiles at the top
@@ -3767,10 +3767,10 @@ loc_6938:
 		beq.s	locret_6952
 		; Draw new tiles on the right
 		moveq	#-16,d4
-		move.w	#320,d5
+		move.w	#336,d5			; Was 320 -- Spirituinsanum top-right corner reloading glitch Fix
 		bsr.w	Calc_VRAM_Pos
 		moveq	#-16,d4
-		move.w	#320,d5
+		move.w	#336,d5			; Was 320 -- Spirituinsanum top-right corner reloading glitch Fix
 		bsr.w	DrawBlocks_TB
 
 locret_6952:
@@ -3821,10 +3821,10 @@ locj_6D56:
 		beq.s	locj_6D70
 		; Draw new tiles on the right
 		moveq	#-16,d4
-		move.w	#320,d5
+		move.w	#336,d5			; Was 320 -- Spirituinsanum top-right corner reloading glitch Fix
 		bsr.w	Calc_VRAM_Pos
 		moveq	#-16,d4
-		move.w	#320,d5
+		move.w	#336,d5			; Was 320 -- Spirituinsanum top-right corner reloading glitch Fix
 		bsr.w	DrawBlocks_TB
 locj_6D70:
 
@@ -4072,7 +4072,8 @@ locj_701C:
 ; when the camera's moving up or down
 ; DrawTiles_LR:
 DrawBlocks_LR:
-		moveq	#((320+16+16)/16)-1,d6	; Draw the entire width of the screen + two extra columns
+		; SpirituInsanum top-right corner reloading glitch fix: Removed the -1
+		moveq	#((320+16+16)/16),d6	; Draw the entire width of the screen + two extra columns
 ; DrawTiles_LR_2:
 DrawBlocks_LR_2:
 		move.l	#$800000,d7	; Delta between rows of tiles

@@ -533,3 +533,9 @@
  Function: Sound driver forgets to include modulation frequency when updating frequency just after reading the tracker
  Date: 2024-06-23
  Modifies: s1.sounddriver.asm
+ 
+ Name: NE Corner Reloading Glitch Fix
+ Credit: SpirituInsanum
+ Function: Fixed some graphical glitching that'd occur in the top-right corner when going very fast.
+ Date: 2024-06-24
+ Modifies: sonic.asm
