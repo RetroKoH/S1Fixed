@@ -9,7 +9,7 @@ Sonic_SlopeRepel:
 		nop	
 		tst.b	obOnWheel(a0)
 		bne.s	.return
-		tst.w	obLRLock(a0)
+		tst.b	obLRLock(a0)
 		bne.s	.locked
 		move.b	obAngle(a0),d0
 		addi.b	#$20,d0
@@ -24,13 +24,13 @@ Sonic_SlopeRepel:
 		bhs.s	.return
 		clr.w	obInertia(a0)
 		bset	#staAir,obStatus(a0)
-		move.w	#$1E,obLRLock(a0)
+		move.b	#$1E,obLRLock(a0)
 
 .return:
 		rts	
 ; ===========================================================================
 
 .locked:
-		subq.w	#1,obLRLock(a0)
+		subq.b	#1,obLRLock(a0)
 		rts	
 ; End of function Sonic_SlopeRepel

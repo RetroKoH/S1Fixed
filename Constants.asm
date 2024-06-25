@@ -185,7 +185,8 @@ obRestartTimer:	equ $3A			; level restart timer (2 bytes)
 
 obJumping:		equ $3C			; jumping flag
 obPlatformID:	equ $3D			; ost slot of the object Sonic's on top of
-obLRLock:		equ $3E			; flag for preventing left and right input (2 bytes)
+obLRLock:		equ $3E			; flag for preventing left and right input
+							; $3F unused
 
 	if (SpinDashEnabled|PeeloutEnabled)=1
 obSpinDashFlag:	equ $2A					; spin dash/peelout flag - if toggled off, this is unused.

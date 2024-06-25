@@ -132,7 +132,7 @@ Spring_BounceLR:
 		neg.w	obVelX(a1)					; move Sonic to	the right
 
 Spring_Flipped:
-		move.w	#$F,objoff_3E(a1)
+		move.b	#$F,obLRLock(a1)
 		move.w	obVelX(a1),obInertia(a1)
 		bchg	#staFacing,obStatus(a1)		; Causes a minor bug w/ Sonic
 		btst	#staSpin,obStatus(a1)

@@ -411,7 +411,7 @@ loc_3F62:
 loc_3F6A:
 		tst.b	(f_slidemode).w
 		beq.s	locret_3F7A
-		move.w	#5,objoff_3E(a1)
+		move.b	#5,obLRLock(a1)
 		clr.b	(f_slidemode).w
 
 locret_3F7A:
