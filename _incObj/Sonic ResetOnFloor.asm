@@ -27,7 +27,7 @@ loc_137AE:
 		subq.w	#5,obY(a0)				; move Sonic up 5 pixels so the increased height doesn't push him into the ground  
 
 loc_137E4:
-		clr.b	objoff_3C(a0)
+		clr.b	obJumping(a0)
 		clr.w	(v_itembonus).w
 		rts	
 ; End of function Sonic_ResetOnFloor

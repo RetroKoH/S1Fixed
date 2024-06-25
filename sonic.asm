@@ -6183,8 +6183,8 @@ loc_12C7E:
 		bsr.s	Sonic_Display
 		bsr.w	Sonic_RecordPosition
 		bsr.w	Sonic_Water
-		move.b	(v_anglebuffer).w,objoff_36(a0)
-		move.b	(v_anglebuffer2).w,objoff_37(a0)
+		move.b	(v_anglebuffer).w,obFrontAngle(a0)
+		move.b	(v_anglebuffer2).w,obRearAngle(a0)
 		tst.b	(f_wtunnelmode).w
 		beq.s	loc_12CA6
 		tst.b	obAnim(a0)

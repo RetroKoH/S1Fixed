@@ -203,6 +203,14 @@ staRollJump:	equ 4 ; status RollJump notes whether or not Sonic is jumping from 
 staPush:		equ 5 ; status Push notes whether or not Sonic is pushing an object.
 staWater:		equ 6 ; status Water is set when Sonic is in the water.
 staSSJump:		equ 7 ; status SSJump is set when Sonic jumps in a Special Stage.
+; Sonic's status masks
+maskFacing:		equ 1<<staFacing
+maskAir:		equ 1<<staAir
+maskSpin:		equ 1<<staSpin
+maskOnObj:		equ 1<<staOnObj
+maskRollJump:	equ 1<<staRollJump
+maskPush:		equ 1<<staPush
+maskWater:		equ 1<<staWater
 ; Other objects' status bits
 staFlipX:		equ 0 ; status FlipX is cleared when facing left, and set when facing right.
 staFlipY:		equ 1 ; status FlipY is set if the sprite is flipped vertically. Cleared otherwise.
@@ -213,6 +221,8 @@ staSonicPush:	equ 5 ; status Push notes whether or not Sonic is pushing the obje
 ; Miscellaneous object scratch-RAM
 objoff_25:	equ $25
 objoff_26:	equ $26
+objoff_27:	equ $27	; unused
+objoff_28:	equ $28	; unused
 objoff_29:	equ $29
 objoff_2A:	equ $2A
 objoff_2B:	equ $2B
@@ -220,6 +230,7 @@ objoff_2C:	equ $2C
 objoff_2E:	equ $2E
 objoff_2F:	equ $2F
 objoff_30:	equ $30
+objoff_31:	equ $31	; unused
 objoff_32:	equ $32
 objoff_33:	equ $33
 objoff_34:	equ $34

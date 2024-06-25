@@ -58,7 +58,7 @@ Stair_Main:	; Routine 0
 		move.b	d3,objoff_37(a1)
 		move.l	a0,stair_parent(a1)
 		add.b	d4,d3
-		dbf	d1,.loop	; repeat sequence 3 times
+		dbf		d1,.loop	; repeat sequence 3 times
 
 .fail:
 
