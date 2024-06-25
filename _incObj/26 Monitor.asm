@@ -43,8 +43,8 @@ Mon_Main:	; Routine 0
 		move.b	obSubtype(a0),obAnim(a0)
 
 Mon_Solid:	; Routine 2
-		move.b	ob2ndRout(a0),d0	; is monitor set to fall?
-		beq.s	.normal				; if not, branch
+		move.b	ob2ndRout(a0),d0		; is monitor set to fall?
+		beq.s	.normal					; if not, branch
 		subq.b	#2,d0
 		bne.s	.fall
 
@@ -53,8 +53,8 @@ Mon_Solid:	; Routine 2
 		move.b	obActWid(a0),d1
 		addi.w	#$B,d1
 		bsr.w	ExitPlatform
-		btst	#3,obStatus(a1)		; is Sonic on top of the monitor?
-		bne.w	.ontop				; if yes, branch
+		btst	#staOnObj,obStatus(a1)	; is Sonic on top of the monitor?
+		bne.w	.ontop					; if yes, branch
 		clr.b	ob2ndRout(a0)
 		bra.w	Mon_Animate
 ; ===========================================================================
@@ -115,21 +115,21 @@ loc_A236:
 		clr.w	obVelX(a1)
 
 loc_A246:
-		btst	#1,obStatus(a1)
+		btst	#staAir,obStatus(a1)
 		bne.s	loc_A26A
-		bset	#5,obStatus(a1)
-		bset	#5,obStatus(a0)
+		bset	#staPush,obStatus(a1)
+		bset	#staSonicPush,obStatus(a0)
 		bra.s	Mon_Animate
 ; ===========================================================================
 
 loc_A25C:
-		btst	#5,obStatus(a0)
+		btst	#staSonicPush,obStatus(a0)
 		beq.s	Mon_Animate
 		; Removed line -- Mercury Walking In Air Fix
 
 loc_A26A:
-		bclr	#5,obStatus(a0)
-		bclr	#5,obStatus(a1)
+		bclr	#staSonicPush,obStatus(a0)
+		bclr	#staPush,obStatus(a1)
 
 Mon_Animate:	; Routine 6
 		lea		(Ani_Monitor).l,a1

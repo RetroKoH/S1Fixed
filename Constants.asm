@@ -158,6 +158,7 @@ obAngle:		equ $26			; angle
 obRespawnNo:	equ $14			; respawn list address (2 bytes)
 obColType:		equ $20			; collision response type
 obColProp:		equ $21			; collision extra property
+obSolid:		equ $25			; solid status flag for objects
 obSubtype:		equ $28			; object subtype
 obBossX:		equ $30
 obBossY:		equ $38
@@ -167,7 +168,7 @@ obParent:		equ $3E
 obInertia:		equ $20			; potential speed (2 bytes) -- Exclusive to players
 							; $23 unused
 							; $24 obRoutine
-obSolid:		equ $25			; solid status flag
+					; does Sonic use $25???
 							; $26 obAngle
 							; $27-$29 unused
 

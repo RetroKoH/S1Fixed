@@ -17,7 +17,7 @@ ApplySpeedSettings:
 		addq.b  #8,d0
 
 .noshoes:
-		btst    #6,obStatus(a0)						; Is the character underwater?
+		btst    #staWater,obStatus(a0)				; Is the character underwater?
 		beq.s   .nowater							; If not, branch
 		addi.b  #$10,d0
 

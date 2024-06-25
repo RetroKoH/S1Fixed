@@ -28,18 +28,18 @@ Smash_Main:	; Routine 0
 .isGHZ:
 		move.b	#4,obRender(a0)
 		move.b	#$10,obActWid(a0)
-		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#$200,obPriority(a0)				; RetroKoH S2 Priority Manager
 		move.b	obSubtype(a0),obFrame(a0)
 
 Smash_Solid:	; Routine 2
-		move.w	(v_player+obVelX).w,smash_speed(a0) ; load Sonic's horizontal speed
+		move.w	(v_player+obVelX).w,smash_speed(a0)	; load Sonic's horizontal speed
 		move.w	#$1B,d1
 		move.w	#$20,d2
 		move.w	#$20,d3
 		move.w	obX(a0),d4
 		bsr.w	SolidObject
-		btst	#5,obStatus(a0)	; is Sonic pushing against the wall?
-		bne.s	.chkroll	; if yes, branch
+		btst	#staSonicPush,obStatus(a0)			; is Sonic pushing against the wall?
+		bne.s	.chkroll							; if yes, branch
 
 .donothing:
 		rts	
@@ -57,17 +57,17 @@ Smash_Solid:	; Routine 2
 		blo.s	.donothing	; if not, branch
 		move.w	smash_speed(a0),obVelX(a1)
 		addq.w	#4,obX(a1)
-		lea	(Smash_FragSpd1).l,a4 ;	use fragments that move	right
+		lea		(Smash_FragSpd1).l,a4 ;	use fragments that move	right
 		move.w	obX(a0),d0
 		cmp.w	obX(a1),d0	; is Sonic to the right	of the block?
 		blo.s	.smash		; if yes, branch
 		subq.w	#8,obX(a1)
-		lea	(Smash_FragSpd2).l,a4 ;	use fragments that move	left
+		lea		(Smash_FragSpd2).l,a4 ;	use fragments that move	left
 
 .smash:
 		move.w	obVelX(a1),obInertia(a1)
-		bclr	#5,obStatus(a0)
-		bclr	#5,obStatus(a1)
+		bclr	#staSonicPush,obStatus(a0)
+		bclr	#staPush,obStatus(a1)
 		moveq	#7,d1		; load 8 fragments
 		move.w	#$70,d2
 		bsr.s	SmashObject

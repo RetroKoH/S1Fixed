@@ -93,8 +93,8 @@ FFloor_Solid2:
 ; ===========================================================================
 
 loc_19C62:	; Routine 6
-		bclr	#3,obStatus(a0)
-		bclr	#3,(v_player+obStatus).w
+		bclr	#staSonicOnObj,obStatus(a0)
+		bclr	#staOnObj,(v_player+obStatus).w
 		bra.w	loc_1982C
 ; ===========================================================================
 

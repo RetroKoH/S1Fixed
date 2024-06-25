@@ -123,7 +123,7 @@ loc_B798:	; Routine 2
 		move.w	#$D,d3
 		move.w	obX(a0),d4
 		bsr.w	SolidObject
-		btst	#3,obStatus(a0)
+		btst	#staSonicOnObj,obStatus(a0)
 		beq.s	CStom_ChkDel
 		cmpi.b	#$10,objoff_32(a0)
 		bhs.s	CStom_ChkDel

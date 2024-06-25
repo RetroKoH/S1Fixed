@@ -81,8 +81,8 @@ PSwapper_MainX:
 		tst.w	(v_debuguse).w
 		bne.w	.locret
 		move.w	obX(a0),d1
-		lea	$34(a0),a2
-		lea	(v_player).w,a1 ; a1=character
+		lea		$34(a0),a2
+		lea		(v_player).w,a1 ; a1=character
 		tst.b	(a2)+
 		bne.w	PSwapper_MainX_Alt
 		cmp.w	obX(a1),d1
@@ -100,7 +100,7 @@ PSwapper_MainX:
 		bge.s	.locret
 		move.b	obSubtype(a0),d0
 		bpl.s	.jump
-		btst	#1,obStatus(a1)
+		btst	#staAir,obStatus(a1)
 		bne.s	.locret
 .jump:
 		btst	#0,obRender(a0)
@@ -143,7 +143,7 @@ PSwapper_MainX_Alt:
 		bge.s	.locret
 		move.b	obSubtype(a0),d0
 		bpl.s	.jump
-		btst	#1,obStatus(a1)
+		btst	#staAir,obStatus(a1)
 		bne.s	.locret
 .jump:
 		btst	#0,obRender(a0)
@@ -193,7 +193,7 @@ PSwapper_MainY:
 		bge.s	.locret
 		move.b	obSubtype(a0),d0
 		bpl.s	.jump
-		btst	#1,obStatus(a1)
+		btst	#staAir,obStatus(a1)
 		bne.s	.locret
 .jump:
 		btst	#0,obRender(a0)
@@ -236,7 +236,7 @@ PSwapper_MainY_Alt:
 		bge.s	.locret
 		move.b	obSubtype(a0),d0
 		bpl.s	.jump
-		btst	#1,obStatus(a1)
+		btst	#staAir,obStatus(a1)
 		bne.s	.locret
 .jump:
 		btst	#0,obRender(a0)

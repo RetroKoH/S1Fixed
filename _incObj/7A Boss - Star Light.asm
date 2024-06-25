@@ -42,7 +42,7 @@ BossStarLight_Loop:
 		move.w	obY(a0),obY(a1)
 
 BossStarLight_LoadBoss:
-		bclr	#0,obStatus(a0)
+		bclr	#staFlipX,obStatus(a0)
 		clr.b	ob2ndRout(a1)
 		move.b	(a2)+,obRoutine(a1)
 		move.b	(a2)+,obAnim(a1)
@@ -166,7 +166,7 @@ loc_18A46:
 loc_18A5E:
 		move.w	objoff_30(a0),d0
 		move.w	#$200,obVelX(a0)
-		btst	#0,obStatus(a0)
+		btst	#staFlipX,obStatus(a0)
 		bne.s	loc_18A7C
 		neg.w	obVelX(a0)
 		cmpi.w	#boss_slz_x+8,d0
@@ -179,13 +179,13 @@ loc_18A7C:
 		blt.s	loc_18A88
 
 loc_18A82:
-		bchg	#0,obStatus(a0)
+		bchg	#staFlipX,obStatus(a0)
 
 loc_18A88:
 		move.w	obX(a0),d0
 		moveq	#-1,d1
 		moveq	#2,d2
-		lea	objoff_2A(a0),a2
+		lea		objoff_2A(a0),a2
 		moveq	#$28,d4
 		tst.w	obVelX(a0)
 		bpl.s	loc_18A9E
@@ -194,7 +194,7 @@ loc_18A88:
 loc_18A9E:
 		move.w	(a2)+,d1
 		movea.l	d1,a3
-		btst	#3,obStatus(a3)
+		btst	#staSonicOnObj,obStatus(a3)
 		bne.s	loc_18AB4
 		move.w	obX(a3),d3
 		add.w	d4,d3
@@ -269,7 +269,7 @@ loc_18B48:
 loc_18B52:
 		addq.b	#2,ob2ndRout(a0)
 		clr.w	obVelY(a0)
-		bset	#0,obStatus(a0)
+		bset	#staFlipX,obStatus(a0)
 		bclr	#7,obStatus(a0)
 		clr.w	obVelX(a0)
 		move.b	#-$18,objoff_3C(a0)

@@ -31,8 +31,8 @@ Obj09_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		clr.w	obPriority(a0)			; RetroKoH S2 Priority Manager
 		move.b	#aniID_Roll,obAnim(a0)
-		bset	#2,obStatus(a0)
-		bset	#1,obStatus(a0)
+		bset	#staSpin,obStatus(a0)
+		bset	#staAir,obStatus(a0)
 
 Obj09_ChkDebug:	; Routine 2
 		tst.w	(f_debugmode).w			; is debug mode	cheat enabled?
@@ -51,12 +51,13 @@ Obj09_NoDebug:
 		jsr		(Sonic_LoadGfx).l
 		jmp		(DisplaySprite).l
 ; ===========================================================================
-Obj09_Modes:	dc.w Obj09_OnWall-Obj09_Modes
-		dc.w Obj09_InAir-Obj09_Modes
+Obj09_Modes:
+		dc.w	Obj09_OnWall-Obj09_Modes
+		dc.w	Obj09_InAir-Obj09_Modes
 ; ===========================================================================
 
 Obj09_OnWall:
-		bclr	#7,obStatus(a0)		; clear "Sonic has jumped" flag -- Mercury Fixed SS Jumping Physics
+		bclr	#staSSJump,obStatus(a0)		; clear "Sonic has jumped" flag -- Mercury Fixed SS Jumping Physics
 		bsr.w	Obj09_Jump
 		bsr.w	Obj09_Move
 		bsr.w	Obj09_Fall
@@ -71,13 +72,12 @@ Obj09_InAir:
 Obj09_Display:
 		bsr.w	Obj09_ChkItems
 		bsr.w	Obj09_ChkItems2
-		jsr	(SpeedToPos).l
+		jsr		(SpeedToPos).l
 		bsr.w	SS_FixCamera
 		move.w	(v_ssangle).w,d0
 		add.w	(v_ssrotate).w,d0
 		move.w	d0,(v_ssangle).w
-		jsr	(Sonic_Animate).l
-		rts	
+		jmp		(Sonic_Animate).l
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
@@ -148,7 +148,7 @@ loc_1BAF2:
 
 
 Obj09_MoveLeft:
-		bset	#0,obStatus(a0)
+		bset	#staFacing,obStatus(a0)
 		move.w	obInertia(a0),d0
 		beq.s	loc_1BB06
 		bpl.s	loc_1BB1A
@@ -179,7 +179,7 @@ loc_1BB22:
 
 
 Obj09_MoveRight:
-		bclr	#0,obStatus(a0)
+		bclr	#staFacing,obStatus(a0)
 		move.w	obInertia(a0),d0
 		bmi.s	loc_1BB48
 		addi.w	#$C,d0
@@ -227,10 +227,10 @@ Obj09_Jump:
 		muls.w	#$680,d0
 		asr.l	#8,d0
 		move.w	d0,obVelY(a0)
-		bset	#1,obStatus(a0)
-		bset	#7,obStatus(a0)		; set "Sonic has jumped" flag -- Mercury Fixed SS Jumping Physics
+		bset	#staAir,obStatus(a0)
+		bset	#staSSJump,obStatus(a0)	; set "Sonic has jumped" flag -- Mercury Fixed SS Jumping Physics
 		move.w	#sfx_Jump,d0
-		jsr		(PlaySound_Special).l	; play jumping sound
+		jmp		(PlaySound_Special).l	; play jumping sound
 
 Obj09_NoJump:
 		rts	
@@ -246,12 +246,12 @@ Obj09_NoJump:
 
 Obj09_JumpHeight:
 	; Mercury Fixed SS Jumping Physics
-		move.b	(v_jpadhold2).w,d0	; is the jump button up?
+		move.b	(v_jpadhold2).w,d0		; is the jump button up?
 		andi.b	#btnABC,d0
-		bne.s	locret_1BBB4		; if not, branch to return
-		btst	#7,obStatus(a0)		; did Sonic jump or is he just falling or hit by a bumper?
-		beq.s	locret_1BBB4		; if not, branch to return
-		move.b	(v_ssangle).w,d0	; get SS angle
+		bne.s	locret_1BBB4			; if not, branch to return
+		btst	#staSSJump,obStatus(a0)	; did Sonic jump or is he just falling or hit by a bumper?
+		beq.s	locret_1BBB4			; if not, branch to return
+		move.b	(v_ssangle).w,d0		; get SS angle
 
 	if SmoothSpecialStages=0	; Cinossu Smooth Special Stages
 		andi.b	#$FC,d0
@@ -283,8 +283,8 @@ Obj09_JumpHeight:
 		move.w	d1,obVelX(a0)
 		muls.w	#$400,d0
 		asr.l	#8,d0
-		move.w	d0,obVelY(a0)		; set the speed to the jump release speed
-		bclr	#7,obStatus(a0)		; clear "Sonic has jumped" flag
+		move.w	d0,obVelY(a0)			; set the speed to the jump release speed
+		bclr	#staSSJump,obStatus(a0)	; clear "Sonic has jumped" flag
 
 locret_1BBB4:
 		rts
@@ -383,7 +383,7 @@ Obj09_Fall:
 		sub.l	d0,d3
 		moveq	#0,d0
 		move.w	d0,obVelX(a0)
-		bclr	#1,obStatus(a0)
+		bclr	#staAir,obStatus(a0)
 		add.l	d1,d2
 		bsr.w	sub_1BCE8
 		beq.s	loc_1BCC6
@@ -400,7 +400,7 @@ loc_1BCB0:
 		sub.l	d1,d2
 		moveq	#0,d1
 		move.w	d1,obVelY(a0)
-		bclr	#1,obStatus(a0)
+		bclr	#staAir,obStatus(a0)
 
 loc_1BCC6:
 		asr.l	#8,d0
@@ -415,7 +415,7 @@ loc_1BCD4:
 		asr.l	#8,d1
 		move.w	d0,obVelX(a0)
 		move.w	d1,obVelY(a0)
-		bset	#1,obStatus(a0)
+		bset	#staAir,obStatus(a0)
 		rts	
 ; End of function Obj09_Fall
 
@@ -512,14 +512,14 @@ Obj09_ChkCont:
 		move.l	a1,4(a2)
 
 Obj09_GetCont:
-		jsr	(CollectRing).l
+		jsr		(CollectRing).l
 		cmpi.w	#50,(v_rings).w	; check if you have 50 rings
 		blo.s	Obj09_NoCont
 		bset	#0,(v_lifecount).w
 		bne.s	Obj09_NoCont
 		addq.b	#1,(v_continues).w ; add 1 to number of continues
 		move.w	#sfx_Continue,d0
-		jsr	(PlaySound).l	; play extra continue sound
+		jsr		(PlaySound).l	; play extra continue sound
 
 Obj09_NoCont:
 		moveq	#0,d4
@@ -540,6 +540,7 @@ Obj09_Get1Up:
 		beq.s	.playbgm
 		addq.b	#1,(v_lives).w		; add 1 to number of lives
 		addq.b	#1,(f_lifecount).w	; update the lives counter
+
 .playbgm:
 	; Lives Over/Underflow Fix End
 		move.w	#bgm_ExtraLife,d0
@@ -661,8 +662,8 @@ Obj09_ChkBumper:
 		muls.w	#-$700,d0
 		asr.l	#8,d0
 		move.w	d0,obVelY(a0)
-		bset	#1,obStatus(a0)
-		bclr	#7,obStatus(a0)		; clear "Sonic has jumped" flag -- Mercury Fixed SS Jumping Physics
+		bset	#staAir,obStatus(a0)
+		bclr	#staSSJump,obStatus(a0)		; clear "Sonic has jumped" flag -- Mercury Fixed SS Jumping Physics
 		bsr.w	SS_RemoveCollectedItem
 		bne.s	Obj09_BumpSnd
 		move.b	#2,(a2)
@@ -680,8 +681,7 @@ Obj09_GOAL:
 		bne.s	Obj09_UPblock
 		addq.b	#2,obRoutine(a0) ; run routine "Obj09_ExitStage"
 		move.w	#sfx_SSGoal,d0
-		jsr	(PlaySound_Special).l	; play "GOAL" sound
-		rts	
+		jmp		(PlaySound_Special).l	; play "GOAL" sound
 ; ===========================================================================
 
 Obj09_UPblock:

@@ -6,15 +6,15 @@
 
 
 Sonic_Animate:
-		lea	(Ani_Sonic).l,a1
+		lea		(Ani_Sonic).l,a1
 		moveq	#0,d0
 		move.b	obAnim(a0),d0
-		cmp.b	obPrevAni(a0),d0	; has animation changed?
-		beq.s	.do					; if not, branch
+		cmp.b	obPrevAni(a0),d0		; has animation changed?
+		beq.s	.do						; if not, branch
 		move.b	d0,obPrevAni(a0)
-		clr.b	obAniFrame(a0)	; reset animation
-		clr.b	obTimeFrame(a0)	; reset frame duration
-		bclr	#5,obStatus(a0)		; clear pushing flag -- Mercury Pushing While Walking Fix
+		clr.b	obAniFrame(a0)			; reset animation
+		clr.b	obTimeFrame(a0)			; reset frame duration
+		bclr	#staPush,obStatus(a0)	; clear pushing flag -- Mercury Pushing While Walking Fix
 
 .do:
 		add.w	d0,d0
@@ -105,16 +105,16 @@ Sonic_Animate:
 
 	if SpinDashEnabled=1
 	; DeltaWooloo/Gio Spindash check
-		tst.b   obSpinDashFlag(a0)	; GIO: Check if the Spin Dash is being charged
-		bne.s   .skip				; GIO: If yes, skip the check for the pushing status.
+		tst.b   obSpinDashFlag(a0)		; GIO: Check if the Spin Dash is being charged
+		bne.s   .skip					; GIO: If yes, skip the check for the pushing status.
 	; Spindash check end
-		btst	#5,obStatus(a0)		; is Sonic pushing something?
-		bne.w	.push				; if yes, branch
+		btst	#staPush,obStatus(a0)	; is Sonic pushing something?
+		bne.w	.push					; if yes, branch
 
 .skip:
 	else
-		btst	#5,obStatus(a0)		; is Sonic pushing something?
-		bne.w	.push				; if yes, branch
+		btst	#staPush,obStatus(a0)	; is Sonic pushing something?
+		bne.w	.push					; if yes, branch
 	endif
 
 		lsr.b	#4,d0				; divide angle by $10
@@ -163,10 +163,10 @@ Sonic_Animate:
 		neg.w	d2
 
 .nomodspeed2:
-		lea	(SonAni_Roll2).l,a1		; use fast animation
+		lea		(SonAni_Roll2).l,a1	; use fast animation
 		cmpi.w	#$600,d2			; is Sonic moving fast?
 		bhs.s	.rollfast			; if yes, branch
-		lea	(SonAni_Roll).l,a1		; use slower animation
+		lea		(SonAni_Roll).l,a1	; use slower animation
 
 .rollfast:
 		neg.w	d2
@@ -197,7 +197,7 @@ Sonic_Animate:
 .belowmax3:
 		lsr.w	#6,d2
 		move.b	d2,obTimeFrame(a0)	; modify frame duration
-		lea	(SonAni_Push).l,a1
+		lea		(SonAni_Push).l,a1
 		move.b	obStatus(a0),d1
 		andi.b	#1,d1
 		andi.b	#$FC,obRender(a0)

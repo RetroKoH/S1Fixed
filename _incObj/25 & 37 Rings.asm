@@ -118,7 +118,7 @@ RLoss_Count:	; Routine 0
 	; RHS Ring Loss Speedup
 		lea		SpillRingData,a3		; load the address of the array in a3
 		lea     (v_player).w,a2			; a2=character
-		btst    #6,obStatus(a2)			; is Sonic underwater?
+		btst    #staWater,obStatus(a2)	; is Sonic underwater?
 		beq.s   .abovewater				; if not, branch
 		lea		SpillRingData_Water,a3	; load the address of the array in a3
 

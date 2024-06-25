@@ -7,15 +7,15 @@
 
 Sonic_AnglePos:
 		move.l	#v_collision1&$FFFFFF,(v_collindex).w	; MJ: load first collision data location
-		cmpi.b	#$C,(v_top_solid_bit).w			; MJ: is second collision set to be used?
-		beq.s	.first					; MJ: if not, branch
+		cmpi.b	#$C,(v_top_solid_bit).w					; MJ: is second collision set to be used?
+		beq.s	.first									; MJ: if not, branch
 		move.l	#v_collision2&$FFFFFF,(v_collindex).w	; MJ: load second collision data location
 .first:
-		move.b	(v_top_solid_bit).w,d5			; MJ: load L/R/B soldity bit
-		btst	#3,obStatus(a0)
-		beq.s	loc_14602
+		move.b	(v_top_solid_bit).w,d5					; MJ: load L/R/B soldity bit
+		btst	#staOnObj,obStatus(a0)					; is Sonic standing on an object?
+		beq.s	loc_14602								; if not, branch
 		moveq	#0,d0
-		move.b	d0,(v_anglebuffer).w
+		move.b	d0,(v_anglebuffer).w					; clear angle buffers and exit
 		move.b	d0,(v_anglebuffer2).w
 		rts	
 ; ===========================================================================
@@ -105,8 +105,8 @@ loc_146C6:
 loc_146CC:
 		tst.b	obOnWheel(a0)
 		bne.s	loc_146C6
-		bset	#1,obStatus(a0)
-		bclr	#5,obStatus(a0)
+		bset	#staAir,obStatus(a0)
+		bclr	#staPush,obStatus(a0)
 		move.b	#aniID_Run,obPrevAni(a0) ; restart Sonic's animation
 		rts	
 ; ===========================================================================
@@ -205,7 +205,7 @@ Sonic_WalkVertR:
 		move.b	obHeight(a0),d0
 		ext.w	d0
 		add.w	d0,d3
-		lea	(v_anglebuffer).w,a4
+		lea		(v_anglebuffer).w,a4
 		movea.w	#$10,a3
 		clr.w	d6
 		bsr.w	FindWall	; MJ: check solidity
@@ -248,8 +248,8 @@ loc_147F8:
 loc_147FE:
 		tst.b	obOnWheel(a0)
 		bne.s	loc_147F8
-		bset	#1,obStatus(a0)
-		bclr	#5,obStatus(a0)
+		bset	#staAir,obStatus(a0)
+		bclr	#staPush,obStatus(a0)
 		move.b	#aniID_Run,obPrevAni(a0) ; restart Sonic's animation
 		rts	
 ; End of function Sonic_WalkVertR
@@ -316,8 +316,8 @@ loc_1489A:
 loc_148A0:
 		tst.b	obOnWheel(a0)
 		bne.s	loc_1489A
-		bset	#1,obStatus(a0)
-		bclr	#5,obStatus(a0)
+		bset	#staAir,obStatus(a0)
+		bclr	#staPush,obStatus(a0)
 		move.b	#aniID_Run,obPrevAni(a0) ; restart Sonic's animation
 		rts	
 ; End of function Sonic_WalkCeiling
@@ -384,8 +384,8 @@ loc_1493C:
 loc_14942:
 		tst.b	obOnWheel(a0)
 		bne.s	loc_1493C
-		bset	#1,obStatus(a0)
-		bclr	#5,obStatus(a0)
+		bset	#staAir,obStatus(a0)
+		bclr	#staPush,obStatus(a0)
 		move.b	#aniID_Run,obPrevAni(a0) ; restart Sonic's animation
 		rts	
 ; End of function Sonic_WalkVertL

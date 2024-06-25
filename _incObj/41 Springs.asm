@@ -47,11 +47,11 @@ Spring_Main:	; Routine 0
 		move.b	#8,obActWid(a0)
 
 Spring_NotLR:
-		btst	#5,d0		; does the spring face downwards?
-		beq.s	Spring_NotDwn	; if not, branch
+		btst	#5,d0				; does the spring face downwards?
+		beq.s	Spring_NotDwn		; if not, branch
 
-		move.b	#$E,obRoutine(a0) ; use "Spring_Dwn" routine
-		bset	#1,obStatus(a0)
+		move.b	#$E,obRoutine(a0)	; use "Spring_Dwn" routine
+		bset	#staFlipY,obStatus(a0)
 
 Spring_NotDwn:
 		btst	#1,d0
@@ -79,8 +79,8 @@ Spring_BounceUp:
 		addq.b	#2,obRoutine(a0)
 		addq.w	#8,obY(a1)
 		move.w	spring_pow(a0),obVelY(a1)	; move Sonic upwards
-		bset	#1,obStatus(a1)
-		bclr	#3,obStatus(a1)
+		bset	#staAir,obStatus(a1)
+		bclr	#staOnObj,obStatus(a1)
 		clr.b	obJumping(a1)
 		; Clear the spin flag?
 
@@ -90,7 +90,7 @@ Spring_BounceUp:
 
 		move.b	#aniID_Spring,obAnim(a1)	; use "bouncing" animation
 		move.b	#2,obRoutine(a1)
-		bclr	#3,obStatus(a0)
+		bclr	#staSonicOnObj,obStatus(a0)
 		clr.b	obSolid(a0)
 		move.w	#sfx_Spring,d0
 		jsr		(PlaySound_Special).l		; play spring sound
@@ -117,31 +117,31 @@ Spring_LR:	; Routine 8
 		move.b	#8,obRoutine(a0)
 
 loc_DC0C:
-		btst	#5,obStatus(a0)
+		btst	#staSonicPush,obStatus(a0)
 		bne.s	Spring_BounceLR
 		rts	
 ; ===========================================================================
 
 Spring_BounceLR:
 		addq.b	#2,obRoutine(a0)
-		move.w	spring_pow(a0),obVelX(a1) ; move Sonic to the left
+		move.w	spring_pow(a0),obVelX(a1)	; move Sonic to the left
 		addq.w	#8,obX(a1)
-		btst	#0,obStatus(a0)	; is object flipped?
-		bne.s	Spring_Flipped	; if yes, branch
+		btst	#staFlipX,obStatus(a0)		; is object flipped?
+		bne.s	Spring_Flipped				; if yes, branch
 		subi.w	#$10,obX(a1)
-		neg.w	obVelX(a1)	; move Sonic to	the right
+		neg.w	obVelX(a1)					; move Sonic to	the right
 
 Spring_Flipped:
 		move.w	#$F,objoff_3E(a1)
 		move.w	obVelX(a1),obInertia(a1)
-		bchg	#0,obStatus(a1)
-		btst	#2,obStatus(a1)
+		bchg	#staFacing,obStatus(a1)		; Causes a minor bug w/ Sonic
+		btst	#staSpin,obStatus(a1)
 		bne.s	loc_DC56
-		move.b	#aniID_Walk,obAnim(a1)	; use walking animation
+		move.b	#aniID_Walk,obAnim(a1)		; use walking animation
 
 loc_DC56:
-		bclr	#5,obStatus(a0)
-		bclr	#5,obStatus(a1)
+		bclr	#staSonicPush,obStatus(a0)
+		bclr	#staPush,obStatus(a1)
 
 	if SpinDashEnabled=1
 		clr.b	(v_cameralag).w 	; clear camera lag
@@ -185,17 +185,17 @@ Spring_BounceDwn:
 		addq.b	#2,obRoutine(a0)
 		subq.w	#8,obY(a1)
 		move.w	spring_pow(a0),obVelY(a1)
-		neg.w	obVelY(a1)	; move Sonic downwards
-		bset	#1,obStatus(a1)
-		bclr	#3,obStatus(a1)
+		neg.w	obVelY(a1)				; move Sonic downwards
+		bset	#staAir,obStatus(a1)
+		bclr	#staOnObj,obStatus(a1)
 		move.b	#2,obRoutine(a1)
-		bclr	#3,obStatus(a0)
+		bclr	#staSonicOnObj,obStatus(a0)
 		clr.b	obSolid(a0)
 		move.w	#sfx_Spring,d0
-		jsr	(PlaySound_Special).l	; play spring sound
+		jsr		(PlaySound_Special).l	; play spring sound
 
 Spring_AniDwn:	; Routine $10
-		lea	(Ani_Spring).l,a1
+		lea		(Ani_Spring).l,a1
 		bra.w	AnimateSprite
 ; ===========================================================================
 

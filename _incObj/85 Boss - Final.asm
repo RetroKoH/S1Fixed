@@ -165,11 +165,11 @@ loc_19EC6:
 loc_19F10:
 		tst.w	objoff_32(a0)
 		bmi.w	loc_19FA6
-		bclr	#0,obStatus(a0)
+		bclr	#staFlipX,obStatus(a0)
 		move.w	(v_player+obX).w,d0
 		sub.w	obX(a0),d0
 		bcs.s	loc_19F2E
-		bset	#0,obStatus(a0)
+		bset	#staFlipX,obStatus(a0)
 
 loc_19F2E:
 		move.w	#$2B,d1
@@ -191,7 +191,7 @@ loc_19F50:
 		cmpi.b	#aniID_Roll,(v_player+obAnim).w
 		bne.s	loc_19F48
 		move.w	#$300,d0
-		btst	#0,obStatus(a0)
+		btst	#staFlipX,obStatus(a0)
 		bne.s	loc_19F6A
 		neg.w	d0
 
@@ -279,7 +279,7 @@ loc_1A020:
 
 loc_1A02A:
 		move.b	#$30,obActWid(a0)
-		bset	#0,obStatus(a0)
+		bset	#staFlipX,obStatus(a0)
 		jsr	(SpeedToPos).l
 		move.b	#6,obFrame(a0)
 		addi.w	#$10,obVelY(a0)
@@ -297,7 +297,7 @@ loc_1A070:
 ; ===========================================================================
 
 loc_1A074:
-		bset	#0,obStatus(a0)
+		bset	#staFlipX,obStatus(a0)
 		move.b	#4,obAnim(a0)
 		jsr	(SpeedToPos).l
 		addi.w	#$10,obVelY(a0)
@@ -396,7 +396,7 @@ loc_1A192:
 		move.l	#Map_Eggman,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
 		clr.b	obAnim(a0)
-		bset	#0,obStatus(a0)
+		bset	#staFlipX,obStatus(a0)
 		jsr	(SpeedToPos).l
 		cmpi.w	#boss_fz_y+$34,obY(a0)
 		bhs.s	loc_1A1D0
@@ -410,7 +410,7 @@ loc_1A1D0:
 ; ===========================================================================
 
 loc_1A1D4:
-		bset	#0,obStatus(a0)
+		bset	#staFlipX,obStatus(a0)
 		jsr	(SpeedToPos).l
 		tst.w	objoff_30(a0)
 		bne.s	loc_1A1FC
@@ -533,7 +533,7 @@ loc_1A312:
 ; ===========================================================================
 
 loc_1A346:	; Routine 8
-		bset	#0,obStatus(a0)
+		bset	#staFlipX,obStatus(a0)
 		movea.l	objoff_34(a0),a1
 		cmpi.l	#Map_Eggman,obMap(a1)
 		beq.s	loc_1A35E
@@ -572,7 +572,7 @@ loc_1A3A6:
 
 loc_1A3AC:	; Routine $C
 		clr.b	obFrame(a0)
-		bset	#0,obStatus(a0)
+		bset	#staFlipX,obStatus(a0)
 		movea.l	objoff_34(a0),a1
 		cmpi.b	#$C,objoff_34(a1)
 		bne.s	loc_1A3D0

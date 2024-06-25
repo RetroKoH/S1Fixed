@@ -29,16 +29,16 @@ Debug_Main:	; Routine 0
 		clr.w	obVelX(a0)
 		clr.w	obVelY(a0)
 		clr.w	obInertia(a0)
-		btst	#3,obStatus(a0)				; is Sonic standing on an object?
+		btst	#staOnObj,obStatus(a0)		; is Sonic standing on an object?
 		beq.s	.setpos						; if not, branch
-		bclr	#3,obStatus(a0)				; clear Sonic's standing flag
+		bclr	#staOnObj,obStatus(a0)		; clear Sonic's standing flag
 		moveq	#0,d0
 		move.b	obPlatformID(a0),d0			; get object id
 		clr.b	obPlatformID(a0)			; clear object id
 		lsl.w	#6,d0
 		addi.l	#v_objspace&$FFFFFF,d0
 		movea.l	d0,a2
-		bclr	#3,obStatus(a2)				; clear object's standing flag
+		bclr	#staSonicOnObj,obStatus(a2)	; clear object's standing flag
 		clr.b	obSolid(a2)
 .setpos:
 	; Debug Improvements end
@@ -178,17 +178,17 @@ Debug_ChgItem:
 ; ===========================================================================
 
 .createitem:
-		btst	#bitC,(v_jpadpress1).w	; is button C pressed?
-		beq.s	.backtonormal			; if not, branch
+		btst	#bitC,(v_jpadpress1).w		; is button C pressed?
+		beq.s	.backtonormal				; if not, branch
 		jsr		(FindFreeObj).l
 		bne.s	.backtonormal
-		clr.b	(v_objstate+2).w		; Mercury Debug Improvements -- Allows us to place more rings/boxes, etc.
+		clr.b	(v_objstate+2).w			; Mercury Debug Improvements -- Allows us to place more rings/boxes, etc.
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		_move.b	obMap(a0),obID(a1)		; create object
+		_move.b	obMap(a0),obID(a1)			; create object
 		move.b	obRender(a0),obRender(a1)
 		move.b	obRender(a0),obStatus(a1)
-		andi.b	#$7F,obStatus(a1)
+		andi.b	#$7F,obStatus(a1)			; ensure bit #7 is clear
 		moveq	#0,d0
 		move.b	(v_debugitem).w,d0
 		lsl.w	#3,d0
@@ -214,7 +214,7 @@ Debug_ChgItem:
 		clr.w	obVelX(a1)
 		clr.w	obVelY(a1)
 		clr.w	obInertia(a1)
-		move.b	#2,obStatus(a1)
+		move.b	#2,obStatus(a1)						; set Sonic into the air. all other bits clear.
 		move.b	#2,obRoutine(a1)
 		move.b	#$13,obHeight(a1)
 		move.b	#9,obWidth(a1)
@@ -222,7 +222,7 @@ Debug_ChgItem:
 		jsr		(ApplySpeedSettings).l				; Fetch Speed settings
 		move.w	(v_limittopdb).w,(v_limittop2).w	; restore level boundaries
 		move.w	(v_limitbtmdb).w,(v_limitbtm1).w
-		jsr		(Hud_Base).l						; reload basic HUD gfx	-- RetroKoH Debug Mode Improvement
+		jmp		(Hud_Base).l						; reload basic HUD gfx	-- RetroKoH Debug Mode Improvement
 .stayindebug:
 		rts
 
@@ -232,8 +232,9 @@ Debug_ChgItem:
 		move.l	#Map_Sonic,obMap(a1)
 		move.w	#ArtTile_Sonic,obGfx(a1)
 		move.b	#aniID_Roll,obAnim(a1)
-		bset	#2,obStatus(a1)
-		bset	#1,obStatus(a1)
+		;move.b	#6,obStatus(a1)
+		bset	#staSpin,obStatus(a1)
+		bset	#staAir,obStatus(a1)
 		rts	
 ; End of function Debug_Control
 

@@ -61,8 +61,8 @@ Jun_Action:	; Routine 2
 		addq.w	#1,d3
 		move.w	obX(a0),d4
 		bsr.w	SolidObject
-		btst	#5,obStatus(a0)	; is Sonic pushing the disc?
-		beq.w	Jun_Display	; if not, branch
+		btst	#staSonicPush,obStatus(a0)	; is Sonic pushing the disc?
+		beq.w	Jun_Display					; if not, branch
 
 		lea		(v_player).w,a1
 		moveq	#$E,d1
@@ -73,18 +73,18 @@ Jun_Action:	; Routine 2
 
 .isleft:
 		cmp.b	obFrame(a0),d1	; is the gap next to Sonic?
-		bne.s	Jun_Display	; if not, branch
+		bne.s	Jun_Display		; if not, branch
 
 		move.b	d1,objoff_32(a0)
-		addq.b	#4,obRoutine(a0) ; goto Jun_Release next
-		move.b	#1,(f_playerctrl).w ; lock controls
-		move.b	#aniID_Roll,obAnim(a1) ; make Sonic use "rolling" animation
+		addq.b	#4,obRoutine(a0)		; goto Jun_Release next
+		move.b	#1,(f_playerctrl).w		; lock controls
+		move.b	#aniID_Roll,obAnim(a1)	; make Sonic use "rolling" animation
 		move.w	#$800,obInertia(a1)
 		clr.w	obVelX(a1)
 		clr.w	obVelY(a1)
-		bclr	#5,obStatus(a0)
-		bclr	#5,obStatus(a1)
-		bset	#1,obStatus(a1)
+		bclr	#staSonicPush,obStatus(a0)
+		bclr	#staPush,obStatus(a1)
+		bset	#staAir,obStatus(a1)
 		move.w	obX(a1),d2
 		move.w	obY(a1),d3
 		bsr.w	Jun_ChgPos
@@ -107,7 +107,7 @@ Jun_Release:	; Routine 6
 .release:
 		cmp.b	objoff_32(a0),d0
 		beq.s	.dontrelease
-		lea	(v_player).w,a1
+		lea		(v_player).w,a1
 		clr.w	obVelX(a1)
 		move.w	#$800,obVelY(a1)
 		cmpi.b	#4,d0

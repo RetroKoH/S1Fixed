@@ -131,9 +131,9 @@ Bri_Action:	; Routine 2
 Bri_Solid:
 		lea		(v_player).w,a1
 		moveq	#objoff_3F,d5
-		btst	#3,obStatus(a0)		; For single player, we don't need to load the standing bit to d6, as there's only one.
-		beq.s	loc_F8F0			; Plat_Exit???
-		btst	#1,obStatus(a1)		; check player's direction
+		btst	#staSonicOnObj,obStatus(a0)	; For single player, we don't need to load the standing bit to d6, as there's only one.
+		beq.s	loc_F8F0					; Plat_Exit???
+		btst	#staAir,obStatus(a1)
 		bne.s	.flip
 		moveq	#0,d0
 		move.w	obX(a1),d0
@@ -144,8 +144,8 @@ Bri_Solid:
 		blo.s	.inX
 
 .flip:
-		bclr	#3,obStatus(a1)
-		bclr	#3,obStatus(a0)		; For single player, we don't need to load the standing bit to d6, as there's only one.
+		bclr	#staOnObj,obStatus(a1)
+		bclr	#staSonicOnObj,obStatus(a0)	; For single player, we don't need to load the standing bit to d6, as there's only one.
 		moveq	#0,d4
 		rts
 ; ===========================================================================
@@ -177,7 +177,7 @@ loc_F8F0:
 		move.w	d1,-(sp)
 		bsr.s	PlatformBridge_cont
 		move.w	(sp)+,d1
-		btst	#3,obStatus(a0)
+		btst	#staSonicOnObj,obStatus(a0)
 		beq.s	.return	; rts
 		moveq	#0,d0
 		move.w	obX(a1),d0
@@ -339,23 +339,24 @@ loc_19DD8:
 		bhi.w	return_19E8E
 		cmpi.w	#-$10,d0
 		blo.w	return_19E8E
-		;tst.b	$2A(a1)
+		;tst.b	$2A(a1)				; Sonic OST obj_control
 		;bmi.w	return_19E8E
-
+		cmpi.b	#6,obRoutine(a1)	; Sonic death check
+		bhs.w	return_19E8E
 		add.w	d0,d2
 		addq.w	#3,d2
 		move.w	d2,obY(a1)
 		
 ;loc_19E14:
 ;RideObject_SetRide:
-		btst	#3,obStatus(a1)
+		btst	#staOnObj,obStatus(a1)
 		beq.s	loc_19E30
 		moveq	#0,d0
 		move.b	obPlatformID(a1),d0
 		lsl.w	#6,d0
 		addi.l	#v_objspace,d0
 		movea.l	d0,a3	; a3=object
-		bclr	#3,obStatus(a3)
+		bclr	#staSonicOnObj,obStatus(a3)
 
 loc_19E30:
 		move.w	a0,d0
@@ -367,8 +368,8 @@ loc_19E30:
 		move.w	#0,obVelY(a1)
 		move.w	obVelX(a1),obInertia(a1)
 	; RetroKoH added check to prevent unwanted rolling
-		btst	#1,obStatus(a1)	; is Sonic in the air?
-		beq.s	RideObject_NotInAir	; if not, branch
+		btst	#staAir,obStatus(a1)	; is Sonic in the air?
+		beq.s	RideObject_NotInAir		; if not, branch
 		move.l	a0,-(sp)
 		movea.l	a1,a0
 
@@ -377,8 +378,8 @@ RideObject_SetOnFloor:
 		movea.l	(sp)+,a0 ; a0=character
 
 RideObject_NotInAir:
-		bset	#3,obStatus(a1)	; set MainCharacter's on object obStatus
-		bset	#3,obStatus(a0)
+		bset	#staOnObj,obStatus(a1)	; set MainCharacter's on object obStatus
+		bset	#staSonicOnObj,obStatus(a0)
 
 return_19E8E:
 		rts

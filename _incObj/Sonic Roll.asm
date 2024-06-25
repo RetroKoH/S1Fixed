@@ -44,23 +44,23 @@ Sonic_ChkWalk:
 ; S3K Rewrite End
 
 Sonic_ChkRoll:
-		btst	#2,obStatus(a0)			; is Sonic already rolling?
+		btst	#staSpin,obStatus(a0)	; is Sonic already rolling?
 		beq.s	.roll					; if not, branch
 		rts	
 ; ===========================================================================
 
 .roll:
-		bset	#2,obStatus(a0)
+		bset	#staSpin,obStatus(a0)
 		move.b	#$E,obHeight(a0)
 		move.b	#7,obWidth(a0)
 		move.b	#aniID_Roll,obAnim(a0)		; use "rolling" animation
 		move.b	#fr_SonRoll1,obFrame(a0)	; hard sets frame so no flicker when roll in tunnels - Mercury Roll Frame Fix
-		addq.w	#5,obY(a0)
+		addq.w	#5,obY(a0)					; Add to y-pos the difference in height radius
 		move.w	#sfx_Roll,d0
-		jsr		(PlaySound_Special).l	; play rolling sound
+		jsr		(PlaySound_Special).l		; play rolling sound
 		tst.w	obInertia(a0)
 		bne.s	.ismoving
-		move.w	#$200,obInertia(a0) 	; set inertia if 0
+		move.w	#$200,obInertia(a0) 		; set inertia if 0
 
 .ismoving:
 		rts	

@@ -57,7 +57,7 @@ Disc_MoveSonic:
 		move.b	disc_radius(a0),d2
 		move.w	d2,d3
 		add.w	d3,d3
-		lea	(v_player).w,a1
+		lea		(v_player).w,a1
 		move.w	obX(a1),d0
 		sub.w	disc_origX(a0),d0
 		add.w	d2,d0
@@ -68,7 +68,7 @@ Disc_MoveSonic:
 		add.w	d2,d1
 		cmp.w	d3,d1
 		bhs.s	.detach
-		btst	#1,obStatus(a1)
+		btst	#staAir,obStatus(a1)
 		beq.s	.attach
 		clr.b	disc_sonic_attached(a0)
 		rts	
@@ -88,12 +88,12 @@ Disc_MoveSonic:
 		tst.b	disc_sonic_attached(a0)
 		bne.s	loc_155E2
 		move.b	#1,disc_sonic_attached(a0)
-		btst	#2,obStatus(a1)
+		btst	#staSpin,obStatus(a1)
 		bne.s	loc_155D0
 		move.b	#aniID_Walk,obAnim(a1)
 
 loc_155D0:
-		bclr	#5,obStatus(a1)
+		bclr	#staPush,obStatus(a1)
 		move.b	#aniID_Run,obPrevAni(a1) ; restart Sonic's animation
 		move.b	#1,obOnWheel(a1)
 

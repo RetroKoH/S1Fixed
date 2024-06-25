@@ -62,12 +62,12 @@ Sonic_UpdateSpinDash:
 		addi.b	#$20,d0
 		move.b	d0,(v_cameralag).w
 	; Camera lag effect end
-		btst	#0,obStatus(a0)
+		btst	#staFacing,obStatus(a0)
 		beq.s	.dontflip
 		neg.w	obInertia(a0)
 
 .dontflip:
-		bset	#2,obStatus(a0)	; Sonic is now spinning
+		bset	#staSpin,obStatus(a0)		; Sonic is now spinning
 		clr.b	(v_playerdust+obAnim).w
 		move.w	#sfx_Teleport,d0
 		jsr		(PlaySound_Special).l
@@ -122,11 +122,11 @@ loc_1AD48:
 		bcs.s	.sound
 		move.w	#$800,obSpinDashCounter(a0)
 .sound:
-		move.w	#sfx_SpinDash,d0			; sfx_SpinDash
+		move.w	#sfx_SpinDash,d0				; sfx_SpinDash
 		jsr		(PlaySound_Special).l
 
 loc_1AD78:
-		addq.l	#4,sp						; increase stack ptr
+		addq.l	#4,sp							; increase stack ptr
 		cmpi.w	#$60,(v_lookshift).w
 		beq.s	loc_1AD8C
 		bcc.s	loc_1AD88

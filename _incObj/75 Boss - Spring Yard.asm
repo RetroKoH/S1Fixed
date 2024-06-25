@@ -43,7 +43,7 @@ BossSpringYard_Loop:
 		move.w	obY(a0),obY(a1)
 
 BossSpringYard_LoadBoss:
-		bclr	#0,obStatus(a0)
+		bclr	#staFlipX,obStatus(a0)
 		clr.b	ob2ndRout(a1)
 		move.b	(a2)+,obRoutine(a1)
 		move.b	(a2)+,obAnim(a1)
@@ -149,7 +149,7 @@ loc_19258:
 loc_19270:
 		move.w	objoff_30(a0),d0
 		move.w	#$140,obVelX(a0)
-		btst	#0,obStatus(a0)
+		btst	#staFlipX,obStatus(a0)
 		bne.s	loc_1928E
 		neg.w	obVelX(a0)
 		cmpi.w	#boss_syz_x+8,d0
@@ -162,7 +162,7 @@ loc_1928E:
 		blt.s	loc_1929E
 
 loc_19294:
-		bchg	#0,obStatus(a0)
+		bchg	#staFlipX,obStatus(a0)
 		clr.b	objoff_3D(a0)
 
 loc_1929E:
@@ -386,7 +386,7 @@ loc_19474:
 loc_1947E:
 		addq.b	#2,ob2ndRout(a0)
 		clr.w	obVelY(a0)
-		bset	#0,obStatus(a0)
+		bset	#staFlipX,obStatus(a0)
 		bclr	#7,obStatus(a0)
 		clr.w	obVelX(a0)
 		move.w	#-1,objoff_3C(a0)

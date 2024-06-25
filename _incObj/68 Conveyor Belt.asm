@@ -6,10 +6,11 @@ Conveyor:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Conv_Index(pc,d0.w),d1
-		jmp	Conv_Index(pc,d1.w)
+		jmp		Conv_Index(pc,d1.w)
 ; ===========================================================================
-Conv_Index:	dc.w Conv_Main-Conv_Index
-		dc.w Conv_Action-Conv_Index
+Conv_Index:
+		dc.w	Conv_Main-Conv_Index
+		dc.w	Conv_Action-Conv_Index
 
 conv_speed = objoff_36
 conv_width = objoff_38
@@ -36,7 +37,7 @@ Conv_Action:	; Routine 2
 		rts	
 
 .delete:
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 .movesonic:
@@ -44,7 +45,7 @@ Conv_Action:	; Routine 2
 		move.b	conv_width(a0),d2
 		move.w	d2,d3
 		add.w	d3,d3
-		lea	(v_player).w,a1
+		lea		(v_player).w,a1
 		move.w	obX(a1),d0
 		sub.w	obX(a0),d0
 		add.w	d2,d0
@@ -55,7 +56,7 @@ Conv_Action:	; Routine 2
 		addi.w	#$30,d1
 		cmpi.w	#$30,d1
 		bhs.s	.notonconveyor
-		btst	#1,obStatus(a1)
+		btst	#staAir,obStatus(a1)
 		bne.s	.notonconveyor
 		move.w	conv_speed(a0),d0
 		add.w	d0,obX(a1)

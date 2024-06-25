@@ -111,7 +111,7 @@ MBlock_Type00:
 MBlock_Type01:
 		move.b	(v_oscillate+$E).w,d0
 		move.w	#$60,d1
-		btst	#0,obStatus(a0)
+		btst	#staFlipX,obStatus(a0)
 		beq.s	loc_FF26
 		neg.w	d0
 		add.w	d1,d0
@@ -195,7 +195,7 @@ MBlock_07_ChkDel:
 MBlock_Type08:
 		move.b	(v_oscillate+$1E).w,d0
 		move.w	#$80,d1
-		btst	#0,obStatus(a0)
+		btst	#staFlipX,obStatus(a0)
 		beq.s	loc_FFE2
 		neg.w	d0
 		add.w	d1,d0
@@ -212,7 +212,7 @@ MBlock_Type0A:
 		move.b	obActWid(a0),d3
 		add.w	d3,d3
 		moveq	#8,d1
-		btst	#0,obStatus(a0)
+		btst	#staFlipX,obStatus(a0)
 		beq.s	loc_10004
 		neg.w	d1
 		neg.w	d3

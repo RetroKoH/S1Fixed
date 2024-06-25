@@ -71,33 +71,33 @@ VanP_Appear:	; Routine 4
 		bchg	#0,obAnim(a0)
 
 .wait:
-		lea	(Ani_Van).l,a1
-		jsr	(AnimateSprite).l
+		lea		(Ani_Van).l,a1
+		jsr		(AnimateSprite).l
 		btst	#1,obFrame(a0)	; has platform vanished?
 		bne.s	.notsolid	; if yes, branch
 		cmpi.b	#2,obRoutine(a0)
 		bne.s	.loc_160D6
 		moveq	#0,d1
 		move.b	obActWid(a0),d1
-		jsr	(PlatformObject).l
+		jsr		(PlatformObject).l
 		bra.w	RememberState
 ; ===========================================================================
 
 .loc_160D6:
 		moveq	#0,d1
 		move.b	obActWid(a0),d1
-		jsr	(ExitPlatform).l
+		jsr		(ExitPlatform).l
 		move.w	obX(a0),d2
-		jsr	(MvSonicOnPtfm2).l
+		jsr		(MvSonicOnPtfm2).l
 		bra.w	RememberState
 ; ===========================================================================
 
 .notsolid:
-		btst	#3,obStatus(a0)
+		btst	#staSonicOnObj,obStatus(a0)
 		beq.s	.display
-		lea	(v_player).w,a1
-		bclr	#3,obStatus(a1)
-		bclr	#3,obStatus(a0)
+		lea		(v_player).w,a1
+		bclr	#staOnObj,obStatus(a1)
+		bclr	#staSonicOnObj,obStatus(a0)
 		move.b	#2,obRoutine(a0)
 		clr.b	obSolid(a0)
 

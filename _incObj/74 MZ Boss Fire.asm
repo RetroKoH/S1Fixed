@@ -61,13 +61,13 @@ BossFire_Index2:
 ; ===========================================================================
 
 BossFire_Drop:
-		bset	#1,obStatus(a0)
+		bset	#staFlipY,obStatus(a0)
 		subq.b	#1,objoff_29(a0)
 		bpl.s	locret_18780
 		move.b	#$8B,obColType(a0)
 		clr.b	obSubtype(a0)
 		addi.w	#$18,obVelY(a0)
-		bclr	#1,obStatus(a0)
+		bclr	#staFlipY,obStatus(a0)
 		bsr.w	ObjFloorDist
 		tst.w	d1
 		bpl.s	locret_18780
@@ -155,7 +155,7 @@ loc_1882C:
 ; ===========================================================================
 
 BossFire_FallEdge:
-		bclr	#1,obStatus(a0)
+		bclr	#staFlipY,obStatus(a0)
 		addi.w	#$24,obVelY(a0)	; make flame fall
 		move.w	obX(a0),d0
 		sub.w	objoff_32(a0),d0

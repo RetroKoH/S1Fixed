@@ -91,7 +91,7 @@ ReactToItem:
 .proximity:
 		andi.w	#$3F,d0
 		add.w	d0,d0
-		lea	.sizes-2(pc,d0.w),a2
+		lea		.sizes-2(pc,d0.w),a2
 		moveq	#0,d1
 		move.b	(a2)+,d1
 		move.w	obX(a1),d0
@@ -259,9 +259,9 @@ React_Caterkiller:
 		andi.b	#1,d1
 		cmp.b	d0,d1					; are Sonic and the Caterkiller facing the same way?
 		bne.s	.hurt					; if not, branch
-		btst	#1,obStatus(a0)			; is Sonic in the air?
+		btst	#staAir,obStatus(a0)	; is Sonic in the air?
 		bne.s	.hurt					; if so, branch
-		btst	#2,obStatus(a0)			; is Sonic spinning?
+		btst	#staSpin,obStatus(a0)	; is Sonic spinning?
 		beq.s	.hurt					; if not, branch
 		moveq	#-1,d0					; else, he shouldn't be hurt
 		rts				
@@ -296,35 +296,35 @@ React_ChkHurt:
 
 
 HurtSonic:
-		tst.b	(v_shield).w	; does Sonic have a shield?
-		bne.s	.hasshield	; if yes, branch
-		tst.w	(v_rings).w	; does Sonic have any rings?
-		beq.w	.norings	; if not, branch
+		tst.b	(v_shield).w			; does Sonic have a shield?
+		bne.s	.hasshield				; if yes, branch
+		tst.w	(v_rings).w				; does Sonic have any rings?
+		beq.w	.norings				; if not, branch
 
-		jsr	(FindFreeObj).l
+		jsr		(FindFreeObj).l
 		bne.s	.hasshield
-		_move.b	#id_RingLoss,obID(a1) ; load bouncing multi rings object
+		_move.b	#id_RingLoss,obID(a1)	; load bouncing multi rings object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 
 .hasshield:
-		clr.b	(v_shield).w		; remove shield
+		clr.b	(v_shield).w			; remove shield
 		move.b	#4,obRoutine(a0)
 		bsr.w	Sonic_ResetOnFloor
-		bset	#1,obStatus(a0)
-		move.w	#-$400,obVelY(a0)	; make Sonic bounce away from the object
+		bset	#staAir,obStatus(a0)
+		move.w	#-$400,obVelY(a0)		; make Sonic bounce away from the object
 		move.w	#-$200,obVelX(a0)
-		btst	#6,obStatus(a0)		; is Sonic underwater?
-		beq.s	.isdry				; if not, branch
+		btst	#staWater,obStatus(a0)	; is Sonic underwater?
+		beq.s	.isdry					; if not, branch
 
-		move.w	#-$200,obVelY(a0)	; slower bounce
+		move.w	#-$200,obVelY(a0)		; slower bounce
 		move.w	#-$100,obVelX(a0)
 
 .isdry:
 		move.w	obX(a0),d0
 		cmp.w	obX(a2),d0
-		blo.s	.isleft		; if Sonic is left of the object, branch
-		neg.w	obVelX(a0)	; if Sonic is right of the object, reverse
+		blo.s	.isleft					; if Sonic is left of the object, branch
+		neg.w	obVelX(a0)				; if Sonic is right of the object, reverse
 
 .isleft:
 	if SpinDashEnabled=1
@@ -367,7 +367,7 @@ KillSonic:
 		clr.b	(v_invinc).w	; remove invincibility
 		move.b	#6,obRoutine(a0)
 		jsr		(Sonic_ResetOnFloor).l
-		bset	#1,obStatus(a0)
+		bset	#staAir,obStatus(a0)
 		move.w	#-$700,obVelY(a0)
 		clr.w	obVelX(a0)
 		clr.w	obInertia(a0)
@@ -419,7 +419,7 @@ React_Special:
 		bhs.s	.normalenemy
 		move.w	obX(a1),d0
 		subq.w	#4,d0
-		btst	#0,obStatus(a1)
+		btst	#staFlipX,obStatus(a1)
 		beq.s	.noflip
 		subi.w	#$10,d0
 

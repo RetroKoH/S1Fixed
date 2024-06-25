@@ -32,10 +32,10 @@ Tele_Main:	; Routine 0
 		move.w	(a2)+,objoff_38(a0)
 
 loc_166C8:	; Routine 2
-		lea	(v_player).w,a1
+		lea		(v_player).w,a1
 		move.w	obX(a1),d0
 		sub.w	obX(a0),d0
-		btst	#0,obStatus(a0)
+		btst	#staFlipX,obStatus(a0)
 		beq.s	loc_166E0
 		addi.w	#$F,d0
 
@@ -61,9 +61,9 @@ loc_1670E:
 		move.w	#$800,obInertia(a1)
 		clr.w	obVelX(a1)
 		clr.w	obVelY(a1)
-		bclr	#5,obStatus(a0)
-		bclr	#5,obStatus(a1)
-		bset	#1,obStatus(a1)
+		bclr	#staSonicPush,obStatus(a0)
+		bclr	#staPush,obStatus(a1)
+		bset	#staAir,obStatus(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		clr.b	objoff_32(a0)

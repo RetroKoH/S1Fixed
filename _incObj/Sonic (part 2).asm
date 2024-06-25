@@ -19,7 +19,7 @@ Sonic_Hurt_Normal:
 	endif
 		jsr		(SpeedToPos).l
 		addi.w	#$30,obVelY(a0)
-		btst	#6,obStatus(a0)
+		btst	#staWater,obStatus(a0)
 		beq.s	loc_1380C
 		subi.w	#$20,obVelY(a0)
 
@@ -42,7 +42,7 @@ loc_1380C:
 Sonic_HurtStop:
 		; Lines omitted -- Mercury Top Boundary Fix
 		bsr.w	Sonic_Floor
-		btst	#1,obStatus(a0)
+		btst	#staAir,obStatus(a0)
 		bne.s	locret_13860
 		clr.w	obVelY(a0)
 		clr.w	obVelX(a0)

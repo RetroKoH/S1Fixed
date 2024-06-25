@@ -9,9 +9,9 @@ CollapseLedge:
 		jmp		Ledge_Index(pc,d1.w)
 ; ===========================================================================
 Ledge_Index:
-		dc.w Ledge_Main-Ledge_Index, Ledge_Touch-Ledge_Index
-		dc.w Ledge_Collapse-Ledge_Index, Ledge_Display-Ledge_Index
-		dc.w Ledge_Delete-Ledge_Index, Ledge_WalkOff-Ledge_Index
+		dc.w	Ledge_Main-Ledge_Index, Ledge_Touch-Ledge_Index
+		dc.w	Ledge_Collapse-Ledge_Index, Ledge_Display-Ledge_Index
+		dc.w	Ledge_Delete-Ledge_Index, Ledge_WalkOff-Ledge_Index
 
 ledge_timedelay = objoff_38		; time between touching the ledge and it collapsing
 ledge_collapse_flag = objoff_3A		; collapse flag
@@ -77,17 +77,16 @@ loc_82D0:
 		subq.b	#1,ledge_timedelay(a0)
 		bsr.w	Ledge_WalkOff
 		lea		(v_player).w,a1
-		btst	#3,obStatus(a1)
+		btst	#staOnObj,obStatus(a1)
 		beq.s	loc_82FC
 		tst.b	ledge_timedelay(a0)
 		bne.s	locret_8308
-		bclr	#3,obStatus(a1)
-		bclr	#5,obStatus(a1)
-		move.b	#aniID_Run,obPrevAni(a1) ; restart Sonic's animation
+		andi.b	#~((1<<staPush)+(1<<staOnObj)),obStatus(a1)	; Clear Push, and OnObj flags ($D7)
+		move.b	#aniID_Run,obPrevAni(a1)					; restart Sonic's animation
 
 loc_82FC:
 		clr.b	ledge_collapse_flag(a0)
-		move.b	#6,obRoutine(a0) ; run "Ledge_Display" routine
+		move.b	#6,obRoutine(a0)							; run "Ledge_Display" routine
 
 locret_8308:
 		rts	

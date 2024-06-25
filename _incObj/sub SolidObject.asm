@@ -17,8 +17,8 @@ SolidObject:
 		move.w	d1,d2
 		add.w	d2,d2
 		lea		(v_player).w,a1
-		btst	#1,obStatus(a1)	; is Sonic in the air?
-		bne.s	.leave			; if yes, branch
+		btst	#staAir,obStatus(a1)	; is Sonic in the air?
+		bne.s	.leave					; if yes, branch
 		move.w	obX(a1),d0
 		sub.w	obX(a0),d0
 		add.w	d1,d0
@@ -27,8 +27,8 @@ SolidObject:
 		blo.s	.stand			; if not, branch
 
 .leave:
-		bclr	#3,obStatus(a1)	; clear Sonic's standing flag
-		bclr	#3,obStatus(a0)	; clear object's standing flag
+		bclr	#staOnObj,obStatus(a1)		; clear Sonic's standing flag
+		bclr	#staSonicOnObj,obStatus(a0)	; clear object's standing flag
 		clr.b	obSolid(a0)
 		moveq	#0,d4
 		rts	
@@ -45,8 +45,8 @@ SolidObject71:
 		beq.w	loc_FAD0
 		move.w	d1,d2
 		add.w	d2,d2
-		lea	(v_player).w,a1
-		btst	#1,obStatus(a1)
+		lea		(v_player).w,a1
+		btst	#staAir,obStatus(a1)
 		bne.s	.leave
 		move.w	obX(a1),d0
 		sub.w	obX(a0),d0
@@ -56,15 +56,15 @@ SolidObject71:
 		blo.s	.stand
 
 .leave:
-		bclr	#3,obStatus(a1)
-		bclr	#3,obStatus(a0)
+		bclr	#staOnObj,obStatus(a1)		; clear Sonic's standing flag
+		bclr	#staSonicOnObj,obStatus(a0)	; clear object's standing flag
 		clr.b	obSolid(a0)
 		moveq	#0,d4
 		rts	
 
 .stand:
 		move.w	d4,d2
-		jsr	MvSonicOnPtfm	; was bsr.w
+		jsr		MvSonicOnPtfm	; was bsr.w
 		moveq	#0,d4
 		rts	
 ; ===========================================================================
@@ -200,12 +200,12 @@ Solid_Left:
 		clr.w	obVelX(a1)	; stop Sonic moving
 
 Solid_Centre:
-		sub.w	d0,obX(a1)	; correct Sonic's position
-		btst	#1,obStatus(a1)	; is Sonic in the air?
-		bne.s	Solid_SideAir	; if yes, branch
-		bset	#5,obStatus(a1)	; make Sonic push object
-		bset	#5,obStatus(a0)	; make object be pushed
-		moveq	#1,d4		; return side collision
+		sub.w	d0,obX(a1)					; correct Sonic's position
+		btst	#staAir,obStatus(a1)		; is Sonic in the air?
+		bne.s	Solid_SideAir				; if yes, branch
+		bset	#staPush,obStatus(a1)		; make Sonic push object
+		bset	#staSonicPush,obStatus(a0)	; make object be pushed
+		moveq	#1,d4						; return side collision
 		rts	
 ; ===========================================================================
 
@@ -216,13 +216,13 @@ Solid_SideAir:
 ; ===========================================================================
 
 Solid_Ignore:
-		btst	#5,obStatus(a0)	; is Sonic pushing?
-		beq.s	Solid_Debug	; if not, branch
+		btst	#staSonicPush,obStatus(a0)	; is Sonic pushing?
+		beq.s	Solid_Debug					; if not, branch
 		; Removed line -- Mercury Walking In Air Fix
 
 Solid_NotPushing:
-		bclr	#5,obStatus(a0)	; clear pushing flag
-		bclr	#5,obStatus(a1)	; clear Sonic's pushing flag
+		bclr	#staSonicPush,obStatus(a0)	; clear pushing flag
+		bclr	#staPush,obStatus(a1)		; clear Sonic's pushing flag
 
 Solid_Debug:
 		moveq	#0,d4		; return no collision
@@ -238,13 +238,13 @@ Solid_TopBottom:
 ; ===========================================================================
 
 Solid_Below:
-		tst.w	obVelY(a1)	; is Sonic moving vertically?
+		tst.w	obVelY(a1)		; is Sonic moving vertically?
 		beq.s	Solid_Squash	; if not, branch
 		bpl.s	Solid_TopBtmAir	; if moving downwards, branch
-		tst.w	d3		; is Sonic above the object?
+		tst.w	d3				; is Sonic above the object?
 		bpl.s	Solid_TopBtmAir	; if yes, branch
-		sub.w	d3,obY(a1)	; correct Sonic's position
-		clr.w	obVelY(a1)	; stop Sonic moving
+		sub.w	d3,obY(a1)		; correct Sonic's position
+		clr.w	obVelY(a1)		; stop Sonic moving
 
 Solid_TopBtmAir:
 		moveq	#-1,d4
@@ -252,11 +252,11 @@ Solid_TopBtmAir:
 ; ===========================================================================
 
 Solid_Squash:
-		btst	#1,obStatus(a1)	; is Sonic in the air?
-		bne.s	Solid_TopBtmAir	; if yes, branch
+		btst	#staAir,obStatus(a1)	; is Sonic in the air?
+		bne.s	Solid_TopBtmAir			; if yes, branch
 		move.l	a0,-(sp)
 		movea.l	a1,a0
-		jsr	(KillSonic).l	; kill Sonic
+		jsr		(KillSonic).l			; kill Sonic
 		movea.l	(sp)+,a0
 		moveq	#-1,d4
 		rts	
@@ -278,9 +278,9 @@ Solid_Landed:
 		sub.w	d3,obY(a1)	; correct Sonic's position
 		subq.w	#1,obY(a1)
 		bsr.s	Solid_ResetFloor
-		move.b	#2,obSolid(a0) ; set standing flags
-		bset	#3,obStatus(a0)
-		moveq	#-1,d4		; return top/bottom collision
+		move.b	#2,obSolid(a0)	; set standing flags
+		bset	#staSonicOnObj,obStatus(a0)
+		moveq	#-1,d4			; return top/bottom collision
 		rts	
 ; ===========================================================================
 
@@ -294,15 +294,15 @@ Solid_Miss:
 
 
 Solid_ResetFloor:
-		btst	#3,obStatus(a1)			; is Sonic standing on something?
-		beq.s	.notonobj				; if not, branch
+		btst	#staOnObj,obStatus(a1)		; is Sonic standing on something?
+		beq.s	.notonobj					; if not, branch
 
 		moveq	#0,d0
-		move.b	obPlatformID(a1),d0		; get object being stood on
+		move.b	obPlatformID(a1),d0			; get object being stood on
 		lsl.w	#object_size_bits,d0
 		addi.l	#(v_objspace&$FFFFFF),d0
 		movea.l	d0,a2
-		bclr	#3,obStatus(a2)			; clear object's standing flags
+		bclr	#staSonicOnObj,obStatus(a2)	; clear object's standing flags
 		clr.b	obSolid(a2)
 
 .notonobj:
@@ -310,19 +310,19 @@ Solid_ResetFloor:
 		subi.w	#v_objspace&$FFFF,d0
 		lsr.w	#object_size_bits,d0
 		andi.w	#$7F,d0
-		move.b	d0,obPlatformID(a1)	; set object being stood on
-		clr.b	obAngle(a1)	; clear Sonic's angle
-		clr.w	obVelY(a1)	; stop Sonic
+		move.b	d0,obPlatformID(a1)		; set object being stood on
+		clr.b	obAngle(a1)				; clear Sonic's angle
+		clr.w	obVelY(a1)				; stop Sonic
 		move.w	obVelX(a1),obInertia(a1)
-		btst	#1,obStatus(a1)	; is Sonic in the air?
-		beq.s	.notinair	; if not, branch
+		btst	#staAir,obStatus(a1)	; is Sonic in the air?
+		beq.s	.notinair				; if not, branch
 		move.l	a0,-(sp)
 		movea.l	a1,a0
-		jsr	(Sonic_ResetOnFloor).l ; reset Sonic as if on floor
+		jsr		(Sonic_ResetOnFloor).l 	; reset Sonic as if on floor
 		movea.l	(sp)+,a0
 
 .notinair:
-		bset	#3,obStatus(a1)	; set object standing flag
-		bset	#3,obStatus(a0)	; set Sonic standing on object flag
+		bset	#staOnObj,obStatus(a1)		; set object standing flag
+		bset	#staSonicOnObj,obStatus(a0)	; set Sonic standing on object flag
 		rts	
 ; End of function Solid_ResetFloor

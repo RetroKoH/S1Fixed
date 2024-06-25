@@ -58,9 +58,9 @@ See_Main:	; Routine 0
 		move.l	a0,see_parent(a1)
 
 .noball:
-		btst	#0,obStatus(a0)	; is seesaw flipped?
-		beq.s	.noflip		; if not, branch
-		move.b	#2,obFrame(a0)	; use different frame
+		btst	#staFlipX,obStatus(a0)	; is seesaw flipped?
+		beq.s	.noflip					; if not, branch
+		move.b	#2,obFrame(a0)			; use different frame
 
 .noflip:
 		move.b	obFrame(a0),see_frame(a0)
@@ -143,7 +143,7 @@ See_Spikeball:	; Routine 6
 		addi.w	#$28,obX(a0)
 		move.w	obY(a0),see_origY(a0)
 		move.b	#1,obFrame(a0)
-		btst	#0,obStatus(a0)	; is seesaw flipped?
+		btst	#staFlipX,obStatus(a0)	; is seesaw flipped?
 		beq.s	See_MoveSpike	; if not, branch
 		subi.w	#$50,obX(a0)	; move spikeball to the other side
 		move.b	#2,see_frame(a0)
@@ -247,7 +247,7 @@ See_Spring:
 		move.b	d1,see_frame(a0)
 		cmp.b	obFrame(a1),d1
 		beq.s	loc_1192C
-		bclr	#3,obStatus(a1)
+		bclr	#staSonicOnObj,obStatus(a1)
 		beq.s	loc_1192C
 		clr.b	ob2ndRout(a1)
 		move.b	#2,obRoutine(a1)
@@ -259,9 +259,9 @@ See_Spring:
 
 		move.w	obVelY(a0),obVelY(a2)
 		neg.w	obVelY(a2)
-		bset	#1,obStatus(a2)
-		bclr	#3,obStatus(a2)
-		clr.b	objoff_3C(a2)
+		bset	#staAir,obStatus(a2)
+		bclr	#staOnObj,obStatus(a2)
+		clr.b	obJumping(a2)
 		move.b	#aniID_Spring,obAnim(a2) ; change Sonic's animation to "spring"
 		move.b	#2,obRoutine(a2)
 		move.w	#sfx_Spring,d0

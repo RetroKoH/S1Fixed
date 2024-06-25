@@ -40,17 +40,17 @@ CFlo_Main:	; Routine 0
 
 CFlo_Touch:	; Routine 2
 		tst.b	cflo_collapse_flag(a0)	; has Sonic touched the	object?
-		beq.s	.solid		; if not, branch
-		tst.b	cflo_timedelay(a0)	; has time delay reached zero?
-		beq.w	CFlo_Fragment	; if yes, branch
-		subq.b	#1,cflo_timedelay(a0) ; subtract 1 from time
+		beq.s	.solid					; if not, branch
+		tst.b	cflo_timedelay(a0)		; has time delay reached zero?
+		beq.w	CFlo_Fragment			; if yes, branch
+		subq.b	#1,cflo_timedelay(a0)	; subtract 1 from time
 
 .solid:
 		move.w	#$20,d1
 		bsr.w	PlatformObject
 		tst.b	obSubtype(a0)
 		bpl.s	.remstate
-		btst	#3,obStatus(a1)
+		btst	#staOnObj,obStatus(a1)
 		beq.s	.remstate
 		bclr	#0,obRender(a0)
 		move.w	obX(a1),d0
@@ -94,12 +94,12 @@ loc_8402:
 		subq.b	#1,cflo_timedelay(a0)
 		bsr.w	CFlo_WalkOff
 		lea		(v_player).w,a1
-		btst	#3,obStatus(a1)
+		btst	#staOnObj,obStatus(a1)
 		beq.s	loc_842E
 		tst.b	cflo_timedelay(a0)
 		bne.s	locret_843A
-		bclr	#3,obStatus(a1)
-		bclr	#5,obStatus(a1)
+		bclr	#staOnObj,obStatus(a1)
+		bclr	#staPush,obStatus(a1)
 		move.b	#aniID_Run,obPrevAni(a1) ; restart Sonic's animation
 
 loc_842E:

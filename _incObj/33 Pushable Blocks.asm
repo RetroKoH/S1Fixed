@@ -119,15 +119,15 @@ loc_C046:
 		bsr.w	SpeedToPos
 
 loc_C056:
-		btst	#1,obStatus(a0)
+		btst	#staFlipY,obStatus(a0)
 		beq.s	loc_C0A0
 		addi.w	#$18,obVelY(a0)
-		jsr	(ObjFloorDist).l
+		jsr		(ObjFloorDist).l
 		tst.w	d1
 		bpl.w	loc_C09E
 		add.w	d1,obY(a0)
 		clr.w	obVelY(a0)
-		bclr	#1,obStatus(a0)
+		bclr	#staFlipY,obStatus(a0)
 		move.w	(a1),d0
 		andi.w	#$3FF,d0
 		cmpi.w	#$16A,d0
@@ -188,9 +188,9 @@ loc_C0E6:
 
 loc_C104:
 		move.w	(sp)+,d4
-		lea	(v_player).w,a1
-		bclr	#3,obStatus(a1)
-		bclr	#3,obStatus(a0)
+		lea		(v_player).w,a1
+		bclr	#staOnObj,obStatus(a1)
+		bclr	#staSonicOnObj,obStatus(a0)
 		bra.w	loc_ppppp
 ; ===========================================================================
 
@@ -240,7 +240,7 @@ loc_C186:
 		subq.b	#2,d0
 		bne.s	loc_C1AA
 		bsr.w	ExitPlatform
-		btst	#3,obStatus(a1)
+		btst	#staOnObj,obStatus(a1)
 		bne.s	loc_C1A4
 		clr.b	obSolid(a0)
 		rts	
@@ -302,12 +302,12 @@ loc_C230:
 		tst.w	d0
 		beq.w	locret_C2E4
 		bmi.s	loc_C268
-		btst	#0,obStatus(a1)
+		btst	#staFacing,obStatus(a1)
 		bne.w	locret_C2E4
 		move.w	d0,-(sp)
 		moveq	#0,d3
 		move.b	obActWid(a0),d3
-		jsr	(ObjHitWallRight).l
+		jsr		(ObjHitWallRight).l
 		move.w	(sp)+,d0
 		tst.w	d1
 		bmi.w	locret_C2E4
@@ -318,13 +318,13 @@ loc_C230:
 ; ===========================================================================
 
 loc_C268:
-		btst	#0,obStatus(a1)
+		btst	#staFacing,obStatus(a1)
 		beq.s	locret_C2E4
 		move.w	d0,-(sp)
 		moveq	#0,d3
 		move.b	obActWid(a0),d3
 		not.w	d3
-		jsr	(ObjHitWallLeft).l
+		jsr		(ObjHitWallLeft).l
 		move.w	(sp)+,d0
 		tst.w	d1
 		bmi.s	locret_C2E4

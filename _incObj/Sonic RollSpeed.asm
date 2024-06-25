@@ -14,7 +14,7 @@ Sonic_RollSpeed:
 		asr.w	#2,d4
 		tst.b	(f_slidemode).w
 		bne.w	loc_131CC
-		tst.w	objoff_3E(a0)
+		tst.w	obLRLock(a0)
 		bne.s	.notright
 		btst	#bitL,(v_jpadhold2).w	; is left being pressed?
 		beq.s	.notleft				; if not, branch
@@ -55,7 +55,7 @@ loc_131AA:
 		bne.s	Sonic_KeepRolling
 	endif
 
-		bclr	#2,obStatus(a0)
+		bclr	#staSpin,obStatus(a0)
 		move.b	#$13,obHeight(a0)
 		move.b	#9,obWidth(a0)
 		move.b	#aniID_Wait,obAnim(a0)	; use "standing" animation
@@ -68,7 +68,7 @@ loc_131AA:
 ; DeltaWooloo: This part is from Sonic 2
 Sonic_KeepRolling:
 		move.w	#$400,obInertia(a0)
-		btst	#0,obStatus(a0)
+		btst	#staFacing,obStatus(a0)
 		beq.s	loc_131CC
 		neg.w	obInertia(a0)
 	endif
@@ -121,7 +121,7 @@ Sonic_RollLeft:
 		bpl.s	loc_13218
 
 loc_1320A:
-		bset	#0,obStatus(a0)
+		bset	#staFacing,obStatus(a0)
 		move.b	#aniID_Roll,obAnim(a0)	; use "rolling" animation
 		rts	
 ; ===========================================================================
@@ -143,7 +143,7 @@ loc_13220:
 Sonic_RollRight:
 		move.w	obInertia(a0),d0
 		bmi.s	loc_1323A
-		bclr	#0,obStatus(a0)
+		bclr	#staFacing,obStatus(a0)
 		move.b	#aniID_Roll,obAnim(a0) ; use "rolling" animation
 		rts	
 ; ===========================================================================

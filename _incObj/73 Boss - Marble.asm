@@ -41,7 +41,7 @@ BossMarble_Loop:
 		move.w	obY(a0),obY(a1)
 
 BossMarble_LoadBoss:
-		bclr	#0,obStatus(a0)
+		bclr	#staFlipX,obStatus(a0)
 		clr.b	ob2ndRout(a1)
 		move.b	(a2)+,obRoutine(a1)
 		move.b	(a2)+,obAnim(a1)
@@ -172,7 +172,7 @@ loc_183DE:
 loc_183E6:
 		move.w	#$200,obVelX(a0)
 		move.w	#$100,obVelY(a0)
-		btst	#0,obStatus(a0)
+		btst	#staFlipX,obStatus(a0)
 		bne.s	loc_183FE
 		neg.w	obVelX(a0)
 
@@ -205,7 +205,7 @@ loc_1844A:
 		move.b	d0,objoff_34(a0)
 
 loc_1845C:
-		btst	#0,obStatus(a0)
+		btst	#staFlipX,obStatus(a0)
 		beq.s	loc_18474
 		cmpi.w	#boss_mz_x+$110,objoff_30(a0)
 		blt.s	locret_1849C
@@ -242,8 +242,8 @@ BossMarble_MakeLava2:
 		beq.s	loc_184EA
 		clr.w	obVelY(a0)
 		move.w	#$50,objoff_3C(a0)
-		bchg	#0,obStatus(a0)
-		jsr	(FindFreeObj).l
+		bchg	#staFlipX,obStatus(a0)
+		jsr		(FindFreeObj).l
 		bne.s	loc_184EA
 		move.w	objoff_30(a0),obX(a1)
 		move.w	objoff_38(a0),obY(a1)
@@ -267,7 +267,7 @@ loc_184F6:
 ; ===========================================================================
 
 loc_18500:
-		bset	#0,obStatus(a0)
+		bset	#staFlipX,obStatus(a0)
 		bclr	#7,obStatus(a0)
 		clr.w	obVelX(a0)
 		addq.b	#2,ob2ndRout(a0)
@@ -434,7 +434,7 @@ loc_1864A:
 		and.b	obStatus(a0),d0
 		andi.b	#$FC,obRender(a0)
 		or.b	d0,obRender(a0)
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 
 BossMarble_TubeMain:	; Routine 8

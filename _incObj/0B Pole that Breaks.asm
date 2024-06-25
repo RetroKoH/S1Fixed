@@ -77,7 +77,7 @@ Pole_Action:	; Routine 2
 .grab:
 		tst.b	obColProp(a0)	; has Sonic touched the	pole?
 		beq.s	Pole_Display	; if not, branch
-		lea	(v_player).w,a1
+		lea		(v_player).w,a1
 		move.w	obX(a0),d0
 		addi.w	#$14,d0
 		cmp.w	obX(a1),d0
@@ -90,7 +90,7 @@ Pole_Action:	; Routine 2
 		move.w	obX(a0),d0
 		addi.w	#$14,d0
 		move.w	d0,obX(a1)
-		bclr	#0,obStatus(a1)
+		bclr	#staFacing,obStatus(a1)
 		move.b	#aniID_Hang,obAnim(a1) ; set Sonic's animation to "hanging"
 		move.b	#1,(f_playerctrl).w ; lock controls
 		move.b	#1,(f_wtunnelallow).w ; disable wind tunnel

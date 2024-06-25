@@ -45,11 +45,11 @@ BossSpikeball_Main:	; Routine 0
 		movea.l	objoff_3C(a0),a1
 		move.w	obX(a1),objoff_30(a0)
 		move.w	obY(a1),objoff_34(a0)
-		bset	#0,obStatus(a0)
+		bset	#staFlipX,obStatus(a0)
 		move.w	obX(a0),d0
 		cmp.w	obX(a1),d0
 		bgt.s	loc_18D68
-		bclr	#0,obStatus(a0)
+		bclr	#staFlipX,obStatus(a0)
 		move.b	#2,objoff_3A(a0)
 
 loc_18D68:
@@ -74,7 +74,7 @@ loc_18D8E:
 		bgt.s	locret_18DC4
 		movea.l	objoff_3C(a0),a1
 		moveq	#2,d1
-		btst	#0,obStatus(a0)
+		btst	#staFlipX,obStatus(a0)
 		beq.s	loc_18DAE
 		moveq	#0,d1
 
@@ -250,9 +250,9 @@ loc_18F58:
 ; ===========================================================================
 
 loc_18F5C:
-		jsr	(ObjectFall).l
+		jsr		(ObjectFall).l
 		movea.l	objoff_3C(a0),a1
-		lea	(word_19018).l,a2
+		lea		(word_19018).l,a2
 		moveq	#0,d0
 		move.b	obFrame(a1),d0
 		move.w	obX(a0),d1
@@ -280,28 +280,28 @@ loc_18FA2:
 		move.b	d1,objoff_3A(a0)
 		cmp.b	obFrame(a1),d1
 		beq.s	loc_19008
-		bclr	#3,obStatus(a1)
+		bclr	#staSonicOnObj,obStatus(a1)
 		beq.s	loc_19008
 		clr.b	ob2ndRout(a1)
 		move.b	#2,obRoutine(a1)
-		lea	(v_player).w,a2
+		lea		(v_player).w,a2
 		move.w	obVelY(a0),obVelY(a2)
 		neg.w	obVelY(a2)
 		cmpi.b	#1,obFrame(a1)
 		bne.s	loc_18FDC
-		asr	obVelY(a2)
+		asr		obVelY(a2)
 
 loc_18FDC:
-		bset	#1,obStatus(a2)
-		bclr	#3,obStatus(a2)
+		bset	#staAir,obStatus(a2)
+		bclr	#staOnObj,obStatus(a2)
 		clr.b	objoff_3C(a2)
 		move.l	a0,-(sp)
-		lea	(a2),a0
-		jsr	(Sonic_ChkRoll).l
+		lea		(a2),a0
+		jsr		(Sonic_ChkRoll).l
 		movea.l	(sp)+,a0
 		move.b	#2,obRoutine(a2)
 		move.w	#sfx_Spring,d0
-		jsr	(PlaySound_Special).l	; play "spring" sound
+		jsr		(PlaySound_Special).l	; play "spring" sound
 
 loc_19008:
 		clr.w	obVelX(a0)

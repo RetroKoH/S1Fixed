@@ -175,7 +175,7 @@ Drown_Countdown:; Routine $A
 		bne.w	.loc_13F86
 		cmpi.b	#6,(v_player+obRoutine).w
 		bhs.w	.nocountdown
-		btst	#6,(v_player+obStatus).w ; is Sonic underwater?
+		btst	#staWater,(v_player+obStatus).w ; is Sonic underwater?
 		beq.w	.nocountdown	; if not, branch
 
 		subq.w	#1,drown_time(a0)	; decrement timer
@@ -227,7 +227,7 @@ Drown_Countdown:; Routine $A
 		lea		(v_player).w,a0
 		bsr.w	Sonic_ResetOnFloor
 		move.b	#aniID_Drown,obAnim(a0)	; use Sonic's drowning animation
-		bset	#1,obStatus(a0)
+		bset	#staAir,obStatus(a0)
 		bset	#7,obGfx(a0)
 		clr.w	obVelY(a0)
 		clr.w	obVelX(a0)
@@ -266,7 +266,7 @@ Drown_Countdown:; Routine $A
 		_move.b	#id_DrownCount,obID(a1)		; load object
 		move.w	(v_player+obX).w,obX(a1)	; match X position to Sonic
 		moveq	#6,d0
-		btst	#0,(v_player+obStatus).w
+		btst	#staFacing,(v_player+obStatus).w
 		beq.s	.noflip
 		neg.w	d0
 		move.b	#$40,obAngle(a1)

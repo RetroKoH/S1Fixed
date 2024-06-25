@@ -9,9 +9,9 @@ EdgeWalls:
 		jmp		Edge_Index(pc,d1.w)
 ; ===========================================================================
 Edge_Index:
-		dc.w Edge_Main-Edge_Index
-		dc.w Edge_Solid-Edge_Index
-		dc.w Edge_Display-Edge_Index
+		dc.w 	Edge_Main-Edge_Index
+		dc.w 	Edge_Solid-Edge_Index
+		dc.w 	Edge_Display-Edge_Index
 ; ===========================================================================
 
 Edge_Main:	; Routine 0

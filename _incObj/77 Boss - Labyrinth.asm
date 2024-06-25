@@ -42,7 +42,7 @@ BossLabyrinth_Loop:
 		move.w	obY(a0),obY(a1)
 
 BossLabyrinth_LoadBoss:
-		bclr	#0,obStatus(a0)
+		bclr	#staFlipX,obStatus(a0)
 		clr.b	ob2ndRout(a1)
 		move.b	(a2)+,obRoutine(a1)
 		move.b	(a2)+,obAnim(a1)
@@ -196,13 +196,13 @@ loc_18046:
 ; ===========================================================================
 
 loc_1804E:
-		bset	#0,obStatus(a0)
+		bset	#staFlipX,obStatus(a0)
 		addq.b	#2,objoff_3F(a0)
 		move.b	objoff_3F(a0),d0
 		jsr	(CalcSine).l
 		tst.w	d1
 		bpl.s	loc_1806C
-		bclr	#0,obStatus(a0)
+		bclr	#staFlipX,obStatus(a0)
 
 loc_1806C:
 		asr.w	#4,d0
@@ -256,7 +256,7 @@ loc_180D2:
 loc_180E6:
 		bne.s	loc_180F2
 		addq.b	#2,ob2ndRout(a0)
-		bclr	#0,obStatus(a0)
+		bclr	#staFlipX,obStatus(a0)
 
 loc_180F2:
 		bra.w	loc_17F38
@@ -275,7 +275,7 @@ loc_18112:
 		move.w	#bgm_LZ,d0
 		jsr	(PlaySound).l		; play LZ music
 		clr.b	(f_lockscreen).w
-		bset	#0,obStatus(a0)
+		bset	#staFlipX,obStatus(a0)
 		addq.b	#2,ob2ndRout(a0)
 
 loc_18126:

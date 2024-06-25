@@ -34,9 +34,9 @@ LGrass_Main:	; Routine 0
 		move.b	obSubtype(a0),d0
 		lsr.w	#2,d0
 		andi.w	#$1C,d0
-		lea	LGrass_Data(pc,d0.w),a1
+		lea		LGrass_Data(pc,d0.w),a1
 		move.w	(a1)+,d0
-		lea	LGrass_Data(pc,d0.w),a2
+		lea		LGrass_Data(pc,d0.w),a2
 		move.l	a2,objoff_30(a0)
 		move.b	(a1)+,obFrame(a0)
 		move.b	(a1),obActWid(a0)
@@ -52,8 +52,8 @@ LGrass_Action:	; Routine 2
 		move.b	obActWid(a0),d1
 		addi.w	#$B,d1
 		bsr.w	ExitPlatform
-		btst	#3,obStatus(a1)
-		bne.w	LGrass_Slope
+		btst	#staOnObj,obStatus(a1)	; is Sonic on the object?
+		bne.w	LGrass_Slope			; if yes, branch
 		clr.b	obSolid(a0)
 		bra.s	LGrass_Display
 ; ===========================================================================

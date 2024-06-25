@@ -28,10 +28,10 @@ Msl_Main:	; Routine 0
 		move.w	#$180,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#8,obActWid(a0)
 		andi.b	#3,obStatus(a0)
-		tst.b	obSubtype(a0)	; was object created by	a Newtron?
-		beq.s	Msl_Animate	; if not, branch
+		tst.b	obSubtype(a0)			; was object created by	a Newtron?
+		beq.s	Msl_Animate				; if not, branch
 
-		move.b	#8,obRoutine(a0) ; run "Msl_FromNewt" routine
+		move.b	#8,obRoutine(a0)		; run "Msl_FromNewt" routine
 		move.b	#$87,obColType(a0)
 		move.b	#1,obAnim(a0)
 		bra.s	Msl_Animate2

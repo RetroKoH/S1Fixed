@@ -63,7 +63,7 @@ Gar_FireBall:	; Routine 4
 		move.b	#2,obFrame(a0)
 		addq.w	#8,obY(a0)
 		move.w	#$200,obVelX(a0)
-		btst	#0,obStatus(a0)	; is gargoyle facing left?
+		btst	#staFlipX,obStatus(a0)	; is gargoyle facing left?
 		bne.s	.noflip		; if not, branch
 		neg.w	obVelX(a0)
 
@@ -79,7 +79,7 @@ Gar_AniFire:	; Routine 6
 
 .nochg:
 		bsr.w	SpeedToPos
-		btst	#0,obStatus(a0) ; is fireball moving left?
+		btst	#staFlipX,obStatus(a0) ; is fireball moving left?
 		bne.s	.isright	; if not, branch
 		moveq	#-8,d3
 		bsr.w	ObjHitWallLeft

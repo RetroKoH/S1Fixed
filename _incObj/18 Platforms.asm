@@ -187,20 +187,20 @@ Plat_Move:
 ; ===========================================================================
 
 .type03:
-		tst.w	objoff_3A(a0)		; is time delay	set?
-		bne.s	.type03_wait	; if yes, branch
-		btst	#3,obStatus(a0)	; is Sonic standing on the platform?
-		beq.s	.type03_nomove	; if not, branch
-		move.w	#30,objoff_3A(a0)	; set time delay to 0.5	seconds
+		tst.w	objoff_3A(a0)				; is time delay	set?
+		bne.s	.type03_wait				; if yes, branch
+		btst	#staSonicOnObj,obStatus(a0)	; is Sonic standing on the platform?
+		beq.s	.type03_nomove				; if not, branch
+		move.w	#30,objoff_3A(a0)			; set time delay to 0.5	seconds
 
 .type03_nomove:
 		rts	
 
 .type03_wait:
-		subq.w	#1,objoff_3A(a0)	; subtract 1 from time
-		bne.s	.type03_nomove	; if time is > 0, branch
+		subq.w	#1,objoff_3A(a0)			; subtract 1 from time
+		bne.s	.type03_nomove				; if time is > 0, branch
 		move.w	#32,objoff_3A(a0)
-		addq.b	#1,obSubtype(a0) ; change to type 04 (falling)
+		addq.b	#1,obSubtype(a0)			; change to type 04 (falling)
 		rts	
 ; ===========================================================================
 
@@ -209,12 +209,12 @@ Plat_Move:
 		beq.s	.loc_8048
 		subq.w	#1,objoff_3A(a0)
 		bne.s	.loc_8048
-		btst	#3,obStatus(a0)
+		btst	#staSonicOnObj,obStatus(a0)
 		beq.s	.loc_8042
-		bset	#1,obStatus(a1)
-		bclr	#3,obStatus(a1)
+		bset	#staAir,obStatus(a1)
+		bclr	#staOnObj,obStatus(a1)
 		move.b	#2,obRoutine(a1)
-		bclr	#3,obStatus(a0)
+		bclr	#staSonicOnObj,obStatus(a0)
 		clr.b	objoff_25(a0)
 		move.w	obVelY(a0),obVelY(a1)
 

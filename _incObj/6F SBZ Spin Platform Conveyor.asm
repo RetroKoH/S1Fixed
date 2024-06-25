@@ -159,11 +159,11 @@ SpinC_Rout2:
 ; ===========================================================================
 
 loc_16404:
-		btst	#3,obStatus(a0)
+		btst	#staSonicOnObj,obStatus(a0)
 		beq.s	loc_16420
-		lea	(v_player).w,a1
-		bclr	#3,obStatus(a1)
-		bclr	#3,obStatus(a0)
+		lea		(v_player).w,a1
+		bclr	#staOnObj,obStatus(a1)
+		bclr	#staSonicOnObj,obStatus(a0)
 		clr.b	obSolid(a0)
 
 loc_16420:

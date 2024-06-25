@@ -3319,11 +3319,11 @@ End_LoadData:
 		move.b	#1,(f_debugmode).w ; enable debug mode
 
 End_LoadSonic:
-		move.b	#id_SonicPlayer,(v_player).w ; load Sonic object
-		bset	#0,(v_player+obStatus).w ; make Sonic face left
-		move.b	#1,(f_lockctrl).w ; lock controls
-		move.w	#(btnL<<8),(v_jpadhold2).w ; move Sonic to the left
-		move.w	#$F800,(v_player+obInertia).w ; set Sonic's speed
+		move.b	#id_SonicPlayer,(v_player).w		; load Sonic object
+		bset	#staFacing,(v_player+obStatus).w	; make Sonic face left
+		move.b	#1,(f_lockctrl).w					; lock controls
+		move.w	#(btnL<<8),(v_jpadhold2).w			; move Sonic to the left
+		move.w	#$F800,(v_player+obInertia).w		; set Sonic's speed
 		jsr		(ObjPosLoad).l
 		jsr		(ExecuteObjects).l
 		jsr		(BuildSprites).l
@@ -4594,14 +4594,14 @@ Platform3:
 		addq.b	#2,obRoutine(a0)
 
 loc_74AE:
-		btst	#3,obStatus(a1)
+		btst	#staOnObj,obStatus(a1)
 		beq.s	loc_74DC
 		moveq	#0,d0
 		move.b	obPlatformID(a1),d0
 		lsl.w	#object_size_bits,d0
 		addi.l	#v_objspace&$FFFFFF,d0
 		movea.l	d0,a2
-		bclr	#3,obStatus(a2)
+		bclr	#staSonicOnObj,obStatus(a2)
 		clr.b	ob2ndRout(a2)
 		cmpi.b	#4,obRoutine(a2)
 		bne.s	loc_74DC
@@ -4616,16 +4616,16 @@ loc_74DC:
 		clr.b	obAngle(a1)
 		clr.w	obVelY(a1)
 		move.w	obVelX(a1),obInertia(a1)
-		btst	#1,obStatus(a1)
+		btst	#staAir,obStatus(a1)
 		beq.s	loc_7512
 		move.l	a0,-(sp)
 		movea.l	a1,a0
-		jsr	(Sonic_ResetOnFloor).l
+		jsr		(Sonic_ResetOnFloor).l
 		movea.l	(sp)+,a0
 
 loc_7512:
-		bset	#3,obStatus(a1)
-		bset	#3,obStatus(a0)
+		bset	#staOnObj,obStatus(a1)
+		bset	#staSonicOnObj,obStatus(a0)
 
 Plat_Exit:
 		rts	
@@ -4698,8 +4698,8 @@ ExitPlatform:
 ExitPlatform2:
 		add.w	d2,d2
 		lea		(v_player).w,a1
-		btst	#1,obStatus(a1)
-		bne.s	loc_75E0
+		btst	#staAir,obStatus(a1)		; Is Sonic in the air?
+		bne.s	loc_75E0					; if yes, branch and clear bits
 		move.w	obX(a1),d0
 		sub.w	obX(a0),d0
 		add.w	d1,d0
@@ -4708,9 +4708,9 @@ ExitPlatform2:
 		blo.s	locret_75F2
 
 loc_75E0:
-		bclr	#3,obStatus(a1)
+		bclr	#staOnObj,obStatus(a1)		; Clear Sonic's obObj bit
 		move.b	#2,obRoutine(a0)
-		bclr	#3,obStatus(a0)
+		bclr	#staSonicOnObj,obStatus(a0)	; Clear the object's standing bit
 
 locret_75F2:
 		rts	
@@ -4868,7 +4868,7 @@ CFlo_Data3:
 
 SlopeObject2:
 		lea		(v_player).w,a1
-		btst	#3,obStatus(a1)
+		btst	#staOnObj,obStatus(a1)
 		beq.s	locret_856E
 		move.w	obX(a1),d0
 		sub.w	obX(a0),d0
@@ -4941,21 +4941,21 @@ loc_8A82:
 		clr.w	obVelX(a1)
 
 loc_8A92:
-		btst	#1,obStatus(a1)
+		btst	#staAir,obStatus(a1)
 		bne.s	loc_8AB6
-		bset	#5,obStatus(a1)
-		bset	#5,obStatus(a0)
+		bset	#staPush,obStatus(a1)
+		bset	#staSonicPush,obStatus(a0)
 		rts	
 ; ===========================================================================
 
 loc_8AA8:
-		btst	#5,obStatus(a0)
+		btst	#staSonicPush,obStatus(a0)
 		beq.s	locret_8AC2
 		; Removed line -- Mercury Walking In Air Fix
 
 loc_8AB6:
-		bclr	#5,obStatus(a0)
-		bclr	#5,obStatus(a1)
+		bclr	#staSonicPush,obStatus(a0)
+		bclr	#staPush,obStatus(a1)
 
 locret_8AC2:
 		rts	
@@ -4978,7 +4978,7 @@ locret_8AD8:
 
 
 Obj44_SolidWall2:
-		lea	(v_player).w,a1
+		lea		(v_player).w,a1
 		move.w	obX(a1),d0
 		sub.w	obX(a0),d0
 		add.w	d1,d0
@@ -6170,13 +6170,13 @@ loc_12C58:
 		move.w	(v_jpadhold1).w,(v_jpadhold2).w ; enable joypad control
 
 loc_12C64:
-		btst	#0,(f_playerctrl).w ; are controls locked?
-		bne.s	loc_12C7E	; if yes, branch
+		btst	#0,(f_playerctrl).w			; are controls locked?
+		bne.s	loc_12C7E					; if yes, branch
 		moveq	#0,d0
 		move.b	obStatus(a0),d0
-		andi.w	#6,d0
+		andi.w	#6,d0						; Use current air and spin states to determine Control Mode
 		move.w	Sonic_Modes(pc,d0.w),d1
-		jsr	Sonic_Modes(pc,d1.w)
+		jsr		Sonic_Modes(pc,d1.w)
 
 loc_12C7E:
 		bsr.s	Sonic_Display
@@ -6194,7 +6194,7 @@ loc_12CA6:
 		bsr.w	Sonic_Animate
 		tst.b	(f_playerctrl).w
 		bmi.s	loc_12CB6
-		jsr	(ReactToItem).l
+		jsr		(ReactToItem).l
 
 loc_12CB6:
 		bsr.w	Sonic_Loops
@@ -6255,7 +6255,7 @@ Sonic_MdAir:
 		bsr.w	Sonic_JumpDirection
 		bsr.w	Sonic_LevelBound
 		jsr		(ObjectFall).l
-		btst	#6,obStatus(a0)
+		btst	#staWater,obStatus(a0)
 		beq.s	loc_12E5C
 		subi.w	#$28,obVelY(a0)
 
@@ -6289,7 +6289,7 @@ Sonic_MdJump:
 		bsr.w	Sonic_JumpDirection
 		bsr.w	Sonic_LevelBound
 		jsr		(ObjectFall).l
-		btst	#6,obStatus(a0)
+		btst	#staWater,obStatus(a0)
 		beq.s	loc_12EA6
 		subi.w	#$28,obVelY(a0)
 

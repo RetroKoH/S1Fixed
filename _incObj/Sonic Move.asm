@@ -29,16 +29,16 @@ Sonic_Move:
 		bne.w	Sonic_ResetScr			; if yes, branch
 		tst.w	obInertia(a0)			; is Sonic moving?
 		bne.w	Sonic_ResetScr			; if yes, branch
-		bclr	#5,obStatus(a0)			; clear push status
-		move.b	#aniID_Wait,obAnim(a0)		; use "standing" animation
-		btst	#3,obStatus(a0)			; is Sonic on an object?
+		bclr	#staPush,obStatus(a0)	; clear push status
+		move.b	#aniID_Wait,obAnim(a0)	; use "standing" animation
+		btst	#staOnObj,obStatus(a0)	; is Sonic on an object?
 		beq.s	Sonic_Balance
 		moveq	#0,d0
 		move.b	obPlatformID(a0),d0
 		lsl.w	#object_size_bits,d0
 		lea		(v_objspace).w,a1
 		lea		(a1,d0.w),a1
-		tst.b	obStatus(a1)
+		tst.b	obStatus(a1)			; This would only occur if bit 7 was set...
 		bmi.s	Sonic_LookUp
 		moveq	#0,d1
 		move.b	obActWid(a1),d1
@@ -55,23 +55,23 @@ Sonic_Move:
 ; ===========================================================================
 
 Sonic_Balance:
-		jsr	(ObjFloorDist).l
+		jsr		(ObjFloorDist).l
 		cmpi.w	#$C,d1
 		blt.s	Sonic_LookUp
-		cmpi.b	#3,objoff_36(a0)
+		cmpi.b	#3,obFrontAngle(a0)
 		bne.s	loc_12F62
 
 loc_12F5A:
-		bclr	#0,obStatus(a0)
+		bclr	#staFacing,obStatus(a0)
 		bra.s	loc_12F70
 ; ===========================================================================
 
 loc_12F62:
-		cmpi.b	#3,objoff_37(a0)
+		cmpi.b	#3,obRearAngle(a0)
 		bne.s	Sonic_LookUp
 
 loc_12F6A:
-		bset	#0,obStatus(a0)
+		bset	#staFacing,obStatus(a0)
 
 loc_12F70:
 		move.b	#aniID_Balance,obAnim(a0)	; use "balancing" animation
@@ -213,7 +213,7 @@ loc_13024:
 		cmpi.b	#$80,d0
 		beq.s	loc_13060
 		add.w	d1,obVelX(a0)
-		bset	#5,obStatus(a0)
+		bset	#staPush,obStatus(a0)
 		clr.w	obInertia(a0)
 		rts	
 ; ===========================================================================
@@ -225,7 +225,7 @@ loc_13060:
 
 loc_13066:
 		sub.w	d1,obVelX(a0)
-		bset	#5,obStatus(a0)
+		bset	#staPush,obStatus(a0)
 		clr.w	obInertia(a0)
 		rts	
 ; ===========================================================================
@@ -247,9 +247,9 @@ Sonic_MoveLeft:
 		bpl.s	loc_130B2
 
 loc_13086:
-		bset	#0,obStatus(a0)
+		bset	#staFacing,obStatus(a0)
 		bne.s	loc_1309A
-		bclr	#5,obStatus(a0)
+		bclr	#staPush,obStatus(a0)
 		move.b	#aniID_Run,obPrevAni(a0) ; restart Sonic's animation
 
 loc_1309A:
@@ -287,7 +287,7 @@ loc_130BA:
 		cmpi.w	#$400,d0
 		blt.s	locret_130E8
 		move.b	#aniID_Stop,obAnim(a0)	; use "stopping" animation
-		bclr	#0,obStatus(a0)
+		bclr	#staFacing,obStatus(a0)
 		move.w	#sfx_Skid,d0
 		jsr		(PlaySound_Special).l	; play stopping sound
 	if SkidDustEnabled=1
@@ -307,9 +307,9 @@ locret_130E8:
 Sonic_MoveRight:
 		move.w	obInertia(a0),d0
 		bmi.s	loc_13118
-		bclr	#0,obStatus(a0)
+		bclr	#staFacing,obStatus(a0)
 		beq.s	loc_13104
-		bclr	#5,obStatus(a0)
+		bclr	#staPush,obStatus(a0)
 		move.b	#aniID_Run,obPrevAni(a0) ; restart Sonic's animation
 
 loc_13104:
@@ -345,7 +345,7 @@ loc_13120:
 		cmpi.w	#-$400,d0
 		bgt.s	locret_1314E
 		move.b	#aniID_Stop,obAnim(a0) ; use "stopping" animation
-		bset	#0,obStatus(a0)
+		bset	#staFacing,obStatus(a0)
 		move.w	#sfx_Skid,d0
 		jsr		(PlaySound_Special).l	; play stopping sound
 	if SkidDustEnabled=1

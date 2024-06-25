@@ -34,15 +34,15 @@ Bump_Hit:	; Routine 2
 		jsr	(CalcSine).l
 		muls.w	#-$700,d1
 		asr.l	#8,d1
-		move.w	d1,obVelX(a1)	; bounce Sonic away
+		move.w	d1,obVelX(a1)			; bounce Sonic away
 		muls.w	#-$700,d0
 		asr.l	#8,d0
-		move.w	d0,obVelY(a1)	; bounce Sonic away
-		bset	#1,obStatus(a1)
-		bclr	#4,obStatus(a1)
-		bclr	#5,obStatus(a1)
+		move.w	d0,obVelY(a1)			; bounce Sonic away
+		bset	#staAir,obStatus(a1)
+		bclr	#staRollJump,obStatus(a1)
+		bclr	#staPush,obStatus(a1)
 		clr.b	objoff_3C(a1)
-		move.b	#1,obAnim(a0)	; use "hit" animation
+		move.b	#1,obAnim(a0)			; use "hit" animation
 		move.w	#sfx_Bumper,d0
 		jsr		(PlaySound_Special).l	; play bumper sound
 		move.w	obRespawnNo(a0),d0		; get address in respawn table
