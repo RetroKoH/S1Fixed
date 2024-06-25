@@ -181,12 +181,12 @@ obFrontAngle:	equ $36			; angle on ground in front of sprite
 obRearAngle:	equ $37			; angle on ground behind sprite
 obOnWheel:		equ $38			; on convex wheel flag
 obStatus2:		equ $39			; secondary status counter
-obRestartTimer:	equ $3A			; level restart timer (2 bytes)
-
+obRestartTimer:	equ $3A			; level restart timer (1 byte)
+							; $3B obSpinDashCounter+1
 obJumping:		equ $3C			; jumping flag
-obPlatformID:	equ $3D			; ost slot of the object Sonic's on top of
-obLRLock:		equ $3E			; flag for preventing left and right input
-							; $3F unused
+obLRLock:		equ $3D			; flag for preventing left and right input
+obPlatformAddr:	equ $3E			; ost slot of the object Sonic's on top of (Convert to 2 bytes and swap with obLRLock)
+							; $3F obPlatformAddr
 
 	if (SpinDashEnabled|PeeloutEnabled)=1
 obSpinDashFlag:	equ $2A					; spin dash/peelout flag - if toggled off, this is unused.

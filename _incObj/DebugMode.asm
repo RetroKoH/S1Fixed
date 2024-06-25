@@ -33,11 +33,12 @@ Debug_Main:	; Routine 0
 		beq.s	.setpos						; if not, branch
 		bclr	#staOnObj,obStatus(a0)		; clear Sonic's standing flag
 		moveq	#0,d0
-		move.b	obPlatformID(a0),d0			; get object id
-		clr.b	obPlatformID(a0)			; clear object id
-		lsl.w	#6,d0
+	; RetroKoH obPlatform SST mod
+		move.w	obPlatformAddr(a0),d0		; get object's SST address
+		clr.w	obPlatformAddr(a0)			; clear object's SST address
 		addi.l	#v_objspace&$FFFFFF,d0
-		movea.l	d0,a2
+		movea.l	d0,a2	; a2=object
+	; obPlatform SST mod end
 		bclr	#staSonicOnObj,obStatus(a2)	; clear object's standing flag
 		clr.b	obSolid(a2)
 .setpos:

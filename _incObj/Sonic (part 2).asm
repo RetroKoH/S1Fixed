@@ -102,7 +102,7 @@ GameOver:
 .skip:
 	; Lives Over/Underflow Fix End
 
-		clr.w	objoff_3A(a0)
+		clr.b	obRestartTimer(a0)
 		move.b	#id_GameOverCard,(v_gameovertext1).w ; load GAME object
 		move.b	#id_GameOverCard,(v_gameovertext2).w ; load OVER object
 		move.b	#1,(v_gameovertext2+obFrame).w ; set OVER object to correct frame
@@ -116,10 +116,10 @@ loc_138C2:
 ; ===========================================================================
 
 loc_138D4:
-		move.w	#60,objoff_3A(a0)	; set time delay to 1 second
+		move.b	#60,obRestartTimer(a0)	; set time delay to 1 second
 		tst.b	(f_timeover).w	; is TIME OVER tag set?
 		beq.s	locret_13900	; if not, branch
-		clr.w	objoff_3A(a0)
+		clr.b	obRestartTimer(a0)
 		move.b	#id_GameOverCard,(v_gameovertext1).w ; load TIME object
 		move.b	#id_GameOverCard,(v_gameovertext2).w ; load OVER object
 		move.b	#2,(v_gameovertext1+obFrame).w
@@ -136,9 +136,9 @@ locret_13900:
 ; ---------------------------------------------------------------------------
 
 Sonic_ResetLevel:; Routine 8
-		tst.w	objoff_3A(a0)
+		tst.b	obRestartTimer(a0)
 		beq.s	locret_13914
-		subq.w	#1,objoff_3A(a0)	; subtract 1 from time delay
+		subq.b	#1,obRestartTimer(a0)	; subtract 1 from time delay
 		bne.s	locret_13914
 		move.w	#1,(f_restart).w ; restart the level
 

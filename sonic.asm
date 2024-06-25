@@ -4597,10 +4597,11 @@ loc_74AE:
 		btst	#staOnObj,obStatus(a1)
 		beq.s	loc_74DC
 		moveq	#0,d0
-		move.b	obPlatformID(a1),d0
-		lsl.w	#object_size_bits,d0
-		addi.l	#v_objspace&$FFFFFF,d0
-		movea.l	d0,a2
+	; RetroKoH obPlatform SST mod
+		move.w	obPlatformAddr(a1),d0		; (Example: 1280)
+		addi.l	#v_objspace&$FFFFFF,d0		; (Example: FFE280)
+		movea.l	d0,a2	; a2=object
+	; obPlatform SST mod end
 		bclr	#staSonicOnObj,obStatus(a2)
 		clr.b	ob2ndRout(a2)
 		cmpi.b	#4,obRoutine(a2)
@@ -4608,11 +4609,11 @@ loc_74AE:
 		subq.b	#2,obRoutine(a2)
 
 loc_74DC:
-		move.w	a0,d0
-		subi.w	#v_objspace&$FFFF,d0
-		lsr.w	#object_size_bits,d0
-		andi.w	#$7F,d0
-		move.b	d0,obPlatformID(a1)
+	; RetroKoH obPlatform SST mod
+		move.w	a0,d0					; load object addr to d0	(Example: E280)
+		subi.w	#v_objspace&$FFFF,d0	; Subtract $D000			(Example: 1280)
+		move.w	d0,obPlatformAddr(a1)
+	; obPlatform SST mod end
 		clr.b	obAngle(a1)
 		clr.w	obVelY(a1)
 		move.w	obVelX(a1),obInertia(a1)

@@ -298,19 +298,20 @@ Solid_ResetFloor:
 		beq.s	.notonobj					; if not, branch
 
 		moveq	#0,d0
-		move.b	obPlatformID(a1),d0			; get object being stood on
-		lsl.w	#object_size_bits,d0
+	; RetroKoH obPlatform SST mod
+		move.w	obPlatformAddr(a1),d0			; get object being stood on
 		addi.l	#(v_objspace&$FFFFFF),d0
-		movea.l	d0,a2
+		movea.l	d0,a2	; a2=object
+	; obPlatform SST mod end
 		bclr	#staSonicOnObj,obStatus(a2)	; clear object's standing flags
 		clr.b	obSolid(a2)
 
 .notonobj:
+	; RetroKoH obPlatform SST mod
 		move.w	a0,d0
 		subi.w	#v_objspace&$FFFF,d0
-		lsr.w	#object_size_bits,d0
-		andi.w	#$7F,d0
-		move.b	d0,obPlatformID(a1)		; set object being stood on
+		move.w	d0,obPlatformAddr(a1)
+	; obPlatform SST mod end
 		clr.b	obAngle(a1)				; clear Sonic's angle
 		clr.w	obVelY(a1)				; stop Sonic
 		move.w	obVelX(a1),obInertia(a1)
