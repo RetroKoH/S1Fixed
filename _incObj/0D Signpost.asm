@@ -127,13 +127,13 @@ Sign_SonicRun:	; Routine 6
 	; possible for the player to avoid having their controls locked by
 	; jumping at the right side of the screen just as the score tally
 	; appears.
-		tst.b	(v_player+obID).w	; Check if Sonic's object has been deleted (because he entered the giant ring)
+		tst.b	(v_player+obID).w			; Check if Sonic's object has been deleted (because he entered the giant ring)
 		beq.s	loc_EC86
-		btst	#1,(v_player+obStatus).w
+		btst	#staAir,(v_player+obStatus).w
 		bne.w	locret_ECEE
 	; Signpost Routine Fix End
-		move.b	#1,(f_lockctrl).w ; lock controls
-		move.w	#btnR<<8,(v_jpadhold2).w ; make Sonic run to the right
+		move.b	#1,(f_lockctrl).w			; lock controls
+		move.w	#btnR<<8,(v_jpadhold2).w	; make Sonic run to the right
 	; Old check moved to above -- Signpost Routine Fix
 		move.w	(v_player+obX).w,d0
 		move.w	(v_limitright2).w,d1

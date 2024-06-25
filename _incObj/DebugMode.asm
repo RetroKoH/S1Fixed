@@ -215,7 +215,7 @@ Debug_ChgItem:
 		clr.w	obVelX(a1)
 		clr.w	obVelY(a1)
 		clr.w	obInertia(a1)
-		move.b	#2,obStatus(a1)						; set Sonic into the air. all other bits clear.
+		move.b	#maskAir,obStatus(a1)				; set Sonic into the air. all other bits clear.
 		move.b	#2,obRoutine(a1)
 		move.b	#$13,obHeight(a1)
 		move.b	#9,obWidth(a1)
@@ -233,9 +233,7 @@ Debug_ChgItem:
 		move.l	#Map_Sonic,obMap(a1)
 		move.w	#ArtTile_Sonic,obGfx(a1)
 		move.b	#aniID_Roll,obAnim(a1)
-		;move.b	#6,obStatus(a1)
-		bset	#staSpin,obStatus(a1)
-		bset	#staAir,obStatus(a1)
+		move.b	#maskAir+maskSpin,obStatus(a1)		; Set spin and in air bits. all other bits clear.
 		rts	
 ; End of function Debug_Control
 

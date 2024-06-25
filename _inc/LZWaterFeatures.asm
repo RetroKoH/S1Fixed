@@ -342,7 +342,7 @@ LZWindTunnels:
 		move.w	#$400,obVelX(a1) ; move Sonic horizontally
 		clr.w	obVelY(a1)
 		move.b	#aniID_Float2,obAnim(a1)	; use floating animation
-		bset	#1,obStatus(a1)
+		bset	#staAir,obStatus(a1)
 		btst	#0,(v_jpadhold2).w ; is up pressed?
 		beq.s	.down		; if not, branch
 		subq.w	#1,obY(a1)	; move Sonic up on pole
@@ -389,15 +389,15 @@ LZWind_Data:	dc.w $A80, $300, $C10,  $380 ; act 1 values (set 1)
 
 LZWaterSlides:
 		lea		(v_player).w,a1
-		btst	#1,obStatus(a1)	; is Sonic jumping?
-		bne.s	loc_3F6A	; if not, branch
-		move.w	obY(a1),d0		; MJ: Load Y position
-		add.w	d0,d0			; MJ: multiply by 2 (Because every 80 bytes switch from FG to BG..)
-		andi.w	#$F00,d0		; MJ: keep Y position within 800 pixels (in multiples of 80)
-		move.w	obX(a1),d1		; MJ: Load Y position
-		lsr.w	#7,d1			; MJ: divide X position by 80 (00 = 0, 80 = 1, etc)
-		andi.w	#$7F,d1			; MJ: keep within 4000 pixels (4000 / 80 = 80)
-		add.w	d1,d0			; MJ: add together
+		btst	#staAir,obStatus(a1)	; is Sonic jumping?
+		bne.s	loc_3F6A				; if not, branch
+		move.w	obY(a1),d0			; MJ: Load Y position
+		add.w	d0,d0				; MJ: multiply by 2 (Because every 80 bytes switch from FG to BG..)
+		andi.w	#$F00,d0			; MJ: keep Y position within 800 pixels (in multiples of 80)
+		move.w	obX(a1),d1			; MJ: Load Y position
+		lsr.w	#7,d1				; MJ: divide X position by 80 (00 = 0, 80 = 1, etc)
+		andi.w	#$7F,d1				; MJ: keep within 4000 pixels (4000 / 80 = 80)
+		add.w	d1,d0				; MJ: add together
 		lea		(v_lvllayout).w,a2	; MJ: Load address of layout
 		move.b	(a2,d0.w),d0		; MJ: collect correct chunk ID based on the position of Sonic
 		lea		Slide_Chunks_End(pc),a2
@@ -424,11 +424,11 @@ LZSlide_Move:
 		nop	
 
 loc_3F84:
-		bclr	#0,obStatus(a1)
+		bclr	#staFacing,obStatus(a1)
 		move.b	Slide_Speeds(pc,d1.w),d0
 		move.b	d0,obInertia(a1)
 		bpl.s	loc_3F9A
-		bset	#0,obStatus(a1)
+		bset	#staFacing,obStatus(a1)
 
 loc_3F9A:
 		clr.b	obInertia+1(a1)
@@ -438,7 +438,7 @@ loc_3F9A:
 		andi.b	#$1F,d0
 		bne.s	locret_3FBE
 		move.w	#sfx_Waterfall,d0
-		jsr	(PlaySound_Special).l	; play water sound
+		jsr		(PlaySound_Special).l	; play water sound
 
 locret_3FBE:
 		rts	

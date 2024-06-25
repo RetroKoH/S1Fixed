@@ -489,7 +489,7 @@ loc_1A296:
 loc_1A2A6:
 		movea.l	objoff_34(a0),a1
 		move.b	obStatus(a1),obStatus(a0)
-		moveq	#3,d0
+		moveq	#(maskFlipX+maskFlipY),d0
 		and.b	obStatus(a0),d0
 		andi.b	#$FC,obRender(a0)
 		or.b	d0,obRender(a0)

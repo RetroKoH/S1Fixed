@@ -94,7 +94,7 @@ Bub_ChkWater:	; Routine 4
 		move.b	#aniID_GetAir,obAnim(a1) ; use bubble-collecting animation
 		move.b	#$23,obLRLock(a1)
 		clr.b	obJumping(a1)
-		andi.b	#~((1<<staPush)+(1<<staRollJump)),obStatus(a1) ; Clear Push, and RollJump ($CF)
+		andi.b	#~(maskRollJump+maskPush),obStatus(a1) ; Clear RollJump and Push flags ($CF)
 		btst	#staSpin,obStatus(a1)
 		beq.w	.burst
 		bclr	#staSpin,obStatus(a1)

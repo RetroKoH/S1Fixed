@@ -126,7 +126,7 @@ loc_17C3C:
 		move.w	d0,objoff_38(a0)
 		move.b	obStatus(a1),obStatus(a0)
 		tst.b	obStatus(a1)
-		bpl.s	locret_17C66
+		bpl.s	locret_17C66				; if bit 7 is clear, branch
 		_move.b	#id_ExplosionBomb,obID(a0)
 		clr.b	obRoutine(a0)
 
@@ -139,7 +139,7 @@ locret_17C66:
 loc_17C68:	; Routine 6
 		movea.l	objoff_34(a0),a1
 		tst.b	obStatus(a1)
-		bpl.s	GBall_Display3
+		bpl.s	GBall_Display3				; if bit 7 is clear, branch
 		_move.b	#id_ExplosionBomb,obID(a0)
 		clr.b	obRoutine(a0)
 
@@ -157,7 +157,7 @@ GBall_Vanish:
 		move.b	d0,obFrame(a0)
 		movea.l	objoff_34(a0),a1
 		tst.b	obStatus(a1)
-		bpl.s	GBall_Display4
+		bpl.s	GBall_Display4				; if bit 7 is clear, branch
 		clr.b	obColType(a0)
 		bsr.w	BossDefeated
 		subq.b	#1,objoff_3C(a0)

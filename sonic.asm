@@ -6175,7 +6175,7 @@ loc_12C64:
 		bne.s	loc_12C7E					; if yes, branch
 		moveq	#0,d0
 		move.b	obStatus(a0),d0
-		andi.w	#6,d0						; Use current air and spin states to determine Control Mode
+		andi.w	#(maskAir+maskSpin),d0		; Use current air and spin states to determine Control Mode
 		move.w	Sonic_Modes(pc,d0.w),d1
 		jsr		Sonic_Modes(pc,d1.w)
 
@@ -6554,9 +6554,9 @@ loc_14D24:
 		bne.s	loc_14D3C
 		addq.w	#8,d2
 	; Ralakimus Rolling Push Sensor Fix
-		btst	#2,obStatus(a0)		; Is Sonic rolling?
-		beq.s	loc_14D3C			; If not, branch
-		subq.w	#5,d2				; If so, move push sensor up a bit
+		btst	#staSpin,obStatus(a0)	; Is Sonic rolling?
+		beq.s	loc_14D3C				; If not, branch
+		subq.w	#5,d2					; If so, move push sensor up a bit
 	; Rolling Push Sensor Fix End
 
 loc_14D3C:

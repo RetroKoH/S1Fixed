@@ -6,7 +6,7 @@ Helix:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Hel_Index(pc,d0.w),d1
-		jmp	Hel_Index(pc,d1.w)
+		jmp		Hel_Index(pc,d1.w)
 ; ===========================================================================
 Hel_Index:
 		dc.w Hel_Main-Hel_Index
@@ -24,7 +24,7 @@ Hel_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Hel,obMap(a0)
 		move.w	#make_art_tile(ArtTile_GHZ_Spike_Pole,2,0),obGfx(a0)
-		move.b	#7,obStatus(a0)
+		move.b	#7,obStatus(a0)			; bit 2 is also set... is this used?
 		move.b	#4,obRender(a0)
 		move.w	#$180,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#8,obActWid(a0)

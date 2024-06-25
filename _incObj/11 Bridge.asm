@@ -96,7 +96,7 @@ Bri_MakeSegment:
 
 Bri_Action:	; Routine 2
 		move.b	obStatus(a0),d0
-		andi.b	#$18,d0			; standing_mask
+		andi.b	#maskSonicOnObj,d0
 		bne.s	.standing
 		tst.b	objoff_3E(a0)
 		beq.s	.solid

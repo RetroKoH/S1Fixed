@@ -45,7 +45,7 @@ Obj09_NoDebug:
 		clr.b	objoff_30(a0)
 		moveq	#0,d0
 		move.b	obStatus(a0),d0
-		andi.w	#2,d0
+		andi.w	#maskAir,d0				; Use current air state to determine Control Mode
 		move.w	Obj09_Modes(pc,d0.w),d1
 		jsr		Obj09_Modes(pc,d1.w)
 		jsr		(Sonic_LoadGfx).l

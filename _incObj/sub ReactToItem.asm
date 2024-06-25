@@ -256,7 +256,7 @@ React_Caterkiller:
 		
 	.skip:
 		move.b	obStatus(a1),d1
-		andi.b	#1,d1
+		andi.b	#maskFlipX,d1
 		cmp.b	d0,d1					; are Sonic and the Caterkiller facing the same way?
 		bne.s	.hurt					; if not, branch
 		btst	#staAir,obStatus(a0)	; is Sonic in the air?

@@ -44,7 +44,7 @@ loc_6DAC:
 		addq.w	#8,d0
 		cmp.w	(v_limitbtm2).w,d0
 		blo.s	loc_6DC4
-		btst	#1,(v_player+obStatus).w
+		btst	#staAir,(v_player+obStatus).w
 		beq.s	loc_6DC4
 		add.w	d1,d1
 		add.w	d1,d1

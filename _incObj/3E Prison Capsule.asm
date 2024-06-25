@@ -74,8 +74,8 @@ Pri_BodyMain:	; Routine 2
 		tst.b	ob2ndRout(a0)		; has the prison been opened?
 		beq.s	.open				; if yes, branch
 		clr.b	ob2ndRout(a0)
-		bclr	#3,(v_player+obStatus).w
-		bset	#1,(v_player+obStatus).w
+		bclr	#staOnObj,(v_player+obStatus).w
+		bset	#staAir,(v_player+obStatus).w
 
 .open:
 		move.b	#2,obFrame(a0)		; use frame number 2 (destroyed	prison)
@@ -107,8 +107,8 @@ Pri_Switched:	; Routine 4
 		move.b	#1,(f_lockctrl).w				; lock controls
 		move.w	#(btnR<<8),(v_jpadhold2).w		; make Sonic run to the right
 		clr.b	ob2ndRout(a0)
-		bclr	#3,(v_player+obStatus).w
-		bset	#1,(v_player+obStatus).w
+		bclr	#staOnObj,(v_player+obStatus).w
+		bset	#staAir,(v_player+obStatus).w
 
 .open2:
 	; Clownacy DisplaySprite Fix (Alt method by RetroKoH)

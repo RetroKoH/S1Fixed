@@ -59,20 +59,20 @@ BossMarble_LoadBoss:
 		move.b	#4,obRender(a1)
 		move.b	#$20,obActWid(a1)
 		move.l	a0,objoff_34(a1)
-		dbf	d1,BossMarble_Loop	; repeat sequence 3 more times
+		dbf		d1,BossMarble_Loop	; repeat sequence 3 more times
 
 BossMarble_ShipMain:	; Routine 2
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
 		move.w	BossMarble_ShipIndex(pc,d0.w),d1
-		jsr	BossMarble_ShipIndex(pc,d1.w)
-		lea	(Ani_Eggman).l,a1
-		jsr	(AnimateSprite).l
-		moveq	#3,d0
+		jsr		BossMarble_ShipIndex(pc,d1.w)
+		lea		(Ani_Eggman).l,a1
+		jsr		(AnimateSprite).l
+		moveq	#(maskFlipX+maskFlipY),d0
 		and.b	obStatus(a0),d0
 		andi.b	#$FC,obRender(a0)
 		or.b	d0,obRender(a0)
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 BossMarble_ShipIndex:
 		dc.w loc_18302-BossMarble_ShipIndex
@@ -106,7 +106,7 @@ loc_1833E:
 		cmpi.b	#4,ob2ndRout(a0)
 		bhs.s	locret_18390
 		tst.b	obStatus(a0)
-		bmi.s	loc_18392
+		bmi.s	loc_18392			; if bit 7 is set, branch
 		tst.b	obColType(a0)
 		bne.s	locret_18390
 		tst.b	objoff_3E(a0)
@@ -430,7 +430,7 @@ loc_1864A:
 		move.w	obX(a1),obX(a0)
 		move.w	obY(a1),obY(a0)
 		move.b	obStatus(a1),obStatus(a0)
-		moveq	#3,d0
+		moveq	#(maskFlipX+maskFlipY),d0
 		and.b	obStatus(a0),d0
 		andi.b	#$FC,obRender(a0)
 		or.b	d0,obRender(a0)

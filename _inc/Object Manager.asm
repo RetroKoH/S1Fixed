@@ -313,10 +313,10 @@ OPLBack8:	; check, if current object needs to be loaded
 		move.w	-2(a0),obX(a1)
 		move.w	(a0),d1
 		move.w	d1,d2
-		and.w	d5,d1			; get object's y position
+		and.w	d5,d1					; get object's y position
 		move.w	d1,obY(a1)
 		rol.w	#3,d2
-		andi.w	#3,d2			; get object's render flags and status
+		andi.w	#3,d2					; get object's render flags and status
 		move.b	d2,obRender(a1)
 		move.b	d2,obStatus(a1)
 		move.b	2(a0),d0

@@ -53,7 +53,7 @@ Shi_Shield:	; Routine 2
 		
 .shift:
 		sub.w	d1,obX(a0)
-		btst	#0,d0		; status_facing
+		btst	#staFlipX,d0	; X-Flip sprite bit
 		beq.s	.noshift
 		add.w	d1,d1
 		add.w	d1,obX(a0)
@@ -103,7 +103,7 @@ Shi_Stars:	; Routine 4
 		move.w	(a1)+,obY(a0)
 		move.b	(v_player+obStatus).w,obStatus(a0)
 
-	;Mercury Shield/Invincibility Positioning Fix
+	; Mercury Shield/Invincibility Positioning Fix
 		move.b	obStatus(a0),d0
 		move.w	#$A,d1
 		cmpi.b	#aniID_Balance,(v_player+obAnim).w
@@ -111,7 +111,7 @@ Shi_Stars:	; Routine 4
 		
 .shift:
 		sub.w	d1,obX(a0)
-		btst	#0,d0		; status_facing
+		btst	#staFlipX,d0	; X-Flip sprite bit
 		beq.s	.noshift
 		add.w	d1,d1
 		add.w	d1,obX(a0)

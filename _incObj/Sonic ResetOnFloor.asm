@@ -14,10 +14,7 @@ Sonic_ResetOnFloor:
 		nop	
 
 loc_137AE:
-		andi.b	#~((1<<staRollJump)+(1<<staPush)+(1<<staAir)),obStatus(a0)	; Should clear Push, Air, and RollJump ($CD)
-;		bclr	#staPush,obStatus(a0)
-;		bclr	#staAir,obStatus(a0)
-;		bclr	#staRollJump,obStatus(a0)
+		andi.b	#~(maskAir+maskRollJump+maskPush),obStatus(a0)	; Should clear Air, RollJump and Push bits ($CD)
 		btst	#staSpin,obStatus(a0)
 		beq.s	loc_137E4
 		bclr	#staSpin,obStatus(a0)

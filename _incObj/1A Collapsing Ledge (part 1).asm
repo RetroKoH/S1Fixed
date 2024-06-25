@@ -81,12 +81,12 @@ loc_82D0:
 		beq.s	loc_82FC
 		tst.b	ledge_timedelay(a0)
 		bne.s	locret_8308
-		andi.b	#~((1<<staPush)+(1<<staOnObj)),obStatus(a1)	; Clear Push, and OnObj flags ($D7)
-		move.b	#aniID_Run,obPrevAni(a1)					; restart Sonic's animation
+		andi.b	#~(maskOnObj+maskPush),obStatus(a1)	; Clear OnObj and Push flags ($D7)
+		move.b	#aniID_Run,obPrevAni(a1)			; restart Sonic's animation
 
 loc_82FC:
 		clr.b	ledge_collapse_flag(a0)
-		move.b	#6,obRoutine(a0)							; run "Ledge_Display" routine
+		move.b	#6,obRoutine(a0)					; run "Ledge_Display" routine
 
 locret_8308:
 		rts	

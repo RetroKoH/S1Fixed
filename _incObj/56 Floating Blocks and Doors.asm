@@ -447,11 +447,11 @@ FBlock_Action:	; Routine 2
 		tst.w	d3
 		bne.s	.loc_1068E
 		addq.b	#1,obStatus(a0)
-		andi.b	#3,obStatus(a0)
+		andi.b	#(maskFlipX+maskFlipY),obStatus(a0)
 
 .loc_1068E:
 		move.b	obStatus(a0),d2
-		andi.b	#3,d2
+		andi.b	#(maskFlipX+maskFlipY),d2
 		bne.s	.loc_106AE
 		sub.w	d1,d0
 		add.w	fb_origX(a0),d0

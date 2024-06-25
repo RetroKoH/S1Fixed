@@ -70,7 +70,7 @@ BossSpringYard_ShipMain:	; Routine 2
 		jsr	BossSpringYard_ShipIndex(pc,d1.w)
 		lea	(Ani_Eggman).l,a1
 		jsr	(AnimateSprite).l
-		moveq	#3,d0
+		moveq	#(maskFlipX+maskFlipY),d0
 		and.b	obStatus(a0),d0
 		andi.b	#$FC,obRender(a0)
 		or.b	d0,obRender(a0)
@@ -111,7 +111,7 @@ loc_19202:
 		cmpi.b	#6,ob2ndRout(a0)
 		bhs.s	locret_19256
 		tst.b	obStatus(a0)
-		bmi.s	loc_19258
+		bmi.s	loc_19258			; if bit 7 is set, branch
 		tst.b	obColType(a0)
 		bne.s	locret_19256
 		tst.b	objoff_3E(a0)
@@ -558,11 +558,11 @@ loc_195BE:
 
 loc_195DA:
 		move.b	obStatus(a1),obStatus(a0)
-		moveq	#3,d0
+		moveq	#(maskFlipX+maskFlipY),d0
 		and.b	obStatus(a0),d0
 		andi.b	#$FC,obRender(a0)
 		or.b	d0,obRender(a0)
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 
 BossSpringYard_SpikeMain:; Routine 8

@@ -46,7 +46,7 @@ Effects_MdSpindashDust:
 		move.w	obX(a2),obX(a0)				; match Player's position
 		move.w	obY(a2),obY(a0)
 		move.b	obStatus(a2),obStatus(a0)	; match Player's x orientation
-		andi.b	#1,obStatus(a0)
+		andi.b	#maskFacing,obStatus(a0)	; only retain staFacing (staFlipX)
 	endif
 
 Effects_MdDisplay:

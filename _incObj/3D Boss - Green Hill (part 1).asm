@@ -53,14 +53,14 @@ BGHZ_ShipMain:	; Routine 2
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
 		move.w	BGHZ_ShipIndex(pc,d0.w),d1
-		jsr	BGHZ_ShipIndex(pc,d1.w)
-		lea	(Ani_Eggman).l,a1
-		jsr	(AnimateSprite).l
+		jsr		BGHZ_ShipIndex(pc,d1.w)
+		lea		(Ani_Eggman).l,a1
+		jsr		(AnimateSprite).l
 		move.b	obStatus(a0),d0
-		andi.b	#3,d0
+		andi.b	#(maskFlipX+maskFlipY),d0
 		andi.b	#$FC,obRender(a0)
 		or.b	d0,obRender(a0)
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 BGHZ_ShipIndex:	dc.w BGHZ_ShipStart-BGHZ_ShipIndex
 		dc.w BGHZ_MakeBall-BGHZ_ShipIndex
@@ -90,7 +90,7 @@ loc_177E6:
 		cmpi.b	#8,ob2ndRout(a0)
 		bhs.s	locret_1784A
 		tst.b	obStatus(a0)
-		bmi.s	loc_1784C
+		bmi.s	loc_1784C			; if bit 7 is set, branch
 		tst.b	obColType(a0)
 		bne.s	locret_1784A
 		tst.b	objoff_3E(a0)

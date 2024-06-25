@@ -778,14 +778,14 @@ loc_6610:
 ScrollVertical:
 		moveq	#0,d1
 		move.w	(v_player+obY).w,d0
-		sub.w	(v_screenposy).w,d0 ; Sonic's distance from top of screen
-		btst	#2,(v_player+obStatus).w ; is Sonic rolling?
-		beq.s	SV_NotRolling	; if not, branch
+		sub.w	(v_screenposy).w,d0				; Sonic's distance from top of screen
+		btst	#staSpin,(v_player+obStatus).w	; is Sonic rolling?
+		beq.s	SV_NotRolling					; if not, branch
 		subq.w	#5,d0
 
 SV_NotRolling:
-		btst	#1,(v_player+obStatus).w ; is Sonic jumping?
-		beq.s	loc_664A	; if not, branch
+		btst	#staAir,(v_player+obStatus).w	; is Sonic in the air?
+		beq.s	loc_664A						; if not, branch
 
 		addi.w	#32,d0
 		sub.w	(v_lookshift).w,d0

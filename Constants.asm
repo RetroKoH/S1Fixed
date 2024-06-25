@@ -204,18 +204,26 @@ staPush:		equ 5 ; status Push notes whether or not Sonic is pushing an object.
 staWater:		equ 6 ; status Water is set when Sonic is in the water.
 staSSJump:		equ 7 ; status SSJump is set when Sonic jumps in a Special Stage.
 ; Sonic's status masks
-maskFacing:		equ 1<<staFacing
-maskAir:		equ 1<<staAir
-maskSpin:		equ 1<<staSpin
-maskOnObj:		equ 1<<staOnObj
-maskRollJump:	equ 1<<staRollJump
-maskPush:		equ 1<<staPush
-maskWater:		equ 1<<staWater
+maskFacing:		equ 1<<staFacing		; 1
+maskAir:		equ 1<<staAir			; 2
+maskSpin:		equ 1<<staSpin			; 4
+maskOnObj:		equ 1<<staOnObj			; 8
+maskRollJump:	equ 1<<staRollJump		; $10
+maskPush:		equ 1<<staPush			; $20
+maskWater:		equ 1<<staWater			; $40
 ; Other objects' status bits
 staFlipX:		equ 0 ; status FlipX is cleared when facing left, and set when facing right.
 staFlipY:		equ 1 ; status FlipY is set if the sprite is flipped vertically. Cleared otherwise.
 staSonicOnObj:	equ 3 ; status SonicOnObj notes whether or not Sonic is standing on the object. Bit 4 would test for Player 2
 staSonicPush:	equ 5 ; status Push notes whether or not Sonic is pushing the object. Bit 6 would test for Player 2
+; Other objects' status masks
+maskFlipX:		equ 1<<staFlipX			; 1
+maskFlipY:		equ 1<<staFlipY			; 2
+	; 4
+maskSonicOnObj:	equ 1<<staSonicOnObj	; 8
+	; $10
+maskSonicPush:	equ 1<<staSonicPush		; $20
+	; $40
 ; ---------------------------------------------------------------------------
 
 ; Miscellaneous object scratch-RAM

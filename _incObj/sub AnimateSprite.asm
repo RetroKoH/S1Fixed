@@ -33,14 +33,14 @@ Anim_Run:
 Anim_Next:
 		move.b	d0,d1
 		andi.b	#$1F,d0
-		move.b	d0,obFrame(a0)	; load sprite number
+		move.b	d0,obFrame(a0)		; load sprite number
 		move.b	obStatus(a0),d0
 		rol.b	#3,d1
 		eor.b	d0,d1
-		andi.b	#3,d1
+		andi.b	#3,d1				; (maskFlipX + maskFlipY)?
 		andi.b	#$FC,obRender(a0)
 		or.b	d1,obRender(a0)
-		addq.b	#1,obAniFrame(a0) ; next frame number
+		addq.b	#1,obAniFrame(a0)	; next frame number
 
 Anim_Wait:
 		rts	
