@@ -35,16 +35,15 @@ Flash_Collect:
 		bpl.s	locret_9F76
 		move.b	#1,obTimeFrame(a0)
 		addq.b	#1,obFrame(a0)
-		cmpi.b	#8,obFrame(a0)	; has animation	finished?
-		bhs.s	Flash_End	; if yes, branch
-		cmpi.b	#3,obFrame(a0)	; is 3rd frame displayed?
-		bne.s	locret_9F76	; if not, branch
-		movea.l	objoff_3C(a0),a1	; get parent object address
-		move.b	#6,obRoutine(a1) ; delete parent object
-		clr.b	(v_player+obAnim).w ; make Sonic invisible
-		move.b	#1,(f_bigring).w ; stop	Sonic getting bonuses
-		clr.b	(v_invinc).w	; remove invincibility
-		clr.b	(v_shield).w	; remove shield
+		cmpi.b	#8,obFrame(a0)			; has animation	finished?
+		bhs.s	Flash_End				; if yes, branch
+		cmpi.b	#3,obFrame(a0)			; is 3rd frame displayed?
+		bne.s	locret_9F76				; if not, branch
+		movea.l	objoff_3C(a0),a1		; get parent object address
+		move.b	#6,obRoutine(a1)		; delete parent object
+		clr.b	(v_player+obAnim).w		; make Sonic invisible
+		move.b	#1,(f_bigring).w		; stop Sonic getting bonuses
+		andi.b	#~(mask2ndShield+mask2ndInvinc),(v_player+obStatus2nd).w	; Should clear Shield and Invincibility ($FC)
 
 locret_9F76:
 		rts	

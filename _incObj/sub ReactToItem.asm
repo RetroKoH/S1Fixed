@@ -177,8 +177,8 @@ React_Monitor:
 ; ===========================================================================
 
 React_Enemy:
-		tst.b	(v_invinc).w				; is Sonic invincible?
-		bne.s	.donthurtsonic				; if yes, branch
+		btst	#sta2ndInvinc,obStatus2nd(a0)	; is Sonic invincible?
+		bne.s	.donthurtsonic					; if yes, branch
 
 	if SpinDashEnabled=1	; Mercury Spin Dash
 		cmpi.b	#aniID_SpinDash,obAnim(a0)	; is Sonic Spin Dashing?
@@ -271,8 +271,8 @@ React_Caterkiller:
 		bset	#7,obStatus(a1)
 
 React_ChkHurt:
-		tst.b	(v_invinc).w	; is Sonic invincible?
-		beq.s	.notinvincible	; if not, branch
+		btst	#sta2ndInvinc,obStatus2nd(a0)	; is Sonic invincible?
+		beq.s	.notinvincible					; if not, branch
 
 .isflashing:
 		moveq	#-1,d0
@@ -296,35 +296,35 @@ React_ChkHurt:
 
 
 HurtSonic:
-		tst.b	(v_shield).w			; does Sonic have a shield?
-		bne.s	.hasshield				; if yes, branch
-		tst.w	(v_rings).w				; does Sonic have any rings?
-		beq.w	.norings				; if not, branch
+		btst	#sta2ndShield,obStatus2nd(a0)	; does Sonic have a shield?
+		bne.s	.hasshield						; if yes, branch
+		tst.w	(v_rings).w						; does Sonic have any rings?
+		beq.w	.norings						; if not, branch
 
 		jsr		(FindFreeObj).l
 		bne.s	.hasshield
-		_move.b	#id_RingLoss,obID(a1)	; load bouncing multi rings object
+		_move.b	#id_RingLoss,obID(a1)			; load bouncing multi rings object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 
 .hasshield:
-		clr.b	(v_shield).w			; remove shield
+		bclr	#sta2ndShield,obStatus2nd(a0)	; remove shield
 		move.b	#4,obRoutine(a0)
 		bsr.w	Sonic_ResetOnFloor
 		bset	#staAir,obStatus(a0)
-		move.w	#-$400,obVelY(a0)		; make Sonic bounce away from the object
+		move.w	#-$400,obVelY(a0)				; make Sonic bounce away from the object
 		move.w	#-$200,obVelX(a0)
-		btst	#staWater,obStatus(a0)	; is Sonic underwater?
-		beq.s	.isdry					; if not, branch
+		btst	#staWater,obStatus(a0)			; is Sonic underwater?
+		beq.s	.isdry							; if not, branch
 
-		move.w	#-$200,obVelY(a0)		; slower bounce
+		move.w	#-$200,obVelY(a0)				; slower bounce
 		move.w	#-$100,obVelX(a0)
 
 .isdry:
 		move.w	obX(a0),d0
 		cmp.w	obX(a2),d0
-		blo.s	.isleft					; if Sonic is left of the object, branch
-		neg.w	obVelX(a0)				; if Sonic is right of the object, reverse
+		blo.s	.isleft							; if Sonic is left of the object, branch
+		neg.w	obVelX(a0)						; if Sonic is right of the object, reverse
 
 .isleft:
 	if SpinDashEnabled=1
@@ -362,9 +362,9 @@ HurtSonic:
 
 
 KillSonic:
-		tst.w	(v_debuguse).w	; is debug mode	active?
-		bne.s	.dontdie	; if yes, branch
-		clr.b	(v_invinc).w	; remove invincibility
+		tst.w	(v_debuguse).w					; is debug mode	active?
+		bne.s	.dontdie						; if yes, branch
+		bclr	#sta2ndInvinc,obStatus2nd(a0)	; remove invincibility
 		move.b	#6,obRoutine(a0)
 		jsr		(Sonic_ResetOnFloor).l
 		bset	#staAir,obStatus(a0)

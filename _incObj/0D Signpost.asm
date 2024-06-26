@@ -121,7 +121,7 @@ Sign_SparkPos:
 
 Sign_SonicRun:	; Routine 6
 		tst.w	(v_debuguse).w	; is debug mode	on?
-		bne.w	locret_ECEE	; if yes, branch
+		bne.s	ret_EC86	; if yes, branch
 	; Signpost Routine Fix
 	; This function's checks are a mess, creating an edgecase where it's
 	; possible for the player to avoid having their controls locked by
@@ -130,7 +130,7 @@ Sign_SonicRun:	; Routine 6
 		tst.b	(v_player+obID).w			; Check if Sonic's object has been deleted (because he entered the giant ring)
 		beq.s	loc_EC86
 		btst	#staAir,(v_player+obStatus).w
-		bne.w	locret_ECEE
+		bne.s	ret_EC86
 	; Signpost Routine Fix End
 		move.b	#1,(f_lockctrl).w			; lock controls
 		move.w	#btnR<<8,(v_jpadhold2).w	; make Sonic run to the right
@@ -139,7 +139,10 @@ Sign_SonicRun:	; Routine 6
 		move.w	(v_limitright2).w,d1
 		addi.w	#$128,d1
 		cmp.w	d1,d0
-		blo.s	locret_ECEE
+		bhs.s	loc_EC86
+
+ret_EC86:		; Added this rts label to optimize three branches above.
+		rts
 
 loc_EC86:
 		addq.b	#2,obRoutine(a0)
@@ -156,8 +159,8 @@ GotThroughAct:
 		tst.b	(v_endcard).w
 		bne.s	locret_ECEE
 		move.w	(v_limitright2).w,(v_limitleft2).w
-		clr.b	(v_invinc).w	; disable invincibility
-		clr.b	(f_timecount).w	; stop time counter
+		bclr	#sta2ndInvinc,(v_player+obStatus2nd).w	; disable invincibility
+		clr.b	(f_timecount).w							; stop time counter
 		move.b	#id_GotThroughCard,(v_endcard).w
 		
 	; AURORA☆FIELDS Title Card Optimization

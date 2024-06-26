@@ -37,10 +37,10 @@ Shi_Main:	; Routine 0
 ; ===========================================================================
 
 Shi_Shield:	; Routine 2
-		tst.b	(v_invinc).w		; does Sonic have invincibility?
-		bne.s	.remove				; if yes, branch
-		tst.b	(v_shield).w		; does Sonic have shield?
-		beq.s	.delete				; if not, branch
+		btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; does Sonic have invincibility?
+		bne.s	.remove									; if yes, branch
+		btst	#sta2ndShield,(v_player+obStatus2nd).w	; does Sonic have shield?
+		beq.s	.delete									; if not, branch
 		move.w	(v_player+obX).w,obX(a0)
 		move.w	(v_player+obY).w,obY(a0)
 		move.b	(v_player+obStatus).w,obStatus(a0)
@@ -73,9 +73,9 @@ Shi_Shield:	; Routine 2
 ; ===========================================================================
 
 Shi_Stars:	; Routine 4
-		tst.b	(v_invinc).w		; does Sonic have invincibility?
-		beq.w	Shi_Start_Delete	; if not, branch
-		move.w	(v_trackpos).w,d0	; get index value for tracking data
+		btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; does Sonic have invincibility?
+		beq.w	Shi_Start_Delete						; if not, branch
+		move.w	(v_trackpos).w,d0						; get index value for tracking data
 		move.b	obAnim(a0),d1
 		subq.b	#1,d1
 

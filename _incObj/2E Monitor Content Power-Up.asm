@@ -51,11 +51,11 @@ Pow_ChkEggman:
 		move.b	obAnim(a0),d0
 		cmpi.b	#1,d0		; does monitor contain Eggman?
 		bne.s	Pow_ChkSonic
-		rts			; Eggman monitor does nothing
+		rts					; Eggman monitor does nothing
 ; ===========================================================================
 
 Pow_ChkSonic:
-		cmpi.b	#2,d0				; does monitor contain Sonic?
+		cmpi.b	#2,d0		; does monitor contain Sonic?
 		bne.s	Pow_ChkShoes
 
 ExtraLife:
@@ -71,50 +71,50 @@ ExtraLife:
 ; ===========================================================================
 
 Pow_ChkShoes:
-		cmpi.b	#3,d0			; does monitor contain speed shoes?
+		cmpi.b	#3,d0		; does monitor contain speed shoes?
 		bne.s	Pow_ChkShield
 
-		move.b	#1,(v_shoes).w				; speed up the BG music
-		move.b	#$96,(v_player+obShoes).w	; time limit for the power-up -- RetroKoH Sonic SST Compaction
-		movem.l a0-a2,-(sp)					; Move a0, a1 and a2 onto stack
-		lea     (v_player).w,a0				; Load Sonic to a0
-		lea		(v_sonspeedmax).w,a2		; Load Sonic_top_speed into a2
-		jsr		ApplySpeedSettings			; Fetch Speed settings
-		movem.l (sp)+,a0-a2					; Move a0, a1 and a2 from stack
+		bset	#sta2ndShoes,(v_player+obStatus2nd).w	; speed up the BG music
+		move.b	#$96,(v_player+obShoes).w				; time limit for the power-up -- RetroKoH Sonic SST Compaction
+		movem.l a0-a2,-(sp)								; Move a0, a1 and a2 onto stack
+		lea     (v_player).w,a0							; Load Sonic to a0
+		lea		(v_sonspeedmax).w,a2					; Load Sonic_top_speed into a2
+		jsr		ApplySpeedSettings						; Fetch Speed settings
+		movem.l (sp)+,a0-a2								; Move a0, a1 and a2 from stack
 		move.w	#bgm_Speedup,d0
-		jmp		(PlaySound).l				; Speed	up the music
+		jmp		(PlaySound).l							; Speed	up the music
 ; ===========================================================================
 
 Pow_ChkShield:
 		cmpi.b	#4,d0		; does monitor contain a shield?
 		bne.s	Pow_ChkInvinc
 
-		move.b	#1,(v_shield).w	; give Sonic a shield
-		move.b	#id_ShieldItem,(v_shieldobj).w ; load shield object ($38)
+		bset	#sta2ndShield,(v_player+obStatus2nd).w	; give Sonic a shield
+		move.b	#id_ShieldItem,(v_shieldobj).w			; load shield object ($38)
 		move.w	#sfx_Shield,d0
-		jmp	(PlaySound).l	; play shield sound
+		jmp		(PlaySound).l							; play shield sound
 ; ===========================================================================
 
 Pow_ChkInvinc:
-		cmpi.b	#5,d0				; does monitor contain invincibility?
+		cmpi.b	#5,d0		; does monitor contain invincibility?
 		bne.s	Pow_ChkRings
 
-		move.b	#1,(v_invinc).w					; make Sonic invincible
-		move.b	#$96,(v_player+obInvinc).w		; time limit for the power-up -- RetroKoH Sonic SST Compaction
-		move.b	#id_ShieldItem,(v_starsobj1).w	; load stars object ($3801)
+		bset	#sta2ndInvinc,(v_player+obStatus2nd).w	; make Sonic invincible
+		move.b	#$96,(v_player+obInvinc).w				; time limit for the power-up -- RetroKoH Sonic SST Compaction
+		move.b	#id_ShieldItem,(v_starsobj1).w			; load stars object ($3801)
 		move.b	#1,(v_starsobj1+obAnim).w
-		move.b	#id_ShieldItem,(v_starsobj2).w	; load stars object ($3802)
+		move.b	#id_ShieldItem,(v_starsobj2).w			; load stars object ($3802)
 		move.b	#2,(v_starsobj2+obAnim).w
-		move.b	#id_ShieldItem,(v_starsobj3).w	; load stars object ($3803)
+		move.b	#id_ShieldItem,(v_starsobj3).w			; load stars object ($3803)
 		move.b	#3,(v_starsobj3+obAnim).w
-		move.b	#id_ShieldItem,(v_starsobj4).w	; load stars object ($3804)
+		move.b	#id_ShieldItem,(v_starsobj4).w			; load stars object ($3804)
 		move.b	#4,(v_starsobj4+obAnim).w
-		tst.b	(f_lockscreen).w	; is boss mode on?
-		bne.s	Pow_NoMusic			; if yes, branch
+		tst.b	(f_lockscreen).w						; is boss mode on?
+		bne.s	Pow_NoMusic								; if yes, branch
 		cmpi.b	#$C,(v_air).w
 		bls.s	Pow_NoMusic
 		move.w	#bgm_Invincible,d0
-		jmp		(PlaySound).l		; play invincibility music
+		jmp		(PlaySound).l							; play invincibility music
 ; ===========================================================================
 
 Pow_NoMusic:

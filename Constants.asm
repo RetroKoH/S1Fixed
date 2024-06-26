@@ -180,7 +180,7 @@ obShoes:		equ $32			; Speed Shoes timer
 obFrontAngle:	equ $36			; angle on ground in front of sprite
 obRearAngle:	equ $37			; angle on ground behind sprite
 obOnWheel:		equ $38			; on convex wheel flag
-obStatus2:		equ $39			; secondary status counter
+obStatus2nd:	equ $39			; secondary status counter
 obRestartTimer:	equ $3A			; level restart timer (1 byte)
 							; $3B obSpinDashCounter+1
 obJumping:		equ $3C			; jumping flag
@@ -193,7 +193,8 @@ obSpinDashFlag:	equ $2A					; spin dash/peelout flag - if toggled off, this is u
 obSpinDashCounter:	equ obRestartTimer	; Counter used for the Spin Dash and/or Peelout (2 bytes) - if toggled off, this is unused.
 	endif
 ; ---------------------------------------------------------------------------
-
+; obStatus bitfield variables
+;
 ; Sonic's status bits (status)
 staFacing:		equ 0 ; status Facing is cleared when facing right, and set when facing left.
 staAir:			equ 1 ; status Air notes whether or not Sonic is in the air.
@@ -204,27 +205,47 @@ staPush:		equ 5 ; status Push notes whether or not Sonic is pushing an object.
 staWater:		equ 6 ; status Water is set when Sonic is in the water.
 staSSJump:		equ 7 ; status SSJump is set when Sonic jumps in a Special Stage.
 ; Sonic's status masks
-maskFacing:		equ 1<<staFacing		; 1
-maskAir:		equ 1<<staAir			; 2
-maskSpin:		equ 1<<staSpin			; 4
-maskOnObj:		equ 1<<staOnObj			; 8
+maskFacing:		equ 1<<staFacing		; $01
+maskAir:		equ 1<<staAir			; $02
+maskSpin:		equ 1<<staSpin			; $04
+maskOnObj:		equ 1<<staOnObj			; $08
 maskRollJump:	equ 1<<staRollJump		; $10
 maskPush:		equ 1<<staPush			; $20
 maskWater:		equ 1<<staWater			; $40
+;
 ; Other objects' status bits
 staFlipX:		equ 0 ; status FlipX is cleared when facing left, and set when facing right.
 staFlipY:		equ 1 ; status FlipY is set if the sprite is flipped vertically. Cleared otherwise.
 staSonicOnObj:	equ 3 ; status SonicOnObj notes whether or not Sonic is standing on the object. Bit 4 would test for Player 2
 staSonicPush:	equ 5 ; status Push notes whether or not Sonic is pushing the object. Bit 6 would test for Player 2
 ; Other objects' status masks
-maskFlipX:		equ 1<<staFlipX			; 1
-maskFlipY:		equ 1<<staFlipY			; 2
+maskFlipX:		equ 1<<staFlipX			; $01
+maskFlipY:		equ 1<<staFlipY			; $02
 	; 4
-maskSonicOnObj:	equ 1<<staSonicOnObj	; 8
+maskSonicOnObj:	equ 1<<staSonicOnObj	; $08
 	; $10
 maskSonicPush:	equ 1<<staSonicPush		; $20
 	; $40
 ; ---------------------------------------------------------------------------
+; status_secondary bitfield variables
+;
+; status_secondary variable bit numbers
+sta2ndShield:	equ	0
+sta2ndInvinc:	equ	1
+sta2ndShoes:	equ	2
+
+sta2ndFShield:	equ 4
+sta2ndLShield:	equ 5
+sta2ndBShield:	equ 6
+
+; status_secondary variable masks
+mask2ndShield:	equ	1<<sta2ndShield		; $01
+mask2ndInvinc:	equ	1<<sta2ndInvinc		; $02
+mask2ndShoes:	equ	1<<sta2ndShoes		; $04
+
+mask2ndFShield:	equ	1<<sta2ndFShield	; $10
+mask2ndLShield:	equ	1<<sta2ndLShield	; $20
+mask2ndBShield:	equ	1<<sta2ndBShield	; $40
 
 ; Miscellaneous object scratch-RAM
 objoff_25:	equ $25

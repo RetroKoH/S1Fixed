@@ -2375,36 +2375,33 @@ Level_ChkWater:
 
 Level_LoadObj:
 		jsr		(ObjPosLoad).l
-		jsr		(RingsManager).l	; RetroKoH S2 Rings Manager
+		jsr		(RingsManager).l		; RetroKoH S2 Rings Manager
 		jsr		(ExecuteObjects).l
 		jsr		(BuildSprites).l
-		tst.b	(v_lastlamp).w		; are you starting from	a lamppost?
-		bne.s	Level_SkipClr		; if yes, branch
-		clr.w	(v_rings).w			; clear rings
-		clr.l	(v_time).w			; clear time
-		clr.b	(v_lifecount).w		; clear lives counter
+		tst.b	(v_lastlamp).w			; are you starting from	a lamppost?
+		bne.s	Level_SkipClr			; if yes, branch
+		clr.w	(v_rings).w				; clear rings
+		clr.l	(v_time).w				; clear time
+		clr.b	(v_lifecount).w			; clear lives counter
 
 Level_SkipClr:
 		clr.b	(f_timeover).w
-		clr.b	(v_shield).w		; clear shield
-		clr.b	(v_invinc).w		; clear invincibility
-		clr.b	(v_shoes).w			; clear speed shoes
 		clr.w	(v_debuguse).w
 		clr.w	(f_restart).w
 		clr.w	(v_framecount).w
 		bsr.w	OscillateNumInit
-		move.b	#1,(f_scorecount).w	; update score counter
-		move.b	#1,(f_ringcount).w	; update rings counter
-		move.b	#1,(f_timecount).w	; update time counter
+		move.b	#1,(f_scorecount).w		; update score counter
+		move.b	#1,(f_ringcount).w		; update rings counter
+		move.b	#1,(f_timecount).w		; update time counter
 		clr.w	(v_btnpushtime1).w
-		lea		(DemoDataPtr).l,a1	; load demo data
+		lea		(DemoDataPtr).l,a1		; load demo data
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
 		lsl.w	#2,d0
 		movea.l	(a1,d0.w),a1
-		tst.w	(f_demo).w	; is demo mode on?
-		bpl.s	Level_Demo	; if yes, branch
-		lea		(DemoEndDataPtr).l,a1 ; load ending demo data
+		tst.w	(f_demo).w				; is demo mode on?
+		bpl.s	Level_Demo				; if yes, branch
+		lea		(DemoEndDataPtr).l,a1	; load ending demo data
 		move.w	(v_creditsnum).w,d0
 		subq.w	#1,d0
 		lsl.w	#2,d0
@@ -3330,9 +3327,6 @@ End_LoadSonic:
 		clr.w	(v_rings).w
 		clr.l	(v_time).w
 		clr.b	(v_lifecount).w
-		clr.b	(v_shield).w
-		clr.b	(v_invinc).w
-		clr.b	(v_shoes).w
 		clr.w	(v_debuguse).w
 		clr.w	(f_restart).w
 		clr.w	(v_framecount).w
@@ -6346,8 +6340,8 @@ ResumeMusic:
 		move.w	#bgm_SBZ,d0					; play SBZ music
 
 .notsbz:
-		tst.b	(v_invinc).w				; is Sonic invincible?
-		beq.s	.notinvinc					; if not, branch
+		btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; is Sonic invincible?
+		beq.s	.notinvinc								; if not, branch
 		move.w	#bgm_Invincible,d0
 
 .notinvinc:
