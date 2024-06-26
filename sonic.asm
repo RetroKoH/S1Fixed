@@ -2289,7 +2289,7 @@ Level_ClrRam:
 		move.b	#1,(f_water).w	; enable water
 
 Level_LoadPal:
-		move.w	#30,(v_air).w
+		move.b	#30,(v_air).w
 		enable_ints
 		moveq	#palid_Sonic,d0
 		bsr.w	PalLoad2	; load Sonic's palette
@@ -3285,7 +3285,7 @@ GM_Ending:
 		move.w	#$8720,(a6)		; set background colour (line 3; colour 0)
 		move.w	#$8A00+223,(v_hbla_hreg).w ; set palette change position (for water)
 		move.w	(v_hbla_hreg).w,(a6)
-		move.w	#30,(v_air).w
+		move.b	#30,(v_air).w
 		move.w	#id_EndZ<<8,(v_zone).w ; set level number to 0600 (extra flowers)
 		cmpi.b	#6,(v_emeralds).w ; do you have all 6 emeralds?
 		beq.s	End_LoadData	; if yes, branch
@@ -6338,7 +6338,7 @@ loc_12EA6:
 
 
 ResumeMusic:
-		cmpi.w	#12,(v_air).w				; more than 12 seconds of air left?
+		cmpi.b	#12,(v_air).w				; more than 12 seconds of air left?
 		bhi.s	.over12						; if yes, branch
 		move.w	#bgm_LZ,d0					; play LZ music
 		cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; check if level is 0103 (SBZ3)
@@ -6356,10 +6356,10 @@ ResumeMusic:
 		move.w	#bgm_Boss,d0
 
 .playselected:
-		jsr	(PlaySound).l
+		jsr		(PlaySound).l
 
 .over12:
-		move.w	#30,(v_air).w				; reset air to 30 seconds
+		move.b	#30,(v_air).w				; reset air to 30 seconds
 		clr.b	(v_sonicbubbles+$32).w
 		rts	
 ; End of function ResumeMusic

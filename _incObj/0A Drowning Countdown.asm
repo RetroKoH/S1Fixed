@@ -107,11 +107,11 @@ Drown_Delete:	; Routine 8, Routine $10
 ; ===========================================================================
 
 Drown_AirLeft:	; Routine $C
-		cmpi.w	#$C,(v_air).w	; check air remaining
-		bhi.s	Drown_AirLeft_Delete		; if higher than $C, branch
+		cmpi.b	#$C,(v_air).w						; check air remaining
+		bhi.s	Drown_AirLeft_Delete				; if higher than $C, branch
 		subq.w	#1,drown_time(a0)
 		bne.s	.display
-		move.b	#id_Drown_Display+8,obRoutine(a0) ; goto Drown_Display next
+		move.b	#id_Drown_Display+8,obRoutine(a0)	; goto Drown_Display next
 		addq.b	#7,obAnim(a0)
 		bra.s	Drown_Display
 ; ===========================================================================
@@ -185,19 +185,19 @@ Drown_Countdown:; Routine $A
 		jsr	(RandomNumber).l
 		andi.w	#1,d0
 		move.b	d0,objoff_34(a0)
-		move.w	(v_air).w,d0	; check air remaining
-		cmpi.w	#25,d0
-		beq.s	.warnsound	; play sound if	air is 25
-		cmpi.w	#20,d0
+		move.b	(v_air).w,d0	; check air remaining
+		cmpi.b	#25,d0
+		beq.s	.warnsound		; play sound if	air is 25
+		cmpi.b	#20,d0
 		beq.s	.warnsound
-		cmpi.w	#15,d0
+		cmpi.b	#15,d0
 		beq.s	.warnsound
-		cmpi.w	#12,d0
-		bhi.s	.reduceair	; if air is above 12, branch
+		cmpi.b	#12,d0
+		bhi.s	.reduceair		; if air is above 12, branch
 
-		bne.s	.skipmusic	; if air is less than 12, branch
+		bne.s	.skipmusic		; if air is less than 12, branch
 		move.w	#bgm_Drowning,d0
-		jsr	(PlaySound).l	; play countdown music
+		jsr		(PlaySound).l	; play countdown music
 
 .skipmusic:
 		subq.b	#1,objoff_32(a0)
@@ -209,10 +209,10 @@ Drown_Countdown:; Routine $A
 
 .warnsound:
 		move.w	#sfx_Warning,d0
-		jsr	(PlaySound_Special).l		; play "ding-ding" warning sound
+		jsr		(PlaySound_Special).l		; play "ding-ding" warning sound
 
 .reduceair:
-		subq.w	#1,(v_air).w			; subtract 1 from air remaining
+		subq.b	#1,(v_air).w			; subtract 1 from air remaining
 		bcc.w	.gotomakenum			; if air is above 0, branch
 
 		; Sonic drowns here
@@ -294,9 +294,9 @@ Drown_Countdown:; Routine $A
 .loc_1403E:
 		btst	#7,objoff_36(a0)
 		beq.s	.loc_14082
-		move.w	(v_air).w,d2
-		lsr.w	#1,d2
-		jsr	(RandomNumber).l
+		move.b	(v_air).w,d2
+		lsr.b	#1,d2
+		jsr		(RandomNumber).l
 		andi.w	#3,d0
 		bne.s	.loc_1406A
 		bset	#6,objoff_36(a0)

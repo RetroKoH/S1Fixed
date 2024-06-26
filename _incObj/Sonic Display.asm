@@ -34,13 +34,13 @@ Sonic_Display:
 .chkremoveinvinc:
 		tst.b	(f_lockscreen).w
 		bne.s	.removeinvincible
-		cmpi.w	#$C,(v_air).w
+		cmpi.b	#$C,(v_air).w
 		blo.s	.removeinvincible
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
-		cmpi.w	#(id_LZ<<8)+3,(v_zone).w ; check if level is SBZ3
+		cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; check if level is SBZ3
 		bne.s	.music
-		moveq	#5,d0				; play SBZ music
+		moveq	#5,d0						; play SBZ music
 
 .music:
 		lea		(MusicList2).l,a1

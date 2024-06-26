@@ -295,8 +295,8 @@ loc_130BA:
 		move.w	#sfx_Skid,d0
 		jsr		(PlaySound_Special).l	; play stopping sound
 	if SkidDustEnabled=1
-		;cmpi.b	#$C,(v_air)
-		;bcs.s	locret_130E8			; if he's drowning, branch to not make dust
+		cmpi.b	#$C,(v_air)
+		bcs.s	locret_130E8			; if he's drowning, branch to not make dust
 		move.b	#6,(v_playerdust+obRoutine).w
 	endif
 
@@ -353,8 +353,8 @@ loc_13120:
 		move.w	#sfx_Skid,d0
 		jsr		(PlaySound_Special).l	; play stopping sound
 	if SkidDustEnabled=1
-		;cmpi.b	#$C,(v_air)
-		;bcs.s	locret_1314E			; if he's drowning, branch to not make dust
+		cmpi.b	#$C,(v_air)
+		bcs.s	locret_1314E			; if he's drowning, branch to not make dust
 		move.b	#6,(v_playerdust+obRoutine).w
 	endif
 

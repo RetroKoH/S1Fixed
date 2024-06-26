@@ -440,19 +440,19 @@ v_zone:			ds.b	1		; current zone number
 v_act:			ds.b	1		; current act number
 v_lives:		ds.b	1		; number of lives
 			ds.b	1		; unused
-v_air:			ds.w	1		; air remaining while underwater
-v_airbyte = v_air+1				; low byte for air
+v_air:				ds.b	1		; air remaining while underwater
+			ds.b	1		; unused
 v_lastspecial:		ds.b	1		; last special stage number
 			ds.b	1		; unused
 v_continues:		ds.b	1		; number of continues
 			ds.b	1		; unused
-f_timeover:		ds.b	1		; time over flag
+f_timeover:			ds.b	1		; time over flag
 v_lifecount:		ds.b	1		; lives counter value (for actual number, see "v_lives")
 f_lifecount:		ds.b	1		; lives counter update flag
 f_ringcount:		ds.b	1		; ring counter update flag
 f_timecount:		ds.b	1		; time counter update flag
 f_scorecount:		ds.b	1		; score counter update flag
-v_rings:		ds.w	1		; rings
+v_rings:			ds.w	1		; rings
 v_ringbyte = v_rings+1				; low byte for rings
 v_time:			ds.l	1		; time
 v_timemin = v_time+1				; time - minutes

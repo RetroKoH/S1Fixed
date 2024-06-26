@@ -25,8 +25,8 @@ Sonic_ChkSpinDash:
 		clr.w	obSpinDashCounter(a0)
 	endc	; Spin Dash Cancel End
 
-	;	cmpi.b	#$C,(v_air).w			; if he's drowning, branch to not make dust
-	;	bcs.s	.nodust
+		cmpi.b	#$C,(v_air).w			; if he's drowning, branch to not make dust
+		bcs.s	.nodust
 		move.b	#1,(v_playerdust+obAnim).w
 .nodust:
 		bsr.w	Sonic_LevelBound
