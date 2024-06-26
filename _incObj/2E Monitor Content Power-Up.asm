@@ -9,9 +9,9 @@ PowerUp:
 		jmp		Pow_Index(pc,d1.w)
 ; ===========================================================================
 Pow_Index:
-		dc.w Pow_Main-Pow_Index
-		dc.w Pow_Move-Pow_Index
-		dc.w Pow_Delete-Pow_Index
+		dc.w	Pow_Main-Pow_Index
+		dc.w	Pow_Move-Pow_Index
+		dc.w	Pow_Delete-Pow_Index
 ; ===========================================================================
 
 Pow_Main:	; Routine 0
@@ -47,17 +47,36 @@ Pow_Checks:
 		addq.b	#2,obRoutine(a0)
 		move.w	#29,obTimeFrame(a0) ; display icon for half a second
 
-Pow_ChkEggman:
+	; RetroKoH Powerup Optimization
+		moveq	#0,d0
 		move.b	obAnim(a0),d0
-		cmpi.b	#1,d0		; does monitor contain Eggman?
-		bne.s	Pow_ChkSonic
+		add.w	d0,d0
+		move.w	Pow_Types(pc,d0.w),d0
+		jmp		Pow_Types(pc,d0.w)
+; ===========================================================================
+	; Lookup table replaces the old system
+Pow_Types:
+		dc.w Pow_Null-Pow_Types		; 0 - Static
+		dc.w Pow_Eggman-Pow_Types	; 1 - Eggman/Robotnik
+		dc.w Pow_Sonic-Pow_Types	; 2 - 1-Up
+		dc.w Pow_Shoes-Pow_Types	; 3 - Speed Shoes
+		dc.w Pow_Shield-Pow_Types	; 4 - Shield
+		dc.w Pow_Invinc-Pow_Types	; 5 - Invincibility
+		dc.w Pow_Rings-Pow_Types	; 6 - Rings
+		dc.w Pow_S-Pow_Types		; 7 - S
+		dc.w Pow_Goggles-Pow_Types	; 8 - Goggles
+	;	dc.w Pow_FShield-Pow_Types	; $9 - Flame Shield
+	;	dc.w Pow_BShield-Pow_Types	; $A - Lightning Shield
+	;	dc.w Pow_LShield-Pow_Types	; $B - Bubble Shield
+; ===========================================================================
+	; Each powerup no longer requires a series of cmpi checks and branches.
+
+Pow_Null:
+Pow_Eggman:
 		rts					; Eggman monitor does nothing
 ; ===========================================================================
 
-Pow_ChkSonic:
-		cmpi.b	#2,d0		; does monitor contain Sonic?
-		bne.s	Pow_ChkShoes
-
+Pow_Sonic:
 ExtraLife:
 	; Mercury Lives Over/Underflow Fix
 		cmpi.b	#99,(v_lives).w		; are lives at max?
@@ -70,10 +89,7 @@ ExtraLife:
 		jmp		(PlaySound).l		; play extra life music
 ; ===========================================================================
 
-Pow_ChkShoes:
-		cmpi.b	#3,d0		; does monitor contain speed shoes?
-		bne.s	Pow_ChkShield
-
+Pow_Shoes:
 		bset	#sta2ndShoes,(v_player+obStatus2nd).w	; speed up the BG music
 		move.b	#$96,(v_player+obShoes).w				; time limit for the power-up -- RetroKoH Sonic SST Compaction
 		movem.l a0-a2,-(sp)								; Move a0, a1 and a2 onto stack
@@ -85,20 +101,14 @@ Pow_ChkShoes:
 		jmp		(PlaySound).l							; Speed	up the music
 ; ===========================================================================
 
-Pow_ChkShield:
-		cmpi.b	#4,d0		; does monitor contain a shield?
-		bne.s	Pow_ChkInvinc
-
+Pow_Shield:
 		bset	#sta2ndShield,(v_player+obStatus2nd).w	; give Sonic a shield
 		move.b	#id_ShieldItem,(v_shieldobj).w			; load shield object ($38)
 		move.w	#sfx_Shield,d0
 		jmp		(PlaySound).l							; play shield sound
 ; ===========================================================================
 
-Pow_ChkInvinc:
-		cmpi.b	#5,d0		; does monitor contain invincibility?
-		bne.s	Pow_ChkRings
-
+Pow_Invinc:
 		bset	#sta2ndInvinc,(v_player+obStatus2nd).w	; make Sonic invincible
 		move.b	#$96,(v_player+obInvinc).w				; time limit for the power-up -- RetroKoH Sonic SST Compaction
 		move.b	#id_ShieldItem,(v_starsobj1).w			; load stars object ($3801)
@@ -110,21 +120,18 @@ Pow_ChkInvinc:
 		move.b	#id_ShieldItem,(v_starsobj4).w			; load stars object ($3804)
 		move.b	#4,(v_starsobj4+obAnim).w
 		tst.b	(f_lockscreen).w						; is boss mode on?
-		bne.s	Pow_NoMusic								; if yes, branch
+		bne.s	.nomusic								; if yes, branch
 		cmpi.b	#$C,(v_air).w
-		bls.s	Pow_NoMusic
+		bls.s	.nomusic
 		move.w	#bgm_Invincible,d0
 		jmp		(PlaySound).l							; play invincibility music
 ; ===========================================================================
 
-Pow_NoMusic:
+.nomusic:
 		rts	
 ; ===========================================================================
 
-Pow_ChkRings:
-		cmpi.b	#6,d0		; does monitor contain 10 rings?
-		bne.s	Pow_ChkS
-
+Pow_Rings:
 		addi.w	#10,(v_rings).w	; add 10 rings to the number of rings you have
 		ori.b	#1,(f_ringcount).w ; update the ring counter
 		cmpi.w	#100,(v_rings).w ; check if you have 100 rings
@@ -138,15 +145,11 @@ Pow_ChkRings:
 
 Pow_RingSound:
 		move.w	#sfx_Ring,d0
-		jmp	(PlaySound).l	; play ring sound
+		jmp		(PlaySound).l	; play ring sound
 ; ===========================================================================
 
-Pow_ChkS:
-		cmpi.b	#7,d0		; does monitor contain 'S'?
-		bne.s	Pow_ChkEnd
-		nop	
-
-Pow_ChkEnd:
+Pow_S:
+Pow_Goggles:
 		rts			; 'S' and goggles monitors do nothing
 ; ===========================================================================
 

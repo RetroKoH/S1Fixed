@@ -42,7 +42,7 @@ Drown_Main:	; Routine 0
 		move.b	obSubtype(a0),d0		; get bubble type
 		bpl.s	.smallbubble			; branch if $00-$7F
 
-		addq.b	#8,obRoutine(a0)	; goto Drown_Countdown next
+		addq.b	#8,obRoutine(a0)		; goto Drown_Countdown next
 		move.l	#Map_Drown,obMap(a0)
 		move.w	#make_art_tile(ArtTile_LZ_Sonic_Drowning,0,0),obGfx(a0)
 		andi.w	#$7F,d0
@@ -64,7 +64,7 @@ Drown_ChkWater:	; Routine 4
 		cmp.w	obY(a0),d0	; has bubble reached the water surface?
 		blo.s	.wobble		; if not, branch
 
-		move.b	#id_Drown_Display,obRoutine(a0) ; goto Drown_Display next
+		move.b	#id_Drown_Display,obRoutine(a0)	; goto Drown_Display next
 		addq.b	#7,obAnim(a0)
 		cmpi.b	#$D,obAnim(a0)
 		beq.s	Drown_Display
@@ -72,8 +72,8 @@ Drown_ChkWater:	; Routine 4
 ; ===========================================================================
 
 .wobble:
-		tst.b	(f_wtunnelmode).w ; is Sonic in a water tunnel?
-		beq.s	.notunnel	; if not, branch
+		tst.b	(f_wtunnelmode).w	; is Sonic in a water tunnel?
+		beq.s	.notunnel			; if not, branch
 		addq.w	#4,drown_origX(a0)
 
 .notunnel:
@@ -174,15 +174,19 @@ Drown_Countdown:; Routine $A
 		tst.w	objoff_2C(a0)
 		bne.w	.loc_13F86
 		cmpi.b	#6,(v_player+obRoutine).w
-		bhs.w	.nocountdown
-		btst	#staWater,(v_player+obStatus).w ; is Sonic underwater?
-		beq.w	.nocountdown	; if not, branch
+		bhs.s	.cantdrown
+	if ShieldsMode>1	; RetroKoH S3K Elemental Shields
+		btst	#sta2ndBShield,(v_status_secondary).w	; does the player have the Bubble Shield?
+		bne.w   @nocountdown
+	endif
+		btst	#staWater,(v_player+obStatus).w			; is Sonic underwater?
+		beq.s	.cantdrown								; if not, branch
 
-		subq.w	#1,drown_time(a0)	; decrement timer
-		bpl.w	.nochange	; branch if time remains
+		subq.w	#1,drown_time(a0)						; decrement timer
+		bpl.w	.nochange								; branch if time remains
 		move.w	#59,drown_time(a0)
 		move.w	#1,objoff_36(a0)
-		jsr	(RandomNumber).l
+		jsr		(RandomNumber).l
 		andi.w	#1,d0
 		move.b	d0,objoff_34(a0)
 		move.b	(v_air).w,d0	; check air remaining
@@ -205,6 +209,9 @@ Drown_Countdown:; Routine $A
 		move.b	objoff_33(a0),objoff_32(a0)
 		bset	#7,objoff_36(a0)
 		bra.s	.reduceair
+
+.cantdrown:
+		rts
 ; ===========================================================================
 
 .warnsound:

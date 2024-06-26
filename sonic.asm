@@ -39,6 +39,7 @@ SkidDustEnabled: = 1					; if set to 1, Skid dust will occur when coming to a st
 SpinDashCancel: = SpinDashEnabled*1		; if set to 1, Spin Dash can be cancelled by not pressing ABC
 SpinDashNoRevDown: = SpinDashEnabled*1	; if set to 1, Spin Dash will not rev down so long as ABC is held down
 PeeloutEnabled: = 1						; if set to 1, Peelout is enabled for Sonic (SFX still don't work properly)
+ShieldsMode: = 0						; 0 - Blue Shield only, 1 - Instashield, 2 - Blue Shield + Elemental, 3 - Elemental only.
 
 	include "MacroSetup.asm"
 	include	"Constants.asm"
