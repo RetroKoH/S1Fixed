@@ -465,7 +465,7 @@ ArtTile_Fireball:				equ $3AA				; ✓ -- MZ and SLZ
 ArtTile_Crabmeat:				equ $3C2				; ✓ -- GHZ and SYZ
 ArtTile_Buzz_Bomber:			equ $406				; ✓ -- GHZ, MZ, SYZ
 ArtTile_Orbinaut:				equ $40A				; ✓ -- LZ and SLZ
-ArtTile_Button:					equ $43D				; ✓ -- MZ, SYZ, LZ
+ArtTile_Button:					equ $43B				; ✓ -- MZ, SYZ, LZ
 ArtTile_Caterkiller:			equ $445				; ✓ -- MZ, SYZ and SBZ
 ArtTile_Yadrin:					equ $455				; ✓ -- MZ and SYZ
 ArtTile_Bomb:					equ $455				; ✓

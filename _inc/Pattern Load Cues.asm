@@ -116,7 +116,7 @@ PLC_LZ:		dc.w ((PLC_LZ2-PLC_LZ-2)/6)-1
 		plcm	Nem_Bubbles,		ArtTile_LZ_Bubbles				; bubbles, numbers and bubbler
 		plcm	Nem_LzBlock3,		ArtTile_LZ_Moving_Block			; 32x16 block
 		plcm	Nem_LzDoor1,		ArtTile_LZ_Door					; vertical door
-		plcm	Nem_Harpoon,		ArtTile_LZ_Harpoon				; harpoon
+		plcm	Nem_LzSwitch,		ArtTile_Button					; switch
 		plcm	Nem_Burrobot,		ArtTile_Burrobot				; burrobot enemy
 
 PLC_LZ2:	dc.w ((PLC_LZ2end-PLC_LZ2-2)/6)-1
@@ -127,7 +127,7 @@ PLC_LZ2:	dc.w ((PLC_LZ2end-PLC_LZ2-2)/6)-1
 		plcm	Nem_LzPlatfm,		ArtTile_LZ_Rising_Platform		; rising platform
 		plcm	Nem_Orbinaut,		ArtTile_Orbinaut				; orbinaut enemy
 		plcm	Nem_Jaws,			ArtTile_Jaws					; jaws enemy
-		plcm	Nem_LzSwitch,		ArtTile_Button					; switch
+		plcm	Nem_Harpoon,		ArtTile_LZ_Harpoon				; harpoon
 		plcm	Nem_Cork,			ArtTile_LZ_Cork					; cork block
 		plcm	Nem_Spikes,			ArtTile_Spikes					; spikes
 		plcm	Nem_HSpring,		ArtTile_Spring_Horizontal		; horizontal spring
