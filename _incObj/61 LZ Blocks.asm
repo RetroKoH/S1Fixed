@@ -6,9 +6,10 @@ LabyrinthBlock:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	LBlk_Index(pc,d0.w),d1
-		jmp	LBlk_Index(pc,d1.w)
+		jmp		LBlk_Index(pc,d1.w)
 ; ===========================================================================
-LBlk_Index:	dc.w LBlk_Main-LBlk_Index
+LBlk_Index:
+		dc.w LBlk_Main-LBlk_Index
 		dc.w LBlk_Action-LBlk_Index
 
 LBlk_Var:
@@ -97,10 +98,10 @@ LBlk_Action:	; Routine 2
 ; ===========================================================================
 
 .wait01:
-		subq.w	#1,lblk_time(a0); decrement waiting time
-		bne.s	.donothing01	; if time remains, branch
-		addq.b	#1,obSubtype(a0) ; goto .type02 or .type04
-		clr.b	lblk_untouched(a0) ; flag block as touched
+		subq.w	#1,lblk_time(a0)	; decrement waiting time
+		bne.s	.donothing01		; if time remains, branch
+		addq.b	#1,obSubtype(a0)	; goto .type02 or .type04
+		clr.b	lblk_untouched(a0)	; flag block as touched
 		rts	
 ; ===========================================================================
 
@@ -109,11 +110,11 @@ LBlk_Action:	; Routine 2
 		bsr.w	SpeedToPos
 		addq.w	#8,obVelY(a0)	; make block fall
 		bsr.w	ObjFloorDist
-		tst.w	d1		; has block hit the floor?
-		bpl.w	.nofloor02	; if not, branch
+		tst.w	d1				; has block hit the floor?
+		bpl.w	.nofloor02		; if not, branch
 		addq.w	#1,d1
 		add.w	d1,obY(a0)
-		clr.w	obVelY(a0)	; stop when it touches the floor
+		clr.w	obVelY(a0)		; stop when it touches the floor
 		clr.b	obSubtype(a0)	; set type to 00 (non-moving type)
 
 .nofloor02:
@@ -121,13 +122,17 @@ LBlk_Action:	; Routine 2
 ; ===========================================================================
 
 .type04:
+	; Devon Note: Placing this object within Fully Solid tiles breaks this
+	; object. See SBZ3 Lower right section after the water tunnel.
+	; Make sure to place within Top-Solid tiles if placing in the ground as
+	; a trap. Consult Clownacy to see if the Top-Solid tiles were a One-28 error.
 		bsr.w	SpeedToPos
 		subq.w	#8,obVelY(a0)	; make block rise
 		bsr.w	ObjHitCeiling
-		tst.w	d1		; has block hit the ceiling?
+		tst.w	d1				; has block hit the ceiling?
 		bpl.w	.noceiling04	; if not, branch
 		sub.w	d1,obY(a0)
-		clr.w	obVelY(a0)	; stop when it touches the ceiling
+		clr.w	obVelY(a0)		; stop when it touches the ceiling
 		clr.b	obSubtype(a0)	; set type to 00 (non-moving type)
 
 .noceiling04:
