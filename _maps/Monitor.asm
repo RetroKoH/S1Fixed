@@ -12,6 +12,9 @@ Map_Monitor_internal:	mappingsTable
 	mappingsTableEntry.w	.shield
 	mappingsTableEntry.w	.invincible
 	mappingsTableEntry.w	.rings
+	mappingsTableEntry.w	.fshield	; Added
+	mappingsTableEntry.w	.bshield	; Added
+	mappingsTableEntry.w	.lshield	; Added
 	mappingsTableEntry.w	.s
 	mappingsTableEntry.w	.goggles
 	mappingsTableEntry.w	.broken
@@ -60,18 +63,33 @@ Map_Monitor_internal:	mappingsTable
 	spritePiece	-$10, -$11, 4, 4, 0, 0, 0, 0, 0
 .rings_End
 
+.fshield:	spriteHeader
+	spritePiece	-8, -$B, 2, 2, $2C, 0, 0, 0, 0	; flame shield monitor
+	spritePiece	-$10, -$11, 4, 4, 0, 0, 0, 1, 0
+.fshield_End
+
+.bshield:	spriteHeader
+	spritePiece	-8, -$B, 2, 2, $30, 0, 0, 0, 0	; bubble shield monitor
+	spritePiece	-$10, -$11, 4, 4, 0, 0, 0, 1, 0
+.bshield_End
+
+.lshield:	spriteHeader
+	spritePiece	-8, -$B, 2, 2, $34, 0, 0, 0, 0	; lightning shield monitor
+	spritePiece	-$10, -$11, 4, 4, 0, 0, 0, 1, 0
+.lshield_End
+
 .s:	spriteHeader
-	spritePiece	-8, -$B, 2, 2, $2C, 0, 0, 0, 0	; 'S' monitor
+	spritePiece	-8, -$B, 2, 2, $38, 0, 0, 0, 0	; 'S' monitor
 	spritePiece	-$10, -$11, 4, 4, 0, 0, 0, 0, 0
 .s_End
 
 .goggles:	spriteHeader
-	spritePiece	-8, -$B, 2, 2, $30, 0, 0, 0, 0	; goggles monitor
+	spritePiece	-8, -$B, 2, 2, $3C, 0, 0, 0, 0	; goggles monitor
 	spritePiece	-$10, -$11, 4, 4, 0, 0, 0, 0, 0
 .goggles_End
 
 .broken:	spriteHeader
-	spritePiece	-$10, -1, 4, 2, $34, 0, 0, 0, 0	; broken monitor
+	spritePiece	-$10, -1, 4, 2, $40, 0, 0, 0, 0	; broken monitor
 .broken_End
 
 	even

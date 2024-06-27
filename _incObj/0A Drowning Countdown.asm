@@ -176,8 +176,8 @@ Drown_Countdown:; Routine $A
 		cmpi.b	#6,(v_player+obRoutine).w
 		bhs.s	.cantdrown
 	if ShieldsMode>1	; RetroKoH S3K Elemental Shields
-		btst	#sta2ndBShield,(v_status_secondary).w	; does the player have the Bubble Shield?
-		bne.w   @nocountdown
+		btst	#sta2ndBShield,(v_player+obStatus2nd).w	; does the player have the Bubble Shield?
+		bne.s   .cantdrown
 	endif
 		btst	#staWater,(v_player+obStatus).w			; is Sonic underwater?
 		beq.s	.cantdrown								; if not, branch

@@ -7,13 +7,41 @@
 
 ReactToItem:
 		nop
-		jsr		Touch_Rings			; RetroKoH S2 Rings Manager
+		jsr		Touch_Rings						; RetroKoH S2 Rings Manager
 
-		move.w	obX(a0),d2			; load Sonic's x-axis position
-		move.w	obY(a0),d3			; load Sonic's y-axis position
+	if ShieldsMode>0
+		move.b	obStatus2nd(a0),d0				; does the player have a Shield or Invincibility?
+		andi.b	#mask2ndChkShield,d0
+		bne.s	.noInstaShield					; if yes, branch
+; By this point, we're focussing purely on the Insta-Shield
+		cmpi.b	#1,obDoubleJumpFlag(a0)			; is the insta-shield active?
+		bne.s	.noInstaShield					; if not, branch
+		move.b	obStatus2nd(a0),d0
+		move.w	d0,-(sp)
+		bset	#sta2ndInvinc,obStatus2nd(a0)	; Set invincibility
+		move.w	obX(a0),d2
+		move.w	obY(a0),d3
+		subi.w	#$18,d2
+		subi.w	#$18,d3
+		move.w	#$30,d4
+		move.w	#$30,d5
+		bsr.s	.chkobjecttype					; check collision flags to see if object is negated by insta-shield
+		move.w	(sp)+,d0
+		btst	#sta2ndInvinc,d0
+		bne.s	.skipclr						; if yes, branch
+		bclr	#sta2ndInvinc,obStatus2nd(a0)	; otherwise, remove invincibility
+
+.skipclr:
+		moveq	#0,d0
+		rts
+
+.noInstaShield
+	endif
+		move.w	obX(a0),d2				; load Sonic's x-axis position
+		move.w	obY(a0),d3				; load Sonic's y-axis position
 		subq.w	#8,d2
 		moveq	#0,d5
-		move.b	obHeight(a0),d5		; load Sonic's height
+		move.b	obHeight(a0),d5			; load Sonic's height
 		subq.b	#3,d5
 		sub.w	d5,d3
 
@@ -33,6 +61,8 @@ ReactToItem:
 	; Ducking Size Fix end
 		move.w	#$10,d4
 		add.w	d5,d5
+
+.chkobjecttype:
 		lea		(v_lvlobjspace).w,a1	; set object RAM start address
 		move.w	#v_lvlobjcount,d6		; (objRAM / objSize) - 1 ($5F)
 
@@ -310,7 +340,7 @@ HurtSonic:
 .hasshield:
 		bclr	#sta2ndShield,obStatus2nd(a0)	; remove shield
 		move.b	#4,obRoutine(a0)
-		bsr.w	Sonic_ResetOnFloor
+		jsr		(Sonic_ResetOnFloor).l
 		bset	#staAir,obStatus(a0)
 		move.w	#-$400,obVelY(a0)				; make Sonic bounce away from the object
 		move.w	#-$200,obVelX(a0)

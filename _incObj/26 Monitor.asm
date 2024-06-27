@@ -34,7 +34,11 @@ Mon_Main:	; Routine 0
 
 		beq.s	.notbroken			; if not, branch
 		move.b	#8,obRoutine(a0)	; run "Mon_Display" routine
-		move.b	#$B,obFrame(a0)		; use broken monitor frame
+	if ShieldsMode>1
+		move.b	#$E,obFrame(a0)		; use new broken monitor frame
+	else
+		move.b	#$B,obFrame(a0)		; use original broken monitor frame
+	endif
 		rts	
 ; ===========================================================================
 
@@ -164,5 +168,9 @@ Mon_Explode:
 		bset	#0,(a2)
 	; S3K Objects Manager End
 
+	if ShieldsMode>1
+		move.b	#$C,obAnim(a0)	; set monitor type to broken
+	else
 		move.b	#9,obAnim(a0)	; set monitor type to broken
+	endif
 		bra.w	DisplaySprite

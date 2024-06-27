@@ -2655,6 +2655,13 @@ ptr_sndD1:	dc.l SoundD1
 ptr_sndD2:	dc.l SoundD2
 ptr_sndD3:	dc.l SoundD3
 ptr_sndD4:	dc.l SoundD4
+ptr_sndD5:	dc.l SoundD5
+ptr_sndD6:	dc.l SoundD6
+ptr_sndD7:	dc.l SoundD7
+ptr_sndD8:	dc.l SoundD8
+ptr_sndD9:	dc.l SoundD9
+ptr_sndDA:	dc.l SoundDA
+ptr_sndDB:	dc.l SoundDB
 ptr_specend
 
 ; ---------------------------------------------------------------------------
@@ -2769,4 +2776,18 @@ SoundD2:	include	"sound/sfx/SndD2 - CDCharge.asm"
 SoundD3:	include	"sound/sfx/SndD3 - CDRelease.asm"
 		even
 SoundD4:	include	"sound/sfx/SndD4 - CDStop.asm"
+		even
+SoundD5:	include	"sound/sfx/SndD5 - Insta Shield.asm"
+		even
+SoundD6:	include	"sound/sfx/SndD6 - Fire Shield.asm"
+		even
+SoundD7:	include	"sound/sfx/SndD7 - Fire Attack.asm"
+		even
+SoundD8:	include	"sound/sfx/SndD8 - Bubble Shield.asm"
+		even
+SoundD9:	include	"sound/sfx/SndD9 - Bubble Attack.asm"
+		even
+SoundDA:	include	"sound/sfx/SndDA - Lightning Shield.asm"
+		even
+SoundDB:	include	"sound/sfx/SndDB - Lightning Attack.asm"
 		even

@@ -93,7 +93,7 @@ locret_E430:
 
 LBall_Type04:
 		bset	#staFlipY,obStatus(a0)
-		bsr.w	ObjHitCeiling
+		jsr		(ObjHitCeiling).l
 		tst.w	d1
 		bpl.s	locret_E452
 		move.b	#8,obSubtype(a0)
@@ -122,7 +122,7 @@ locret_E474:
 LBall_Type06:
 		bset	#staFlipX,obStatus(a0)
 		moveq	#-8,d3
-		bsr.w	ObjHitWallLeft
+		jsr		(ObjHitWallLeft).l
 		tst.w	d1
 		bpl.s	locret_E498
 		move.b	#8,obSubtype(a0)

@@ -189,8 +189,12 @@ obPlatformAddr:	equ $3E			; ost slot of the object Sonic's on top of (Convert to
 							; $3F obPlatformAddr
 
 	if (SpinDashEnabled|PeeloutEnabled)=1
-obSpinDashFlag:	equ $2A					; spin dash/peelout flag - if toggled off, this is unused.
+obSpinDashFlag:		equ $2A				; spin dash/peelout flag - if toggled off, this is unused.
 obSpinDashCounter:	equ obRestartTimer	; Counter used for the Spin Dash and/or Peelout (2 bytes) - if toggled off, this is unused.
+	endif
+	if ShieldsMode>0
+obDoubleJumpFlag:	equ	$2F				; Flag noting double jump status. 0 - not triggered. 1 - triggered. 2 - post-instashield (Begin Drop Dash revving). 3 - Drop Dash Cancelled.
+obDoubleJumpProp:	equ $25				; Counter for Sonic's Drop Dash (if enabled). Can also be utilized for remaining frames of flight / 2 for Tails, gliding-related for Knuckles.
 	endif
 ; ---------------------------------------------------------------------------
 ; obStatus bitfield variables
@@ -230,22 +234,25 @@ maskSonicPush:	equ 1<<staSonicPush		; $20
 ; status_secondary bitfield variables
 ;
 ; status_secondary variable bit numbers
-sta2ndShield:	equ	0
-sta2ndInvinc:	equ	1
-sta2ndShoes:	equ	2
+sta2ndShield:		equ	0
+sta2ndInvinc:		equ	1
+sta2ndShoes:		equ	2
 
-sta2ndFShield:	equ 4
-sta2ndLShield:	equ 5
-sta2ndBShield:	equ 6
+sta2ndFShield:		equ 4
+sta2ndLShield:		equ 5
+sta2ndBShield:		equ 6
 
 ; status_secondary variable masks
-mask2ndShield:	equ	1<<sta2ndShield		; $01
-mask2ndInvinc:	equ	1<<sta2ndInvinc		; $02
-mask2ndShoes:	equ	1<<sta2ndShoes		; $04
+mask2ndShield:		equ	1<<sta2ndShield		; $01
+mask2ndInvinc:		equ	1<<sta2ndInvinc		; $02
+mask2ndShoes:		equ	1<<sta2ndShoes		; $04
 
-mask2ndFShield:	equ	1<<sta2ndFShield	; $10
-mask2ndLShield:	equ	1<<sta2ndLShield	; $20
-mask2ndBShield:	equ	1<<sta2ndBShield	; $40
+mask2ndFShield:		equ	1<<sta2ndFShield	; $10
+mask2ndLShield:		equ	1<<sta2ndLShield	; $20
+mask2ndBShield:		equ	1<<sta2ndBShield	; $40
+
+mask2ndChkShield:	equ $71					; Every shield bit checked
+mask2ndRmvShield:	equ	~mask2ndChkShield	; ~$71
 
 ; Miscellaneous object scratch-RAM
 objoff_25:	equ $25
@@ -404,6 +411,13 @@ sfx_SpinDash:	equ ((ptr_sndD1-SpecSoundIndex)/4)+spec__First
 sfx_Charge:		equ ((ptr_sndD2-SoundIndex)/4)+sfx__First
 sfx_Release:	equ ((ptr_sndD3-SoundIndex)/4)+sfx__First
 sfx_Stop:		equ ((ptr_sndD4-SoundIndex)/4)+sfx__First
+sfx_InstaAtk:	equ ((ptr_sndD5-SoundIndex)/4)+sfx__First
+sfx_FShield:	equ ((ptr_sndD6-SoundIndex)/4)+sfx__First
+sfx_FShieldAtk:	equ ((ptr_sndD7-SoundIndex)/4)+sfx__First
+sfx_BShield:	equ ((ptr_sndD8-SoundIndex)/4)+sfx__First
+sfx_BShieldAtk:	equ ((ptr_sndD9-SoundIndex)/4)+sfx__First
+sfx_LShield:	equ ((ptr_sndDA-SoundIndex)/4)+sfx__First
+sfx_LShieldAtk:	equ ((ptr_sndDB-SoundIndex)/4)+sfx__First
 spec__Last:		equ ((ptr_specend-SpecSoundIndex-4)/4)+spec__First
 
 flg__First:		equ $E0

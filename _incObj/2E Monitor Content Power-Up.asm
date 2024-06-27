@@ -63,11 +63,11 @@ Pow_Types:
 		dc.w Pow_Shield-Pow_Types	; 4 - Shield
 		dc.w Pow_Invinc-Pow_Types	; 5 - Invincibility
 		dc.w Pow_Rings-Pow_Types	; 6 - Rings
-		dc.w Pow_S-Pow_Types		; 7 - S
-		dc.w Pow_Goggles-Pow_Types	; 8 - Goggles
-	;	dc.w Pow_FShield-Pow_Types	; $9 - Flame Shield
-	;	dc.w Pow_BShield-Pow_Types	; $A - Lightning Shield
-	;	dc.w Pow_LShield-Pow_Types	; $B - Bubble Shield
+		dc.w Pow_FShield-Pow_Types	; 7 - Flame Shield		; Added
+		dc.w Pow_BShield-Pow_Types	; 8 - Bubble Shield		; Added
+		dc.w Pow_LShield-Pow_Types	; 9 - Lightning Shield	; Added
+		dc.w Pow_S-Pow_Types		; A - S
+		dc.w Pow_Goggles-Pow_Types	; B - Goggles
 ; ===========================================================================
 	; Each powerup no longer requires a series of cmpi checks and branches.
 
@@ -102,10 +102,13 @@ Pow_Shoes:
 ; ===========================================================================
 
 Pow_Shield:
-		bset	#sta2ndShield,(v_player+obStatus2nd).w	; give Sonic a shield
-		move.b	#id_ShieldItem,(v_shieldobj).w			; load shield object ($38)
+		andi.b	#mask2ndRmvShield,(v_player+obStatus2nd).w	; remove shield status
+		bset	#sta2ndShield,(v_player+obStatus2nd).w		; give Sonic a shield
+		move.b	#id_ShieldItem,(v_shieldobj).w				; load shield object ($38)
+		clr.b	(v_shieldobj+obAnim).w
+		clr.b	(v_shieldobj+obRoutine).w
 		move.w	#sfx_Shield,d0
-		jmp		(PlaySound).l							; play shield sound
+		jmp		(PlaySound).l								; play shield sound
 ; ===========================================================================
 
 Pow_Invinc:
@@ -151,6 +154,39 @@ Pow_RingSound:
 Pow_S:
 Pow_Goggles:
 		rts			; 'S' and goggles monitors do nothing
+; ===========================================================================
+
+Pow_FShield:
+		andi.b	#mask2ndRmvShield,(v_player+obStatus2nd).w	; remove shield status
+		bset	#sta2ndShield,(v_player+obStatus2nd).w		; give Sonic a shield
+		bset	#sta2ndFShield,(v_player+obStatus2nd).w		; give Sonic a flame shield
+		move.b	#id_ShieldItem,(v_shieldobj).w				; load shield object
+		clr.b	(v_shieldobj+obRoutine).w
+		move.b	#5,(v_shieldobj+obAnim).w
+		move.w	#sfx_FShield,d0
+		jmp		(PlaySound_Special).l						; play shield sound
+; ===========================================================================
+
+Pow_BShield:
+		andi.b	#mask2ndRmvShield,(v_player+obStatus2nd).w	; remove shield status
+		bset	#sta2ndShield,(v_player+obStatus2nd).w		; give Sonic a shield
+		bset	#sta2ndBShield,(v_player+obStatus2nd).w		; give Sonic a bubble shield
+		move.b	#id_ShieldItem,(v_shieldobj).w				; load shield object
+		clr.b	(v_shieldobj+obRoutine).w
+		move.b	#7,(v_shieldobj+obAnim).w
+		move.w	#sfx_BShield,d0
+		jmp		(PlaySound_Special).l						; play shield sound
+; ===========================================================================
+
+Pow_LShield:
+		andi.b	#mask2ndRmvShield,(v_player+obStatus2nd).w	; remove shield status
+		bset	#sta2ndShield,(v_player+obStatus2nd).w		; give Sonic a shield
+		bset	#sta2ndLShield,(v_player+obStatus2nd).w		; give Sonic a lightning shield
+		move.b	#id_ShieldItem,(v_shieldobj).w				; load shield object
+		clr.b	(v_shieldobj+obRoutine).w
+		move.b	#$A,(v_shieldobj+obAnim).w
+		move.w	#sfx_LShield,d0
+		jmp		(PlaySound_Special).l						; play shield sound
 ; ===========================================================================
 
 Pow_Delete:	; Routine 4

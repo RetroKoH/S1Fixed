@@ -38,7 +38,7 @@ Gird_Action:	; Routine 2
 		bne.s	.solid
 
 .beginmove:
-		jsr	(SpeedToPos).l
+		jsr		(SpeedToPos).l
 		subq.w	#1,gird_time(a0) ; decrement movement duration
 		bne.s	.solid		; if time remains, branch
 		bsr.w	Gird_ChgMove	; if time is zero, branch
@@ -54,7 +54,7 @@ Gird_Action:	; Routine 2
 		move.b	obHeight(a0),d2
 		move.w	d2,d3
 		addq.w	#1,d3
-		bsr.w	SolidObject
+		jsr		(SolidObject).l
 
 .chkdel:
 		offscreen.s	.delete,gird_origX(a0)	; ProjectFM

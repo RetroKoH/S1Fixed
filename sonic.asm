@@ -39,7 +39,7 @@ SkidDustEnabled: = 1					; if set to 1, Skid dust will occur when coming to a st
 SpinDashCancel: = SpinDashEnabled*1		; if set to 1, Spin Dash can be cancelled by not pressing ABC
 SpinDashNoRevDown: = SpinDashEnabled*1	; if set to 1, Spin Dash will not rev down so long as ABC is held down
 PeeloutEnabled: = 1						; if set to 1, Peelout is enabled for Sonic (SFX still don't work properly)
-ShieldsMode: = 0						; 0 - Blue Shield only, 1 - Instashield, 2 - Blue Shield + Elemental, 3 - Elemental only.
+ShieldsMode: = 3						; 0 - Blue Shield only, 1 - Instashield, 2 - Blue Shield + Elemental, 3 - Elemental only.
 
 	include "MacroSetup.asm"
 	include	"Constants.asm"
@@ -2353,14 +2353,17 @@ Level_SkipTtlCard:
 		jsr		(ConvertCollisionArray).l
 		bsr.w	ColIndexLoad
 		bsr.w	LZWaterFeatures
-		move.b	#id_SonicPlayer,(v_player).w ; load Sonic object
-		; No longer using a HUD object
+		move.b	#id_SonicPlayer,(v_player).w	; load Sonic object
+	if ShieldsMode>0
+		move.b	#id_ShieldItem,(v_shieldobj).w	; load instashield object
+		move.b	#$D,(v_shieldobj+obAnim).w
+	endif
 
 Level_ChkDebug:
-;		tst.b	(f_debugcheat).w		; has debug cheat been entered?
-;		beq.s	Level_ChkWater			; if not, branch
-;		btst	#bitA,(v_jpadhold1).w	; is A button held?
-;		beq.s	Level_ChkWater			; if not, branch
+		tst.b	(f_debugcheat).w		; has debug cheat been entered?
+		beq.s	Level_ChkWater			; if not, branch
+		btst	#bitA,(v_jpadhold1).w	; is A button held?
+		beq.s	Level_ChkWater			; if not, branch
 		move.b	#1,(f_debugmode).w		; enable debug mode
 
 Level_ChkWater:
@@ -6372,6 +6375,20 @@ Map_Drown:		include	"_maps/Drowning Countdown.asm"
 				include	"_anim/Shield and Invincibility.asm"
 Map_Shield:		include	"_maps/Shield and Invincibility.asm"
 				include "_maps/Shield and Invincibility - DPLCs.asm"		; RetroKoH VRAM Overhaul
+
+	if ShieldsMode>0
+				include "_maps\Shield - Insta.asm"
+				include "_maps\Shield - Insta - DPLCs.asm"
+	endif
+	if ShieldsMode>1
+				include "_maps\Shield - Flame.asm"
+				include "_maps\Shield - Flame - DPLCs.asm"
+				include "_maps\Shield - Bubble.asm"
+				include "_maps\Shield - Bubble - DPLCs.asm"
+				include "_maps\Shield - Lightning.asm"
+				include "_maps\Shield - Lightning - DPLCs.asm"
+	endif
+
 				include	"_anim/Special Stage Entry (Unused).asm"
 
 Map_Vanish:	include	"_maps/Special Stage Entry (Unused).asm"
@@ -7815,10 +7832,26 @@ SonicDynPLC:	include	"_maps/Sonic - DPLCs.asm"
 ; ---------------------------------------------------------------------------
 Art_Sonic:		binclude	"artunc/Sonic.bin"					; Sonic
 		even
-Art_Shield:		binclude	"artunc/Shield.bin"					; Blue Shield -- RetroKoH VRAM Overhaul
+Art_Shield:		binclude	"artunc/Shield - Blue.bin"			; Blue Shield -- RetroKoH VRAM Overhaul
 		even
 Art_Stars:		binclude	"artunc/Invincibility Stars.bin"	; Invincibility Stars -- RetroKoH VRAM Overhaul
 		even
+
+	if ShieldsMode>0
+Art_Insta:		binclude	"artunc\Shield - Insta.bin"
+		even
+	endif
+	if ShieldsMode>1
+Art_Shield_F:	binclude	"artunc\Shield - Flame.bin"
+		even
+Art_Shield_B:	binclude	"artunc\Shield - Bubble.bin"
+		even
+Art_Shield_L:	binclude	"artunc\Shield - Lightning.bin"
+		even
+Art_Shield_L2:	binclude	"artunc\Shield - Lightning Sparks.bin"
+		even
+	endif
+
 Art_Signpost:	binclude	"artunc/Signpost.bin"				; End-of-level Signpost -- RetroKoH VRAM Overhaul
 		even
 Art_BigRing:	binclude	"artunc/Giant Ring.bin"				; Giant Ring -- RetroKoH VRAM Overhaul
