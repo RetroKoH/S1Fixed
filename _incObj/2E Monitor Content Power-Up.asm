@@ -105,8 +105,8 @@ Pow_Shield:
 		andi.b	#mask2ndRmvShield,(v_player+obStatus2nd).w	; remove shield status
 		bset	#sta2ndShield,(v_player+obStatus2nd).w		; give Sonic a shield
 		move.b	#id_ShieldItem,(v_shieldobj).w				; load shield object ($38)
-		clr.b	(v_shieldobj+obAnim).w
 		clr.b	(v_shieldobj+obRoutine).w
+		clr.b	(v_shieldobj+obSubtype).w
 		move.w	#sfx_Shield,d0
 		jmp		(PlaySound).l								; play shield sound
 ; ===========================================================================
@@ -162,7 +162,7 @@ Pow_FShield:
 		bset	#sta2ndFShield,(v_player+obStatus2nd).w		; give Sonic a flame shield
 		move.b	#id_ShieldItem,(v_shieldobj).w				; load shield object
 		clr.b	(v_shieldobj+obRoutine).w
-		move.b	#5,(v_shieldobj+obAnim).w
+		move.b	#2,(v_shieldobj+obSubtype).w
 		move.w	#sfx_FShield,d0
 		jmp		(PlaySound_Special).l						; play shield sound
 ; ===========================================================================
@@ -173,7 +173,7 @@ Pow_BShield:
 		bset	#sta2ndBShield,(v_player+obStatus2nd).w		; give Sonic a bubble shield
 		move.b	#id_ShieldItem,(v_shieldobj).w				; load shield object
 		clr.b	(v_shieldobj+obRoutine).w
-		move.b	#7,(v_shieldobj+obAnim).w
+		move.b	#3,(v_shieldobj+obSubtype).w
 		move.w	#sfx_BShield,d0
 		jmp		(PlaySound_Special).l						; play shield sound
 ; ===========================================================================
@@ -184,7 +184,7 @@ Pow_LShield:
 		bset	#sta2ndLShield,(v_player+obStatus2nd).w		; give Sonic a lightning shield
 		move.b	#id_ShieldItem,(v_shieldobj).w				; load shield object
 		clr.b	(v_shieldobj+obRoutine).w
-		move.b	#$A,(v_shieldobj+obAnim).w
+		move.b	#4,(v_shieldobj+obSubtype).w
 		move.w	#sfx_LShield,d0
 		jmp		(PlaySound_Special).l						; play shield sound
 ; ===========================================================================

@@ -1,5 +1,5 @@
 ; ---------------------------------------------------------------------------
-; Object 38 - shield and invincibility stars
+; Object 38 - shields
 ; ---------------------------------------------------------------------------
 
 ; w/ DPLCs and dynamic pointers -- RetroKoH VRAM Overhaul
@@ -15,7 +15,7 @@ ShieldItem:
 Shi_Index:
 		dc.w	Shi_Main-Shi_Index
 		dc.w	Shi_Shield-Shi_Index
-		dc.w	Shi_Stars-Shi_Index
+		dc.w	Shi_Stars-Shi_Index ; Make its own object?
 	; Added (Lookup table should follow this order)
 		dc.w	Shi_Flame-Shi_Index
 		dc.w	Shi_Bubble-Shi_Index
@@ -24,77 +24,41 @@ Shi_Index:
 		dc.w	Shi_LightningSpark-Shi_Index
 		dc.w	Shi_LightningDestroy-Shi_Index
 ; ===========================================================================
-; Rework this into a lookup table using obSubtype(a0).
-; See monitor powerup as a reference.
 
 Shi_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)
 		move.b	#4,obRender(a0)
-		move.w	#$80,obPriority(a0)				; RetroKoH S2 Priority Manager
+		move.w	#$80,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#$10,obActWid(a0)
 		move.w	#make_art_tile(ArtTile_Shield,0,0),obGfx(a0)
-		tst.b	obAnim(a0)						; is object a shield?
-		bne.s	.notblueshield					; if yes, branch
-	; Blue Shield
-		move.l	#Map_Shield,obMap(a0)
-		move.l	#Art_Shield,obArtLoc(a0)
-		move.l	#ShieldDynPLC,obDPLCLoc(a0)
-		rts
-; ===========================================================================
+	; RetroKoH Shield Optimization
+		moveq	#0,d0
+		move.b	obSubtype(a0),d0
+		lsl.b	#1,d0
+		move.b	d0,obRoutine(a0)
+		addq.b	#2,obRoutine(a0)	; set next routine
+		lsl.b	#3,d0
+		lea     ShieldVars,a1		; Load lookup table into a1
+		adda.w	d0,a1				; get corresponding shield data
+		move.l	(a1)+,d0			; load the first longword, but we'll only use the lowest byte
+		move.b	d0,obAnim(a0)		; load correct animation
+		move.l	(a1)+,obMap(a0)		; load correct mappings
+		move.l	(a1)+,obArtLoc(a0)	; load correct art location (for DPLCs)
+		move.l	(a1)+,obDPLCLoc(a0)	; load correct DPLC location
 
-.notblueshield:
-		cmpi.b	#5,obAnim(a0)					; is object a flame shield?
-		bne.s	.notflameshield
-	; Flame Shield
-		move.l	#Map_FlameShield,obMap(a0)
-		move.l	#Art_Shield_F,obArtLoc(a0)
-		move.l	#DPLC_FlameShield,obDPLCLoc(a0)
-		addq.b	#4,obRoutine(a0)
-		rts
-; ===========================================================================
+		cmpi.b	#8,obRoutine(a0)	; bubble shield check
+		bne.s	.notBubble
+		bra.w	ResumeMusic
 
-.notflameshield:
-		cmpi.b	#7,obAnim(a0)					; is object a bubble shield?
-		bne.s	.notbubbleshield				; if not, branch
-	; Bubble Shield
-		move.l	#Map_BubbleShield,obMap(a0)
-		move.l	#Art_Shield_B,obArtLoc(a0)
-		move.l	#DPLC_BubbleShield,obDPLCLoc(a0)
-		bsr.w	ResumeMusic
-		addq.b	#6,obRoutine(a0)
+.notBubble:
+;		cmpi.b	#$A,obRoutine(a0)	; lightning shield check
+;		bne.s	.notBubble
+;		move.l	#Art_Shield_L2,d1		; Load art for sparks
+;		move.w	#$ACA0,d2				; load it just after the lightning shield art
+;		move.w	#$50,d3
+;		jsr		(QueueDMATransfer).l
+.notLightning:
 		rts
-; ===========================================================================
-
-.notbubbleshield:
-		cmpi.b	#$A,obAnim(a0)			; is object a lightning shield?
-		bne.s	.notlightningshield
-		move.l	#Map_LightningShield,obMap(a0)
-		move.l	#Art_Shield_L,obArtLoc(a0)
-		move.l	#DPLC_LightningShield,obDPLCLoc(a0)
-
-		move.l	#Art_Shield_L2,d1		; Load art for sparks
-		move.w	#$ACA0,d2				; load it just after the lightning shield art
-		move.w	#$50,d3
-		jsr		(QueueDMATransfer).l
-		addq.b	#8,obRoutine(a0)
-		rts
-; ===========================================================================
-.notlightningshield:
-		cmpi.b	#$D,obAnim(a0)			; is object an InstaShield? (Sonic only)
-		bne.s	.stars
-		move.l	#Map_InstaShield,obMap(a0)
-		move.l	#Art_Insta,obArtLoc(a0)
-		move.l	#DPLC_InstaShield,obDPLCLoc(a0)
-		move.b	#$C,obRoutine(a0)
-		rts
-; ===========================================================================
-
-.stars
-		move.l	#Map_Shield,obMap(a0)
-		move.l	#Art_Stars,obArtLoc(a0)
-		move.l	#ShieldDynPLC,obDPLCLoc(a0)
-		addq.b	#2,obRoutine(a0)		; Stars specific code: goto Shi_Stars next
-		rts
+	; Shield Optimization End
 ; ===========================================================================
 
 Shi_Shield:	; Routine 2
@@ -134,10 +98,10 @@ Shi_Shield:	; Routine 2
 ;		tst.b	(v_player+obCharID).w	; You would need to add obCharID to player SST to use this.
 ;		bne.s	.notSonic
 		clr.b	obRoutine(a0)
-		move.b	#$D,obAnim(a0)			; Replace shield with instashield
+		move.b	#5,obSubtype(a0)			; Replace shield with instashield
 		rts
-;.notSonic:
 
+;.notSonic:
 ; Normal .delete (without instashield) jumps straight to this line.
 		jmp		(DeleteObject).l
 ; ===========================================================================
@@ -210,9 +174,9 @@ Shi_Flame:	; Routine 6
 		move.w	(v_player+obX).w,obX(a0)
 		move.w	(v_player+obY).w,obY(a0)
 		cmpi.b	#6,obAnim(a0)							; is Sonic using the Dash ability?
-		beq.s	.noshift								; if yes, branch
+		beq.s	.noshift								; if yes, branch (avoid flipping the sprite mid-dash)
 		move.b	(v_player+obStatus).w,obStatus(a0)
-		andi.b	#staFlipX,obStatus(a0)		; Copy first bit, so the Shield is always facing in the same direction as the player.
+		andi.b	#maskFlipX,obStatus(a0)					; Copy first bit, so the Shield is always facing in the same direction as the player.
 
 .noshift:
 		lea		(Ani_Shield).l,a1
@@ -232,7 +196,7 @@ Shi_Flame:	; Routine 6
 ;		tst.b	(v_player+obCharID).w
 ;		bne.s	.notSonic
 		clr.b	obRoutine(a0)
-		move.b	#$D,obAnim(a0)	; Replace shield with instashield
+		move.b	#5,obSubtype(a0)			; Replace shield with instashield
 
 .remove:
 		rts
@@ -251,7 +215,7 @@ Shi_Bubble:	; Routine 8
 		move.w	(v_player+obX).w,obX(a0)
 		move.w	(v_player+obY).w,obY(a0)
 		move.b	(v_player+obStatus).w,obStatus(a0)
-		andi.b	#staFlipX,obStatus(a0)		; Copy first bit, so the Shield is always facing in the same direction as the player.
+		andi.b	#maskFlipX,obStatus(a0)		; Copy first bit, so the Shield is always facing in the same direction as the player.
 
 		lea		(Ani_Shield).l,a1
 		jsr		(AnimateSprite).l
@@ -269,7 +233,7 @@ Shi_Bubble:	; Routine 8
 ;		tst.b	(v_player+obCharID).w
 ;		bne.s	.notSonic
 		clr.b	obRoutine(a0)
-		move.b	#$D,obAnim(a0)	; Replace shield with instashield
+		move.b	#5,obSubtype(a0)			; Replace shield with instashield
 
 .remove:
 		rts
@@ -290,7 +254,7 @@ Shi_Lightning:	; Routine 8
 		move.w	(v_player+obX).w,obX(a0)
 		move.w	(v_player+obY).w,obY(a0)
 		move.b	(v_player+obStatus).w,obStatus(a0)
-		andi.b	#staFlipX,obStatus(a0)		; Copy first bit, so the Shield is always facing in the same direction as the player.
+		andi.b	#maskFlipX,obStatus(a0)		; Copy first bit, so the Shield is always facing in the same direction as the player.
 
 		lea		(Ani_Shield).l,a1
 		jsr		(AnimateSprite).l
@@ -312,7 +276,7 @@ Shi_Lightning:	; Routine 8
 ;		tst.b	(v_player+obCharID).w
 ;		bne.s	.notSonic
 		clr.b	obRoutine(a0)
-		move.b	#$D,obAnim(a0)	; Replace shield with instashield
+		move.b	#5,obSubtype(a0)			; Replace shield with instashield
 
 .remove:
 		rts
@@ -354,7 +318,7 @@ Shi_Insta:	; Routine $C
 		move.w	(v_player+obX).w,obX(a0)
 		move.w	(v_player+obY).w,obY(a0)
 		move.b	(v_player+obStatus).w,obStatus(a0)
-		andi.b	#staFlipX,obStatus(a0)		; Copy first bit, so the Shield is always facing in the same direction as the player.
+		andi.b	#maskFlipX,obStatus(a0)					; Copy first bit, so the Shield is always facing in the same direction as the player.
 		lea		(Ani_Shield).l,a1
 		jsr		(AnimateSprite).l
 		cmpi.b	#7,obFrame(a0)
@@ -396,7 +360,7 @@ Shi_LightningDestroy: ; Routine $10
 ;		tst.b	(v_player+obCharID).w
 ;		bne.s	.notSonic
 		clr.b	obRoutine(a0)
-		move.b	#$D,obAnim(a0)	; Replace shield with instashield
+		move.b	#5,obSubtype(a0)			; Replace shield with instashield
 ;		bra.s	.continue
 
 ;.notSonic:
@@ -459,3 +423,15 @@ ShieldPLC_ReadEntry:
 
 ShieldDPLC_Return:
 		rts
+; ===========================================================================
+; Shield variables
+; ===========================================================================
+ShieldVars:
+				; anim	; map			; artLoc		; dplcLoc
+		dc.l	0,		Map_Shield,			Art_Shield,		ShieldDynPLC		; 0 - Blue Shield
+		dc.l	1,		Map_Shield,			Art_Shield,		ShieldDynPLC		; $10 - Stars - Make its own object?
+		dc.l	5,		Map_FlameShield,	Art_Shield_F,	DPLC_FlameShield	; $20 - Flame
+		dc.l	7,		Map_BubbleShield,	Art_Shield_B,	DPLC_BubbleShield	; $30 - Bubble
+		dc.l	$A,		Map_LightningShield,Art_Shield_L,	DPLC_LightningShield; $40 - Lightning
+		dc.l	$D,		Map_InstaShield,	Art_Insta,		DPLC_InstaShield	; $50 - InstaShield
+; ===========================================================================

@@ -2356,7 +2356,7 @@ Level_SkipTtlCard:
 		move.b	#id_SonicPlayer,(v_player).w	; load Sonic object
 	if ShieldsMode>0
 		move.b	#id_ShieldItem,(v_shieldobj).w	; load instashield object
-		move.b	#$D,(v_shieldobj+obAnim).w
+		move.b	#5,(v_shieldobj+obSubtype).w
 	endif
 
 Level_ChkDebug:
