@@ -2356,7 +2356,7 @@ Level_SkipTtlCard:
 		move.b	#id_SonicPlayer,(v_player).w	; load Sonic object
 	if ShieldsMode>0
 		move.b	#id_ShieldItem,(v_shieldobj).w	; load instashield object
-		move.b	#5,(v_shieldobj+obSubtype).w
+		move.b	#4,(v_shieldobj+obSubtype).w
 	endif
 
 Level_ChkDebug:
@@ -6029,7 +6029,6 @@ Map_LWall:	include	"_maps/Wall of Lava.asm"
 		include	"_incObj/40 Moto Bug.asm" ; includes "_incObj/sub RememberState.asm"
 		include	"_anim/Moto Bug.asm"
 Map_Moto:	include	"_maps/Moto Bug.asm"
-		include	"_incObj/4F.asm"
 
 		include	"_incObj/50 Yadrin.asm"
 		include	"_anim/Yadrin.asm"
@@ -6367,7 +6366,8 @@ ResumeMusic:
 				include	"_anim/Drowning Countdown.asm"
 Map_Drown:		include	"_maps/Drowning Countdown.asm"
 
-				include	"_incObj/38 Shield and Invincibility.asm"
+				include	"_incObj/38 Shield.asm"
+				include	"_incObj/4F Invincibility.asm"						; Split from Shields (RetroKoH)
 				include	"_incObj/4A Special Stage Entry (Unused).asm"
 				include	"_incObj/03 Collision Switcher.asm"
 				include	"_incObj/08 Water Splash.asm"
