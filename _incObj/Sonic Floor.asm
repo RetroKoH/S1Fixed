@@ -27,9 +27,10 @@ Sonic_Floor:
 .airCol_PosY:
 		cmp.w	d0,d1					; Are we moving towards the right?
 		blt.w	loc_1373E				; If so, branch
-		neg.w	d0						; Are we moving towards the left?
-		cmp.w	d0,d1
+		neg.w	d0
+		cmp.w	d0,d1					; Are we moving towards the left?
 		ble.w	loc_13680				; If so, branch
+		; fallthrough if moving downward
 	; Air Collision Improvement End
 		bsr.w	Sonic_HitWall
 		tst.w	d1
@@ -60,7 +61,7 @@ loc_13602:
 loc_1361E:
 		add.w	d1,obY(a0)
 		move.b	d3,obAngle(a0)
-		bsr.w	Sonic_ResetOnFloor
+		;bsr.w	Sonic_ResetOnFloor		; Moved to loc_1364E -- Fix Bubble Bounce
 		move.b	#aniID_Walk,obAnim(a0)
 		move.b	d3,d0
 		addi.b	#$20,d0
@@ -70,14 +71,15 @@ loc_1361E:
 		addi.b	#$10,d0
 		andi.b	#$20,d0
 		beq.s	loc_1364E
-		asr	obVelY(a0)
+		asr		obVelY(a0)
 		bra.s	loc_13670
 ; ===========================================================================
 
 loc_1364E:
 		clr.w	obVelY(a0)
 		move.w	obVelX(a0),obInertia(a0)
-		rts	
+		; rts
+		bra.w	Sonic_ResetOnFloor		; Moved from loc_1361E -- Fix Bubble Bounce
 ; ===========================================================================
 
 loc_1365C:
@@ -87,6 +89,7 @@ loc_1365C:
 		move.w	#$FC0,obVelY(a0)
 
 loc_13670:
+		bsr.w	Sonic_ResetOnFloor		; Added -- Fix Bubble Bounce
 		move.w	obVelY(a0),obInertia(a0)
 		tst.b	d3
 		bpl.s	locret_1367E
@@ -127,10 +130,11 @@ loc_136B4:
 		bpl.s	locret_136E0
 		add.w	d1,obY(a0)
 		move.b	d3,obAngle(a0)
-		bsr.w	Sonic_ResetOnFloor
+		;bsr.w	Sonic_ResetOnFloor			; Moved -- Fix Bubble Bounce
 		move.b	#aniID_Walk,obAnim(a0)
 		clr.w	obVelY(a0)
 		move.w	obVelX(a0),obInertia(a0)
+		bra.w	Sonic_ResetOnFloor			; Moved -- Fix Bubble Bounce
 
 locret_136E0:
 		rts	
@@ -206,10 +210,11 @@ loc_13772:
 		bpl.s	locret_1379E
 		add.w	d1,obY(a0)
 		move.b	d3,obAngle(a0)
-		bsr.w	Sonic_ResetOnFloor
+		;bsr.w	Sonic_ResetOnFloor			; Moved -- Fix Bubble Bounce
 		move.b	#aniID_Walk,obAnim(a0)
 		clr.w	obVelY(a0)
 		move.w	obVelX(a0),obInertia(a0)
+		bra.w	Sonic_ResetOnFloor			; Moved -- Fix Bubble Bounce
 
 locret_1379E:
 		rts	

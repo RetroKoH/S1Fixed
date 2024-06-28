@@ -136,7 +136,7 @@ locret_E498:
 LBall_Type07:
 		bclr	#staFlipX,obStatus(a0)
 		moveq	#8,d3
-		bsr.w	ObjHitWallRight
+		jsr		(ObjHitWallRight).l
 		tst.w	d1
 		bpl.s	locret_E4BC
 		move.b	#8,obSubtype(a0)
