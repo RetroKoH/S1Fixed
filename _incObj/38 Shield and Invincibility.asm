@@ -233,6 +233,7 @@ Shi_Flame:	; Routine 6
 ;		bne.s	.notSonic
 		clr.b	obRoutine(a0)
 		move.b	#$D,obAnim(a0)	; Replace shield with instashield
+
 .remove:
 		rts
 

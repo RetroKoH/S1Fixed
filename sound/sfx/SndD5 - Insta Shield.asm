@@ -9,7 +9,7 @@ Sound_42_Header:
 ; PSG3 Data
 Sound_42_PSG3:
 	smpsPSGform         $E7
-	smpsPSGvoice        $00
+	smpsPSGvoice        $00	; Modified to work in the current engine. Double check this value.
 	dc.b	nCs6, $04
 	smpsModSet          $02, $01, $06, $07
 	dc.b	nE5, $10

@@ -239,8 +239,8 @@ sta2ndInvinc:		equ	1
 sta2ndShoes:		equ	2
 
 sta2ndFShield:		equ 4
-sta2ndLShield:		equ 5
-sta2ndBShield:		equ 6
+sta2ndBShield:		equ 5
+sta2ndLShield:		equ 6
 
 ; status_secondary variable masks
 mask2ndShield:		equ	1<<sta2ndShield		; $01
@@ -248,8 +248,8 @@ mask2ndInvinc:		equ	1<<sta2ndInvinc		; $02
 mask2ndShoes:		equ	1<<sta2ndShoes		; $04
 
 mask2ndFShield:		equ	1<<sta2ndFShield	; $10
-mask2ndLShield:		equ	1<<sta2ndLShield	; $20
-mask2ndBShield:		equ	1<<sta2ndBShield	; $40
+mask2ndBShield:		equ	1<<sta2ndBShield	; $20
+mask2ndLShield:		equ	1<<sta2ndLShield	; $40
 
 mask2ndChkShield:	equ $71					; Every shield bit checked
 mask2ndRmvShield:	equ	~mask2ndChkShield	; ~$71

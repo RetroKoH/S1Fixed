@@ -50,13 +50,33 @@ Sonic_DoubleJump:
 		andi.b	#btnABC,d0								; are buttons A, B, or C being pressed?
 		beq.s	Sonic_ShieldDoNothing					; if not, branch
 		bclr	#staRollJump,obStatus(a0)
-;		bra.s	Sonic_ShieldCheckFire					; check for flame shield
-		
-;Sonic_ShieldCheckFire:
+
+; Here we check for Shield status to determine which ability to use. Unlike w/ S3K, we
+; will only branch IF we meet the conditions.
 		btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; first, does Sonic have invincibility?
-		bne.s	Sonic_ShieldDoNothing					; if yes, branch
-		btst	#sta2ndFShield,(v_player+obStatus2nd).w	; does Sonic have a Fire Shield?
-		beq.s	Sonic_ShieldCheckBubble					; if not, branch
+		bne.s	Sonic_ShieldDoNothing					; if so, no shield ability is uaable.
+		btst	#sta2ndShield,(v_player+obStatus2nd).w	; does Sonic have any Shield?
+		beq.s	Sonic_InstaShieldAttack					; if not, branch to the Insta-Shield.
+		btst	#sta2ndFShield,(v_player+obStatus2nd).w	; does Sonic have a Flame Shield?
+		bne.s	Sonic_FlameShieldAttack					; if yes, branch
+		btst	#sta2ndBShield,(v_player+obStatus2nd).w	; does Sonic have a Bubble Shield?
+		bne.s	Sonic_BubbleShieldAttack				; if yes, branch
+		btst	#sta2ndLShield,(v_player+obStatus2nd).w	; does Sonic have a Lightning Shield?
+		bne.s	Sonic_LightningShieldAttack				; if yes, branch
+; at this point, we must have a Blue shield. Fall through to do nothing.
+
+Sonic_ShieldDoNothing:
+		rts
+; ===========================================================================
+
+Sonic_InstaShieldAttack:
+		addq.b	#1,(v_shieldobj+obAnim).w				; Set animation
+		move.b	#1,obDoubleJumpFlag(a0)
+		move.w	#sfx_InstaAtk,d0
+		jmp		(PlaySound_Special).l
+; ===========================================================================
+
+Sonic_FlameShieldAttack:
 		addq.b	#1,(v_shieldobj+obAnim).w				; Set animation
 		move.b	#1,obDoubleJumpFlag(a0)					; Set double jump flag
 		move.w	#$800,d0								; Set horizontal speed to 8
@@ -71,13 +91,9 @@ Sonic_DoubleJump:
 		clr.w	obVelY(a0)
 		move.w	#sfx_FShieldAtk,d0
 		jmp		(PlaySound_Special).l
-Sonic_ShieldDoNothing:
-		rts
 ; ===========================================================================
 
-Sonic_ShieldCheckBubble:
-		btst	#sta2ndBShield,(v_player+obStatus2nd).w	; does Sonic have a Bubble Shield
-		beq.s	Sonic_ShieldCheckLightning				; if not, branch
+Sonic_BubbleShieldAttack:
 		addq.b	#1,(v_shieldobj+obAnim).w				; Set animation
 		move.b	#1,obDoubleJumpFlag(a0)
 		clr.w	obVelX(a0)
@@ -87,9 +103,7 @@ Sonic_ShieldCheckBubble:
 		jmp		(PlaySound_Special).l
 ; ===========================================================================
 
-Sonic_ShieldCheckLightning:
-		btst	#sta2ndLShield,(v_player+obStatus2nd).w	; does Sonic have a Lightning Shield?
-		beq.s	Sonic_ShieldInsta						; if not, branch
+Sonic_LightningShieldAttack:
 		addq.b	#1,(v_shieldobj+obAnim).w				; Set animation
 		move.b	#1,obDoubleJumpFlag(a0)
 		move.w	#-$580,obVelY(a0)						; y speed set to -5.5, to spring him further upward
@@ -97,12 +111,4 @@ Sonic_ShieldCheckLightning:
 		move.w	#sfx_LShieldAtk,d0
 		jmp		(PlaySound_Special).l
 ; ===========================================================================
-
-Sonic_ShieldInsta:
-		btst	#sta2ndShield,(v_player+obStatus2nd).w	; does Sonic have a blue shield?
-		bne.s	Sonic_ShieldDoNothing					; if yes, branch
-		addq.b	#1,(v_shieldobj+obAnim).w				; Set animation
-		move.b	#1,obDoubleJumpFlag(a0)
-		move.w	#sfx_InstaAtk,d0
-		jmp		(PlaySound_Special).l
 	endif
