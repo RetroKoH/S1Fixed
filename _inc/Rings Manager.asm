@@ -139,9 +139,22 @@ Touch_Rings:
 		beq.w	Touch_Rings_Done			; if not, return
 		movea.w	(v_ringstart_addr_RAM).w,a4
 
-; Add Lightning Shield Attraction later
+	if ShieldsMode>1
+		btst	#sta2ndLShield,obStatus2nd(a0)	; does the player have a lightning shield?
+		beq.s	Touch_Rings_NoAttraction		; if not, branch
+		move.w	obX(a0),d2
+		move.w	obY(a0),d3
+		subi.w	#$40,d2							; lightning shield has a magnetic range of $40 pixels in each direction.
+		subi.w	#$40,d3
+		move.w	#6,d1
+		move.w	#12,d6
+		move.w	#$80,d4
+		move.w	#$80,d5
+		bra.s	Touch_Rings_Loop
+; ---------------------------------------------------------------------------
+	endif
 
-;Touch_Rings_NoAttraction:
+Touch_Rings_NoAttraction:
 		move.w	obX(a0),d2
 		move.w	obY(a0),d3
 		subi.w	#8,d2			; assume X radius to be 8
@@ -149,7 +162,7 @@ Touch_Rings:
 		move.b	obHeight(a0),d5
 		subq.b	#3,d5
 		sub.w	d5,d3			; subtract (Y radius - 3) from Y pos
-		cmpi.b	#$4D,obFrame(a0)
+		cmpi.b	#aniID_Duck,obAnim(a0)
 		bne.s	.TR_2			; if you're not ducking, branch
 		addi.w	#$C,d3
 		moveq	#$A,d5
@@ -182,14 +195,18 @@ Touch_Rings_Loop:
 		sub.w	d3,d0			; subtract Sonic's top edge pos
 		bcc.s	.TRL_4			; if Sonic's above the ring, branch
 		add.w	d6,d0			; add ring diameter
-		bcs.s	Touch_DestroyRing	; if Sonic's colliding, branch
+		bcs.s	.chkshield		; if Sonic's colliding, branch
 		bra.w	Touch_NextRing	; otherwise, test next ring
 
 .TRL_4:
 		cmp.w	d5,d0			; has Sonic crossed the ring?
 		bhi.w	Touch_NextRing	; if he has, branch
 
-; Add Lightning Shield check later
+.chkshield:
+	if ShieldsMode>1
+		btst	#sta2ndLShield,obStatus2nd(a0)	; does the player have a lightning shield?
+		bne.s	Touch_Ring_AttractRing			; if yes, branch
+	endif
 
 Touch_DestroyRing:
 		move.w	#$608,(a4)		; set frame and destruction timer - $608 instead of $604 for 8-frame rings
@@ -214,6 +231,25 @@ Touch_Rings_Done:
 		rts
 ; ---------------------------------------------------------------------------
 
+	if ShieldsMode>1
+Touch_Ring_AttractRing:
+		movea.l	a1,a3
+		jsr		(FindFreeObj).l
+		bne.w	.noring
+		move.b	#id_RingLoss,obID(a1)	; Create attracted ring in the location of the ring in the Ring Manager
+		move.b	#$A,obRoutine(a1)		; Set routine to Attracted Ring
+		move.w	(a3),obX(a1)			; Set x-position of object based on x-position in table
+		move.w	2(a3),obY(a1)			; Do the same for the y-position
+		move.w	a4,$30(a1)
+		move.w	#-1,(a4)
+		rts
+; ---------------------------------------------------------------------------
+
+.noring:
+		movea.l	a3,a1
+		bra.s	Touch_DestroyRing
+; ---------------------------------------------------------------------------
+	endif
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to draw on-screen rings

@@ -108,6 +108,14 @@ RLoss_Index:
 		dc.w RLoss_Collect-RLoss_Index
 		dc.w RLoss_Sparkle-RLoss_Index
 		dc.w RLoss_Delete-RLoss_Index
+
+	if ShieldsMode>1	; Attracted Rings (By the lightning shield)
+		dc.w RAttract_Init-RLoss_Index
+		dc.w RAttract_Main-RLoss_Index
+		dc.w RLoss_Collect-RLoss_Index
+		dc.w RLoss_Sparkle-RLoss_Index
+		dc.w RLoss_Delete-RLoss_Index
+	endif
 ; ===========================================================================
 
 RLoss_Count:	; Routine 0
@@ -290,3 +298,89 @@ SpillRingData_Water:
                 dc.w    $FF72,$00D4, $008E,$00D4, $FFCE,$00FA, $0032,$00FA ; 32
                 even
 ; ===========================================================================
+
+	if ShieldsMode>1
+RAttract_Init:
+		addq.b	#2,obRoutine(a0)
+		move.l	#Map_Ring,obMap(a0)
+		move.w	#make_art_tile(ArtTile_Ring,1,0),obGfx(a0)
+		move.b	#4,obRender(a0)
+		move.w	#$100,obPriority(a0)
+		move.b	#$47,obColType(a0)
+		move.b	#8,obActWid(a0)
+		move.b	#8,obHeight(a0)
+		move.b	#8,obWidth(a0)
+
+RAttract_Main:
+		bsr.s	AttractedRing_Move
+		btst	#sta2ndLShield,(v_player+obStatus2nd).w
+		bne.s	.hasshield
+		move.b	#2,obRoutine(a0)
+		moveq   #-1,d0					; Move #-1 to d0
+		move.b  d0,obDelayAni(a0)		; Move d0 to new timer
+		move.b  d0,(v_ani3_time).w		; Move d0 to old timer (for animation purposes)
+
+.hasshield:
+		move.b	(v_ani2_frame).w,obFrame(a0)
+
+		; Fix accidental deletion of scattered rings - REV C EDIT
+		cmpi.w  #$FF00,(v_limittop2).w	; is vertical wrapping enabled?
+		beq.s   .display       	; if so, branch
+		; End of fix
+
+		move.w	(v_limitbtm2).w,d0
+		addi.w	#$E0,d0
+		cmp.w	obY(a0),d0		; has object moved below level boundary?
+		bcs.w	RLoss_Delete	; if yes, branch
+
+.display:	
+		bra.w	DisplaySprite
+
+
+; =============== S U B R O U T I N E =======================================
+
+
+AttractedRing_Move:
+		move.w	#$30,d1
+		move.w	(v_player+obX).w,d0
+		cmp.w	obX(a0),d0
+		bcc.s	.branch1
+		neg.w	d1
+		tst.w	obVelX(a0)
+		bmi.s	.branch2
+		add.w	d1,d1
+		add.w	d1,d1
+		bra.s	.branch2
+; ---------------------------------------------------------------------------
+
+.branch1:
+		tst.w	obVelX(a0)
+		bpl.s	.branch2
+		add.w	d1,d1
+		add.w	d1,d1
+
+.branch2:
+		add.w	d1,obVelX(a0)
+		move.w	#$30,d1
+		move.w	(v_player+obY).w,d0
+		cmp.w	obY(a0),d0
+		bcc.s	.branch3
+		neg.w	d1
+		tst.w	obVelY(a0)
+		bmi.s	.branch4
+		add.w	d1,d1
+		add.w	d1,d1
+		bra.s	.branch4
+; ---------------------------------------------------------------------------
+
+.branch3:
+		tst.w	obVelY(a0)
+		bpl.s	.branch4
+		add.w	d1,d1
+		add.w	d1,d1
+
+.branch4:
+		add.w	d1,obVelY(a0)
+		jmp		(SpeedToPos).l
+; End of function AttractedRing_Move
+	endif
