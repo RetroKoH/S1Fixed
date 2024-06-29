@@ -159,6 +159,7 @@ obRespawnNo:	equ $14			; respawn list address (2 bytes)
 obColType:		equ $20			; collision response type
 obColProp:		equ $21			; collision extra property
 obSolid:		equ $25			; solid status flag for objects
+obShieldProp:	equ $27			; How object responds to shields {Reflect-Lightning-Bubble-Flame 0-0-0-0}
 obSubtype:		equ $28			; object subtype
 obBossX:		equ $30
 obBossY:		equ $38
@@ -242,6 +243,12 @@ sta2ndFShield:		equ 4
 sta2ndBShield:		equ 5
 sta2ndLShield:		equ 6
 
+; obShieldProp bits
+shPropFlame:		equ sta2ndFShield
+shPropBubble:		equ sta2ndBShield
+shPropLightning:	equ sta2ndLShield
+shPropReflect:		equ 7
+
 ; status_secondary variable masks
 mask2ndShield:		equ	1<<sta2ndShield		; $01
 mask2ndInvinc:		equ	1<<sta2ndInvinc		; $02
@@ -251,6 +258,7 @@ mask2ndFShield:		equ	1<<sta2ndFShield	; $10
 mask2ndBShield:		equ	1<<sta2ndBShield	; $20
 mask2ndLShield:		equ	1<<sta2ndLShield	; $40
 
+mask2ndChkElement:	equ $70					; Elemental Shield bits checked
 mask2ndChkShield:	equ $71					; Every shield bit checked
 mask2ndRmvShield:	equ	~mask2ndChkShield	; ~$71
 

@@ -28,6 +28,9 @@ Msl_Main:	; Routine 0
 		move.w	#$180,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#8,obActWid(a0)
 		andi.b	#(maskFlipX+maskFlipY),obStatus(a0)
+		
+		bset	#shPropReflect,obShieldProp(a0)	; Reflected by Elemental Shields
+		
 		tst.b	obSubtype(a0)			; was object created by	a Newtron?
 		beq.s	Msl_Animate				; if not, branch
 

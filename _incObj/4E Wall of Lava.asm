@@ -40,6 +40,9 @@ LWall_Main:	; Routine 0
 		move.w	#$80,obPriority(a1)		; RetroKoH S2 Priority Manager
 		clr.b	obAnim(a1)
 		move.b	#$94,obColType(a1)
+		
+		bset	#shPropFlame,obShieldProp(a1)	; Negated by Flame Shield
+		
 		move.l	a0,objoff_3C(a1)
 
 .fail:

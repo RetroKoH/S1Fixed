@@ -20,6 +20,9 @@ Flame_Main:	; Routine 0
 		move.w	#$80,obPriority(a0)		; RetroKoH S2 Priority Manager
 		move.w	obY(a0),objoff_30(a0)	; store obY (gets overwritten later though)
 		move.b	#$C,obActWid(a0)
+
+		bset	#shPropFlame,obShieldProp(a0)	; Negated by Flame Shield
+
 		move.b	obSubtype(a0),d0
 		andi.w	#$F0,d0					; read 1st digit of object type
 		add.w	d0,d0					; multiply by 2

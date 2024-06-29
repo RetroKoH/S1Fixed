@@ -170,6 +170,9 @@ Geyser_Main:	; Routine 0
 		move.w	objoff_30(a0),objoff_30(a1)
 		addi.w	#$60,objoff_30(a1)
 		move.b	#$93,obColType(a1)
+
+		bset	#shPropFlame,obShieldProp(a1)	; Negated by Flame Shield
+
 		move.b	#$80,obHeight(a1)
 		bset	#4,obRender(a1)
 		addq.b	#4,obRoutine(a1)

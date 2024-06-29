@@ -59,6 +59,9 @@ Gar_FireBall:	; Routine 4
 		ori.b	#4,obRender(a0)
 		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#$98,obColType(a0)
+
+		bset	#shPropFlame,obShieldProp(a0)	; Negated by Flame Shield
+
 		move.b	#8,obActWid(a0)
 		move.b	#2,obFrame(a0)
 		addq.w	#8,obY(a0)

@@ -179,6 +179,9 @@ loc_11B7C:
 		move.w	(a2)+,obVelX(a1)
 		move.w	(a2)+,obVelY(a1)
 		move.b	#$98,obColType(a1)
+
+		bset	#shPropReflect,obShieldProp(a1)	; Reflected by Elemental Shields
+
 		bset	#7,obRender(a1)
 
 .fail:

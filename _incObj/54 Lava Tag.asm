@@ -24,6 +24,8 @@ LTag_Main:	; Routine 0
 		move.l	#Map_LTag,obMap(a0)
 		move.b	#$84,obRender(a0)
 
+		bset	#shPropFlame,obShieldProp(a0)	; Negated by Flame Shield
+
 LTag_ChkDel:	; Routine 2
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0

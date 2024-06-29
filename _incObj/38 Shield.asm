@@ -122,7 +122,21 @@ Shi_Flame:	; Routine 6
 		move.b	(v_player+obStatus).w,obStatus(a0)
 		andi.b	#maskFlipX,obStatus(a0)					; Copy first bit, so the Shield is always facing in the same direction as the player.
 
+	; Mercury Shield/Invincibility Positioning Fix
+		move.b	obStatus(a0),d0
+		move.w	#$A,d1
+		cmpi.b	#aniID_Balance,(v_player+obAnim).w
+		bne.s	.noshift
+		
+.shift:
+		sub.w	d1,obX(a0)
+		btst	#staFlipX,d0	; X-Flip sprite bit
+		beq.s	.noshift
+		add.w	d1,d1
+		add.w	d1,obX(a0)
 .noshift:
+	; Shield/Invincibility Positioning Fix End
+
 		lea		(Ani_Shield).l,a1
 		jsr		(AnimateSprite).l
 		move.w	#$80,obPriority(a0)
@@ -134,6 +148,9 @@ Shi_Flame:	; Routine 6
 		bsr.w	Shield_LoadGfx
 		jmp		(DisplaySprite).l
 
+.remove:
+		rts
+
 .dissipate: ; SPECIAL EFFECT FOR UNDERWATER (To be added later)
 .delete:
 		andi.b	#mask2ndRmvShield,(v_player+obStatus2nd).w
@@ -141,8 +158,6 @@ Shi_Flame:	; Routine 6
 ;		bne.s	.notSonic
 		clr.b	obRoutine(a0)
 		move.b	#4,obSubtype(a0)			; Replace shield with instashield
-
-.remove:
 		rts
 
 ;.notSonic:
@@ -160,6 +175,21 @@ Shi_Bubble:	; Routine 8
 		move.w	(v_player+obY).w,obY(a0)
 		move.b	(v_player+obStatus).w,obStatus(a0)
 		andi.b	#maskFlipX,obStatus(a0)		; Copy first bit, so the Shield is always facing in the same direction as the player.
+
+	; Mercury Shield/Invincibility Positioning Fix
+		move.b	obStatus(a0),d0
+		move.w	#$A,d1
+		cmpi.b	#aniID_Balance,(v_player+obAnim).w
+		bne.s	.noshift
+		
+.shift:
+		sub.w	d1,obX(a0)
+		btst	#staFlipX,d0	; X-Flip sprite bit
+		beq.s	.noshift
+		add.w	d1,d1
+		add.w	d1,obX(a0)
+.noshift:
+	; Shield/Invincibility Positioning Fix End
 
 		lea		(Ani_Shield).l,a1
 		jsr		(AnimateSprite).l
@@ -200,6 +230,21 @@ Shi_Lightning:	; Routine 8
 		move.b	(v_player+obStatus).w,obStatus(a0)
 		andi.b	#maskFlipX,obStatus(a0)		; Copy first bit, so the Shield is always facing in the same direction as the player.
 
+	; Mercury Shield/Invincibility Positioning Fix
+		move.b	obStatus(a0),d0
+		move.w	#$A,d1
+		cmpi.b	#aniID_Balance,(v_player+obAnim).w
+		bne.s	.noshift
+		
+.shift:
+		sub.w	d1,obX(a0)
+		btst	#staFlipX,d0	; X-Flip sprite bit
+		beq.s	.noshift
+		add.w	d1,d1
+		add.w	d1,obX(a0)
+.noshift:
+	; Shield/Invincibility Positioning Fix End
+
 		lea		(Ani_Shield).l,a1
 		jsr		(AnimateSprite).l
 		move.w	#$80,obPriority(a0)
@@ -211,6 +256,9 @@ Shi_Lightning:	; Routine 8
 		bsr.w	Shield_LoadGfx
 		jmp		(DisplaySprite).l
 
+.remove:
+		rts
+
 .checkflash: ; SPECIAL EFFECT FOR UNDERWATER (To be added later)
 		;tst.w	(v_pcyc_time).w
 		;bra.s	Lightning_FlashWater
@@ -221,8 +269,6 @@ Shi_Lightning:	; Routine 8
 ;		bne.s	.notSonic
 		clr.b	obRoutine(a0)
 		move.b	#4,obSubtype(a0)			; Replace shield with instashield
-
-.remove:
 		rts
 
 ;.notSonic:

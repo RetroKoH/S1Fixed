@@ -301,19 +301,71 @@ React_Caterkiller:
 		bset	#7,obStatus(a1)
 
 React_ChkHurt:
-		btst	#sta2ndInvinc,obStatus2nd(a0)	; is Sonic invincible?
-		beq.s	.notinvincible					; if not, branch
+		move.b	obStatus2nd(a0),d0
+		andi.b	#mask2ndChkElement,d0			; does the player have an elemental shield?
+		beq.s	.noelemental					; if not, branch
+		and.b	obShieldProp(a1),d0				; is the object negated by player's current shield?
+		bne.s	.nohurt							; if yes, branch and exit
+		bra.s	.checkreflect					; if not, check for reflecting
 
-.isflashing:
+.noelemental:
+		btst	#sta2ndShield,obStatus2nd(a0)	; does Sonic have a Blue Shield?
+		bne.s	.chkhurt						; if yes, branch to hurt Sonic
+		cmpi.b	#1,obDoubleJumpFlag(a0)			; is instashield active?
+		bne.s	.chkhurt						; if not, branch to hurt Sonic
+
+; Elementals and Instashield reflect
+.checkreflect:
+		btst	#shPropReflect,obShieldProp(a1)	; is the object supposed to bounce off of shields?
+		beq.s	.chkhurt						; if not, branch
+		
+;Bounce_Projectile:
+		move.w	obX(a0),d1
+		move.w	obY(a0),d2
+		sub.w	obX(a1),d1
+		sub.w	obY(a1),d2
+		jsr		(CalcAngle).l
+		jsr		(CalcSine).l
+		muls.w	#-$800,d1
+		asr.l	#8,d1
+		move.w	d1,obVelX(a1)
+		muls.w	#-$800,d0
+		asr.l	#8,d0
+		move.w	d0,obVelY(a1)
+		clr.b	obColType(a1)
+.nohurt:
 		moveq	#-1,d0
-		rts	
+		rts
+
+.chkhurt:
+		tst.b	obInvuln(a0)					; is Sonic flashing? -- RetroKoH Sonic SST Compaction
+		bne.s	.nohurt							; if yes, branch and exit
+		btst	#sta2ndInvinc,obStatus2nd(a0)	; is Sonic invincible?
+		bne.s	.nohurt							; if yes, branch and exit
+
+.gotohurt:
+		movea.l	a1,a2
+		;bra.s	HurtSonic						; if not, branch to standard routine
+; End of function ReactToItem
+; continue straight to HurtSonic
 ; ===========================================================================
 
-.notinvincible:
-		nop	
-		tst.b	obInvuln(a0)	; is Sonic flashing? -- RetroKoH Sonic SST Compaction
-		bne.s	.isflashing		; if yes, branch
-		movea.l	a1,a2
+
+; Original Code	
+;React_ChkHurt:
+;		btst	#sta2ndInvinc,obStatus2nd(a0)	; is Sonic invincible?
+;		beq.s	.notinvincible					; if not, branch
+
+;.isflashing:
+;		moveq	#-1,d0
+;		rts	
+; ===========================================================================
+
+;.notinvincible:
+;		nop	
+;		tst.b	obInvuln(a0)	; is Sonic flashing? -- RetroKoH Sonic SST Compaction
+;		bne.s	.isflashing		; if yes, branch
+;		movea.l	a1,a2
 
 ; End of function ReactToItem
 ; continue straight to HurtSonic

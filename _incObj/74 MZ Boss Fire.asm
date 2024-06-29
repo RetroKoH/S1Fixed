@@ -28,6 +28,9 @@ BossFire_Main:	; Routine 0
 		tst.b	obSubtype(a0)
 		bne.s	loc_1870A
 		move.b	#$8B,obColType(a0)
+
+		bset	#shPropFlame,obShieldProp(a0)	; Negated by Flame Shield
+
 		addq.b	#2,obRoutine(a0)
 		bra.w	loc_18886
 ; ===========================================================================

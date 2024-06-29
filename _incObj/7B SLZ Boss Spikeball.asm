@@ -347,6 +347,9 @@ BossSpikeball_Loop:
 		move.w	(a2)+,obVelX(a1)
 		move.w	(a2)+,obVelY(a1)
 		move.b	#$98,obColType(a1)
+
+		bset	#shPropReflect,obShieldProp(a1)	; Reflected by Elemental Shields
+
 		ori.b	#4,obRender(a1)
 		bset	#7,obRender(a1)
 		move.b	#$C,obActWid(a1)

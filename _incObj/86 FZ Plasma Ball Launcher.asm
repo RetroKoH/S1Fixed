@@ -89,6 +89,9 @@ BossPlasma_Loop:
 		move.b	#$C,obHeight(a1)
 		move.b	#$C,obWidth(a1)
 		clr.b	obColType(a1)
+
+		bset	#shPropLightning,obShieldProp(a1)	; Negated by Lightning Shield
+
 		move.w	#$180,obPriority(a1)	; RetroKoH S2 Priority Manager
 		move.w	#$3E,obSubtype(a1)
 		move.b	#4,obRender(a1)

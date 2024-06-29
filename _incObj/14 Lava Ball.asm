@@ -25,12 +25,15 @@ LBall_Main:	; Routine 0
 		move.l	#Map_Fire,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Fireball,0,0),obGfx(a0)	; RetroKoH VRAM Overhaul
 		move.b	#4,obRender(a0)
-		move.w	#$180,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#$180,obPriority(a0)			; RetroKoH S2 Priority Manager
 		move.b	#$8B,obColType(a0)
+		
+		bset	#shPropFlame,obShieldProp(a0)	; Negated by Flame Shield
+		
 		move.w	obY(a0),objoff_30(a0)
 		tst.b	objoff_29(a0)
 		beq.s	.speed
-		addq.b	#1,obPriority(a0)		; Add to upper byte, to add $100 to priority value -- RetroKoH S2 Priority Manager
+		addq.b	#1,obPriority(a0)				; Add to upper byte, to add $100 to priority value -- RetroKoH S2 Priority Manager
 
 .speed:
 		moveq	#0,d0
@@ -107,7 +110,7 @@ locret_E452:
 
 LBall_Type05:
 		bclr	#staFlipY,obStatus(a0)
-		bsr.w	ObjFloorDist
+		jsr		(ObjFloorDist).l
 		tst.w	d1
 		bpl.s	locret_E474
 		move.b	#8,obSubtype(a0)
