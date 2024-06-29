@@ -24,7 +24,7 @@ PathSwapper:
 	; S3K Objects Manaager End
 
 .delete:
-		bra.w	DeleteObject
+		jmp		(DeleteObject).l
 ; ===========================================================================
 ; off_1FCF0:
 PSwapper_Index:

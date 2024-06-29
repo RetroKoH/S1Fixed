@@ -106,7 +106,7 @@ Sonic_BubbleShieldAttack:
 ; ===========================================================================
 
 Sonic_LightningShieldAttack:
-		;addq.b	#1,(v_shieldobj+obAnim).w				; Set animation
+		addq.b	#1,(v_shieldobj+obAnim).w				; Set animation to aniID_LightningSpark
 		move.b	#1,obDoubleJumpFlag(a0)
 		move.w	#-$580,obVelY(a0)						; y speed set to -5.5, to spring him further upward
 		clr.b	obJumping(a0)

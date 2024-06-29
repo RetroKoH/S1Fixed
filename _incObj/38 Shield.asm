@@ -62,12 +62,13 @@ Shi_Main:	; Routine 0
 		bra.w	ResumeMusic
 
 .notBubble:
-;		cmpi.b	#$A,obRoutine(a0)	; lightning shield check
-;		bne.s	.notBubble
-;		move.l	#Art_Shield_L2,d1		; Load art for sparks
-;		move.w	#$ACA0,d2				; load it just after the lightning shield art
-;		move.w	#$50,d3
-;		jsr		(QueueDMATransfer).l
+		cmpi.b	#$A,obRoutine(a0)				; lightning shield check
+		bne.s	.notLightning
+		move.l	#Art_Shield_L2,d1				; Load art for sparks
+		move.w	#ArtTile_LShield_Sparks*$20,d2	; load it just after the lightning shield art
+		move.w	#$50,d3
+		jsr		(QueueDMATransfer).l
+
 .notLightning:
 	endif
 		rts
@@ -266,11 +267,11 @@ Shi_Bubble:	; Routine 8
 
 Shi_Lightning:	; Routine $A
 		btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; does Sonic have invincibility?
-		bne.s	.remove									; if yes, branch
+		bne.w	.remove									; if yes, branch
 ;		cmpi.b	#$1C,(v_player+obAnim).w			; Which animation is this???
 ;		beq.s	.remove
 		btst	#sta2ndShield,(v_player+obStatus2nd).w	; does Sonic have shield?
-		beq.s	.delete									; if not, branch
+		beq.w	.delete									; if not, branch
 		btst	#staWater,(v_player+obStatus).w			; is Sonic underwater?
 		bne.s	.checkflash								; if yes, branch, and destroy the shield
 		move.w	(v_player+obX).w,obX(a0)
@@ -292,7 +293,13 @@ Shi_Lightning:	; Routine $A
 		add.w	d1,obX(a0)
 .noshift:
 	; Shield/Invincibility Positioning Fix End
+	
+		cmpi.b	#aniID_LightningShield,obAnim(a0)
+		beq.s	.animate
+		bsr.w	Lightning_CreateSpark
+		move.b	#aniID_LightningShield,obAnim(a0)
 
+.animate:
 		lea		(Ani_Shield).l,a1
 		jsr		(AnimateSprite).l
 		move.w	#$80,obPriority(a0)
@@ -309,7 +316,7 @@ Shi_Lightning:	; Routine $A
 
 .checkflash: ; SPECIAL EFFECT FOR UNDERWATER (To be added later)
 		;tst.w	(v_pcyc_time).w
-		;bra.s	Lightning_FlashWater
+		bra.s	Lightning_FlashWater
 
 .delete:
 		andi.b	#mask2ndRmvShield,(v_player+obStatus2nd).w
@@ -323,39 +330,59 @@ Shi_Lightning:	; Routine $A
 ;		jmp		(DeleteObject).l
 ; ===========================================================================
 
+Lightning_FlashWater:
+		move.b	#$E,obRoutine(a0)
+		andi.b	#mask2ndRmvShield,(v_player+obStatus2nd).w
+		lea		(v_pal_water).w,a1
+		lea		(v_pal_water_dup).w,a2
+		move.w	#$1F,d0
+
+.loop:
+		move.l	(a1),(a2)+
+		move.l	#$EEE0EEE,(a1)+
+		dbf		d0,.loop
+		move.w	#0,-$40(a1)
+		rts
+; ===========================================================================
 Lightning_CreateSpark:
-;		moveq	#$C,d2
-;		lea		(v_sparkspace).w,a1
-;		lea		(SparkVelocities).l,a2
-;		moveq	#3,d1
+		lea		(v_sparksobj).w,a1
+		lea		(SparkVelocities).l,a2
+		moveq	#3,d1
 
-;.loop:
-;		move.b	#id_ShieldItem,obID(a1)
-;		move.b	#$E,routine(a1)
-;		move.w	obX(a0),obX(a1)
-;		move.w	obY(a0),obY(a1)
-;		move.l	obMap(a0),obMap(a1)
-;		move.w	obGfx(a0),obGfx(a1)
-;		move.b	#4,obRender(a1)
-;		move.w	#$80,obPriority(a1)
-;		move.b	#8,obActWid(a1)
-;		move.b	d2,obAnim(a1)
-;		move.w	(a2)+,obVelX(a1)
-;		move.w	(a2)+,obVelY(a1)
-;		lea		object_size(a1),a1
-;		dbf		d1,.loop
+.loop:
+		move.b	#id_ShieldItem,obID(a1)
+		move.b	#$C,obRoutine(a1)
+		move.w	obX(a0),obX(a1)
+		move.w	obY(a0),obY(a1)
+		move.l	obMap(a0),obMap(a1)
+		move.w	obGfx(a0),obGfx(a1)
+		move.b	#4,obRender(a1)
+		move.w	#$80,obPriority(a1)
+		move.b	#8,obActWid(a1)
+		move.b	#aniID_LightningSpark,obAnim(a1)
+		move.w	(a2)+,obVelX(a1)
+		move.w	(a2)+,obVelY(a1)
+		lea		object_size(a1),a1
+		dbf		d1,.loop
 
-;.end:
+.end:
 		rts
 ; End of function Lightning_CreateSpark
 ; ===========================================================================
+; ---------------------------------------------------------------------------
+SparkVelocities:
+		dc.w  $FE00, $FE00
+		dc.w   $200, $FE00
+		dc.w  $FE00,  $200
+		dc.w   $200,  $200
+; ---------------------------------------------------------------------------
 
-Shi_LightningSpark: ; Routine $E
+Shi_LightningSpark: ; Routine $C
 		jsr		(SpeedToPos).l
 		addi.w	#$18,obVelY(a0)
 		lea		(Ani_Shield).l,a1
 		jsr		(AnimateSprite).l
-		cmpi.b	#$E,obRoutine(a0)
+		cmpi.b	#$C,obRoutine(a0)
 		bne.s	.delete
 		jmp		(DisplaySprite).l
 
@@ -363,19 +390,19 @@ Shi_LightningSpark: ; Routine $E
 		jmp		(DeleteObject).l
 ; ===========================================================================
 
-Shi_LightningDestroy: ; Routine $10
+Shi_LightningDestroy: ; Routine $E
 		subq.b	#1,obTimeFrame(a0)
 		bpl.s	.return
 ;		tst.b	(v_player+obCharID).w
 ;		bne.s	.notSonic
 		clr.b	obRoutine(a0)
 		move.b	#1,obSubtype(a0)			; Replace shield with instashield
-;		bra.s	.continue
+;		bra.s	.cont
 
 ;.notSonic:
 ;		jsr		(DeleteObject).l
 
-.continue:
+.cont:
 		lea		(v_pal_water_dup).w,a1
 		lea		(v_pal_water).w,a2
 		move.w	#$1F,d0

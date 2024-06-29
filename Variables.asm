@@ -97,6 +97,7 @@ v_splash		= v_objspace+object_size*12	; ($D300) object variable space for the wa
 v_sonicbubbles	= v_objspace+object_size*13	; ($D340) object variable space for the bubbles that come out of Sonic's mouth/drown countdown ($40 bytes)
 
 ; ($D380-D5BF) - 10 Slots Unused?
+v_sparksobj		= v_objspace+object_size*16	; ($D400) object variable space for lightning shield sparks (4 object slots)
 
 v_endcard		= v_objspace+object_size*23	; ($D5C0) object variable space for the level results card ($1C0 bytes)
 v_endcardsonic	= v_endcard+object_size*0	; ($D5C0) object variable space for the level results card "SONIC HAS" text ($40 bytes)

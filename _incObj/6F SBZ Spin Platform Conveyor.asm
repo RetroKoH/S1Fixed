@@ -155,7 +155,7 @@ SpinC_Rout2:
 		move.w	d2,d3
 		addq.w	#1,d3
 		move.w	(sp)+,d4
-		bra.w	SolidObject
+		jmp		(SolidObject).l
 ; ===========================================================================
 
 loc_16404:
