@@ -9,9 +9,11 @@ Ani_Monitor:
 		dc.w	.shield-Ani_Monitor
 		dc.w	.invincible-Ani_Monitor
 		dc.w	.rings-Ani_Monitor
+	if ShieldsMode>1
 		dc.w	.fshield-Ani_Monitor	; Added
 		dc.w	.bshield-Ani_Monitor	; Added
 		dc.w	.lshield-Ani_Monitor	; Added
+	endif
 		dc.w	.s-Ani_Monitor
 		dc.w	.goggles-Ani_Monitor
 		dc.w	.breaking-Ani_Monitor
@@ -30,6 +32,9 @@ Ani_Monitor:
 		even
 .rings:		dc.b 1,	0, 8, 8, 1, 8, 8, 2, 8,	8, afEnd
 		even
+
+	if ShieldsMode>1
+
 .fshield:	dc.b 1,	0, 9, 9, 1, 9, 9, 2, 9, 9, afEnd
 		even
 .bshield:	dc.b 1,	0, $A, $A, 1, $A, $A, 2, $A, $A, afEnd
@@ -42,3 +47,14 @@ Ani_Monitor:
 		even
 .breaking:	dc.b 2,	0, 1, 2, $E, afBack, 1
 		even
+
+	else
+
+.s:		dc.b 1,	0, 9, 9, 1, 9, 9, 2, 9,	9, afEnd
+		even
+.goggles:	dc.b 1,	0, $A, $A, 1, $A, $A, 2, $A, $A, afEnd
+		even
+.breaking:	dc.b 2,	0, 1, 2, $B, afBack, 1
+		even
+
+	endif

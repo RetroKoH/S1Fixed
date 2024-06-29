@@ -17,6 +17,13 @@ Sonic_ResetOnFloor:
 		move.b	#9,obWidth(a0)
 		move.b	#aniID_Walk,obAnim(a0)			; use running/walking animation
 		subq.w	#5,obY(a0)						; move Sonic up 5 pixels so the increased height doesn't push him into the ground 
+	if ShieldsMode=0
+.ret:
+		rts	
+; End of function Sonic_ResetOnFloor
+	else				; Mode 1+
+	
+	if ShieldsMode>1			; Mode 2+
 		tst.b	obDoubleJumpFlag(a0)
 		beq.s	.ret
 		btst	#sta2ndBShield,obStatus2nd(a0)	; does Sonic have a Bubble Shield?
@@ -25,12 +32,16 @@ Sonic_ResetOnFloor:
 
 .nobubble:
 	; Add Drop Dash Check here
+	endif						; Mode 2+
 		clr.b	obDoubleJumpFlag(a0)
 
 .ret:
 		rts	
 ; End of function Sonic_ResetOnFloor
+	endif				; Mode 1+
 
+
+	if ShieldsMode>1
 ; ---------------------------------------------------------------------------
 ; Subroutine to	bounce Sonic in the air when he has a bubble shield
 ; ---------------------------------------------------------------------------
@@ -71,3 +82,4 @@ BubbleShield_Bounce:
 		move.w	#sfx_BShieldAtk,d0
 		jmp		(PlaySound_Special).l
 ; End of function BubbleShield_Bounce
+	endif

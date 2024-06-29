@@ -2,13 +2,20 @@
 ; Object 26 - monitors
 ; ---------------------------------------------------------------------------
 
+	if ShieldsMode>1
+monLastID: = $C
+	else
+monLastID: = 9
+	endif
+
 Monitor:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Mon_Index(pc,d0.w),d1
-		jmp	Mon_Index(pc,d1.w)
+		jmp		Mon_Index(pc,d1.w)
 ; ===========================================================================
-Mon_Index:	dc.w Mon_Main-Mon_Index
+Mon_Index:
+		dc.w Mon_Main-Mon_Index
 		dc.w Mon_Solid-Mon_Index
 		dc.w Mon_BreakOpen-Mon_Index
 		dc.w Mon_Animate-Mon_Index
@@ -22,7 +29,7 @@ Mon_Main:	; Routine 0
 		move.l	#Map_Monitor,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Monitor,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.w	#$180,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#$180,obPriority(a0)				; RetroKoH S2 Priority Manager
 		move.b	#$F,obActWid(a0)
 
 	; ProjectFM S3K Objects Manager
@@ -32,13 +39,9 @@ Mon_Main:	; Routine 0
 		btst	#0,(a2)				; has monitor been broken?
 	; S3K Objects Manager End
 
-		beq.s	.notbroken			; if not, branch
-		move.b	#8,obRoutine(a0)	; run "Mon_Display" routine
-	if ShieldsMode>1
-		move.b	#$E,obFrame(a0)		; use new broken monitor frame
-	else
-		move.b	#$B,obFrame(a0)		; use original broken monitor frame
-	endif
+		beq.s	.notbroken					; if not, branch
+		move.b	#8,obRoutine(a0)			; run "Mon_Display" routine
+		move.b	#monLastID+2,obFrame(a0)	; use broken monitor frame
 		rts	
 ; ===========================================================================
 
@@ -47,6 +50,20 @@ Mon_Main:	; Routine 0
 		move.b	obSubtype(a0),obAnim(a0)
 
 Mon_Solid:	; Routine 2
+	if ShieldsMode=2
+		move.b	obSubtype(a0),d0
+		cmpi.b	#7,d0					; is this a flame shield?
+		blt.s	.skipcheck
+		cmpi.b	#9,d0					; is this a lightning shield?
+		bgt.s	.skipcheck
+	; if we reached this point, this is an elemental shield...
+		move.b	obSubtype(a0),obAnim(a0)
+		btst	#sta2ndShield,(v_player+obStatus2nd).w	; does Sonic have a shield?
+		bne.s	.skipcheck								; if yes, don't change it.
+		move.b	#4,obAnim(a0)							; reset to blue shield.
+
+.skipcheck:
+	endif
 		move.b	ob2ndRout(a0),d0		; is monitor set to fall?
 		beq.s	.normal					; if not, branch
 		subq.b	#2,d0
@@ -156,21 +173,17 @@ Mon_BreakOpen:	; Routine 4
 Mon_Explode:
 		bsr.w	FindFreeObj
 		bne.s	.fail
-		_move.b	#id_ExplosionItem,obID(a1) ; load explosion object
-		addq.b	#2,obRoutine(a1) ; don't create an animal
+		_move.b	#id_ExplosionItem,obID(a1)	; load explosion object
+		addq.b	#2,obRoutine(a1)			; don't create an animal
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 
 .fail:
 	; ProjectFM S3K Objects Manager
-		move.w	obRespawnNo(a0),d0	; get address in respawn table
-		movea.w	d0,a2				; load address into a2
+		move.w	obRespawnNo(a0),d0			; get address in respawn table
+		movea.w	d0,a2						; load address into a2
 		bset	#0,(a2)
 	; S3K Objects Manager End
 
-	if ShieldsMode>1
-		move.b	#$C,obAnim(a0)	; set monitor type to broken
-	else
-		move.b	#9,obAnim(a0)	; set monitor type to broken
-	endif
+		move.b	#monLastID,obAnim(a0)		; set monitor type to broken
 		bra.w	DisplaySprite

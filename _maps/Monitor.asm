@@ -12,9 +12,13 @@ Map_Monitor_internal:	mappingsTable
 	mappingsTableEntry.w	.shield
 	mappingsTableEntry.w	.invincible
 	mappingsTableEntry.w	.rings
+
+	if ShieldsMode>1
 	mappingsTableEntry.w	.fshield	; Added
 	mappingsTableEntry.w	.bshield	; Added
 	mappingsTableEntry.w	.lshield	; Added
+	endif
+
 	mappingsTableEntry.w	.s
 	mappingsTableEntry.w	.goggles
 	mappingsTableEntry.w	.broken
@@ -63,6 +67,8 @@ Map_Monitor_internal:	mappingsTable
 	spritePiece	-$10, -$11, 4, 4, 0, 0, 0, 0, 0
 .rings_End
 
+	if ShieldsMode>1
+
 .fshield:	spriteHeader
 	spritePiece	-8, -$B, 2, 2, $2C, 0, 0, 0, 0	; flame shield monitor
 	spritePiece	-$10, -$11, 4, 4, 0, 0, 0, 1, 0
@@ -91,5 +97,23 @@ Map_Monitor_internal:	mappingsTable
 .broken:	spriteHeader
 	spritePiece	-$10, -1, 4, 2, $40, 0, 0, 0, 0	; broken monitor
 .broken_End
+
+	else
+
+.s:	spriteHeader
+	spritePiece	-8, -$B, 2, 2, $2C, 0, 0, 0, 0	; 'S' monitor
+	spritePiece	-$10, -$11, 4, 4, 0, 0, 0, 0, 0
+.s_End
+
+.goggles:	spriteHeader
+	spritePiece	-8, -$B, 2, 2, $30, 0, 0, 0, 0	; goggles monitor
+	spritePiece	-$10, -$11, 4, 4, 0, 0, 0, 0, 0
+.goggles_End
+
+.broken:	spriteHeader
+	spritePiece	-$10, -1, 4, 2, $34, 0, 0, 0, 0	; broken monitor
+.broken_End
+
+	endif
 
 	even

@@ -39,7 +39,7 @@ SkidDustEnabled: = 1					; if set to 1, Skid dust will occur when coming to a st
 SpinDashCancel: = SpinDashEnabled*1		; if set to 1, Spin Dash can be cancelled by not pressing ABC
 SpinDashNoRevDown: = SpinDashEnabled*1	; if set to 1, Spin Dash will not rev down so long as ABC is held down
 PeeloutEnabled: = 1						; if set to 1, Peelout is enabled for Sonic (SFX still don't work properly)
-ShieldsMode: = 3						; 0 - Blue Shield only, 1 - Instashield, 2 - Blue Shield + Elemental, 3 - Elemental only.
+ShieldsMode: = 3						; 0 - Blue Shield only, 1 - Blue Shield + Instashield, 2 - Blue Shield + Elementals, 3 - Elemental only.
 
 	include "MacroSetup.asm"
 	include	"Constants.asm"
@@ -2356,7 +2356,7 @@ Level_SkipTtlCard:
 		move.b	#id_SonicPlayer,(v_player).w	; load Sonic object
 	if ShieldsMode>0
 		move.b	#id_ShieldItem,(v_shieldobj).w	; load instashield object
-		move.b	#4,(v_shieldobj+obSubtype).w
+		move.b	#1,(v_shieldobj+obSubtype).w
 	endif
 
 Level_ChkDebug:
@@ -8111,8 +8111,15 @@ Nem_Lives:	binclude	"artnem/HUD - Life Counter Icon.nem"
 		even
 Nem_Ring:	binclude	"artnem/Rings.nem"
 		even
+
+	if ShieldsMode>1
+Nem_Monitors:	binclude	"artnem/Monitors - S3K.nem"
+		even
+	else
 Nem_Monitors:	binclude	"artnem/Monitors.nem"
 		even
+	endif
+
 Nem_Explode:	binclude	"artnem/Explosion.nem"
 		even
 Nem_Points:	binclude	"artnem/Points.nem"	; points from destroyed enemy or object
@@ -8447,6 +8454,44 @@ ObjPosSBZPlatform_Index:
 		dc.w ObjPos_SBZ1pf5-ObjPos_Index, ObjPos_SBZ1pf6-ObjPos_Index
 		dc.w ObjPos_SBZ1pf1-ObjPos_Index, ObjPos_SBZ1pf2-ObjPos_Index
 		dc.b $FF, $FF, 0, 0, 0,	0
+
+	if ShieldsMode>1
+ObjPos_GHZ1:	binclude	"objpos/Elemental Monitors/ghz1.bin"
+		even
+ObjPos_GHZ2:	binclude	"objpos/Elemental Monitors/ghz2.bin"
+		even
+ObjPos_GHZ3:	binclude	"objpos/Elemental Monitors/ghz3.bin"
+		even
+ObjPos_LZ1:		binclude	"objpos/Elemental Monitors/lz1.bin"
+		even
+ObjPos_LZ2:		binclude	"objpos/Elemental Monitors/lz2.bin"
+		even
+ObjPos_LZ3:		binclude	"objpos/Elemental Monitors/lz3.bin"
+		even
+ObjPos_MZ1:		binclude	"objpos/Elemental Monitors/mz1.bin"
+		even
+ObjPos_MZ2:		binclude	"objpos/Elemental Monitors/mz2.bin"
+		even
+ObjPos_MZ3:		binclude	"objpos/Elemental Monitors/mz3.bin"
+		even
+ObjPos_SLZ1:	binclude	"objpos/Elemental Monitors/slz1.bin"
+		even
+ObjPos_SLZ2:	binclude	"objpos/Elemental Monitors/slz2.bin"
+		even
+ObjPos_SLZ3:	binclude	"objpos/Elemental Monitors/slz3.bin"
+		even
+ObjPos_SYZ1:	binclude	"objpos/Elemental Monitors/syz1.bin"
+		even
+ObjPos_SYZ2:	binclude	"objpos/Elemental Monitors/syz2.bin"
+		even
+ObjPos_SYZ3:	binclude	"objpos/Elemental Monitors/syz3.bin"
+		even
+ObjPos_SBZ1:	binclude	"objpos/Elemental Monitors/sbz1.bin"
+		even
+ObjPos_SBZ2:	binclude	"objpos/Elemental Monitors/sbz2.bin"
+		even
+
+	else
 ObjPos_GHZ1:	binclude	"objpos/ghz1.bin"
 		even
 ObjPos_GHZ2:	binclude	"objpos/ghz2.bin"
@@ -8458,20 +8503,6 @@ ObjPos_LZ1:		binclude	"objpos/lz1.bin"
 ObjPos_LZ2:		binclude	"objpos/lz2.bin"
 		even
 ObjPos_LZ3:		binclude	"objpos/lz3.bin"
-		even
-ObjPos_SBZ3:	binclude	"objpos/sbz3.bin"
-		even
-ObjPos_LZ1pf1:	binclude	"objpos/lz1pf1.bin"
-		even
-ObjPos_LZ1pf2:	binclude	"objpos/lz1pf2.bin"
-		even
-ObjPos_LZ2pf1:	binclude	"objpos/lz2pf1.bin"
-		even
-ObjPos_LZ2pf2:	binclude	"objpos/lz2pf2.bin"
-		even
-ObjPos_LZ3pf1:	binclude	"objpos/lz3pf1.bin"
-		even
-ObjPos_LZ3pf2:	binclude	"objpos/lz3pf2.bin"
 		even
 ObjPos_MZ1:		binclude	"objpos/mz1.bin"
 		even
@@ -8495,7 +8526,23 @@ ObjPos_SBZ1:	binclude	"objpos/sbz1.bin"
 		even
 ObjPos_SBZ2:	binclude	"objpos/sbz2.bin"
 		even
+	endif
+
+ObjPos_SBZ3:	binclude	"objpos/sbz3.bin"
+		even
 ObjPos_FZ:		binclude	"objpos/fz.bin"
+		even
+ObjPos_LZ1pf1:	binclude	"objpos/lz1pf1.bin"
+		even
+ObjPos_LZ1pf2:	binclude	"objpos/lz1pf2.bin"
+		even
+ObjPos_LZ2pf1:	binclude	"objpos/lz2pf1.bin"
+		even
+ObjPos_LZ2pf2:	binclude	"objpos/lz2pf2.bin"
+		even
+ObjPos_LZ3pf1:	binclude	"objpos/lz3pf1.bin"
+		even
+ObjPos_LZ3pf2:	binclude	"objpos/lz3pf2.bin"
 		even
 ObjPos_SBZ1pf1:	binclude	"objpos/sbz1pf1.bin"
 		even

@@ -301,6 +301,23 @@ React_Caterkiller:
 		bset	#7,obStatus(a1)
 
 React_ChkHurt:
+	if ShieldsMode=0
+		btst	#sta2ndInvinc,obStatus2nd(a0)	; is Sonic invincible?
+		beq.s	.notinvincible					; if not, branch
+
+.isflashing:
+		moveq	#-1,d0
+		rts	
+; ===========================================================================
+
+.notinvincible:
+		nop	
+		tst.b	obInvuln(a0)	; is Sonic flashing? -- RetroKoH Sonic SST Compaction
+		bne.s	.isflashing		; if yes, branch
+		movea.l	a1,a2
+; End of function ReactToItem
+	else
+
 		move.b	obStatus2nd(a0),d0
 		andi.b	#mask2ndChkElement,d0			; does the player have an elemental shield?
 		beq.s	.noelemental					; if not, branch
@@ -347,28 +364,9 @@ React_ChkHurt:
 		movea.l	a1,a2
 		;bra.s	HurtSonic						; if not, branch to standard routine
 ; End of function ReactToItem
+	endif
 ; continue straight to HurtSonic
 ; ===========================================================================
-
-
-; Original Code	
-;React_ChkHurt:
-;		btst	#sta2ndInvinc,obStatus2nd(a0)	; is Sonic invincible?
-;		beq.s	.notinvincible					; if not, branch
-
-;.isflashing:
-;		moveq	#-1,d0
-;		rts	
-; ===========================================================================
-
-;.notinvincible:
-;		nop	
-;		tst.b	obInvuln(a0)	; is Sonic flashing? -- RetroKoH Sonic SST Compaction
-;		bne.s	.isflashing		; if yes, branch
-;		movea.l	a1,a2
-
-; End of function ReactToItem
-; continue straight to HurtSonic
 
 ; ---------------------------------------------------------------------------
 ; Hurting Sonic	subroutine

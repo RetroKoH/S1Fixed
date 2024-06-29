@@ -16,13 +16,16 @@ ShieldItem:
 Shi_Index:
 		dc.w	Shi_Main-Shi_Index
 		dc.w	Shi_Shield-Shi_Index
-	; Added (Lookup table should follow this order)
+	if ShieldsMode>0
+		dc.w	Shi_Insta-Shi_Index
+	endif
+	if ShieldsMode>1
 		dc.w	Shi_Flame-Shi_Index
 		dc.w	Shi_Bubble-Shi_Index
 		dc.w	Shi_Lightning-Shi_Index
-		dc.w	Shi_Insta-Shi_Index
 		dc.w	Shi_LightningSpark-Shi_Index
 		dc.w	Shi_LightningDestroy-Shi_Index
+	endif
 ; ===========================================================================
 
 Shi_Main:	; Routine 0
@@ -30,7 +33,15 @@ Shi_Main:	; Routine 0
 		move.w	#$80,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#$10,obActWid(a0)
 		move.w	#make_art_tile(ArtTile_Shield,0,0),obGfx(a0)
-	; RetroKoH Shield Optimization
+	if ShieldsMode=0
+		addq.b	#2,obRoutine(a0)
+		clr.b	obAnim(a0)					; Blue Shield Animation
+		move.l	#Map_Shield,obMap(a0)
+		move.l	#Art_Shield,obArtLoc(a0)	; load correct art location (for DPLCs)
+		move.l	#ShieldDynPLC,obDPLCLoc(a0)	; load correct DPLC location
+		rts
+	
+	else; RetroKoH Shield Optimization
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
 		lsl.b	#1,d0
@@ -44,7 +55,8 @@ Shi_Main:	; Routine 0
 		move.l	(a1)+,obMap(a0)		; load correct mappings
 		move.l	(a1)+,obArtLoc(a0)	; load correct art location (for DPLCs)
 		move.l	(a1)+,obDPLCLoc(a0)	; load correct DPLC location
-
+	
+	if ShieldsMode>1
 		cmpi.b	#8,obRoutine(a0)	; bubble shield check
 		bne.s	.notBubble
 		bra.w	ResumeMusic
@@ -57,8 +69,9 @@ Shi_Main:	; Routine 0
 ;		move.w	#$50,d3
 ;		jsr		(QueueDMATransfer).l
 .notLightning:
+	endif
 		rts
-	; Shield Optimization End
+	endif; Shield Optimization End
 ; ===========================================================================
 
 Shi_Shield:	; Routine 2
@@ -95,17 +108,52 @@ Shi_Shield:	; Routine 2
 
 ; Commented out code is useful for hacks w/ additional characters.
 .delete:
+	if ShieldsMode=0
+		jmp		(DeleteObject).l
+	else
 ;		tst.b	(v_player+obCharID).w	; You would need to add obCharID to player SST to use this.
 ;		bne.s	.notSonic
 		clr.b	obRoutine(a0)
-		move.b	#4,obSubtype(a0)			; Replace shield with instashield
+		move.b	#1,obSubtype(a0)			; Replace shield with instashield
 		rts
 
 ;.notSonic:
 ; Normal .delete (without instashield) jumps straight to this line.
 		jmp		(DeleteObject).l
+	endif
 ; ===========================================================================
+	if ShieldsMode>0
+Shi_Insta:	; Routine 4
+		btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; does Sonic have invincibility?
+		bne.s	.remove									; if yes, branch
+		move.w	(v_player+obX).w,obX(a0)
+		move.w	(v_player+obY).w,obY(a0)
+		move.b	(v_player+obStatus).w,obStatus(a0)
+		andi.b	#maskFlipX,obStatus(a0)					; Copy first bit, so the Shield is always facing in the same direction as the player.
+		lea		(Ani_Shield).l,a1
+		jsr		(AnimateSprite).l
+		cmpi.b	#7,obFrame(a0)
+		bne.s	.chkframe
+		tst.b	(v_player+obDoubleJumpFlag).w
+		beq.s	.chkframe
+		move.b	#2,(v_player+obDoubleJumpFlag).w		; Advance flag (We can now rev the Drop Dash)
 
+.chkframe:
+		tst.b	obFrame(a0)
+		beq.s	.loaddplc
+		cmpi.b	#3,obFrame(a0)
+		bne.s	.display
+
+.loaddplc:
+		bsr.w	Shield_LoadGfx
+.display:
+		jmp		(DisplaySprite).l
+.remove:
+		rts
+; ===========================================================================
+	endif
+	
+	if ShieldsMode>1
 Shi_Flame:	; Routine 6
 		btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; does Sonic have invincibility?
 		bne.s	.remove									; if yes, branch
@@ -117,7 +165,7 @@ Shi_Flame:	; Routine 6
 		bne.s	.delete									; if yes, branch, and destroy the shield
 		move.w	(v_player+obX).w,obX(a0)
 		move.w	(v_player+obY).w,obY(a0)
-		cmpi.b	#6,obAnim(a0)							; is Sonic using the Dash ability?
+		cmpi.b	#aniID_FlameDash,obAnim(a0)				; is Sonic using the Dash ability?
 		beq.s	.noshift								; if yes, branch (avoid flipping the sprite mid-dash)
 		move.b	(v_player+obStatus).w,obStatus(a0)
 		andi.b	#maskFlipX,obStatus(a0)					; Copy first bit, so the Shield is always facing in the same direction as the player.
@@ -157,7 +205,7 @@ Shi_Flame:	; Routine 6
 ;		tst.b	(v_player+obCharID).w
 ;		bne.s	.notSonic
 		clr.b	obRoutine(a0)
-		move.b	#4,obSubtype(a0)			; Replace shield with instashield
+		move.b	#1,obSubtype(a0)			; Replace shield with instashield
 		rts
 
 ;.notSonic:
@@ -207,7 +255,7 @@ Shi_Bubble:	; Routine 8
 ;		tst.b	(v_player+obCharID).w
 ;		bne.s	.notSonic
 		clr.b	obRoutine(a0)
-		move.b	#4,obSubtype(a0)			; Replace shield with instashield
+		move.b	#1,obSubtype(a0)			; Replace shield with instashield
 
 .remove:
 		rts
@@ -216,7 +264,7 @@ Shi_Bubble:	; Routine 8
 ;		jmp		(DeleteObject).l
 ; ===========================================================================
 
-Shi_Lightning:	; Routine 8
+Shi_Lightning:	; Routine $A
 		btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; does Sonic have invincibility?
 		bne.s	.remove									; if yes, branch
 ;		cmpi.b	#$1C,(v_player+obAnim).w			; Which animation is this???
@@ -268,7 +316,7 @@ Shi_Lightning:	; Routine 8
 ;		tst.b	(v_player+obCharID).w
 ;		bne.s	.notSonic
 		clr.b	obRoutine(a0)
-		move.b	#4,obSubtype(a0)			; Replace shield with instashield
+		move.b	#1,obSubtype(a0)			; Replace shield with instashield
 		rts
 
 ;.notSonic:
@@ -302,35 +350,6 @@ Lightning_CreateSpark:
 ; End of function Lightning_CreateSpark
 ; ===========================================================================
 
-Shi_Insta:	; Routine $C
-		btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; does Sonic have invincibility?
-		bne.s	.remove									; if yes, branch
-		move.w	(v_player+obX).w,obX(a0)
-		move.w	(v_player+obY).w,obY(a0)
-		move.b	(v_player+obStatus).w,obStatus(a0)
-		andi.b	#maskFlipX,obStatus(a0)					; Copy first bit, so the Shield is always facing in the same direction as the player.
-		lea		(Ani_Shield).l,a1
-		jsr		(AnimateSprite).l
-		cmpi.b	#7,obFrame(a0)
-		bne.s	.chkframe
-		tst.b	(v_player+obDoubleJumpFlag).w
-		beq.s	.chkframe
-		move.b	#2,(v_player+obDoubleJumpFlag).w		; Advance flag (We can now rev the Drop Dash)
-
-.chkframe:
-		tst.b	obFrame(a0)
-		beq.s	.loaddplc
-		cmpi.b	#3,obFrame(a0)
-		bne.s	.display
-
-.loaddplc:
-		bsr.w	Shield_LoadGfx
-.display:
-		jmp		(DisplaySprite).l
-.remove:
-		rts
-; ===========================================================================
-
 Shi_LightningSpark: ; Routine $E
 		jsr		(SpeedToPos).l
 		addi.w	#$18,obVelY(a0)
@@ -350,7 +369,7 @@ Shi_LightningDestroy: ; Routine $10
 ;		tst.b	(v_player+obCharID).w
 ;		bne.s	.notSonic
 		clr.b	obRoutine(a0)
-		move.b	#4,obSubtype(a0)			; Replace shield with instashield
+		move.b	#1,obSubtype(a0)			; Replace shield with instashield
 ;		bra.s	.continue
 
 ;.notSonic:
@@ -368,6 +387,7 @@ Shi_LightningDestroy: ; Routine $10
 .return:
 		rts
 ; ===========================================================================
+	endif
 
 ; ---------------------------------------------------------------------------
 ; Shield and Stars dynamic pattern loading subroutine
@@ -413,14 +433,19 @@ ShieldPLC_ReadEntry:
 
 ShieldDPLC_Return:
 		rts
+	
+	if ShieldsMode>0
 ; ===========================================================================
 ; Shield variables
 ; ===========================================================================
 ShieldVars:
 				; anim	; map			; artLoc		; dplcLoc
 		dc.l	0,		Map_Shield,			Art_Shield,		ShieldDynPLC		; $00 - Blue Shield
-		dc.l	5,		Map_FlameShield,	Art_Shield_F,	DPLC_FlameShield	; $10 - Flame
-		dc.l	7,		Map_BubbleShield,	Art_Shield_B,	DPLC_BubbleShield	; $20 - Bubble
-		dc.l	$A,		Map_LightningShield,Art_Shield_L,	DPLC_LightningShield; $30 - Lightning
-		dc.l	$D,		Map_InstaShield,	Art_Insta,		DPLC_InstaShield	; $40 - InstaShield
+		dc.l	5,		Map_InstaShield,	Art_Insta,		DPLC_InstaShield	; $10 - InstaShield
+	if ShieldsMode>1
+		dc.l	7,		Map_FlameShield,	Art_Shield_F,	DPLC_FlameShield	; $20 - Flame
+		dc.l	9,		Map_BubbleShield,	Art_Shield_B,	DPLC_BubbleShield	; $30 - Bubble
+		dc.l	$C,		Map_LightningShield,Art_Shield_L,	DPLC_LightningShield; $40 - Lightning
+	endif
 ; ===========================================================================
+	endif

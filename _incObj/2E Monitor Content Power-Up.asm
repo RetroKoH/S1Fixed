@@ -63,9 +63,11 @@ Pow_Types:
 		dc.w Pow_Shield-Pow_Types	; 4 - Shield
 		dc.w Pow_Invinc-Pow_Types	; 5 - Invincibility
 		dc.w Pow_Rings-Pow_Types	; 6 - Rings
+	if ShieldsMode>1
 		dc.w Pow_FShield-Pow_Types	; 7 - Flame Shield		; Added
 		dc.w Pow_BShield-Pow_Types	; 8 - Bubble Shield		; Added
 		dc.w Pow_LShield-Pow_Types	; 9 - Lightning Shield	; Added
+	endif
 		dc.w Pow_S-Pow_Types		; A - S
 		dc.w Pow_Goggles-Pow_Types	; B - Goggles
 ; ===========================================================================
@@ -156,13 +158,14 @@ Pow_Goggles:
 		rts			; 'S' and goggles monitors do nothing
 ; ===========================================================================
 
+	if ShieldsMode>1
 Pow_FShield:
 		andi.b	#mask2ndRmvShield,(v_player+obStatus2nd).w	; remove shield status
 		bset	#sta2ndShield,(v_player+obStatus2nd).w		; give Sonic a shield
 		bset	#sta2ndFShield,(v_player+obStatus2nd).w		; give Sonic a flame shield
 		move.b	#id_ShieldItem,(v_shieldobj).w				; load shield object
 		clr.b	(v_shieldobj+obRoutine).w
-		move.b	#1,(v_shieldobj+obSubtype).w
+		move.b	#2,(v_shieldobj+obSubtype).w
 		move.w	#sfx_FShield,d0
 		jmp		(PlaySound_Special).l						; play shield sound
 ; ===========================================================================
@@ -173,7 +176,7 @@ Pow_BShield:
 		bset	#sta2ndBShield,(v_player+obStatus2nd).w		; give Sonic a bubble shield
 		move.b	#id_ShieldItem,(v_shieldobj).w				; load shield object
 		clr.b	(v_shieldobj+obRoutine).w
-		move.b	#2,(v_shieldobj+obSubtype).w
+		move.b	#3,(v_shieldobj+obSubtype).w
 		move.w	#sfx_BShield,d0
 		jmp		(PlaySound_Special).l						; play shield sound
 ; ===========================================================================
@@ -184,10 +187,11 @@ Pow_LShield:
 		bset	#sta2ndLShield,(v_player+obStatus2nd).w		; give Sonic a lightning shield
 		move.b	#id_ShieldItem,(v_shieldobj).w				; load shield object
 		clr.b	(v_shieldobj+obRoutine).w
-		move.b	#3,(v_shieldobj+obSubtype).w
+		move.b	#4,(v_shieldobj+obSubtype).w
 		move.w	#sfx_LShield,d0
 		jmp		(PlaySound_Special).l						; play shield sound
 ; ===========================================================================
+	endif
 
 Pow_Delete:	; Routine 4
 		subq.w	#1,obTimeFrame(a0)
