@@ -93,6 +93,12 @@
  Function: Enables the Sonic CD Peelout. Also enables the dashing animation while running.
  Date: 2024-06-23
  Variable: PeeloutEnabled
+ 
+ Name: Elemental Shields
+ Credit: RetroKoH, DeltaW
+ Function: Enables the usage of S3K Shields and abilities in Sonic 1
+ Date: 2024-06-30
+ Variable: ShieldsMode (0-Blue Only, 1-Instashield added, 2-S1+S3K Scaling Shields, 3-S3K Shields only)
 
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format

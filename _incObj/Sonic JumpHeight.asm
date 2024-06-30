@@ -81,8 +81,9 @@ Sonic_InstaShieldAttack:
 Sonic_FlameShieldAttack:
 		addq.b	#1,(v_shieldobj+obAnim).w				; Set animation
 		move.b	#1,obDoubleJumpFlag(a0)					; Set double jump flag
+		move.b	#$20,(v_cameralag).w					; hard-coded camera lag
+		bsr.s	Reset_Sonic_Position_Array
 		move.w	#$800,d0								; Set horizontal speed to 8
-		move.b	#$10,(v_cameralag).w					; hard-coded camera lag
 		btst	#staFacing,obStatus(a0)					; is Sonic facing left?
 		beq.s	.noflip									; if not, branch
 		neg.w	d0										; if yes, negate x speed value to move Sonic left
@@ -113,6 +114,19 @@ Sonic_LightningShieldAttack:
 		move.w	#sfx_LShieldAtk,d0
 		jmp		(PlaySound_Special).l
 ; ===========================================================================
+
+Reset_Sonic_Position_Array:
+		lea		(v_tracksonic).w,a1
+		move.w	#$3F,d0
+
+loc_10DEC:
+		move.w	obX(a0),(a1)+
+		move.w	obY(a0),(a1)+
+		dbf		d0,loc_10DEC
+		move.w	#0,(v_trackpos).w
+		rts
+; End of function Reset_Sonic_Position_Array
+
 	endif
 
 	endif
