@@ -6,12 +6,13 @@ VanishPlatform:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	VanP_Index(pc,d0.w),d1
-		jmp	VanP_Index(pc,d1.w)
+		jmp		VanP_Index(pc,d1.w)
 ; ===========================================================================
-VanP_Index:	dc.w VanP_Main-VanP_Index
-		dc.w VanP_Vanish-VanP_Index
-		dc.w VanP_Appear-VanP_Index
-		dc.w loc_16068-VanP_Index
+VanP_Index:
+		dc.w 	VanP_Main-VanP_Index
+		dc.w 	VanP_Vanish-VanP_Index
+		dc.w 	VanP_Appear-VanP_Index
+		dc.w 	loc_16068-VanP_Index
 
 vanp_timer = objoff_30		; counter for time until event
 vanp_timelen = objoff_32	; time between events (general)
@@ -53,9 +54,9 @@ loc_16068:	; Routine 6
 ; ===========================================================================
 
 .animate:
-		lea	(Ani_Van).l,a1
-		jsr	(AnimateSprite).l
-		bra.w	RememberState
+		lea		(Ani_Van).l,a1
+		jsr		(AnimateSprite).l
+		jmp		(RememberState).l
 ; ===========================================================================
 
 VanP_Vanish:	; Routine 2
@@ -80,7 +81,7 @@ VanP_Appear:	; Routine 4
 		moveq	#0,d1
 		move.b	obActWid(a0),d1
 		jsr		(PlatformObject).l
-		bra.w	RememberState
+		jmp		(RememberState).l
 ; ===========================================================================
 
 .loc_160D6:
@@ -89,7 +90,7 @@ VanP_Appear:	; Routine 4
 		jsr		(ExitPlatform).l
 		move.w	obX(a0),d2
 		jsr		(MvSonicOnPtfm2).l
-		bra.w	RememberState
+		jmp		(RememberState).l
 ; ===========================================================================
 
 .notsolid:
@@ -102,4 +103,4 @@ VanP_Appear:	; Routine 4
 		clr.b	obSolid(a0)
 
 .display:
-		bra.w	RememberState
+		jmp		(RememberState).l

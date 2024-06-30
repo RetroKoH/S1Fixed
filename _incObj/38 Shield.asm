@@ -23,6 +23,7 @@ Shi_Index:
 		dc.w	Shi_Flame-Shi_Index
 		dc.w	Shi_Bubble-Shi_Index
 		dc.w	Shi_Lightning-Shi_Index
+		dc.w	Shi_FlameDissipate-Shi_Index
 		dc.w	Shi_LightningSpark-Shi_Index
 		dc.w	Shi_LightningDestroy-Shi_Index
 	endif
@@ -157,13 +158,13 @@ Shi_Insta:	; Routine 4
 	if ShieldsMode>1
 Shi_Flame:	; Routine 6
 		btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; does Sonic have invincibility?
-		bne.s	.remove									; if yes, branch
-;		cmpi.b	#$1C,(v_player+obAnim).w			; Which animation is this???
-;		beq.s	.remove
+		bne.w	.remove									; if yes, branch
+		cmpi.b	#aniID_Null,(v_player+obAnim).w			; Is Sonic in a blank animation?
+		beq.w	.remove
 		btst	#sta2ndShield,(v_player+obStatus2nd).w	; does Sonic have shield?
 		beq.s	.delete									; if not, branch
 		btst	#staWater,(v_player+obStatus).w			; is Sonic underwater?
-		bne.s	.delete									; if yes, branch, and destroy the shield
+		bne.s	.dissipate								; if yes, branch, and destroy the shield
 		move.w	(v_player+obX).w,obX(a0)
 		move.w	(v_player+obY).w,obY(a0)
 		cmpi.b	#aniID_FlameDash,obAnim(a0)				; is Sonic using the Dash ability?
@@ -197,27 +198,45 @@ Shi_Flame:	; Routine 6
 		bsr.w	Shield_LoadGfx
 		jmp		(DisplaySprite).l
 
-.remove:
-		rts
-
 .dissipate: ; SPECIAL EFFECT FOR UNDERWATER (To be added later)
+		bsr.s	Flame_Dissipate
+
 .delete:
 		andi.b	#mask2ndRmvShield,(v_player+obStatus2nd).w
 ;		tst.b	(v_player+obCharID).w
 ;		bne.s	.notSonic
 		clr.b	obRoutine(a0)
 		move.b	#1,obSubtype(a0)			; Replace shield with instashield
+
+.remove:
 		rts
 
 ;.notSonic:
 ;		jmp		(DeleteObject).l
 ; ===========================================================================
 
+Flame_Dissipate:
+		lea		(v_sparksobj).w,a1
+		move.b	#id_ShieldItem,obID(a1)
+		move.b	#$C,obRoutine(a1)		; Flame_Dissipate routine
+		move.w	obX(a0),obX(a1)
+		move.w	obY(a0),obY(a1)
+		move.l	#Map_ExplodeItem,obMap(a1)
+		move.w	#make_art_tile(ArtTile_Explosion,0,0),obGfx(a1)
+		move.b	#4,obRender(a1)
+		move.w	#$280,obPriority(a1)
+		move.b	#$C,obActWid(a1)
+		move.b	#3,obTimeFrame(a1)
+		move.b	#1,obFrame(a1)
+		rts
+
+; ===========================================================================
+
 Shi_Bubble:	; Routine 8
 		btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; does Sonic have invincibility?
-		bne.s	.remove									; if yes, branch
-;		cmpi.b	#$1C,(v_player+obAnim).w			; Which animation is this???
-;		beq.s	.remove
+		bne.w	.remove									; if yes, branch
+		cmpi.b	#aniID_Null,(v_player+obAnim).w			; Is Sonic in a blank animation?
+		beq.w	.remove
 		btst	#sta2ndShield,(v_player+obStatus2nd).w	; does Sonic have shield?
 		beq.s	.delete									; if not, branch
 		move.w	(v_player+obX).w,obX(a0)
@@ -268,8 +287,8 @@ Shi_Bubble:	; Routine 8
 Shi_Lightning:	; Routine $A
 		btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; does Sonic have invincibility?
 		bne.w	.remove									; if yes, branch
-;		cmpi.b	#$1C,(v_player+obAnim).w			; Which animation is this???
-;		beq.s	.remove
+		cmpi.b	#aniID_Null,(v_player+obAnim).w			; Is Sonic in a blank animation?
+		beq.w	.remove
 		btst	#sta2ndShield,(v_player+obStatus2nd).w	; does Sonic have shield?
 		beq.w	.delete									; if not, branch
 		btst	#staWater,(v_player+obStatus).w			; is Sonic underwater?
@@ -311,9 +330,6 @@ Shi_Lightning:	; Routine $A
 		bsr.w	Shield_LoadGfx
 		jmp		(DisplaySprite).l
 
-.remove:
-		rts
-
 .checkflash: ; SPECIAL EFFECT FOR UNDERWATER (To be added later)
 		;tst.w	(v_pcyc_time).w
 		bra.s	Lightning_FlashWater
@@ -324,6 +340,8 @@ Shi_Lightning:	; Routine $A
 ;		bne.s	.notSonic
 		clr.b	obRoutine(a0)
 		move.b	#1,obSubtype(a0)			; Replace shield with instashield
+
+.remove:
 		rts
 
 ;.notSonic:
@@ -331,7 +349,7 @@ Shi_Lightning:	; Routine $A
 ; ===========================================================================
 
 Lightning_FlashWater:
-		move.b	#$E,obRoutine(a0)
+		move.b	#$10,obRoutine(a0)		; set to Lightning_Destroy routine
 		andi.b	#mask2ndRmvShield,(v_player+obStatus2nd).w
 		lea		(v_pal_water).w,a1
 		lea		(v_pal_water_dup).w,a2
@@ -351,7 +369,7 @@ Lightning_CreateSpark:
 
 .loop:
 		move.b	#id_ShieldItem,obID(a1)
-		move.b	#$C,obRoutine(a1)
+		move.b	#$E,obRoutine(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.l	obMap(a0),obMap(a1)
@@ -377,7 +395,23 @@ SparkVelocities:
 		dc.w   $200,  $200
 ; ---------------------------------------------------------------------------
 
-Shi_LightningSpark: ; Routine $C
+Shi_FlameDissipate: ; Routine $C
+		jsr		(SpeedToPos).l
+		subq.b	#1,obTimeFrame(a0)
+		bpl.s	.display
+		move.b	#3,obTimeFrame(a0)
+		addq.b	#1,obFrame(a0)
+		cmpi.b	#5,obFrame(a0)
+		beq.s	.delete
+
+.display:
+		jmp		(DisplaySprite).l
+
+.delete:
+		jmp		(DeleteObject).l
+; ===========================================================================
+
+Shi_LightningSpark: ; Routine $E
 		jsr		(SpeedToPos).l
 		addi.w	#$18,obVelY(a0)
 		lea		(Ani_Shield).l,a1
@@ -390,7 +424,7 @@ Shi_LightningSpark: ; Routine $C
 		jmp		(DeleteObject).l
 ; ===========================================================================
 
-Shi_LightningDestroy: ; Routine $E
+Shi_LightningDestroy: ; Routine $10
 		subq.b	#1,obTimeFrame(a0)
 		bpl.s	.return
 ;		tst.b	(v_player+obCharID).w

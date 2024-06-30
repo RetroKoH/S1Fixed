@@ -38,6 +38,20 @@ Smash_Solid:	; Routine 2
 		move.w	#$20,d3
 		move.w	obX(a0),d4
 		bsr.w	SolidObject
+
+	if ShieldsMode>1
+		beq.s	.donothing
+
+;		tst.b	obCharID(a1)					; is the player Sonic?
+;		bne.s	.chkPush						; if not, skip and check if player is rolling on the ground
+		btst	#sta2ndFShield,obStatus2nd(a1)	; does Sonic have the Flame Shield
+		beq.s	.chkPush						; if not, skip and check if player is rolling on the ground
+		tst.b	obDoubleJumpFlag(a1)			; is Sonic using his ability?
+		bne.s	.cont							; if yes, branch. ABILITY TIME
+
+	.chkPush:
+	endif
+
 		btst	#staSonicPush,obStatus(a0)			; is Sonic pushing against the wall?
 		bne.s	.chkroll							; if yes, branch
 
@@ -55,6 +69,8 @@ Smash_Solid:	; Routine 2
 .chkspeed:
 		cmpi.w	#$480,d0	; is Sonic's speed $480 or higher?
 		blo.s	.donothing	; if not, branch
+
+.cont:
 		move.w	smash_speed(a0),obVelX(a1)
 		addq.w	#4,obX(a1)
 		lea		(Smash_FragSpd1).l,a4 ;	use fragments that move	right
