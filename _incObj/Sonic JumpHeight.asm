@@ -53,17 +53,19 @@ Sonic_DoubleJump:
 
 ; Here we check for Shield status to determine which ability to use.
 ; Unlike w/ S3K, we will only branch IF we meet the conditions.
-		btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; first, does Sonic have invincibility?
-		bne.s	Sonic_ShieldDoNothing					; if so, no shield ability is uaable.
-		btst	#sta2ndShield,(v_player+obStatus2nd).w	; does Sonic have any Shield?
-		beq.s	Sonic_InstaShieldAttack					; if not, branch to the Insta-Shield.
+		moveq	#0,d0
+		move.b	(v_player+obStatus2nd).w,d0
+		btst	#sta2ndInvinc,d0				; first, does Sonic have invincibility?
+		bne.s	Sonic_ShieldDoNothing			; if so, no shield ability is uaable.
+		btst	#sta2ndShield,d0				; does Sonic have any Shield?
+		beq.s	Sonic_InstaShieldAttack			; if not, branch to the Insta-Shield.
 	if ShieldsMode>1
-		btst	#sta2ndFShield,(v_player+obStatus2nd).w	; does Sonic have a Flame Shield?
-		bne.s	Sonic_FlameShieldAttack					; if yes, branch
-		btst	#sta2ndBShield,(v_player+obStatus2nd).w	; does Sonic have a Bubble Shield?
-		bne.s	Sonic_BubbleShieldAttack				; if yes, branch
-		btst	#sta2ndLShield,(v_player+obStatus2nd).w	; does Sonic have a Lightning Shield?
-		bne.s	Sonic_LightningShieldAttack				; if yes, branch
+		btst	#sta2ndFShield,d0				; does Sonic have a Flame Shield?
+		bne.s	Sonic_FlameShieldAttack			; if yes, branch
+		btst	#sta2ndBShield,d0				; does Sonic have a Bubble Shield?
+		bne.s	Sonic_BubbleShieldAttack		; if yes, branch
+		btst	#sta2ndLShield,d0				; does Sonic have a Lightning Shield?
+		bne.s	Sonic_LightningShieldAttack		; if yes, branch
 	endif
 ; at this point, we must have a Blue shield. Fall through to do nothing.
 

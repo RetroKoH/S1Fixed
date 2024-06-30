@@ -368,7 +368,7 @@ Lightning_CreateSpark:
 		moveq	#3,d1
 
 .loop:
-		move.b	#id_ShieldItem,obID(a1)
+		move.b	obID(a0),obID(a1)
 		move.b	#$E,obRoutine(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
@@ -416,7 +416,7 @@ Shi_LightningSpark: ; Routine $E
 		addi.w	#$18,obVelY(a0)
 		lea		(Ani_Shield).l,a1
 		jsr		(AnimateSprite).l
-		cmpi.b	#$C,obRoutine(a0)
+		cmpi.b	#$E,obRoutine(a0)
 		bne.s	.delete
 		jmp		(DisplaySprite).l
 
@@ -500,7 +500,7 @@ ShieldDPLC_Return:
 ; Shield variables
 ; ===========================================================================
 ShieldVars:
-				; anim	; map			; artLoc		; dplcLoc
+				; anim	; map				; artLoc		; dplcLoc
 		dc.l	0,		Map_Shield,			Art_Shield,		ShieldDynPLC		; $00 - Blue Shield
 		dc.l	5,		Map_InstaShield,	Art_Insta,		DPLC_InstaShield	; $10 - InstaShield
 	if ShieldsMode>1
