@@ -88,8 +88,18 @@ Shi_Shield:	; Routine 2
 	; Mercury Shield/Invincibility Positioning Fix
 		move.b	obStatus(a0),d0
 		move.w	#$A,d1
+
+	if CDBalancing=1
+		cmpi.b	#aniID_Balance2,(v_player+obAnim).w
+		beq.s	.shift
+		cmpi.b	#aniID_Balance3,(v_player+obAnim).w
+		bne.s	.noshift
+		bchg	#staFacing,d0
+		move.w	#4,d1
+	else	
 		cmpi.b	#aniID_Balance,(v_player+obAnim).w
 		bne.s	.noshift
+	endif
 		
 .shift:
 		sub.w	d1,obX(a0)
@@ -162,7 +172,7 @@ Shi_Flame:	; Routine 6
 		cmpi.b	#aniID_Null,(v_player+obAnim).w			; Is Sonic in a blank animation?
 		beq.w	.remove
 		btst	#sta2ndShield,(v_player+obStatus2nd).w	; does Sonic have shield?
-		beq.s	.delete									; if not, branch
+		beq.w	.delete									; if not, branch
 		btst	#staWater,(v_player+obStatus).w			; is Sonic underwater?
 		bne.s	.dissipate								; if yes, branch, and destroy the shield
 		move.w	(v_player+obX).w,obX(a0)
@@ -175,9 +185,19 @@ Shi_Flame:	; Routine 6
 	; Mercury Shield/Invincibility Positioning Fix
 		move.b	obStatus(a0),d0
 		move.w	#$A,d1
+
+	if CDBalancing=1
+		cmpi.b	#aniID_Balance2,(v_player+obAnim).w
+		beq.s	.shift
+		cmpi.b	#aniID_Balance3,(v_player+obAnim).w
+		bne.s	.noshift
+		bchg	#staFacing,d0
+		move.w	#4,d1
+	else	
 		cmpi.b	#aniID_Balance,(v_player+obAnim).w
 		bne.s	.noshift
-		
+	endif
+	
 .shift:
 		sub.w	d1,obX(a0)
 		btst	#staFlipX,d0	; X-Flip sprite bit
@@ -247,8 +267,18 @@ Shi_Bubble:	; Routine 8
 	; Mercury Shield/Invincibility Positioning Fix
 		move.b	obStatus(a0),d0
 		move.w	#$A,d1
+
+	if CDBalancing=1
+		cmpi.b	#aniID_Balance2,(v_player+obAnim).w
+		beq.s	.shift
+		cmpi.b	#aniID_Balance3,(v_player+obAnim).w
+		bne.s	.noshift
+		bchg	#staFacing,d0
+		move.w	#4,d1
+	else	
 		cmpi.b	#aniID_Balance,(v_player+obAnim).w
 		bne.s	.noshift
+	endif
 		
 .shift:
 		sub.w	d1,obX(a0)
@@ -292,7 +322,7 @@ Shi_Lightning:	; Routine $A
 		btst	#sta2ndShield,(v_player+obStatus2nd).w	; does Sonic have shield?
 		beq.w	.delete									; if not, branch
 		btst	#staWater,(v_player+obStatus).w			; is Sonic underwater?
-		bne.s	.checkflash								; if yes, branch, and destroy the shield
+		bne.w	.checkflash								; if yes, branch, and destroy the shield
 		move.w	(v_player+obX).w,obX(a0)
 		move.w	(v_player+obY).w,obY(a0)
 		move.b	(v_player+obStatus).w,obStatus(a0)
@@ -301,8 +331,18 @@ Shi_Lightning:	; Routine $A
 	; Mercury Shield/Invincibility Positioning Fix
 		move.b	obStatus(a0),d0
 		move.w	#$A,d1
+
+	if CDBalancing=1
+		cmpi.b	#aniID_Balance2,(v_player+obAnim).w
+		beq.s	.shift
+		cmpi.b	#aniID_Balance3,(v_player+obAnim).w
+		bne.s	.noshift
+		bchg	#staFacing,d0
+		move.w	#4,d1
+	else	
 		cmpi.b	#aniID_Balance,(v_player+obAnim).w
 		bne.s	.noshift
+	endif
 		
 .shift:
 		sub.w	d1,obX(a0)

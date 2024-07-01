@@ -63,8 +63,18 @@ Stars_Next:	; Routine 2
 	; Mercury Shield/Invincibility Positioning Fix
 		move.b	obStatus(a0),d0
 		move.w	#$A,d1
+
+	if CDBalancing=1
+		cmpi.b	#aniID_Balance2,(v_player+obAnim).w
+		beq.s	.shift
+		cmpi.b	#aniID_Balance3,(v_player+obAnim).w
+		bne.s	.noshift
+		bchg	#staFacing,d0
+		move.w	#4,d1
+	else	
 		cmpi.b	#aniID_Balance,(v_player+obAnim).w
 		bne.s	.noshift
+	endif
 		
 .shift:
 		sub.w	d1,obX(a0)

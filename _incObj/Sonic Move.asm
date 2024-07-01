@@ -52,9 +52,11 @@ Sonic_Move:
 		add.w	obX(a0),d1
 		sub.w	obX(a1),d1
 		cmpi.w	#4,d1
-		blt.s	loc_12F6A
+
+	if CDBalancing=1
+		blt.s	Sonic_BalanceLeft
 		cmp.w	d2,d1
-		bge.s	loc_12F5A
+		bge.s	Sonic_BalanceRight
 		bra.s	Sonic_LookUp
 ; ===========================================================================
 
@@ -63,24 +65,59 @@ Sonic_Balance:
 		cmpi.w	#$C,d1
 		blt.s	Sonic_LookUp
 		cmpi.b	#3,obFrontAngle(a0)
-		bne.s	loc_12F62
-
-loc_12F5A:
-		bclr	#staFacing,obStatus(a0)
-		bra.s	loc_12F70
-; ===========================================================================
-
-loc_12F62:
+		beq.s	Sonic_BalanceRight
 		cmpi.b	#3,obRearAngle(a0)
 		bne.s	Sonic_LookUp
 
-loc_12F6A:
+Sonic_BalanceLeft:
+		btst	#staFacing,obStatus(a0)		; is Sonic facing left?	;Mercury Constants
+		beq.s	Sonic_BalanceBackward		; if not, balance backward
+		move.b	#aniID_Balance2,obAnim(a0)	; use forward balancing animation
+		bra.w	Sonic_ResetScr				; branch
+
+Sonic_BalanceRight:
+		btst	#staFacing,obStatus(a0)	; is Sonic facing left?	;Mercury Constants
+		bne.s	Sonic_BalanceBackward	; if so, balance backward
+		move.b	#aniID_Balance2,obAnim(a0) ; use forward balancing animation
+		bra.w	Sonic_ResetScr	; branch
+
+Sonic_BalanceBackward:
+		move.b	#aniID_Balance3,obAnim(a0) ; use backward balancing animation
+		bra.w	Sonic_ResetScr
+
+	else
+
+		blt.s	Sonic_BalanceOnObjLeft	;loc_12F6A
+		cmp.w	d2,d1
+		bge.s	Sonic_BalanceOnObjRight	;loc_12F5A
+		bra.s	Sonic_LookUp
+; ===========================================================================
+
+Sonic_Balance:
+		jsr		(ObjFloorDist).l
+		cmpi.w	#$C,d1
+		blt.s	Sonic_LookUp
+;Sonic_BalanceRight:
+		cmpi.b	#3,obFrontAngle(a0)
+		bne.s	Sonic_BalanceLeft
+
+Sonic_BalanceOnObjRight: ;loc_12F5A
+		bclr	#staFacing,obStatus(a0)
+		bra.s	Sonic_BalanceSetAnim
+; ===========================================================================
+
+Sonic_BalanceLeft:
+		cmpi.b	#3,obRearAngle(a0)
+		bne.s	Sonic_LookUp
+
+Sonic_BalanceOnObjLeft: ;loc_12F6A
 		bset	#staFacing,obStatus(a0)
 
-loc_12F70:
+Sonic_BalanceSetAnim:
 		move.b	#aniID_Balance,obAnim(a0)	; use "balancing" animation
 		bra.w	Sonic_ResetScr
 ; ===========================================================================
+	endif
 
 Sonic_LookUp:
 		btst	#bitUp,(v_jpadhold2).w		; is up being pressed?

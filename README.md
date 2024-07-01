@@ -105,6 +105,12 @@
  Function: Enabled the Air Roll from Sonic Triple Trouble
  Date: 2024-07-01
  Variable: AirRollEnabled
+ 
+ Name: CD Balancing
+ Credit: Mercury
+ Function: Uses the Sonic CD balancing sprites (forward and back) instead of Sonic 1's.
+ Date: 2024-07-01
+ Variable: CDBalancing
 
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format
