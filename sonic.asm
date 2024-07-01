@@ -41,7 +41,8 @@ SpinDashNoRevDown: = SpinDashEnabled*1	; if set to 1, Spin Dash will not rev dow
 PeeloutEnabled: = 1						; if set to 1, Peelout is enabled for Sonic (SFX still don't work properly)
 ShieldsMode: = 3						; 0 - Blue Shield only, 1 - Blue Shield + Instashield, 2 - Blue Shield + Elementals, 3 - Elemental only.
 AirRollEnabled: = 1						; if set to 1, Air rolling is enabled for Sonic.
-CDBalancing: = 0						; if set to 1, Sonic has 2 Balancing animations, taken from Sonic CD.
+CDBalancing: = 1						; if set to 1, Sonic has 2 Balancing animations, taken from Sonic CD.
+DropDashEnabled: = 1					; if set to 1, Drop dashing is enabled for Sonic.
 
 	include "MacroSetup.asm"
 	include	"Constants.asm"

@@ -77,7 +77,10 @@ loc_1361E:
 
 loc_1364E:
 		clr.w	obVelY(a0)
+		cmpi.b  #$14,obDoubleJumpProp(a0)
+		bge.s   .cont					; skips over the code that would change Sonic's inertia down a slope when the dropdash is fully charged
 		move.w	obVelX(a0),obInertia(a0)
+	.cont:
 		; rts
 		bra.w	Sonic_ResetOnFloor		; Moved from loc_1361E -- Fix Bubble Bounce
 ; ===========================================================================
@@ -89,7 +92,9 @@ loc_1365C:
 		move.w	#$FC0,obVelY(a0)
 
 loc_13670:
-		bsr.w	Sonic_ResetOnFloor		; Added -- Fix Bubble Bounce
+		bsr.w	Sonic_ResetOnFloor			; Added -- Fix Bubble Bounce
+		cmpi.b  #$14,obDoubleJumpProp(a0)
+        bge.s   locret_1367E				; skips over the code that would change Sonic's inertia down a slope when the dropdash is fully charged
 		move.w	obVelY(a0),obInertia(a0)
 		tst.b	d3
 		bpl.s	locret_1367E
@@ -213,7 +218,10 @@ loc_13772:
 		;bsr.w	Sonic_ResetOnFloor			; Moved -- Fix Bubble Bounce
 		move.b	#aniID_Walk,obAnim(a0)
 		clr.w	obVelY(a0)
+		cmpi.b  #$14,obDoubleJumpProp(a0)
+        bge.s   .skip						; skips over the code that would change Sonic's inertia down a slope when the dropdash is fully charged
 		move.w	obVelX(a0),obInertia(a0)
+	.skip:
 		bra.w	Sonic_ResetOnFloor			; Moved -- Fix Bubble Bounce
 
 locret_1379E:

@@ -193,7 +193,7 @@ obPlatformAddr:	equ $3E			; ost slot of the object Sonic's on top of (Convert to
 obSpinDashFlag:		equ $2A				; spin dash/peelout flag - if toggled off, this is unused.
 obSpinDashCounter:	equ obRestartTimer	; Counter used for the Spin Dash and/or Peelout (2 bytes) - if toggled off, this is unused.
 	endif
-	if ShieldsMode>0
+	if ShieldsMode>0|DropDashEnabled=1
 obDoubleJumpFlag:	equ	$2F				; Flag noting double jump status. 0 - not triggered. 1 - triggered. 2 - post-instashield (Begin Drop Dash revving). 3 - Drop Dash Cancelled.
 obDoubleJumpProp:	equ $25				; Counter for Sonic's Drop Dash (if enabled). Can also be utilized for remaining frames of flight / 2 for Tails, gliding-related for Knuckles.
 	endif
