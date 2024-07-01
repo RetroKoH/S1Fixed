@@ -99,6 +99,12 @@
  Function: Enables the usage of S3K Shields and abilities in Sonic 1
  Date: 2024-06-30
  Variable: ShieldsMode (0-Blue Only, 1-Instashield added, 2-S1+S3K Scaling Shields, 3-S3K Shields only)
+ 
+ Name: Air Roll
+ Credit: RetroKoH (Inspired by a guide by Inferno Gear)
+ Function: Enabled the Air Roll from Sonic Triple Trouble
+ Date: 2024-07-01
+ Variable: AirRollEnabled
 
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format

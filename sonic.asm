@@ -40,6 +40,7 @@ SpinDashCancel: = SpinDashEnabled*1		; if set to 1, Spin Dash can be cancelled b
 SpinDashNoRevDown: = SpinDashEnabled*1	; if set to 1, Spin Dash will not rev down so long as ABC is held down
 PeeloutEnabled: = 1						; if set to 1, Peelout is enabled for Sonic (SFX still don't work properly)
 ShieldsMode: = 3						; 0 - Blue Shield only, 1 - Blue Shield + Instashield, 2 - Blue Shield + Elementals, 3 - Elemental only.
+AirRollEnabled: = 1						; if set to 1, Air rolling is enabled for Sonic.
 
 	include "MacroSetup.asm"
 	include	"Constants.asm"
@@ -6249,7 +6250,11 @@ Sonic_MdNormal:
 
 Sonic_MdAir:
 	; in the air, not in a ball (thus, not jumping)
+	if AirRollEnabled=1
+		bsr.w	Sonic_ChkAirRoll		; Contains truncated JumpHeight code
+	else
 		bsr.w	Sonic_JumpHeight
+	endif
 		bsr.w	Sonic_JumpDirection
 		bsr.w	Sonic_LevelBound
 		jsr		(ObjectFall).l
@@ -6302,6 +6307,10 @@ loc_12EA6:
 		include	"_incObj/Sonic Roll.asm"
 		include	"_incObj/Sonic Jump.asm"
 		include	"_incObj/Sonic JumpHeight.asm"
+		
+	if AirRollEnabled=1
+		include "_incObj/Sonic AirRoll.asm"
+	endif
 	
 	if PeeloutEnabled=1
 		include	"_incObj/Sonic Peelout.asm"
