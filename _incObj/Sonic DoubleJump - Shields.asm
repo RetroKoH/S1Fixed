@@ -24,7 +24,7 @@ Sonic_DoubleJump:
 		moveq	#0,d0
 		move.b	(v_player+obStatus2nd).w,d0
 		btst	#sta2ndInvinc,d0				; first, does Sonic have invincibility?
-		bne.s	Sonic_ShieldDoNothing			; if so, no shield ability is uaable.
+		bne.s	Sonic_SetDoubleJumpFlag			; if so, no shield ability is uaable.
 		btst	#sta2ndShield,d0				; does Sonic have any Shield?
 		beq.s	Sonic_InstaShieldAttack			; if not, branch to the Insta-Shield.
 
@@ -39,6 +39,7 @@ Sonic_DoubleJump:
 
 ; at this point, we must have a Blue shield. Fall through to do nothing.
 
+Sonic_SetDoubleJumpFlag:
 		addq.b	#1,obDoubleJumpFlag(a0)			; Set flag. If Drop Dash is enabled, we can check for that.
 
 Sonic_ShieldDoNothing:
