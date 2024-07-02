@@ -25,7 +25,7 @@ Sonic_ResetOnFloor:
 			beq.s	.ret
 			cmpi.b	#$14,obDoubleJumpProp(a0)	; is it fully revved up?
 			blt.s	.noability					; if not, exit
-			bra.w	DropDash
+			bra.w	DropDash_Release
 
 		.noability:
 			clr.b	obDoubleJumpFlag(a0)
@@ -51,7 +51,7 @@ Sonic_ResetOnFloor:
 					bne.s	.noability					; if he has, we will exit
 					cmpi.b	#$14,obDoubleJumpProp(a0)	; is it fully revved up?
 					blt.s	.noability					; if not, exit
-					bra.w	DropDash
+					bra.w	DropDash_Release
 
 				.noability:
 			endif
@@ -113,46 +113,51 @@ BubbleShield_Bounce:
 	if DropDashEnabled=1
 ; ---------------------------------------------------------------------------
 ; Subroutine to	allow Sonic to perform the Drop Dash
+; Modified (possibly fixed) thanks to Hitaxas
 ; ---------------------------------------------------------------------------
 
 ; =============== S U B R O U T I N E =======================================
 
 
-DropDash:
+DropDash_Release:
 		move.b	#$E,obHeight(a0)
 		move.b	#7,obWidth(a0)
 		move.b	#aniID_Roll,obAnim(a0)
 		addq.w	#5,obY(a0)
-		move.w	#$800,d1
-		move.w	#$C00,d2
-		btst	#staFacing,obStatus(a0)
-		bne.s	.facingleft
-		move.w	obInertia(a0),d0
-		asr.w	#2,d0
-		add.w	d1,d0
-		move.w  d0,obInertia(a0)            ; move d0 (new dashspeed) to Sonic's inertia
-		cmp.w	d2,d0
-		blt.s	.skipcap
-		move.w	d2,obInertia(a0)
-		bra.s	.skipcap
 
-	.facingleft:
-		neg.w	d1
-		neg.w	d2
-		move.w	obInertia(a0),d0
-		asr.w	#2,d0
-		add.w	d1,d0
-		move.w  d0,obInertia(a0)            ; move d0 (new dashspeed) to Sonic's inertia
-		cmp.w	d2,d0
-		bgt.s	.skipcap
-		move.w	d2,obInertia(a0)
+		move.w	#$800,d1				; base dash speed
+		move.w	#$C00,d2				; max dash speed
 
-	.skipcap:
-		cmpi.w  #$FC0,obVelY(a0)		; is Sonic's vertical velocity $FC0?
-        ble.s   .notOnSlope				; if less or equal, charge like not on a slope
-        move.w  #$FC0,obVelY(a0)		; set Sonic's vertical velocity to $FC0
-        lsr.w   #1,obInertia(a0)		; divide Sonic's inertia by 2 (2^1)
-	.notOnSlope:
+		move.w	obInertia(a0),d3
+		bgt.s	.checkangle 			; if inertia>0, branch
+		asr.w	#2,d3					; divide ground speed by 4
+		add.w	d1,d3					; add speed base to ground speed
+		cmp.w	d2,d3					; check if current speed is lower than speed cap
+		blt.s	.noangle				; if not, branch
+		move.w	d2,d3					; if yes, cap speed
+		bra.s	.checkdir
+		
+.checkangle:
+		tst.b	obAngle(a0)				; test if Sonic is on an angle
+		beq.s	.noangle 				; if yes, branch
+		asr.w	#1,d3					; divide ground speed by 2
+		add.w	d1,d3					; add speed base to ground speed
+		bra.s	.checkdir				; set result as actual ground speed
+
+.noangle:
+		move.w	d1,d3 					; move base dash speed to inertia
+
+.checkdir:	
+		btst	#staFacing,obStatus(a0)	; is sonic facing left?
+		beq.s	.setspeed				; if no, branch
+		neg.w	d3
+
+.setspeed:
+		move.w	d3,obInertia(a0)		; move dash speed into inertia	
+		move.w	#sfx_Teleport,d0
+		jsr		(PlaySound_Special).l	; play spindash release sfx
+
+.finish:
 		bset	#staSpin,obStatus(a0)
 		clr.b	obDoubleJumpFlag(a0)
 		clr.b	obDoubleJumpProp(a0)
