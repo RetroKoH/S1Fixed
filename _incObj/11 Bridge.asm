@@ -7,8 +7,8 @@ obBriChild2		= objoff_34	; pointer to second set of bridge segments, if applicab
 ; ===========================================================================
 
 Bridge:
-		btst	#6,obRender(a0)	; Is this object set to render sub sprites?
-		bne.w	.SubSprs		; If so, branch
+		btst	#6,obRender(a0)		; Is this object set to render sub sprites?
+		bne.s	.SubSprs			; If so, branch
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Bri_Index(pc,d0.w),d1
@@ -20,9 +20,9 @@ Bridge:
 		bra.w	DisplaySprite2
 ; ===========================================================================
 Bri_Index:
-		dc.w Bri_Main-Bri_Index
-		dc.w Bri_Action-Bri_Index
-		dc.w Bri_Display-Bri_Index	; Only called upon when on the bridge (Platform3:)
+		dc.w	Bri_Main-Bri_Index
+		dc.w	Bri_Action-Bri_Index
+		dc.w	Bri_Display-Bri_Index	; Only called upon when on the bridge (Platform3:)
 ; ===========================================================================
 
 Bri_Main:	; Routine 0

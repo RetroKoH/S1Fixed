@@ -56,8 +56,8 @@ Drown_Main:	; Routine 0
 		move.w	#-$88,obVelY(a0)
 
 Drown_Animate:	; Routine 2
-		lea	(Ani_Drown).l,a1
-		jsr	(AnimateSprite).l
+		lea		(Ani_Drown).l,a1
+		jsr		(AnimateSprite).l
 
 Drown_ChkWater:	; Routine 4
 		move.w	(v_waterpos1).w,d0
@@ -80,30 +80,30 @@ Drown_ChkWater:	; Routine 4
 		move.b	obAngle(a0),d0
 		addq.b	#1,obAngle(a0)
 		andi.w	#$7F,d0
-		lea	(Drown_WobbleData).l,a1
+		lea		(Drown_WobbleData).l,a1
 		move.b	(a1,d0.w),d0
 		ext.w	d0
 		add.w	drown_origX(a0),d0
 		move.w	d0,obX(a0)
 		bsr.s	Drown_ShowNumber
-		jsr	(SpeedToPos).l
+		jsr		(SpeedToPos).l
 		tst.b	obRender(a0)
 		bpl.s	.delete
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 
 .delete:
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 Drown_Display:	; Routine 6, Routine $E
 		bsr.s	Drown_ShowNumber
-		lea	(Ani_Drown).l,a1
-		jsr	(AnimateSprite).l
-		jmp	(DisplaySprite).l
+		lea		(Ani_Drown).l,a1
+		jsr		(AnimateSprite).l
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 
 Drown_Delete:	; Routine 8, Routine $10
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 Drown_AirLeft:	; Routine $C
@@ -117,14 +117,14 @@ Drown_AirLeft:	; Routine $C
 ; ===========================================================================
 
 .display:
-		lea	(Ani_Drown).l,a1
-		jsr	(AnimateSprite).l
+		lea		(Ani_Drown).l,a1
+		jsr		(AnimateSprite).l
 		tst.b	obRender(a0)
 		bpl.s	Drown_AirLeft_Delete
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 
 Drown_AirLeft_Delete:	
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 Drown_ShowNumber:
@@ -247,7 +247,7 @@ Drown_Countdown:; Routine $A
 ; ===========================================================================
 .loc_13F86:
 	; RHS Drowning Fix
-		subq.w	#1,$2C(a0)
+		subq.w	#1,objoff_2C(a0)
 		bne.s	.nochange		; Make it jump straight to this location
 		move.b	#6,(v_player+obRoutine).w
 		rts
@@ -289,7 +289,7 @@ Drown_Countdown:; Routine $A
 		move.w	(v_player+obY).w,d0
 		subi.w	#$C,d0
 		move.w	d0,obY(a1)
-		jsr	(RandomNumber).l
+		jsr		(RandomNumber).l
 		move.b	d0,obAngle(a1)
 		move.w	(v_framecount).w,d0
 		andi.b	#3,d0

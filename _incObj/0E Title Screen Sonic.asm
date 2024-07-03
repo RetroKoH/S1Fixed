@@ -5,14 +5,13 @@
 TitleSonic:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
-		move.w	TSon_Index(pc,d0.w),d1
-		jmp	TSon_Index(pc,d1.w)
-; ===========================================================================
+		jmp		TSon_Index(pc,d0.w)
+; ; =========================================================================
 TSon_Index:
-		dc.w TSon_Main-TSon_Index
-		dc.w TSon_Delay-TSon_Index
-		dc.w TSon_Move-TSon_Index
-		dc.w TSon_Animate-TSon_Index
+		bra.s	TSon_Main
+		bra.s	TSon_Delay
+		bra.s	TSon_Move
+		bra.s	TSon_Animate
 ; ===========================================================================
 
 TSon_Main:	; Routine 0
@@ -21,7 +20,7 @@ TSon_Main:	; Routine 0
 		move.w	#$DE,obScreenY(a0)	; position is fixed to screen
 		move.l	#Map_TSon,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Title_Sonic,1,0),obGfx(a0)
-		move.w	#$80,obPriority(a0)		; RetroKoH S2 Priority Manager
+		move.w	#$80,obPriority(a0)	; RetroKoH S2 Priority Manager
 		move.b	#29,obDelayAni(a0)	; set time delay to 0.5 seconds
 		lea		(Ani_TSon).l,a1
 		bsr.w	AnimateSprite
@@ -37,20 +36,16 @@ TSon_Delay:	;Routine 2
 ; ===========================================================================
 
 TSon_Move:	; Routine 4
-		subq.w	#8,obScreenY(a0) ; move Sonic up
-		cmpi.w	#$96,obScreenY(a0) ; has Sonic reached final position?
-		bne.s	.display	; if not, branch
+		subq.w	#8,obScreenY(a0)	; move Sonic up
+		cmpi.w	#$96,obScreenY(a0)	; has Sonic reached final position?
+		bne.s	.display			; if not, branch
 		addq.b	#2,obRoutine(a0)
 
 .display:
 		bra.w	DisplaySprite
-
-		rts	
 ; ===========================================================================
 
 TSon_Animate:	; Routine 6
-		lea	(Ani_TSon).l,a1
+		lea		(Ani_TSon).l,a1
 		bsr.w	AnimateSprite
 		bra.w	DisplaySprite
-
-		rts	

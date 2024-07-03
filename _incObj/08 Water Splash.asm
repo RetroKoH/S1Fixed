@@ -3,16 +3,14 @@
 ; ---------------------------------------------------------------------------
 
 Splash:
-		moveq	#0,d0
+	; LavaGaming Object Routine Optimization
 		move.b	obRoutine(a0),d0
-		move.w	Spla_Index(pc,d0.w),d1
-		jmp		Spla_Index(pc,d1.w)
-; ===========================================================================
-Spla_Index:
-		dc.w Spla_Main-Spla_Index
-		dc.w Spla_Display-Spla_Index
-		dc.w Spla_Delete-Spla_Index
-; ===========================================================================
+		cmpi.b	#2,d0
+		beq.s	Spla_Display
+		
+		tst.b	d0
+		bne.w	Spla_Delete
+	; Object Routine Optimization End
 
 Spla_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)

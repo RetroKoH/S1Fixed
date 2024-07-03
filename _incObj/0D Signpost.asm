@@ -2,6 +2,10 @@
 ; Object 0D - signpost at the end of a level
 ; ---------------------------------------------------------------------------
 
+spintime = objoff_30		; time for signpost to spin
+sparkletime = objoff_32		; time between sparkles
+sparkle_id = objoff_34		; counter to keep track of sparkles
+
 Signpost:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
@@ -29,15 +33,11 @@ Signpost:
 		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix
 ; ===========================================================================
 Sign_Index:
-		dc.w Sign_Main-Sign_Index
-		dc.w Sign_Touch-Sign_Index
-		dc.w Sign_Spin-Sign_Index
-		dc.w Sign_SonicRun-Sign_Index
-		dc.w Sign_Exit-Sign_Index
-
-spintime = objoff_30		; time for signpost to spin
-sparkletime = objoff_32		; time between sparkles
-sparkle_id = objoff_34		; counter to keep track of sparkles
+		dc.w	Sign_Main-Sign_Index
+		dc.w	Sign_Touch-Sign_Index
+		dc.w	Sign_Spin-Sign_Index
+		dc.w	Sign_SonicRun-Sign_Index
+		dc.w	Sign_Exit-Sign_Index
 ; ===========================================================================
 
 Sign_Main:	; Routine 0
@@ -192,14 +192,15 @@ GotThroughAct:
 		mulu.w	#10,d0		; multiply by 10
 		move.w	d0,(v_ringbonus).w ; set ring bonus
 		move.w	#bgm_GotThrough,d0
-		jsr	(PlaySound_Special).l	; play "Sonic got through" music
+		jsr		(PlaySound_Special).l	; play "Sonic got through" music
 
 locret_ECEE:
 		rts	
 ; End of function GotThroughAct
 
 ; ===========================================================================
-TimeBonuses:	dc.w 5000, 5000, 1000, 500, 400, 400, 300, 300,	200, 200
+TimeBonuses:
+		dc.w 5000, 5000, 1000, 500, 400, 400, 300, 300,	200, 200
 		dc.w 200, 200, 100, 100, 100, 100, 50, 50, 50, 50, 0
 ; ===========================================================================
 

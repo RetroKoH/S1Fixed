@@ -5,14 +5,12 @@
 PSBTM:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
-		move.w	PSB_Index(pc,d0.w),d1
-		jsr		PSB_Index(pc,d1.w)
-		bra.w	DisplaySprite
+		jmp		PSB_Index(pc,d0.w)
 ; ===========================================================================
 PSB_Index:
-		dc.w PSB_Main-PSB_Index
-		dc.w PSB_PrsStart-PSB_Index
-		dc.w PSB_Exit-PSB_Index
+		bra.s	PSB_Main
+		bra.s	PSB_PrsStart
+		bra.w	DisplaySprite
 ; ===========================================================================
 
 PSB_Main:	; Routine 0
@@ -26,16 +24,16 @@ PSB_Main:	; Routine 0
 
 		addq.b	#2,obRoutine(a0)
 		cmpi.b	#3,obFrame(a0)		; is the object	"TM"?
-		bne.s	PSB_Exit			; if not, branch
+		bne.w	DisplaySprite		; if not, branch and exit
 
 		move.w	#make_art_tile(ArtTile_Title_Trademark,1,0),obGfx(a0)	; "TM" specific code
 		move.w	#$178,obX(a0)		; RetroKoH Title Screen Adjustment
 		move.w	#$F8,obScreenY(a0)
-
-PSB_Exit:	; Routine 4
-		rts	
+		bra.w	DisplaySprite
 ; ===========================================================================
 
 PSB_PrsStart:	; Routine 2
 		lea		(Ani_PSBTM).l,a1
-		bra.w	AnimateSprite	; "PRESS START" is animated
+		bsr.w	AnimateSprite		; "PRESS START" is animated
+		bra.w	DisplaySprite
+; ===========================================================================

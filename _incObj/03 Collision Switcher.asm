@@ -10,7 +10,7 @@ PathSwapper:
 	if DebugPathSwappers
 		tst.w	(f_debugcheat).w
 		bne.w	RememberState
-	endc
+	endif
 		; like RememberState, but doesn't display (Sonic 2's MarkObjGone3)
 		out_of_range.w	.offscreen
 		rts
@@ -28,9 +28,9 @@ PathSwapper:
 ; ===========================================================================
 ; off_1FCF0:
 PSwapper_Index:
-		dc.w PSwapper_Init-PSwapper_Index	; 0
-		dc.w PSwapper_MainX-PSwapper_Index	; 2
-		dc.w PSwapper_MainY-PSwapper_Index	; 4
+		dc.w	PSwapper_Init-PSwapper_Index	; 0
+		dc.w	PSwapper_MainX-PSwapper_Index	; 2
+		dc.w	PSwapper_MainY-PSwapper_Index	; 4
 ; ===========================================================================
 ; loc_1FCF6:
 PSwapper_Init:
@@ -49,12 +49,12 @@ PSwapper_Init:
 		move.b	d0,obFrame(a0)
 		andi.w	#3,d0
 		add.w	d0,d0
-		move.w	word_1FD68(pc,d0.w),$32(a0)
+		move.w	word_1FD68(pc,d0.w),objoff_32(a0)
 		move.w	obY(a0),d1
 		lea		(v_player).w,a1 ; a1=character
 		cmp.w	obY(a1),d1
 		bhs.w	PSwapper_MainY
-		move.b	#1,$34(a0)
+		move.b	#1,objoff_34(a0)
 		bra.w	PSwapper_MainY
 ; ===========================================================================
 word_1FD68:
@@ -68,12 +68,12 @@ PSwapper_Init_CheckX:
 		andi.w	#3,d0
 		move.b	d0,obFrame(a0)
 		add.w	d0,d0
-		move.w	word_1FD68(pc,d0.w),$32(a0)
+		move.w	word_1FD68(pc,d0.w),objoff_32(a0)
 		move.w	obX(a0),d1
-		lea	(v_player).w,a1 ; a1=character
+		lea		(v_player).w,a1		; a1=character
 		cmp.w	obX(a1),d1
 		bhs.s	.jump
-		move.b	#1,$34(a0)
+		move.b	#1,objoff_34(a0)
 .jump:
 
 ; loc_1FDA4:
@@ -81,16 +81,16 @@ PSwapper_MainX:
 		tst.w	(v_debuguse).w
 		bne.w	.locret
 		move.w	obX(a0),d1
-		lea		$34(a0),a2
-		lea		(v_player).w,a1 ; a1=character
-		tst.b	(a2)+
+		lea		objoff_34(a0),a2	; a2=$34(a0)
+		lea		(v_player).w,a1		; a1=character
+		tst.b	(a2)+				; test $34(a0); a2=$35(a0)
 		bne.w	PSwapper_MainX_Alt
 		cmp.w	obX(a1),d1
 		bhi.s	.locret
-		move.b	#1,-1(a2)
+		move.b	#1,-1(a2)			; load to $34(a0)
 		move.w	obY(a0),d2
 		move.w	d2,d3
-		move.w	$32(a0),d4
+		move.w	objoff_32(a0),d4
 		sub.w	d4,d2
 		add.w	d4,d3
 		move.w	obY(a1),d4
@@ -121,8 +121,8 @@ PSwapper_MainX:
 		tst.b	(f_debugcheat).w
 		beq.s	.locret
 		move.b	#sfx_Lamppost,d0
-		jmp	(PlaySound_Special).l
-	endc
+		jmp		(PlaySound_Special).l
+	endif
 .locret:
 		rts
 ; ===========================================================================
@@ -133,7 +133,7 @@ PSwapper_MainX_Alt:
 		clr.b	-1(a2)
 		move.w	obY(a0),d2
 		move.w	d2,d3
-		move.w	$32(a0),d4
+		move.w	objoff_32(a0),d4
 		sub.w	d4,d2
 		add.w	d4,d3
 		move.w	obY(a1),d4
@@ -164,8 +164,8 @@ PSwapper_MainX_Alt:
 		tst.b	(f_debugcheat).w
 		beq.s	.locret
 		move.b	#sfx_Lamppost,d0
-		jmp	(PlaySound_Special).l
-	endc
+		jmp		(PlaySound_Special).l
+	endif
 .locret:
 		rts
 ; ===========================================================================
@@ -174,8 +174,8 @@ PSwapper_MainY:
 		tst.w	(v_debuguse).w
 		bne.w	.locret
 		move.w	obY(a0),d1
-		lea	$34(a0),a2
-		lea	(v_player).w,a1 ; a1=character
+		lea		objoff_34(a0),a2
+		lea		(v_player).w,a1 ; a1=character
 		tst.b	(a2)+
 		bne.s	PSwapper_MainY_Alt
 		cmp.w	obY(a1),d1
@@ -183,7 +183,7 @@ PSwapper_MainY:
 		move.b	#1,-1(a2)
 		move.w	obX(a0),d2
 		move.w	d2,d3
-		move.w	$32(a0),d4
+		move.w	objoff_32(a0),d4
 		sub.w	d4,d2
 		add.w	d4,d3
 		move.w	obX(a1),d4
@@ -214,8 +214,8 @@ PSwapper_MainY:
 		tst.b	(f_debugcheat).w
 		beq.s	.locret
 		move.b	#sfx_Lamppost,d0
-		jmp	(PlaySound_Special).l
-	endc
+		jmp		(PlaySound_Special).l
+	endif
 .locret:
 		rts
 ; ===========================================================================
@@ -226,7 +226,7 @@ PSwapper_MainY_Alt:
 		clr.b	-1(a2)
 		move.w	obX(a0),d2
 		move.w	d2,d3
-		move.w	$32(a0),d4
+		move.w	objoff_32(a0),d4
 		sub.w	d4,d2
 		add.w	d4,d3
 		move.w	obX(a1),d4
@@ -257,7 +257,7 @@ PSwapper_MainY_Alt:
 		tst.b	(f_debugcheat).w
 		beq.s	.locret
 		move.b	#sfx_Lamppost,d0
-		jmp	(PlaySound_Special).l
-	endc
+		jmp		(PlaySound_Special).l
+	endif
 .locret:
 		rts

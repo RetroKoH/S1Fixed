@@ -16,10 +16,10 @@ Obj09_Normal:
 		jmp		Obj09_Index(pc,d1.w)
 ; ===========================================================================
 Obj09_Index:
-		dc.w Obj09_Main-Obj09_Index
-		dc.w Obj09_ChkDebug-Obj09_Index
-		dc.w Obj09_ExitStage-Obj09_Index
-		dc.w Obj09_Exit2-Obj09_Index
+		dc.w	Obj09_Main-Obj09_Index
+		dc.w	Obj09_ChkDebug-Obj09_Index
+		dc.w	Obj09_ExitStage-Obj09_Index
+		dc.w	Obj09_Exit2-Obj09_Index
 ; ===========================================================================
 
 Obj09_Main:	; Routine 0
@@ -277,7 +277,7 @@ Obj09_JumpHeight:
 
 		neg.b	d0
 		subi.b	#$40,d0
-		jsr	(CalcSine).l
+		jsr		(CalcSine).l
 		muls.w	#$400,d1
 		asr.l	#8,d1
 		move.w	d1,obVelX(a0)
@@ -337,10 +337,10 @@ loc_1BC12:
 		move.w	(v_ssangle).w,d0
 		add.w	(v_ssrotate).w,d0
 		move.w	d0,(v_ssangle).w
-		jsr	(Sonic_Animate).l
-		jsr	(Sonic_LoadGfx).l
+		jsr		(Sonic_Animate).l
+		jsr		(Sonic_LoadGfx).l
 		bsr.w	SS_FixCamera
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 
 Obj09_Exit2:
@@ -349,10 +349,10 @@ Obj09_Exit2:
 		move.b	#id_Level,(v_gamemode).w
 
 loc_1BC40:
-		jsr	(Sonic_Animate).l
-		jsr	(Sonic_LoadGfx).l
+		jsr		(Sonic_Animate).l
+		jsr		(Sonic_LoadGfx).l
 		bsr.w	SS_FixCamera
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
@@ -424,7 +424,7 @@ loc_1BCD4:
 
 
 sub_1BCE8:
-		lea	(v_ssbuffer1&$FFFFFF).l,a1
+		lea		(v_ssbuffer1&$FFFFFF).l,a1
 		moveq	#0,d4
 		swap	d2
 		move.w	d2,d4
@@ -483,7 +483,7 @@ loc_1BD46:
 
 
 Obj09_ChkItems:
-		lea	(v_ssbuffer1&$FFFFFF).l,a1
+		lea		(v_ssbuffer1&$FFFFFF).l,a1
 		moveq	#0,d4
 		move.w	obY(a0),d4
 		addi.w	#$50,d4
@@ -565,13 +565,13 @@ Obj09_GetEmer:
 		subi.b	#$3B,d4
 		moveq	#0,d0
 		move.b	(v_emeralds).w,d0
-		lea	(v_emldlist).w,a2
+		lea		(v_emldlist).w,a2
 		move.b	d4,(a2,d0.w)
 		addq.b	#1,(v_emeralds).w ; add 1 to number of emeralds
 
 Obj09_NoEmer:
 		move.w	#bgm_Emerald,d0
-		jsr	(PlaySound_Special).l ;	play emerald music
+		jsr		(PlaySound_Special).l ;	play emerald music
 		moveq	#0,d4
 		rts	
 ; ===========================================================================
@@ -596,7 +596,7 @@ Obj09_NoGhost:
 Obj09_MakeGhostSolid:
 		cmpi.b	#2,objoff_3A(a0)	; is the ghost marked as "solid"?
 		bne.s	Obj09_GhostNotSolid ; if not, branch
-		lea	(v_ssblockbuffer&$FFFFFF).l,a1
+		lea		(v_ssblockbuffer&$FFFFFF).l,a1
 		moveq	#(v_ssblockbuffer_end-v_ssblockbuffer)/$80-1,d1
 
 Obj09_GhostLoop2:
@@ -609,9 +609,9 @@ Obj09_GhostLoop:
 
 Obj09_NoReplace:
 		addq.w	#1,a1
-		dbf	d2,Obj09_GhostLoop
-		lea	$40(a1),a1
-		dbf	d1,Obj09_GhostLoop2
+		dbf		d2,Obj09_GhostLoop
+		lea		$40(a1),a1
+		dbf		d1,Obj09_GhostLoop2
 
 Obj09_GhostNotSolid:
 		clr.b	objoff_3A(a0)
@@ -673,7 +673,7 @@ Obj09_ChkBumper:
 
 Obj09_BumpSnd:
 		move.w	#sfx_Bumper,d0
-		jmp	(PlaySound_Special).l	; play bumper sound
+		jmp		(PlaySound_Special).l	; play bumper sound
 ; ===========================================================================
 
 Obj09_GOAL:
@@ -692,14 +692,14 @@ Obj09_UPblock:
 		move.b	#$1E,objoff_36(a0)
 		btst	#6,(v_ssrotate+1).w
 		beq.s	Obj09_UPsnd
-		asl	(v_ssrotate).w	; increase stage rotation speed
+		asl		(v_ssrotate).w	; increase stage rotation speed
 		movea.l	objoff_32(a0),a1
 		subq.l	#1,a1
 		move.b	#$2A,(a1)	; change item to a "DOWN" block
 
 Obj09_UPsnd:
 		move.w	#sfx_SSItem,d0
-		jmp	(PlaySound_Special).l	; play up/down sound
+		jmp		(PlaySound_Special).l	; play up/down sound
 ; ===========================================================================
 
 Obj09_DOWNblock:
@@ -710,14 +710,14 @@ Obj09_DOWNblock:
 		move.b	#$1E,objoff_36(a0)
 		btst	#6,(v_ssrotate+1).w
 		bne.s	Obj09_DOWNsnd
-		asr	(v_ssrotate).w	; reduce stage rotation speed
+		asr		(v_ssrotate).w	; reduce stage rotation speed
 		movea.l	objoff_32(a0),a1
 		subq.l	#1,a1
 		move.b	#$29,(a1)	; change item to an "UP" block
 
 Obj09_DOWNsnd:
 		move.w	#sfx_SSItem,d0
-		jmp	(PlaySound_Special).l	; play up/down sound
+		jmp		(PlaySound_Special).l	; play up/down sound
 ; ===========================================================================
 
 Obj09_Rblock:
@@ -736,7 +736,7 @@ Obj09_Rblock:
 Obj09_RevStage:
 		neg.w	(v_ssrotate).w	; reverse stage rotation
 		move.w	#sfx_SSItem,d0
-		jmp	(PlaySound_Special).l	; play sound
+		jmp		(PlaySound_Special).l	; play sound
 ; ===========================================================================
 
 Obj09_ChkGlass:
@@ -767,7 +767,7 @@ Obj09_GlassUpdate:
 
 Obj09_GlassSnd:
 		move.w	#sfx_SSGlass,d0
-		jmp	(PlaySound_Special).l	; play glass block sound
+		jmp		(PlaySound_Special).l	; play glass block sound
 ; ===========================================================================
 
 Obj09_NoGlass:

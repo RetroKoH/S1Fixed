@@ -2,21 +2,21 @@
 ; Object 14 - lava balls (MZ, SLZ)
 ; ---------------------------------------------------------------------------
 
-LavaBall:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	LBall_Index(pc,d0.w),d1
-		jmp		LBall_Index(pc,d1.w)	; FixBugs: Clownacy DisplaySprite Fix
 ; ===========================================================================
-LBall_Index:
-		dc.w LBall_Main-LBall_Index
-		dc.w LBall_Action-LBall_Index
-		dc.w LBall_Delete-LBall_Index
-
 LBall_Speeds:
 		dc.w -$400, -$500, -$600, -$700, -$200
 		dc.w $200, -$200, $200,	0
 ; ===========================================================================
+
+LavaBall:
+	; LavaGaming Object Routine Optimization
+		move.b	obRoutine(a0),d0
+		cmpi.b	#2,d0
+		beq.w	LBall_Action
+		
+		tst.b	d0
+		bne.w	DeleteObject
+	; Object Routine Optimization End
 
 LBall_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -147,9 +147,6 @@ LBall_Type07:
 		clr.w	obVelX(a0)	; stop object when it touches a	wall
 
 locret_E4BC:
-		rts	
-; ===========================================================================
-
 LBall_Type08:
 		rts	
 ; ===========================================================================

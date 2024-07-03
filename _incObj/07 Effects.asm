@@ -21,7 +21,8 @@ Effects_Init:	; Routine 0
 		move.b	#$10,obActWid(a0)
 		clr.b	obAnim(a0)
 		move.w	#ArtTile_Dust,obGfx(a0)
-		move.w	#$F400,$3C(a0)
+	;	move.w	#$F400,objoff_3C(a0)	; $34 = address to load art to in DPLC processing
+		; Not needed for a single player game, but needed for adding a second player.
 
 Effects_Main:	; Routine 2
 		lea		(v_player).w,a2
@@ -51,7 +52,7 @@ Effects_MdSpindashDust:
 
 Effects_MdDisplay:
 		lea		(Ani_Effects).l,a1
-		jsr		AnimateSprite
+		jsr		(AnimateSprite).l
 		bsr.w	Effects_LoadGfx
 		jmp		(DisplaySprite).l
 
@@ -84,7 +85,7 @@ Effects_SkidDust:
 		move.b	#3,objoff_32(a0)
 		jsr		(FindFreeObj).l
 		bne.s	Effects_LoadGfx
-		move.b	obID(a0),obID(a1) ; load obj08
+		move.b	obID(a0),obID(a1) ; load obj07
 		move.w	obX(a2),obX(a1)
 		move.w	obY(a2),obY(a1)
 		addi.w	#$10,obY(a1)

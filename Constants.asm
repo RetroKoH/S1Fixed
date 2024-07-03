@@ -169,11 +169,12 @@ obParent:		equ $3E
 obInertia:		equ $20			; potential speed (2 bytes) -- Exclusive to players
 							; $23 unused
 							; $24 obRoutine
-					; does Sonic use $25???
+					; Sonic uses $25 if double jump stuff is enabled
 							; $26 obAngle
 							; $27-$29 unused
 
-							; $2B-$2F unused
+							; $2B-$2E unused
+					; Sonic uses $2F if double jump stuff is enabled
 obInvuln:		equ $30			; Invulnerable (blinking after getting hit) timer
 obInvinc:		equ $31			; Invincibility timer
 obShoes:		equ $32			; Speed Shoes timer

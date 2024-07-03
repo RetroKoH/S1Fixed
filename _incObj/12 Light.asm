@@ -16,7 +16,7 @@ Light_Main:	; Routine 0
 		move.b	#$10,obActWid(a0)
 		move.w	#$300,obPriority(a0)	; RetroKoH S2 Priority Manager
 
-Light_Animate:	; Routine 2
+Light_Animate:	; Routine 2 (Replace with global sync animation)
 		subq.b	#1,obTimeFrame(a0)
 		bpl.s	.chkdel
 		move.b	#7,obTimeFrame(a0)

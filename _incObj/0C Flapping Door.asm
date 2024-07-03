@@ -2,8 +2,8 @@
 ; Object 0C - flapping door (LZ)
 ; ---------------------------------------------------------------------------
 
-flap_time = objoff_32		; time between opening/closing
 flap_wait = objoff_30		; time until change
+flap_time = objoff_32		; time between opening/closing
 
 FlapDoor:
 	; LavaGaming Object Routine Optimization
@@ -18,19 +18,19 @@ Flap_Main:	; Routine 0
 		ori.b	#4,obRender(a0)
 		move.b	#$28,obActWid(a0)
 		moveq	#0,d0
-		move.b	obSubtype(a0),d0 ; get object type
-		mulu.w	#60,d0		; multiply by 60 (1 second)
-		move.w	d0,flap_time(a0) ; set flap delay time
+		move.b	obSubtype(a0),d0			; get object type
+		mulu.w	#60,d0						; multiply by 60 (1 second)
+		move.w	d0,flap_time(a0)			; set flap delay time
 
 Flap_OpenClose:	; Routine 2
-		subq.w	#1,flap_wait(a0) ; decrement time delay
-		bpl.s	.wait		; if time remains, branch
+		subq.w	#1,flap_wait(a0)			; decrement time delay
+		bpl.s	.wait						; if time remains, branch
 		move.w	flap_time(a0),flap_wait(a0) ; reset time delay
-		bchg	#0,obAnim(a0)	; open/close door
+		bchg	#0,obAnim(a0)				; open/close door
 		tst.b	obRender(a0)
 		bpl.s	.nosound
 		move.w	#sfx_Door,d0
-		jsr		(PlaySound_Special).l	; play door sound
+		jsr		(PlaySound_Special).l		; play door sound
 
 .wait:
 .nosound:
