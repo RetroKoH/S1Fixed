@@ -3,14 +3,10 @@
 ; ---------------------------------------------------------------------------
 
 Basaran:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Bas_Index(pc,d0.w),d1
-		jmp	Bas_Index(pc,d1.w)
-; ===========================================================================
-Bas_Index:	dc.w Bas_Main-Bas_Index
-		dc.w Bas_Action-Bas_Index
-; ===========================================================================
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Bas_Action
+	; Object Routine Optimization End
 
 Bas_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -26,12 +22,13 @@ Bas_Action:	; Routine 2
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
 		move.w	.index(pc,d0.w),d1
-		jsr	.index(pc,d1.w)
-		lea	(Ani_Bas).l,a1
+		jsr		.index(pc,d1.w)
+		lea		(Ani_Bas).l,a1
 		bsr.w	AnimateSprite
 		bra.w	RememberState
 ; ===========================================================================
-.index:		dc.w .dropcheck-.index
+.index:
+		dc.w .dropcheck-.index
 		dc.w .dropfly-.index
 		dc.w .flapsound-.index
 		dc.w .flyup-.index
@@ -69,14 +66,14 @@ Bas_Action:	; Routine 2
 		move.w	objoff_36(a0),d0
 		sub.w	obY(a0),d0
 		bcs.s	.chkdel
-		cmpi.w	#$10,d0		; is basaran close to Sonic vertically?
-		bhs.s	.dropmore	; if not, branch
+		cmpi.w	#$10,d0			; is basaran close to Sonic vertically?
+		bhs.s	.return			; if not, branch
 		move.w	d1,obVelX(a0)	; make basaran fly horizontally
-		clr.w	obVelY(a0)	; stop basaran falling
+		clr.w	obVelY(a0)		; stop basaran falling
 		move.b	#2,obAnim(a0)
 		addq.b	#2,ob2ndRout(a0)
 
-.dropmore:
+.return:
 		rts	
 
 .chkdel:
@@ -85,8 +82,6 @@ Bas_Action:	; Routine 2
 		bmi.s	.return
 		addq.l	#4,sp
 		bra.w	DeleteObject
-.return:
-		rts	
 ; ===========================================================================
 
 .flapsound:

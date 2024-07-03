@@ -3,15 +3,14 @@
 ; ---------------------------------------------------------------------------
 
 Newtron:
-		moveq	#0,d0
+	; LavaGaming Object Routine Optimization
 		move.b	obRoutine(a0),d0
-		move.w	Newt_Index(pc,d0.w),d1
-		jmp	Newt_Index(pc,d1.w)
-; ===========================================================================
-Newt_Index:	dc.w Newt_Main-Newt_Index
-		dc.w Newt_Action-Newt_Index
-		dc.w Newt_Delete-Newt_Index
-; ===========================================================================
+		cmpi.b	#2,d0
+		beq.s	Newt_Action
+
+		tst.b	d0
+		bne.w	DeleteObject
+	; Object Routine Optimization End
 
 Newt_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -125,8 +124,7 @@ Newt_Action:	; Routine 2
 ; ===========================================================================
 
 .speed:
-		bsr.w	SpeedToPos
-		rts	
+		bra.w	SpeedToPos
 ; ===========================================================================
 
 .type01:
@@ -161,6 +159,3 @@ Newt_Action:	; Routine 2
 .fail:
 		rts	
 ; ===========================================================================
-
-Newt_Delete:	; Routine 4
-		bra.w	DeleteObject

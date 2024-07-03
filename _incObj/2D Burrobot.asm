@@ -2,17 +2,13 @@
 ; Object 2D - Burrobot enemy (LZ)
 ; ---------------------------------------------------------------------------
 
-Burrobot:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Burro_Index(pc,d0.w),d1
-		jmp	Burro_Index(pc,d1.w)
-; ===========================================================================
-Burro_Index:	dc.w Burro_Main-Burro_Index
-		dc.w Burro_Action-Burro_Index
-
 burro_timedelay = objoff_30		; time between direction changes
-; ===========================================================================
+
+Burrobot:
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Burro_Action
+	; Object Routine Optimization End
 
 Burro_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -31,12 +27,13 @@ Burro_Action:	; Routine 2
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
 		move.w	.index(pc,d0.w),d1
-		jsr	.index(pc,d1.w)
-		lea	(Ani_Burro).l,a1
+		jsr		.index(pc,d1.w)
+		lea		(Ani_Burro).l,a1
 		bsr.w	AnimateSprite
 		bra.w	RememberState
 ; ===========================================================================
-.index:		dc.w .changedir-.index
+.index:
+		dc.w .changedir-.index
 		dc.w Burro_Move-.index
 		dc.w Burro_Jump-.index
 		dc.w Burro_ChkSonic-.index

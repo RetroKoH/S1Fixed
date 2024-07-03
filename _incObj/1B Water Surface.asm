@@ -2,18 +2,14 @@
 ; Object 1B - water surface (LZ)
 ; ---------------------------------------------------------------------------
 
-WaterSurface:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Surf_Index(pc,d0.w),d1
-		jmp	Surf_Index(pc,d1.w)
-; ===========================================================================
-Surf_Index:	dc.w Surf_Main-Surf_Index
-		dc.w Surf_Action-Surf_Index
-
 surf_origX = objoff_30		; original x-axis position
 surf_freeze = objoff_32		; flag to freeze animation
-; ===========================================================================
+
+WaterSurface:
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Surf_Action
+	; Object Routine Optimization End
 
 Surf_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -45,23 +41,21 @@ Surf_Action:	; Routine 2
 		beq.s	.animate	; if not, branch
 		addq.b	#3,obFrame(a0)	; use different	frames
 		move.b	#1,surf_freeze(a0) ; stop animation
-		bra.s	.display
+		bra.w	DisplaySprite
 ; ===========================================================================
 
 .stopped:
 		tst.w	(f_pause).w	; is the game paused?
-		bne.s	.display	; if yes, branch
+		bne.w	DisplaySprite	; if yes, branch
 		clr.b	surf_freeze(a0) ; resume animation
 		subq.b	#3,obFrame(a0)	; use normal frames
 
 .animate:
 		subq.b	#1,obTimeFrame(a0)
-		bpl.s	.display
+		bpl.w	DisplaySprite
 		move.b	#7,obTimeFrame(a0)
 		addq.b	#1,obFrame(a0)
 		cmpi.b	#3,obFrame(a0)
-		blo.s	.display
+		blo.w	DisplaySprite
 		clr.b	obFrame(a0)
-
-.display:
 		bra.w	DisplaySprite

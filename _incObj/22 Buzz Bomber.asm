@@ -3,20 +3,20 @@
 ; Object 22 - Buzz Bomber enemy	(GHZ, MZ, SYZ)
 ; ---------------------------------------------------------------------------
 
-BuzzBomber:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Buzz_Index(pc,d0.w),d1
-		jmp	Buzz_Index(pc,d1.w)
-; ===========================================================================
-Buzz_Index:	dc.w Buzz_Main-Buzz_Index
-		dc.w Buzz_Action-Buzz_Index
-		dc.w Buzz_Delete-Buzz_Index
-
 buzz_timedelay = objoff_32
 buzz_buzzstatus = objoff_34
 buzz_parent = objoff_3C
-; ===========================================================================
+
+BuzzBomber:
+	; LavaGaming Object Routine Optimization
+		moveq	#0,d0				; 4
+		move.b	obRoutine(a0),d0	; C
+		cmpi.b	#2,d0				; 8
+		beq.s	Buzz_Action			; 8/A - Most common routine, and closest branch for fewer cycles = $22
+		
+		tst.b	d0					; 4
+		bne.w	DeleteObject		; C/E ($30 on init, $32 on Destroy)
+	; Object Routine Optimization End
 
 Buzz_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -119,6 +119,3 @@ Buzz_Action:	; Routine 2
 .keepgoing:
 		rts	
 ; ===========================================================================
-
-Buzz_Delete:	; Routine 4
-		bra.w	DeleteObject

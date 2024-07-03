@@ -3,15 +3,10 @@
 ; ---------------------------------------------------------------------------
 
 TryChaos:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	TCha_Index(pc,d0.w),d1
-		jsr	TCha_Index(pc,d1.w)
-		jmp	(DisplaySprite).l
-; ===========================================================================
-TCha_Index:	dc.w TCha_Main-TCha_Index
-		dc.w TCha_Move-TCha_Index
-; ===========================================================================
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.w	TCha_Move
+	; Object Routine Optimization End
 
 TCha_Main:	; Routine 0
 		movea.l	a0,a1
@@ -32,7 +27,7 @@ TCha_Main:	; Routine 0
 		move.w	#$EC,obScreenY(a1)
 		move.w	obScreenY(a1),objoff_3A(a1)
 		move.b	#$1C,objoff_3C(a1)
-		lea	(v_emldlist).w,a3
+		lea		(v_emldlist).w,a3
 
 .chkemerald:
 		moveq	#0,d0
@@ -48,7 +43,7 @@ TCha_Main:	; Routine 0
 ; ===========================================================================
 
 .notgot:
-		dbf	d0,.chkloop
+		dbf		d0,.chkloop
 
 .loc_5B42:
 		move.b	d2,obFrame(a1)
@@ -58,12 +53,12 @@ TCha_Main:	; Routine 0
 		move.b	d3,obTimeFrame(a1)
 		move.b	d3,obDelayAni(a1)
 		addi.w	#10,d3
-		lea	object_size(a1),a1
-		dbf	d1,.makeemerald	; repeat 5 times
+		lea		object_size(a1),a1
+		dbf		d1,.makeemerald	; repeat 5 times
 
 TCha_Move:	; Routine 2
 		tst.w	objoff_3E(a0)
-		beq.s	locret_5BBA
+		beq.s	loc_5BBA
 		tst.b	obTimeFrame(a0)
 		beq.s	loc_5B78
 		subq.b	#1,obTimeFrame(a0)
@@ -84,7 +79,7 @@ loc_5B8C:
 		move.b	obDelayAni(a0),obTimeFrame(a0)
 
 loc_5B96:
-		jsr	(CalcSine).l
+		jsr		(CalcSine).l
 		moveq	#0,d4
 		move.b	objoff_3C(a0),d4
 		muls.w	d4,d1
@@ -96,5 +91,5 @@ loc_5B96:
 		move.w	d1,obX(a0)
 		move.w	d0,obScreenY(a0)
 
-locret_5BBA:
-		rts	
+loc_5BBA:
+		jmp	(DisplaySprite).l	

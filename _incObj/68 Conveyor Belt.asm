@@ -2,19 +2,14 @@
 ; Object 68 - conveyor belts (SBZ)
 ; ---------------------------------------------------------------------------
 
-Conveyor:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Conv_Index(pc,d0.w),d1
-		jmp		Conv_Index(pc,d1.w)
-; ===========================================================================
-Conv_Index:
-		dc.w	Conv_Main-Conv_Index
-		dc.w	Conv_Action-Conv_Index
-
 conv_speed = objoff_36
 conv_width = objoff_38
-; ===========================================================================
+
+Conveyor:
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Conv_Action
+	; Object Routine Optimization End
 
 Conv_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)

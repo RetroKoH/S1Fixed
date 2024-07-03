@@ -3,14 +3,10 @@
 ; ---------------------------------------------------------------------------
 
 Flamethrower:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Flame_Index(pc,d0.w),d1
-		jmp	Flame_Index(pc,d1.w)
-; ===========================================================================
-Flame_Index:	dc.w Flame_Main-Flame_Index
-		dc.w Flame_Action-Flame_Index
-; ===========================================================================
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Flame_Action
+	; Object Routine Optimization End
 
 Flame_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)

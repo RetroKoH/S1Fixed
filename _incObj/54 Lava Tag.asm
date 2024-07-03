@@ -2,19 +2,16 @@
 ; Object 54 - invisible	lava tag (MZ)
 ; ---------------------------------------------------------------------------
 
-LavaTag:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	LTag_Index(pc,d0.w),d1
-		jmp		LTag_Index(pc,d1.w)
 ; ===========================================================================
-LTag_Index:
-		dc.w LTag_Main-LTag_Index
-		dc.w LTag_ChkDel-LTag_Index
-
 LTag_ColTypes:	dc.b $96, $94, $95
 		even
 ; ===========================================================================
+
+LavaTag:
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	LTag_ChkDel
+	; Object Routine Optimization End
 
 LTag_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)

@@ -7,15 +7,10 @@
 
 ; loc_16F88:
 RingsManager:
-		moveq	#0,d0
-		move.b	(v_ringsroutine).w,d0
-		move.w	RM_Index(pc,d0.w),d0
-		jmp		RM_Index(pc,d0.w)
-; ===========================================================================
-RM_Index:
-		dc.w RM_Main-RM_Index ; 0
-		dc.w RM_Next-RM_Index ; 2
-; ===========================================================================
+	; LavaGaming Object Routine Optimization
+		tst.b	(v_ringsroutine).w
+		bne.w	RM_Next
+	; Object Routine Optimization End
 
 RM_Main:
 		addq.b	#2,(v_ringsroutine).w		; => RingsManager_Main

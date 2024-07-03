@@ -3,14 +3,10 @@
 ; ---------------------------------------------------------------------------
 
 Bumper:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Bump_Index(pc,d0.w),d1
-		jmp	Bump_Index(pc,d1.w)
-; ===========================================================================
-Bump_Index:	dc.w Bump_Main-Bump_Index
-		dc.w Bump_Hit-Bump_Index
-; ===========================================================================
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Bump_Hit
+	; Object Routine Optimization End
 
 Bump_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -22,8 +18,8 @@ Bump_Main:	; Routine 0
 		move.b	#$D7,obColType(a0)
 
 Bump_Hit:	; Routine 2
-		tst.b	obColProp(a0)	; has Sonic touched the	bumper?
-		beq.w	.display	; if not, branch
+		tst.b	obColProp(a0)			; has Sonic touched the	bumper?
+		beq.w	.display				; if not, branch
 		clr.b	obColProp(a0)
 		lea		(v_player).w,a1
 		move.w	obX(a0),d1
@@ -54,24 +50,24 @@ Bump_Hit:	; Routine 2
 
 .addscore:
 		moveq	#1,d0
-		jsr		(AddPoints).l	; add 10 to score
+		jsr		(AddPoints).l			; add 10 to score
 		bsr.w	FindFreeObj
 		bne.s	.display
-		_move.b	#id_Points,obID(a1) ; load points object
+		_move.b	#id_Points,obID(a1) 	; load points object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.b	#4,obFrame(a1)
 
 .display:
-		lea	(Ani_Bump).l,a1
+		lea		(Ani_Bump).l,a1
 		bsr.w	AnimateSprite
 		out_of_range.s	.resetcount
 		bra.w	DisplaySprite
 ; ===========================================================================
 
 .resetcount:
-		move.w	obRespawnNo(a0),d0	; get address in respawn table
-		beq.w	DeleteObject		; if it's zero, don't remember object
-		movea.w	d0,a2				; load address into a2
-		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again
+		move.w	obRespawnNo(a0),d0		; get address in respawn table
+		beq.w	DeleteObject			; if it's zero, don't remember object
+		movea.w	d0,a2					; load address into a2
+		bclr	#7,(a2)					; clear respawn table entry, so object can be loaded again
 		bra.w	DeleteObject

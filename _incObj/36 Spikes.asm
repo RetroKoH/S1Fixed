@@ -2,16 +2,7 @@
 ; Object 36 - spikes
 ; ---------------------------------------------------------------------------
 
-Spikes:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Spik_Index(pc,d0.w),d1
-		jmp		Spik_Index(pc,d1.w)
 ; ===========================================================================
-Spik_Index:
-		dc.w Spik_Main-Spik_Index
-		dc.w Spik_Solid-Spik_Index
-
 spik_origX = objoff_30		; start X position
 spik_origY = objoff_32		; start Y position
 
@@ -23,6 +14,12 @@ Spik_Var:
 		dc.b 4,	$40
 		dc.b 5,	$10
 ; ===========================================================================
+
+Spikes:
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Spik_Solid
+	; Object Routine Optimization End
 
 Spik_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -109,20 +106,16 @@ Spik_Display:
 ; ===========================================================================
 
 Spik_Type0x:
+	; LavaGaming Object Routine Optimization
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
-		add.w	d0,d0
-		move.w	Spik_TypeIndex(pc,d0.w),d1
-		jmp		Spik_TypeIndex(pc,d1.w)
-; ===========================================================================
-Spik_TypeIndex:
-		dc.w Spik_Type00-Spik_TypeIndex
-		dc.w Spik_Type01-Spik_TypeIndex
-		dc.w Spik_Type02-Spik_TypeIndex
-; ===========================================================================
-
+		subq.b	#1,d0
+		tst.b	d0
+		beq.s	Spik_Type01
+		bgt.s	Spik_Type02
 Spik_Type00:
-		rts			; don't move the object
+		rts					; don't move the object
+	; Object Routine Optimization End
 ; ===========================================================================
 
 Spik_Type01:

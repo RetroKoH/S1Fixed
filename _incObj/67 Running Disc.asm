@@ -2,21 +2,17 @@
 ; Object 67 - disc that	you run	around (SBZ)
 ; ---------------------------------------------------------------------------
 
-RunningDisc:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Disc_Index(pc,d0.w),d1
-		jmp	Disc_Index(pc,d1.w)
-; ===========================================================================
-Disc_Index:	dc.w Disc_Main-Disc_Index
-		dc.w Disc_Action-Disc_Index
-
 disc_origX = objoff_32		; original x-axis position
 disc_origY = objoff_30		; original y-axis position
 disc_spot_distance = objoff_34
 disc_radius = objoff_38
 disc_sonic_attached = objoff_3A
-; ===========================================================================
+
+RunningDisc:
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Disc_Action
+	; Object Routine Optimization End
 
 Disc_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)

@@ -2,18 +2,14 @@
 ; Object 0C - flapping door (LZ)
 ; ---------------------------------------------------------------------------
 
-FlapDoor:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Flap_Index(pc,d0.w),d1
-		jmp	Flap_Index(pc,d1.w)
-; ===========================================================================
-Flap_Index:	dc.w Flap_Main-Flap_Index
-		dc.w Flap_OpenClose-Flap_Index
-
 flap_time = objoff_32		; time between opening/closing
 flap_wait = objoff_30		; time until change
-; ===========================================================================
+
+FlapDoor:
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Flap_OpenClose
+	; Object Routine Optimization End
 
 Flap_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -34,25 +30,23 @@ Flap_OpenClose:	; Routine 2
 		tst.b	obRender(a0)
 		bpl.s	.nosound
 		move.w	#sfx_Door,d0
-		jsr	(PlaySound_Special).l	; play door sound
+		jsr		(PlaySound_Special).l	; play door sound
 
 .wait:
 .nosound:
-		lea	(Ani_Flap).l,a1
+		lea		(Ani_Flap).l,a1
 		bsr.w	AnimateSprite
-		clr.b	(f_wtunnelallow).w ; enable wind tunnel
-		tst.b	obFrame(a0)	; is the door open?
-		bne.s	.display	; if yes, branch
+		clr.b	(f_wtunnelallow).w		; enable wind tunnel
+		tst.b	obFrame(a0)				; is the door open?
+		bne.w	RememberState			; if yes, branch
 		move.w	(v_player+obX).w,d0
-		cmp.w	obX(a0),d0	; has Sonic passed through the door?
-		bhs.s	.display	; if yes, branch
-		move.b	#1,(f_wtunnelallow).w ; disable wind tunnel
+		cmp.w	obX(a0),d0				; has Sonic passed through the door?
+		bhs.w	RememberState			; if yes, branch
+		move.b	#1,(f_wtunnelallow).w	; disable wind tunnel
 		move.w	#$13,d1
 		move.w	#$20,d2
 		move.w	d2,d3
 		addq.w	#1,d3
 		move.w	obX(a0),d4
-		bsr.w	SolidObject	; make the door	solid
-
-.display:
+		bsr.w	SolidObject				; make the door	solid
 		bra.w	RememberState

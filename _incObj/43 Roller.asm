@@ -3,14 +3,10 @@
 ; ---------------------------------------------------------------------------
 
 Roller:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Roll_Index(pc,d0.w),d1
-		jmp	Roll_Index(pc,d1.w)
-; ===========================================================================
-Roll_Index:	dc.w Roll_Main-Roll_Index
-		dc.w Roll_Action-Roll_Index
-; ===========================================================================
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Roll_Action
+	; Object Routine Optimization End
 
 Roll_Main:	; Routine 0
 		move.b	#$E,obHeight(a0)
@@ -36,8 +32,8 @@ Roll_Action:	; Routine 2
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
 		move.w	Roll_Index2(pc,d0.w),d1
-		jsr	Roll_Index2(pc,d1.w)
-		lea	(Ani_Roll).l,a1
+		jsr		Roll_Index2(pc,d1.w)
+		lea		(Ani_Roll).l,a1
 		bsr.w	AnimateSprite
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
@@ -57,11 +53,10 @@ Roll_ChkGone:
 		movea.w	d0,a2					; load address into a2
 		bclr	#7,(a2)					; clear respawn table entry, so object can be loaded again
 	; S3K Object Manager End
-
-Roll_Delete:
 		bra.w	DeleteObject
 ; ===========================================================================
-Roll_Index2:	dc.w Roll_RollChk-Roll_Index2
+Roll_Index2:
+		dc.w Roll_RollChk-Roll_Index2
 		dc.w Roll_RollNoChk-Roll_Index2
 		dc.w Roll_ChkJump-Roll_Index2
 		dc.w Roll_MatchFloor-Roll_Index2

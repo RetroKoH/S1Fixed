@@ -3,15 +3,10 @@
 ; ---------------------------------------------------------------------------
 
 MissileDissolve:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	MDis_Index(pc,d0.w),d1
-		jmp	MDis_Index(pc,d1.w)
-; ===========================================================================
-MDis_Index:
-		dc.w MDis_Main-MDis_Index
-		dc.w MDis_Animate-MDis_Index
-; ===========================================================================
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	MDis_Animate
+	; Object Routine Optimization End
 
 MDis_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -24,7 +19,7 @@ MDis_Main:	; Routine 0
 		move.b	#9,obTimeFrame(a0)
 		clr.b	obFrame(a0)
 		move.w	#sfx_A5,d0
-		jsr	(PlaySound_Special).l		 ; play sound
+		jsr		(PlaySound_Special).l		 ; play sound
 
 MDis_Animate:	; Routine 2
 		subq.b	#1,obTimeFrame(a0) ; subtract 1 from frame duration
@@ -43,15 +38,14 @@ MDis_Animate:	; Routine 2
 ; ---------------------------------------------------------------------------
 
 ExplosionItem:
-		moveq	#0,d0
+	; LavaGaming Object Routine Optimization
 		move.b	obRoutine(a0),d0
-		move.w	ExItem_Index(pc,d0.w),d1
-		jmp	ExItem_Index(pc,d1.w)
-; ===========================================================================
-ExItem_Index:	dc.w ExItem_Animal-ExItem_Index
-		dc.w ExItem_Main-ExItem_Index
-		dc.w ExItem_Animate-ExItem_Index
-; ===========================================================================
+		cmpi.b	#4,d0
+		beq.s	ExItem_Animate
+		
+		tst.b	d0
+		bne.s	ExItem_Main
+	; Object Routine Optimization End
 
 ExItem_Animal:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -73,7 +67,7 @@ ExItem_Main:	; Routine 2
 		move.b	#7,obTimeFrame(a0) ; set frame duration to 7 frames
 		clr.b	obFrame(a0)
 		move.w	#sfx_BreakItem,d0
-		jsr	(PlaySound_Special).l	; play breaking enemy sound
+		jsr		(PlaySound_Special).l	; play breaking enemy sound
 
 ExItem_Animate:	; Routine 4 (2 for ExplosionBomb)
 		subq.b	#1,obTimeFrame(a0) ; subtract 1 from frame duration
@@ -91,14 +85,10 @@ ExItem_Animate:	; Routine 4 (2 for ExplosionBomb)
 ; ---------------------------------------------------------------------------
 
 ExplosionBomb:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	ExBom_Index(pc,d0.w),d1
-		jmp	ExBom_Index(pc,d1.w)
-; ===========================================================================
-ExBom_Index:	dc.w ExBom_Main-ExBom_Index
-		dc.w ExItem_Animate-ExBom_Index
-; ===========================================================================
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	ExItem_Animate
+	; Object Routine Optimization End
 
 ExBom_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -112,3 +102,4 @@ ExBom_Main:	; Routine 0
 		clr.b	obFrame(a0)
 		move.w	#sfx_Bomb,d0
 		jmp		(PlaySound_Special).l	; play exploding bomb sound
+; ===========================================================================

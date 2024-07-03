@@ -2,19 +2,11 @@
 ; Object 6B - stomper and sliding door (SBZ)
 ; ---------------------------------------------------------------------------
 
-ScrapStomp:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Sto_Index(pc,d0.w),d1
-		jmp	Sto_Index(pc,d1.w)
-; ===========================================================================
-Sto_Index:	dc.w Sto_Main-Sto_Index
-			dc.w Sto_Action-Sto_Index
-
 sto_origX = objoff_34		; original x-axis position
 sto_origY = objoff_30		; original y-axis position
 sto_active = objoff_38		; flag set when a switch is pressed
 
+; ===========================================================================
 Sto_Var:
 			; width,	height, ????,	type number
 		dc.b  $40,		$C,		$80,	1
@@ -23,6 +15,13 @@ Sto_Var:
 		dc.b  $1C,		$20,	$60,	4
 		dc.b  $80,		$40,	0,		5
 ; ===========================================================================
+
+ScrapStomp:
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.w	Sto_Action
+	; Object Routine Optimization End
+
 
 Sto_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)

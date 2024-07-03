@@ -2,18 +2,13 @@
 ; Object 46 - solid blocks and blocks that fall	from the ceiling (MZ)
 ; ---------------------------------------------------------------------------
 
-MarbleBrick:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Brick_Index(pc,d0.w),d1
-		jmp		Brick_Index(pc,d1.w)
-; ===========================================================================
-Brick_Index:
-		dc.w Brick_Main-Brick_Index
-		dc.w Brick_Action-Brick_Index
-
 brick_origY = objoff_30
-; ===========================================================================
+
+MarbleBrick:
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Brick_Action
+	; Object Routine Optimization End
 
 Brick_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -46,15 +41,12 @@ Brick_Action:	; Routine 2
 		offscreen.w	DeleteObject	; ProjectFM S3K Object Manager
 		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix
 ; ===========================================================================
-Brick_TypeIndex:dc.w Brick_Type00-Brick_TypeIndex
+Brick_TypeIndex:
+		dc.w Brick_Type00-Brick_TypeIndex
 		dc.w Brick_Type01-Brick_TypeIndex
 		dc.w Brick_Type02-Brick_TypeIndex
 		dc.w Brick_Type03-Brick_TypeIndex
 		dc.w Brick_Type04-Brick_TypeIndex
-; ===========================================================================
-
-Brick_Type00:
-		rts	
 ; ===========================================================================
 
 Brick_Type02:
@@ -80,6 +72,8 @@ loc_E8A8:
 		move.w	brick_origY(a0),d1
 		sub.w	d0,d1
 		move.w	d1,obY(a0)	; update the block's position to make it wobble
+
+Brick_Type00:
 		rts	
 ; ===========================================================================
 

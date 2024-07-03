@@ -7,13 +7,10 @@ GlassBlock:
 		move.b	obRoutine(a0),d0
 		move.w	Glass_Index(pc,d0.w),d1
 		jsr		Glass_Index(pc,d1.w)
-		offscreen.w	Glass_Delete	; ProjectFM S3K Objects Manager
+		offscreen.w	DeleteObject	; ProjectFM S3K Objects Manager
 		bra.w	DisplaySprite
 ; ===========================================================================
 
-Glass_Delete:
-		bra.w	DeleteObject
-; ===========================================================================
 Glass_Index:
 		dc.w Glass_Main-Glass_Index
 		dc.w Glass_Block012-Glass_Index

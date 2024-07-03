@@ -2,24 +2,16 @@
 ; Object 13 - lava ball	maker (MZ, SLZ)
 ; ---------------------------------------------------------------------------
 
-LavaMaker:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	LavaM_Index(pc,d0.w),d1
-		jsr		LavaM_Index(pc,d1.w)
-		; FixBugs: Clownacy DisplaySprite Fix; See LavaBall.
-		offscreen.w	DeleteObject
-		rts
 ; ===========================================================================
-LavaM_Index:
-		dc.w LavaM_Main-LavaM_Index
-		dc.w LavaM_MakeLava-LavaM_Index
-; ---------------------------------------------------------------------------
-;
 ; Lava ball production rates
-;
 LavaM_Rates:	dc.b 30, 60, 90, 120, 150, 180
 ; ===========================================================================
+
+LavaMaker:
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	LavaM_MakeLava
+	; Object Routine Optimization End
 
 LavaM_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -44,4 +36,6 @@ LavaM_MakeLava:	; Routine 2
 		move.b	obSubtype(a0),obSubtype(a1)
 
 LavaM_Wait:
-		rts	
+	; FixBugs: Clownacy DisplaySprite Fix; See LavaBall.
+		offscreen.w	DeleteObject
+		rts

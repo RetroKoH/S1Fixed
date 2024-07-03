@@ -3,14 +3,10 @@
 ; ---------------------------------------------------------------------------
 
 AutoDoor:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	ADoor_Index(pc,d0.w),d1
-		jmp	ADoor_Index(pc,d1.w)
-; ===========================================================================
-ADoor_Index:	dc.w ADoor_Main-ADoor_Index
-		dc.w ADoor_OpenShut-ADoor_Index
-; ===========================================================================
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	ADoor_OpenShut
+	; Object Routine Optimization End
 
 ADoor_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -47,7 +43,7 @@ ADoor_Open:
 		move.b	#1,obAnim(a0)	; use "opening"	animation
 
 ADoor_Animate:
-		lea	(Ani_ADoor).l,a1
+		lea		(Ani_ADoor).l,a1
 		bsr.w	AnimateSprite
 		tst.b	obFrame(a0)	; is the door open?
 		bne.s	.remember	; if yes, branch
@@ -60,3 +56,4 @@ ADoor_Animate:
 
 .remember:
 		bra.w	RememberState
+; ===========================================================================

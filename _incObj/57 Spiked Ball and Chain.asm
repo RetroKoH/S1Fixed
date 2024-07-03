@@ -2,23 +2,22 @@
 ; Object 57 - spiked balls (SYZ, LZ)
 ; ---------------------------------------------------------------------------
 
-SpikeBall:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	SBall_Index(pc,d0.w),d1
-		jmp	SBall_Index(pc,d1.w)
-; ===========================================================================
-SBall_Index:	dc.w SBall_Main-SBall_Index
-		dc.w SBall_Move-SBall_Index
-		dc.w SBall_Display-SBall_Index
-
 sball_childs = objoff_29	; number of child objects (1 byte)
 		; $30-$37	; object RAM numbers of childs (1 byte each)
 sball_origX = objoff_3A		; centre x-axis position (2 bytes)
 sball_origY = objoff_38		; centre y-axis position (2 bytes)
 sball_radius = objoff_3C	; radius (1 byte)
 sball_speed = objoff_3E		; rate of spin (2 bytes)
-; ===========================================================================
+
+SpikeBall:
+	; LavaGaming Object Routine Optimization
+		move.b	obRoutine(a0),d0
+		cmpi.b	#4,d0
+		beq.w	DisplaySprite
+		
+		tst.b	d0
+		bne.w	SBall_Move
+	; Object Routine Optimization End
 
 SBall_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -124,10 +123,10 @@ SBall_Move:	; Routine 2
 		move.w	sball_speed(a0),d0
 		add.w	d0,obAngle(a0)
 		move.b	obAngle(a0),d0
-		jsr	(CalcSine).l
+		jsr		(CalcSine).l
 		move.w	sball_origY(a0),d2
 		move.w	sball_origX(a0),d3
-		lea	sball_childs(a0),a2
+		lea		sball_childs(a0),a2
 		moveq	#0,d6
 		move.b	(a2)+,d6
 
@@ -148,7 +147,7 @@ SBall_Move:	; Routine 2
 		add.w	d3,d5
 		move.w	d4,obY(a1)
 		move.w	d5,obX(a1)
-		dbf	d6,.loop
+		dbf		d6,.loop
 		rts	
 ; ===========================================================================
 
@@ -159,7 +158,7 @@ SBall_Move:	; Routine 2
 
 .delete:
 		moveq	#0,d2
-		lea	sball_childs(a0),a2
+		lea		sball_childs(a0),a2
 		move.b	(a2)+,d2
 
 .deleteloop:
@@ -169,10 +168,6 @@ SBall_Move:	; Routine 2
 		addi.l	#v_objspace&$FFFFFF,d0
 		movea.l	d0,a1
 		bsr.w	DeleteChild
-		dbf	d2,.deleteloop ; delete all pieces of	chain
-
+		dbf		d2,.deleteloop ; delete all pieces of	chain
 		rts	
 ; ===========================================================================
-
-SBall_Display:	; Routine 4
-		bra.w	DisplaySprite

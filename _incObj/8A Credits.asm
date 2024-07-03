@@ -3,14 +3,10 @@
 ; ---------------------------------------------------------------------------
 
 CreditsText:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Cred_Index(pc,d0.w),d1
-		jmp	Cred_Index(pc,d1.w)
-; ===========================================================================
-Cred_Index:	dc.w Cred_Main-Cred_Index
-		dc.w Cred_Display-Cred_Index
-; ===========================================================================
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Cred_Display
+	; Object Routine Optimization End
 
 Cred_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -34,8 +30,8 @@ Cred_Main:	; Routine 0
 		bne.s	Cred_Display	; if not, branch
 		move.w	#cWhite,(v_pal_dry_dup+$40).w ; 3rd palette, 1st entry = white
 		move.w	#$880,(v_pal_dry_dup+$42).w ; 3rd palette, 2nd entry = cyan
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 Cred_Display:	; Routine 2
-		jmp	DisplaySprite
+		jmp		(DisplaySprite).l

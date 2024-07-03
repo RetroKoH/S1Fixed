@@ -2,21 +2,12 @@
 ; Object 56 - floating blocks (SYZ/SLZ), large doors (LZ)
 ; ---------------------------------------------------------------------------
 
-FloatingBlock:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	FBlock_Index(pc,d0.w),d1
-		jmp		FBlock_Index(pc,d1.w)
-; ===========================================================================
-FBlock_Index:
-		dc.w FBlock_Main-FBlock_Index
-		dc.w FBlock_Action-FBlock_Index
-
 fb_origX = objoff_34		; original x-axis position
 fb_origY = objoff_30		; original y-axis position
 fb_height = objoff_3A		; total object height
 fb_type = objoff_3C		; subtype (2nd digit only)
 
+; ===========================================================================
 FBlock_Var:	; width/2, height/2
 		dc.b  $10, $10	; subtype 0x/8x
 		dc.b  $20, $20	; subtype 1x/9x
@@ -27,6 +18,12 @@ FBlock_Var:	; width/2, height/2
 		dc.b	8, $20	; subtype 6x/Ex
 		dc.b  $40, $10	; subtype 7x/Fx
 ; ===========================================================================
+
+FloatingBlock:
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.w	FBlock_Action
+	; Object Routine Optimization End
 
 FBlock_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -60,12 +57,14 @@ FBlock_Main:	; Routine 0
 		bne.s	.notatpos
 		tst.b	(f_obj56).w
 		beq.s	.dontdelete
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
+
 .notatpos:
 		clr.b	obSubtype(a0)
 		tst.b	(f_obj56).w
 		bne.s	.dontdelete
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
+
 .dontdelete:
 		moveq	#0,d0
 		cmpi.b	#id_LZ,(v_zone).w ; check if level is LZ
@@ -75,8 +74,8 @@ FBlock_Main:	; Routine 0
 		subq.w	#8,d0
 		bcs.s	.stillnotLZ
 		lsl.w	#2,d0
-		lea	(v_oscillate+$2C).w,a2
-		lea	(a2,d0.w),a2
+		lea		(v_oscillate+$2C).w,a2
+		lea		(a2,d0.w),a2
 		tst.w	(a2)
 		bpl.s	.stillnotLZ
 		bchg	#staFlipX,obStatus(a0)
@@ -111,7 +110,7 @@ FBlock_Action:	; Routine 2
 		andi.w	#$F,d0		; read only the	2nd digit
 		add.w	d0,d0
 		move.w	.index(pc,d0.w),d1
-		jsr	.index(pc,d1.w)	; move block subroutines
+		jsr		.index(pc,d1.w)	; move block subroutines
 		move.w	(sp)+,d4
 		tst.b	obRender(a0)
 		bpl.s	.chkdel
@@ -126,13 +125,16 @@ FBlock_Action:	; Routine 2
 
 .chkdel:
 		offscreen.s	.chkdel2,fb_origX(a0)	; ProjectFM S3K Object Manager
+
 .display:
 		bra.w	DisplaySprite
+
 .chkdel2:
 		cmpi.b	#$37,obSubtype(a0)
 		bne.s	.delete
 		tst.b	objoff_38(a0)
-		bne.s	.display
+		bne.w	DisplaySprite
+
 .delete:
 		jmp	(DeleteObject).l
 ; ===========================================================================
@@ -144,11 +146,6 @@ FBlock_Action:	; Routine 2
 		dc.w .type08-.index, .type09-.index
 		dc.w .type0A-.index, .type0B-.index
 		dc.w .type0C-.index, .type0D-.index
-; ===========================================================================
-
-.type00:
-; doesn't move
-		rts	
 ; ===========================================================================
 
 .type01:
@@ -175,7 +172,9 @@ FBlock_Action:	; Routine 2
 		move.w	fb_origX(a0),d1
 		sub.w	d0,d1
 		move.w	d1,obX(a0)	; move object horizontally
-		rts	
+.type00:
+; doesn't move
+		rts		
 ; ===========================================================================
 
 .type03:

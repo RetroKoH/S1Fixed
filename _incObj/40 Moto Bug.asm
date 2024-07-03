@@ -6,7 +6,7 @@ MotoBug:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Moto_Index(pc,d0.w),d1
-		jmp	Moto_Index(pc,d1.w)
+		jmp		Moto_Index(pc,d1.w)
 ; ===========================================================================
 Moto_Index:	dc.w Moto_Main-Moto_Index
 		dc.w Moto_Action-Moto_Index

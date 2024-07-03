@@ -6,8 +6,7 @@ EndSTH:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	ESth_Index(pc,d0.w),d1
-		jsr		ESth_Index(pc,d1.w)
-		jmp		(DisplaySprite).l
+		jmp		ESth_Index(pc,d1.w)
 ; ===========================================================================
 ESth_Index:
 		dc.w ESth_Main-ESth_Index
@@ -30,7 +29,7 @@ ESth_Move:	; Routine 2
 		cmpi.w	#$C0,obX(a0)	; has object reached $C0?
 		beq.s	ESth_Delay		; if yes, branch
 		addi.w	#$10,obX(a0)	; move object to the right
-		rts
+		jmp		(DisplaySprite).l
 
 ESth_Delay:
 		addq.b	#2,obRoutine(a0)
@@ -43,4 +42,4 @@ ESth_GotoCredits:
 		move.b	#id_Credits,(v_gamemode).w ; exit to credits
 
 ESth_Wait:
-		rts
+		jmp		(DisplaySprite).l

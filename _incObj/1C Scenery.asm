@@ -3,14 +3,10 @@
 ; ---------------------------------------------------------------------------
 
 Scenery:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Scen_Index(pc,d0.w),d1
-		jmp	Scen_Index(pc,d1.w)
-; ===========================================================================
-Scen_Index:	dc.w Scen_Main-Scen_Index
-		dc.w Scen_ChkDel-Scen_Index
-; ===========================================================================
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Scen_ChkDel
+	; Object Routine Optimization End
 
 Scen_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)

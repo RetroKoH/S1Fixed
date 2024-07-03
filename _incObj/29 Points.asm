@@ -3,15 +3,10 @@
 ; ---------------------------------------------------------------------------
 
 Points:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Poi_Index(pc,d0.w),d1
-		jmp		Poi_Index(pc,d1.w)	; Clownacy DisplaySprite Fix
-; ===========================================================================
-Poi_Index:
-		dc.w Poi_Main-Poi_Index
-		dc.w Poi_Slower-Poi_Index
-; ===========================================================================
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Poi_Slower
+	; Object Routine Optimization End
 
 Poi_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -28,3 +23,4 @@ Poi_Slower:	; Routine 2
 		bsr.w	SpeedToPos
 		addi.w	#$18,obVelY(a0)		; reduce object	speed
 		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix
+; ===========================================================================

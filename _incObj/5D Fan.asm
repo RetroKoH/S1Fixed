@@ -2,18 +2,14 @@
 ; Object 5D - fans (SLZ)
 ; ---------------------------------------------------------------------------
 
-Fan:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Fan_Index(pc,d0.w),d1
-		jmp	Fan_Index(pc,d1.w)
-; ===========================================================================
-Fan_Index:	dc.w Fan_Main-Fan_Index
-		dc.w Fan_Delay-Fan_Index
-
 fan_time = objoff_30		; time between switching on/off
 fan_switch = objoff_32		; on/off switch
-; ===========================================================================
+
+Fan:
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Fan_Delay
+	; Object Routine Optimization End
 
 Fan_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)

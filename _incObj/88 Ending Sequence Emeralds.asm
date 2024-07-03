@@ -2,27 +2,22 @@
 ; Object 88 - chaos emeralds on	the ending sequence
 ; ---------------------------------------------------------------------------
 
-EndChaos:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	ECha_Index(pc,d0.w),d1
-		jsr	ECha_Index(pc,d1.w)
-		jmp	(DisplaySprite).l
-; ===========================================================================
-ECha_Index:	dc.w ECha_Main-ECha_Index
-		dc.w ECha_Move-ECha_Index
-
 echa_origX = objoff_38	; x-axis centre of emerald circle (2 bytes)
 echa_origY = objoff_3A	; y-axis centre of emerald circle (2 bytes)
 echa_radius = objoff_3C	; radius (2 bytes)
 echa_angle = objoff_3E	; angle for rotation (2 bytes)
-; ===========================================================================
+
+EndChaos:
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	ECha_Move
+	; Object Routine Optimization End
 
 ECha_Main:	; Routine 0
 		cmpi.b	#2,(v_player+obFrame).w ; this isn't `fr_Wait1`: `v_player` is Object 88, which has its own frames
 		beq.s	ECha_CreateEms
 		addq.l	#4,sp
-		rts	
+		jmp	(DisplaySprite).l	
 ; ===========================================================================
 
 ECha_CreateEms:
@@ -82,4 +77,4 @@ ECha_Rise:
 		subq.w	#1,echa_origY(a0) ; make circle rise
 
 ECha_End:
-		rts	
+		jmp	(DisplaySprite).l	

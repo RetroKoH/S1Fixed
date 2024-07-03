@@ -2,20 +2,16 @@
 ; Object 58 - giant spiked balls (SYZ)
 ; ---------------------------------------------------------------------------
 
-BigSpikeBall:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	BBall_Index(pc,d0.w),d1
-		jmp	BBall_Index(pc,d1.w)
-; ===========================================================================
-BBall_Index:	dc.w BBall_Main-BBall_Index
-		dc.w BBall_Move-BBall_Index
-
 bball_origX = objoff_3A		; original x-axis position
 bball_origY = objoff_38		; original y-axis position
 bball_radius = objoff_3C	; radius of circle
 bball_speed = objoff_3E		; speed
-; ===========================================================================
+
+BigSpikeBall:
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	BBall_Move
+	; Object Routine Optimization End
 
 BBall_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -44,18 +40,15 @@ BBall_Move:	; Routine 2
 		andi.w	#7,d0		; read only the	2nd digit
 		add.w	d0,d0
 		move.w	.index(pc,d0.w),d1
-		jsr	.index(pc,d1.w)
+		jsr		.index(pc,d1.w)
 		offscreen.w	DeleteObject,bball_origX(a0)	; PFM S3K Obj
 		bra.w	DisplaySprite
 ; ===========================================================================
-.index:		dc.w .type00-.index
+.index:
+		dc.w .type00-.index
 		dc.w .type01-.index
 		dc.w .type02-.index
 		dc.w .type03-.index
-; ===========================================================================
-
-.type00:
-		rts	
 ; ===========================================================================
 
 .type01:
@@ -71,7 +64,9 @@ BBall_Move:	; Routine 2
 		move.w	bball_origX(a0),d1
 		sub.w	d0,d1
 		move.w	d1,obX(a0)	; move object horizontally
-		rts	
+
+.type00:
+		rts
 ; ===========================================================================
 
 .type02:
@@ -94,7 +89,7 @@ BBall_Move:	; Routine 2
 		move.w	bball_speed(a0),d0
 		add.w	d0,obAngle(a0)
 		move.b	obAngle(a0),d0
-		jsr	(CalcSine).l
+		jsr		(CalcSine).l
 		move.w	bball_origY(a0),d2
 		move.w	bball_origX(a0),d3
 		moveq	#0,d4

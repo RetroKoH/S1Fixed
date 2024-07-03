@@ -2,21 +2,17 @@
 ; Object 70 - large girder block (SBZ)
 ; ---------------------------------------------------------------------------
 
-Girder:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Gird_Index(pc,d0.w),d1
-		jmp	Gird_Index(pc,d1.w)
-; ===========================================================================
-Gird_Index:	dc.w Gird_Main-Gird_Index
-		dc.w Gird_Action-Gird_Index
-
 gird_origX = objoff_32		; original x-axis position
 gird_origY = objoff_30		; original y-axis position
 gird_time = objoff_34		; duration for movement in a direction
 gird_set = objoff_38		; which movement settings to use (0/8/16/24)
 gird_delay = objoff_3A		; delay for movement
-; ===========================================================================
+
+Girder:
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Gird_Action
+	; Object Routine Optimization End
 
 Gird_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)

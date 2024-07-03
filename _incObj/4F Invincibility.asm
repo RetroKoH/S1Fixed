@@ -3,15 +3,10 @@
 ; ---------------------------------------------------------------------------
 
 StarsItem:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Stars_Index(pc,d0.w),d1
-		jmp		Stars_Index(pc,d1.w)
-; ===========================================================================
-Stars_Index:
-		dc.w	Stars_Main-Stars_Index
-		dc.w	Stars_Next-Stars_Index
-; ===========================================================================
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Stars_Next
+	; Object Routine Optimization End
 
 Stars_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)

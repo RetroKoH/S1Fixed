@@ -4,14 +4,10 @@
 ; ---------------------------------------------------------------------------
 
 Button:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	But_Index(pc,d0.w),d1
-		jmp	But_Index(pc,d1.w)
-; ===========================================================================
-But_Index:	dc.w But_Main-But_Index
-		dc.w But_Pressed-But_Index
-; ===========================================================================
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	But_Pressed
+	; Object Routine Optimization End
 
 But_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -103,13 +99,11 @@ But_MZLoop:
 		beq.s	loc_BE5E	; if yes, branch
 
 loc_BE4E:
-		lea	object_size(a1),a1	; check	next object
-		dbf	d6,But_MZLoop	; repeat $5F times
+		lea		object_size(a1),a1	; check	next object
+		dbf		d6,But_MZLoop	; repeat $5F times
 
 		move.w	(sp)+,d3
 		moveq	#0,d0
-
-locret_BE5A:
 		rts	
 ; ===========================================================================
 But_MZData:	dc.b $10, $10

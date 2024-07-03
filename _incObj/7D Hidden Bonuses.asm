@@ -2,23 +2,19 @@
 ; Object 7D - hidden points at the end of a level
 ; ---------------------------------------------------------------------------
 
-HiddenBonus:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Bonus_Index(pc,d0.w),d1
-		jmp	Bonus_Index(pc,d1.w)
-; ===========================================================================
-Bonus_Index:	dc.w Bonus_Main-Bonus_Index
-		dc.w Bonus_Display-Bonus_Index
-
 bonus_timelen = objoff_30		; length of time to display bonus sprites
-; ===========================================================================
+
+HiddenBonus:
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.w	Bonus_Display
+	; Object Routine Optimization End
 
 Bonus_Main:	; Routine 0
 		moveq	#$10,d2
 		move.w	d2,d3
 		add.w	d3,d3
-		lea	(v_player).w,a1
+		lea		(v_player).w,a1
 		move.w	obX(a1),d0
 		sub.w	obX(a0),d0
 		add.w	d2,d0
@@ -42,19 +38,19 @@ Bonus_Main:	; Routine 0
 		move.b	obSubtype(a0),obFrame(a0)
 		move.w	#119,bonus_timelen(a0) ; set display time to 2 seconds
 		move.w	#sfx_Bonus,d0
-		jsr	(PlaySound_Special).l	; play bonus sound
+		jsr		(PlaySound_Special).l	; play bonus sound
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
 		add.w	d0,d0
 		move.w	.points(pc,d0.w),d0 ; load bonus points array
-		jsr	(AddPoints).l
+		jsr		(AddPoints).l
 
 .chkdel:
 		offscreen.s	.delete
 		rts	
 
 .delete:
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 
 ; ===========================================================================
 .points:
@@ -69,7 +65,7 @@ Bonus_Display:	; Routine 2
 		subq.w	#1,bonus_timelen(a0) ; decrement display time
 		bmi.s	Bonus_Display_Delete		; if time is zero, branch
 		out_of_range.s	Bonus_Display_Delete
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 
 Bonus_Display_Delete:	
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l

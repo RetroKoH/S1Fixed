@@ -2,17 +2,13 @@
 ; Object 6E - electrocution orbs (SBZ)
 ; ---------------------------------------------------------------------------
 
-Electro:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Elec_Index(pc,d0.w),d1
-		jmp	Elec_Index(pc,d1.w)
-; ===========================================================================
-Elec_Index:	dc.w Elec_Main-Elec_Index
-		dc.w Elec_Shock-Elec_Index
-
 elec_freq = objoff_34		; frequency
-; ===========================================================================
+
+Electro:
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Elec_Shock
+	; Object Routine Optimization End
 
 Elec_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)

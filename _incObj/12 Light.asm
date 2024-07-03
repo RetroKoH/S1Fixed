@@ -3,15 +3,10 @@
 ; ---------------------------------------------------------------------------
 
 SpinningLight:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Light_Index(pc,d0.w),d1
-		jmp		Light_Index(pc,d1.w)
-; ===========================================================================
-Light_Index:
-		dc.w 	Light_Main-Light_Index
-		dc.w 	Light_Animate-Light_Index
-; ===========================================================================
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Light_Animate
+	; Object Routine Optimization End
 
 Light_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)

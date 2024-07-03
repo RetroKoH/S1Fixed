@@ -2,27 +2,25 @@
 ; Object 61 - blocks (LZ)
 ; ---------------------------------------------------------------------------
 
-LabyrinthBlock:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	LBlk_Index(pc,d0.w),d1
-		jmp		LBlk_Index(pc,d1.w)
-; ===========================================================================
-LBlk_Index:
-		dc.w LBlk_Main-LBlk_Index
-		dc.w LBlk_Action-LBlk_Index
+lblk_origX = objoff_34		; original x-axis position
+lblk_origY = objoff_30		; original y-axis position
+lblk_time = objoff_36		; time delay for block movement
+lblk_untouched = objoff_38	; flag block as untouched
 
+; ===========================================================================
 LBlk_Var:
 		dc.b $10, $10		; width, height
 		dc.b $20, $C
 		dc.b $10, $10
 		dc.b $10, $10
-
-lblk_origX = objoff_34		; original x-axis position
-lblk_origY = objoff_30		; original y-axis position
-lblk_time = objoff_36		; time delay for block movement
-lblk_untouched = objoff_38	; flag block as untouched
 ; ===========================================================================
+
+LabyrinthBlock:
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	LBlk_Action
+	; Object Routine Optimization End
+
 
 LBlk_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -81,10 +79,6 @@ LBlk_Action:	; Routine 2
 		dc.w .type06-.index, .type07-.index
 ; ===========================================================================
 
-.type00:
-		rts	
-; ===========================================================================
-
 .type01:
 .type03:
 		tst.w	lblk_time(a0)				; does time remain?
@@ -94,6 +88,7 @@ LBlk_Action:	; Routine 2
 		move.w	#30,lblk_time(a0)			; wait for half second
 
 .donothing01:
+.type00:
 		rts	
 ; ===========================================================================
 

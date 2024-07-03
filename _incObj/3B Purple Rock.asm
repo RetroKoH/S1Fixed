@@ -3,15 +3,10 @@
 ; ---------------------------------------------------------------------------
 
 PurpleRock:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Rock_Index(pc,d0.w),d1
-		jmp		Rock_Index(pc,d1.w)
-; ===========================================================================
-Rock_Index:
-		dc.w Rock_Main-Rock_Index
-		dc.w Rock_Solid-Rock_Index
-; ===========================================================================
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Rock_Solid
+	; Object Routine Optimization End
 
 Rock_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)

@@ -2,17 +2,13 @@
 ; Object 20 - cannonball that Ball Hog throws (SBZ)
 ; ---------------------------------------------------------------------------
 
-Cannonball:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Cbal_Index(pc,d0.w),d1
-		jmp	Cbal_Index(pc,d1.w)
-; ===========================================================================
-Cbal_Index:	dc.w Cbal_Main-Cbal_Index
-		dc.w Cbal_Bounce-Cbal_Index
-
 cbal_time = objoff_30		; time until the cannonball explodes (2 bytes)
-; ===========================================================================
+
+Cannonball:
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Cbal_Bounce
+	; Object Routine Optimization End
 
 Cbal_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -30,10 +26,10 @@ Cbal_Main:	; Routine 0
 		move.b	#4,obFrame(a0)
 
 Cbal_Bounce:	; Routine 2
-		jsr	(ObjectFall).l
+		jsr		(ObjectFall).l
 		tst.w	obVelY(a0)
 		bmi.s	Cbal_ChkExplode
-		jsr	(ObjFloorDist).l
+		jsr		(ObjFloorDist).l
 		tst.w	d1		; has ball hit the floor?
 		bpl.s	Cbal_ChkExplode	; if not, branch
 

@@ -3,16 +3,14 @@
 ; ---------------------------------------------------------------------------
 
 EdgeWalls:
-		moveq	#0,d0
+	; LavaGaming Object Routine Optimization
 		move.b	obRoutine(a0),d0
-		move.w	Edge_Index(pc,d0.w),d1
-		jmp		Edge_Index(pc,d1.w)
-; ===========================================================================
-Edge_Index:
-		dc.w 	Edge_Main-Edge_Index
-		dc.w 	Edge_Solid-Edge_Index
-		dc.w 	Edge_Display-Edge_Index
-; ===========================================================================
+		cmpi.b	#4,d0
+		beq.s	Edge_Display
+		
+		tst.b	d0
+		bne.s	Edge_Solid
+	; Object Routine Optimization End
 
 Edge_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)

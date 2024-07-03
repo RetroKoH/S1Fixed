@@ -2,18 +2,14 @@
 ; Object 2C - Jaws enemy (LZ)
 ; ---------------------------------------------------------------------------
 
-Jaws:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Jaws_Index(pc,d0.w),d1
-		jmp	Jaws_Index(pc,d1.w)
-; ===========================================================================
-Jaws_Index:	dc.w Jaws_Main-Jaws_Index
-		dc.w Jaws_Turn-Jaws_Index
-
 jaws_timecount = objoff_30
 jaws_timedelay = objoff_32
-; ===========================================================================
+
+Jaws:
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Jaws_Turn
+	; Object Routine Optimization End
 
 Jaws_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -43,7 +39,7 @@ Jaws_Turn:	; Routine 2
 		move.b	#1,obPrevAni(a0) ; reset animation
 
 .animate:
-		lea	(Ani_Jaws).l,a1
+		lea		(Ani_Jaws).l,a1
 		bsr.w	AnimateSprite
 		bsr.w	SpeedToPos
 		bra.w	RememberState

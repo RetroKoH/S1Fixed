@@ -3,15 +3,10 @@
 ; ---------------------------------------------------------------------------
 
 DebugMode:
-		moveq	#0,d0
-		move.b	(v_debuguse).w,d0
-		move.w	Debug_Index(pc,d0.w),d1
-		jmp		Debug_Index(pc,d1.w)
-; ===========================================================================
-Debug_Index:
-		dc.w Debug_Main-Debug_Index
-		dc.w Debug_Action-Debug_Index
-; ===========================================================================
+	; LavaGaming Object Routine Optimization
+		tst.b	(v_debuguse).w
+		bne.w	Debug_Action
+	; Object Routine Optimization End
 
 Debug_Main:	; Routine 0
 		addq.b	#2,(v_debuguse).w

@@ -2,19 +2,15 @@
 ; Object 6A - ground saws and pizza cutters (SBZ)
 ; ---------------------------------------------------------------------------
 
-Saws:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Saw_Index(pc,d0.w),d1
-		jmp	Saw_Index(pc,d1.w)
-; ===========================================================================
-Saw_Index:	dc.w Saw_Main-Saw_Index
-		dc.w Saw_Action-Saw_Index
-
 saw_origX = objoff_3A		; original x-axis position
 saw_origY = objoff_38		; original y-axis position
 saw_here = objoff_3D		; flag set when the ground saw appears
-; ===========================================================================
+
+Saws:
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Saw_Action
+	; Object Routine Optimization End
 
 Saw_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)

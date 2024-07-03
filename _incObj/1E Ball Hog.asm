@@ -2,17 +2,13 @@
 ; Object 1E - Ball Hog enemy (SBZ)
 ; ---------------------------------------------------------------------------
 
-BallHog:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Hog_Index(pc,d0.w),d1
-		jmp	Hog_Index(pc,d1.w)
-; ===========================================================================
-Hog_Index:	dc.w Hog_Main-Hog_Index
-		dc.w Hog_Action-Hog_Index
-
 hog_launchflag = objoff_32		; 0 to launch a cannonball
-; ===========================================================================
+
+BallHog:
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Hog_Action
+	; Object Routine Optimization End
 
 Hog_Main:	; Routine 0
 		move.b	#$13,obHeight(a0)
@@ -24,7 +20,7 @@ Hog_Main:	; Routine 0
 		move.b	#5,obColType(a0)
 		move.b	#$C,obActWid(a0)
 		bsr.w	ObjectFall
-		jsr	(ObjFloorDist).l	; find floor
+		jsr		(ObjFloorDist).l	; find floor
 		tst.w	d1
 		bpl.s	.floornotfound
 		add.w	d1,obY(a0)
@@ -36,26 +32,24 @@ Hog_Main:	; Routine 0
 ; ===========================================================================
 
 Hog_Action:	; Routine 2
-		lea	(Ani_Hog).l,a1
+		lea		(Ani_Hog).l,a1
 		bsr.w	AnimateSprite
 		cmpi.b	#1,obFrame(a0)	; is final frame (01) displayed?
 		bne.s	.setlaunchflag	; if not, branch
 		tst.b	hog_launchflag(a0)	; is it	set to launch cannonball?
 		beq.s	.makeball	; if yes, branch
-		bra.s	.remember
+		bra.w	RememberState
 ; ===========================================================================
 
 .setlaunchflag:
 		clr.b	hog_launchflag(a0)	; set to launch	cannonball
-
-.remember:
 		bra.w	RememberState
 ; ===========================================================================
 
 .makeball:
 		move.b	#1,hog_launchflag(a0)
 		bsr.w	FindFreeObj
-		bne.s	.fail
+		bne.w	RememberState
 		_move.b	#id_Cannonball,obID(a1) ; load cannonball object ($20)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
@@ -71,6 +65,4 @@ Hog_Action:	; Routine 2
 		add.w	d0,obX(a1)
 		addi.w	#$C,obY(a1)
 		move.b	obSubtype(a0),obSubtype(a1) ; copy object type from Ball Hog
-
-.fail:
-		bra.s	.remember
+		bra.w	RememberState
