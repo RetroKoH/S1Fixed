@@ -212,6 +212,16 @@
  Function: Allows one object to draw out multiple sprites. This paves the way for various optimizations.
  Date: 2024-06-21
  
+ Name: Optimized Routine Handling
+ Credit: Lavagaming1/RetroKoH
+ Function: Many objects employ new methods to navigate routines, saving cycles.
+ Date: 2024-07-03
+ 
+ Name: Optimized CalcAngle
+ Credit: Devon/DeltaW
+ Function: Optimized angle calculation.
+ Date: 2024-07-03
+ 
 # Visual Changes
  Name: Title Screen Tweaks
  Credit: RetroKoH
