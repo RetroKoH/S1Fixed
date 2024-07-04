@@ -2622,21 +2622,21 @@ SynchroAnimate:
 
 ; Used for GHZ spiked log
 Sync1:
-		subq.b	#1,(v_ani0_time).w ; has timer reached 0?
-		bpl.s	Sync2		; if not, branch
-		move.b	#$B,(v_ani0_time).w ; reset timer
-		subq.b	#1,(v_ani0_frame).w ; next frame
-		andi.b	#7,(v_ani0_frame).w ; max frame is 7
+		subq.b	#1,(v_ani0_time).w	; has timer reached 0?
+		bpl.s	Sync2				; if not, branch
+		move.b	#$B,(v_ani0_time).w	; reset timer
+		subq.b	#1,(v_ani0_frame).w	; next frame
+		andi.b	#7,(v_ani0_frame).w	; max frame is 7
 
 ; Used for 8-frame rings and giant rings -- RetroKoH 8-Frame Rings Change
 Sync2:
-		subq.b	#1,(v_ani1_time).w  ; decrement timer
-		bpl.s	Sync4               ; if timer !=0, branch
-		move.b	#3,(v_ani1_time).w  ; reset timer
-		addq.b	#1,(v_ani1_frame).w ; next frame
-		andi.b	#7,(v_ani1_frame).w ; max frame is 7
+		subq.b	#1,(v_ani1_time).w	; decrement timer
+		bpl.s	Sync3				; if timer !=0, branch
+		move.b	#3,(v_ani1_time).w	; reset timer
+		addq.b	#1,(v_ani1_frame).w	; next frame
+		andi.b	#7,(v_ani1_frame).w	; max frame is 7
 
-; Unused
+; Used for SYZ Lights (Timing is already identical, no need for identical timers to run twice)
 Sync3:
 		subq.b	#1,(v_ani2_time).w
 		bpl.s	Sync4
@@ -2646,7 +2646,7 @@ Sync3:
 		blo.s	Sync4
 		clr.b	(v_ani2_frame).w
 
-; Used for bouncing rings -- RetroKoH 8-Frame Rings Change
+; Used for bouncing rings and rings in the special stage -- RetroKoH 8-Frame Rings Change
 Sync4:
 		tst.b	(v_ani3_time).w
 		beq.s	SyncEnd

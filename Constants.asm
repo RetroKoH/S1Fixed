@@ -494,7 +494,7 @@ boss_syz_x:	equ $2C00		; Spring Yard Zone
 boss_syz_y:	equ $4CC
 boss_syz_end:	equ boss_syz_x+$140
 
-boss_sbz2_x:	equ $2050		; Scrap Brain Zone Act 2 Cutscene
+boss_sbz2_x:	equ $2050	; Scrap Brain Zone Act 2 Cutscene
 boss_sbz2_y:	equ $510
 
 boss_fz_x:	equ $2450		; Final Zone

@@ -1,5 +1,6 @@
 ; ---------------------------------------------------------------------------
 ; Object 12 - lamp (SYZ)
+; I could probably remove this object and use animated tiles
 ; ---------------------------------------------------------------------------
 
 SpinningLight:
@@ -16,14 +17,9 @@ Light_Main:	; Routine 0
 		move.b	#$10,obActWid(a0)
 		move.w	#$300,obPriority(a0)	; RetroKoH S2 Priority Manager
 
-Light_Animate:	; Routine 2 (Replace with global sync animation)
-		subq.b	#1,obTimeFrame(a0)
-		bpl.s	.chkdel
-		move.b	#7,obTimeFrame(a0)
-		addq.b	#1,obFrame(a0)
-		cmpi.b	#6,obFrame(a0)
-		blo.s	.chkdel
-		clr.b	obFrame(a0)
+Light_Animate:	; Routine 2 (Replaced with global sync animation)
+		move.b	(v_ani2_frame).w,d0
+		move.b	d0,obFrame(a0)	; change current frame
 
 .chkdel:
 		offscreen.w	DeleteObject	; ProjectFM S3K Object Manager
