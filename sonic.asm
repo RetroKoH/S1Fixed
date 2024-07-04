@@ -1854,19 +1854,19 @@ LevelSelect:
 		bsr.w	RunPLC
 		tst.l	(v_plc_buffer).w
 		bne.s	LevelSelect
-		andi.b	#btnABC+btnStart,(v_jpadpress1).w ; is A, B, C, or Start pressed?
-		beq.s	LevelSelect	; if not, branch
+		andi.b	#btnABC+btnStart,(v_jpadpress1).w	; is A, B, C, or Start pressed?
+		beq.s	LevelSelect							; if not, branch
 		move.w	(v_levselitem).w,d0
-		cmpi.w	#$14,d0		; have you selected item $14 (sound test)?
-		bne.s	LevSel_Level_SS	; if not, go to	Level/SS subroutine
+		cmpi.w	#$14,d0								; have you selected item $14 (sound test)?
+		bne.s	LevSel_Level						; if not, go to	Level/SS subroutine
 		move.w	(v_levselsound).w,d0
 		addi.w	#$80,d0
-		tst.b	(f_creditscheat).w ; is Japanese Credits cheat on?
-		beq.s	LevSel_NoCheat	; if not, branch
-		cmpi.w	#$9F,d0		; is sound $9F being played?
-		beq.s	LevSel_Ending	; if yes, branch
-		cmpi.w	#$9E,d0		; is sound $9E being played?
-		beq.s	LevSel_Credits	; if yes, branch
+		tst.b	(f_creditscheat).w					; is Japanese Credits cheat on?
+		beq.s	LevSel_NoCheat						; if not, branch
+		cmpi.w	#$9F,d0								; is sound $9F being played?
+		beq.s	LevSel_Ending						; if yes, branch
+		cmpi.w	#$9E,d0								; is sound $9E being played?
+		beq.s	LevSel_Credits						; if yes, branch
 
 LevSel_NoCheat:
 		; This is a workaround for a bug; see PlaySoundID for more.
@@ -1895,41 +1895,41 @@ LevSel_Credits:
 		rts	
 ; ===========================================================================
 
-LevSel_Level_SS:
+LevSel_Level:
 		add.w	d0,d0
-		move.w	LevSel_Ptrs(pc,d0.w),d0 ; load level number
+		move.w	LevSel_Ptrs(pc,d0.w),d0		; load level number
 		bmi.w	LevelSelect
-		cmpi.w	#id_SS*$100,d0	; check	if level is 0700 (Special Stage)
-		bne.s	LevSel_Level	; if not, branch
-		move.b	#id_Special,(v_gamemode).w ; set screen mode to $10 (Special Stage)
-		clr.w	(v_zone).w	; clear	level
-		move.b	#3,(v_lives).w	; set lives to 3
-		clr.w	(v_rings).w	; clear rings
-		clr.l	(v_time).w	; clear time
-		clr.l	(v_score).w	; clear score
-		move.l	#5000,(v_scorelife).w ; extra life is awarded at 50000 points
+		cmpi.w	#id_SS*$100,d0				; check	if level is 0700 (Special Stage)
+		bne.s	LevSel_NotSpecial			; if not, branch
+		move.b	#id_Special,(v_gamemode).w	; set screen mode to $10 (Special Stage)
+		bsr.s	ResetLevel					; Reset level variables
+		clr.w	(v_zone).w					; also clear current zone (start at GHZ 1 after the Special Stage)
 		rts	
 ; ===========================================================================
 
-LevSel_Level:
+LevSel_NotSpecial:
 		andi.w	#$3FFF,d0
 		move.w	d0,(v_zone).w	; set level number
 
 PlayLevel:
-		move.b	#id_Level,(v_gamemode).w ; set screen mode to $0C (level)
-		move.b	#3,(v_lives).w	; set lives to 3
-		clr.w	(v_rings).w	; clear rings
-		clr.l	(v_time).w	; clear time
-		clr.l	(v_score).w	; clear score
-		clr.b	(v_lastspecial).w ; clear special stage number
-		clr.b	(v_emeralds).w ; clear emeralds
-		clr.l	(v_emldlist).w ; clear emeralds
-		clr.l	(v_emldlist+4).w ; clear emeralds
-		clr.b	(v_continues).w ; clear continues
-		move.l	#5000,(v_scorelife).w ; extra life is awarded at 50000 points
+		move.b	#id_Level,(v_gamemode).w	; set screen mode to $0C (level)
+		bsr.s	ResetLevel					; Reset level variables
 		move.b	#bgm_Fade,d0
-		bsr.w	PlaySound_Special ; fade out music
-		rts	
+		bra.w	PlaySound_Special			; fade out music	
+; ===========================================================================
+
+ResetLevel:
+		move.b	#3,(v_lives).w				; set lives to 3
+		clr.w	(v_rings).w					; clear rings
+		clr.l	(v_time).w					; clear time
+		clr.l	(v_score).w					; clear score
+		clr.b	(v_lastspecial).w			; clear special stage number
+		clr.b	(v_emeralds).w				; clear emerald count
+		clr.l	(v_emldlist).w				; clear emeralds
+		clr.l	(v_emldlist+4).w			; clear emeralds
+		clr.b	(v_continues).w				; clear continues
+		move.l	#5000,(v_scorelife).w		; extra life is awarded at 50000 points
+		rts
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Level	select - level pointers
@@ -1989,37 +1989,37 @@ loc_33B6:
 ; ===========================================================================
 
 loc_33E4:
-		andi.b	#btnStart,(v_jpadpress1).w ; is Start button pressed?
-		bne.w	Tit_ChkLevSel	; if yes, branch
+		andi.b	#btnStart,(v_jpadpress1).w	; is Start button pressed?
+		bne.w	Tit_ChkLevSel				; if yes, branch
 		tst.w	(v_demolength).w
 		bne.w	loc_33B6
 		move.b	#bgm_Fade,d0
-		bsr.w	PlaySound_Special ; fade out music
-		move.w	(v_demonum).w,d0 ; load	demo number
+		bsr.w	PlaySound_Special			; fade out music
+		move.w	(v_demonum).w,d0			; load demo number
 		andi.w	#7,d0
 		add.w	d0,d0
-		move.w	Demo_Levels(pc,d0.w),d0	; load level number for	demo
+		move.w	Demo_Levels(pc,d0.w),d0		; load level number for	demo
 		move.w	d0,(v_zone).w
-		addq.w	#1,(v_demonum).w ; add 1 to demo number
-		cmpi.w	#4,(v_demonum).w ; is demo number less than 4?
-		blo.s	loc_3422	; if yes, branch
-		clr.w	(v_demonum).w ; reset demo number to	0
+		addq.w	#1,(v_demonum).w			; add 1 to demo number
+		cmpi.w	#4,(v_demonum).w			; is demo number less than 4?
+		blo.s	loc_3422					; if yes, branch
+		clr.w	(v_demonum).w				; reset demo number to 0
 
 loc_3422:
-		move.w	#1,(f_demo).w	; turn demo mode on
-		move.b	#id_Demo,(v_gamemode).w ; set screen mode to 08 (demo)
-		cmpi.w	#$600,d0	; is level number 0600 (special	stage)?
-		bne.s	Demo_Level	; if not, branch
-		move.b	#id_Special,(v_gamemode).w ; set screen mode to $10 (Special Stage)
-		clr.w	(v_zone).w	; clear	level number
-		clr.b	(v_lastspecial).w ; clear special stage number
+		move.w	#1,(f_demo).w				; turn demo mode on
+		move.b	#id_Demo,(v_gamemode).w		; set screen mode to 08 (demo)
+		cmpi.w	#$600,d0					; is level number 0600 (special	stage)?
+		bne.s	Demo_Level					; if not, branch
+		move.b	#id_Special,(v_gamemode).w	; set screen mode to $10 (Special Stage)
+		clr.w	(v_zone).w					; clear	level number
+		clr.b	(v_lastspecial).w			; clear special stage number
 
 Demo_Level:
-		move.b	#3,(v_lives).w	; set lives to 3
-		clr.w	(v_rings).w	; clear rings
-		clr.l	(v_time).w	; clear time
-		clr.l	(v_score).w	; clear score
-		move.l	#5000,(v_scorelife).w ; extra life is awarded at 50000 points
+		move.b	#3,(v_lives).w				; set lives to 3
+		clr.w	(v_rings).w					; clear rings
+		clr.l	(v_time).w					; clear time
+		clr.l	(v_score).w					; clear score
+		move.l	#5000,(v_scorelife).w		; extra life is awarded at 50000 points
 		rts	
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -2064,8 +2064,7 @@ LevSel_Down:
 
 LevSel_Refresh:
 		move.w	d0,(v_levselitem).w ; set new selection
-		bsr.w	LevSelTextLoad	; refresh text
-		rts	
+		bra.w	LevSelTextLoad	; refresh text
 ; ===========================================================================
 
 LevSel_SndTest:
@@ -2091,7 +2090,7 @@ LevSel_Right:
 
 LevSel_Refresh2:
 		move.w	d0,(v_levselsound).w ; set sound test number
-		bsr.w	LevSelTextLoad	; refresh text
+		bra.w	LevSelTextLoad	; refresh text
 
 LevSel_NoMove:
 		rts	
@@ -3230,27 +3229,26 @@ Cont_MainLoop:
 		enable_ints
 
 loc_4DF2:
-		jsr	(ExecuteObjects).l
-		jsr	(BuildSprites).l
-		cmpi.w	#$180,(v_player+obX).w ; has Sonic run off screen?
-		bhs.s	Cont_GotoLevel	; if yes, branch
+		jsr		(ExecuteObjects).l
+		jsr		(BuildSprites).l
+		cmpi.w	#$180,(v_player+obX).w		; has Sonic run off screen?
+		bhs.s	Cont_GotoLevel				; if yes, branch
 		cmpi.b	#6,(v_player+obRoutine).w
 		bhs.s	Cont_MainLoop
 		tst.w	(v_demolength).w
 		bne.w	Cont_MainLoop
-		move.b	#id_Sega,(v_gamemode).w ; go to Sega screen
+		move.b	#id_Sega,(v_gamemode).w		; go to Sega screen
 		rts	
 ; ===========================================================================
 
 Cont_GotoLevel:
-		move.b	#id_Level,(v_gamemode).w ; set screen mode to $0C (level)
-		move.b	#3,(v_lives).w	; set lives to 3
-		moveq	#0,d0
-		move.w	d0,(v_rings).w	; clear rings
-		move.l	d0,(v_time).w	; clear time
-		move.l	d0,(v_score).w	; clear score
-		move.b	d0,(v_lastlamp).w ; clear lamppost count
-		subq.b	#1,(v_continues).w ; subtract 1 from continues
+		move.b	#id_Level,(v_gamemode).w	; set screen mode to $0C (level)
+		move.b	#3,(v_lives).w				; set lives to 3
+		clr.w	(v_rings).w					; clear rings
+		clr.l	(v_time).w					; clear time
+		clr.l	(v_score).w					; clear score
+		clr.b	(v_lastlamp).w				; clear lamppost count
+		subq.b	#1,(v_continues).w			; subtract 1 from continues
 		rts	
 ; ===========================================================================
 
@@ -3551,28 +3549,27 @@ EndingDemoLoad:
 		move.w	(v_creditsnum).w,d0
 		andi.w	#$F,d0
 		add.w	d0,d0
-		move.w	EndDemo_Levels(pc,d0.w),d0 ; load level	array
-		move.w	d0,(v_zone).w	; set level from level array
+		move.w	EndDemo_Levels(pc,d0.w),d0	; load level  array
+		move.w	d0,(v_zone).w				; set level from level array
 		addq.w	#1,(v_creditsnum).w
-		cmpi.w	#9,(v_creditsnum).w ; have credits finished?
-		bhs.s	EndDemo_Exit	; if yes, branch
-		move.w	#$8001,(f_demo).w ; set demo+ending mode
-		move.b	#id_Demo,(v_gamemode).w ; set game mode to 8 (demo)
-		move.b	#3,(v_lives).w	; set lives to 3
-		moveq	#0,d0
-		move.w	d0,(v_rings).w	; clear rings
-		move.l	d0,(v_time).w	; clear time
-		move.l	d0,(v_score).w	; clear score
-		move.b	d0,(v_lastlamp).w ; clear lamppost counter
-		cmpi.w	#4,(v_creditsnum).w ; is SLZ demo running?
-		bne.s	EndDemo_Exit	; if not, branch
-		lea	(EndDemo_LampVar).l,a1 ; load lamppost variables
-		lea	(v_lastlamp).w,a2
+		cmpi.w	#9,(v_creditsnum).w			; have credits finished?
+		bhs.s	EndDemo_Exit				; if yes, branch
+		move.w	#$8001,(f_demo).w			; set demo+ending mode
+		move.b	#id_Demo,(v_gamemode).w		; set game mode to 8 (demo)
+		move.b	#3,(v_lives).w				; set lives to 3
+		clr.w	(v_rings).w					; clear rings
+		clr.l	(v_time).w					; clear time
+		clr.l	(v_score).w					; clear score
+		clr.b	(v_lastlamp).w				; clear lamppost counter
+		cmpi.w	#4,(v_creditsnum).w			; is SLZ demo running?
+		bne.s	EndDemo_Exit				; if not, branch
+		lea		(EndDemo_LampVar).l,a1		; load lamppost variables
+		lea		(v_lastlamp).w,a2
 		move.w	#8,d0
 
 EndDemo_LampLoad:
 		move.l	(a1)+,(a2)+
-		dbf	d0,EndDemo_LampLoad
+		dbf		d0,EndDemo_LampLoad
 
 EndDemo_Exit:
 		rts	
