@@ -333,32 +333,32 @@ v_bg2_xblock:		ds.b	1		; secondary background x-block parity (for redraw)
 v_bg2_yblock:		ds.b	1		; secondary background y-block parity (unused)
 v_bg3_xblock:		ds.b	1		; teritary background x-block parity (for redraw)
 v_bg3_yblock:		ds.b	1		; teritary background y-block parity (unused)
-			ds.b	2		; unused
-v_fg_scroll_flags:	ds.w	1		; screen redraw flags for foreground
-v_bg1_scroll_flags:	ds.w	1		; screen redraw flags for background 1
-v_bg2_scroll_flags:	ds.w	1		; screen redraw flags for background 2
-v_bg3_scroll_flags:	ds.w	1		; screen redraw flags for background 3
-f_bgscrollvert:		ds.b	1		; flag for vertical background scrolling
-			ds.b	3		; unused
-v_sonspeedmax:		ds.w	1		; Sonic's maximum speed
-v_sonspeedacc:		ds.w	1		; Sonic's acceleration
-v_sonspeeddec:		ds.w	1		; Sonic's deceleration
-v_sonframenum:		ds.b	1		; frame to display for Sonic
-f_sonframechg:		ds.b	1		; flag set to update Sonic's sprite frame
-v_anglebuffer:		ds.b	1		; angle of collision block that Sonic or object is standing on
-			ds.b	1		; unused
-v_anglebuffer2:		ds.b	1		; other angle of collision block that Sonic or object is standing on
-			ds.b	1		; unused
-v_opl_routine:		ds.b	1		; ObjPosLoad - routine counter
-			ds.b	1		; unused
-v_opl_screen:		ds.w	1		; ObjPosLoad - screen variable
-v_opl_data:			ds.b	$10		; ObjPosLoad - data buffer
-v_ssangle:			ds.w	1		; Special Stage angle
-v_ssrotate:			ds.w	1		; Special Stage rotation speed
-v_ssangleprev:		ds.b	1		; Previous Special Stage angle -- Mercury Dynamic Special Stage Walls
+					ds.b	2		; unused
+v_fg_scroll_flags:		ds.w	1		; screen redraw flags for foreground
+v_bg1_scroll_flags:		ds.w	1		; screen redraw flags for background 1
+v_bg2_scroll_flags:		ds.w	1		; screen redraw flags for background 2
+v_bg3_scroll_flags:		ds.w	1		; screen redraw flags for background 3
+f_bgscrollvert:			ds.b	1		; flag for vertical background scrolling
+					ds.b	3		; unused
+v_sonspeedmax:			ds.w	1		; Sonic's maximum speed
+v_sonspeedacc:			ds.w	1		; Sonic's acceleration
+v_sonspeeddec:			ds.w	1		; Sonic's deceleration
+v_sonframenum:			ds.b	1		; frame to display for Sonic
+f_sonframechg:			ds.b	1		; flag set to update Sonic's sprite frame
+v_anglebuffer:			ds.b	1		; angle of collision block that Sonic or object is standing on
+					ds.b	1		; unused
+v_anglebuffer2:			ds.b	1		; other angle of collision block that Sonic or object is standing on
+					ds.b	1		; unused
+v_opl_routine:			ds.b	1		; ObjPosLoad - routine counter
+					ds.b	1		; unused
+v_opl_screen:			ds.w	1		; ObjPosLoad - screen variable
+v_opl_data:				ds.b	$10		; ObjPosLoad - data buffer
+v_ssangle:				ds.w	1		; Special Stage angle
+v_ssrotate:				ds.w	1		; Special Stage rotation speed
+v_ssangleprev:			ds.b	1		; Previous Special Stage angle -- Mercury Dynamic Special Stage Walls
 					ds.b	$9		; unused
-f_levelstarted:			ds.w	1		; level start flag (for drawing non-objects) -- RetroKoH S2 Rings Manager
-								; Second byte reserved for now
+f_levelstarted:			ds.b	1		; level start flag (for drawing non-objects) -- RetroKoH S/3K Rings Manager
+v_hudscrollpos			ds.b	1		; Scrolling x-position for the HUD. -- RetroKoH Scrolling HUD Display
 v_btnpushtime1:			ds.w	1		; button push duration - in level
 v_btnpushtime2:			ds.w	1		; button push duration - in demo
 v_palchgspeed:			ds.w	1		; palette fade/transition speed (0 is fastest)

@@ -43,6 +43,7 @@ ShieldsMode: = 3						; 0 - Blue Shield only, 1 - Blue Shield + Instashield, 2 -
 AirRollEnabled: = 1						; if set to 1, Air rolling is enabled for Sonic.
 CDBalancing: = 1						; if set to 1, Sonic has 2 Balancing animations, taken from Sonic CD.
 DropDashEnabled: = 1					; if set to 1, Drop dashing is enabled for Sonic.
+HUDScrolling: = 1						; if set to 1, HUD Scrolls in and out of view during gameplay.
 
 	include "MacroSetup.asm"
 	include	"Constants.asm"
@@ -1636,7 +1637,12 @@ GM_Title:
 		clr.b	(f_wtr_state).w
 		bsr.w	ClearScreen
 		
-		clr.w	(f_levelstarted).w			; clear flag AND HUD scrolling byte (once implemented) -- RetroKoH S2 Rings Manager
+	if HUDScrolling=1
+		clr.w	(f_levelstarted).w			; clear flag AND HUD scrolling byte -- RetroKoH S2 Rings Manager
+	else
+		clr.b	(f_levelstarted).w			; clear flag -- RetroKoH S2 Rings Manager
+	endif
+
 		clearRAM v_ringpos,v_ringend		; clear ring RAM -- RetroKoH S2 Rings Manager
 		clearRAM v_objspace,v_objend		; clear object RAM
 
@@ -2362,10 +2368,10 @@ Level_SkipTtlCard:
 	endif
 
 Level_ChkDebug:
-		tst.b	(f_debugcheat).w		; has debug cheat been entered?
-		beq.s	Level_ChkWater			; if not, branch
-		btst	#bitA,(v_jpadhold1).w	; is A button held?
-		beq.s	Level_ChkWater			; if not, branch
+	;	tst.b	(f_debugcheat).w		; has debug cheat been entered?
+	;	beq.s	Level_ChkWater			; if not, branch
+	;	btst	#bitA,(v_jpadhold1).w	; is A button held?
+	;	beq.s	Level_ChkWater			; if not, branch
 		move.b	#1,(f_debugmode).w		; enable debug mode
 
 Level_ChkWater:
@@ -2494,6 +2500,13 @@ Level_DoScroll:
 		bsr.w	DeformLayers
 
 Level_SkipScroll:
+	if HUDScrolling=1
+		cmpi.b	#128+16,(v_hudscrollpos).w
+		beq.s	Level_SkipHUDScroll
+		add.b	#4,(v_hudscrollpos).w
+
+Level_SkipHUDScroll:
+	endif
 		jsr		(BuildSprites).l
 		jsr		(ObjPosLoad).l
 		bsr.w	PaletteCycle
