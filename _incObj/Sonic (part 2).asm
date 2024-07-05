@@ -110,18 +110,18 @@ GameOver:
 
 loc_138C2:
 		move.w	#bgm_GameOver,d0
-		jsr	(PlaySound).l	; play game over music
+		jsr		(PlaySound).l	; play game over music
 		moveq	#3,d0
-		jmp	(AddPLC).l	; load game over patterns
+		jmp		(AddPLC).l		; load game over patterns
 ; ===========================================================================
 
 loc_138D4:
-		move.b	#60,obRestartTimer(a0)	; set time delay to 1 second
-		tst.b	(f_timeover).w	; is TIME OVER tag set?
-		beq.s	locret_13900	; if not, branch
+		move.b	#60,obRestartTimer(a0)					; set time delay to 1 second
+		tst.b	(f_timeover).w							; is TIME OVER tag set?
+		beq.s	locret_13900							; if not, branch
 		clr.b	obRestartTimer(a0)
-		move.b	#id_GameOverCard,(v_gameovertext1).w ; load TIME object
-		move.b	#id_GameOverCard,(v_gameovertext2).w ; load OVER object
+		move.b	#id_GameOverCard,(v_gameovertext1).w	; load TIME object
+		move.b	#id_GameOverCard,(v_gameovertext2).w	; load OVER object
 		move.b	#2,(v_gameovertext1+obFrame).w
 		move.b	#3,(v_gameovertext2+obFrame).w
 		bra.s	loc_138C2

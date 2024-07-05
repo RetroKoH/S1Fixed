@@ -451,20 +451,19 @@ KillSonic:
 		move.w	#-$700,obVelY(a0)
 		clr.w	obVelX(a0)
 		clr.w	obInertia(a0)
-		move.w	obY(a0),objoff_38(a0)
 		move.b	#aniID_Death,obAnim(a0)
 		bset	#7,obGfx(a0)
 	; Mercury Spike SFX Fix
-		move.w	#sfx_HitSpikes,d0 ; play spikes death sound
-		cmpi.b	#id_Spikes,obID(a2)	; check	if you were killed by spikes
+		move.w	#sfx_HitSpikes,d0		; play spikes death sound
+		cmpi.b	#id_Spikes,obID(a2)		; check	if you were killed by spikes
 		beq.s	.sound
 		cmpi.b	#id_Harpoon,obID(a2)	; check	if you were killed by a harpoon
 		beq.s	.sound
-		move.w	#sfx_Death,d0	; play normal death sound
+		move.w	#sfx_Death,d0			; play normal death sound
 	; Spike SFX Fix End
 
 .sound:
-		jsr	(PlaySound_Special).l
+		jsr		(PlaySound_Special).l
 
 .dontdie:
 		moveq	#-1,d0
@@ -478,25 +477,21 @@ KillSonic:
 React_Special:
 		move.b	obColType(a1),d1
 		andi.b	#$3F,d1
-		cmpi.b	#$B,d1		; is collision type $CB	?
-		beq.s	.caterkiller	; if yes, branch
-		cmpi.b	#$C,d1		; is collision type $CC	?
-		beq.s	.yadrin		; if yes, branch
-		cmpi.b	#$17,d1		; is collision type $D7	?
-		beq.s	.D7orE1		; if yes, branch
-		cmpi.b	#$21,d1		; is collision type $E1	?
-		beq.s	.D7orE1		; if yes, branch
+		cmpi.b	#$B,d1				; is collision type $CB	?
+		beq.w	React_Caterkiller	; if yes, branch
+		cmpi.b	#$C,d1				; is collision type $CC	?
+		beq.s	.yadrin				; if yes, branch
+		cmpi.b	#$17,d1				; is collision type $D7	?
+		beq.s	.D7orE1				; if yes, branch
+		cmpi.b	#$21,d1				; is collision type $E1	?
+		beq.s	.D7orE1				; if yes, branch
 		rts	
-; ===========================================================================
-
-.caterkiller:
-		bra.w	React_Caterkiller
 ; ===========================================================================
 
 .yadrin:
 		sub.w	d0,d5
 		cmpi.w	#8,d5
-		bhs.s	.normalenemy
+		bhs.w	React_Enemy			; .normalenemy
 		move.w	obX(a1),d0
 		subq.w	#4,d0
 		btst	#staFlipX,obStatus(a1)
@@ -507,20 +502,14 @@ React_Special:
 		sub.w	d2,d0
 		bcc.s	.loc_1B13C
 		addi.w	#$18,d0
-		bcs.s	.loc_1B140
-		bra.s	.normalenemy
+		bcs.w	React_ChkHurt
+		bra.w	React_Enemy			; .normalenemy
 ; ===========================================================================
 
 .loc_1B13C:
 		cmp.w	d4,d0
-		bhi.s	.normalenemy
-
-.loc_1B140:
+		bhi.w	React_Enemy			; .normalenemy
 		bra.w	React_ChkHurt
-; ===========================================================================
-
-.normalenemy:
-		bra.w	React_Enemy
 ; ===========================================================================
 
 .D7orE1:
