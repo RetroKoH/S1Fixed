@@ -1,18 +1,22 @@
 ; ---------------------------------------------------------------------------
 ; Object 15 - swinging platforms (GHZ, MZ, SLZ)
-;	    - spiked ball on a chain (SBZ)
+;			- spiked ball on a chain (SBZ)
 ; ---------------------------------------------------------------------------
 
 SwingingPlatform:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Swing_Index(pc,d0.w),d1
-		jmp	Swing_Index(pc,d1.w)
+		jmp		Swing_Index(pc,d1.w)
 ; ===========================================================================
-Swing_Index:	dc.w Swing_Main-Swing_Index, Swing_SetSolid-Swing_Index
-		dc.w Swing_Action2-Swing_Index,	Swing_Delete-Swing_Index
-		dc.w Swing_Delete-Swing_Index, Swing_Display-Swing_Index
-		dc.w Swing_Action-Swing_Index
+Swing_Index:	offsetTable
+		offsetTableEntry.w	Swing_Main
+		offsetTableEntry.w	Swing_SetSolid
+		offsetTableEntry.w	Swing_Action2
+		offsetTableEntry.w	Swing_Delete
+		offsetTableEntry.w	Swing_Delete
+		offsetTableEntry.w	Swing_Display
+		offsetTableEntry.w	Swing_Action
 
 swing_origX = objoff_3A		; original x-axis position
 swing_origY = objoff_38		; original y-axis position

@@ -8,15 +8,15 @@ Prison:
 		move.w	Pri_Index(pc,d0.w),d1
 		jmp		Pri_Index(pc,d1.w)
 ; ===========================================================================
-Pri_Index:
-		dc.w Pri_Main-Pri_Index
-		dc.w Pri_BodyMain-Pri_Index
-		dc.w Pri_Switched-Pri_Index
-		dc.w Pri_Explosion-Pri_Index
-		dc.w Pri_Explosion-Pri_Index
-		dc.w Pri_Explosion-Pri_Index
-		dc.w Pri_Animals-Pri_Index
-		dc.w Pri_EndAct-Pri_Index
+Pri_Index:	offsetTable
+		offsetTableEntry.w Pri_Main
+		offsetTableEntry.w Pri_BodyMain
+		offsetTableEntry.w Pri_Switched
+		offsetTableEntry.w Pri_Explosion
+		offsetTableEntry.w Pri_Explosion
+		offsetTableEntry.w Pri_Explosion
+		offsetTableEntry.w Pri_Animals
+		offsetTableEntry.w Pri_EndAct
 
 pri_origY = objoff_30		; original y-axis position
 

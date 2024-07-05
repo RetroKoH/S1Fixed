@@ -8,11 +8,11 @@ BossFire:
 		move.w	BossFire_Index(pc,d0.w),d0
 		jmp		BossFire_Index(pc,d0.w)		; DisplaySprite has been moved to avoid a display-after-free bug -- Clownacy DisplaySprite Fix
 ; ===========================================================================
-BossFire_Index:
-		dc.w BossFire_Main-BossFire_Index
-		dc.w BossFire_Action-BossFire_Index
-		dc.w loc_18886-BossFire_Index
-		dc.w BossFire_Delete3-BossFire_Index
+BossFire_Index:		offsetTable
+		offsetTableEntry.w BossFire_Main
+		offsetTableEntry.w BossFire_Action
+		offsetTableEntry.w loc_18886
+		offsetTableEntry.w BossFire_Delete3
 ; ===========================================================================
 
 BossFire_Main:	; Routine 0
@@ -56,11 +56,11 @@ BossFire_Action:	; Routine 2
 BossFire_Delete:
 		jmp	(DeleteObject).l
 ; ===========================================================================
-BossFire_Index2:
-		dc.w BossFire_Drop-BossFire_Index2
-		dc.w BossFire_MakeFlame-BossFire_Index2
-		dc.w BossFire_Duplicate-BossFire_Index2
-		dc.w BossFire_FallEdge-BossFire_Index2
+BossFire_Index2:	offsetTable
+		offsetTableEntry.w.w BossFire_Drop
+		offsetTableEntry.w.w BossFire_MakeFlame
+		offsetTableEntry.w.w BossFire_Duplicate
+		offsetTableEntry.w.w BossFire_FallEdge
 ; ===========================================================================
 
 BossFire_Drop:

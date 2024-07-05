@@ -191,15 +191,22 @@ loc_6206:
 		move.b	(v_zone).w,d2
 		add.w	d2,d2
 		move.w	BgScroll_Index(pc,d2.w),d2
-		jmp	BgScroll_Index(pc,d2.w)
+		jmp		BgScroll_Index(pc,d2.w)
 ; End of function BgScrollSpeed
 
+; ---------------------------------------------------------------------------
+; Offset index for BG scrolling code
+; ---------------------------------------------------------------------------
 ; ===========================================================================
-BgScroll_Index:	dc.w BgScroll_GHZ-BgScroll_Index, BgScroll_LZ-BgScroll_Index
-		dc.w BgScroll_MZ-BgScroll_Index, BgScroll_SLZ-BgScroll_Index
-		dc.w BgScroll_SYZ-BgScroll_Index, BgScroll_SBZ-BgScroll_Index
+BgScroll_Index:	offsetTable
+		offsetTableEntry.w	BgScroll_GHZ
+		offsetTableEntry.w	BgScroll_LZ
+		offsetTableEntry.w	BgScroll_MZ
+		offsetTableEntry.w	BgScroll_SLZ
+		offsetTableEntry.w	BgScroll_SYZ
+		offsetTableEntry.w	BgScroll_SBZ
 		zonewarning BgScroll_Index,2
-		dc.w BgScroll_End-BgScroll_Index
+		offsetTableEntry.w	BgScroll_End
 ; ===========================================================================
 
 BgScroll_GHZ:

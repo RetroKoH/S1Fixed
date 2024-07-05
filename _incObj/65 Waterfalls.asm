@@ -6,13 +6,14 @@ Waterfall:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	WFall_Index(pc,d0.w),d1
-		jmp	WFall_Index(pc,d1.w)
+		jmp		WFall_Index(pc,d1.w)
 ; ===========================================================================
-WFall_Index:	dc.w WFall_Main-WFall_Index
-		dc.w WFall_Animate-WFall_Index
-		dc.w WFall_ChkDel-WFall_Index
-		dc.w WFall_OnWater-WFall_Index
-		dc.w loc_12B36-WFall_Index
+WFall_Index:	offsetTable
+		offsetTableEntry.w WFall_Main
+		offsetTableEntry.w WFall_Animate
+		offsetTableEntry.w WFall_ChkDel
+		offsetTableEntry.w WFall_OnWater
+		offsetTableEntry.w loc_12B36
 ; ===========================================================================
 
 WFall_Main:	; Routine 0
@@ -45,8 +46,8 @@ WFall_Main:	; Routine 0
 		move.b	#8,obRoutine(a0) ; goto loc_12B36 next
 
 WFall_Animate:	; Routine 2
-		lea	(Ani_WFall).l,a1
-		jsr	(AnimateSprite).l
+		lea		(Ani_WFall).l,a1
+		jsr		(AnimateSprite).l
 
 WFall_ChkDel:	; Routine 4
 		bra.w	RememberState
@@ -56,7 +57,9 @@ WFall_OnWater:	; Routine 6
 		move.w	(v_waterpos1).w,d0
 		subi.w	#$10,d0
 		move.w	d0,obY(a0)	; match	object position	to water height
-		bra.s	WFall_Animate
+		lea		(Ani_WFall).l,a1
+		jsr		(AnimateSprite).l
+		bra.w	RememberState
 ; ===========================================================================
 
 loc_12B36:	; Routine 8
@@ -66,4 +69,6 @@ loc_12B36:	; Routine 8
 		bset	#7,obGfx(a0)
 
 .animate:
-		bra.s	WFall_Animate
+		lea		(Ani_WFall).l,a1
+		jsr		(AnimateSprite).l
+		bra.w	RememberState

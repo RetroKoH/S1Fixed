@@ -6,13 +6,14 @@ Gargoyle:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Gar_Index(pc,d0.w),d1
-		jsr	Gar_Index(pc,d1.w)
+		jsr		Gar_Index(pc,d1.w)
 		bra.w	RememberState
 ; ===========================================================================
-Gar_Index:	dc.w Gar_Main-Gar_Index
-		dc.w Gar_MakeFire-Gar_Index
-		dc.w Gar_FireBall-Gar_Index
-		dc.w Gar_AniFire-Gar_Index
+Gar_Index:	offsetTable
+		offsetTableEntry.w Gar_Main
+		offsetTableEntry.w Gar_MakeFire
+		offsetTableEntry.w Gar_FireBall
+		offsetTableEntry.w Gar_AniFire
 
 Gar_SpitRate:	dc.b 30, 60, 90, 120, 150, 180,	210, 240
 ; ===========================================================================
@@ -72,7 +73,7 @@ Gar_FireBall:	; Routine 4
 
 .noflip:
 		move.w	#sfx_Fireball,d0
-		jsr	(PlaySound_Special).l	; play lava ball sound
+		jsr		(PlaySound_Special).l	; play lava ball sound
 
 Gar_AniFire:	; Routine 6
 		move.b	(v_framebyte).w,d0

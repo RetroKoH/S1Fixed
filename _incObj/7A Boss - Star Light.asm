@@ -8,17 +8,23 @@ BossStarLight:
 		move.w	BossStarLight_Index(pc,d0.w),d1
 		jmp	BossStarLight_Index(pc,d1.w)
 ; ===========================================================================
-BossStarLight_Index:
-		dc.w BossStarLight_Main-BossStarLight_Index
-		dc.w BossStarLight_ShipMain-BossStarLight_Index
-		dc.w BossStarLight_FaceMain-BossStarLight_Index
-		dc.w BossStarLight_FlameMain-BossStarLight_Index
-		dc.w BossStarLight_TubeMain-BossStarLight_Index
+BossStarLight_Index:	offsetTable
+		offsetTableEntry.w BossStarLight_Main
+		offsetTableEntry.w BossStarLight_ShipMain
+		offsetTableEntry.w BossStarLight_FaceMain
+		offsetTableEntry.w BossStarLight_FlameMain
+		offsetTableEntry.w BossStarLight_TubeMain
 
-BossStarLight_ObjData:	dc.b 2,	0, 4		; routine number, animation, priority
-		dc.b 4,	1, 4
-		dc.b 6,	7, 4
-		dc.b 8,	0, 3
+BossStarLight_ObjData:
+		; 	routine, anim, priority
+		dc.b 2,	0
+		dc.w	$200
+		dc.b 4,	1
+		dc.w	$200
+		dc.b 6,	7
+		dc.w	$200
+		dc.b 8,	0
+		dc.w	$180
 ; ===========================================================================
 
 BossStarLight_Main:
@@ -27,15 +33,15 @@ BossStarLight_Main:
 		move.w	obX(a0),objoff_30(a0)
 		move.w	obY(a0),objoff_38(a0)
 		move.b	#$F,obColType(a0)
-		move.b	#8,obColProp(a0) ; set number of hits to 8
-		lea	BossStarLight_ObjData(pc),a2
+		move.b	#8,obColProp(a0)	; set number of hits to 8
+		lea		BossStarLight_ObjData(pc),a2
 		movea.l	a0,a1
 		moveq	#3,d1
 		bra.s	BossStarLight_LoadBoss
 ; ===========================================================================
 
 BossStarLight_Loop:
-		jsr	(FindNextFreeObj).l
+		jsr		(FindNextFreeObj).l
 		bne.s	loc_1895C
 		_move.b	#id_BossStarLight,obID(a1)
 		move.w	obX(a0),obX(a1)
@@ -46,21 +52,13 @@ BossStarLight_LoadBoss:
 		clr.b	ob2ndRout(a1)
 		move.b	(a2)+,obRoutine(a1)
 		move.b	(a2)+,obAnim(a1)
-		move.b	(a2)+,obPriority(a1)
-
-	; RetroKoH S2 Priority Manager
-		move.w  obPriority(a1),d0
-		lsr.w   #1,d0
-		andi.w  #$380,d0
-		move.w  d0,obPriority(a1)
-	; S2 Priority Manager End
-
+		move.w	(a2)+,obPriority(a1)	; RetroKoH S3K Priority Manager
 		move.l	#Map_Eggman,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.b	#$20,obActWid(a1)
 		move.l	a0,objoff_34(a1)
-		dbf	d1,BossStarLight_Loop	; repeat sequence 3 more times
+		dbf		d1,BossStarLight_Loop	; repeat sequence 3 more times
 
 loc_1895C:
 		lea		(v_lvlobjspace).w,a1	; FixBugs -- Formerly (v_objspace+object_size*1)
@@ -77,28 +75,28 @@ loc_18968:
 
 loc_18974:
 		adda.w	#object_size,a1
-		dbf	d1,loc_18968
+		dbf		d1,loc_18968
 
 BossStarLight_ShipMain:	; Routine 2
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
 		move.w	BossStarLight_ShipIndex(pc,d0.w),d0
-		jsr	BossStarLight_ShipIndex(pc,d0.w)
-		lea	(Ani_Eggman).l,a1
-		jsr	(AnimateSprite).l
+		jsr		BossStarLight_ShipIndex(pc,d0.w)
+		lea		(Ani_Eggman).l,a1
+		jsr		(AnimateSprite).l
 		moveq	#(maskFlipX+maskFlipY),d0
 		and.b	obStatus(a0),d0
 		andi.b	#$FC,obRender(a0)
 		or.b	d0,obRender(a0)
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 ; ===========================================================================
-BossStarLight_ShipIndex:
-		dc.w loc_189B8-BossStarLight_ShipIndex
-		dc.w loc_18A5E-BossStarLight_ShipIndex
-		dc.w BossStarLight_MakeBall-BossStarLight_ShipIndex
-		dc.w loc_18B48-BossStarLight_ShipIndex
-		dc.w loc_18B80-BossStarLight_ShipIndex
-		dc.w loc_18BC6-BossStarLight_ShipIndex
+BossStarLight_ShipIndex:	offsetTable
+		offsetTableEntry.w loc_189B8
+		offsetTableEntry.w loc_18A5E
+		offsetTableEntry.w BossStarLight_MakeBall
+		offsetTableEntry.w loc_18B48
+		offsetTableEntry.w loc_18B80
+		offsetTableEntry.w loc_18BC6
 ; ===========================================================================
 
 loc_189B8:
@@ -111,7 +109,7 @@ loc_189CA:
 		bsr.w	BossMove
 		move.b	objoff_3F(a0),d0
 		addq.b	#2,objoff_3F(a0)
-		jsr	(CalcSine).l
+		jsr		(CalcSine).l
 		asr.w	#6,d0
 		add.w	objoff_38(a0),d0
 		move.w	d0,obY(a0)
@@ -135,10 +133,10 @@ loc_189FE:
 		bne.s	loc_18A28
 		move.b	#$20,objoff_3E(a0)
 		move.w	#sfx_HitBoss,d0
-		jsr	(PlaySound_Special).l	; play boss damage sound
+		jsr		(PlaySound_Special).l	; play boss damage sound
 
 loc_18A28:
-		lea	(v_pal_dry+$22).w,a1
+		lea		(v_pal_dry+$22).w,a1
 		moveq	#0,d0
 		tst.w	(a1)
 		bne.s	loc_18A36
@@ -202,7 +200,7 @@ loc_18A9E:
 		beq.s	loc_18AC0
 
 loc_18AB4:
-		dbf	d2,loc_18A9E
+		dbf		d2,loc_18A9E
 
 		move.b	d2,obSubtype(a0)
 		bra.w	loc_189CA
@@ -312,7 +310,7 @@ loc_18BAE:
 loc_18BB4:
 		clr.w	obVelY(a0)
 		move.w	#bgm_SLZ,d0
-		jsr	(PlaySound).l		; play SLZ music
+		jsr		(PlaySound).l	; play SLZ music
 
 loc_18BC2:
 		bra.w	loc_189EE
@@ -396,8 +394,8 @@ loc_18C56:
 		move.b	#7,obAnim(a0)
 
 loc_18C6C:
-		lea	(Ani_Eggman).l,a1
-		jsr	(AnimateSprite).l
+		lea		(Ani_Eggman).l,a1
+		jsr		(AnimateSprite).l
 
 loc_18C78:
 		movea.l	objoff_34(a0),a1
@@ -408,7 +406,7 @@ loc_18C78:
 		and.b	obStatus(a0),d0
 		andi.b	#$FC,obRender(a0)
 		or.b	d0,obRender(a0)
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 
 BossStarLight_TubeMain:	; Routine 8

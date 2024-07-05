@@ -6,16 +6,17 @@ GameOverCard:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Over_Index(pc,d0.w),d1
-		jmp	Over_Index(pc,d1.w)
+		jmp		Over_Index(pc,d1.w)
 ; ===========================================================================
-Over_Index:	dc.w Over_ChkPLC-Over_Index
-		dc.w Over_Move-Over_Index
-		dc.w Over_Wait-Over_Index
+Over_Index:		offsetTable
+		offsetTableEntry.w Over_ChkPLC
+		offsetTableEntry.w Over_Move
+		offsetTableEntry.w Over_Wait
 ; ===========================================================================
 
 Over_ChkPLC:	; Routine 0
-		tst.l	(v_plc_buffer).w ; are the pattern load cues empty?
-		beq.s	Over_Main	; if yes, branch
+		tst.l	(v_plc_buffer).w	; are the pattern load cues empty?
+		beq.s	Over_Main			; if yes, branch
 		rts	
 ; ===========================================================================
 
@@ -56,7 +57,7 @@ Over_Wait:	; Routine 4
 		andi.b	#btnABC,d0	; is button A, B or C pressed?
 		bne.s	Over_ChgMode	; if yes, branch
 		btst	#0,obFrame(a0)
-		bne.s	Over_Display
+		bne.w	DisplaySprite
 		tst.w	obTimeFrame(a0)	; has time delay reached zero?
 		beq.s	Over_ChgMode	; if yes, branch
 		subq.w	#1,obTimeFrame(a0) ; subtract 1 from time delay
@@ -68,14 +69,12 @@ Over_ChgMode:
 		bne.s	Over_ResetLvl	; if yes, branch
 		move.b	#id_Continue,(v_gamemode).w ; set mode to $14 (continue screen)
 		tst.b	(v_continues).w	; do you have any continues?
-		bne.s	Over_Display	; if yes, branch
+		bne.w	DisplaySprite	; if yes, branch
 		move.b	#id_Sega,(v_gamemode).w ; set mode to 0 (Sega screen)
-		bra.s	Over_Display
+		bra.w	DisplaySprite
 ; ===========================================================================
 
 Over_ResetLvl:
 		clr.l	(v_lamp_time).w		; reset lamp time
 		move.w	#1,(f_restart).w	; restart level
-
-Over_Display:
 		bra.w	DisplaySprite

@@ -6,27 +6,29 @@ BossGreenHill:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	BGHZ_Index(pc,d0.w),d1
-		jmp	BGHZ_Index(pc,d1.w)
+		jmp		BGHZ_Index(pc,d1.w)
 ; ===========================================================================
-BGHZ_Index:	dc.w BGHZ_Main-BGHZ_Index
-		dc.w BGHZ_ShipMain-BGHZ_Index
-		dc.w BGHZ_FaceMain-BGHZ_Index
-		dc.w BGHZ_FlameMain-BGHZ_Index
+BGHZ_Index:		offsetTable
+		offsetTableEntry.w BGHZ_Main
+		offsetTableEntry.w BGHZ_ShipMain
+		offsetTableEntry.w BGHZ_FaceMain
+		offsetTableEntry.w BGHZ_FlameMain
 
-BGHZ_ObjData:	dc.b 2,	0		; routine counter, animation
+BGHZ_ObjData:
+		dc.b 2,	0		; routine counter, animation
 		dc.b 4,	1
 		dc.b 6,	7
 ; ===========================================================================
 
 BGHZ_Main:	; Routine 0
-		lea	(BGHZ_ObjData).l,a2
+		lea		(BGHZ_ObjData).l,a2
 		movea.l	a0,a1
 		moveq	#2,d1
 		bra.s	BGHZ_LoadBoss
 ; ===========================================================================
 
 BGHZ_Loop:
-		jsr	(FindNextFreeObj).l
+		jsr		(FindNextFreeObj).l
 		bne.s	loc_17772
 
 BGHZ_LoadBoss:
@@ -41,7 +43,7 @@ BGHZ_LoadBoss:
 		move.w	#$180,obPriority(a1)	; RetroKoH S2 Priority Manager
 		move.b	(a2)+,obAnim(a1)
 		move.l	a0,objoff_34(a1)
-		dbf	d1,BGHZ_Loop	; repeat sequence 2 more times
+		dbf		d1,BGHZ_Loop	; repeat sequence 2 more times
 
 loc_17772:
 		move.w	obX(a0),objoff_30(a0)
@@ -62,13 +64,14 @@ BGHZ_ShipMain:	; Routine 2
 		or.b	d0,obRender(a0)
 		jmp		(DisplaySprite).l
 ; ===========================================================================
-BGHZ_ShipIndex:	dc.w BGHZ_ShipStart-BGHZ_ShipIndex
-		dc.w BGHZ_MakeBall-BGHZ_ShipIndex
-		dc.w BGHZ_ShipMove-BGHZ_ShipIndex
-		dc.w loc_17954-BGHZ_ShipIndex
-		dc.w loc_1797A-BGHZ_ShipIndex
-		dc.w loc_179AC-BGHZ_ShipIndex
-		dc.w loc_179F6-BGHZ_ShipIndex
+BGHZ_ShipIndex:		offsetTable
+		offsetTableEntry.w BGHZ_ShipStart
+		offsetTableEntry.w BGHZ_MakeBall
+		offsetTableEntry.w BGHZ_ShipMove
+		offsetTableEntry.w loc_17954
+		offsetTableEntry.w loc_1797A
+		offsetTableEntry.w loc_179AC
+		offsetTableEntry.w loc_179F6
 ; ===========================================================================
 
 BGHZ_ShipStart:
@@ -81,7 +84,7 @@ BGHZ_ShipStart:
 
 loc_177E6:
 		move.b	objoff_3F(a0),d0
-		jsr	(CalcSine).l
+		jsr		(CalcSine).l
 		asr.w	#6,d0
 		add.w	objoff_38(a0),d0
 		move.w	d0,obY(a0)
@@ -97,10 +100,10 @@ loc_177E6:
 		bne.s	BGHZ_ShipFlash
 		move.b	#$20,objoff_3E(a0)	; set number of	times for ship to flash
 		move.w	#sfx_HitBoss,d0
-		jsr	(PlaySound_Special).l	; play boss damage sound
+		jsr		(PlaySound_Special).l	; play boss damage sound
 
 BGHZ_ShipFlash:
-		lea	(v_pal_dry+$22).w,a1 ; load 2nd pallet, 2nd entry
+		lea		(v_pal_dry+$22).w,a1 ; load 2nd pallet, 2nd entry
 		moveq	#0,d0		; move 0 (black) to d0
 		tst.w	(a1)
 		bne.s	loc_1783C

@@ -6,17 +6,18 @@ GotThroughCard:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Got_Index(pc,d0.w),d1
-		jmp	Got_Index(pc,d1.w)
+		jmp		Got_Index(pc,d1.w)
 ; ===========================================================================
-Got_Index:	dc.w Got_ChkPLC-Got_Index
-		dc.w Got_Move-Got_Index
-		dc.w Got_Wait-Got_Index
-		dc.w Got_TimeBonus-Got_Index
-		dc.w Got_Wait-Got_Index
-		dc.w Got_NextLevel-Got_Index
-		dc.w Got_Wait-Got_Index
-		dc.w Got_Move2-Got_Index
-		dc.w loc_C766-Got_Index
+Got_Index:	offsetTable
+		offsetTableEntry.w Got_ChkPLC
+		offsetTableEntry.w Got_Move
+		offsetTableEntry.w Got_Wait
+		offsetTableEntry.w Got_TimeBonus
+		offsetTableEntry.w Got_Wait
+		offsetTableEntry.w Got_NextLevel
+		offsetTableEntry.w Got_Wait
+		offsetTableEntry.w Got_Move2
+		offsetTableEntry.w loc_C766
 
 got_mainX = objoff_30		; position for card to display on
 got_finalX = objoff_32		; position for card to finish on
@@ -291,7 +292,7 @@ Got_SBZ2:
 		addq.b	#2,obRoutine(a0)
 		clr.b	(f_lockctrl).w	; unlock controls
 		move.w	#bgm_FZ,d0
-		jmp	(PlaySound).l	; play FZ music
+		jmp		(PlaySound).l	; play FZ music
 ; ===========================================================================
 
 loc_C766:	; Routine $10
@@ -303,7 +304,8 @@ loc_C766:	; Routine $10
 		;    x-start,	x-main,	y-main,
 		;				routine, frame number
 
-Got_Config:	dc.w 4,		$124,	$BC			; "SONIC HAS"
+Got_Config:
+		dc.w 4,		$124,	$BC			; "SONIC HAS"
 		dc.b 				2,	0
 
 		dc.w -$120,	$120,	$D0			; "PASSED"
@@ -318,7 +320,7 @@ Got_Config:	dc.w 4,		$124,	$BC			; "SONIC HAS"
 		dc.w $540,	$120,	$FC			; time bonus
 		dc.b 				2,	3
 
-		dc.w $560,	$120,	$10C			; ring bonus
+		dc.w $560,	$120,	$10C		; ring bonus
 		dc.b 				2,	4
 
 		dc.w $20C,	$14C,	$CC			; oval

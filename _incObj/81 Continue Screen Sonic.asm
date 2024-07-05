@@ -5,14 +5,14 @@
 ContSonic:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
-		move.w	CSon_Index(pc,d0.w),d1
-		jsr	CSon_Index(pc,d1.w)
-		jmp	(DisplaySprite).l
+		jsr		CSon_Index(pc,d0.w)
+		jmp		(DisplaySprite).l
 ; ===========================================================================
-CSon_Index:	dc.w CSon_Main-CSon_Index
-		dc.w CSon_ChkLand-CSon_Index
-		dc.w CSon_Animate-CSon_Index
-		dc.w CSon_Run-CSon_Index
+CSon_Index:
+		bra.s CSon_Main
+		bra.s CSon_ChkLand
+		bra.s CSon_Animate
+		bra.w CSon_Run
 ; ===========================================================================
 
 CSon_Main:	; Routine 0
@@ -34,20 +34,20 @@ CSon_ChkLand:	; Routine 2
 		clr.w	obVelY(a0)	; stop Sonic falling
 		move.l	#Map_ContScr,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Continue_Sonic,0,1),obGfx(a0)
-		move.b	#aniID_Walk,obAnim(a0)
+		clr.b	obAnim(a0)
 		bra.s	CSon_Animate
 
 CSon_ShowFall:
-		jsr	(SpeedToPos).l
-		jsr	(Sonic_Animate).l
-		jmp	(Sonic_LoadGfx).l
+		jsr		(SpeedToPos).l
+		jsr		(Sonic_Animate).l
+		jmp		(Sonic_LoadGfx).l
 ; ===========================================================================
 
 CSon_Animate:	; Routine 4
 		tst.b	(v_jpadpress1).w ; is Start button pressed?
 		bmi.s	CSon_GetUp	; if yes, branch
-		lea	(AniScript_CSon).l,a1
-		jmp	(AnimateSprite).l
+		lea		(AniScript_CSon).l,a1
+		jmp		(AnimateSprite).l
 
 CSon_GetUp:
 		addq.b	#2,obRoutine(a0)
@@ -60,15 +60,15 @@ CSon_GetUp:
 		bsr.w	PlaySound_Special ; fade out music
 
 CSon_Run:	; Routine 6
-		cmpi.w	#$800,obInertia(a0) ; check Sonic's inertia
-		bne.s	CSon_AddInertia	; if too low, branch
-		move.w	#$1000,obVelX(a0) ; move Sonic to the right
+		cmpi.w	#$800,obInertia(a0)	; check Sonic's inertia
+		bne.s	CSon_AddInertia		; if too low, branch
+		move.w	#$1000,obVelX(a0)	; move Sonic to the right
 		bra.s	CSon_ShowRun
 
 CSon_AddInertia:
 		addi.w	#$20,obInertia(a0) ; increase inertia
 
 CSon_ShowRun:
-		jsr	(SpeedToPos).l
-		jsr	(Sonic_Animate).l
-		jmp	(Sonic_LoadGfx).l
+		jsr		(SpeedToPos).l
+		jsr		(Sonic_Animate).l
+		jmp		(Sonic_LoadGfx).l

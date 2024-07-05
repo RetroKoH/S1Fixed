@@ -14,12 +14,12 @@ Monitor:
 		move.w	Mon_Index(pc,d0.w),d1
 		jmp		Mon_Index(pc,d1.w)
 ; ===========================================================================
-Mon_Index:
-		dc.w Mon_Main-Mon_Index
-		dc.w Mon_Solid-Mon_Index
-		dc.w Mon_BreakOpen-Mon_Index
-		dc.w Mon_Animate-Mon_Index
-		dc.w Mon_Display-Mon_Index
+Mon_Index:		offsetTable
+		offsetTableEntry.w Mon_Main
+		offsetTableEntry.w Mon_Solid
+		offsetTableEntry.w Mon_BreakOpen
+		offsetTableEntry.w Mon_Animate
+		offsetTableEntry.w Mon_Display
 ; ===========================================================================
 
 Mon_Main:	; Routine 0
@@ -89,7 +89,7 @@ Mon_Solid:	; Routine 2
 
 .fall:		; 2nd Routine 4
 		bsr.w	ObjectFall
-		jsr	(ObjFloorDist).l
+		jsr		(ObjFloorDist).l
 		tst.w	d1
 		bpl.w	Mon_Animate
 		add.w	d1,obY(a0)

@@ -8,11 +8,11 @@ Junction:
 		move.w	Jun_Index(pc,d0.w),d1
 		jmp		Jun_Index(pc,d1.w)
 ; ===========================================================================
-Jun_Index:
-		dc.w Jun_Main-Jun_Index
-		dc.w Jun_Action-Jun_Index
-		dc.w Jun_Display-Jun_Index
-		dc.w Jun_Release-Jun_Index
+Jun_Index:		offsetTable
+		offsetTableEntry.w Jun_Main
+		offsetTableEntry.w Jun_Action
+		offsetTableEntry.w Jun_Display
+		offsetTableEntry.w Jun_Release
 
 jun_frame = objoff_34		; current frame
 jun_reverse = objoff_36		; flag set when switch is pressed
@@ -179,7 +179,8 @@ Jun_ChgPos:
 		rts	
 
 
-.data:		dc.b -$20,    0, -$1E,   $E ; disc x-pos, Sonic x-pos, disc y-pos, Sonic y-pos
+.data:
+		dc.b -$20,    0, -$1E,   $E ; disc x-pos, Sonic x-pos, disc y-pos, Sonic y-pos
 		dc.b -$18,  $18,  -$E,  $1E
 		dc.b    0,  $20,   $E,  $1E
 		dc.b  $18,  $18,  $1E,   $E

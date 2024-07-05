@@ -6,13 +6,13 @@ BossLabyrinth:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	BossLabyrinth_Index(pc,d0.w),d1
-		jmp	BossLabyrinth_Index(pc,d1.w)
+		jmp		BossLabyrinth_Index(pc,d1.w)
 ; ===========================================================================
-BossLabyrinth_Index:
-		dc.w BossLabyrinth_Main-BossLabyrinth_Index
-		dc.w BossLabyrinth_ShipMain-BossLabyrinth_Index
-		dc.w BossLabyrinth_FaceMain-BossLabyrinth_Index
-		dc.w BossLabyrinth_FlameMain-BossLabyrinth_Index
+BossLabyrinth_Index:	offsetTable
+		offsetTableEntry.w BossLabyrinth_Main
+		offsetTableEntry.w BossLabyrinth_ShipMain
+		offsetTableEntry.w BossLabyrinth_FaceMain
+		offsetTableEntry.w BossLabyrinth_FlameMain
 
 BossLabyrinth_ObjData:
 		dc.b 2,	0		; routine number, animation
@@ -68,11 +68,15 @@ BossLabyrinth_ShipMain:	; Routine 2
 		or.b	d0,obRender(a0)
 		jmp	(DisplaySprite).l
 ; ===========================================================================
-BossLabyrinth_ShipIndex:
-		dc.w loc_17F1E-BossLabyrinth_ShipIndex,	loc_17FA0-BossLabyrinth_ShipIndex
-		dc.w loc_17FE0-BossLabyrinth_ShipIndex,	loc_1801E-BossLabyrinth_ShipIndex
-		dc.w loc_180BC-BossLabyrinth_ShipIndex,	loc_180F6-BossLabyrinth_ShipIndex
-		dc.w loc_1812A-BossLabyrinth_ShipIndex,	loc_18152-BossLabyrinth_ShipIndex
+BossLabyrinth_ShipIndex:	offsetTable
+		offsetTableEntry.w loc_17F1E
+		offsetTableEntry.w loc_17FA0
+		offsetTableEntry.w loc_17FE0
+		offsetTableEntry.w loc_1801E
+		offsetTableEntry.w loc_180BC
+		offsetTableEntry.w loc_180F6
+		offsetTableEntry.w loc_1812A
+		offsetTableEntry.w loc_18152
 ; ===========================================================================
 
 loc_17F1E:

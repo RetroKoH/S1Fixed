@@ -5,13 +5,13 @@
 EndSTH:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
-		move.w	ESth_Index(pc,d0.w),d1
-		jmp		ESth_Index(pc,d1.w)
+	; RetroKoH Object Routine Optimization
+		jmp		ESth_Index(pc,d0.w)
 ; ===========================================================================
 ESth_Index:
-		dc.w ESth_Main-ESth_Index
-		dc.w ESth_Move-ESth_Index
-		dc.w ESth_GotoCredits-ESth_Index
+		bra.s ESth_Main
+		bra.s ESth_Move
+		bra.s ESth_GotoCredits
 
 esth_time = objoff_30		; time until exit
 ; ===========================================================================

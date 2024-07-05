@@ -44,7 +44,8 @@ LZWaterFeatures:
 ; ---------------------------------------------------------------------------
 ; Initial water heights
 ; ---------------------------------------------------------------------------
-WaterHeight:	dc.w $B8	; Labyrinth 1
+WaterHeight:
+		dc.w $B8	; Labyrinth 1
 		dc.w $328	; Labyrinth 2
 		dc.w $900	; Labyrinth 3
 		dc.w $228	; Scrap Brain 3
@@ -60,7 +61,7 @@ LZDynamicWater:
 		move.b	(v_act).w,d0
 		add.w	d0,d0
 		move.w	DynWater_Index(pc,d0.w),d0
-		jsr	DynWater_Index(pc,d0.w)
+		jsr		DynWater_Index(pc,d0.w)
 		moveq	#0,d1
 		move.b	(f_water).w,d1
 		move.w	(v_waterpos3).w,d0
@@ -73,12 +74,14 @@ LZDynamicWater:
 		add.w	d1,(v_waterpos2).w ; move water up/down
 
 .exit:
-		rts	
+		rts
+
 ; ===========================================================================
-DynWater_Index:	dc.w DynWater_LZ1-DynWater_Index
-		dc.w DynWater_LZ2-DynWater_Index
-		dc.w DynWater_LZ3-DynWater_Index
-		dc.w DynWater_SBZ3-DynWater_Index
+DynWater_Index:	offsetTable
+		offsetTableEntry.w	DynWater_LZ1
+		offsetTableEntry.w	DynWater_LZ2
+		offsetTableEntry.w	DynWater_LZ3
+		offsetTableEntry.w	DynWater_SBZ3
 ; ===========================================================================
 
 DynWater_LZ1:

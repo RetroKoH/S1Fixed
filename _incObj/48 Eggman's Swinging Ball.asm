@@ -6,13 +6,14 @@ BossBall:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	GBall_Index(pc,d0.w),d1
-		jmp	GBall_Index(pc,d1.w)
+		jmp		GBall_Index(pc,d1.w)
 ; ===========================================================================
-GBall_Index:	dc.w GBall_Main-GBall_Index
-		dc.w GBall_Base-GBall_Index
-		dc.w GBall_Display2-GBall_Index
-		dc.w loc_17C68-GBall_Index
-		dc.w GBall_ChkVanish-GBall_Index
+GBall_Index:	offsetTable
+		offsetTableEntry.w GBall_Main
+		offsetTableEntry.w GBall_Base
+		offsetTableEntry.w GBall_Display2
+		offsetTableEntry.w loc_17C68
+		offsetTableEntry.w GBall_ChkVanish
 ; ===========================================================================
 
 GBall_Main:	; Routine 0
@@ -29,7 +30,7 @@ GBall_Main:	; Routine 0
 ; ===========================================================================
 
 GBall_MakeLinks:
-		jsr	(FindNextFreeObj).l
+		jsr		(FindNextFreeObj).l
 		bne.s	GBall_MakeBall
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
@@ -50,7 +51,7 @@ loc_17B60:
 		move.b	#8,obActWid(a1)
 		move.w	#$300,obPriority(a1)	; RetroKoH S2 Priority Manager
 		move.l	objoff_34(a0),objoff_34(a1)
-		dbf	d1,GBall_MakeLinks ; repeat sequence 5 more times
+		dbf		d1,GBall_MakeLinks ; repeat sequence 5 more times
 
 GBall_MakeBall:
 		move.b	#8,obRoutine(a1)
@@ -67,8 +68,8 @@ GBall_PosData:	dc.b 0,	$10, $20, $30, $40, $60	; y-position data for links and	g
 ; ===========================================================================
 
 GBall_Base:	; Routine 2
-		lea	(GBall_PosData).l,a3
-		lea	obSubtype(a0),a2
+		lea		(GBall_PosData).l,a3
+		lea		obSubtype(a0),a2
 		moveq	#0,d6
 		move.b	(a2)+,d6
 
@@ -84,7 +85,7 @@ loc_17BC6:
 		addq.b	#1,objoff_3C(a1)
 
 loc_17BE0:
-		dbf	d6,loc_17BC6
+		dbf		d6,loc_17BC6
 
 		cmp.b	objoff_3C(a1),d0
 		bne.s	loc_17BFA
@@ -101,14 +102,14 @@ loc_17BFA:
 GBall_Display:
 		bsr.w	sub_17C2A
 		move.b	obAngle(a0),d0
-		jsr	(Swing_Move2).l
-		jmp	(DisplaySprite).l
+		jsr		(Swing_Move2).l
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 
 GBall_Display2:	; Routine 4
 		bsr.w	sub_17C2A
-		jsr	(Obj48_Move).l
-		jmp	(DisplaySprite).l
+		jsr		(Obj48_Move).l
+		jmp		(DisplaySprite).l
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
@@ -144,7 +145,7 @@ loc_17C68:	; Routine 6
 		clr.b	obRoutine(a0)
 
 GBall_Display3:
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 
 GBall_ChkVanish:; Routine 8
@@ -166,4 +167,4 @@ GBall_Vanish:
 		clr.b	obRoutine(a0)
 
 GBall_Display4:
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l

@@ -6,28 +6,41 @@ Animals:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Anml_Index(pc,d0.w),d1
-		jmp	Anml_Index(pc,d1.w)
+		jmp		Anml_Index(pc,d1.w)
 ; ===========================================================================
-Anml_Index:	dc.w Anml_Ending-Anml_Index, loc_912A-Anml_Index
-		dc.w loc_9184-Anml_Index, loc_91C0-Anml_Index
-		dc.w loc_9184-Anml_Index, loc_9184-Anml_Index
-		dc.w loc_9184-Anml_Index, loc_91C0-Anml_Index
-		dc.w loc_9184-Anml_Index, loc_9240-Anml_Index
-		dc.w loc_9260-Anml_Index, loc_9260-Anml_Index
-		dc.w loc_9280-Anml_Index, loc_92BA-Anml_Index
-		dc.w loc_9314-Anml_Index, loc_9332-Anml_Index
-		dc.w loc_9314-Anml_Index, loc_9332-Anml_Index
-		dc.w loc_9314-Anml_Index, loc_9370-Anml_Index
-		dc.w loc_92D6-Anml_Index
+Anml_Index:		offsetTable
+		offsetTableEntry.w Anml_Ending
+		offsetTableEntry.w loc_912A
+		offsetTableEntry.w loc_9184
+		offsetTableEntry.w loc_91C0
+		offsetTableEntry.w loc_9184
+		offsetTableEntry.w loc_9184
+		offsetTableEntry.w loc_9184
+		offsetTableEntry.w loc_91C0
+		offsetTableEntry.w loc_9184
+		offsetTableEntry.w loc_9240
+		offsetTableEntry.w loc_9260
+		offsetTableEntry.w loc_9260
+		offsetTableEntry.w loc_9280
+		offsetTableEntry.w loc_92BA
+		offsetTableEntry.w loc_9314
+		offsetTableEntry.w loc_9332
+		offsetTableEntry.w loc_9314
+		offsetTableEntry.w loc_9332
+		offsetTableEntry.w loc_9314
+		offsetTableEntry.w loc_9370
+		offsetTableEntry.w loc_92D6
 
-Anml_VarIndex:	dc.b 0,	5 ; Green Hill Zone
+Anml_VarIndex:
+		dc.b 0,	5 ; Green Hill Zone
 		dc.b 2, 3 ; Labyrinth Zone
 		dc.b 6, 3 ; Marble Zone
 		dc.b 4, 5 ; Star Light Zone
 		dc.b 4, 1 ; Spring Yard Zone
 		dc.b 0, 1 ; Scrap Brain Zone
 
-Anml_Variables:	dc.w -$200, -$400
+Anml_Variables:
+		dc.w -$200, -$400
 		dc.l Map_Animal1
 		dc.w -$200, -$300	; horizontal speed, vertical speed
 		dc.l Map_Animal2	; mappings address
@@ -42,15 +55,18 @@ Anml_Variables:	dc.w -$200, -$400
 		dc.w -$280, -$380
 		dc.l Map_Animal3
 
-Anml_EndSpeed:	dc.w -$440, -$400, -$440, -$400, -$440, -$400, -$300, -$400
+Anml_EndSpeed:
+		dc.w -$440, -$400, -$440, -$400, -$440, -$400, -$300, -$400
 		dc.w -$300, -$400, -$180, -$300, -$180, -$300, -$140, -$180
 		dc.w -$1C0, -$300, -$200, -$300, -$280, -$380
 
-Anml_EndMap:	dc.l Map_Animal2, Map_Animal2, Map_Animal2, Map_Animal1, Map_Animal1
+Anml_EndMap:
+		dc.l Map_Animal2, Map_Animal2, Map_Animal2, Map_Animal1, Map_Animal1
 		dc.l Map_Animal1, Map_Animal1, Map_Animal2, Map_Animal3, Map_Animal2
 		dc.l Map_Animal3
 
-Anml_EndVram:	dc.w make_art_tile(ArtTile_Ending_Flicky,0,0)
+Anml_EndVram:
+		dc.w make_art_tile(ArtTile_Ending_Flicky,0,0)
 		dc.w make_art_tile(ArtTile_Ending_Flicky,0,0)
 		dc.w make_art_tile(ArtTile_Ending_Flicky,0,0)
 		dc.w make_art_tile(ArtTile_Ending_Rabbit,0,0)
@@ -74,7 +90,7 @@ Anml_Ending:	; Routine 0
 		move.w	Anml_EndVram(pc,d0.w),obGfx(a0)
 		add.w	d0,d0
 		move.l	Anml_EndMap(pc,d0.w),obMap(a0)
-		lea	Anml_EndSpeed(pc),a1
+		lea		Anml_EndSpeed(pc),a1
 		move.w	(a1,d0.w),objoff_32(a0) ; load horizontal speed
 		move.w	(a1,d0.w),obVelX(a0)
 		move.w	2(a1,d0.w),objoff_34(a0) ; load vertical speed
@@ -146,7 +162,7 @@ loc_912A:
 		bsr.w	ObjectFall
 		tst.w	obVelY(a0)
 		bmi.s	loc_9180
-		jsr	(ObjFloorDist).l
+		jsr		(ObjFloorDist).l
 		tst.w	d1
 		bpl.s	loc_9180
 		add.w	d1,obY(a0)
@@ -174,7 +190,7 @@ loc_9184:
 		tst.w	obVelY(a0)
 		bmi.s	loc_91AE
 		clr.b	obFrame(a0)
-		jsr	(ObjFloorDist).l
+		jsr		(ObjFloorDist).l
 		tst.w	d1
 		bpl.s	loc_91AE
 		add.w	d1,obY(a0)
@@ -193,7 +209,7 @@ loc_91C0:
 		addi.w	#$18,obVelY(a0)
 		tst.w	obVelY(a0)
 		bmi.s	loc_91FC
-		jsr	(ObjFloorDist).l
+		jsr		(ObjFloorDist).l
 		tst.w	d1
 		bpl.s	loc_91FC
 		add.w	d1,obY(a0)
@@ -292,7 +308,7 @@ loc_92D6:
 		tst.w	obVelY(a0)
 		bmi.s	loc_9310
 		clr.b	obFrame(a0)
-		jsr	(ObjFloorDist).l
+		jsr		(ObjFloorDist).l
 		tst.w	d1
 		bpl.s	loc_9310
 		not.b	objoff_29(a0)
@@ -329,7 +345,7 @@ loc_9332:
 		tst.w	obVelY(a0)
 		bmi.s	loc_936C
 		clr.b	obFrame(a0)
-		jsr	(ObjFloorDist).l
+		jsr		(ObjFloorDist).l
 		tst.w	d1
 		bpl.s	loc_936C
 		neg.w	obVelX(a0)
@@ -348,7 +364,7 @@ loc_9370:
 		addi.w	#$18,obVelY(a0)
 		tst.w	obVelY(a0)
 		bmi.s	loc_93AA
-		jsr	(ObjFloorDist).l
+		jsr		(ObjFloorDist).l
 		tst.w	d1
 		bpl.s	loc_93AA
 		not.b	objoff_29(a0)

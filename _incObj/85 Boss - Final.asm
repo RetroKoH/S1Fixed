@@ -12,14 +12,14 @@ BossFinal:
 		move.w	BossFinal_Index(pc,d0.w),d0
 		jmp		BossFinal_Index(pc,d0.w)
 ; ===========================================================================
-BossFinal_Index:
-		dc.w BossFinal_Main-BossFinal_Index
-		dc.w BossFinal_Eggman-BossFinal_Index
-		dc.w loc_1A38E-BossFinal_Index
-		dc.w loc_1A346-BossFinal_Index
-		dc.w loc_1A2C6-BossFinal_Index
-		dc.w loc_1A3AC-BossFinal_Index
-		dc.w loc_1A264-BossFinal_Index
+BossFinal_Index:	offsetTable
+		offsetTableEntry.w BossFinal_Main
+		offsetTableEntry.w BossFinal_Eggman
+		offsetTableEntry.w loc_1A38E
+		offsetTableEntry.w loc_1A346
+		offsetTableEntry.w loc_1A2C6
+		offsetTableEntry.w loc_1A3AC
+		offsetTableEntry.w loc_1A264
 
 BossFinal_ObjData:
 		dc.w $100, $100, make_art_tile(ArtTile_FZ_Eggman_No_Vehicle,0,0)	; X pos, Y pos,	VRAM setting
@@ -36,24 +36,26 @@ BossFinal_ObjData:
 		dc.l Map_Eggman
 
 BossFinal_ObjData2:
-		dc.b 2,	0, 4, $20, $19	; routine num, animation, sprite priority, width, height
-		dc.b 4,	0, 1, $12, 8
-		dc.b 6,	0, 3, 0, 0
-		dc.b 8,	0, 3, 0, 0
-		dc.b $A, 0, 3, $20, $20
-		dc.b $C, 0, 3, 0, 0
+	; 			routine,		priority-hi,		width,
+	;					anim,		priority-lo,			height
+		dc.b	2,		0, 		2,	$00,			$20,	$19
+		dc.b	4,		0,		0,	$80,			$12,	8
+		dc.b	6,		0,		1,	$80,			0,		0
+		dc.b	8,		0,		1,	$80,			0,		0
+		dc.b	$A, 	0,		1,	$80,			$20,	$20
+		dc.b	$C, 	0,		1,	$80,			0,		0
 ; ===========================================================================
 
 BossFinal_Main:	; Routine 0
-		lea	BossFinal_ObjData(pc),a2
-		lea	BossFinal_ObjData2(pc),a3
+		lea		BossFinal_ObjData(pc),a2
+		lea		BossFinal_ObjData2(pc),a3
 		movea.l	a0,a1
 		moveq	#5,d1
 		bra.s	BossFinal_LoadBoss
 ; ===========================================================================
 
 BossFinal_Loop:
-		jsr	(FindNextFreeObj).l
+		jsr		(FindNextFreeObj).l
 		bne.s	loc_19E20
 
 BossFinal_LoadBoss:
@@ -64,42 +66,34 @@ BossFinal_LoadBoss:
 		move.l	(a2)+,obMap(a1)
 		move.b	(a3)+,obRoutine(a1)
 		move.b	(a3)+,obAnim(a1)
-		move.b	(a3)+,obPriority(a1)
-
-	; RetroKoH S2 Priority Manager
-		move.w  obPriority(a1),d0
-		lsr.w   #1,d0
-		andi.w  #$380,d0
-		move.w  d0,obPriority(a1)
-	; S2 Priority Manager End
-
+		move.w	(a3)+,obPriority(a1)	; RetroKoH S3K Priority
 		move.b	(a3)+,obActWid(a1)
 		move.b	(a3)+,obHeight(a1)
 		move.b	#4,obRender(a1)
 		bset	#7,obRender(a0)
 		move.l	a0,objoff_34(a1)
-		dbf	d1,BossFinal_Loop
+		dbf		d1,BossFinal_Loop
 
 loc_19E20:
-		lea	objoff_36(a0),a2
-		jsr	(FindFreeObj).l
+		lea		objoff_36(a0),a2
+		jsr		(FindFreeObj).l
 		bne.s	loc_19E5A
 		move.b	#id_BossPlasma,obID(a1) ; load energy ball object
 		move.w	a1,(a2)
 		move.l	a0,objoff_34(a1)
-		lea	objoff_38(a0),a2
+		lea		objoff_38(a0),a2
 		moveq	#0,d2
 		moveq	#3,d1
 
 loc_19E3E:
-		jsr	(FindNextFreeObj).l
+		jsr		(FindNextFreeObj).l
 		bne.s	loc_19E5A
 		move.w	a1,(a2)+
 		move.b	#id_EggmanCylinder,obID(a1) ; load crushing cylinder object
 		move.l	a0,objoff_34(a1)
 		move.b	d2,obSubtype(a1)
 		addq.w	#2,d2
-		dbf	d1,loc_19E3E
+		dbf		d1,loc_19E3E
 
 loc_19E5A:
 		clr.w	objoff_34(a0)
@@ -110,13 +104,18 @@ BossFinal_Eggman:	; Routine 2
 		moveq	#0,d0
 		move.b	objoff_34(a0),d0
 		move.w	off_19E80(pc,d0.w),d0
-		jsr	off_19E80(pc,d0.w)
-		jmp	(DisplaySprite).l
+		jsr		off_19E80(pc,d0.w)
+		jmp		(DisplaySprite).l
 ; ===========================================================================
-off_19E80:	dc.w loc_19E90-off_19E80, loc_19EA8-off_19E80
-		dc.w loc_19FE6-off_19E80, loc_1A02A-off_19E80
-		dc.w loc_1A074-off_19E80, loc_1A112-off_19E80
-		dc.w loc_1A192-off_19E80, loc_1A1D4-off_19E80
+off_19E80:		offsetTable
+		offsetTableEntry.w loc_19E90
+		offsetTableEntry.w loc_19EA8
+		offsetTableEntry.w loc_19FE6
+		offsetTableEntry.w loc_1A02A
+		offsetTableEntry.w loc_1A074
+		offsetTableEntry.w loc_1A112
+		offsetTableEntry.w loc_1A192
+		offsetTableEntry.w loc_1A1D4
 ; ===========================================================================
 
 loc_19E90:
@@ -135,16 +134,16 @@ loc_19EA8:
 		tst.w	objoff_30(a0)
 		bpl.s	loc_19F10
 		clr.w	objoff_30(a0)
-		jsr	(RandomNumber).l
+		jsr		(RandomNumber).l
 		andi.w	#$C,d0
 		move.w	d0,d1
 		addq.w	#2,d1
 		tst.l	d0
 		bpl.s	loc_19EC6
-		exg	d1,d0
+		exg		d1,d0
 
 loc_19EC6:
-		lea	word_19FD6(pc),a1
+		lea		word_19FD6(pc),a1
 		move.w	(a1,d0.w),d0
 		move.w	(a1,d1.w),d1
 		move.w	d0,objoff_30(a0)
@@ -160,7 +159,7 @@ loc_19EC6:
 		move.w	#1,objoff_32(a0)
 		clr.b	objoff_35(a0)
 		move.w	#sfx_Rumbling,d0
-		jsr	(PlaySound_Special).l	; play rumbling sound
+		jsr		(PlaySound_Special).l	; play rumbling sound
 
 loc_19F10:
 		tst.w	objoff_32(a0)
@@ -220,8 +219,8 @@ loc_19F96:
 		move.b	#1,obAnim(a0)
 
 loc_19F9C:
-		lea	Ani_SEgg(pc),a1
-		jmp	(AnimateSprite).l
+		lea		Ani_SEgg(pc),a1
+		jmp		(AnimateSprite).l
 ; ===========================================================================
 
 loc_19FA6:
@@ -274,13 +273,13 @@ locret_1A01E:
 
 loc_1A020:
 		move.w	#sfx_Electric,d0
-		jmp	(PlaySound_Special).l	; play electricity sound
+		jmp		(PlaySound_Special).l	; play electricity sound
 ; ===========================================================================
 
 loc_1A02A:
 		move.b	#$30,obActWid(a0)
 		bset	#staFlipX,obStatus(a0)
-		jsr	(SpeedToPos).l
+		jsr		(SpeedToPos).l
 		move.b	#6,obFrame(a0)
 		addi.w	#$10,obVelY(a0)
 		cmpi.w	#boss_fz_y+$8C,obY(a0)
@@ -299,7 +298,7 @@ loc_1A070:
 loc_1A074:
 		bset	#staFlipX,obStatus(a0)
 		move.b	#4,obAnim(a0)
-		jsr	(SpeedToPos).l
+		jsr		(SpeedToPos).l
 		addi.w	#$10,obVelY(a0)
 		cmpi.w	#boss_fz_y+$93,obY(a0)
 		blo.s	loc_1A09A
@@ -370,8 +369,8 @@ loc_1A142:
 		move.b	#1,obColProp(a0)
 
 loc_1A15C:
-		lea	Ani_SEgg(pc),a1
-		jsr	(AnimateSprite).l
+		lea		Ani_SEgg(pc),a1
+		jsr		(AnimateSprite).l
 
 loc_1A166:
 		cmpi.w	#boss_fz_end,(v_limitright2).w
@@ -385,7 +384,7 @@ loc_1A172:
 		move.w	#$70,d2
 		move.w	#$71,d3
 		move.w	obX(a0),d4
-		jmp	(SolidObject).l
+		jmp		(SolidObject).l
 ; ===========================================================================
 
 locret_1A190:
@@ -397,7 +396,7 @@ loc_1A192:
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
 		clr.b	obAnim(a0)
 		bset	#staFlipX,obStatus(a0)
-		jsr	(SpeedToPos).l
+		jsr		(SpeedToPos).l
 		cmpi.w	#boss_fz_y+$34,obY(a0)
 		bhs.s	loc_1A1D0
 		move.w	#$180,obVelX(a0)
@@ -411,14 +410,14 @@ loc_1A1D0:
 
 loc_1A1D4:
 		bset	#staFlipX,obStatus(a0)
-		jsr	(SpeedToPos).l
+		jsr		(SpeedToPos).l
 		tst.w	objoff_30(a0)
 		bne.s	loc_1A1FC
 		tst.b	obColType(a0)
 		bne.s	loc_1A216
 		move.w	#$1E,objoff_30(a0)
 		move.w	#sfx_HitBoss,d0
-		jsr	(PlaySound_Special).l	; play boss damage sound
+		jsr		(PlaySound_Special).l	; play boss damage sound
 
 loc_1A1FC:
 		subq.w	#1,objoff_30(a0)
@@ -478,8 +477,8 @@ loc_1A280:
 		move.b	#$B,obAnim(a0)
 
 loc_1A28C:
-		lea	Ani_Eggman(pc),a1
-		jsr	(AnimateSprite).l
+		lea		Ani_Eggman(pc),a1
+		jsr		(AnimateSprite).l
 
 loc_1A296:
 		movea.l	objoff_34(a0),a1
@@ -493,7 +492,7 @@ loc_1A2A6:
 		and.b	obStatus(a0),d0
 		andi.b	#$FC,obRender(a0)
 		or.b	d0,obRender(a0)
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 
 loc_1A2C6:	; Routine 6
@@ -514,8 +513,8 @@ loc_1A2E4:
 		move.b	#6,obAnim(a0)
 		move.l	#Map_Eggman,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
-		lea	Ani_Eggman(pc),a1
-		jsr	(AnimateSprite).l
+		lea		Ani_Eggman(pc),a1
+		jsr		(AnimateSprite).l
 		bra.w	loc_1A296
 ; ===========================================================================
 
@@ -527,8 +526,8 @@ loc_1A312:
 		clr.b	obAnim(a0)
 		move.l	#Map_FZDamaged,obMap(a0)
 		move.w	#make_art_tile(ArtTile_FZ_Eggman_Fleeing,0,0),obGfx(a0)
-		lea	Ani_FZEgg(pc),a1
-		jsr	(AnimateSprite).l
+		lea		Ani_FZEgg(pc),a1
+		jsr		(AnimateSprite).l
 		bra.w	loc_1A296
 ; ===========================================================================
 
@@ -567,7 +566,7 @@ loc_1A38E:	; Routine $A
 		bpl.w	BossFinal_Delete
 
 loc_1A3A6:
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 
 loc_1A3AC:	; Routine $C

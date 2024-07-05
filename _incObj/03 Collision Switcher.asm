@@ -27,10 +27,10 @@ PathSwapper:
 		jmp		(DeleteObject).l
 ; ===========================================================================
 ; off_1FCF0:
-PSwapper_Index:
-		dc.w	PSwapper_Init-PSwapper_Index	; 0
-		dc.w	PSwapper_MainX-PSwapper_Index	; 2
-		dc.w	PSwapper_MainY-PSwapper_Index	; 4
+PSwapper_Index:		offsetTable
+		offsetTableEntry.w	PSwapper_Init	; 0
+		offsetTableEntry.w	PSwapper_MainX	; 2
+		offsetTableEntry.w	PSwapper_MainY	; 4
 ; ===========================================================================
 ; loc_1FCF6:
 PSwapper_Init:

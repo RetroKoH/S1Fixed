@@ -16,17 +16,19 @@ PaletteCycle:
 
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
-; Palette cycling routines
+; Offset index for Palette cycling routines
 ; ---------------------------------------------------------------------------
-PalCycle_Index:
-		dc.w PalCycle_GHZ-PalCycle_Index
-		dc.w PalCycle_LZ-PalCycle_Index
-		dc.w PalCycle_MZ-PalCycle_Index
-		dc.w PalCycle_SLZ-PalCycle_Index
-		dc.w PalCycle_SYZ-PalCycle_Index
-		dc.w PalCycle_SBZ-PalCycle_Index
+; ===========================================================================
+PalCycle_Index:	offsetTable
+		offsetTableEntry.w	PalCycle_GHZ
+		offsetTableEntry.w	PalCycle_LZ
+		offsetTableEntry.w	PalCycle_MZ
+		offsetTableEntry.w	PalCycle_SLZ
+		offsetTableEntry.w	PalCycle_SYZ
+		offsetTableEntry.w	PalCycle_SBZ
 		zonewarning PalCycle_Index,2
-		dc.w PalCycle_GHZ-PalCycle_Index	; Ending
+		offsetTableEntry.w	PalCycle_GHZ
+; ===========================================================================
 
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||

@@ -16,22 +16,22 @@ BossSpikeball:
 		; Removed first call to _Delete
 		cmpi.w	#$280,d0
 		bls.s	BossStarLight_NoDel
-		move.w	obRespawnNo(a0),d0	; get address in respawn table
-		beq.w	BossStarLight_Delete ; if it's zero, don't remember object
-		movea.w	d0,a2				; load address into a2
-		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again
-		jmp		DeleteObject		; and delete object
+		move.w	obRespawnNo(a0),d0		; get address in respawn table
+		beq.w	BossStarLight_Delete	; if it's zero, don't remember object
+		movea.w	d0,a2					; load address into a2
+		bclr	#7,(a2)					; clear respawn table entry, so object can be loaded again
+		jmp		DeleteObject			; and delete object
 
 BossStarLight_NoDel:
 		jmp		(DisplaySprite).l
 ; ===========================================================================
-BossSpikeball_Index:
-		dc.w BossSpikeball_Main-BossSpikeball_Index
-		dc.w BossSpikeball_Fall-BossSpikeball_Index
-		dc.w loc_18DC6-BossSpikeball_Index
-		dc.w loc_18EAA-BossSpikeball_Index
-		dc.w BossSpikeball_Explode-BossSpikeball_Index
-		dc.w BossSpikeball_MoveFrag-BossSpikeball_Index
+BossSpikeball_Index:	offsetTable
+		offsetTableEntry.w BossSpikeball_Main
+		offsetTableEntry.w BossSpikeball_Fall
+		offsetTableEntry.w loc_18DC6
+		offsetTableEntry.w loc_18EAA
+		offsetTableEntry.w BossSpikeball_Explode
+		offsetTableEntry.w BossSpikeball_MoveFrag
 ; ===========================================================================
 
 BossSpikeball_Main:	; Routine 0

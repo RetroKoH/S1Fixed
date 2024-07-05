@@ -6,24 +6,24 @@ BossBlock:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	BossBlock_Index(pc,d0.w),d1
-		jmp	BossBlock_Index(pc,d1.w)
+		jmp		BossBlock_Index(pc,d1.w)
 ; ===========================================================================
-BossBlock_Index:
-		dc.w BossBlock_Main-BossBlock_Index
-		dc.w BossBlock_Action-BossBlock_Index
-		dc.w loc_19762-BossBlock_Index
+BossBlock_Index:	offsetTable
+		offsetTableEntry.w BossBlock_Main
+		offsetTableEntry.w BossBlock_Action
+		offsetTableEntry.w loc_19762
 ; ===========================================================================
 
 BossBlock_Main:	; Routine 0
 		moveq	#0,d4
 		move.w	#boss_syz_x+$10,d5
 		moveq	#9,d6
-		lea	(a0),a1
+		lea		(a0),a1
 		bra.s	BossBlock_MakeBlock
 ; ===========================================================================
 
 BossBlock_Loop:
-		jsr	(FindFreeObj).l
+		jsr		(FindFreeObj).l
 		bne.s	BossBlock_ExitLoop
 
 BossBlock_MakeBlock:
@@ -40,7 +40,7 @@ BossBlock_MakeBlock:
 		addi.w	#$101,d4
 		addi.w	#$20,d5		; add $20 to next x-position
 		addq.b	#2,obRoutine(a1)
-		dbf	d6,BossBlock_Loop	; repeat sequence 9 more times
+		dbf		d6,BossBlock_Loop	; repeat sequence 9 more times
 
 BossBlock_ExitLoop:
 		rts	

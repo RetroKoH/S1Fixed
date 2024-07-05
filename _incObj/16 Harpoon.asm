@@ -5,13 +5,12 @@
 Harpoon:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
-		move.w	Harp_Index(pc,d0.w),d1
-		jmp		Harp_Index(pc,d1.w)
+		jmp		Harp_Index(pc,d0.w)	; RetroKoH Object Routine Optimization
 ; ===========================================================================
 Harp_Index:
-		dc.w Harp_Main-Harp_Index
-		dc.w Harp_Move-Harp_Index
-		dc.w Harp_Wait-Harp_Index
+		bra.s	Harp_Main
+		bra.s	Harp_Move
+		bra.s	Harp_Wait
 
 harp_time = objoff_30		; time between stabbing/retracting
 ; ===========================================================================

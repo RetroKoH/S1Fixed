@@ -28,13 +28,13 @@ Seesaw:
 		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again
 		bra.w	DeleteObject		; and delete object	
 ; ===========================================================================
-See_Index:
-		dc.w See_Main-See_Index
-		dc.w See_Slope-See_Index
-		dc.w See_Slope2-See_Index
-		dc.w See_Spikeball-See_Index
-		dc.w See_MoveSpike-See_Index
-		dc.w See_SpikeFall-See_Index
+See_Index:	offsetTable
+		offsetTableEntry.w See_Main
+		offsetTableEntry.w See_Slope
+		offsetTableEntry.w See_Slope2
+		offsetTableEntry.w See_Spikeball
+		offsetTableEntry.w See_MoveSpike
+		offsetTableEntry.w See_SpikeFall
 ; ===========================================================================
 
 See_Main:	; Routine 0
@@ -68,33 +68,31 @@ See_Main:	; Routine 0
 See_Slope:	; Routine 2
 		move.b	see_frame(a0),d1
 		bsr.w	See_ChgFrame
-		lea	(See_DataSlope).l,a2
+		lea		(See_DataSlope).l,a2
 		btst	#0,obFrame(a0)	; is seesaw flat?
 		beq.s	.notflat	; if not, branch
-		lea	(See_DataFlat).l,a2
+		lea		(See_DataFlat).l,a2
 
 .notflat:
-		lea	(v_player).w,a1
+		lea		(v_player).w,a1
 		move.w	obVelY(a1),see_speed(a0)
 		move.w	#$30,d1
-		jsr	(SlopeObject).l
-		rts	
+		jmp		(SlopeObject).l	
 ; ===========================================================================
 
 See_Slope2:	; Routine 4
 		bsr.w	See_ChkSide
-		lea	(See_DataSlope).l,a2
+		lea		(See_DataSlope).l,a2
 		btst	#0,obFrame(a0)	; is seesaw flat?
 		beq.s	.notflat	; if not, branch
-		lea	(See_DataFlat).l,a2
+		lea		(See_DataFlat).l,a2
 
 .notflat:
 		move.w	#$30,d1
-		jsr	(ExitPlatform).l
+		jsr		(ExitPlatform).l
 		move.w	#$30,d1
 		move.w	obX(a0),d2
-		jsr	(SlopeObject2).l
-		rts	
+		jmp		(SlopeObject2).l
 ; ===========================================================================
 
 See_ChkSide:
@@ -213,7 +211,7 @@ See_SpikeFall:	; Routine $A
 		subi.w	#$2F,d0
 		cmp.w	obY(a0),d0
 		bgt.s	locret_11898
-		bsr.w	ObjectFall
+		bra.w	ObjectFall
 
 locret_11898:
 		rts	

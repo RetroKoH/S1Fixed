@@ -18,15 +18,23 @@ AnimateLevelGfx:
 
 .ispaused:
 		rts	
+; ===========================================================================
 
+; ---------------------------------------------------------------------------
+; Offset index for animated art routines
+; ---------------------------------------------------------------------------
 ; ===========================================================================
-AniArt_Index:
-		dc.w AniArt_GHZ-AniArt_Index, AniArt_none-AniArt_Index
-		dc.w AniArt_MZ-AniArt_Index, AniArt_none-AniArt_Index
-		dc.w AniArt_none-AniArt_Index, AniArt_SBZ-AniArt_Index
+AniArt_Index:	offsetTable
+		offsetTableEntry.w	AniArt_GHZ
+		offsetTableEntry.w	AniArt_none
+		offsetTableEntry.w	AniArt_MZ
+		offsetTableEntry.w	AniArt_none
+		offsetTableEntry.w	AniArt_none
+		offsetTableEntry.w	AniArt_SBZ
 		zonewarning AniArt_Index,2
-		dc.w AniArt_Ending-AniArt_Index
+		offsetTableEntry.w	AniArt_Ending
 ; ===========================================================================
+
 ; ---------------------------------------------------------------------------
 ; Animated pattern routine - Green Hill
 ; ---------------------------------------------------------------------------

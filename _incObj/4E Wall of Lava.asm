@@ -8,12 +8,12 @@ LavaWall:
 		move.w	LWall_Index(pc,d0.w),d1
 		jmp		LWall_Index(pc,d1.w)
 ; ===========================================================================
-LWall_Index:
-		dc.w LWall_Main-LWall_Index
-		dc.w LWall_Solid-LWall_Index
-		dc.w LWall_Action-LWall_Index
-		dc.w LWall_Move-LWall_Index
-		dc.w LWall_Delete-LWall_Index
+LWall_Index:	offsetTable
+		offsetTableEntry.w LWall_Main
+		offsetTableEntry.w LWall_Solid
+		offsetTableEntry.w LWall_Action
+		offsetTableEntry.w LWall_Move
+		offsetTableEntry.w LWall_Delete
 
 lwall_flag = objoff_36		; flag to start wall moving
 ; ===========================================================================
@@ -123,7 +123,7 @@ LWall_Solid:	; Routine 2
 LWall_Move:	; Routine 6
 		movea.l	objoff_3C(a0),a1
 		cmpi.b	#8,obRoutine(a1)
-		beq.s	LWall_Delete
+		beq.w	DeleteObject
 		move.w	obX(a1),obX(a0)	; move rest of lava wall
 		subi.w	#$80,obX(a0)
 		bra.w	DisplaySprite

@@ -6,12 +6,13 @@ ContScrItem:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	CSI_Index(pc,d0.w),d1
-		jmp	CSI_Index(pc,d1.w)
+		jmp		CSI_Index(pc,d1.w)
 ; ===========================================================================
-CSI_Index:	dc.w CSI_Main-CSI_Index
-		dc.w CSI_Display-CSI_Index
-		dc.w CSI_MakeMiniSonic-CSI_Index
-		dc.w CSI_ChkDel-CSI_Index
+CSI_Index:	offsetTable
+		offsetTableEntry.w CSI_Main
+		offsetTableEntry.w CSI_Display
+		offsetTableEntry.w CSI_MakeMiniSonic
+		offsetTableEntry.w CSI_ChkDel
 ; ===========================================================================
 
 CSI_Main:	; Routine 0
@@ -25,7 +26,7 @@ CSI_Main:	; Routine 0
 		clr.w	(v_rings).w	; clear rings
 
 CSI_Display:	; Routine 2
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 
 CSI_MiniSonicPos:
@@ -35,12 +36,12 @@ CSI_MiniSonicPos:
 CSI_MakeMiniSonic:
 		; Routine 4
 		movea.l	a0,a1
-		lea	(CSI_MiniSonicPos).l,a2
+		lea		(CSI_MiniSonicPos).l,a2
 		moveq	#0,d1
 		move.b	(v_continues).w,d1
 		subq.b	#2,d1
 		bcc.s	CSI_MoreThan1
-		jmp	(DeleteObject).l	; cancel if you have 0-1 continues
+		jmp		(DeleteObject).l	; cancel if you have 0-1 continues
 
 CSI_MoreThan1:
 		moveq	#1,d3
@@ -68,10 +69,10 @@ CSI_Even:
 		move.l	#Map_ContScr,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Mini_Sonic,0,1),obGfx(a1)
 		clr.b	obRender(a1)
-		lea	object_size(a1),a1
-		dbf	d1,CSI_MiniSonicLoop ; repeat for number of continues
+		lea		object_size(a1),a1
+		dbf		d1,CSI_MiniSonicLoop ; repeat for number of continues
 
-		lea	-object_size(a1),a1
+		lea		-object_size(a1),a1
 		move.b	d3,obSubtype(a1)
 
 CSI_ChkDel:	; Routine 6
@@ -93,8 +94,8 @@ CSI_Animate:
 		bchg	#0,obFrame(a0)
 
 CSI_Display2:
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 
 CSI_Delete:
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l

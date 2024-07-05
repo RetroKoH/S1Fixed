@@ -8,12 +8,12 @@ BossSpringYard:
 		move.w	BossSpringYard_Index(pc,d0.w),d1
 		jmp		BossSpringYard_Index(pc,d1.w)
 ; ===========================================================================
-BossSpringYard_Index:
-		dc.w BossSpringYard_Main-BossSpringYard_Index
-		dc.w BossSpringYard_ShipMain-BossSpringYard_Index
-		dc.w BossSpringYard_FaceMain-BossSpringYard_Index
-		dc.w BossSpringYard_FlameMain-BossSpringYard_Index
-		dc.w BossSpringYard_SpikeMain-BossSpringYard_Index
+BossSpringYard_Index:	offsetTable
+		offsetTableEntry.w BossSpringYard_Main
+		offsetTableEntry.w BossSpringYard_ShipMain
+		offsetTableEntry.w BossSpringYard_FaceMain
+		offsetTableEntry.w BossSpringYard_FlameMain
+		offsetTableEntry.w BossSpringYard_SpikeMain
 
 BossSpringYard_ObjData:
 		dc.b 2,	0, 5		; routine number, animation, priority
@@ -76,13 +76,13 @@ BossSpringYard_ShipMain:	; Routine 2
 		or.b	d0,obRender(a0)
 		jmp	(DisplaySprite).l
 ; ===========================================================================
-BossSpringYard_ShipIndex:
-		dc.w loc_191CC-BossSpringYard_ShipIndex
-		dc.w loc_19270-BossSpringYard_ShipIndex
-		dc.w loc_192EC-BossSpringYard_ShipIndex
-		dc.w loc_19474-BossSpringYard_ShipIndex
-		dc.w loc_194AC-BossSpringYard_ShipIndex
-		dc.w loc_194F2-BossSpringYard_ShipIndex
+BossSpringYard_ShipIndex:	offsetTable
+		offsetTableEntry.w loc_191CC
+		offsetTableEntry.w loc_19270
+		offsetTableEntry.w loc_192EC
+		offsetTableEntry.w loc_19474
+		offsetTableEntry.w loc_194AC
+		offsetTableEntry.w loc_194F2
 ; ===========================================================================
 
 loc_191CC:
@@ -200,12 +200,13 @@ loc_192EC:
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
 		move.w	off_192FA(pc,d0.w),d0
-		jmp	off_192FA(pc,d0.w)
+		jmp		off_192FA(pc,d0.w)
 ; ===========================================================================
-off_192FA:	dc.w loc_19302-off_192FA
-		dc.w loc_19348-off_192FA
-		dc.w loc_1938E-off_192FA
-		dc.w loc_193D0-off_192FA
+off_192FA:	offsetTable
+		offsetTableEntry.w loc_19302
+		offsetTableEntry.w loc_19348
+		offsetTableEntry.w loc_1938E
+		offsetTableEntry.w loc_193D0
 ; ===========================================================================
 
 loc_19302:
@@ -466,7 +467,7 @@ BossSpringYard_FaceMain:	; Routine 4
 		moveq	#0,d0
 		move.b	ob2ndRout(a1),d0
 		move.w	off_19546(pc,d0.w),d0
-		jsr	off_19546(pc,d0.w)
+		jsr		off_19546(pc,d0.w)
 		move.b	d1,obAnim(a0)
 		move.b	(a0),d0
 		cmp.b	(a1),d0
@@ -477,9 +478,13 @@ BossSpringYard_FaceMain:	; Routine 4
 BossSpringYard_FaceDelete:
 		jmp	(DeleteObject).l
 ; ===========================================================================
-off_19546:	dc.w loc_19574-off_19546, loc_19574-off_19546
-		dc.w loc_1955A-off_19546, loc_19552-off_19546
-		dc.w loc_19552-off_19546, loc_19556-off_19546
+off_19546:	offsetTable
+		offsetTableEntry.w loc_19574
+		offsetTableEntry.w loc_19574
+		offsetTableEntry.w loc_1955A
+		offsetTableEntry.w loc_19552
+		offsetTableEntry.w loc_19552
+		offsetTableEntry.w loc_19556
 ; ===========================================================================
 
 loc_19552:
@@ -496,10 +501,13 @@ loc_1955A:
 		moveq	#0,d0
 		move.b	obSubtype(a1),d0
 		move.w	off_19568(pc,d0.w),d0
-		jmp	off_19568(pc,d0.w)
+		jmp		off_19568(pc,d0.w)
 ; ===========================================================================
-off_19568:	dc.w loc_19570-off_19568, loc_19572-off_19568
-		dc.w loc_19570-off_19568, loc_19570-off_19568
+off_19568:
+		offsetTableEntry.w loc_19570
+		offsetTableEntry.w loc_19572
+		offsetTableEntry.w loc_19570
+		offsetTableEntry.w loc_19570
 ; ===========================================================================
 
 loc_19570:

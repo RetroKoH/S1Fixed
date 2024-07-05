@@ -6,14 +6,15 @@ FalseFloor:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	FFloor_Index(pc,d0.w),d1
-		jmp	FFloor_Index(pc,d1.w)
+		jmp		FFloor_Index(pc,d1.w)
 ; ===========================================================================
-FFloor_Index:	dc.w FFloor_Main-FFloor_Index
-		dc.w FFloor_ChkBreak-FFloor_Index
-		dc.w loc_19C36-FFloor_Index
-		dc.w loc_19C62-FFloor_Index
-		dc.w loc_19C72-FFloor_Index
-		dc.w loc_19C80-FFloor_Index
+FFloor_Index:	offsetTable
+		offsetTableEntry.w FFloor_Main
+		offsetTableEntry.w FFloor_ChkBreak
+		offsetTableEntry.w loc_19C36
+		offsetTableEntry.w loc_19C62
+		offsetTableEntry.w loc_19C72
+		offsetTableEntry.w loc_19C80
 ; ===========================================================================
 
 FFloor_Main:	; Routine 0
@@ -26,10 +27,10 @@ FFloor_Main:	; Routine 0
 		moveq	#0,d4
 		move.w	#boss_sbz2_x-$40,d5
 		moveq	#7,d6
-		lea	objoff_30(a0),a2
+		lea		objoff_30(a0),a2
 
 FFloor_MakeBlock:
-		jsr	(FindFreeObj).l
+		jsr		(FindFreeObj).l
 		bne.s	FFloor_ExitMake
 		move.w	a1,(a2)+
 		move.b	#id_FalseFloor,obID(a1)	; load block object
@@ -43,7 +44,7 @@ FFloor_MakeBlock:
 		move.w	#boss_sbz2_y+$C0,obY(a1)
 		addi.w	#$20,d5					; add $20 for next X position
 		move.b	#8,obRoutine(a1)
-		dbf	d6,FFloor_MakeBlock			; repeat sequence 7 more times
+		dbf		d6,FFloor_MakeBlock			; repeat sequence 7 more times
 
 FFloor_ExitMake:
 		addq.b	#2,obRoutine(a0)
@@ -71,7 +72,7 @@ FFloor_Solid:
 		add.w	d0,d1
 		moveq	#$10,d2
 		moveq	#$11,d3
-		jmp	(SolidObject).l
+		jmp		(SolidObject).l
 ; ===========================================================================
 
 loc_19C36:	; Routine 4
@@ -101,36 +102,36 @@ loc_19C62:	; Routine 6
 loc_19C72:	; Routine 8
 		cmpi.w	#"GO",obSubtype(a0) ; is object set to disintegrate?
 		beq.s	FFloor_Break	; if yes, branch
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 
 loc_19C80:	; Routine $A
 		tst.b	obRender(a0)
 		bpl.w	loc_1982C
-		jsr	(ObjectFall).l
-		jmp	(DisplaySprite).l
+		jsr		(ObjectFall).l
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 
 FFloor_Break:
-		lea	FFloor_FragSpeed(pc),a4
-		lea	FFloor_FragPos(pc),a5
+		lea		FFloor_FragSpeed(pc),a4
+		lea		FFloor_FragPos(pc),a5
 		moveq	#1,d4
 		moveq	#3,d1
 		moveq	#$38,d2
 		addq.b	#2,obRoutine(a0)
 		move.b	#8,obActWid(a0)
 		move.b	#8,obHeight(a0)
-		lea	(a0),a1
+		lea		(a0),a1
 		bra.s	FFloor_MakeFrag
 ; ===========================================================================
 
 FFloor_LoopFrag:
-		jsr	(FindNextFreeObj).l
+		jsr		(FindNextFreeObj).l
 		bne.s	FFloor_BreakSnd
 
 FFloor_MakeFrag:
-		lea	(a0),a2
-		lea	(a1),a3
+		lea		(a0),a2
+		lea		(a1),a3
 		moveq	#3,d3
 
 loc_19CC4:
@@ -138,7 +139,7 @@ loc_19CC4:
 		move.l	(a2)+,(a3)+
 		move.l	(a2)+,(a3)+
 		move.l	(a2)+,(a3)+
-		dbf	d3,loc_19CC4
+		dbf		d3,loc_19CC4
 
 		move.w	(a4)+,obVelY(a1)
 		move.w	(a5)+,d3
@@ -147,16 +148,18 @@ loc_19CC4:
 		add.w	d3,obY(a1)
 		move.b	d4,obFrame(a1)
 		addq.w	#1,d4
-		dbf	d1,FFloor_LoopFrag ; repeat sequence 3 more times
+		dbf		d1,FFloor_LoopFrag ; repeat sequence 3 more times
 
 FFloor_BreakSnd:
 		move.w	#sfx_WallSmash,d0
-		jsr	(PlaySound_Special).l	; play smashing sound
-		jmp	(DisplaySprite).l
+		jsr		(PlaySound_Special).l	; play smashing sound
+		jmp		(DisplaySprite).l
 ; ===========================================================================
-FFloor_FragSpeed:dc.w $80, 0
+FFloor_FragSpeed:
+		dc.w $80, 0
 		dc.w $120, $C0
-FFloor_FragPos:	dc.w -8, -8
+FFloor_FragPos:
+		dc.w -8, -8
 		dc.w $10, 0
 		dc.w 0,	$10
 		dc.w $10, $10

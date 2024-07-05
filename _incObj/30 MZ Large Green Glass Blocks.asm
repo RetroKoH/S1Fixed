@@ -11,14 +11,14 @@ GlassBlock:
 		bra.w	DisplaySprite
 ; ===========================================================================
 
-Glass_Index:
-		dc.w Glass_Main-Glass_Index
-		dc.w Glass_Block012-Glass_Index
-		dc.w Glass_Reflect012-Glass_Index
-		dc.w Glass_Block34-Glass_Index
-		dc.w Glass_Reflect34-Glass_Index
+Glass_Index:	offsetTable
+		offsetTableEntry.w Glass_Main
+		offsetTableEntry.w Glass_Block012
+		offsetTableEntry.w Glass_Reflect012
+		offsetTableEntry.w Glass_Block34
+		offsetTableEntry.w Glass_Reflect34
 
-glass_dist = objoff_32		; distance block moves when switch is pressed
+glass_dist = objoff_32			; distance block moves when switch is pressed
 glass_parent = objoff_3C		; address of parent object
 
 Glass_Vars1:	dc.b 2,	0, 0	; routine num, y-axis dist from	origin,	frame num
@@ -28,13 +28,13 @@ Glass_Vars2:	dc.b 6,	0, 2
 ; ===========================================================================
 
 Glass_Main:	; Routine 0
-		lea	(Glass_Vars1).l,a2
+		lea		(Glass_Vars1).l,a2
 		moveq	#1,d1
 		move.b	#$48,obHeight(a0)
 		cmpi.b	#3,obSubtype(a0) ; is object type 0/1/2 ?
 		blo.s	.IsType012	; if yes, branch
 
-		lea	(Glass_Vars2).l,a2
+		lea		(Glass_Vars2).l,a2
 		moveq	#1,d1
 		move.b	#$38,obHeight(a0)
 
@@ -64,7 +64,7 @@ Glass_Main:	; Routine 0
 		move.w	#$200,obPriority(a1)		; RetroKoH S2 Priority Manager
 		move.b	(a2)+,obFrame(a1)
 		move.l	a0,glass_parent(a1)
-		dbf	d1,.Repeat	; repeat once to load "reflection object"
+		dbf		d1,.Repeat	; repeat once to load "reflection object"
 
 		move.b	#$10,obActWid(a1)
 		move.w	#$180,obPriority(a1)		; RetroKoH S2 Priority Manager
@@ -116,15 +116,16 @@ Glass_Types:
 		andi.w	#7,d0
 		add.w	d0,d0
 		move.w	Glass_TypeIndex(pc,d0.w),d1
-		jmp	Glass_TypeIndex(pc,d1.w)
+		jmp		Glass_TypeIndex(pc,d1.w)
 ; End of function Glass_Types
 
 ; ===========================================================================
-Glass_TypeIndex:dc.w Glass_Type00-Glass_TypeIndex
-		dc.w Glass_Type01-Glass_TypeIndex
-		dc.w Glass_Type02-Glass_TypeIndex
-		dc.w Glass_Type03-Glass_TypeIndex
-		dc.w Glass_Type04-Glass_TypeIndex
+Glass_TypeIndex:	offsetTable
+		offsetTableEntry.w Glass_Type00
+		offsetTableEntry.w Glass_Type01
+		offsetTableEntry.w Glass_Type02
+		offsetTableEntry.w Glass_Type03
+		offsetTableEntry.w Glass_Type04
 ; ===========================================================================
 
 Glass_Type00:

@@ -6,14 +6,15 @@ Bubble:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Bub_Index(pc,d0.w),d1
-		jmp	Bub_Index(pc,d1.w)
+		jmp		Bub_Index(pc,d1.w)
 ; ===========================================================================
-Bub_Index:	dc.w Bub_Main-Bub_Index
-		dc.w Bub_Animate-Bub_Index
-		dc.w Bub_ChkWater-Bub_Index
-		dc.w Bub_Display-Bub_Index
-		dc.w Bub_Delete-Bub_Index
-		dc.w Bub_BblMaker-Bub_Index
+Bub_Index:	offsetTable
+		offsetTableEntry.w Bub_Main
+		offsetTableEntry.w Bub_Animate
+		offsetTableEntry.w Bub_ChkWater
+		offsetTableEntry.w Bub_Display
+		offsetTableEntry.w Bub_Delete
+		offsetTableEntry.w Bub_BblMaker
 
 bub_inhalable = objoff_2E	; flag set when bubble is collectable
 bub_origX = objoff_30		; original x-axis position
@@ -43,12 +44,12 @@ Bub_Main:	; Routine 0
 		move.b	d0,obAnim(a0)
 		move.w	obX(a0),bub_origX(a0)
 		move.w	#-$88,obVelY(a0) ; float bubble upwards
-		jsr	(RandomNumber).l
+		jsr		(RandomNumber).l
 		move.b	d0,obAngle(a0)
 
 Bub_Animate:	; Routine 2
-		lea	(Ani_Bub).l,a1
-		jsr	(AnimateSprite).l
+		lea		(Ani_Bub).l,a1
+		jsr		(AnimateSprite).l
 		cmpi.b	#6,obFrame(a0)	; is bubble full-size?
 		bne.s	Bub_ChkWater	; if not, branch
 
@@ -111,7 +112,7 @@ Bub_ChkWater:	; Routine 4
 		jmp		(DisplaySprite).l
 
 .delete:
-		jmp		(DeleteObject).l
+		bra.w	DeleteObject
 ; ===========================================================================
 
 Bub_Display:	; Routine 6
@@ -119,10 +120,10 @@ Bub_Display:	; Routine 6
 		jsr		(AnimateSprite).l
 		tst.b	obRender(a0)
 		bpl.s	.delete
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 
 .delete:
-		jmp	(DeleteObject).l
+		bra.w	DeleteObject
 ; ===========================================================================
 
 Bub_Delete:	; Routine 8
@@ -142,7 +143,7 @@ Bub_BblMaker:	; Routine $A
 		move.w	#1,objoff_36(a0)
 
 .tryagain:
-		jsr	(RandomNumber).l
+		jsr		(RandomNumber).l
 		move.w	d0,d1
 		andi.w	#7,d0
 		cmpi.w	#6,d0		; random number over 6?
@@ -150,7 +151,7 @@ Bub_BblMaker:	; Routine $A
 
 		move.b	d0,objoff_34(a0)
 		andi.w	#$C,d1
-		lea	(Bub_BblTypes).l,a1
+		lea		(Bub_BblTypes).l,a1
 		adda.w	d1,a1
 		move.l	a1,objoff_3C(a0)
 		subq.b	#1,bub_time(a0)
@@ -167,14 +168,14 @@ Bub_BblMaker:	; Routine $A
 		bpl.w	.loc_12914
 
 .loc_1287C:
-		jsr	(RandomNumber).l
+		jsr		(RandomNumber).l
 		andi.w	#$1F,d0
 		move.w	d0,objoff_38(a0)
 		bsr.w	FindFreeObj
 		bne.s	.fail
 		_move.b	#id_Bubble,obID(a1) ; load bubble object
 		move.w	obX(a0),obX(a1)
-		jsr	(RandomNumber).l
+		jsr		(RandomNumber).l
 		andi.w	#$F,d0
 		subq.w	#8,d0
 		add.w	d0,obX(a1)
@@ -185,7 +186,7 @@ Bub_BblMaker:	; Routine $A
 		move.b	(a2,d0.w),obSubtype(a1)
 		btst	#7,objoff_36(a0)
 		beq.s	.fail
-		jsr	(RandomNumber).l
+		jsr		(RandomNumber).l
 		andi.w	#3,d0
 		bne.s	.loc_buh
 		bset	#6,objoff_36(a0)
@@ -202,15 +203,15 @@ Bub_BblMaker:	; Routine $A
 .fail:
 		subq.b	#1,objoff_34(a0)
 		bpl.s	.loc_12914
-		jsr	(RandomNumber).l
+		jsr		(RandomNumber).l
 		andi.w	#$7F,d0
 		addi.w	#$80,d0
 		add.w	d0,objoff_38(a0)
 		clr.w	objoff_36(a0)
 
 .loc_12914:
-		lea	(Ani_Bub).l,a1
-		jsr	(AnimateSprite).l
+		lea		(Ani_Bub).l,a1
+		jsr		(AnimateSprite).l
 
 .chkdel:
 		offscreen.w	DeleteObject		; PFM S3K OBJ
@@ -230,7 +231,7 @@ Bub_BblTypes:	dc.b 0,	1, 0, 0, 0, 0, 1, 0, 0,	0, 0, 1, 0, 1, 0, 0, 1,	0
 Bub_ChkSonic:
 		tst.b	(f_playerctrl).w
 		bmi.s	.loc_12998
-		lea	(v_player).w,a1
+		lea		(v_player).w,a1
 		move.w	obX(a1),d0
 		move.w	obX(a0),d1
 		subi.w	#$10,d1

@@ -17,7 +17,7 @@ DynamicLevelEvents:
 		move.b	(v_zone).w,d0
 		add.w	d0,d0
 		move.w	DLE_Index(pc,d0.w),d0
-		jsr	DLE_Index(pc,d0.w) ; run level-specific events
+		jsr		DLE_Index(pc,d0.w) ; run level-specific events
 		moveq	#2,d1
 		move.w	(v_limitbtm1).w,d0
 		sub.w	(v_limitbtm2).w,d0 ; has lower level boundary changed recently?
@@ -56,15 +56,22 @@ loc_6DC4:
 ; End of function DynamicLevelEvents
 
 ; ===========================================================================
+
 ; ---------------------------------------------------------------------------
 ; Offset index for dynamic level events
 ; ---------------------------------------------------------------------------
-DLE_Index:	dc.w DLE_GHZ-DLE_Index, DLE_LZ-DLE_Index
-		dc.w DLE_MZ-DLE_Index, DLE_SLZ-DLE_Index
-		dc.w DLE_SYZ-DLE_Index, DLE_SBZ-DLE_Index
-		zonewarning DLE_Index,2
-		dc.w DLE_Ending-DLE_Index
 ; ===========================================================================
+DLE_Index:	offsetTable
+		offsetTableEntry.w	DLE_GHZ
+		offsetTableEntry.w	DLE_LZ
+		offsetTableEntry.w	DLE_MZ
+		offsetTableEntry.w	DLE_SLZ
+		offsetTableEntry.w	DLE_SYZ
+		offsetTableEntry.w	DLE_SBZ
+		zonewarning DLE_Index,2
+		offsetTableEntry.w	DLE_Ending
+; ===========================================================================
+
 ; ---------------------------------------------------------------------------
 ; Green	Hill Zone dynamic level events
 ; ---------------------------------------------------------------------------

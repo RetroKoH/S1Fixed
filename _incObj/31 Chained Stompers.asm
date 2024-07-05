@@ -8,12 +8,12 @@ ChainStomp:
 		move.w	CStom_Index(pc,d0.w),d1
 		jmp		CStom_Index(pc,d1.w)
 ; ===========================================================================
-CStom_Index:
-		dc.w CStom_Main-CStom_Index
-		dc.w loc_B798-CStom_Index
-		dc.w loc_B7FE-CStom_Index
-		dc.w CStom_ChkDel-CStom_Index
-		dc.w loc_B7E2-CStom_Index
+CStom_Index:	offsetTable
+		offsetTableEntry.w CStom_Main
+		offsetTableEntry.w loc_B798
+		offsetTableEntry.w loc_B7FE
+		offsetTableEntry.w CStom_ChkDel
+		offsetTableEntry.w loc_B7E2
 
 CStom_switch = objoff_3A			; switch number for the current stomper
 
@@ -54,7 +54,7 @@ loc_B6CE:
 		move.w	d2,objoff_32(a0)
 
 loc_B6E0:
-		lea	(CStom_Var).l,a2
+		lea		(CStom_Var).l,a2
 		movea.l	a0,a1
 		moveq	#3,d1
 		bra.s	CStom_MakeStomper
@@ -103,12 +103,13 @@ CStom_SetSize:
 		move.b	obSubtype(a0),d0
 		lsr.w	#3,d0
 		andi.b	#$E,d0
-		lea	CStom_Var2(pc,d0.w),a2
+		lea		CStom_Var2(pc,d0.w),a2
 		move.b	(a2)+,obActWid(a0)
 		move.b	(a2)+,obFrame(a0)
 		bra.s	loc_B798
 ; ===========================================================================
-CStom_Var2:	dc.b $38, 0		; width, frame number
+CStom_Var2:
+		dc.b $38, 0		; width, frame number
 		dc.b $30, 9
 		dc.b $10, $A
 ; ===========================================================================
@@ -160,19 +161,20 @@ CStom_Types:
 		andi.w	#$F,d0
 		add.w	d0,d0
 		move.w	CStom_TypeIndex(pc,d0.w),d1
-		jmp	CStom_TypeIndex(pc,d1.w)
+		jmp		CStom_TypeIndex(pc,d1.w)
 ; ===========================================================================
-CStom_TypeIndex:dc.w CStom_Type00-CStom_TypeIndex
-		dc.w CStom_Type01-CStom_TypeIndex
-		dc.w CStom_Type01-CStom_TypeIndex
-		dc.w CStom_Type03-CStom_TypeIndex
-		dc.w CStom_Type01-CStom_TypeIndex
-		dc.w CStom_Type03-CStom_TypeIndex
-		dc.w CStom_Type01-CStom_TypeIndex
+CStom_TypeIndex:	offsetTable
+		offsetTableEntry.w CStom_Type00
+		offsetTableEntry.w CStom_Type01
+		offsetTableEntry.w CStom_Type01
+		offsetTableEntry.w CStom_Type03
+		offsetTableEntry.w CStom_Type01
+		offsetTableEntry.w CStom_Type03
+		offsetTableEntry.w CStom_Type01
 ; ===========================================================================
 
 CStom_Type00:
-		lea	(f_switch).w,a2	; load switch statuses
+		lea		(f_switch).w,a2	; load switch statuses
 		moveq	#0,d0
 		move.b	CStom_switch(a0),d0 ; move number 0 or 1 to d0
 		tst.b	(a2,d0.w)	; has switch (d0) been pressed?
@@ -191,7 +193,7 @@ loc_B872:
 		tst.b	obRender(a0)
 		bpl.s	loc_B892
 		move.w	#sfx_ChainRise,d0
-		jsr	(PlaySound_Special).l	; play rising chain sound
+		jsr		(PlaySound_Special).l	; play rising chain sound
 
 loc_B892:
 		subi.w	#$80,objoff_32(a0)
@@ -217,7 +219,7 @@ loc_B8A8:
 		tst.b	obRender(a0)
 		bpl.s	CStom_Restart
 		move.w	#sfx_ChainStomp,d0
-		jsr	(PlaySound_Special).l	; play stomping sound
+		jsr		(PlaySound_Special).l	; play stomping sound
 
 CStom_Restart:
 		moveq	#0,d0
@@ -243,7 +245,7 @@ loc_B902:
 		tst.b	obRender(a0)
 		bpl.s	loc_B91C
 		move.w	#sfx_ChainRise,d0
-		jsr	(PlaySound_Special).l	; play rising chain sound
+		jsr		(PlaySound_Special).l	; play rising chain sound
 
 loc_B91C:
 		subi.w	#$80,objoff_32(a0)
@@ -270,7 +272,7 @@ loc_B938:
 		tst.b	obRender(a0)
 		bpl.s	loc_B97C
 		move.w	#sfx_ChainStomp,d0
-		jsr	(PlaySound_Special).l	; play stomping sound
+		jsr		(PlaySound_Special).l	; play stomping sound
 
 loc_B97C:
 		bra.w	CStom_Restart

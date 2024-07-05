@@ -6,14 +6,14 @@ Crabmeat:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Crab_Index(pc,d0.w),d1
-		jmp	Crab_Index(pc,d1.w)
+		jmp		Crab_Index(pc,d1.w)
 ; ===========================================================================
-Crab_Index:
-ptr_Crab_Main:		dc.w Crab_Main-Crab_Index
-ptr_Crab_Action:	dc.w Crab_Action-Crab_Index
-ptr_Crab_Delete:	dc.w Crab_Delete-Crab_Index
-ptr_Crab_BallMain:	dc.w Crab_BallMain-Crab_Index
-ptr_Crab_BallMove:	dc.w Crab_BallMove-Crab_Index
+Crab_Index:		offsetTable
+ptr_Crab_Main:		offsetTableEntry.w	Crab_Main
+ptr_Crab_Action:	offsetTableEntry.w	Crab_Action
+ptr_Crab_Delete:	offsetTableEntry.w	Crab_Delete
+ptr_Crab_BallMain:	offsetTableEntry.w	Crab_BallMain
+ptr_Crab_BallMove:	offsetTableEntry.w	Crab_BallMove
 
 id_Crab_Main = ptr_Crab_Main-Crab_Index	; 0
 id_Crab_Action = ptr_Crab_Action-Crab_Index	; 2
@@ -35,7 +35,7 @@ Crab_Main:	; Routine 0
 		move.b	#6,obColType(a0)
 		move.b	#$15,obActWid(a0)
 		bsr.w	ObjectFall
-		jsr	(ObjFloorDist).l	; find floor
+		jsr		(ObjFloorDist).l	; find floor
 		tst.w	d1
 		bpl.s	.floornotfound
 		add.w	d1,obY(a0)
@@ -48,17 +48,10 @@ Crab_Main:	; Routine 0
 ; ===========================================================================
 
 Crab_Action:	; Routine 2
-		moveq	#0,d0
-		move.b	ob2ndRout(a0),d0
-		move.w	.index(pc,d0.w),d1
-		jsr	.index(pc,d1.w)
-		lea	(Ani_Crab).l,a1
-		bsr.w	AnimateSprite
-		bra.w	RememberState
-; ===========================================================================
-.index:		dc.w .waittofire-.index
-		dc.w .walkonfloor-.index
-; ===========================================================================
+	; LavaGaming Object Routine Optimization
+		tst.b	ob2ndRout(a0)
+		bne.w	.walkonfloor
+	; Object Routine Optimization End
 
 .waittofire:
 		subq.w	#1,crab_timedelay(a0) ; subtract 1 from time delay
@@ -81,7 +74,9 @@ Crab_Action:	; Routine 2
 
 .dontmove:
 .noflip:
-		rts	
+		lea		(Ani_Crab).l,a1
+		bsr.w	AnimateSprite
+		bra.w	RememberState	
 ; ===========================================================================
 
 .fire:
@@ -107,7 +102,9 @@ Crab_Action:	; Routine 2
 		move.w	#$100,obVelX(a1)
 
 .failright:
-		rts	
+		lea		(Ani_Crab).l,a1
+		bsr.w	AnimateSprite
+		bra.w	RememberState	
 ; ===========================================================================
 
 .walkonfloor:
@@ -128,26 +125,32 @@ loc_9640:
 		blt.s	loc_966E
 		cmpi.w	#$C,d1
 		bge.s	loc_966E
-		rts	
+		lea		(Ani_Crab).l,a1
+		bsr.w	AnimateSprite
+		bra.w	RememberState	
 ; ===========================================================================
 
 loc_9654:
 		jsr		(ObjFloorDist).l
 		add.w	d1,obY(a0)
 		move.b	d3,obAngle(a0)
-		bsr.w	Crab_SetAni
+		bsr.s	Crab_SetAni
 		addq.b	#3,d0
 		move.b	d0,obAnim(a0)
-		rts	
+		lea		(Ani_Crab).l,a1
+		bsr.w	AnimateSprite
+		bra.w	RememberState	
 ; ===========================================================================
 
 loc_966E:
 		subq.b	#2,ob2ndRout(a0)
 		move.w	#59,crab_timedelay(a0)
 		clr.w	obVelX(a0)
-		bsr.w	Crab_SetAni
+		bsr.s	Crab_SetAni
 		move.b	d0,obAnim(a0)
-		rts	
+		lea		(Ani_Crab).l,a1
+		bsr.w	AnimateSprite
+		bra.w	RememberState	
 ; ---------------------------------------------------------------------------
 ; Subroutine to	set the	correct	animation for a	Crabmeat
 ; ---------------------------------------------------------------------------
@@ -210,6 +213,6 @@ Crab_BallMove:	; Routine 8
 		bsr.w	ObjectFall
 		move.w	(v_limitbtm2).w,d0
 		addi.w	#$E0,d0
-		cmp.w	obY(a0),d0	; has object moved below the level boundary?
-		blo.s	Crab_Delete
+		cmp.w	obY(a0),d0		; has object moved below the level boundary?
+		blo.w	DeleteObject
 		bra.w	DisplaySprite	; Clownacy DisplaySprite Fix

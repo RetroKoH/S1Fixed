@@ -59,14 +59,16 @@ Eni_Loop:
 ; ===========================================================================
 ; loc_1768:
 EniDec_00:
-.loop:		move.w	a2,(a1)+	; copy incremental copy word
+.loop:
+		move.w	a2,(a1)+	; copy incremental copy word
 		addq.w	#1,a2		; increment it
 		dbf	d2,.loop	; repeat
 		bra.s	Eni_Loop
 ; ===========================================================================
 ; loc_1772:
 EniDec_01:
-.loop:		move.w	a4,(a1)+	; copy literal copy word
+.loop:
+		move.w	a4,(a1)+	; copy literal copy word
 		dbf	d2,.loop	; repeat
 		bra.s	Eni_Loop
 ; ===========================================================================
@@ -74,7 +76,8 @@ EniDec_01:
 EniDec_100:
 		bsr.w	EniDec_FetchInlineValue
 ; loc_177E:
-.loop:		move.w	d1,(a1)+	; copy inline value
+.loop:
+		move.w	d1,(a1)+	; copy inline value
 		dbf	d2,.loop	; repeat
 
 		bra.s	Eni_Loop
@@ -83,7 +86,8 @@ EniDec_100:
 EniDec_101:
 		bsr.w	EniDec_FetchInlineValue
 ; loc_178A:
-.loop:		move.w	d1,(a1)+	; copy inline value
+.loop:
+		move.w	d1,(a1)+	; copy inline value
 		addq.w	#1,d1		; increment
 		dbf	d2,.loop	; repeat
 
@@ -93,7 +97,8 @@ EniDec_101:
 EniDec_110:
 		bsr.w	EniDec_FetchInlineValue
 ; loc_1798:
-.loop:		move.w	d1,(a1)+	; copy inline value
+.loop:
+		move.w	d1,(a1)+	; copy inline value
 		subq.w	#1,d1		; decrement
 		dbf	d2,.loop	; repeat
 
@@ -104,7 +109,8 @@ EniDec_111:
 		cmpi.w	#$F,d2
 		beq.s	EniDec_Done
 ; loc_17A8:
-.loop:		bsr.w	EniDec_FetchInlineValue	; fetch new inline value
+.loop:
+		bsr.w	EniDec_FetchInlineValue	; fetch new inline value
 		move.w	d1,(a1)+	; copy it
 		dbf	d2,.loop	; and repeat
 

@@ -9,10 +9,10 @@ SmashWall:
 		jsr		Smash_Index(pc,d1.w)
 		bra.w	RememberState
 ; ===========================================================================
-Smash_Index:
-		dc.w Smash_Main-Smash_Index
-		dc.w Smash_Solid-Smash_Index
-		dc.w Smash_FragMove-Smash_Index
+Smash_Index:	offsetTable
+		offsetTableEntry.w Smash_Main
+		offsetTableEntry.w Smash_Solid
+		offsetTableEntry.w Smash_FragMove
 
 smash_speed = objoff_30		; Sonic's horizontal speed
 ; ===========================================================================

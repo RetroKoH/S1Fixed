@@ -32,12 +32,12 @@ Signpost:
 		offscreen.w	DeleteObject	; ProjectFM S3K Object Manager
 		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix
 ; ===========================================================================
-Sign_Index:
-		dc.w	Sign_Main-Sign_Index
-		dc.w	Sign_Touch-Sign_Index
-		dc.w	Sign_Spin-Sign_Index
-		dc.w	Sign_SonicRun-Sign_Index
-		dc.w	Sign_Exit-Sign_Index
+Sign_Index:		offsetTable
+		offsetTableEntry.w	Sign_Main
+		offsetTableEntry.w	Sign_Touch
+		offsetTableEntry.w	Sign_Spin
+		offsetTableEntry.w	Sign_SonicRun
+		offsetTableEntry.w	Sign_Exit
 ; ===========================================================================
 
 Sign_Main:	; Routine 0

@@ -7,11 +7,11 @@ Effects:
 		move.w	Effects_Index(pc,d0.w),d1
 		jmp		Effects_Index(pc,d1.w)
 ; ===========================================================================
-Effects_Index:
-		dc.w 	Effects_Init-Effects_Index
-		dc.w 	Effects_Main-Effects_Index
-		dc.w 	Effects_Delete-Effects_Index
-		dc.w	Effects_ChkSkid-Effects_Index
+Effects_Index:	offsetTable
+		offsetTableEntry.w 	Effects_Init
+		offsetTableEntry.w 	Effects_Main
+		offsetTableEntry.w 	Effects_Delete
+		offsetTableEntry.w	Effects_ChkSkid
 ; ===========================================================================
 Effects_Init:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -33,10 +33,10 @@ Effects_Main:	; Routine 2
 		jmp		Effects_DisplayModes(pc,d1.w)
 ; ===========================================================================
 ; off_1DDA4:
-Effects_DisplayModes:
-		dc.w 	Effects_MdDisplay-Effects_DisplayModes		; 0
-		dc.w 	Effects_MdSpindashDust-Effects_DisplayModes	; 2
-		dc.w 	Effects_MdDisplay-Effects_DisplayModes		; Effects_MdSkidDust-Effects_DisplayModes	; 4
+Effects_DisplayModes:	offsetTable
+		offsetTableEntry.w 	Effects_MdDisplay		; 0
+		offsetTableEntry.w 	Effects_MdSpindashDust	; 2
+		offsetTableEntry.w 	Effects_MdDisplay		; Effects_MdSkidDust-Effects_DisplayModes	; 4
 ; ===========================================================================
 Effects_MdSpindashDust:
 	if SpinDashEnabled=1
@@ -56,7 +56,7 @@ Effects_MdDisplay:
 		bsr.w	Effects_LoadGfx
 		jmp		(DisplaySprite).l
 
-Fx_MdNull:
+Effects_MdNull:
 		rts
 ; ===========================================================================
 Effects_ResetDisplayMode:

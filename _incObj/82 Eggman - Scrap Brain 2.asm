@@ -6,19 +6,22 @@ ScrapEggman:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	SEgg_Index(pc,d0.w),d1
-		jmp	SEgg_Index(pc,d1.w)
+		jmp		SEgg_Index(pc,d1.w)
 ; ===========================================================================
-SEgg_Index:	dc.w SEgg_Main-SEgg_Index
-		dc.w SEgg_Eggman-SEgg_Index
-		dc.w SEgg_Switch-SEgg_Index
+SEgg_Index:		offsetTable
+		offsetTableEntry.w SEgg_Main
+		offsetTableEntry.w SEgg_Eggman
+		offsetTableEntry.w SEgg_Switch
 
 SEgg_ObjData:
-		dc.b 2,	0, 3		; routine number, animation, priority
-		dc.b 4,	0, 3
+		;		routine,		priority-hi
+		;				anim,			priority-lo
+		dc.b	2,		0,		1,		$80
+		dc.b	4,		0,		1,		$80
 ; ===========================================================================
 
 SEgg_Main:	; Routine 0
-		lea	SEgg_ObjData(pc),a2
+		lea		SEgg_ObjData(pc),a2
 		move.w	#boss_sbz2_x+$110,obX(a0)
 		move.w	#boss_sbz2_y+$94,obY(a0)
 		move.b	#$F,obColType(a0)
@@ -27,15 +30,7 @@ SEgg_Main:	; Routine 0
 		clr.b	ob2ndRout(a0)
 		move.b	(a2)+,obRoutine(a0)
 		move.b	(a2)+,obAnim(a0)
-		move.b	(a2)+,obPriority(a0)
-
-	; RetroKoH S2 Priority Manager
-		move.w  obPriority(a0),d0
-		lsr.w   #1,d0
-		andi.w  #$380,d0
-		move.w  d0,obPriority(a0)
-	; S2 Priority Manager End
-
+		move.w	(a2)+,obPriority(a1)	; RetroKoH S3K Priority
 		move.l	#Map_SEgg,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
@@ -50,15 +45,7 @@ SEgg_Main:	; Routine 0
 		clr.b	ob2ndRout(a0)
 		move.b	(a2)+,obRoutine(a1)
 		move.b	(a2)+,obAnim(a1)
-		move.b	(a2)+,obPriority(a1)
-
-	; RetroKoH S2 Priority Manager
-		move.w  obPriority(a1),d0
-		lsr.w   #1,d0
-		andi.w  #$380,d0
-		move.w  d0,obPriority(a1)
-	; S2 Priority Manager End
-
+		move.w	(a2)+,obPriority(a1)	; RetroKoH S3K Priority
 		move.l	#Map_But,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman_Button,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)
@@ -69,16 +56,18 @@ SEgg_Main:	; Routine 0
 SEgg_Eggman:	; Routine 2
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
-		move.w	SEgg_EggIndex(pc,d0.w),d1
-		jsr	SEgg_EggIndex(pc,d1.w)
-		lea	Ani_SEgg(pc),a1
-		jsr	(AnimateSprite).l
-		jmp	(DisplaySprite).l
+	; RetroKoH Object Routine Optimization
+		jsr		SEgg_EggIndex(pc,d0.w)
+		lea		Ani_SEgg(pc),a1
+		jsr		(AnimateSprite).l
+		jmp		(DisplaySprite).l
 ; ===========================================================================
-SEgg_EggIndex:	dc.w SEgg_ChkSonic-SEgg_EggIndex
-		dc.w SEgg_PreLeap-SEgg_EggIndex
-		dc.w SEgg_Leap-SEgg_EggIndex
-		dc.w loc_19934-SEgg_EggIndex
+SEgg_EggIndex:
+		bra.s	SEgg_ChkSonic
+		bra.s	SEgg_PreLeap
+		bra.s	SEgg_Leap
+		bra.s	loc_19934
+	; Object Routine Optimization End
 ; ===========================================================================
 
 SEgg_ChkSonic:
@@ -91,7 +80,7 @@ SEgg_ChkSonic:
 		move.b	#1,obAnim(a0)
 
 loc_19934:
-		jmp	(SpeedToPos).l
+		jmp		(SpeedToPos).l
 ; ===========================================================================
 
 SEgg_PreLeap:
@@ -103,7 +92,7 @@ SEgg_PreLeap:
 		move.w	#15,objoff_3C(a0)
 
 loc_19954:
-		bra.s	loc_19934
+		jmp		(SpeedToPos).l
 ; ===========================================================================
 
 SEgg_Leap:
@@ -150,18 +139,14 @@ SEgg_FindLoop:
 		move.b	#1,obAnim(a0)
 
 loc_199D0:
-		bra.w	loc_19934
+		jmp		(SpeedToPos).l
 ; ===========================================================================
 
 SEgg_Switch:	; Routine 4
-		moveq	#0,d0
-		move.b	ob2ndRout(a0),d0
-		move.w	SEgg_SwIndex(pc,d0.w),d0
-		jmp	SEgg_SwIndex(pc,d0.w)
-; ===========================================================================
-SEgg_SwIndex:	dc.w loc_199E6-SEgg_SwIndex
-		dc.w SEgg_SwDisplay-SEgg_SwIndex
-; ===========================================================================
+	; LavaGaming Object Routine Optimization
+		tst.b	ob2ndRout(a0)
+		bne.s	SEgg_SwDisplay
+	; Object Routine Optimization End
 
 loc_199E6:
 		movea.l	objoff_34(a0),a1

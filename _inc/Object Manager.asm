@@ -22,17 +22,6 @@ ObjPosLoad:
 		bne.w	OPL_Next
 	; Object Routine Optimization End
 
-;		moveq	#0,d0
-;		move.b	(v_opl_routine).w,d0
-;		jmp		OPL_Index(pc,d0.w)
-; End of function ObjPosLoad
-
-; ===========================================================================
-;OPL_Index:
-;		bra.w	OPL_Main
-;		bra.w	OPL_Next
-; ===========================================================================
-
 OPL_Main:
 		addq.b	#4,(v_opl_routine).w
 

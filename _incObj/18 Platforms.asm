@@ -6,13 +6,14 @@ BasicPlatform:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Plat_Index(pc,d0.w),d1
-		jmp	Plat_Index(pc,d1.w)
+		jmp		Plat_Index(pc,d1.w)
 ; ===========================================================================
-Plat_Index:	dc.w Plat_Main-Plat_Index
-		dc.w Plat_Solid-Plat_Index
-		dc.w Plat_Action2-Plat_Index
-		dc.w Plat_Delete-Plat_Index
-		dc.w Plat_Action-Plat_Index
+Plat_Index:		offsetTable
+		offsetTableEntry.w Plat_Main
+		offsetTableEntry.w Plat_Solid
+		offsetTableEntry.w Plat_Action2
+		offsetTableEntry.w Plat_Delete
+		offsetTableEntry.w Plat_Action
 ; ===========================================================================
 
 Plat_Main:	; Routine 0
@@ -114,11 +115,12 @@ Plat_Move:
 		andi.w	#$F,d0
 		add.w	d0,d0
 		move.w	.index(pc,d0.w),d1
-		jmp	.index(pc,d1.w)
+		jmp		.index(pc,d1.w)
 ; End of function Plat_Move
 
 ; ===========================================================================
-.index:		dc.w .type00-.index, .type01-.index
+.index:
+		dc.w .type00-.index, .type01-.index
 		dc.w .type02-.index, .type03-.index
 		dc.w .type04-.index, .type05-.index
 		dc.w .type06-.index, .type07-.index
@@ -148,7 +150,9 @@ Plat_Move:
 		ext.w	d1
 		add.w	d1,d0
 		move.w	d0,obX(a0)	; change position on x-axis
-		bra.w	.chgmotion
+;	.chgmotion
+		move.b	(v_oscillate+$1A).w,objoff_26(a0) ; update platform-movement variable
+		rts
 ; ===========================================================================
 
 .type0C:
@@ -183,7 +187,9 @@ Plat_Move:
 		ext.w	d1
 		add.w	d1,d0
 		move.w	d0,objoff_2C(a0)	; change position on y-axis
-		bra.w	.chgmotion
+;	.chgmotion
+		move.b	(v_oscillate+$1A).w,objoff_26(a0) ; update platform-movement variable
+		rts
 ; ===========================================================================
 
 .type03:
@@ -280,10 +286,9 @@ Plat_Move:
 		asr.w	#1,d1
 		add.w	d1,d0
 		move.w	d0,objoff_2C(a0)	; change position on y-axis
-
-.chgmotion:
+;	.chgmotion
 		move.b	(v_oscillate+$1A).w,objoff_26(a0) ; update platform-movement variable
-		rts	
+		rts
 ; ===========================================================================
 
 Plat_ChkDel:

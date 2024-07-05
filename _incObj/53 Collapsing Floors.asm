@@ -8,10 +8,13 @@ CollapseFloor:
 		move.w	CFlo_Index(pc,d0.w),d1
 		jmp		CFlo_Index(pc,d1.w)
 ; ===========================================================================
-CFlo_Index:
-		dc.w CFlo_Main-CFlo_Index, CFlo_Touch-CFlo_Index
-		dc.w CFlo_Collapse-CFlo_Index, CFlo_Display-CFlo_Index
-		dc.w CFlo_Delete-CFlo_Index, CFlo_WalkOff-CFlo_Index
+CFlo_Index:		offsetTable
+		offsetTableEntry.w CFlo_Main
+		offsetTableEntry.w CFlo_Touch
+		offsetTableEntry.w CFlo_Collapse
+		offsetTableEntry.w CFlo_Display
+		offsetTableEntry.w CFlo_Delete
+		offsetTableEntry.w CFlo_WalkOff
 
 cflo_timedelay = objoff_38
 cflo_collapse_flag = objoff_3A
@@ -113,7 +116,7 @@ locret_843A:
 CFlo_TimeZero:
 		bsr.w	ObjectFall
 		tst.b	obRender(a0)
-		bpl.s	CFlo_Delete
+		bpl.w	DeleteObject
 		bra.w	DisplaySprite	; Clownacy DisplaySprite Fix	
 ; ===========================================================================
 

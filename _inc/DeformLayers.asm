@@ -29,15 +29,22 @@ DeformLayers:
 ; End of function DeformLayers
 
 ; ===========================================================================
+
 ; ---------------------------------------------------------------------------
 ; Offset index for background layer deformation	code
 ; ---------------------------------------------------------------------------
-Deform_Index:
-		dc.w Deform_GHZ-Deform_Index, Deform_LZ-Deform_Index
-		dc.w Deform_MZ-Deform_Index, Deform_SLZ-Deform_Index
-		dc.w Deform_SYZ-Deform_Index, Deform_SBZ-Deform_Index
+; ===========================================================================
+Deform_Index:	offsetTable
+		offsetTableEntry.w	Deform_GHZ
+		offsetTableEntry.w	Deform_LZ
+		offsetTableEntry.w	Deform_MZ
+		offsetTableEntry.w	Deform_SLZ
+		offsetTableEntry.w	Deform_SYZ
+		offsetTableEntry.w	Deform_SBZ
 		zonewarning Deform_Index,2
-		dc.w Deform_GHZ-Deform_Index
+		offsetTableEntry.w	Deform_GHZ
+; ===========================================================================
+
 ; ---------------------------------------------------------------------------
 ; Green	Hill Zone background layer deformation code
 ; ---------------------------------------------------------------------------

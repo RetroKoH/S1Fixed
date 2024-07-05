@@ -10,18 +10,21 @@ Elevator:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Elev_Index(pc,d0.w),d1
-		jsr	Elev_Index(pc,d1.w)
+		jsr		Elev_Index(pc,d1.w)
 		offscreen.w	DeleteObject,elev_origX(a0)	; PFM S3K Obj
 		bra.w	DisplaySprite
 ; ===========================================================================
-Elev_Index:	dc.w Elev_Main-Elev_Index
-		dc.w Elev_Platform-Elev_Index
-		dc.w Elev_Action-Elev_Index
-		dc.w Elev_MakeMulti-Elev_Index
+Elev_Index:		offsetTable
+		offsetTableEntry.w Elev_Main
+		offsetTableEntry.w Elev_Platform
+		offsetTableEntry.w Elev_Action
+		offsetTableEntry.w Elev_MakeMulti
 
-Elev_Var1:	dc.b $28, 0		; width, frame number
+Elev_Var1:
+		dc.b $28, 0		; width, frame number
 
-Elev_Var2:	dc.b $10, 1		; distance to move, action type
+Elev_Var2:
+		dc.b $10, 1		; distance to move, action type
 		dc.b $20, 1
 		dc.b $34, 1
 		dc.b $10, 3
@@ -106,18 +109,20 @@ Elev_Types:
 		move.b	obSubtype(a0),d0
 		andi.w	#$F,d0
 		add.w	d0,d0
-		move.w	.index(pc,d0.w),d1
-		jmp	.index(pc,d1.w)
+		move.w	Elev_TypeIndex(pc,d0.w),d1
+		jmp		Elev_TypeIndex(pc,d1.w)
 ; ===========================================================================
-.index:		dc.w .type00-.index, .type01-.index
-		dc.w .type02-.index, .type01-.index
-		dc.w .type04-.index, .type01-.index
-		dc.w .type06-.index, .type01-.index
-		dc.w .type08-.index, .type09-.index
-; ===========================================================================
-
-.type00:
-		rts	
+Elev_TypeIndex:		offsetTable
+		offsetTableEntry.w .type00
+		offsetTableEntry.w .type01
+		offsetTableEntry.w .type02
+		offsetTableEntry.w .type01
+		offsetTableEntry.w .type04
+		offsetTableEntry.w .type01
+		offsetTableEntry.w .type06
+		offsetTableEntry.w .type01
+		offsetTableEntry.w .type08
+		offsetTableEntry.w .type09
 ; ===========================================================================
 
 .type01:
@@ -125,6 +130,7 @@ Elev_Types:
 		bne.s	.notstanding
 		addq.b	#1,obSubtype(a0) ; if yes, add 1 to type
 
+.type00:
 .notstanding:
 		rts	
 ; ===========================================================================
@@ -185,12 +191,10 @@ Elev_Types:
 
 .typereset:
 		btst	#staSonicOnObj,obStatus(a0)
-		beq.s	.delete
+		beq.w	DeleteObject
 		bset	#staAir,obStatus(a1)
 		bclr	#staOnObj,obStatus(a1)
 		move.b	#2,obRoutine(a1)
-
-.delete:
 		bra.w	DeleteObject
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||

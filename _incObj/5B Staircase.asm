@@ -15,10 +15,10 @@ Staircase:
 		offscreen.w	DeleteObject,stair_origX(a0)	; PFM S3K Obj
 		bra.w	DisplaySprite
 ; ===========================================================================
-Stair_Index:	dc.w Stair_Main-Stair_Index
-		dc.w Stair_Move-Stair_Index
-		dc.w Stair_Solid-Stair_Index
-
+Stair_Index:	offsetTable
+		offsetTableEntry.w Stair_Main
+		offsetTableEntry.w Stair_Move
+		offsetTableEntry.w Stair_Solid
 ; ===========================================================================
 
 Stair_Main:	; Routine 0
@@ -68,7 +68,7 @@ Stair_Move:	; Routine 2
 		andi.w	#7,d0
 		add.w	d0,d0
 		move.w	Stair_TypeIndex(pc,d0.w),d1
-		jsr	Stair_TypeIndex(pc,d1.w)
+		jsr		Stair_TypeIndex(pc,d1.w)
 
 Stair_Solid:	; Routine 4
 		movea.l	stair_parent(a0),a2
@@ -96,10 +96,11 @@ loc_10F92:
 locret_10FA0:
 		rts	
 ; ===========================================================================
-Stair_TypeIndex:dc.w Stair_Type00-Stair_TypeIndex
-		dc.w Stair_Type01-Stair_TypeIndex
-		dc.w Stair_Type02-Stair_TypeIndex
-		dc.w Stair_Type01-Stair_TypeIndex
+Stair_TypeIndex:	offsetTable
+		offsetTableEntry.w Stair_Type00
+		offsetTableEntry.w Stair_Type01
+		offsetTableEntry.w Stair_Type02
+		offsetTableEntry.w Stair_Type01
 ; ===========================================================================
 
 Stair_Type00:
@@ -139,7 +140,7 @@ loc_10FE0:
 ; ===========================================================================
 
 loc_10FEC:
-		lea	objoff_38(a0),a1
+		lea		objoff_38(a0),a1
 		move.w	objoff_34(a0),d0
 		lsr.b	#2,d0
 		andi.b	#1,d0
@@ -154,7 +155,7 @@ loc_10FEC:
 ; ===========================================================================
 
 Stair_Type01:
-		lea	objoff_38(a0),a1
+		lea		objoff_38(a0),a1
 		cmpi.b	#$80,(a1)
 		beq.s	locret_11038
 		addq.b	#1,(a1)
@@ -174,5 +175,4 @@ Stair_Type01:
 		move.b	d1,(a1)+
 
 locret_11038:
-		rts	
-		rts	
+		rts

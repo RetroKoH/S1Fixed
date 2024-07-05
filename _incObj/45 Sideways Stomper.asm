@@ -8,12 +8,12 @@ SideStomp:
 		move.w	SStom_Index(pc,d0.w),d1
 		jmp		SStom_Index(pc,d1.w)
 ; ===========================================================================
-SStom_Index:
-		dc.w SStom_Main-SStom_Index
-		dc.w SStom_Solid-SStom_Index
-		dc.w loc_BA8E-SStom_Index
-		dc.w SStom_Display-SStom_Index
-		dc.w SStom_Pole-SStom_Index
+SStom_Index:	offsetTable
+		offsetTableEntry.w SStom_Main
+		offsetTableEntry.w SStom_Solid
+		offsetTableEntry.w loc_BA8E
+		offsetTableEntry.w SStom_Display
+		offsetTableEntry.w SStom_Pole
 
 SStom_Var:
 		;		routine		xpos	frame

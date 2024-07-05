@@ -23,14 +23,15 @@ loc_12378:
 		move.b	objoff_2F(a0),d0
 		bpl.w	DeleteObject
 		andi.w	#$7F,d0
-		lea	(v_obj63).w,a2
+		lea		(v_obj63).w,a2
 		bclr	#0,(a2,d0.w)
 		bra.w	DeleteObject
 ; ===========================================================================
-LCon_Index:	dc.w LCon_Main-LCon_Index
-		dc.w loc_124B2-LCon_Index
-		dc.w loc_124C2-LCon_Index
-		dc.w loc_124DE-LCon_Index
+LCon_Index:	offsetTable
+		offsetTableEntry.w LCon_Main
+		offsetTableEntry.w loc_124B2
+		offsetTableEntry.w loc_124C2
+		offsetTableEntry.w loc_124DE
 ; ===========================================================================
 
 LCon_Main:	; Routine 0
@@ -57,7 +58,7 @@ loc_123E2:
 		move.w	d0,d1
 		lsr.w	#3,d0
 		andi.w	#$1E,d0
-		lea	LCon_Data(pc),a2
+		lea		LCon_Data(pc),a2
 		adda.w	(a2,d0.w),a2
 		move.w	(a2)+,objoff_38(a0)
 		move.w	(a2)+,objoff_30(a0)
@@ -95,7 +96,7 @@ loc_1244C:
 loc_12460:
 		move.b	d0,objoff_2F(a0)
 		andi.w	#$7F,d0
-		lea	(v_obj63).w,a2
+		lea		(v_obj63).w,a2
 		bset	#0,(a2,d0.w)
 	if FixBugs
 		bne.s	.delete
@@ -105,7 +106,7 @@ loc_12460:
 		add.w	d0,d0
 		andi.w	#$1E,d0
 		addi.w	#ObjPosLZPlatform_Index-ObjPos_Index,d0
-		lea	(ObjPos_Index).l,a2
+		lea		(ObjPos_Index).l,a2
 		adda.w	(a2,d0.w),a2
 		move.w	(a2)+,d1
 		movea.l	a0,a1
@@ -141,18 +142,18 @@ loc_124AA:
 loc_124B2:	; Routine 2
 		moveq	#0,d1
 		move.b	obActWid(a0),d1
-		jsr	(PlatformObject).l
+		jsr		(PlatformObject).l
 		bra.w	sub_12502
 ; ===========================================================================
 
 loc_124C2:	; Routine 4
 		moveq	#0,d1
 		move.b	obActWid(a0),d1
-		jsr	(ExitPlatform).l
+		jsr		(ExitPlatform).l
 		move.w	obX(a0),-(sp)
 		bsr.w	sub_12502
 		move.w	(sp)+,d2
-		jmp	(MvSonicOnPtfm2).l
+		jmp		(MvSonicOnPtfm2).l
 ; ===========================================================================
 
 loc_124DE:	; Routine 6
@@ -215,8 +216,7 @@ loc_12552:
 		bsr.w	LCon_ChangeDir
 
 loc_1256A:
-		bsr.w	SpeedToPos
-		rts	
+		bra.w	SpeedToPos
 ; End of function sub_12502
 
 
@@ -280,7 +280,8 @@ loc_125D4:
 ; End of function LCon_ChangeDir
 
 ; ===========================================================================
-LCon_Data:	dc.w word_125F4-LCon_Data
+LCon_Data:
+		dc.w word_125F4-LCon_Data
 		dc.w word_12610-LCon_Data
 		dc.w word_12628-LCon_Data
 		dc.w word_1263C-LCon_Data

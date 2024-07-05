@@ -6,14 +6,14 @@ BossMarble:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	BossMarble_Index(pc,d0.w),d1
-		jmp	BossMarble_Index(pc,d1.w)
+		jmp		BossMarble_Index(pc,d1.w)
 ; ===========================================================================
-BossMarble_Index:
-		dc.w BossMarble_Main-BossMarble_Index
-		dc.w BossMarble_ShipMain-BossMarble_Index
-		dc.w BossMarble_FaceMain-BossMarble_Index
-		dc.w BossMarble_FlameMain-BossMarble_Index
-		dc.w BossMarble_TubeMain-BossMarble_Index
+BossMarble_Index:	offsetTable
+		offsetTableEntry.w BossMarble_Main
+		offsetTableEntry.w BossMarble_ShipMain
+		offsetTableEntry.w BossMarble_FaceMain
+		offsetTableEntry.w BossMarble_FlameMain
+		offsetTableEntry.w BossMarble_TubeMain
 
 BossMarble_ObjData:
 		dc.b 2,	0, 4		; routine number, animation, priority
@@ -74,12 +74,12 @@ BossMarble_ShipMain:	; Routine 2
 		or.b	d0,obRender(a0)
 		jmp		(DisplaySprite).l
 ; ===========================================================================
-BossMarble_ShipIndex:
-		dc.w loc_18302-BossMarble_ShipIndex
-		dc.w loc_183AA-BossMarble_ShipIndex
-		dc.w loc_184F6-BossMarble_ShipIndex
-		dc.w loc_1852C-BossMarble_ShipIndex
-		dc.w loc_18582-BossMarble_ShipIndex
+BossMarble_ShipIndex:	offsetTable
+		offsetTableEntry.w loc_18302
+		offsetTableEntry.w loc_183AA
+		offsetTableEntry.w loc_184F6
+		offsetTableEntry.w loc_1852C
+		offsetTableEntry.w loc_18582
 ; ===========================================================================
 
 loc_18302:
@@ -145,14 +145,15 @@ loc_183AA:
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
 		move.w	off_183C2(pc,d0.w),d0
-		jsr	off_183C2(pc,d0.w)
+		jsr		off_183C2(pc,d0.w)
 		andi.b	#6,obSubtype(a0)
 		bra.w	loc_1833E
 ; ===========================================================================
-off_183C2:	dc.w loc_183CA-off_183C2
-		dc.w BossMarble_MakeLava2-off_183C2
-		dc.w loc_183CA-off_183C2
-		dc.w BossMarble_MakeLava2-off_183C2
+off_183C2:	offsetTable
+		offsetTableEntry.w loc_183CA
+		offsetTableEntry.w BossMarble_MakeLava2
+		offsetTableEntry.w loc_183CA
+		offsetTableEntry.w BossMarble_MakeLava2
 ; ===========================================================================
 
 loc_183CA:

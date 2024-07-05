@@ -2,20 +2,18 @@
 ; Object 34 - zone title cards
 ; ---------------------------------------------------------------------------
 
-TitleCard:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Card_Index(pc,d0.w),d1
-		jmp	Card_Index(pc,d1.w)
-; ===========================================================================
-Card_Index:	dc.w Card_CheckSBZ3-Card_Index
-		dc.w Card_ChkPos-Card_Index
-		dc.w Card_Wait-Card_Index
-		dc.w Card_Wait-Card_Index
-
 card_mainX = objoff_30		; position for card to display on
 card_finalX = objoff_32		; position for card to finish on
-; ===========================================================================
+
+TitleCard:
+	; RetroKoH/LavaGaming Object Routine Optimization
+		move.b	obRoutine(a0),d0
+		cmpi.b	#2,d0
+		bgt.w	Card_Wait		; Routines 4/6
+		
+		tst.b	d0
+		bne.w	Card_ChkPos
+	; Object Routine Optimization End
 
 Card_CheckSBZ3:	; Routine 0
 		movea.l	a0,a1
@@ -33,10 +31,10 @@ Card_CheckFZ:
 		moveq	#$B,d2		; use "FINAL" mappings
 
 Card_LoadConfig:
-		lea	(Card_ConData).l,a3
+		lea		(Card_ConData).l,a3
 		lsl.w	#4,d0
 		adda.w	d0,a3
-		lea	(Card_ItemData).l,a2
+		lea		(Card_ItemData).l,a2
 		moveq	#3,d1
 
 Card_Loop:
@@ -126,16 +124,17 @@ Card_ChangeArt:
 		cmpi.b	#4,obRoutine(a0)
 		bne.s	Card_Delete
 		moveq	#plcid_Explode,d0
-		jsr	(AddPLC).l	; load explosion patterns
+		jsr		(AddPLC).l	; load explosion patterns
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
 		addi.w	#plcid_GHZAnimals,d0
-		jsr	(AddPLC).l	; load animal patterns
+		jsr		(AddPLC).l	; load animal patterns
 
 Card_Delete:
 		bra.w	DeleteObject
 ; ===========================================================================
-Card_ItemData:	dc.w $D0	; y-axis position
+Card_ItemData:
+		dc.w $D0	; y-axis position
 		dc.b 2,	0	; routine number, frame	number (changes)
 		dc.w $E4
 		dc.b 2,	6
@@ -149,7 +148,8 @@ Card_ItemData:	dc.w $D0	; y-axis position
 ; 4 bytes per item (YYYY XXXX)
 ; 4 items per level (GREEN HILL, ZONE, ACT X, oval)
 ; ---------------------------------------------------------------------------
-Card_ConData:	dc.w 0,	$120, $FEFC, $13C, $414, $154, $214, $154 ; GHZ
+Card_ConData:
+		dc.w 0,	$120, $FEFC, $13C, $414, $154, $214, $154 ; GHZ
 		dc.w 0,	$120, $FEF4, $134, $40C, $14C, $20C, $14C ; LZ
 		dc.w 0,	$120, $FEE0, $120, $3F8, $138, $1F8, $138 ; MZ
 		dc.w 0,	$120, $FEFC, $13C, $414, $154, $214, $154 ; SLZ

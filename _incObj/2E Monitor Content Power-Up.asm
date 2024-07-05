@@ -3,15 +3,16 @@
 ; ---------------------------------------------------------------------------
 
 PowerUp:
+	; RetroKoH Object Routine Optimization
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
-		move.w	Pow_Index(pc,d0.w),d1
-		jmp		Pow_Index(pc,d1.w)
+		jmp		Pow_Index(pc,d0.w)
 ; ===========================================================================
 Pow_Index:
-		dc.w	Pow_Main-Pow_Index
-		dc.w	Pow_Move-Pow_Index
-		dc.w	Pow_Delete-Pow_Index
+		bra.s	Pow_Main
+		bra.s	Pow_Move
+		bra.s	Pow_Delete
+	; Object Routine Optimization End
 ; ===========================================================================
 
 Pow_Main:	; Routine 0
@@ -32,15 +33,17 @@ Pow_Main:	; Routine 0
 		move.l	a1,obMap(a0)
 
 Pow_Move:	; Routine 2
-		bsr.s	.moveup
-		bra.w	DisplaySprite	; Clownacy DisplaySprite Fix (Alt method by RetroKoH based on S2)
-		
-.moveup:
 		tst.w	obVelY(a0)		; is object moving?
 		bpl.w	Pow_Checks		; if not, branch
 		bsr.w	SpeedToPos
 		addi.w	#$18,obVelY(a0)	; reduce object	speed
-		rts
+		bra.w	DisplaySprite	; Clownacy DisplaySprite Fix (Alt method by RetroKoH based on S2)
+; ===========================================================================
+
+Pow_Delete:	; Routine 4
+		subq.w	#1,obTimeFrame(a0)
+		bmi.w	DeleteObject	; delete after half a second
+		bra.w	DisplaySprite	; Clownacy DisplaySprite Fix (Alt method by RetroKoH based on S2)
 ; ===========================================================================
 
 Pow_Checks:
@@ -52,24 +55,25 @@ Pow_Checks:
 		move.b	obAnim(a0),d0
 		add.w	d0,d0
 		move.w	Pow_Types(pc,d0.w),d0
-		jmp		Pow_Types(pc,d0.w)
+		jsr		Pow_Types(pc,d0.w)
+		bra.w	DisplaySprite	; Clownacy DisplaySprite Fix (Alt method by RetroKoH based on S2)
 ; ===========================================================================
 	; Lookup table replaces the old system
-Pow_Types:
-		dc.w Pow_Null-Pow_Types		; 0 - Static
-		dc.w Pow_Eggman-Pow_Types	; 1 - Eggman/Robotnik
-		dc.w Pow_Sonic-Pow_Types	; 2 - 1-Up
-		dc.w Pow_Shoes-Pow_Types	; 3 - Speed Shoes
-		dc.w Pow_Shield-Pow_Types	; 4 - Shield
-		dc.w Pow_Invinc-Pow_Types	; 5 - Invincibility
-		dc.w Pow_Rings-Pow_Types	; 6 - Rings
+Pow_Types:	offsetTable
+		offsetTableEntry.w Pow_Null		; 0 - Static
+		offsetTableEntry.w Pow_Eggman	; 1 - Eggman/Robotnik
+		offsetTableEntry.w Pow_Sonic	; 2 - 1-Up
+		offsetTableEntry.w Pow_Shoes	; 3 - Speed Shoes
+		offsetTableEntry.w Pow_Shield	; 4 - Shield
+		offsetTableEntry.w Pow_Invinc	; 5 - Invincibility
+		offsetTableEntry.w Pow_Rings	; 6 - Rings
 	if ShieldsMode>1
-		dc.w Pow_FShield-Pow_Types	; 7 - Flame Shield		; Added
-		dc.w Pow_BShield-Pow_Types	; 8 - Bubble Shield		; Added
-		dc.w Pow_LShield-Pow_Types	; 9 - Lightning Shield	; Added
+		offsetTableEntry.w Pow_FShield	; 7 - Flame Shield		; Added
+		offsetTableEntry.w Pow_BShield	; 8 - Bubble Shield		; Added
+		offsetTableEntry.w Pow_LShield	; 9 - Lightning Shield	; Added
 	endif
-		dc.w Pow_S-Pow_Types		; A - S
-		dc.w Pow_Goggles-Pow_Types	; B - Goggles
+		offsetTableEntry.w Pow_S		; A - S
+		offsetTableEntry.w Pow_Goggles	; B - Goggles
 ; ===========================================================================
 	; Each powerup no longer requires a series of cmpi checks and branches.
 
@@ -192,8 +196,3 @@ Pow_LShield:
 		jmp		(PlaySound_Special).l						; play shield sound
 ; ===========================================================================
 	endif
-
-Pow_Delete:	; Routine 4
-		subq.w	#1,obTimeFrame(a0)
-		bmi.w	DeleteObject	; delete after half a second
-		bra.w	DisplaySprite	; Clownacy DisplaySprite Fix (Alt method by RetroKoH based on S2)

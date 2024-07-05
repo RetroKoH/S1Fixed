@@ -3,18 +3,17 @@
 ; (this	is not used anywhere in	the game)
 ; ---------------------------------------------------------------------------
 
-MagicSwitch:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Swi_Index(pc,d0.w),d1
-		jmp	Swi_Index(pc,d1.w)
-; ===========================================================================
-Swi_Index:	dc.w Swi_Main-Swi_Index
-		dc.w Swi_Action-Swi_Index
-		dc.w Swi_Delete-Swi_Index
-
 swi_origY = objoff_30		; original y-axis position
-; ===========================================================================
+
+MagicSwitch:
+	; LavaGaming Object Routine Optimization
+		move.b	obRoutine(a0),d0
+		cmpi.b	#2,d0
+		beq.s	Swi_Action
+		
+		tst.b	d0
+		bne.w	DeleteObject
+	; Object Routine Optimization End
 
 Swi_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -36,12 +35,9 @@ Swi_Action:	; Routine 2
 		move.w	d0,(f_switch).w	; set switch 0 as "pressed"
 
 Swi_ChkDel:
-		offscreen.s	Swi_Delete	; ProjectFM S3K Objects Manager
+		offscreen.w	DeleteObject	; ProjectFM S3K Objects Manager
 		bra.w	DisplaySprite	; Clownacy DisplaySprite Fix	
 ; ===========================================================================
-
-Swi_Delete:	; Routine 4
-		bra.w	DeleteObject
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	check if Sonic touches the object

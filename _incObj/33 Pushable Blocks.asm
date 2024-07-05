@@ -6,13 +6,15 @@ PushBlock:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	PushB_Index(pc,d0.w),d1
-		jmp	PushB_Index(pc,d1.w)
+		jmp		PushB_Index(pc,d1.w)
 ; ===========================================================================
-PushB_Index:	dc.w PushB_Main-PushB_Index
-		dc.w loc_BF6E-PushB_Index
-		dc.w loc_C02C-PushB_Index
+PushB_Index:	offsetTable
+		offsetTableEntry.w PushB_Main
+		offsetTableEntry.w loc_BF6E
+		offsetTableEntry.w loc_C02C
 
-PushB_Var:	dc.b $10, 0	; object width,	frame number
+PushB_Var:
+		dc.b $10, 0	; object width,	frame number
 		dc.b $40, 1
 ; ===========================================================================
 
@@ -148,7 +150,7 @@ loc_C0A0:
 		bmi.s	loc_C0BC
 		moveq	#0,d3
 		move.b	obActWid(a0),d3
-		jsr	(ObjHitWallRight).l
+		jsr		(ObjHitWallRight).l
 		tst.w	d1		; has block touched a wall?
 		bmi.s	PushB_StopPush	; if yes, branch
 		bra.s	loc_C0E6
@@ -158,7 +160,7 @@ loc_C0BC:
 		moveq	#0,d3
 		move.b	obActWid(a0),d3
 		not.w	d3
-		jsr	(ObjHitWallLeft).l
+		jsr		(ObjHitWallLeft).l
 		tst.w	d1		; has block touched a wall?
 		bmi.s	PushB_StopPush	; if yes, branch
 		bra.s	loc_C0E6

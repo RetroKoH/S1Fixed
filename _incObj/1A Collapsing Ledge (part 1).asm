@@ -8,10 +8,13 @@ CollapseLedge:
 		move.w	Ledge_Index(pc,d0.w),d1
 		jmp		Ledge_Index(pc,d1.w)
 ; ===========================================================================
-Ledge_Index:
-		dc.w	Ledge_Main-Ledge_Index, Ledge_Touch-Ledge_Index
-		dc.w	Ledge_Collapse-Ledge_Index, Ledge_Display-Ledge_Index
-		dc.w	Ledge_Delete-Ledge_Index, Ledge_WalkOff-Ledge_Index
+Ledge_Index:	offsetTable
+		offsetTableEntry.w	Ledge_Main
+		offsetTableEntry.w	Ledge_Touch
+		offsetTableEntry.w	Ledge_Collapse
+		offsetTableEntry.w	Ledge_Display
+		offsetTableEntry.w	Ledge_Delete
+		offsetTableEntry.w	Ledge_WalkOff
 
 ledge_timedelay = objoff_38		; time between touching the ledge and it collapsing
 ledge_collapse_flag = objoff_3A		; collapse flag

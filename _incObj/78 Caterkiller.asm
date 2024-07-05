@@ -6,16 +6,16 @@ Caterkiller:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Cat_Index(pc,d0.w),d1
-		jmp	Cat_Index(pc,d1.w)
+		jmp		Cat_Index(pc,d1.w)
 ; ===========================================================================
-Cat_Index:
-		dc.w Cat_Main-Cat_Index
-		dc.w Cat_Head-Cat_Index
-		dc.w Cat_BodySeg1-Cat_Index
-		dc.w Cat_BodySeg2-Cat_Index
-		dc.w Cat_BodySeg1-Cat_Index
-		dc.w Cat_Delete-Cat_Index
-		dc.w loc_16CC0-Cat_Index
+Cat_Index:	offsetTable
+		offsetTableEntry.w Cat_Main
+		offsetTableEntry.w Cat_Head
+		offsetTableEntry.w Cat_BodySeg1
+		offsetTableEntry.w Cat_BodySeg2
+		offsetTableEntry.w Cat_BodySeg1
+		offsetTableEntry.w Cat_Delete
+		offsetTableEntry.w loc_16CC0
 
 ; SSTs used
 ;		0		1		2		3		4		5		6		7		8		9		A		B		C		D		E		F
@@ -106,8 +106,7 @@ Cat_Head:	; Routine 2
 		bmi.w	loc_16C96
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
-		move.w	Cat_Index2(pc,d0.w),d1
-		jsr		Cat_Index2(pc,d1.w)
+		jsr		Cat_Index2(pc,d0.w)
 		move.b	objoff_2B(a0),d1
 		bpl.s	.display
 		lea		(Ani_Cat).l,a1
@@ -142,8 +141,11 @@ Cat_ChkGone:
 Cat_Delete:	; Routine $A
 		jmp	(DeleteObject).l
 ; ===========================================================================
-Cat_Index2:	dc.w .wait-Cat_Index2
-		dc.w loc_16B02-Cat_Index2
+	; RetroKoH Object Routine Optimization
+Cat_Index2:
+		bra.s	.wait
+		bra.s	loc_16B02
+	; Object Routine Optimization End
 ; ===========================================================================
 
 .wait:

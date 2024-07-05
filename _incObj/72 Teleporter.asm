@@ -13,10 +13,11 @@ Teleport:
 .delete:
 		jmp	(DeleteObject).l
 ; ===========================================================================
-Tele_Index:	dc.w Tele_Main-Tele_Index
-		dc.w loc_166C8-Tele_Index
-		dc.w loc_1675E-Tele_Index
-		dc.w loc_16798-Tele_Index
+Tele_Index:		offsetTable
+		offsetTableEntry.w Tele_Main
+		offsetTableEntry.w loc_166C8
+		offsetTableEntry.w loc_1675E
+		offsetTableEntry.w loc_16798
 ; ===========================================================================
 
 Tele_Main:	; Routine 0

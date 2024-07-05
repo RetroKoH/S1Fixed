@@ -6,12 +6,12 @@ SpinPlatform:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Spin_Index(pc,d0.w),d1
-		jmp	Spin_Index(pc,d1.w)
+		jmp		Spin_Index(pc,d1.w)
 ; ===========================================================================
-Spin_Index:
-		dc.w Spin_Main-Spin_Index
-		dc.w Spin_Trapdoor-Spin_Index
-		dc.w Spin_Spinner-Spin_Index
+Spin_Index:		offsetTable
+		offsetTableEntry.w Spin_Main
+		offsetTableEntry.w Spin_Trapdoor
+		offsetTableEntry.w Spin_Spinner
 
 spin_timer = objoff_30		; time counter until change
 spin_timelen = objoff_32	; time between changes (general)

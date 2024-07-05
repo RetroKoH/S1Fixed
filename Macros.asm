@@ -290,3 +290,18 @@ SonicDplcVer = 1
 
 pcmLoopCounter function sampleRate,baseCycles, 1+(53693175/15/(sampleRate)-(baseCycles)+(13/2))/13
 dpcmLoopCounter function sampleRate, pcmLoopCounter(sampleRate,301/2) ; 301 is the number of cycles zPlayPCMLoop takes.
+
+; ---------------------------------------------------------------------------
+; macros for offset tables -- taken from s2disasm
+; ---------------------------------------------------------------------------
+
+; macro to declare an offset table
+offsetTable macro {INTLABEL}
+current_offset_table := __LABEL__
+__LABEL__ label *
+    endm
+
+; macro to declare an entry in an offset table
+offsetTableEntry macro ptr
+	dc.ATTRIBUTE ptr-current_offset_table
+    endm

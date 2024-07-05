@@ -7,11 +7,12 @@ GrassFire:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	GFire_Index(pc,d0.w),d1
-		jmp	GFire_Index(pc,d1.w)
+		jmp		GFire_Index(pc,d1.w)
 ; ===========================================================================
-GFire_Index:	dc.w GFire_Main-GFire_Index
-		dc.w loc_B238-GFire_Index
-		dc.w GFire_Move-GFire_Index
+GFire_Index:	offsetTable
+		offsetTableEntry.w GFire_Main
+		offsetTableEntry.w loc_B238
+		offsetTableEntry.w GFire_Move
 
 gfire_origX = objoff_2A
 ; ===========================================================================
@@ -78,6 +79,6 @@ GFire_Move:	; Routine 4
 		move.w	d0,obY(a0)
 
 GFire_Animate:
-		lea	(Ani_GFire).l,a1
+		lea		(Ani_GFire).l,a1
 		bsr.w	AnimateSprite
 		bra.w	DisplaySprite

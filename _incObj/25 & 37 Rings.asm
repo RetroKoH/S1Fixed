@@ -8,12 +8,12 @@ Rings:
 		move.w	Ring_Index(pc,d0.w),d1
 		jmp		Ring_Index(pc,d1.w)
 ; ===========================================================================
-Ring_Index:
-ptr_Ring_Main:		dc.w Ring_Main-Ring_Index
-ptr_Ring_Animate:	dc.w Ring_Animate-Ring_Index
-ptr_Ring_Collect:	dc.w Ring_Collect-Ring_Index
-ptr_Ring_Sparkle:	dc.w Ring_Sparkle-Ring_Index
-ptr_Ring_Delete:	dc.w Ring_Delete-Ring_Index
+Ring_Index:		offsetTable
+ptr_Ring_Main:		offsetTableEntry.w Ring_Main
+ptr_Ring_Animate:	offsetTableEntry.w Ring_Animate
+ptr_Ring_Collect:	offsetTableEntry.w Ring_Collect
+ptr_Ring_Sparkle:	offsetTableEntry.w Ring_Sparkle
+ptr_Ring_Delete:	offsetTableEntry.w Ring_Delete
 
 id_Ring_Main = ptr_Ring_Main-Ring_Index	; 0
 id_Ring_Animate = ptr_Ring_Animate-Ring_Index	; 2
@@ -102,19 +102,19 @@ RingLoss:
 		move.w	RLoss_Index(pc,d0.w),d1
 		jmp		RLoss_Index(pc,d1.w)
 ; ===========================================================================
-RLoss_Index:
-		dc.w RLoss_Count-RLoss_Index
-		dc.w RLoss_Bounce-RLoss_Index
-		dc.w RLoss_Collect-RLoss_Index
-		dc.w RLoss_Sparkle-RLoss_Index
-		dc.w RLoss_Delete-RLoss_Index
+RLoss_Index:		offsetTable
+		offsetTableEntry.w RLoss_Count
+		offsetTableEntry.w RLoss_Bounce
+		offsetTableEntry.w RLoss_Collect
+		offsetTableEntry.w RLoss_Sparkle
+		offsetTableEntry.w RLoss_Delete
 
 	if ShieldsMode>1	; Attracted Rings (By the lightning shield)
-		dc.w RAttract_Init-RLoss_Index
-		dc.w RAttract_Main-RLoss_Index
-		dc.w RLoss_Collect-RLoss_Index
-		dc.w RLoss_Sparkle-RLoss_Index
-		dc.w RLoss_Delete-RLoss_Index
+		offsetTableEntry.w RAttract_Init
+		offsetTableEntry.w RAttract_Main
+		offsetTableEntry.w RLoss_Collect
+		offsetTableEntry.w RLoss_Sparkle
+		offsetTableEntry.w RLoss_Delete
 	endif
 ; ===========================================================================
 

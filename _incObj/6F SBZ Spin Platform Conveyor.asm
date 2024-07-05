@@ -3,11 +3,16 @@
 ; ---------------------------------------------------------------------------
 
 SpinConvey:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	SpinC_Index(pc,d0.w),d1
-		jmp		SpinC_Index(pc,d1.w)
-; ===========================================================================
+	; LavaGaming Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.w	loc_163D8
+	; Object Routine Optimization End
+
+SpinC_Main:	; Routine 0
+	; Clownacy DisplaySprite Fix (Alt Method by RetroKoH)
+		bsr.s	SpinC_Rout1
+		offscreen.s	loc_1629A,objoff_30(a0)	; ProjectFM
+		jmp		(DisplaySprite).l
 
 ; Clownacy DisplaySprite Fix (Alt Method by RetroKoH)
 SpinC_Display:
@@ -28,17 +33,6 @@ SpinC_Act1or2:
 
 SpinC_Delete:
 		jmp		(DeleteObject).l
-; ===========================================================================
-SpinC_Index:
-		dc.w SpinC_Main-SpinC_Index
-		dc.w loc_163D8-SpinC_Index
-; ===========================================================================
-
-SpinC_Main:	; Routine 0
-	; Clownacy DisplaySprite Fix (Alt Method by RetroKoH)
-		bsr.s	SpinC_Rout1
-		offscreen.s	loc_1629A,objoff_30(a0)	; ProjectFM
-		jmp		(DisplaySprite).l
 
 SpinC_Rout1:
 		move.b	obSubtype(a0),d0

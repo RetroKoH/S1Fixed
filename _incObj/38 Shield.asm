@@ -13,19 +13,19 @@ ShieldItem:
 		move.w	Shi_Index(pc,d0.w),d1
 		jmp		Shi_Index(pc,d1.w)
 ; ===========================================================================
-Shi_Index:
-		dc.w	Shi_Main-Shi_Index
-		dc.w	Shi_Shield-Shi_Index
+Shi_Index:		offsetTable
+		offsetTableEntry.w	Shi_Main
+		offsetTableEntry.w	Shi_Shield
 	if ShieldsMode>0
-		dc.w	Shi_Insta-Shi_Index
+		offsetTableEntry.w	Shi_Insta
 	endif
 	if ShieldsMode>1
-		dc.w	Shi_Flame-Shi_Index
-		dc.w	Shi_Bubble-Shi_Index
-		dc.w	Shi_Lightning-Shi_Index
-		dc.w	Shi_FlameDissipate-Shi_Index
-		dc.w	Shi_LightningSpark-Shi_Index
-		dc.w	Shi_LightningDestroy-Shi_Index
+		offsetTableEntry.w	Shi_Flame
+		offsetTableEntry.w	Shi_Bubble
+		offsetTableEntry.w	Shi_Lightning
+		offsetTableEntry.w	Shi_FlameDissipate
+		offsetTableEntry.w	Shi_LightningSpark
+		offsetTableEntry.w	Shi_LightningDestroy
 	endif
 ; ===========================================================================
 

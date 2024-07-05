@@ -6,12 +6,13 @@ Bomb:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Bom_Index(pc,d0.w),d1
-		jmp	Bom_Index(pc,d1.w)
+		jmp		Bom_Index(pc,d1.w)
 ; ===========================================================================
-Bom_Index:	dc.w Bom_Main-Bom_Index
-		dc.w Bom_Action-Bom_Index
-		dc.w Bom_Display-Bom_Index
-		dc.w Bom_End-Bom_Index
+Bom_Index:	offsetTable
+		offsetTableEntry.w Bom_Main
+		offsetTableEntry.w Bom_Action
+		offsetTableEntry.w Bom_Display
+		offsetTableEntry.w Bom_End
 
 bom_time = objoff_30		; time of fuse
 bom_origY = objoff_34		; original y-axis position
@@ -38,15 +39,16 @@ loc_11A3C:
 Bom_Action:	; Routine 2
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
-		move.w	.index(pc,d0.w),d1
-		jsr	.index(pc,d1.w)
-		lea	(Ani_Bomb).l,a1
+		move.w	Bom_ActIndex(pc,d0.w),d1
+		jsr		Bom_ActIndex(pc,d1.w)
+		lea		(Ani_Bomb).l,a1
 		bsr.w	AnimateSprite
 		bra.w	RememberState
 ; ===========================================================================
-.index:		dc.w .walk-.index
-		dc.w .wait-.index
-		dc.w .explode-.index
+Bom_ActIndex:	offsetTable
+		offsetTableEntry.w .walk
+		offsetTableEntry.w .wait
+		offsetTableEntry.w .explode
 ; ===========================================================================
 
 .walk:
@@ -69,8 +71,7 @@ Bom_Action:	; Routine 2
 		bsr.w	.chksonic
 		subq.w	#1,bom_time(a0)	; subtract 1 from time delay
 		bmi.s	.stopwalking	; if time expires, branch
-		bsr.w	SpeedToPos
-		rts	
+		bra.w	SpeedToPos
 ; ===========================================================================
 
 .stopwalking:
@@ -139,7 +140,7 @@ Bom_Action:	; Routine 2
 
 Bom_Display:	; Routine 4
 		bsr.s	loc_11B70
-		lea	(Ani_Bomb).l,a1
+		lea		(Ani_Bomb).l,a1
 		bsr.w	AnimateSprite
 		bra.w	RememberState
 ; ===========================================================================
@@ -147,8 +148,7 @@ Bom_Display:	; Routine 4
 loc_11B70:
 		subq.w	#1,bom_time(a0)
 		bmi.s	loc_11B7C
-		bsr.w	SpeedToPos
-		rts	
+		bra.w	SpeedToPos
 ; ===========================================================================
 
 loc_11B7C:
@@ -162,7 +162,7 @@ loc_11B7C:
 		move.w	bom_origY(a0),obY(a0)
 		moveq	#3,d1
 		movea.l	a0,a1
-		lea	(Bom_ShrSpeed).l,a2 ; load shrapnel speed data
+		lea		(Bom_ShrSpeed).l,a2 ; load shrapnel speed data
 		bra.s	.makeshrapnel
 ; ===========================================================================
 
@@ -192,7 +192,7 @@ loc_11B7C:
 Bom_End:	; Routine 6
 		bsr.w	SpeedToPos
 		addi.w	#$18,obVelY(a0)
-		lea	(Ani_Bomb).l,a1
+		lea		(Ani_Bomb).l,a1
 		bsr.w	AnimateSprite
 		tst.b	obRender(a0)
 		bpl.w	DeleteObject

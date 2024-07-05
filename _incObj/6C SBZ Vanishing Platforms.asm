@@ -8,11 +8,11 @@ VanishPlatform:
 		move.w	VanP_Index(pc,d0.w),d1
 		jmp		VanP_Index(pc,d1.w)
 ; ===========================================================================
-VanP_Index:
-		dc.w 	VanP_Main-VanP_Index
-		dc.w 	VanP_Vanish-VanP_Index
-		dc.w 	VanP_Appear-VanP_Index
-		dc.w 	loc_16068-VanP_Index
+VanP_Index:		offsetTable
+		offsetTableEntry.w 	VanP_Main
+		offsetTableEntry.w 	VanP_Vanish
+		offsetTableEntry.w 	VanP_Appear
+		offsetTableEntry.w 	loc_16068
 
 vanp_timer = objoff_30		; counter for time until event
 vanp_timelen = objoff_32	; time between events (general)

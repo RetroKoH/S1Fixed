@@ -15,11 +15,11 @@ Obj09_Normal:
 		move.w	Obj09_Index(pc,d0.w),d1
 		jmp		Obj09_Index(pc,d1.w)
 ; ===========================================================================
-Obj09_Index:
-		dc.w	Obj09_Main-Obj09_Index
-		dc.w	Obj09_ChkDebug-Obj09_Index
-		dc.w	Obj09_ExitStage-Obj09_Index
-		dc.w	Obj09_Exit2-Obj09_Index
+Obj09_Index:	offsetTable
+		offsetTableEntry.w	Obj09_Main
+		offsetTableEntry.w	Obj09_ChkDebug
+		offsetTableEntry.w	Obj09_ExitStage
+		offsetTableEntry.w	Obj09_Exit2
 ; ===========================================================================
 
 Obj09_Main:	; Routine 0
@@ -43,21 +43,13 @@ Obj09_ChkDebug:	; Routine 2
 
 Obj09_NoDebug:
 		clr.b	objoff_30(a0)
-		moveq	#0,d0
-		move.b	obStatus(a0),d0
-		andi.w	#maskAir,d0				; Use current air state to determine Control Mode
-		move.w	Obj09_Modes(pc,d0.w),d1
-		jsr		Obj09_Modes(pc,d1.w)
-		jsr		(Sonic_LoadGfx).l
-		jmp		(DisplaySprite).l
-; ===========================================================================
-Obj09_Modes:
-		dc.w	Obj09_OnWall-Obj09_Modes
-		dc.w	Obj09_InAir-Obj09_Modes
-; ===========================================================================
+	; LavaGaming/RetroKoH Object Routine Optimization
+		btst	#staAir,obStatus(a0)	; Use current air state to determine Control Mode
+		bne.s	Obj09_InAir
+	; Object Routine Optimization End
 
 Obj09_OnWall:
-		bclr	#staSSJump,obStatus(a0)		; clear "Sonic has jumped" flag -- Mercury Fixed SS Jumping Physics
+		bclr	#staSSJump,obStatus(a0)	; clear "Sonic has jumped" flag -- Mercury Fixed SS Jumping Physics
 		bsr.w	Obj09_Jump
 		bsr.w	Obj09_Move
 		bsr.w	Obj09_Fall
@@ -77,7 +69,10 @@ Obj09_Display:
 		move.w	(v_ssangle).w,d0
 		add.w	(v_ssrotate).w,d0
 		move.w	d0,(v_ssangle).w
-		jmp		(Sonic_Animate).l
+		jsr		(Sonic_Animate).l
+		jsr		(Sonic_LoadGfx).l
+		jmp		(DisplaySprite).l
+; ===========================================================================
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 

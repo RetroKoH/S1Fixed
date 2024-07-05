@@ -10,17 +10,17 @@ Springs:
 		offscreen.w	DeleteObject
 		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix	
 ; ===========================================================================
-Spring_Index:
-		dc.w Spring_Main-Spring_Index
-		dc.w Spring_Up-Spring_Index
-		dc.w Spring_AniUp-Spring_Index
-		dc.w Spring_ResetUp-Spring_Index
-		dc.w Spring_LR-Spring_Index
-		dc.w Spring_AniLR-Spring_Index
-		dc.w Spring_ResetLR-Spring_Index
-		dc.w Spring_Dwn-Spring_Index
-		dc.w Spring_AniDwn-Spring_Index
-		dc.w Spring_ResetDwn-Spring_Index
+Spring_Index:	offsetTable
+		offsetTableEntry.w Spring_Main
+		offsetTableEntry.w Spring_Up
+		offsetTableEntry.w Spring_AniUp
+		offsetTableEntry.w Spring_ResetUp
+		offsetTableEntry.w Spring_LR
+		offsetTableEntry.w Spring_AniLR
+		offsetTableEntry.w Spring_ResetLR
+		offsetTableEntry.w Spring_Dwn
+		offsetTableEntry.w Spring_AniDwn
+		offsetTableEntry.w Spring_ResetDwn
 
 spring_pow = objoff_30			; power of current spring
 

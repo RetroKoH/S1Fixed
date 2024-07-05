@@ -3,15 +3,14 @@
 ; ---------------------------------------------------------------------------
 
 RingFlash:
-		moveq	#0,d0
+	; LavaGaming Object Routine Optimization
 		move.b	obRoutine(a0),d0
-		move.w	Flash_Index(pc,d0.w),d1
-		jmp	Flash_Index(pc,d1.w)
-; ===========================================================================
-Flash_Index:	dc.w Flash_Main-Flash_Index
-		dc.w Flash_ChkDel-Flash_Index
-		dc.w Flash_Delete-Flash_Index
-; ===========================================================================
+		cmpi.b	#2,d0
+		beq.w	Flash_ChkDel	; routine = 2
+		
+		tst.b	d0
+		bne.w	DeleteObject	; routine = 4
+	; Object Routine Optimization End
 
 Flash_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -51,12 +50,8 @@ locret_9F76:
 
 Flash_End:
 		addq.b	#2,obRoutine(a0)
-		clr.w	(v_player).w 		; remove Sonic object (clears both ID and render flags)
+		clr.w	(v_player).w 			; remove Sonic object (clears both ID and render flags)
 		addq.l	#4,sp
 		rts	
 ; End of function Flash_Collect
-
 ; ===========================================================================
-
-Flash_Delete:	; Routine 4
-		bra.w	DeleteObject

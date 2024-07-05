@@ -447,7 +447,7 @@ VBlank:
 
 		move.w	#$700,d0
 .waitPAL:
-		dbf	d0,.waitPAL ; wait here in a loop doing nothing for a while...
+		dbf		d0,.waitPAL ; wait here in a loop doing nothing for a while...
 
 .notPAL:
 		move.b	(v_vbla_routine).w,d0
@@ -455,34 +455,41 @@ VBlank:
 		move.w	#1,(f_hbla_pal).w
 		andi.w	#$3E,d0
 		move.w	VBla_Index(pc,d0.w),d0
-		jsr	VBla_Index(pc,d0.w)
+		jsr		VBla_Index(pc,d0.w)
 
 VBla_Music:
-		jsr	(UpdateMusic).l
+		jsr		(UpdateMusic).l
 
 VBla_Exit:
 		addq.l	#1,(v_vbla_count).w
 		movem.l	(sp)+,d0-a6
-		rte	
+		rte
 ; ===========================================================================
-VBla_Index:	dc.w VBla_00-VBla_Index, VBla_02-VBla_Index
-		dc.w VBla_04-VBla_Index, VBla_06-VBla_Index
-		dc.w VBla_08-VBla_Index, VBla_0A-VBla_Index
-		dc.w VBla_0C-VBla_Index, VBla_0E-VBla_Index
-		dc.w VBla_10-VBla_Index, VBla_12-VBla_Index
-		dc.w VBla_14-VBla_Index, VBla_16-VBla_Index
-		dc.w VBla_0C-VBla_Index
+VBla_Index:		offsetTable
+		offsetTableEntry.w	VBla_00
+		offsetTableEntry.w	VBla_02
+		offsetTableEntry.w	VBla_04
+		offsetTableEntry.w	VBla_06
+		offsetTableEntry.w	VBla_08
+		offsetTableEntry.w	VBla_0A
+		offsetTableEntry.w	VBla_0C
+		offsetTableEntry.w	VBla_0E
+		offsetTableEntry.w	VBla_10
+		offsetTableEntry.w	VBla_12
+		offsetTableEntry.w	VBla_14
+		offsetTableEntry.w	VBla_16
+		offsetTableEntry.w	VBla_0C
 ; ===========================================================================
 
 VBla_00:
 		cmpi.b	#$80+id_Level,(v_gamemode).w
 		beq.s	.islevel
 		cmpi.b	#id_Level,(v_gamemode).w ; is game on a level?
-		bne.w	VBla_Music	; if not, branch
+		bne.s	VBla_Music	; if not, branch
 
 .islevel:
 		cmpi.b	#id_LZ,(v_zone).w ; is level LZ ?
-		bne.w	VBla_Music	; if not, branch
+		bne.s	VBla_Music	; if not, branch
 
 		move.w	(vdp_control_port).l,d0
 		btst	#6,(v_megadrive).w ; is Megadrive PAL?
@@ -490,7 +497,7 @@ VBla_00:
 
 		move.w	#$700,d0
 .waitPAL:
-		dbf	d0,.waitPAL
+		dbf		d0,.waitPAL
 
 .notPAL:
 		move.w	#1,(f_hbla_pal).w ; set HBlank flag
@@ -508,7 +515,11 @@ VBla_00:
 .waterbelow:
 		move.w	(v_hbla_hreg).w,(a5)
 		; removed Z80 macro
-		bra.w	VBla_Music
+		; instead of branching back to VBla_Music, call directly.
+		jsr		(UpdateMusic).l
+		addq.l	#1,(v_vbla_count).w
+		movem.l	(sp)+,d0-a6
+		rte
 ; ===========================================================================
 
 VBla_02:
@@ -613,14 +624,14 @@ VBla_0A:
 	if DynamicSpecialStageWalls=1 ; Mercury Dynamic Special Stage Walls
 		cmpi.b	#96,(v_hbla_line).w
 		bcc.s	.update
-		bra.w	.end
+		bra.s	.end
 		
 .update:
 		jsr	SS_LoadWalls	
 	endif	; Dynamic Special Stage Walls End
 
 		tst.w	(v_demolength).w	; is there time left on the demo?
-		beq.w	.end				; if not, return
+		beq.s	.end				; if not, return
 		subq.w	#1,(v_demolength).w	; subtract 1 from time left in demo
 
 .end:
@@ -653,10 +664,9 @@ VBla_0C:
 		movem.l	(v_fg_scroll_flags).w,d0-d1
 		movem.l	d0-d1,(v_fg_scroll_flags_dup).w
 		bsr.w	LoadTilesAsYouMove
-		jsr	(AnimateLevelGfx).l
-		jsr	(HUD_Update).l
-		bsr.w	sub_1642
-		rts	
+		jsr		(AnimateLevelGfx).l
+		jsr		(HUD_Update).l
+		bra.w	sub_1642
 ; ===========================================================================
 
 VBla_0E:
@@ -686,14 +696,14 @@ VBla_16:
 	if DynamicSpecialStageWalls=1 ; Mercury Dynamic Special Stage Walls
 		cmpi.b	#96,(v_hbla_line).w
 		bcc.s	.update
-		bra.w	.end
+		bra.s	.end
 		
 .update:
 		jsr	SS_LoadWalls	
 	endif	; Dynamic Special Stage Walls End
 
 		tst.w	(v_demolength).w
-		beq.w	.end
+		beq.s	.end
 		subq.w	#1,(v_demolength).w
 
 .end:
@@ -734,8 +744,8 @@ HBlank:
 		beq.s	.nochg		; if not, branch
 		clr.w	(f_hbla_pal).w
 		movem.l	a0-a1,-(sp)
-		lea	(vdp_data_port).l,a1
-		lea	(v_pal_water).w,a0 ; get palette from RAM
+		lea		(vdp_data_port).l,a1
+		lea		(v_pal_water).w,a0 ; get palette from RAM
 		move.l	#$C0000000,4(a1) ; set VDP to CRAM write
 		move.l	(a0)+,(a1)	; move palette to CRAM
 		move.l	(a0)+,(a1)
@@ -782,7 +792,7 @@ loc_119E:
 		clr.b	(f_doupdatesinhblank).w
 		movem.l	d0-a6,-(sp)
 		bsr.w	Demo_Time
-		jsr	(UpdateMusic).l
+		jsr		(UpdateMusic).l
 		movem.l	(sp)+,d0-a6
 		rte	
 ; End of function HBlank
@@ -1925,7 +1935,7 @@ PlayLevel:
 ; ===========================================================================
 
 ResetLevel:
-		move.b	#3,(v_lives).w				; set lives to 3
+		move.b	#1,(v_lives).w				; set lives to 3
 		clr.w	(v_rings).w					; clear rings
 		clr.l	(v_time).w					; clear time
 		clr.l	(v_score).w					; clear score
@@ -1933,7 +1943,7 @@ ResetLevel:
 		clr.b	(v_emeralds).w				; clear emerald count
 		clr.l	(v_emldlist).w				; clear emeralds
 		clr.l	(v_emldlist+4).w			; clear emeralds
-		clr.b	(v_continues).w				; clear continues
+		move.b	#3,(v_continues).w			; clear continues
 		move.l	#5000,(v_scorelife).w		; extra life is awarded at 50000 points
 		rts
 ; ===========================================================================
@@ -2070,7 +2080,7 @@ LevSel_Down:
 
 LevSel_Refresh:
 		move.w	d0,(v_levselitem).w ; set new selection
-		bra.w	LevSelTextLoad	; refresh text
+		bra.s	LevSelTextLoad	; refresh text
 ; ===========================================================================
 
 LevSel_SndTest:
@@ -2096,7 +2106,7 @@ LevSel_Right:
 
 LevSel_Refresh2:
 		move.w	d0,(v_levselsound).w ; set sound test number
-		bra.w	LevSelTextLoad	; refresh text
+		bra.s	LevSelTextLoad	; refresh text
 
 LevSel_NoMove:
 		rts	
@@ -6138,13 +6148,13 @@ Sonic_Normal:
 		move.w	Sonic_Index(pc,d0.w),d1
 		jmp		Sonic_Index(pc,d1.w)
 ; ===========================================================================
-Sonic_Index:
-		dc.w Sonic_Main-Sonic_Index
-		dc.w Sonic_Control-Sonic_Index
-		dc.w Sonic_Hurt-Sonic_Index
-		dc.w Sonic_Death-Sonic_Index
-		dc.w Sonic_ResetLevel-Sonic_Index
-		dc.w Sonic_Drowned-Sonic_Index		; RHS Drowning Fix
+Sonic_Index:	offsetTable
+		offsetTableEntry.w	Sonic_Main
+		offsetTableEntry.w	Sonic_Control
+		offsetTableEntry.w	Sonic_Hurt
+		offsetTableEntry.w	Sonic_Death
+		offsetTableEntry.w	Sonic_ResetLevel
+		offsetTableEntry.w	Sonic_Drowned		; RHS Drowning Fix
 ; ===========================================================================
 
 Sonic_Main:	; Routine 0

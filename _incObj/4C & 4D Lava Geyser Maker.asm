@@ -9,13 +9,13 @@ GeyserMaker:
 		move.w	GMake_Index(pc,d0.w),d1
 		jmp		GMake_Index(pc,d1.w)	; FixBugs - Deletion has been changed to eliminate potential double-delete and display-and-delete bugs.
 ; ===========================================================================
-GMake_Index:
-		dc.w GMake_Main-GMake_Index
-		dc.w GMake_Wait-GMake_Index
-		dc.w GMake_ChkType-GMake_Index
-		dc.w GMake_MakeLava-GMake_Index
-		dc.w GMake_Display-GMake_Index
-		dc.w GMake_Delete-GMake_Index
+GMake_Index:	offsetTable
+		offsetTableEntry.w GMake_Main
+		offsetTableEntry.w GMake_Wait
+		offsetTableEntry.w GMake_ChkType
+		offsetTableEntry.w GMake_MakeLava
+		offsetTableEntry.w GMake_Display
+		offsetTableEntry.w GMake_Delete
 
 gmake_time = objoff_34		; time delay (2 bytes)
 gmake_timer = objoff_32		; current time remaining (2 bytes)
@@ -88,10 +88,9 @@ GMake_ChkType:	; Routine 4
 GMake_Display:	; Routine 8
 		; FixBugs - Deletion has been changed to eliminate potential double-delete and display-and-delete bugs.
 		offscreen.w	DeleteObject
-		lea	(Ani_Geyser).l,a1
+		lea		(Ani_Geyser).l,a1
 		bsr.w	AnimateSprite
-		bsr.w	DisplaySprite
-		rts	
+		bra.w	DisplaySprite
 ; ===========================================================================
 
 GMake_Delete:	; Routine $A
@@ -103,7 +102,6 @@ GMake_Delete:	; Routine $A
 		offscreen.w	DeleteObject
 		rts	
 
-
 ; ---------------------------------------------------------------------------
 ; Object 4D - lava geyser / lavafall (MZ)
 ; ---------------------------------------------------------------------------
@@ -114,11 +112,11 @@ LavaGeyser:
 		move.w	Geyser_Index(pc,d0.w),d1
 		jmp		Geyser_Index(pc,d1.w)	; FixBugs - The call to DisplaySprite has been moved to prevent a display-and-delete bug.
 ; ===========================================================================
-Geyser_Index:
-		dc.w Geyser_Main-Geyser_Index
-		dc.w Geyser_Action-Geyser_Index
-		dc.w loc_EFFC-Geyser_Index
-		dc.w Geyser_Delete-Geyser_Index
+Geyser_Index:	offsetTable
+		offsetTableEntry.w Geyser_Main
+		offsetTableEntry.w Geyser_Action
+		offsetTableEntry.w loc_EFFC
+		offsetTableEntry.w Geyser_Delete
 
 Geyser_Speeds:	dc.w $FB00, 0
 ; ===========================================================================
@@ -194,54 +192,49 @@ Geyser_Main:	; Routine 0
 		jsr		(PlaySound_Special).l	; play flame sound
 
 Geyser_Action:	; Routine 2
-		moveq	#0,d0
-		move.b	obSubtype(a0),d0
-		add.w	d0,d0
-		move.w	Geyser_Types(pc,d0.w),d1
-		jsr		Geyser_Types(pc,d1.w)
-		bsr.w	SpeedToPos
-		lea		(Ani_Geyser).l,a1
-		bsr.w	AnimateSprite
-
-Geyser_ChkDel:
-		offscreen.w	DeleteObject	; ProjectFM S3k OBject Manager
-		bra.w	DisplaySprite		; FixBugs - Moved to prevent a delete-and-display bug.
-; ===========================================================================
-Geyser_Types:
-		dc.w Geyser_Type00-Geyser_Types
-		dc.w Geyser_Type01-Geyser_Types
-; ===========================================================================
+	; LavaGaming Object Routine Optimization
+		tst.b	obSubtype(a0)
+		bne.s	Geyser_Type01
+	; Object Routine Optimization End
 
 Geyser_Type00:
 		addi.w	#$18,obVelY(a0)		; increase object's falling speed
 		move.w	objoff_30(a0),d0
 		cmp.w	obY(a0),d0
-		bhs.s	locret_EFDA
+		bhs.s	loc_EFDA
 		addq.b	#4,obRoutine(a0)
 		movea.l	objoff_3C(a0),a1
 		move.b	#3,obAnim(a1)
 
-locret_EFDA:
-		rts	
+loc_EFDA:
+		bsr.w	SpeedToPos
+		lea		(Ani_Geyser).l,a1
+		bsr.w	AnimateSprite
+		offscreen.w	DeleteObject	; ProjectFM S3k OBject Manager
+		bra.w	DisplaySprite		; FixBugs - Moved to prevent a delete-and-display bug.
 ; ===========================================================================
 
 Geyser_Type01:
 		addi.w	#$18,obVelY(a0)		; increase object's falling speed
 		move.w	objoff_30(a0),d0
 		cmp.w	obY(a0),d0
-		bhs.s	locret_EFFA
+		bhs.s	loc_EFFA
 		addq.b	#4,obRoutine(a0)
 		movea.l	objoff_3C(a0),a1
 		move.b	#1,obAnim(a1)
 
-locret_EFFA:
-		rts	
+loc_EFFA:
+		bsr.w	SpeedToPos
+		lea		(Ani_Geyser).l,a1
+		bsr.w	AnimateSprite
+		offscreen.w	DeleteObject	; ProjectFM S3k OBject Manager
+		bra.w	DisplaySprite		; FixBugs - Moved to prevent a delete-and-display bug.	
 ; ===========================================================================
 
 loc_EFFC:	; Routine 4
 		movea.l	objoff_3C(a0),a1
 		cmpi.b	#6,obRoutine(a1)
-		beq.w	Geyser_Delete
+		beq.w	DeleteObject
 		move.w	obY(a1),d0
 		addi.w	#$60,d0
 		move.w	d0,obY(a0)
@@ -270,7 +263,8 @@ loc_F04C:
 		move.b	obAniFrame(a0),d0
 		add.b	d1,d0
 		move.b	d0,obFrame(a0)
-		bra.w	Geyser_ChkDel
+		offscreen.w	DeleteObject	; ProjectFM S3k OBject Manager
+		bra.w	DisplaySprite		; FixBugs - Moved to prevent a delete-and-display bug.
 ; ===========================================================================
 
 Geyser_Delete:	; Routine 6

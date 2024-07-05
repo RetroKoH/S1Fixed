@@ -10,12 +10,12 @@ EggmanCylinder:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	EggmanCylinder_Index(pc,d0.w),d0
-		jmp	EggmanCylinder_Index(pc,d0.w)
+		jmp		EggmanCylinder_Index(pc,d0.w)
 ; ===========================================================================
-EggmanCylinder_Index:
-		dc.w EggmanCylinder_Main-EggmanCylinder_Index
-		dc.w loc_1A4CE-EggmanCylinder_Index
-		dc.w loc_1A57E-EggmanCylinder_Index
+EggmanCylinder_Index:	offsetTable
+		offsetTableEntry.w EggmanCylinder_Main
+		offsetTableEntry.w loc_1A4CE
+		offsetTableEntry.w loc_1A57E
 
 EggmanCylinder_PosData:
 		dc.w boss_fz_x+$80,  boss_fz_y+$110
@@ -25,7 +25,7 @@ EggmanCylinder_PosData:
 ; ===========================================================================
 
 EggmanCylinder_Main:	; Routine
-		lea	EggmanCylinder_PosData(pc),a1
+		lea		EggmanCylinder_PosData(pc),a1
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
 		add.w	d0,d0
@@ -82,7 +82,7 @@ loc_1A524:
 		move.w	#$60,d2
 		move.w	#$61,d3
 		move.w	obX(a0),d4
-		jsr	(SolidObject).l
+		jsr		(SolidObject).l
 		moveq	#0,d0
 		move.w	objoff_3C(a0),d1
 		bpl.s	loc_1A550
@@ -113,23 +113,16 @@ loc_1A55C:
 		bpl.w	EggmanCylinder_Delete
 
 loc_1A578:
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 
 loc_1A57E:	; Routine 4
-		moveq	#0,d0
-		move.b	obSubtype(a0),d0
-		move.w	off_1A590(pc,d0.w),d0
-		jsr	off_1A590(pc,d0.w)
-		bra.w	loc_1A4EA
-; ===========================================================================
-off_1A590:	dc.w loc_1A598-off_1A590
-		dc.w loc_1A598-off_1A590
-		dc.w loc_1A604-off_1A590
-		dc.w loc_1A604-off_1A590
-; ===========================================================================
+	; LavaGaming Object Routine Optimization
+		cmpi.b	#2,obSubtype(a0)
+		bgt.s	loc_1A604
+	; Object Routine Optimization End
 
-loc_1A598:
+loc_1A598:	; Subtypes 00 and 02
 		tst.b	objoff_29(a0)
 		bne.s	loc_1A5D4
 		movea.l	objoff_34(a0),a1
@@ -140,13 +133,13 @@ loc_1A598:
 
 loc_1A5B4:
 		addi.l	#$20000,objoff_3C(a0)
-		bcc.s	locret_1A602
+		bcc.w	loc_1A4EA
 		clr.l	objoff_3C(a0)
 		movea.l	objoff_34(a0),a1
 		subq.w	#1,objoff_32(a1)
 		clr.w	objoff_30(a1)
 		subq.b	#2,obRoutine(a0)
-		rts	
+		bra.w	loc_1A4EA	
 ; ===========================================================================
 
 loc_1A5D4:
@@ -157,16 +150,14 @@ loc_1A5D4:
 loc_1A5E4:
 		subi.l	#$8000,objoff_3C(a0)
 		cmpi.w	#-$A0,objoff_3C(a0)
-		bgt.s	locret_1A602
+		bgt.w	loc_1A4EA
 		clr.w	objoff_3E(a0)
 		move.w	#-$A0,objoff_3C(a0)
 		clr.b	objoff_29(a0)
-
-locret_1A602:
-		rts	
+		bra.w	loc_1A4EA	
 ; ===========================================================================
 
-loc_1A604:
+loc_1A604:	; Subtypes 04 and 06
 		bset	#1,obRender(a0)
 		tst.b	objoff_29(a0)
 		bne.s	loc_1A646
@@ -178,13 +169,13 @@ loc_1A604:
 
 loc_1A626:
 		subi.l	#$20000,objoff_3C(a0)
-		bcc.s	locret_1A674
+		bcc.w	loc_1A4EA
 		clr.l	objoff_3C(a0)
 		movea.l	objoff_34(a0),a1
 		subq.w	#1,objoff_32(a1)
 		clr.w	objoff_30(a1)
 		subq.b	#2,obRoutine(a0)
-		rts	
+		bra.w	loc_1A4EA	
 ; ===========================================================================
 
 loc_1A646:
@@ -195,10 +186,8 @@ loc_1A646:
 loc_1A656:
 		addi.l	#$8000,objoff_3C(a0)
 		cmpi.w	#$A0,objoff_3C(a0)
-		blt.s	locret_1A674
+		blt.w	loc_1A4EA
 		clr.w	objoff_3E(a0)
 		move.w	#$A0,objoff_3C(a0)
 		clr.b	objoff_29(a0)
-
-locret_1A674:
-		rts	
+		bra.w	loc_1A4EA	

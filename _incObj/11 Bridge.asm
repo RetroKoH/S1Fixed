@@ -19,10 +19,10 @@ Bridge:
 		move.w	#$180,d0			; Display sprites
 		bra.w	DisplaySprite2
 ; ===========================================================================
-Bri_Index:
-		dc.w	Bri_Main-Bri_Index
-		dc.w	Bri_Action-Bri_Index
-		dc.w	Bri_Display-Bri_Index	; Only called upon when on the bridge (Platform3:)
+Bri_Index:	offsetTable
+		offsetTableEntry.w	Bri_Main
+		offsetTableEntry.w	Bri_Action
+		offsetTableEntry.w	Bri_Display	; Only called upon when on the bridge (Platform3:)
 ; ===========================================================================
 
 Bri_Main:	; Routine 0

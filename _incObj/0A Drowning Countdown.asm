@@ -9,16 +9,16 @@ DrownCount:
 		move.w	Drown_Index(pc,d0.w),d1
 		jmp		Drown_Index(pc,d1.w)
 ; ===========================================================================
-Drown_Index:
-ptr_Drown_Main:			dc.w Drown_Main-Drown_Index
-ptr_Drown_Animate:		dc.w Drown_Animate-Drown_Index
-ptr_Drown_ChkWater:		dc.w Drown_ChkWater-Drown_Index
-ptr_Drown_Display:		dc.w Drown_Display-Drown_Index
-ptr_Drown_Delete:		dc.w Drown_Delete-Drown_Index
-ptr_Drown_Countdown:	dc.w Drown_Countdown-Drown_Index
-ptr_Drown_AirLeft:		dc.w Drown_AirLeft-Drown_Index
-						dc.w Drown_Display-Drown_Index
-						dc.w Drown_Delete-Drown_Index
+Drown_Index:	offsetTable
+ptr_Drown_Main:			offsetTableEntry.w Drown_Main
+ptr_Drown_Animate:		offsetTableEntry.w Drown_Animate
+ptr_Drown_ChkWater:		offsetTableEntry.w Drown_ChkWater
+ptr_Drown_Display:		offsetTableEntry.w Drown_Display
+ptr_Drown_Delete:		offsetTableEntry.w Drown_Delete
+ptr_Drown_Countdown:	offsetTableEntry.w Drown_Countdown
+ptr_Drown_AirLeft:		offsetTableEntry.w Drown_AirLeft
+						offsetTableEntry.w Drown_Display
+						offsetTableEntry.w Drown_Delete
 
 drown_origX = objoff_30		; original x-axis position
 drown_time = objoff_38		; time between each number changes
@@ -68,6 +68,8 @@ Drown_ChkWater:	; Routine 4
 		addq.b	#7,obAnim(a0)
 		cmpi.b	#$D,obAnim(a0)
 		beq.s	Drown_Display
+		blo.s	Drown_Display
+		move.b	#$D,obAnim(a0)
 		bra.s	Drown_Display
 ; ===========================================================================
 
