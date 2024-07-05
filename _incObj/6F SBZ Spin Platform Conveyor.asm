@@ -96,17 +96,17 @@ loc_16378:
 loc_16380:
 		move.b	d0,objoff_2F(a0)
 		andi.w	#$7F,d0
-		lea	(v_obj63).w,a2
+		lea		(v_obj63).w,a2
 		bset	#0,(a2,d0.w)
 		beq.s	loc_1639A
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 loc_1639A:
 		add.w	d0,d0
 		andi.w	#$1E,d0
 		addi.w	#ObjPosSBZPlatform_Index-ObjPos_Index,d0
-		lea	(ObjPos_Index).l,a2
+		lea		(ObjPos_Index).l,a2
 		adda.w	(a2,d0.w),a2
 		move.w	(a2)+,d1
 		movea.l	a0,a1
@@ -114,7 +114,7 @@ loc_1639A:
 ; ===========================================================================
 
 SpinC_Loop:
-		jsr	(FindFreeObj).l
+		jsr		(FindFreeObj).l
 		bne.s	loc_163D0
 
 SpinC_LoadPform:
@@ -125,7 +125,7 @@ SpinC_LoadPform:
 		move.b	d0,obSubtype(a1)
 
 loc_163D0:
-		dbf	d1,SpinC_Loop
+		dbf		d1,SpinC_Loop
 
 		addq.l	#4,sp
 		rts	
@@ -134,8 +134,8 @@ loc_163D0:
 loc_163D8:	; Routine 2
 	; Clownacy DisplaySprite Fix (Alt Method by RetroKoH)
 		bsr.s	SpinC_Rout2
-		out_of_range.w	loc_1629A,objoff_30(a0)
-		jmp	(DisplaySprite).l
+		offscreen.w	loc_1629A,objoff_30(a0)
+		jmp		(DisplaySprite).l
 
 SpinC_Rout2:
 		lea		(Ani_SpinConvey).l,a1

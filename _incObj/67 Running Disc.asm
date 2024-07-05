@@ -151,7 +151,7 @@ Disc_MoveSpot:
 ; ===========================================================================
 
 Disc_ChkDel:
-		out_of_range.s	.delete,disc_origX(a0)
+		offscreen.s	.delete,disc_origX(a0)
 		jmp	(DisplaySprite).l
 
 .delete:

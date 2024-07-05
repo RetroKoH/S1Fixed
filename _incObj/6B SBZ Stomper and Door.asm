@@ -94,8 +94,8 @@ Sto_Action:	; Routine 2
 		move.b	obSubtype(a0),d0
 		andi.w	#$F,d0
 		add.w	d0,d0
-		move.w	.index(pc,d0.w),d1
-		jsr	.index(pc,d1.w)
+		move.w	Sto_SubtypeIndex(pc,d0.w),d1
+		jsr		Sto_SubtypeIndex(pc,d1.w)
 		move.w	(sp)+,d4
 		tst.b	obRender(a0)
 		bpl.s	.chkdel
@@ -109,7 +109,7 @@ Sto_Action:	; Routine 2
 		bsr.w	SolidObject
 
 .chkdel:
-		out_of_range.s	.chkgone,sto_origX(a0)
+		offscreen.s	.chkgone,sto_origX(a0)
 		jmp	(DisplaySprite).l
 
 .chkgone:
@@ -124,13 +124,13 @@ Sto_Action:	; Routine 2
 .delete:
 		jmp	(DeleteObject).l
 ; ===========================================================================
-.index:		dc.w .type00-.index, .type01-.index
-		dc.w .type02-.index, .type03-.index
-		dc.w .type04-.index, .type05-.index
-; ===========================================================================
-
-.type00:
-		rts
+Sto_SubtypeIndex:	offsetTable
+		offsetTableEntry.w .type00
+		offsetTableEntry.w .type01
+		offsetTableEntry.w .type02
+		offsetTableEntry.w .type03
+		offsetTableEntry.w .type04
+		offsetTableEntry.w .type05
 ; ===========================================================================
 
 .type01:
@@ -160,6 +160,8 @@ Sto_Action:	; Routine 2
 		move.w	sto_origX(a0),d1
 		sub.w	d0,d1
 		move.w	d1,obX(a0)
+
+.type00:
 		rts	
 ; ===========================================================================
 

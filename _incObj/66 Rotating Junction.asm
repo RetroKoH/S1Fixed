@@ -43,7 +43,7 @@ Jun_Main:	; Routine 0
 		move.b	#$38,obActWid(a1)
 
 .fail:
-		dbf	d1,.repeat
+		dbf		d1,.repeat
 
 		move.b	#$30,obActWid(a0)
 		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
