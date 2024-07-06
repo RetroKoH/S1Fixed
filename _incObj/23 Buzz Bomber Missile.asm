@@ -53,7 +53,7 @@ Msl_Animate:	; Routine 2
 		beq.s	Msl_ChkCancel.return
 		lea		(Ani_Missile).l,a1
 		bsr.w	AnimateSprite
-		bra.w	DisplaySprite
+		jmp		(DisplayAndCollision).l		; S3K TouchResponse
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	check if the Buzz Bomber which fired the missile has been
@@ -68,7 +68,7 @@ Msl_ChkCancel:
 		; This adds a return value so that we know if the object has
 		; been freed. -- Clownacy DisplaySprite Fix
 		bne.s	.return
-		bsr.s	Msl_Delete
+		bsr.w	DeleteObject
 		moveq	#0,d0
 
 .return:
@@ -85,11 +85,11 @@ Msl_FromBuzz:	; Routine 4
 		bsr.w	SpeedToPos
 		move.w	(v_limitbtm2).w,d0
 		addi.w	#$E0,d0
-		cmp.w	obY(a0),d0	; has object moved below the level boundary?
-		blo.s	Msl_Delete	; if yes, branch
+		cmp.w	obY(a0),d0			; has object moved below the level boundary?
+		blo.w	DeleteObject		; if yes, branch
 		lea		(Ani_Missile).l,a1
 		bsr.w	AnimateSprite
-		bra.w	DisplaySprite	; Clownacy DisplaySprite Fix
+		bra.w	DisplayAndCollision	; S3K TouchResponse; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 .explode:
@@ -104,10 +104,10 @@ Msl_Delete:	; Routine 6
 
 Msl_FromNewt:	; Routine 8
 		tst.b	obRender(a0)
-		bpl.s	Msl_Delete
+		bpl.w	DeleteObject
 		bsr.w	SpeedToPos
 
 Msl_Animate2:
 		lea		(Ani_Missile).l,a1
 		bsr.w	AnimateSprite
-		bra.w	DisplaySprite
+		bra.w	DisplayAndCollision	; S3K TouchResponse

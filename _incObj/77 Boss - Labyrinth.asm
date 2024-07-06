@@ -28,14 +28,14 @@ BossLabyrinth_Main:	; Routine 0
 		move.b	#$F,obColType(a0)
 		move.b	#8,obColProp(a0) ; set number of hits to 8
 		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
-		lea	BossLabyrinth_ObjData(pc),a2
+		lea		BossLabyrinth_ObjData(pc),a2
 		movea.l	a0,a1
 		moveq	#2,d1
 		bra.s	BossLabyrinth_LoadBoss
 ; ===========================================================================
 
 BossLabyrinth_Loop:
-		jsr	(FindNextFreeObj).l
+		jsr		(FindNextFreeObj).l
 		bne.s	BossLabyrinth_ShipMain
 		_move.b	#id_BossLabyrinth,obID(a1)
 		move.w	obX(a0),obX(a1)
@@ -52,21 +52,21 @@ BossLabyrinth_LoadBoss:
 		move.b	#4,obRender(a1)
 		move.b	#$20,obActWid(a1)
 		move.l	a0,objoff_34(a1)
-		dbf	d1,BossLabyrinth_Loop
+		dbf		d1,BossLabyrinth_Loop
 
 BossLabyrinth_ShipMain:	; Routine 2
-		lea	(v_player).w,a1
+		lea		(v_player).w,a1
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
 		move.w	BossLabyrinth_ShipIndex(pc,d0.w),d1
-		jsr	BossLabyrinth_ShipIndex(pc,d1.w)
-		lea	(Ani_Eggman).l,a1
-		jsr	(AnimateSprite).l
+		jsr		BossLabyrinth_ShipIndex(pc,d1.w)
+		lea		(Ani_Eggman).l,a1
+		jsr		(AnimateSprite).l
 		moveq	#(maskFlipX+maskFlipY),d0
 		and.b	obStatus(a0),d0
 		andi.b	#$FC,obRender(a0)
 		or.b	d0,obRender(a0)
-		jmp	(DisplaySprite).l
+		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 ; ===========================================================================
 BossLabyrinth_ShipIndex:	offsetTable
 		offsetTableEntry.w loc_17F1E
@@ -94,7 +94,7 @@ loc_17F38:
 
 loc_17F48:
 		tst.b	objoff_3D(a0)
-		bne.s	loc_17F8E
+		bne.w	BossDefeated
 		tst.b	obStatus(a0)
 		bmi.s	loc_17F92
 		tst.b	obColType(a0)
@@ -103,10 +103,10 @@ loc_17F48:
 		bne.s	loc_17F70
 		move.b	#$20,objoff_3E(a0)
 		move.w	#sfx_HitBoss,d0
-		jsr	(PlaySound_Special).l
+		jsr		(PlaySound_Special).l
 
 loc_17F70:
-		lea	(v_pal_dry+$22).w,a1
+		lea		(v_pal_dry+$22).w,a1
 		moveq	#0,d0
 		tst.w	(a1)
 		bne.s	loc_17F7E
@@ -120,10 +120,6 @@ loc_17F7E:
 
 locret_17F8C:
 		rts	
-; ===========================================================================
-
-loc_17F8E:
-		bra.w	BossDefeated
 ; ===========================================================================
 
 loc_17F92:
@@ -149,12 +145,10 @@ loc_17FB6:
 		addq.w	#1,d0
 
 loc_17FCA:
-		bne.s	loc_17FDC
+		bne.w	loc_17F38
 		move.w	#$140,obVelX(a0)
 		move.w	#-$200,obVelY(a0)
 		addq.b	#2,ob2ndRout(a0)
-
-loc_17FDC:
 		bra.w	loc_17F38
 ; ===========================================================================
 
@@ -174,12 +168,10 @@ loc_17FF6:
 		addq.w	#1,d0
 
 loc_1800A:
-		bne.s	loc_1801A
+		bne.w	loc_17F38
 		move.w	#-$180,obVelY(a0)
 		addq.b	#2,ob2ndRout(a0)
 		clr.b	objoff_3F(a0)
-
-loc_1801A:
 		bra.w	loc_17F38
 ; ===========================================================================
 
@@ -191,8 +183,8 @@ loc_1801E:
 		move.w	#-$80,obVelY(a0)
 		tst.b	objoff_3D(a0)
 		beq.s	loc_18046
-		asl	obVelX(a0)
-		asl	obVelY(a0)
+		asl		obVelX(a0)
+		asl		obVelY(a0)
 
 loc_18046:
 		addq.b	#2,ob2ndRout(a0)
@@ -203,7 +195,7 @@ loc_1804E:
 		bset	#staFlipX,obStatus(a0)
 		addq.b	#2,objoff_3F(a0)
 		move.b	objoff_3F(a0),d0
-		jsr	(CalcSine).l
+		jsr		(CalcSine).l
 		tst.w	d1
 		bpl.s	loc_1806C
 		bclr	#staFlipX,obStatus(a0)
@@ -258,11 +250,9 @@ loc_180D2:
 		addq.w	#1,d0
 
 loc_180E6:
-		bne.s	loc_180F2
+		bne.w	loc_17F38
 		addq.b	#2,ob2ndRout(a0)
 		bclr	#staFlipX,obStatus(a0)
-
-loc_180F2:
 		bra.w	loc_17F38
 ; ===========================================================================
 
@@ -270,19 +260,17 @@ loc_180F6:
 		tst.b	objoff_3D(a0)
 		bne.s	loc_18112
 		cmpi.w	#boss_lz_x+$E8,obX(a1)
-		blt.s	loc_18126
+		blt.w	loc_17F38
 		cmpi.w	#boss_lz_y+$30,obY(a1)
-		bgt.s	loc_18126
+		bgt.w	loc_17F38
 		move.b	#$32,objoff_3C(a0)
 
 loc_18112:
 		move.w	#bgm_LZ,d0
-		jsr	(PlaySound).l		; play LZ music
+		jsr		(PlaySound).l		; play LZ music
 		clr.b	(f_lockscreen).w
 		bset	#staFlipX,obStatus(a0)
 		addq.b	#2,ob2ndRout(a0)
-
-loc_18126:
 		bra.w	loc_17F38
 ; ===========================================================================
 
@@ -290,7 +278,7 @@ loc_1812A:
 		tst.b	objoff_3D(a0)
 		bne.s	loc_18136
 		subq.b	#1,objoff_3C(a0)
-		bne.s	loc_1814E
+		bne.w	loc_17F38
 
 loc_18136:
 		clr.b	objoff_3C(a0)
@@ -298,8 +286,6 @@ loc_18136:
 		move.w	#-$40,obVelY(a0)
 		clr.b	objoff_3D(a0)
 		addq.b	#2,ob2ndRout(a0)
-
-loc_1814E:
 		bra.w	loc_17F38
 ; ===========================================================================
 
@@ -307,14 +293,12 @@ loc_18152:
 		cmpi.w	#boss_lz_end,(v_limitright2).w
 		bhs.s	loc_18160
 		addq.w	#2,(v_limitright2).w
-		bra.s	loc_18166
+		bra.w	loc_17F38
 ; ===========================================================================
 
 loc_18160:
 		tst.b	obRender(a0)
 		bpl.s	BossLabyrinth_ShipDel
-
-loc_18166:
 		bra.w	loc_17F38
 ; ===========================================================================
 
@@ -322,7 +306,7 @@ BossLabyrinth_ShipDel:
 		; Avoid returning to BossLabyrinth_ShipMain to prevent a
 		; display-and-delete bug.
 		addq.l	#4,sp			; Clownacy DisplaySprite Fix
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 BossLabyrinth_FaceMain:	; Routine 4
@@ -354,17 +338,15 @@ loc_18196:
 loc_181A0:
 		move.b	d1,obAnim(a0)
 		cmpi.b	#$E,d0
-		bne.s	loc_181B6
+		bne.s	BossLabyrinth_Display
 		move.b	#6,obAnim(a0)
 		tst.b	obRender(a0)
 		bpl.s	BossLabyrinth_FaceDel
-
-loc_181B6:
 		bra.s	BossLabyrinth_Display
 ; ===========================================================================
 
 BossLabyrinth_FaceDel:
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 BossLabyrinth_FlameMain:; Routine 6
@@ -374,27 +356,25 @@ BossLabyrinth_FlameMain:; Routine 6
 		cmp.b	(a0),d0
 		bne.s	BossLabyrinth_FlameDel
 		cmpi.b	#$E,ob2ndRout(a1)
-		bne.s	loc_181F0
+		bne.s	BossLabyrinth_Display
 		move.b	#$B,obAnim(a0)
 		tst.b	obRender(a0)
 		bpl.s	BossLabyrinth_FlameDel
-		bra.s	loc_181F0
+		bra.s	BossLabyrinth_Display
 ; ===========================================================================
 		tst.w	obVelX(a1)
-		beq.s	loc_181F0
+		beq.s	BossLabyrinth_Display
 		move.b	#8,obAnim(a0)
-
-loc_181F0:
 		bra.s	BossLabyrinth_Display
 ; ===========================================================================
 
 BossLabyrinth_FlameDel:
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 BossLabyrinth_Display:
-		lea	(Ani_Eggman).l,a1
-		jsr	(AnimateSprite).l
+		lea		(Ani_Eggman).l,a1
+		jsr		(AnimateSprite).l
 		movea.l	objoff_34(a0),a1
 		move.w	obX(a1),obX(a0)
 		move.w	obY(a1),obY(a0)
@@ -403,4 +383,4 @@ BossLabyrinth_Display:
 		and.b	obStatus(a0),d0
 		andi.b	#$FC,obRender(a0)
 		or.b	d0,obRender(a0)
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l

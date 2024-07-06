@@ -40,4 +40,4 @@ LTag_ChkDel:	; Routine 2
 		bra.w	DeleteObject		; and delete object
 
 LTag_NoDel:
-		rts	
+		jmp  	Add_SpriteToCollisionResponseList	; S3K TouchResponse

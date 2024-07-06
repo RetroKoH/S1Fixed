@@ -66,7 +66,7 @@ SEgg_EggIndex:
 		bra.s	SEgg_ChkSonic
 		bra.s	SEgg_PreLeap
 		bra.s	SEgg_Leap
-		bra.s	loc_19934
+		jmp		(SpeedToPos).l;bra.s	loc_19934
 	; Object Routine Optimization End
 ; ===========================================================================
 

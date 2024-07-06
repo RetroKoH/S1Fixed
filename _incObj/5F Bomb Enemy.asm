@@ -6,7 +6,8 @@ Bomb:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Bom_Index(pc,d0.w),d1
-		jmp		Bom_Index(pc,d1.w)
+		jsr		Bom_Index(pc,d1.w)
+		jmp		Add_SpriteToCollisionResponseList
 ; ===========================================================================
 Bom_Index:	offsetTable
 		offsetTableEntry.w Bom_Main
@@ -185,7 +186,7 @@ loc_11B7C:
 		bset	#7,obRender(a1)
 
 .fail:
-		dbf	d1,.loop	; repeat 3 more	times
+		dbf		d1,.loop	; repeat 3 more	times
 
 		move.b	#6,obRoutine(a0)
 

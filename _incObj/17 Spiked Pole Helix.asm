@@ -116,10 +116,10 @@ Hel_ChkDel:
 
 Hel_DelAll:
 		moveq	#0,d2
-		lea	obSubtype(a0),a2 ; move helix length to a2
+		lea		obSubtype(a0),a2 ; move helix length to a2
 		move.b	(a2)+,d2	; move helix length to d2
 		subq.b	#2,d2
-		bcs.s	Hel_Delete
+		bcs.w	DeleteObject
 
 Hel_DelLoop:
 		moveq	#0,d0
@@ -128,7 +128,7 @@ Hel_DelLoop:
 		addi.l	#v_objspace&$FFFFFF,d0
 		movea.l	d0,a1		; get child address
 		bsr.w	DeleteChild	; delete object
-		dbf	d2,Hel_DelLoop ; repeat d2 times (helix length)
+		dbf		d2,Hel_DelLoop ; repeat d2 times (helix length)
 
 Hel_Delete:	; Routine 6
 		bra.w	DeleteObject
@@ -136,4 +136,12 @@ Hel_Delete:	; Routine 6
 
 Hel_Display:	; Routine 8
 		bsr.w	Hel_RotateSpikes
+		tst.b	obColType(a0)
+		beq.w	DisplaySprite
+		lea		(v_col_response_list).w,a1
+		cmpi.w	#$7E,(a1)		; Is list full?
+		bhs.w	DisplaySprite	; If so, return
+		addq.w	#2,(a1)			; Count this new entry
+		adda.w	(a1),a1			; Offset into right area of list
+		move.w	a0,(a1)			; Store RAM address in list
 		bra.w	DisplaySprite

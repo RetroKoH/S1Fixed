@@ -125,21 +125,21 @@ Cat_Head:	; Routine 2
 
 .display:
 		out_of_range.s	Cat_ChkGone
-		jmp		(DisplaySprite).l
+		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 
 Cat_ChkGone:
-		move.w	obRespawnNo(a0),d0	; get address in respawn table
-		beq.s	.delete				; if it's zero, don't remember object
-		movea.w	d0,a2				; load address into a2
-		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again
+		move.w	obRespawnNo(a0),d0		; get address in respawn table
+		beq.s	.delete					; if it's zero, don't remember object
+		movea.w	d0,a2					; load address into a2
+		bclr	#7,(a2)					; clear respawn table entry, so object can be loaded again
 
 .delete:
-		move.b	#$A,obRoutine(a0)	; goto Cat_Delete next
+		move.b	#$A,obRoutine(a0)		; goto Cat_Delete next
 		rts	
 ; ===========================================================================
 
 Cat_Delete:	; Routine $A
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 ; ===========================================================================
 	; RetroKoH Object Routine Optimization
 Cat_Index2:
@@ -187,7 +187,7 @@ loc_16B02:
 		swap	d3
 		cmp.w	obX(a0),d3
 		beq.s	.notmoving
-		jsr	(ObjFloorDist).l
+		jsr		(ObjFloorDist).l
 		cmpi.w	#-8,d1
 		blt.s	.loc_16B70
 		cmpi.w	#$C,d1
@@ -236,7 +236,7 @@ Cat_BodySeg2:	; Routine 6
 		movea.l	cat_parent(a0),a1
 		move.b	objoff_2B(a1),objoff_2B(a0)
 		bpl.s	Cat_BodySeg1
-		lea	(Ani_Cat).l,a1
+		lea		(Ani_Cat).l,a1
 		move.b	obAngle(a0),d0
 		andi.w	#$7F,d0
 		addq.b	#4,obAngle(a0)
@@ -326,7 +326,7 @@ loc_16C64:
 
 	if FixBugs
 		; Delete the parent.
-		jsr	(DeleteChild).l ; Don't mind this misnomer.
+		jsr		(DeleteChild).l ; Don't mind this misnomer.
 	endif
 
 .delete:
@@ -340,7 +340,7 @@ loc_16C64:
 	endif
 
 .display:
-		jmp	(DisplaySprite).l
+		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 
 ; ===========================================================================
 Cat_FragSpeed:	dc.w -$200, -$180, $180, $200
@@ -365,10 +365,10 @@ loc_16CAA:
 		andi.b	#$F8,obFrame(a0)
 
 loc_16CC0:	; Routine $C
-		jsr	(ObjectFall).l
+		jsr		(ObjectFall).l
 		tst.w	obVelY(a0)
 		bmi.s	loc_16CE0
-		jsr	(ObjFloorDist).l
+		jsr		(ObjFloorDist).l
 		tst.w	d1
 		bpl.s	loc_16CE0
 		add.w	d1,obY(a0)
@@ -377,4 +377,4 @@ loc_16CC0:	; Routine $C
 loc_16CE0:
 		tst.b	obRender(a0)
 		bpl.w	Cat_ChkGone
-		jmp	(DisplaySprite).l
+		jmp		(DisplayAndCollision).l	; S3K TouchResponse

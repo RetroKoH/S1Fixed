@@ -23,7 +23,7 @@ BossSpikeball:
 		jmp		DeleteObject			; and delete object
 
 BossStarLight_NoDel:
-		jmp		(DisplaySprite).l
+		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 ; ===========================================================================
 BossSpikeball_Index:	offsetTable
 		offsetTableEntry.w BossSpikeball_Main

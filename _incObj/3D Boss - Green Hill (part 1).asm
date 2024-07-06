@@ -62,7 +62,7 @@ BGHZ_ShipMain:	; Routine 2
 		andi.b	#(maskFlipX+maskFlipY),d0
 		andi.b	#$FC,obRender(a0)
 		or.b	d0,obRender(a0)
-		jmp		(DisplaySprite).l
+		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 ; ===========================================================================
 BGHZ_ShipIndex:		offsetTable
 		offsetTableEntry.w BGHZ_ShipStart

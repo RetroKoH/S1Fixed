@@ -39,7 +39,7 @@ GRing_Animate:	; Routine 2
 		move.b	(v_ani1_frame).w,obFrame(a0)
 		bsr.w	GRing_LoadGfx					; RetroKoH VRAM Overhaul
 		offscreen.w	DeleteObject				; ProjectFM S3K Objects Manager
-		bra.w	DisplaySprite
+		jmp		(DisplayAndCollision).l			; S3K TouchResponse
 ; ===========================================================================
 
 GRing_Collect:	; Routine 4

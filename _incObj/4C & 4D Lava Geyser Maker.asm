@@ -90,7 +90,7 @@ GMake_Display:	; Routine 8
 		offscreen.w	DeleteObject
 		lea		(Ani_Geyser).l,a1
 		bsr.w	AnimateSprite
-		bra.w	DisplaySprite
+		jmp		(DisplayAndCollision).l		; S3K TouchResponse
 ; ===========================================================================
 
 GMake_Delete:	; Routine $A
@@ -210,8 +210,8 @@ loc_EFDA:
 		bsr.w	SpeedToPos
 		lea		(Ani_Geyser).l,a1
 		bsr.w	AnimateSprite
-		offscreen.w	DeleteObject	; ProjectFM S3k OBject Manager
-		bra.w	DisplaySprite		; FixBugs - Moved to prevent a delete-and-display bug.
+		offscreen.w	DeleteObject			; ProjectFM S3k OBject Manager
+		jmp		(DisplayAndCollision).l		; FixBugs - Moved to prevent a delete-and-display bug.
 ; ===========================================================================
 
 Geyser_Type01:
@@ -227,8 +227,8 @@ loc_EFFA:
 		bsr.w	SpeedToPos
 		lea		(Ani_Geyser).l,a1
 		bsr.w	AnimateSprite
-		offscreen.w	DeleteObject	; ProjectFM S3k OBject Manager
-		bra.w	DisplaySprite		; FixBugs - Moved to prevent a delete-and-display bug.	
+		offscreen.w	DeleteObject			; ProjectFM S3k OBject Manager
+		jmp		(DisplayAndCollision).l		; FixBugs - Moved to prevent a delete-and-display bug.	
 ; ===========================================================================
 
 loc_EFFC:	; Routine 4
@@ -263,8 +263,8 @@ loc_F04C:
 		move.b	obAniFrame(a0),d0
 		add.b	d1,d0
 		move.b	d0,obFrame(a0)
-		offscreen.w	DeleteObject	; ProjectFM S3k OBject Manager
-		bra.w	DisplaySprite		; FixBugs - Moved to prevent a delete-and-display bug.
+		offscreen.w	DeleteObject			; ProjectFM S3k OBject Manager
+		jmp		(DisplayAndCollision).l		; FixBugs - Moved to prevent a delete-and-display bug.
 ; ===========================================================================
 
 Geyser_Delete:	; Routine 6

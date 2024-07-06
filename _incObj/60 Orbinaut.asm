@@ -119,7 +119,7 @@ Orb_Display:	; Routine 4
 
 Orb_ChkDel:
 		out_of_range.w	.chkgone
-		bra.w	DisplaySprite
+		bra.w	DisplayAndCollision	; S3K TouchResponse
 
 .chkgone:
 		move.w	obRespawnNo(a0),d0	; get address in respawn table
@@ -167,7 +167,7 @@ Orb_MoveOrb:	; Routine 6
 		neg.w	obVelX(a0)
 
 .noflip:
-		bra.w	DisplaySprite
+		bra.w	DisplayAndCollision	; S3K TouchResponse
 ; ===========================================================================
 
 .circle:
@@ -181,11 +181,11 @@ Orb_MoveOrb:	; Routine 6
 		move.w	d0,obY(a0)
 		move.b	objoff_36(a1),d0
 		add.b	d0,obAngle(a0)
-		bra.w	DisplaySprite
+		bra.w	DisplayAndCollision	; S3K TouchResponse
 ; ===========================================================================
 
 Orb_ChkDel2:	; Routine 8
 		bsr.w	SpeedToPos
 		tst.b	obRender(a0)
 		bpl.w	DeleteObject
-		bra.w	DisplaySprite
+		bra.w	DisplayAndCollision	; S3K TouchResponse

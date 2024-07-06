@@ -33,7 +33,7 @@ Saw_Action:	; Routine 2
 		move.w	.index(pc,d0.w),d1
 		jsr		.index(pc,d1.w)
 		offscreen.s	.delete,saw_origX(a0)	; PFM S3K OBJ
-		jmp		(DisplaySprite).l
+		jmp		(DisplayAndCollision).l		; S3K TouchResponse
 
 .delete:
 		jmp	(DeleteObject).l

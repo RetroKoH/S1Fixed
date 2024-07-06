@@ -105,7 +105,7 @@ BossFinal_Eggman:	; Routine 2
 		move.b	objoff_34(a0),d0
 		move.w	off_19E80(pc,d0.w),d0
 		jsr		off_19E80(pc,d0.w)
-		jmp		(DisplaySprite).l
+		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 ; ===========================================================================
 off_19E80:		offsetTable
 		offsetTableEntry.w loc_19E90
@@ -283,15 +283,13 @@ loc_1A02A:
 		move.b	#6,obFrame(a0)
 		addi.w	#$10,obVelY(a0)
 		cmpi.w	#boss_fz_y+$8C,obY(a0)
-		blo.s	loc_1A070
+		blo.w	loc_1A166
 		move.w	#boss_fz_y+$8C,obY(a0)
 		addq.b	#2,objoff_34(a0)
 		move.b	#$20,obActWid(a0)
 		move.w	#$100,obVelX(a0)
 		move.w	#-$100,obVelY(a0)
 		addq.b	#2,(v_dle_routine).w
-
-loc_1A070:
 		bra.w	loc_1A166
 ; ===========================================================================
 
@@ -335,18 +333,16 @@ loc_1A0B4:
 
 loc_1A0F2:
 		cmpi.w	#boss_fz_x+$250,obX(a0)
-		blo.s	loc_1A110
+		blo.s	loc_1A15C
 		move.w	#boss_fz_x+$250,obX(a0)
 		move.w	#$240,obVelX(a0)
 		move.w	#-$4C0,obVelY(a0)
 		addq.b	#2,objoff_34(a0)
-
-loc_1A110:
 		bra.s	loc_1A15C
 ; ===========================================================================
 
 loc_1A112:
-		jsr	(SpeedToPos).l
+		jsr		(SpeedToPos).l
 		cmpi.w	#boss_fz_x+$290,obX(a0)
 		blo.s	loc_1A124
 		clr.w	obVelX(a0)
@@ -398,13 +394,11 @@ loc_1A192:
 		bset	#staFlipX,obStatus(a0)
 		jsr		(SpeedToPos).l
 		cmpi.w	#boss_fz_y+$34,obY(a0)
-		bhs.s	loc_1A1D0
+		bhs.w	loc_1A15C
 		move.w	#$180,obVelX(a0)
 		move.w	#-$18,obVelY(a0)
 		move.b	#$F,obColType(a0)
 		addq.b	#2,objoff_34(a0)
-
-loc_1A1D0:
 		bra.w	loc_1A15C
 ; ===========================================================================
 
@@ -448,16 +442,12 @@ loc_1A23A:
 
 loc_1A248:
 		cmpi.w	#boss_fz_end+$200,obX(a0)
-		blo.s	loc_1A260
+		blo.w	loc_1A15C
 		tst.b	obRender(a0)
-		bmi.s	loc_1A260
+		bmi.w	loc_1A15C
 		move.b	#id_Ending,(v_gamemode).w
 		addq.l	#4,sp						; Clownacy DisplaySprite Fix
 		bra.w	BossFinal_Delete
-; ===========================================================================
-
-loc_1A260:
-		bra.w	loc_1A15C
 ; ===========================================================================
 
 loc_1A264:	; Routine 4
@@ -492,7 +482,7 @@ loc_1A2A6:
 		and.b	obStatus(a0),d0
 		andi.b	#$FC,obRender(a0)
 		or.b	d0,obRender(a0)
-		jmp		(DisplaySprite).l
+		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 ; ===========================================================================
 
 loc_1A2C6:	; Routine 6
@@ -548,12 +538,10 @@ loc_1A35E:
 
 loc_1A376:
 		subq.b	#1,obTimeFrame(a0)
-		bgt.s	loc_1A38A
+		bgt.w	loc_1A296
 		addq.b	#1,obFrame(a0)
 		cmpi.b	#2,obFrame(a0)
 		bgt.w	BossFinal_Delete
-
-loc_1A38A:
 		bra.w	loc_1A296
 ; ===========================================================================
 
@@ -566,7 +554,7 @@ loc_1A38E:	; Routine $A
 		bpl.w	BossFinal_Delete
 
 loc_1A3A6:
-		jmp		(DisplaySprite).l
+		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 ; ===========================================================================
 
 loc_1A3AC:	; Routine $C
@@ -574,9 +562,7 @@ loc_1A3AC:	; Routine $C
 		bset	#staFlipX,obStatus(a0)
 		movea.l	objoff_34(a0),a1
 		cmpi.b	#$C,objoff_34(a1)
-		bne.s	loc_1A3D0
+		bne.w	loc_1A2A6
 		cmpi.l	#Map_Eggman,obMap(a1)
 		beq.w	BossFinal_Delete
-
-loc_1A3D0:
 		bra.w	loc_1A2A6

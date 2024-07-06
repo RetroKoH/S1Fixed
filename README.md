@@ -222,6 +222,11 @@
  Function: Optimized angle calculation.
  Date: 2024-07-03
  
+ Name: S3K TouchResponse Object Collision System
+ Credit: DeltaW/RetroKoH
+ Function: Optimized Object Detection for Sonic
+ Date: 2024-07-07
+ 
 # Visual Changes
  Name: Title Screen Tweaks
  Credit: RetroKoH

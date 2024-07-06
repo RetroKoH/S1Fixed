@@ -27,14 +27,14 @@ BossMarble_Main:	; Routine 0
 		move.w	obY(a0),objoff_38(a0)
 		move.b	#$F,obColType(a0)
 		move.b	#8,obColProp(a0) ; set number of hits to 8
-		lea	BossMarble_ObjData(pc),a2
+		lea		BossMarble_ObjData(pc),a2
 		movea.l	a0,a1
 		moveq	#3,d1
 		bra.s	BossMarble_LoadBoss
 ; ===========================================================================
 
 BossMarble_Loop:
-		jsr	(FindNextFreeObj).l
+		jsr		(FindNextFreeObj).l
 		bne.s	BossMarble_ShipMain
 		_move.b	#id_BossMarble,obID(a1)
 		move.w	obX(a0),obX(a1)
@@ -72,7 +72,7 @@ BossMarble_ShipMain:	; Routine 2
 		and.b	obStatus(a0),d0
 		andi.b	#$FC,obRender(a0)
 		or.b	d0,obRender(a0)
-		jmp		(DisplaySprite).l
+		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 ; ===========================================================================
 BossMarble_ShipIndex:	offsetTable
 		offsetTableEntry.w loc_18302
@@ -85,7 +85,7 @@ BossMarble_ShipIndex:	offsetTable
 loc_18302:
 		move.b	objoff_3F(a0),d0
 		addq.b	#2,objoff_3F(a0)
-		jsr	(CalcSine).l
+		jsr		(CalcSine).l
 		asr.w	#2,d0
 		move.w	d0,obVelY(a0)
 		move.w	#-$100,obVelX(a0)
@@ -97,7 +97,7 @@ loc_18302:
 		clr.l	obVelX(a0)
 
 loc_18334:
-		jsr	(RandomNumber).l
+		jsr		(RandomNumber).l
 		move.b	d0,objoff_34(a0)
 
 loc_1833E:
@@ -113,10 +113,10 @@ loc_1833E:
 		bne.s	loc_18374
 		move.b	#$28,objoff_3E(a0)
 		move.w	#sfx_HitBoss,d0
-		jsr	(PlaySound_Special).l	; play boss damage sound
+		jsr		(PlaySound_Special).l	; play boss damage sound
 
 loc_18374:
-		lea	(v_pal_dry+$22).w,a1
+		lea		(v_pal_dry+$22).w,a1
 		moveq	#0,d0
 		tst.w	(a1)
 		bne.s	loc_18382
@@ -186,11 +186,11 @@ loc_183FE:
 BossMarble_MakeLava:
 		subq.b	#1,objoff_34(a0)
 		bcc.s	loc_1845C
-		jsr	(FindFreeObj).l
+		jsr		(FindFreeObj).l
 		bne.s	loc_1844A
 		_move.b	#id_LavaBall,obID(a1) ; load lava ball object
 		move.w	#boss_mz_y+$D8,obY(a1)	; set Y	position
-		jsr	(RandomNumber).l
+		jsr		(RandomNumber).l
 		andi.l	#$FFFF,d0
 		divu.w	#$50,d0
 		swap	d0
@@ -200,7 +200,7 @@ BossMarble_MakeLava:
 		move.w	#$FF,obSubtype(a1)
 
 loc_1844A:
-		jsr	(RandomNumber).l
+		jsr		(RandomNumber).l
 		andi.b	#$1F,d0
 		addi.b	#$40,d0
 		move.b	d0,objoff_34(a0)
@@ -316,7 +316,7 @@ loc_18566:
 loc_1856C:
 		clr.w	obVelY(a0)
 		move.w	#bgm_MZ,d0
-		jsr	(PlaySound).l		; play MZ music
+		jsr		(PlaySound).l		; play MZ music
 
 loc_1857A:
 		bsr.w	BossMove
@@ -345,7 +345,7 @@ BossMarble_ShipDel:
 		; Objects should not queue themselves for display
 		; while also being deleted.
 		addq.l	#4,sp			; Clownacy DisplaySprites Fix
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 BossMarble_FaceMain:	; Routine 4
@@ -385,17 +385,15 @@ loc_185E4:
 loc_185EE:
 		move.b	d1,obAnim(a0)
 		subq.b	#4,d0
-		bne.s	loc_18602
+		bne.s	BossMarble_Display
 		move.b	#6,obAnim(a0)
 		tst.b	obRender(a0)
 		bpl.s	BossMarble_FaceDel
-
-loc_18602:
 		bra.s	BossMarble_Display
 ; ===========================================================================
 
 BossMarble_FaceDel:
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 BossMarble_FlameMain:; Routine 6
@@ -406,25 +404,23 @@ BossMarble_FlameMain:; Routine 6
 		move.b	#$B,obAnim(a0)
 		tst.b	obRender(a0)
 		bpl.s	BossMarble_FlameDel
-		bra.s	loc_18636
+		bra.s	BossMarble_Display
 ; ===========================================================================
 
 loc_1862A:
 		tst.w	obVelX(a1)
-		beq.s	loc_18636
+		beq.s	BossMarble_Display
 		move.b	#8,obAnim(a0)
-
-loc_18636:
 		bra.s	BossMarble_Display
 ; ===========================================================================
 
 BossMarble_FlameDel:
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 BossMarble_Display:
-		lea	(Ani_Eggman).l,a1
-		jsr	(AnimateSprite).l
+		lea		(Ani_Eggman).l,a1
+		jsr		(AnimateSprite).l
 
 loc_1864A:
 		movea.l	objoff_34(a0),a1

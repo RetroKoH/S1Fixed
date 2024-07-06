@@ -6146,7 +6146,9 @@ Sonic_Normal:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Sonic_Index(pc,d0.w),d1
-		jmp		Sonic_Index(pc,d1.w)
+		jsr		Sonic_Index(pc,d1.w)
+		clr.w	(v_col_response_list).w		; reset collsion response list
+		rts
 ; ===========================================================================
 Sonic_Index:	offsetTable
 		offsetTableEntry.w	Sonic_Main

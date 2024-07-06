@@ -55,4 +55,4 @@ loc_E57A:
 
 Flame_ChkDel:
 		offscreen.w	DeleteObject	; ProjectFM S3K Object Manager
-		bra.w	DisplaySprite
+		bra.w	DisplayAndCollision	; S3K TouchResponse

@@ -4,11 +4,11 @@ BGHZ_MakeBall:
 		move.w	#-$40,obVelY(a0)
 		bsr.w	BossMove
 		cmpi.w	#boss_ghz_x+$A0,objoff_30(a0)
-		bne.s	loc_17916
+		bne.w	loc_177E6
 		clr.w	obVelX(a0)
 		clr.w	obVelY(a0)
 		addq.b	#2,ob2ndRout(a0)
-		jsr	(FindNextFreeObj).l
+		jsr		(FindNextFreeObj).l
 		bne.s	loc_17910
 		_move.b	#id_BossBall,obID(a1) ; load swinging ball object
 		move.w	objoff_30(a0),obX(a1)
@@ -17,8 +17,6 @@ BGHZ_MakeBall:
 
 loc_17910:
 		move.w	#$77,objoff_3C(a0)
-
-loc_17916:
 		bra.w	loc_177E6
 ; ===========================================================================
 
@@ -35,10 +33,8 @@ BGHZ_ShipMove:
 
 BGHZ_Reverse:
 		btst	#staFlipX,obStatus(a0)
-		bne.s	loc_17950
+		bne.w	loc_177E6
 		neg.w	obVelX(a0)	; reverse direction of the ship
-
-loc_17950:
 		bra.w	loc_177E6
 ; ===========================================================================
 
@@ -46,7 +42,7 @@ loc_17954:
 		subq.w	#1,objoff_3C(a0)
 		bmi.s	loc_17960
 		bsr.w	BossMove
-		bra.s	loc_17976
+		bra.w	loc_177E6
 ; ===========================================================================
 
 loc_17960:
@@ -54,8 +50,6 @@ loc_17960:
 		move.w	#$40-1,objoff_3C(a0)
 		subq.b	#2,ob2ndRout(a0)
 		clr.w	obVelX(a0)
-
-loc_17976:
 		bra.w	loc_177E6
 ; ===========================================================================
 
@@ -110,7 +104,7 @@ loc_179DA:
 loc_179E0:
 		clr.w	obVelY(a0)
 		move.w	#bgm_GHZ,d0
-		jsr	(PlaySound).l		; play GHZ music
+		jsr		(PlaySound).l		; play GHZ music
 
 loc_179EE:
 		bsr.w	BossMove
@@ -140,7 +134,7 @@ BGHZ_ShipDel:
 		; should not queue themselves for display while also being
 		; deleted.
 		addq.l	#4,sp			; Clownacy DisplaySprites Fix
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 BGHZ_FaceMain:	; Routine 4
@@ -176,17 +170,15 @@ loc_17A50:
 loc_17A5A:
 		move.b	d1,obAnim(a0)
 		subq.b	#2,d0
-		bne.s	BGHZ_FaceDisp
+		bne.s	BGHZ_Display	; Face display
 		move.b	#6,obAnim(a0)
 		tst.b	obRender(a0)
 		bpl.s	BGHZ_FaceDel
-
-BGHZ_FaceDisp:
-		bra.s	BGHZ_Display
+		bra.s	BGHZ_Display	; Face display
 ; ===========================================================================
 
 BGHZ_FaceDel:
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 BGHZ_FlameMain:	; Routine 6
@@ -197,16 +189,14 @@ BGHZ_FlameMain:	; Routine 6
 		move.b	#$B,obAnim(a0)
 		tst.b	obRender(a0)
 		bpl.s	BGHZ_FlameDel
-		bra.s	BGHZ_FlameDisp
+		bra.s	BGHZ_Display	; Flame Display
 ; ===========================================================================
 
 loc_17A96:
 		move.w	obVelX(a1),d0
-		beq.s	BGHZ_FlameDisp
+		beq.s	BGHZ_Display	; Flame display
 		move.b	#8,obAnim(a0)
-
-BGHZ_FlameDisp:
-		bra.s	BGHZ_Display
+		bra.s	BGHZ_Display	; Flame display
 ; ===========================================================================
 
 BGHZ_FlameDel:

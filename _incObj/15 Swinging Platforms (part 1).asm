@@ -20,6 +20,13 @@ Swing_Index:	offsetTable
 
 swing_origX = objoff_3A		; original x-axis position
 swing_origY = objoff_38		; original y-axis position
+
+swing_angle = $10		; precise rotation angle (2 bytes)
+	; ^^^ We need this so that obShieldProp isn't overwritten, otherwise
+	; Insta-Shield negates its collision property. Upper byte written to obAngle.
+	; Unlike other similar objects, I set this to $10 because the GHZ boss chain
+	; uses up much of its scratch RAM, and that object use's this object's movement
+	; routines.
 ; ===========================================================================
 
 Swing_Main:	; Routine 0
@@ -117,7 +124,8 @@ Swing_Main:	; Routine 0
 		lsr.w	#object_size_bits,d5
 		andi.w	#$7F,d5
 		move.b	d5,(a2)+
-		move.w	#$4080,obAngle(a0)
+		move.w	#$4080,swing_angle(a0)
+		move.b	swing_angle(a0),obAngle(a0)
 		move.w	#-$200,objoff_3E(a0)
 		move.w	(sp)+,d1
 		btst	#4,d1					; is object type $1X ?

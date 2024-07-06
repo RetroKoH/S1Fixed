@@ -21,7 +21,7 @@ Seesaw:
 		sub.w	d1,d0
 		; Deleted first call to DeleteObject
 		cmpi.w	#$280,d0
-		bls.w	DisplaySprite
+		bls.w	SBall_Display		; branch to here for S3K TouchResponse
 		move.w	obRespawnNo(a0),d0	; get address in respawn table
 		beq.w	DeleteObject		; if it's zero, don't remember object
 		movea.w	d0,a2				; load address into a2
@@ -97,7 +97,7 @@ See_Slope2:	; Routine 4
 
 See_ChkSide:
 		moveq	#2,d1
-		lea	(v_player).w,a1
+		lea		(v_player).w,a1
 		move.w	obX(a0),d0
 		sub.w	obX(a1),d0	; is Sonic on the left side of the seesaw?
 		bcc.s	.leftside	; if yes, branch
@@ -181,7 +181,7 @@ loc_11838:
 ; ===========================================================================
 
 loc_1183E:
-		lea	(See_Speeds).l,a2
+		lea		(See_Speeds).l,a2
 		moveq	#0,d0
 		move.b	obFrame(a1),d0
 		move.w	#$28,d2
@@ -220,7 +220,7 @@ locret_11898:
 loc_1189A:
 		bsr.w	ObjectFall
 		movea.l	see_parent(a0),a1
-		lea	(See_Speeds).l,a2
+		lea		(See_Speeds).l,a2
 		moveq	#0,d0
 		move.b	obFrame(a1),d0
 		move.w	obX(a0),d1

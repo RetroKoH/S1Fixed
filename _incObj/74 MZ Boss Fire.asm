@@ -50,11 +50,11 @@ BossFire_Action:	; Routine 2
 		jsr		(AnimateSprite).l
 		cmpi.w	#boss_mz_y+$D8,obY(a0)
 		bhi.s	BossFire_Delete
-		jmp		(DisplaySprite).l		; Clownacy DisplaySprite Fix
+		jmp		(DisplayAndCollision).l		; Clownacy DisplaySprite Fix; S3K TouchResponse
 ; ===========================================================================
 
 BossFire_Delete:
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 ; ===========================================================================
 BossFire_Index2:	offsetTable
 		offsetTableEntry.w.w BossFire_Drop
@@ -88,10 +88,10 @@ BossFire_MakeFlame:
 		move.w	obX(a0),objoff_30(a0)
 		move.w	obY(a0),objoff_38(a0)
 		move.b	#3,objoff_29(a0)
-		jsr	(FindNextFreeObj).l
+		jsr		(FindNextFreeObj).l
 		bne.s	loc_187CA
-		lea	(a1),a3
-		lea	(a0),a2
+		lea		(a1),a3
+		lea		(a0),a2
 		moveq	#3,d0
 
 BossFire_Loop:
@@ -99,7 +99,7 @@ BossFire_Loop:
 		move.l	(a2)+,(a3)+
 		move.l	(a2)+,(a3)+
 		move.l	(a2)+,(a3)+
-		dbf	d0,BossFire_Loop
+		dbf		d0,BossFire_Loop
 
 		neg.w	obVelX(a1)
 		addq.b	#2,ob2ndRout(a1)
@@ -112,7 +112,7 @@ loc_187CA:
 
 
 BossFire_Duplicate2:
-		jsr	(FindNextFreeObj).l
+		jsr		(FindNextFreeObj).l
 		bne.s	locret_187EE
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
@@ -190,7 +190,7 @@ BossFire_Delete2:
 		; Do not return to BossFire_Action, to avoid double-delete
 		; and display-and-delete bugs.
 		addq.l	#4,sp			; Clownacy DisplaySprite Fix
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 loc_18886:	; Routine 4
@@ -202,11 +202,11 @@ loc_18886:	; Routine 4
 		clr.b	obColType(a0)
 
 BossFire_Animate:
-		lea	(Ani_Fire).l,a1
+		lea		(Ani_Fire).l,a1
 		; DisplaySprite has been moved to avoid a display-after-free bug.
-		jsr	(AnimateSprite).l
-		jmp	(DisplaySprite).l	; Clownacy DisplaySprite Fix
+		jsr		(AnimateSprite).l
+		jmp		(DisplayAndCollision).l	; S3K TouchResponse; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 BossFire_Delete3:	; Routine 6
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l

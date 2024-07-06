@@ -3,17 +3,21 @@
 ; ---------------------------------------------------------------------------
 
 sball_childs = objoff_29	; number of child objects (1 byte)
-		; $30-$37	; object RAM numbers of childs (1 byte each)
-sball_origX = objoff_3A		; centre x-axis position (2 bytes)
+		; followed by object RAM numbers of childs (1 byte each, up to 8 bytes)
 sball_origY = objoff_38		; centre y-axis position (2 bytes)
+sball_origX = objoff_3A		; centre x-axis position (2 bytes)
 sball_radius = objoff_3C	; radius (1 byte)
 sball_speed = objoff_3E		; rate of spin (2 bytes)
+
+sball_angle = objoff_36		; precise rotation angle (2 bytes)
+	; ^^^ We need this so that obShieldProp isn't overwritten, otherwise
+	; Insta-Shield negates its collision property. Upper byte written to obAngle.
 
 SpikeBall:
 	; LavaGaming Object Routine Optimization
 		move.b	obRoutine(a0),d0
 		cmpi.b	#4,d0
-		beq.w	DisplaySprite
+		beq.w	SBall_Display
 		
 		tst.b	d0
 		bne.w	SBall_Move
@@ -42,13 +46,16 @@ SBall_Main:	; Routine 0
 		ext.w	d1
 		asl.w	#3,d1					; multiply by 8
 		move.w	d1,sball_speed(a0)		; set object twirl speed
+	; This needs to be examined
 		move.b	obStatus(a0),d0
 		ror.b	#2,d0
 		andi.b	#$C0,d0
-		move.b	d0,obAngle(a0)
+		move.b	d0,obAngle(a0)			; set initial angle
+		move.b	d0,sball_angle(a0)		; set initial precise angle
+	; is obStatus always 0???
 		lea		sball_childs(a0),a2		; a2 = (a0)'s child address array
 		move.b	obSubtype(a0),d1		; get object type
-		andi.w	#7,d1					; read only the	2nd digit
+		andi.w	#7,d1					; read only the	2nd digit (max: 7)
 		clr.b	(a2)+
 		move.w	d1,d3
 		lsl.w	#4,d3
@@ -121,7 +128,8 @@ SBall_Move:	; Routine 2
 
 .movesub:
 		move.w	sball_speed(a0),d0
-		add.w	d0,obAngle(a0)
+		add.w	d0,sball_angle(a0)
+		move.b	sball_angle(a0),obAngle(a0)	; To prevent insta-shield bug.
 		move.b	obAngle(a0),d0
 		jsr		(CalcSine).l
 		move.w	sball_origY(a0),d2
@@ -153,7 +161,7 @@ SBall_Move:	; Routine 2
 
 .chkdel:
 		offscreen.s	.delete,sball_origX(a0)	; ProjectFM S3K Object Manager
-		bra.w	DisplaySprite
+		bra.s	SBall_Display
 ; ===========================================================================
 
 .delete:
@@ -168,6 +176,17 @@ SBall_Move:	; Routine 2
 		addi.l	#v_objspace&$FFFFFF,d0
 		movea.l	d0,a1
 		bsr.w	DeleteChild
-		dbf		d2,.deleteloop ; delete all pieces of	chain
+		dbf		d2,.deleteloop ; delete all pieces of chain
 		rts	
 ; ===========================================================================
+
+SBall_Display:	; Routine 4 -- S3K TouchResponse
+		tst.b	obColType(a0)
+		beq.w	DisplaySprite
+		lea		(v_col_response_list).w,a1
+		cmpi.w	#$7E,(a1)		; Is list full?
+		bhs.w	DisplaySprite	; If so, return
+		addq.w	#2,(a1)			; Count this new entry
+		adda.w	(a1),a1			; Offset into right area of list
+		move.w	a0,(a1)			; Store RAM address in list
+		bra.w	DisplaySprite

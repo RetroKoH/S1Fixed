@@ -243,11 +243,22 @@ RLoss_Bounce:	; Routine 2
 		blo.w	DeleteObject			; if yes, branch
 		; Mercury Ring Flashing Effect
 .chkflash:
-		btst	#0, obDelayAni(a0)		; Test the first bit of the timer, so rings flash every other frame.
+	; S3K TouchResponse
+	; Add to collision response list directly, then choose whether or not to display.
+		lea		(v_col_response_list).w,a1
+		cmpi.w	#$7E,(a1)				; Is list full?
+		bhs.s	.full					; If so, return
+		addq.w	#2,(a1)					; Count this new entry
+		adda.w	(a1),a1					; Offset into right area of list
+		move.w	a0,(a1)					; Store RAM address in list
+
+		btst	#0,obDelayAni(a0)		; Test the first bit of the timer, so rings flash every other frame.
 		beq.w	DisplaySprite			; If the bit is 0, the ring will appear.
 		cmpi.b	#80,obDelayAni(a0)		; Rings will flash during last 80 steps of their life.
 		bhi.w	DisplaySprite			; If the timer is higher than 80, obviously the rings will STAY visible.
-		rts
+		rts								; Skip Displaying if there is no room in the collision table.
+.full:
+		bra.w	DisplaySprite
 		; Ring Flashing Effect End
 ; ===========================================================================
 
@@ -334,7 +345,7 @@ RAttract_Main:
 		bcs.w	RLoss_Delete	; if yes, branch
 
 .display:	
-		bra.w	DisplaySprite
+		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 
 
 ; =============== S U B R O U T I N E =======================================

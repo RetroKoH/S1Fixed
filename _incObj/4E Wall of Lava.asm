@@ -107,7 +107,7 @@ LWall_Solid:	; Routine 2
 		out_of_range.s	.chkgone	; retain old macro
 
 .moving:
-		bra.w	DisplaySprite	; Clownacy DisplaySprites fix
+		jmp		(DisplayAndCollision).l		; Clownacy DisplaySprites fix
 ; ===========================================================================
 
 .chkgone:

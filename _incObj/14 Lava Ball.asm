@@ -65,7 +65,7 @@ LBall_Action:	; Routine 2
 
 LBall_ChkDel:
 		offscreen.w	DeleteObject	; ProjectFM S3K Object Manager
-		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix
+		jmp	(DisplayAndCollision).l	; Clownacy DisplaySprite Fix; S3K TouchResponse
 ; ===========================================================================
 LBall_TypeIndex:
 		dc.w LBall_Type00-LBall_TypeIndex, LBall_Type00-LBall_TypeIndex

@@ -6,14 +6,13 @@
 
 
 ReactToItem:
-		nop
-		jsr		Touch_Rings						; RetroKoH S2 Rings Manager
+		jsr		(Touch_Rings).l					; RetroKoH S2 Rings Manager
 
 	if ShieldsMode>0
 		move.b	obStatus2nd(a0),d0				; does the player have a Shield or Invincibility?
 		andi.b	#mask2ndChkShield,d0
 		bne.s	.noInstaShield					; if yes, branch
-; By this point, we're focussing purely on the Insta-Shield
+; By this point, we're focusing purely on the Insta-Shield
 		cmpi.b	#1,obDoubleJumpFlag(a0)			; is the insta-shield active?
 		bne.s	.noInstaShield					; if not, branch
 		move.b	obStatus2nd(a0),d0
@@ -63,23 +62,66 @@ ReactToItem:
 		add.w	d5,d5
 
 .chkobjecttype:
-		lea		(v_lvlobjspace).w,a1	; set object RAM start address
-		move.w	#v_lvlobjcount,d6		; (objRAM / objSize) - 1 ($5F)
+		lea		(v_col_response_list).w,a4
+		move.w	(a4)+,d6				; Get number of objects queued
+		beq.s	.end					; If there are none, return
 
 .loop:
-		tst.b	obRender(a1)
-		bpl.s	.next
-		move.b	obColType(a1),d0	; load collision type
-		bne.s	.proximity			; if nonzero, branch
+		movea.w	(a4)+,a1				; Get address of first object's RAM
+		move.b	obColType(a1),d0		; Get its collision_flags
+
+		bne.s	.proximity				; If it actually has collision, branch
 
 .next:
-		lea		object_size(a1),a1	; next object RAM
-		dbf		d6,.loop			; repeat $5F more times
+		subq.w	#2,d6					; Count the object as done
+		bne.s	.loop					; If there are still objects left, loop
 
 		moveq	#0,d0
+.end
 		rts	
 ; ===========================================================================
-.sizes:		;   width, height
+
+.proximity:
+		andi.w	#$3F,d0
+		add.w	d0,d0
+		lea		Touch_Sizes-2(pc,d0.w),a2
+		moveq	#0,d1
+		move.b	(a2)+,d1
+		move.w	obX(a1),d0
+		sub.w	d1,d0
+		sub.w	d2,d0
+		bcc.s	.outsidex		; branch if not touching
+		add.w	d1,d1
+		add.w	d1,d0
+		bcs.s	.withinx		; branch if touching
+		bra.s	.next
+; ===========================================================================
+
+.outsidex:
+		cmp.w	d4,d0
+		bhi.s	.next
+
+.withinx:
+		moveq	#0,d1
+		move.b	(a2)+,d1
+		move.w	obY(a1),d0
+		sub.w	d1,d0
+		sub.w	d3,d0
+		bcc.s	.outsidey		; branch if not touching
+		add.w	d1,d1
+		add.w	d0,d1
+		bcs.s	Touch_ChkValue	; branch if touching
+		bra.s	.next
+; ===========================================================================
+
+.outsidey:
+		cmp.w	d5,d0
+		bhi.s	.next	
+		bra.s	Touch_ChkValue
+; ===========================================================================
+
+Touch_Sizes:
+		; width, height
 		dc.b  $14, $14		; $01
 		dc.b   $C, $14		; $02
 		dc.b  $14,  $C		; $03
@@ -118,52 +160,14 @@ ReactToItem:
 		dc.b  $48,   8		; $24
 ; ===========================================================================
 
-.proximity:
-		andi.w	#$3F,d0
-		add.w	d0,d0
-		lea		.sizes-2(pc,d0.w),a2
-		moveq	#0,d1
-		move.b	(a2)+,d1
-		move.w	obX(a1),d0
-		sub.w	d1,d0
-		sub.w	d2,d0
-		bcc.s	.outsidex	; branch if not touching
-		add.w	d1,d1
-		add.w	d1,d0
-		bcs.s	.withinx	; branch if touching
-		bra.w	.next
-; ===========================================================================
-
-.outsidex:
-		cmp.w	d4,d0
-		bhi.w	.next
-
-.withinx:
-		moveq	#0,d1
-		move.b	(a2)+,d1
-		move.w	obY(a1),d0
-		sub.w	d1,d0
-		sub.w	d3,d0
-		bcc.s	.outsidey	; branch if not touching
-		add.w	d1,d1
-		add.w	d0,d1
-		bcs.s	.withiny	; branch if touching
-		bra.w	.next
-; ===========================================================================
-
-.outsidey:
-		cmp.w	d5,d0
-		bhi.w	.next
-
-.withiny:
-.chktype:
-		move.b	obColType(a1),d1 ; load collision type
-		andi.b	#$C0,d1		; is obColType $40 or higher?
-		beq.w	React_Enemy	; if not, branch
-		cmpi.b	#$C0,d1		; is obColType $C0 or higher?
-		beq.w	React_Special	; if yes, branch
-		tst.b	d1		; is obColType $80-$BF?
-		bmi.w	React_ChkHurt	; if yes, branch
+Touch_ChkValue:
+		move.b	obColType(a1),d1	; load collision type
+		andi.b	#$C0,d1				; is obColType $40 or higher?
+		beq.w	React_Enemy			; if not, branch
+		cmpi.b	#$C0,d1				; is obColType $C0 or higher?
+		beq.w	React_Special		; if yes, branch
+		tst.b	d1					; is obColType $80-$BF?
+		bmi.w	React_ChkHurt		; if yes, branch
 
 ; obColType is $40-$7F (powerups)
 
@@ -173,10 +177,10 @@ ReactToItem:
 		beq.s	React_Monitor		; if yes, branch
 	; Otherwise, check if Sonic is able to collect rings
 		cmpi.b	#90,obInvuln(a0)	; is Sonic too early in invuln frames to collect rings? -- RetroKoH Sonic SST Compaction
-		bhs.w	.invincible			; if yes, branch
+		bhs.s	.invulnerable		; if yes, branch
 		addq.b	#2,obRoutine(a1)	; advance the object's routine counter (CollectRing)
 
-.invincible:
+.invulnerable:
 		rts	
 ; ===========================================================================
 
@@ -197,10 +201,10 @@ React_Monitor:
 ; ===========================================================================
 
 .movingdown:
-		cmpi.b	#aniID_Roll,obAnim(a0) ; is Sonic rolling/jumping?
+		cmpi.b	#aniID_Roll,obAnim(a0)	; is Sonic rolling/jumping?
 		bne.s	.donothing
-		neg.w	obVelY(a0)	; reverse Sonic's y-motion
-		addq.b	#2,obRoutine(a1) ; advance the monitor's routine counter
+		neg.w	obVelY(a0)				; reverse Sonic's y-motion
+		addq.b	#2,obRoutine(a1)		; advance the monitor's routine counter
 
 .donothing:
 		rts	
@@ -333,8 +337,9 @@ React_ChkHurt:
 
 ; Elementals and Instashield reflect
 .checkreflect:
-		btst	#shPropReflect,obShieldProp(a1)	; is the object supposed to bounce off of shields?
-		beq.s	.chkhurt						; if not, branch
+		move.b	obShieldProp(a1),d1
+		btst	#shPropReflect,d1		; is the object supposed to bounce off of shields?
+		beq.s	.chkhurt				; if not, branch
 		
 ;Bounce_Projectile:
 		move.w	obX(a0),d1

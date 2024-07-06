@@ -42,7 +42,9 @@ v_ringend:
 v_objstate:				ds.w	$C0				; object state list (Moved and Expanded -- ProjectFM/MoDule S3K Objects Manager)
 v_objstate_end:
 
-						ds.b	$BF4			; unused -- $9C0C
+v_col_response_list		ds.b	$70				; $9C0C
+
+						ds.b	$B84			; unused -- $9C7C
 
 v_bgscroll_buffer:		ds.b	$200			; $A800 - background scroll buffer
 v_ngfx_buffer:			ds.b	$200			; Nemesis graphics decompression buffer

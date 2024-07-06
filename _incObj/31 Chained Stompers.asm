@@ -125,14 +125,16 @@ loc_B798:	; Routine 2
 		move.w	obX(a0),d4
 		bsr.w	SolidObject
 		btst	#staSonicOnObj,obStatus(a0)
-		beq.s	CStom_ChkDel
+		beq.s	.chkdel
 		cmpi.b	#$10,objoff_32(a0)
-		bhs.s	CStom_ChkDel
+		bhs.s	.chkdel
 		movea.l	a0,a2
 		lea		(v_player).w,a0
 		jsr		(KillSonic).l
 		movea.l	a2,a0
-		bra.s	CStom_ChkDel	; FixBugs: Clownacy DisplaySprites Fix
+.chkdel:
+		offscreen.w	DeleteObject	; ProjectFM S3K Objects Manager
+		bra.w	DisplayAndCollision	; S3K TouchResponse; Clownacy DisplaySprites Fix
 ; ===========================================================================
 
 loc_B7E2:	; Routine 8
@@ -153,7 +155,7 @@ loc_B7FE:	; Routine 4
 
 CStom_ChkDel:	; Routine 6 (Replaced CStom_Display2 as that became a fallthrough)
 		offscreen.w	DeleteObject	; ProjectFM S3K Objects Manager
-		bra.w	DisplaySprite		; Clownacy DisplaySprites Fix
+		bra.w	DisplayAndCollision	; S3K TouchResponse; Clownacy DisplaySprites Fix
 ; ===========================================================================
 
 CStom_Types:
@@ -235,7 +237,7 @@ CStom_Type01:
 		tst.w	objoff_38(a0)
 		beq.s	loc_B902
 		subq.w	#1,objoff_38(a0)
-		bra.s	loc_B97C
+		bra.s	CStom_Restart
 ; ===========================================================================
 
 loc_B902:
@@ -249,32 +251,30 @@ loc_B902:
 
 loc_B91C:
 		subi.w	#$80,objoff_32(a0)
-		bcc.s	loc_B97C
+		bcc.s	CStom_Restart
 		clr.w	objoff_32(a0)
 		clr.w	obVelY(a0)
 		clr.w	objoff_36(a0)
-		bra.s	loc_B97C
+		bra.s	CStom_Restart
 ; ===========================================================================
 
 loc_B938:
 		move.w	objoff_34(a0),d1
 		cmp.w	objoff_32(a0),d1
-		beq.s	loc_B97C
+		beq.s	CStom_Restart
 		move.w	obVelY(a0),d0
 		addi.w	#$70,obVelY(a0)	; make object fall
 		add.w	d0,objoff_32(a0)
 		cmp.w	objoff_32(a0),d1
-		bhi.s	loc_B97C
+		bhi.s	CStom_Restart
 		move.w	d1,objoff_32(a0)
 		clr.w	obVelY(a0)	; stop object falling
 		move.w	#1,objoff_36(a0)
 		move.w	#$3C,objoff_38(a0)
 		tst.b	obRender(a0)
-		bpl.s	loc_B97C
+		bpl.w	CStom_Restart
 		move.w	#sfx_ChainStomp,d0
 		jsr		(PlaySound_Special).l	; play stomping sound
-
-loc_B97C:
 		bra.w	CStom_Restart
 ; ===========================================================================
 
@@ -286,8 +286,6 @@ CStom_Type03:
 
 loc_B98C:
 		cmpi.w	#$90,d0
-		bhs.s	loc_B996
+		bhs.w	CStom_Restart
 		addq.b	#1,obSubtype(a0)
-
-loc_B996:
 		bra.w	CStom_Restart

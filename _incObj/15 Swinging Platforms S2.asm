@@ -1,98 +1,89 @@
 ; ----------------------------------------------------------------------------
 ; Object 15 - swinging platforms (GHZ, MZ, SLZ)
-;	    - spiked ball on a chain (SBZ)
+;			- spiked ball on a chain (SBZ)
 ; ----------------------------------------------------------------------------
-Obj15:
-	btst	#6,render_flags(a0)
-	bne.w	+
+SwingingPlatform:
+	btst	#6,obRender(a0)
+	bne.w	.subSpr
 	moveq	#0,d0
-	move.b	routine(a0),d0
-	move.w	Obj15_Index(pc,d0.w),d1
-	jmp	Obj15_Index(pc,d1.w)
+	move.b	obRoutine(a0),d0
+	move.w	Swing_Index(pc,d0.w),d1
+	jmp		Swing_Index(pc,d1.w)
 ; ---------------------------------------------------------------------------
-+
+.subSpr
 	move.w	#object_display_list_size*4,d0
 	bra.w	DisplaySprite3
 ; ===========================================================================
-; off_FCBC: Obj15_States:
-Obj15_Index:	offsetTable
-		offsetTableEntry.w Obj15_Init		;  0
+Swing_Index:	offsetTable
+		offsetTableEntry.w Swing_Main		;  0
 		offsetTableEntry.w Obj15_State2		;  2
 		offsetTableEntry.w Obj15_Display	;  4
 		offsetTableEntry.w Obj15_State4		;  6
 		offsetTableEntry.w Obj15_State5		;  8
 		offsetTableEntry.w Obj15_State6		; $A
 		offsetTableEntry.w Obj15_State7		; $C
-; ===========================================================================
-; loc_FCCA:
-Obj15_Init:
-	addq.b	#2,routine(a0)
-	move.l	#Obj15_MapUnc_101E8,mappings(a0)
-	move.w	#make_art_tile(ArtTile_ArtNem_OOZSwingPlat,2,0),art_tile(a0)
-	move.b	#4,render_flags(a0)
-	move.b	#3,priority(a0)
-	move.b	#$20,width_pixels(a0)
-	move.b	#$10,y_radius(a0)
-	move.w	y_pos(a0),objoff_38(a0)
-	move.w	x_pos(a0),objoff_3A(a0)
-	cmpi.b	#mystic_cave_zone,(Current_Zone).w
-	bne.s	+
-	move.l	#Obj15_Obj7A_MapUnc_10256,mappings(a0)
-	move.w	#make_art_tile(ArtTile_ArtKos_LevelArt,0,0),art_tile(a0)
-	move.b	#$18,width_pixels(a0)
-	move.b	#8,y_radius(a0)
-+
-	cmpi.b	#aquatic_ruin_zone,(Current_Zone).w
-	bne.s	+
-	move.l	#Obj15_Obj83_MapUnc_1021E,mappings(a0)
-	move.w	#make_art_tile(ArtTile_ArtKos_LevelArt,0,0),art_tile(a0)
-	move.b	#$20,width_pixels(a0)
-	move.b	#8,y_radius(a0)
-+
-	bsr.w	Adjust2PArtPointer
-	moveq	#0,d1
-	move.b	subtype(a0),d1
-	bpl.s	+
-	addq.b	#4,routine(a0)
-+
-	move.b	d1,d4
-	andi.b	#$70,d4
-	andi.w	#$F,d1
-	move.w	x_pos(a0),d2
-	move.w	y_pos(a0),d3
-	jsrto	AllocateObjectAfterCurrent, JmpTo2_AllocateObjectAfterCurrent
-	bne.w	+++
-	_move.b	id(a0),id(a1) ; load obj15
-	move.l	mappings(a0),mappings(a1)
-	move.w	art_tile(a0),art_tile(a1)
-	move.b	#4,render_flags(a1)
-	cmpi.b	#$20,d4
-	bne.s	+
-	move.b	#4,routine(a1)
-	move.b	#4,priority(a1)
-	move.b	#$10,width_pixels(a1)
-	move.b	#$50,y_radius(a1)
-	bset	#4,render_flags(a1)
-	move.b	#3,mapping_frame(a1)
-	move.w	d2,x_pos(a1)
-	addi.w	#$40,d3
-	move.w	d3,y_pos(a1)
-	addi.w	#$48,d3
-	move.w	d3,y_pos(a0)
-	bra.s	++
-; ===========================================================================
-+
-	bset	#6,render_flags(a1)
-	move.b	#$48,mainspr_width(a1)
-	move.b	d1,mainspr_childsprites(a1)
-	subq.b	#1,d1
-	lea	subspr_data(a1),a2
 
--	move.w	d2,(a2)+	; sub?_x_pos
-	move.w	d3,(a2)+	; sub?_y_pos
-	move.w	#1,(a2)+	; sub2_mapframe
-	addi.w	#$10,d3
-	dbf	d1,-
+swing_origX = objoff_3A		; original x-axis position
+swing_origY = objoff_38		; original y-axis position
+; ===========================================================================
+Swing_Main:
+		addq.b	#2,obRoutine(a0)
+		move.l	#Map_Swing_GHZ,obMap(a0)	; GHZ and MZ specific code
+		move.w	#make_art_tile(ArtTile_GHZ_MZ_Swing,2,0),obGfx(a0)
+		move.b	#4,obRender(a0)
+		move.w	#$180,obPriority(a0)		; RetroKoH S3K Priority Manager
+		move.b	#$18,obActWid(a0)
+		move.b	#8,obHeight(a0)
+		move.w	obY(a0),swing_origY(a0)
+		move.w	obX(a0),swing_origX(a0)
+		cmpi.b	#id_SLZ,(v_zone).w			; check if level is SLZ
+		bne.s	.notSLZ
+
+		move.l	#Map_Swing_SLZ,obMap(a0)	; SLZ specific code
+		move.w	#make_art_tile(ArtTile_SLZ_Swing,2,0),obGfx(a0)
+		move.b	#$20,obActWid(a0)
+		move.b	#$10,obHeight(a0)
+		move.b	#$99,obColType(a0)
+
+.notSLZ:
+		cmpi.b	#id_SBZ,(v_zone).w		; check if level is SBZ
+		bne.s	.length
+
+		move.l	#Map_BBall,obMap(a0)	; SBZ specific code
+		move.w	#make_art_tile(ArtTile_SYZ_Big_Spikeball,0,0),obGfx(a0)
+		move.b	#$18,obActWid(a0)
+		move.b	#$18,obHeight(a0)
+		move.b	#$86,obColType(a0)
+		move.b	#$C,obRoutine(a0)		; goto Swing_Action next
+
+.length:
+		bsr.w	FindFreeObj
+		bne.w	.return
+		move.b	obID(a0),obID(a1)	; load obj15
+		move.l	obMap(a0),obMap(a1)
+		move.w	obGfx(a0),obGfx(a1)
+		move.b	#4,obRender(a1)
+		move.b	#4,obRoutine(a1)
+		move.w	#$200,obPriority(a1)	; RetroKoH S3K Priority Manager
+		move.b	#8,obActWid(a1)
+		move.b	#1,obFrame(a1)
+		move.w	d2,obX(a1)
+		addi.w	#$40,d3
+		move.w	d3,obY(a1)
+		addi.w	#$48,d3
+		move.w	d3,obY(a0)
+		bset	#6,obRender(a1)
+		move.b	#$48,mainspr_width(a1)
+		move.b	d1,mainspr_childsprites(a1)
+		subq.b	#1,d1
+		lea		subspr_data(a1),a2
+
+.loop:
+		move.w	d2,(a2)+	; sub?_x_pos
+		move.w	d3,(a2)+	; sub?_y_pos
+		move.w	#1,(a2)+	; sub2_mapframe
+		addi.w	#$10,d3
+		dbf		d1,.loop
 
 	move.b	#2,sub2_mapframe(a1)
 	move.w	sub6_x_pos(a1),x_pos(a1)

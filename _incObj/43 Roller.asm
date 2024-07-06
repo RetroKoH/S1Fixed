@@ -15,13 +15,13 @@ Roll_Main:	; Routine 0
 		jsr		(ObjFloorDist).l
 		tst.w	d1
 		bpl.s	locret_E052
-		add.w	d1,obY(a0)	; match	roller's position with the floor
+		add.w	d1,obY(a0)				; match	roller's position with the floor
 		clr.w	obVelY(a0)
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Roll,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Roller,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#$200,obPriority(a0)	; RetroKoH S3K Priority Manager
 		move.b	#$10,obActWid(a0)
 
 locret_E052:
@@ -43,7 +43,7 @@ Roll_Action:	; Routine 2
 		sub.w	d1,d0
 		cmpi.w	#$280,d0
 		bgt.w	Roll_ChkGone
-		bra.w	DisplaySprite
+		bra.w	DisplayAndCollision		; S3K TouchResponse
 ; ===========================================================================
 
 Roll_ChkGone:

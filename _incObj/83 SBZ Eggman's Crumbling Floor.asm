@@ -77,7 +77,7 @@ FFloor_Solid:
 
 loc_19C36:	; Routine 4
 		subi.b	#$E,obTimeFrame(a0)
-		bcc.s	FFloor_Solid2
+		bcc.s	FFloor_Solid
 		moveq	#-1,d0
 		move.b	obFrame(a0),d0
 		ext.w	d0
@@ -88,8 +88,6 @@ loc_19C36:	; Routine 4
 		addq.b	#1,obFrame(a0)
 		cmpi.b	#8,obFrame(a0)
 		beq.s	loc_19C62
-
-FFloor_Solid2:
 		bra.s	FFloor_Solid
 ; ===========================================================================
 

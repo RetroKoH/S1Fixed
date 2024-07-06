@@ -62,7 +62,7 @@ Bump_Hit:	; Routine 2
 		lea		(Ani_Bump).l,a1
 		bsr.w	AnimateSprite
 		out_of_range.s	.resetcount
-		bra.w	DisplaySprite
+		bra.w	DisplayAndCollision		; S3K TouchResponse
 ; ===========================================================================
 
 .resetcount:

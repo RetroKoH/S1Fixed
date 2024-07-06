@@ -18,7 +18,8 @@ GBall_Index:	offsetTable
 
 GBall_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
-		move.w	#$4080,obAngle(a0)
+		move.w	#$4080,swing_angle(a0)
+		move.b	swing_angle(a0),obAngle(a0)
 		move.w	#-$200,objoff_3E(a0)
 		move.l	#Map_BossItems,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Eggman_Weapons,0,0),obGfx(a0)
@@ -103,13 +104,13 @@ GBall_Display:
 		bsr.w	sub_17C2A
 		move.b	obAngle(a0),d0
 		jsr		(Swing_Move2).l
-		jmp		(DisplaySprite).l
+		jmp		(DisplayAndCollision).l		; S3K TouchResponse
 ; ===========================================================================
 
 GBall_Display2:	; Routine 4
 		bsr.w	sub_17C2A
 		jsr		(Obj48_Move).l
-		jmp		(DisplaySprite).l
+		jmp		(DisplayAndCollision).l		; S3K TouchResponse
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
@@ -145,7 +146,7 @@ loc_17C68:	; Routine 6
 		clr.b	obRoutine(a0)
 
 GBall_Display3:
-		jmp		(DisplaySprite).l
+		jmp		(DisplayAndCollision).l		; S3K TouchResponse
 ; ===========================================================================
 
 GBall_ChkVanish:; Routine 8
@@ -167,4 +168,4 @@ GBall_Vanish:
 		clr.b	obRoutine(a0)
 
 GBall_Display4:
-		jmp		(DisplaySprite).l
+		jmp		(DisplayAndCollision).l		; S3K TouchResponse

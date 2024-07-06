@@ -79,45 +79,45 @@ BossBlock_Solid:
 		move.w	#$10,d2
 		move.w	#$11,d3
 		move.w	obX(a0),d4
-		jsr	(SolidObject).l
+		jsr		(SolidObject).l
 
 BossBlock_Display:
-		jmp	(DisplaySprite).l
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 
 loc_19762:	; Routine 4
 		tst.b	obRender(a0)
 		bpl.s	BossBlock_Delete
-		jsr	(ObjectFall).l
-		jmp	(DisplaySprite).l
+		jsr		(ObjectFall).l
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 
 BossBlock_Delete:
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
 BossBlock_Break:
-		lea	BossBlock_FragSpeed(pc),a4
-		lea	BossBlock_FragPos(pc),a5
+		lea		BossBlock_FragSpeed(pc),a4
+		lea		BossBlock_FragPos(pc),a5
 		moveq	#1,d4
 		moveq	#3,d1
 		moveq	#$38,d2
 		addq.b	#2,obRoutine(a0)
 		move.b	#8,obActWid(a0)
 		move.b	#8,obHeight(a0)
-		lea	(a0),a1
+		lea		(a0),a1
 		bra.s	BossBlock_MakeFrag
 ; ===========================================================================
 
 BossBlock_LoopFrag:
-		jsr	(FindNextFreeObj).l
+		jsr		(FindNextFreeObj).l
 		bne.s	loc_197D4
 
 BossBlock_MakeFrag:
-		lea	(a0),a2
-		lea	(a1),a3
+		lea		(a0),a2
+		lea		(a1),a3
 		moveq	#3,d3
 
 loc_197AA:
@@ -125,7 +125,7 @@ loc_197AA:
 		move.l	(a2)+,(a3)+
 		move.l	(a2)+,(a3)+
 		move.l	(a2)+,(a3)+
-		dbf	d3,loc_197AA
+		dbf		d3,loc_197AA
 
 		move.w	(a4)+,obVelX(a1)
 		move.w	(a4)+,obVelY(a1)
@@ -135,11 +135,11 @@ loc_197AA:
 		add.w	d3,obY(a1)
 		move.b	d4,obFrame(a1)
 		addq.w	#1,d4
-		dbf	d1,BossBlock_LoopFrag ; repeat sequence 3 more times
+		dbf		d1,BossBlock_LoopFrag ; repeat sequence 3 more times
 
 loc_197D4:
 		move.w	#sfx_WallSmash,d0
-		jmp	(PlaySound_Special).l	; play smashing sound
+		jmp		(PlaySound_Special).l	; play smashing sound
 ; End of function BossBlock_Break
 
 ; ===========================================================================

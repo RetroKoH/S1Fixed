@@ -213,6 +213,6 @@ Crab_BallMove:	; Routine 8
 		bsr.w	ObjectFall
 		move.w	(v_limitbtm2).w,d0
 		addi.w	#$E0,d0
-		cmp.w	obY(a0),d0		; has object moved below the level boundary?
+		cmp.w	obY(a0),d0				; has object moved below the level boundary?
 		blo.w	DeleteObject
-		bra.w	DisplaySprite	; Clownacy DisplaySprite Fix
+		jmp		(DisplayAndCollision).l	; Clownacy DisplaySprite Fix; S3K TouchResponse

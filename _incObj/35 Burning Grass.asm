@@ -81,4 +81,4 @@ GFire_Move:	; Routine 4
 GFire_Animate:
 		lea		(Ani_GFire).l,a1
 		bsr.w	AnimateSprite
-		bra.w	DisplaySprite
+		jmp		(DisplayAndCollision).l

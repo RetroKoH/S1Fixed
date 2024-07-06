@@ -38,11 +38,9 @@ Harp_Move:	; Routine 2
 		even
 
 Harp_Wait:	; Routine 4
-		subq.w	#1,harp_time(a0) ; decrement timer
-		bpl.s	.chkdel		; branch if time remains
-		move.w	#60,harp_time(a0) ; reset timer
-		subq.b	#2,obRoutine(a0) ; run "Harp_Move" subroutine
-		bchg	#0,obAnim(a0)	; reverse animation
-
-.chkdel:
+		subq.w	#1,harp_time(a0)	; decrement timer
+		bpl.w	RememberState		; branch if time remains
+		move.w	#60,harp_time(a0)	; reset timer
+		subq.b	#2,obRoutine(a0)	; run "Harp_Move" subroutine
+		bchg	#0,obAnim(a0)		; reverse animation
 		bra.w	RememberState

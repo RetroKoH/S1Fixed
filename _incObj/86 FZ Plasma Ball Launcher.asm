@@ -111,22 +111,18 @@ BossPlasma_Loop:
 
 loc_1A954:
 		tst.w	objoff_32(a0)
-		bne.s	loc_1A95E
+		bne.w	loc_1A86C
 		addq.b	#2,obRoutine(a0)
-
-loc_1A95E:
 		bra.w	loc_1A86C
 ; ===========================================================================
 
 loc_1A962:	; Routine 6
 		move.b	#2,obAnim(a0)
 		tst.w	objoff_38(a0)
-		bne.s	loc_1A97E
+		bne.w	loc_1A86C
 		move.b	#2,obRoutine(a0)
 		movea.l	objoff_34(a0),a1
 		move.w	#-1,objoff_32(a1)
-
-loc_1A97E:
 		bra.w	loc_1A86C
 ; ===========================================================================
 
@@ -150,7 +146,7 @@ loc_1A9A6:
 		addq.b	#2,ob2ndRout(a0)
 		lea		Ani_Plasma(pc),a1
 		jsr		(AnimateSprite).l
-		jmp		(DisplaySprite).l	
+		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 ; ===========================================================================
 
 loc_1A9C0:
@@ -182,7 +178,7 @@ loc_1A9E6:
 locret_1AA1C:
 		lea		Ani_Plasma(pc),a1
 		jsr		(AnimateSprite).l
-		jmp		(DisplaySprite).l	
+		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 ; ===========================================================================
 
 loc_1AA1E:
@@ -193,7 +189,7 @@ loc_1AA1E:
 		beq.s	loc_1AA34
 		lea		Ani_Plasma(pc),a1
 		jsr		(AnimateSprite).l
-		jmp		(DisplaySprite).l
+		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 ; ===========================================================================
 
 loc_1AA34:

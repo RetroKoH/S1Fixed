@@ -2,8 +2,12 @@
 ; Object 58 - giant spiked balls (SYZ)
 ; ---------------------------------------------------------------------------
 
-bball_origX = objoff_3A		; original x-axis position
+bball_angle = objoff_36		; precise rotation angle (2 bytes)
+	; ^^^ We need this so that obShieldProp isn't overwritten, otherwise
+	; Insta-Shield negates its collision property. Upper byte written to obAngle.
+
 bball_origY = objoff_38		; original y-axis position
+bball_origX = objoff_3A		; original x-axis position
 bball_radius = objoff_3C	; radius of circle
 bball_speed = objoff_3E		; speed
 
@@ -31,8 +35,9 @@ BBall_Main:	; Routine 0
 		move.b	obStatus(a0),d0
 		ror.b	#2,d0
 		andi.b	#$C0,d0
-		move.b	d0,obAngle(a0)
-		move.b	#$50,bball_radius(a0) ; set radius of circle motion
+		move.b	d0,obAngle(a0)			; set initial angle
+		move.b	d0,bball_angle(a0)		; set initial precise angle
+		move.b	#$50,bball_radius(a0)	; set radius of circle motion
 
 BBall_Move:	; Routine 2
 		moveq	#0,d0
@@ -42,7 +47,7 @@ BBall_Move:	; Routine 2
 		move.w	.index(pc,d0.w),d1
 		jsr		.index(pc,d1.w)
 		offscreen.w	DeleteObject,bball_origX(a0)	; PFM S3K Obj
-		bra.w	DisplaySprite
+		bra.w	DisplayAndCollision		; S3K TouchResponse
 ; ===========================================================================
 .index:
 		dc.w .type00-.index
@@ -87,7 +92,8 @@ BBall_Move:	; Routine 2
 
 .type03:
 		move.w	bball_speed(a0),d0
-		add.w	d0,obAngle(a0)
+		add.w	d0,bball_angle(a0)
+		move.b	bball_angle(a0),obAngle(a0)	; To prevent insta-shield bug.
 		move.b	obAngle(a0),d0
 		jsr		(CalcSine).l
 		move.w	bball_origY(a0),d2

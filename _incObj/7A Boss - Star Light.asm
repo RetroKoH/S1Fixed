@@ -88,7 +88,7 @@ BossStarLight_ShipMain:	; Routine 2
 		and.b	obStatus(a0),d0
 		andi.b	#$FC,obRender(a0)
 		or.b	d0,obRender(a0)
-		jmp		(DisplaySprite).l
+		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 ; ===========================================================================
 BossStarLight_ShipIndex:	offsetTable
 		offsetTableEntry.w loc_189B8
@@ -406,7 +406,7 @@ loc_18C78:
 		and.b	obStatus(a0),d0
 		andi.b	#$FC,obRender(a0)
 		or.b	d0,obRender(a0)
-		jmp		(DisplaySprite).l
+		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 ; ===========================================================================
 
 BossStarLight_TubeMain:	; Routine 8

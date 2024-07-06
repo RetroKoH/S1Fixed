@@ -29,7 +29,7 @@ BossSpringYard_Main:	; Routine 0
 		move.w	obY(a0),objoff_38(a0)
 		move.b	#$F,obColType(a0)
 		move.b	#8,obColProp(a0) ; set number of hits to 8
-		lea	BossSpringYard_ObjData(pc),a2
+		lea		BossSpringYard_ObjData(pc),a2
 		movea.l	a0,a1
 		moveq	#3,d1
 		bra.s	BossSpringYard_LoadBoss
@@ -61,20 +61,20 @@ BossSpringYard_LoadBoss:
 		move.b	#4,obRender(a1)
 		move.b	#$20,obActWid(a1)
 		move.l	a0,objoff_34(a1)
-		dbf	d1,BossSpringYard_Loop	; repeat sequence 3 more times
+		dbf		d1,BossSpringYard_Loop	; repeat sequence 3 more times
 
 BossSpringYard_ShipMain:	; Routine 2
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
 		move.w	BossSpringYard_ShipIndex(pc,d0.w),d1
-		jsr	BossSpringYard_ShipIndex(pc,d1.w)
-		lea	(Ani_Eggman).l,a1
-		jsr	(AnimateSprite).l
+		jsr		BossSpringYard_ShipIndex(pc,d1.w)
+		lea		(Ani_Eggman).l,a1
+		jsr		(AnimateSprite).l
 		moveq	#(maskFlipX+maskFlipY),d0
 		and.b	obStatus(a0),d0
 		andi.b	#$FC,obRender(a0)
 		or.b	d0,obRender(a0)
-		jmp	(DisplaySprite).l
+		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 ; ===========================================================================
 BossSpringYard_ShipIndex:	offsetTable
 		offsetTableEntry.w loc_191CC
@@ -94,7 +94,7 @@ loc_191CC:
 loc_191DE:
 		move.b	objoff_3F(a0),d0
 		addq.b	#2,objoff_3F(a0)
-		jsr	(CalcSine).l
+		jsr		(CalcSine).l
 		asr.w	#2,d0
 		move.w	d0,obVelY(a0)
 
@@ -118,10 +118,10 @@ loc_19202:
 		bne.s	loc_1923A
 		move.b	#$20,objoff_3E(a0)
 		move.w	#sfx_HitBoss,d0
-		jsr	(PlaySound_Special).l	; play boss damage sound
+		jsr		(PlaySound_Special).l	; play boss damage sound
 
 loc_1923A:
-		lea	(v_pal_dry+$22).w,a1
+		lea		(v_pal_dry+$22).w,a1
 		moveq	#0,d0
 		tst.w	(a1)
 		bne.s	loc_19248
@@ -213,7 +213,7 @@ loc_19302:
 		move.w	#$180,obVelY(a0)
 		move.w	objoff_38(a0),d0
 		cmpi.w	#boss_syz_y+$8A,d0
-		blo.s	loc_19344
+		blo.w	loc_191F2
 		move.w	#boss_syz_y+$8A,objoff_38(a0)
 		clr.w	objoff_3C(a0)
 		moveq	#-1,d0
@@ -228,8 +228,6 @@ loc_19302:
 loc_1933C:
 		clr.w	obVelY(a0)
 		addq.b	#2,obSubtype(a0)
-
-loc_19344:
 		bra.w	loc_191F2
 ; ===========================================================================
 
@@ -240,7 +238,7 @@ loc_19348:
 		move.w	#-$800,obVelY(a0)
 		tst.w	objoff_36(a0)
 		bne.s	loc_19362
-		asr	obVelY(a0)
+		asr		obVelY(a0)
 
 loc_19362:
 		moveq	#0,d0
@@ -280,15 +278,13 @@ loc_1939C:
 loc_193B4:
 		addq.b	#2,obSubtype(a0)
 		clr.w	obVelY(a0)
-		bra.s	loc_193CC
+		bra.w	loc_191F2
 ; ===========================================================================
 
 loc_193BE:
 		cmpi.w	#-$40,obVelY(a0)
-		bge.s	loc_193CC
+		bge.w	loc_191F2
 		addi.w	#$C,obVelY(a0)
-
-loc_193CC:
 		bra.w	loc_191F2
 ; ===========================================================================
 
@@ -313,7 +309,7 @@ loc_193EE:
 		clr.b	objoff_29(a0)
 		subq.b	#2,ob2ndRout(a0)
 		move.b	#-1,objoff_3D(a0)
-		bra.s	loc_19446
+		bra.w	loc_19202
 ; ===========================================================================
 
 loc_19406:
@@ -345,8 +341,6 @@ loc_19438:
 		add.w	objoff_38(a0),d0
 		move.w	d0,obY(a0)
 		move.w	objoff_30(a0),obX(a0)
-
-loc_19446:
 		bra.w	loc_19202
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -369,8 +363,8 @@ BossSpringYard_FindLoop:
 ; ===========================================================================
 
 loc_1946A:
-		lea	object_size(a1),a1	; next object RAM entry
-		dbf	d0,BossSpringYard_FindLoop
+		lea		object_size(a1),a1	; next object RAM entry
+		dbf		d0,BossSpringYard_FindLoop
 
 locret_19472:
 		rts	
@@ -392,10 +386,8 @@ loc_1947E:
 		clr.w	obVelX(a0)
 		move.w	#-1,objoff_3C(a0)
 		tst.b	(v_bossstatus).w
-		bne.s	loc_194A8
+		bne.w	loc_19202
 		move.b	#1,(v_bossstatus).w
-
-loc_194A8:
 		bra.w	loc_19202
 ; ===========================================================================
 
@@ -404,12 +396,12 @@ loc_194AC:
 		beq.s	loc_194BC
 		bpl.s	loc_194C2
 		addi.w	#$18,obVelY(a0)
-		bra.s	loc_194EE
+		bra.w	loc_191F2
 ; ===========================================================================
 
 loc_194BC:
 		clr.w	obVelY(a0)
-		bra.s	loc_194EE
+		bra.w	loc_191F2
 ; ===========================================================================
 
 loc_194C2:
@@ -417,22 +409,20 @@ loc_194C2:
 		blo.s	loc_194DA
 		beq.s	loc_194E0
 		cmpi.w	#$2A,objoff_3C(a0)
-		blo.s	loc_194EE
+		blo.w	loc_191F2
 		addq.b	#2,ob2ndRout(a0)
-		bra.s	loc_194EE
+		bra.w	loc_191F2
 ; ===========================================================================
 
 loc_194DA:
 		subq.w	#8,obVelY(a0)
-		bra.s	loc_194EE
+		bra.w	loc_191F2
 ; ===========================================================================
 
 loc_194E0:
 		clr.w	obVelY(a0)
 		move.w	#bgm_SYZ,d0
-		jsr	(PlaySound).l		; play SYZ music
-
-loc_194EE:
+		jsr		(PlaySound).l		; play SYZ music
 		bra.w	loc_191F2
 ; ===========================================================================
 
@@ -458,7 +448,7 @@ BossSpringYard_ShipDelete:
 		; Avoid returning to BossSpringYard_ShipMain to prevent a
 		; display-and-delete bug.
 		addq.l	#4,sp			; Clownacy DisplaySprite Fix
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 BossSpringYard_FaceMain:	; Routine 4
@@ -466,8 +456,8 @@ BossSpringYard_FaceMain:	; Routine 4
 		movea.l	objoff_34(a0),a1
 		moveq	#0,d0
 		move.b	ob2ndRout(a1),d0
-		move.w	off_19546(pc,d0.w),d0
-		jsr		off_19546(pc,d0.w)
+		move.w	BossSpringYard_FaceRoutines(pc,d0.w),d0
+		jsr		BossSpringYard_FaceRoutines(pc,d0.w)
 		move.b	d1,obAnim(a0)
 		move.b	(a0),d0
 		cmp.b	(a1),d0
@@ -476,9 +466,9 @@ BossSpringYard_FaceMain:	; Routine 4
 ; ===========================================================================
 
 BossSpringYard_FaceDelete:
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 ; ===========================================================================
-off_19546:	offsetTable
+BossSpringYard_FaceRoutines:	offsetTable
 		offsetTableEntry.w loc_19574
 		offsetTableEntry.w loc_19574
 		offsetTableEntry.w loc_1955A
@@ -498,23 +488,8 @@ loc_19556:
 ; ===========================================================================
 
 loc_1955A:
-		moveq	#0,d0
-		move.b	obSubtype(a1),d0
-		move.w	off_19568(pc,d0.w),d0
-		jmp		off_19568(pc,d0.w)
-; ===========================================================================
-off_19568:
-		offsetTableEntry.w loc_19570
-		offsetTableEntry.w loc_19572
-		offsetTableEntry.w loc_19570
-		offsetTableEntry.w loc_19570
-; ===========================================================================
-
-loc_19570:
-		bra.s	loc_19574
-; ===========================================================================
-
-loc_19572:
+		cmpi.b	#2,obSubtype(a1)
+		beq.s	loc_19574
 		moveq	#6,d1
 
 loc_19574:
@@ -541,25 +516,23 @@ BossSpringYard_FlameMain:; Routine 6
 		move.b	#$B,obAnim(a0)
 		tst.b	obRender(a0)
 		bpl.s	BossSpringYard_FlameDelete
-		bra.s	loc_195B6
+		bra.s	loc_195BE
 ; ===========================================================================
 
 loc_195AA:
 		tst.w	obVelX(a1)
-		beq.s	loc_195B6
+		beq.s	loc_195BE
 		move.b	#8,obAnim(a0)
-
-loc_195B6:
 		bra.s	loc_195BE
 ; ===========================================================================
 
 BossSpringYard_FlameDelete:
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 loc_195BE:
-		lea	(Ani_Eggman).l,a1
-		jsr	(AnimateSprite).l
+		lea		(Ani_Eggman).l,a1
+		jsr		(AnimateSprite).l
 		movea.l	objoff_34(a0),a1
 		move.w	obX(a1),obX(a0)
 		move.w	obY(a1),obY(a0)
@@ -617,14 +590,12 @@ loc_19658:
 		clr.b	obColType(a0)
 		movea.l	objoff_34(a0),a1
 		tst.b	obColType(a1)
-		beq.s	loc_19688
+		beq.w	loc_195DA
 		tst.b	objoff_29(a1)
-		bne.s	loc_19688
+		bne.w	loc_195DA
 		move.b	#$84,obColType(a0)
-
-loc_19688:
 		bra.w	loc_195DA
 ; ===========================================================================
 
 BossSpringYard_SpikeDelete:
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
