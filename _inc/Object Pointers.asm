@@ -39,7 +39,7 @@ ptr_MagicSwitch:		dc.l MagicSwitch
 ptr_BallHog:			dc.l BallHog
 ptr_Crabmeat:			dc.l Crabmeat
 ptr_Cannonball:			dc.l Cannonball		; $20
-ptr_HUD:				dc.l HUD
+ptr_AfterImages:		dc.l AfterImages
 ptr_BuzzBomber:			dc.l BuzzBomber
 ptr_Missile:			dc.l Missile
 ptr_MissileDissolve:	dc.l MissileDissolve
@@ -186,10 +186,10 @@ id_CollapseLedge:		equ ((ptr_CollapseLedge-Obj_Index)/4)+1
 id_WaterSurface:		equ ((ptr_WaterSurface-Obj_Index)/4)+1
 id_Scenery:				equ ((ptr_Scenery-Obj_Index)/4)+1
 id_MagicSwitch:			equ ((ptr_MagicSwitch-Obj_Index)/4)+1
-id_BallHog:			equ ((ptr_BallHog-Obj_Index)/4)+1
-id_Crabmeat:		equ ((ptr_Crabmeat-Obj_Index)/4)+1
-id_Cannonball:		equ ((ptr_Cannonball-Obj_Index)/4)+1		; $20
-id_HUD:			equ ((ptr_HUD-Obj_Index)/4)+1
+id_BallHog:				equ ((ptr_BallHog-Obj_Index)/4)+1
+id_Crabmeat:			equ ((ptr_Crabmeat-Obj_Index)/4)+1
+id_Cannonball:			equ ((ptr_Cannonball-Obj_Index)/4)+1		; $20
+id_AfterImages:			equ ((ptr_AfterImages-Obj_Index)/4)+1
 id_BuzzBomber:		equ ((ptr_BuzzBomber-Obj_Index)/4)+1
 id_Missile:		equ ((ptr_Missile-Obj_Index)/4)+1
 id_MissileDissolve:	equ ((ptr_MissileDissolve-Obj_Index)/4)+1

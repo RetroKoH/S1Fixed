@@ -111,6 +111,12 @@
  Function: Uses the Sonic CD balancing sprites (forward and back) instead of Sonic 1's.
  Date: 2024-07-01
  Variable: CDBalancing
+ 
+ Name: S3K AfterImages
+ Credit: Hitaxas (Wooloo Engine)
+ Function: Applies After-Image effects to the Speed Shoes
+ Date: 2024-07-07
+ Variable: AfterImagesOn
 
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format

@@ -98,6 +98,15 @@ ExtraLife:
 Pow_Shoes:
 		bset	#sta2ndShoes,(v_player+obStatus2nd).w	; speed up the BG music
 		move.b	#$96,(v_player+obShoes).w				; time limit for the power-up -- RetroKoH Sonic SST Compaction
+
+	if AfterImagesOn=1; Hitaxas S3K afterimage
+		move.b	#id_AfterImages,(v_trails).w
+		move.w	#v_player,(v_trails+obParent).w	
+		move.b	#id_AfterImages,(v_trails2).w
+		move.b	#2,(v_trails2+obSubtype).w
+		move.w	#v_followobject,(v_trails2+obParent).w
+	endif
+
 		movem.l a0-a2,-(sp)								; Move a0, a1 and a2 onto stack
 		lea     (v_player).w,a0							; Load Sonic to a0
 		lea		(v_sonspeedmax).w,a2					; Load Sonic_top_speed into a2

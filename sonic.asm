@@ -44,6 +44,7 @@ AirRollEnabled: = 1						; if set to 1, Air rolling is enabled for Sonic.
 CDBalancing: = 1						; if set to 1, Sonic has 2 Balancing animations, taken from Sonic CD.
 DropDashEnabled: = 1					; if set to 1, Drop dashing is enabled for Sonic.
 HUDScrolling: = 1						; if set to 1, HUD Scrolls in and out of view during gameplay.
+AfterImagesOn: = 1						; if set to 1, an after-image effect is applied to the Speed Shoes.
 
 	include "MacroSetup.asm"
 	include	"Constants.asm"
@@ -7724,7 +7725,8 @@ Map_SS_Down:	include	"_maps/SS DOWN Block.asm"
 
 		include	"_inc/AnimateLevelGfx.asm"
 
-		include	"_incObj/21 HUD.asm"
+		include	"_incObj/21 AfterImages.asm"
+
 Map_HUD:	include	"_maps/HUD.asm"
 
 ; ---------------------------------------------------------------------------
