@@ -11,20 +11,27 @@ SwingingPlatform:
 	jmp		Swing_Index(pc,d1.w)
 ; ---------------------------------------------------------------------------
 .subSpr
-	move.w	#object_display_list_size*4,d0
-	bra.w	DisplaySprite3
+	move.w	#$200,d0			; $200 or $180?
+	bra.w	DisplaySprite2
 ; ===========================================================================
 Swing_Index:	offsetTable
 		offsetTableEntry.w Swing_Main			;  0
 		offsetTableEntry.w Swing_NormalSwing	;  2
-		offsetTableEntry.w Obj15_Display		;  4
-		offsetTableEntry.w Obj15_State4			;  6
-		offsetTableEntry.w Obj15_State5			;  8
-		offsetTableEntry.w Obj15_State6			; $A
-		offsetTableEntry.w Obj15_State7			; $C
+		offsetTableEntry.w Swing_Display		;  4
+		offsetTableEntry.w Swing_State4			;  6
+		offsetTableEntry.w Swing_State5			;  8
+		offsetTableEntry.w Swing_State6			; $A
+		offsetTableEntry.w Swing_ARZFall		; $C (Unused atm)
 
 swing_origX = objoff_3A		; original x-axis position
 swing_origY = objoff_38		; original y-axis position
+
+swing_angle = $10		; precise rotation angle (2 bytes)
+	; ^^^ We need this so that obShieldProp isn't overwritten, otherwise
+	; Insta-Shield negates its collision property. Upper byte written to obAngle.
+	; Unlike other similar objects, I set this to $10 because the GHZ boss chain
+	; uses up much of its scratch RAM, and that object use's this object's movement
+	; routines.
 ; ===========================================================================
 Swing_Main:
 		addq.b	#2,obRoutine(a0)
@@ -125,7 +132,7 @@ Swing_Main:
 		move.b	d1,obSubtype(a0)
 		cmpi.b	#$40,d1
 		bne.s	Swing_NormalSwing
-		move.l	#Obj15_MapUnc_102DE,mappings(a0)
+		move.l	#Map_BBall,obMap(a0);#Obj15_MapUnc_102DE,obMap(a0)
 		move.b	#$A7,obColType(a0)
 
 ; loc_FE50:
@@ -325,7 +332,7 @@ Swing_S2ChkDel: ;Swing_S2ChkDel:
 		jmp		(DeleteObject).l
 ; ===========================================================================
 
-Obj15_Display: ;;
+Swing_Display:
 		jmp		(DisplayAndCollision).l
 ; ===========================================================================
 
@@ -362,17 +369,11 @@ Swing_State4:
 +
 		bset	#staFlipY,obStatus(a1)
 		move.w	a0,d0
-		subi.w	#v_objspace,d0
-		lsr.w	#6,d0
-		andi.w	#$7F,d0
-		move.w	a1,d1
-		subi.w	#v_objspace,d1
-		lsr.w	#6,d1
-		andi.w	#$7F,d1		
+		subi.w	#v_objspace&$FFFF,d0	
 		lea		(v_player).w,a1
-		cmp.b	obInteract(a1),d0
+		cmp.b	obPlatformAddr(a1),d0
 		bne.s	loc_100E4
-		move.b	d1,obInteract(a1)
+		move.b	d0,obPlatformAddr(a1)
 
 loc_100E4:
 		move.b	#3,obFrame(a0)
@@ -382,13 +383,13 @@ loc_100E4:
 ; ===========================================================================
 
 ; loc_100F8:
-Obj15_State5:
+Swing_State5:
 		bsr.w	sub_FE70
 		bra.w	Swing_S2ChkDel
 ; ===========================================================================
 ; loc_10100:
-Obj15_State6:
-	move.w	obX(a0),-(sp)
+Swing_State6:
+		move.w	obX(a0),-(sp)
 		btst	#1,obStatus(a0)
 		beq.s	+
 		jsr		(SpeedToPos).l
@@ -397,8 +398,8 @@ Obj15_State6:
 		blo.s	++
 		move.w	#$720,obY(a0)
 		bclr	#1,obStatus(a0)
-		move.w	#0,obVelX(a0)
-		move.w	#0,obVelY(a0)
+		clr.w	obVelX(a0)
+		clr.w	obVelY(a0)
 		move.w	obY(a0),swing_origY(a0)
 		bra.s	++
 ; ===========================================================================
@@ -412,11 +413,11 @@ Obj15_State6:
 		beq.s	+
 		moveq	#0,d3
 		move.b	obActWid(a0),d3
-		jsr	ObjCheckRightWallDist
+		jsr		(ObjCheckRightWallDist).l
 		tst.w	d1
 		bpl.s	+
-		add.w	d1,x_pos(a0)
-		move.w	#0,x_vel(a0)
+		add.w	d1,obX(a0)
+		move.w	#0,obVelX(a0)
 	
 +
 		moveq	#0,d1
@@ -425,8 +426,8 @@ Obj15_State6:
 		move.b	obHeight(a0),d3
 		addq.b	#1,d3
 		move.w	(sp)+,d4
-		jsr	PlatformObject2
-		jmp	RememberState
+		jsr		(PlatformObject2).l
+		jmp		(RememberState).l
 
 ; ===========================================================================
 ; loc_10166:
@@ -472,3 +473,123 @@ Swing_ARZFall:
 		jsr	PlatformObject2
 		jmp	RememberState
 ; ===========================================================================
+
+; ---------------------------------------------------------------------------
+; Subroutine to collide Sonic/Tails with the top of a platform
+; Code ported from Sonic 2
+; ---------------------------------------------------------------------------
+
+; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
+;
+; input variables:
+; d1 = object width
+; d3 = object height / 2
+; d4 = object x-axis position
+;
+; address registers:
+; a0 = the object to check collision with
+; a1 = sonic or tails (set inside these subroutines)
+; loc_19C32:
+PlatformObject2:
+		lea		(v_player).w,a1 ; a1=character
+		btst	#staSonicOnObj,obStatus(a0)
+		beq.w	PlatformObject2_cont			; Code in Bridge.asm
+		move.w	d1,d2
+		add.w	d2,d2
+		btst	#1,obStatus(a1)
+		bne.s	PlatformObject_SingleCharacter2
+		move.w	obX(a1),d0
+		sub.w	obX(a0),d0
+		add.w	d1,d0
+		bmi.s	PlatformObject_SingleCharacter2
+		cmp.w	d2,d0
+		blo.s	loc_19C802
+
+PlatformObject_SingleCharacter2:
+		bclr	#3,obStatus(a1)
+		bset	#1,obStatus(a1)
+		bclr	d6,obStatus(a0)
+		moveq	#0,d4
+		rts
+; ---------------------------------------------------------------------------
+loc_19C802:
+		move.w	d4,d2
+		bsr.w	MvSonicOnPtfm
+		moveq	#0,d4
+		rts
+; ===========================================================================
+
+Swing_Move:
+		move.b	(v_oscillate+$1A).w,d0
+		move.w	#$80,d1
+		btst	#staFlipX,obStatus(a0)
+		beq.s	Swing_Move2
+		neg.w	d0
+		add.w	d1,d0
+		bra.s	Swing_Move2
+; End of function Swing_Move
+
+
+; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+
+
+Obj48_Move:
+		tst.b	objoff_3D(a0)
+		bne.s	loc_7B9C
+		move.w	objoff_3E(a0),d0
+		addq.w	#8,d0
+		move.w	d0,objoff_3E(a0)
+		add.w	d0,swing_angle(a0)
+		move.b	swing_angle(a0),obAngle(a0)
+		cmpi.w	#$200,d0
+		bne.s	loc_7BB6
+		move.b	#1,objoff_3D(a0)
+		bra.s	loc_7BB6
+; ===========================================================================
+
+loc_7B9C:
+		move.w	objoff_3E(a0),d0
+		subq.w	#8,d0
+		move.w	d0,objoff_3E(a0)
+		add.w	d0,swing_angle(a0)
+		move.b	swing_angle(a0),obAngle(a0)
+		cmpi.w	#-$200,d0
+		bne.s	loc_7BB6
+		clr.b	objoff_3D(a0)
+
+loc_7BB6:
+		move.b	obAngle(a0),d0
+; End of function Obj48_Move
+
+
+; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+
+
+Swing_Move2:
+		bsr.w	CalcSine
+		move.w	objoff_38(a0),d2
+		move.w	objoff_3A(a0),d3
+		lea		obSubtype(a0),a2
+		moveq	#0,d6
+		move.b	(a2)+,d6
+
+loc_7BCE:
+		moveq	#0,d4
+		move.b	(a2)+,d4
+		lsl.w	#object_size_bits,d4
+		addi.l	#v_objspace&$FFFFFF,d4
+		movea.l	d4,a1
+		moveq	#0,d4
+		move.b	objoff_3C(a1),d4
+		move.l	d4,d5
+		muls.w	d0,d4
+		asr.l	#8,d4
+		muls.w	d1,d5
+		asr.l	#8,d5
+		add.w	d2,d4
+		add.w	d3,d5
+		move.w	d4,obY(a1)
+		move.w	d5,obX(a1)
+		dbf		d6,loc_7BCE
+		rts	
+; End of function Swing_Move2
