@@ -71,7 +71,17 @@ Sonic_UpdateSpinDash:
 		clr.b	(v_playerdust+obAnim).w
 		move.w	#sfx_Teleport,d0
 		jsr		(PlaySound_Special).l
-		bra.w	loc_1AD78
+	; RHS/Esrael Boundary Spindash bugfix
+		move.b	obAngle(a0),d0
+		jsr		(CalcSine).l
+		muls.w	obInertia(a0),d1
+		asr.l	#8,d1
+		move.w	d1,obVelX(a0)
+		muls.w	obInertia(a0),d0
+		asr.l	#8,d0
+		move.w	d0,obVelY(a0)
+	; Boundary Spindash bugfix end
+		bra.w	SpinDash_ResetScr
 ; ---------------------------------------------------------------------------
 SpinDashSpeeds:
 		dc.w  $800		; 0
@@ -104,7 +114,7 @@ Sonic_ChargingSpinDash:				; If still charging the dash...
 		bne.s	.skip
 		clr.w	obSpinDashCounter(a0)		; clear SpinDash Counter
 		clr.b	obSpinDashFlag(a0)			; cancel SpinDash
-		bra.s	loc_1AD78					; branch
+		bra.s	SpinDash_ResetScr					; branch
 		
 .skip:
 	endif	; Spin Dash Cancel End	
@@ -115,7 +125,7 @@ Sonic_ChargingSpinDash:				; If still charging the dash...
 loc_1AD48:
 		move.b	(v_jpadpress2).w,d0
 		andi.b	#btnABC,d0
-		beq.w	loc_1AD78
+		beq.w	SpinDash_ResetScr
 		;move.w	#(id_SpinDash<<8),obAnim(a0)	; id_SpinDash
 		addi.w	#$200,obSpinDashCounter(a0)
 		cmpi.w	#$800,obSpinDashCounter(a0)
@@ -125,7 +135,7 @@ loc_1AD48:
 		move.w	#sfx_SpinDash,d0				; sfx_SpinDash
 		jsr		(PlaySound_Special).l
 
-loc_1AD78:
+SpinDash_ResetScr:
 		addq.l	#4,sp							; increase stack ptr
 		cmpi.w	#$60,(v_lookshift).w
 		beq.s	loc_1AD8C

@@ -572,3 +572,8 @@
  Function: Fixed some graphical glitching that'd occur in the top-right corner when going very fast.
  Date: 2024-06-24
  Modifies: sonic.asm
+ 
+ Name: Boundary SpinDash Bugfix
+ Credit: RHS/Esrael?
+ Function: Fixed a bug that caused Sonic to lock in place when trying to spindash at the edge of the screen.
+ Date: 2024/07/07
