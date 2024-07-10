@@ -12,8 +12,8 @@ TCha_Main:	; Routine 0
 		movea.l	a0,a1
 		moveq	#0,d2
 		moveq	#0,d3
-		moveq	#5,d1
-		sub.b	(v_emeralds).w,d1
+		moveq	#emldCount-1,d1		; d1 = load total emeralds - 1
+		sub.b	(v_emeralds).w,d1	; d1 = number of emeralds we don't have - 1
 
 .makeemerald:
 		move.b	#id_TryChaos,obID(a1) ; load emerald object
@@ -31,15 +31,15 @@ TCha_Main:	; Routine 0
 
 .chkemerald:
 		moveq	#0,d0
-		move.b	(v_emeralds).w,d0
+		move.b	(v_emeralds).w,d0	; load # of total emeralds to d0
 		subq.w	#1,d0
-		bcs.s	.loc_5B42
+		bcs.s	.loc_5B42			; branch ahead if you have no emeralds
 
 .chkloop:
-		cmp.b	(a3,d0.w),d2
-		bne.s	.notgot
-		addq.b	#1,d2
-		bra.s	.chkemerald
+		cmp.b	(a3,d0.w),d2		; Did you get the emerald?
+		bne.s	.notgot				; if not, branch ahead and set the mappings.
+		addq.b	#1,d2				; Check for the next emerald.
+		bra.s	.chkemerald			; Jump back and check again.
 ; ===========================================================================
 
 .notgot:
@@ -47,14 +47,14 @@ TCha_Main:	; Routine 0
 
 .loc_5B42:
 		move.b	d2,obFrame(a1)
-		addq.b	#1,obFrame(a1)
-		addq.b	#1,d2
+		addq.b	#1,obFrame(a1)		; d2 + 1, as the first frame is the null frame. (Should set null frame to #7 to avoid this extra instruction)
+		addq.b	#1,d2				; Add 1 to d2, to check for the next missing emerald.
 		move.b	#$80,obAngle(a1)
 		move.b	d3,obTimeFrame(a1)
 		move.b	d3,obDelayAni(a1)
 		addi.w	#10,d3
 		lea		object_size(a1),a1
-		dbf		d1,.makeemerald	; repeat 5 times
+		dbf		d1,.makeemerald		; repeat d1 times... for every emerald we don't have
 
 TCha_Move:	; Routine 2
 		tst.w	objoff_3E(a0)
@@ -92,4 +92,4 @@ loc_5B96:
 		move.w	d0,obScreenY(a0)
 
 loc_5BBA:
-		jmp	(DisplaySprite).l	
+		jmp		(DisplaySprite).l	

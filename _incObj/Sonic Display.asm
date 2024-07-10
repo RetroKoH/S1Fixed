@@ -8,9 +8,9 @@ Sonic_Display:
 		andi.b	#7,d1				; if d1 == 0, we will decrement shoes/invinc on this frame
 
 	; Check hurt frames
-		move.b	obInvuln(a0),d0	; RetroKoH Sonic SST Compaction
+		move.b	obInvuln(a0),d0		; RetroKoH Sonic SST Compaction
 		beq.s	.display
-		subq.b	#1,obInvuln(a0)	; RetroKoH Sonic SST Compaction
+		subq.b	#1,obInvuln(a0)		; RetroKoH Sonic SST Compaction
 		lsr.w	#3,d0
 		bcc.s	.chkinvincible
 
@@ -20,6 +20,10 @@ Sonic_Display:
 .chkinvincible:
 		btst	#sta2ndInvinc,obStatus2nd(a0)	; does Sonic have invincibility?
 		beq.s	.chkshoes						; if not, branch
+	if SuperMod=1
+		btst	#sta2ndSuper,obStatus2nd(a0)	; is Sonic Super?
+		bne.s	.chkshoes						; if yes, don't check to remove invincibility
+	endif
 		tst.b	obInvinc(a0)					; check	time remaining for invinciblity -- RetroKoH Sonic SST Compaction
 		beq.s	.chkremoveinvinc				; if we have the powerup but no time remains, remove the powerup (RetroKoH Bugfix)
 		

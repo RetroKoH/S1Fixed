@@ -2,6 +2,11 @@
 ; Object 4F - Invincibility Stars (Moved from Shield to its own object)
 ; ---------------------------------------------------------------------------
 
+; ===========================================================================
+Stars_Delete:
+		jmp		(DeleteObject).l
+; ===========================================================================
+
 StarsItem:
 	; LavaGaming Object Routine Optimization
 		tst.b	obRoutine(a0)
@@ -17,14 +22,12 @@ Stars_Main:	; Routine 0
 		move.l	#Map_Shield,obMap(a0)
 		move.l	#Art_Stars,obArtLoc(a0)
 		move.l	#ShieldDynPLC,obDPLCLoc(a0)
-		rts
-; ===========================================================================
-
-Stars_Delete:
-		jmp		(DeleteObject).l
-; ===========================================================================
 
 Stars_Next:	; Routine 2
+	if SuperMod=1
+		btst	#sta2ndSuper,(v_player+obStatus2nd).w	; is Sonic Super?
+		bne.s	Stars_Delete							; if yes, destroy stars
+	endif
 		btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; does Sonic have invincibility?
 		beq.s	Stars_Delete							; if not, branch
 		move.w	(v_trackpos).w,d0						; get index value for tracking data

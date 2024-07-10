@@ -10,6 +10,10 @@ Map_ECha_internal:	mappingsTable
 	mappingsTableEntry.w	M_ECha_6
 	mappingsTableEntry.w	M_ECha_7
 
+	if SuperMod=1
+	mappingsTableEntry.w	M_ECha_8
+	endif
+
 M_ECha_1:	spriteHeader
 	spritePiece	-8, -8, 2, 2, 0, 0, 0, 0, 0
 M_ECha_1_End
@@ -37,5 +41,11 @@ M_ECha_6_End
 M_ECha_7:	spriteHeader
 	spritePiece	-8, -8, 2, 2, $C, 0, 0, 0, 0
 M_ECha_7_End
+
+	if SuperMod=1
+M_ECha_8:	spriteHeader
+        spritePiece	-8, -8, 2, 2, $C, 0, 0, 1, 0  ; cyan emerald
+M_ECha_8_End
+	endif
 
 	even

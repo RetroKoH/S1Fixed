@@ -45,6 +45,7 @@ CDBalancing: = 1						; if set to 1, Sonic has 2 Balancing animations, taken fro
 DropDashEnabled: = 1					; if set to 1, Drop dashing is enabled for Sonic.
 HUDScrolling: = 1						; if set to 1, HUD Scrolls in and out of view during gameplay.
 AfterImagesOn: = 1						; if set to 1, an after-image effect is applied to the Speed Shoes.
+SuperMod: = 1
 
 	include "MacroSetup.asm"
 	include	"Constants.asm"
@@ -1383,7 +1384,7 @@ Pal_Sega2:	binclude	"palette/Sega2.bin"
 
 
 PalLoad1:
-		lea	(PalPointers).l,a1
+		lea		(PalPointers).l,a1
 		lsl.w	#3,d0
 		adda.w	d0,a1
 		movea.l	(a1)+,a2	; get palette data address
@@ -1393,7 +1394,7 @@ PalLoad1:
 
 .loop:
 		move.l	(a2)+,(a3)+	; move data to RAM
-		dbf	d7,.loop
+		dbf		d7,.loop
 		rts	
 ; End of function PalLoad1
 
@@ -1402,7 +1403,7 @@ PalLoad1:
 
 
 PalLoad2:
-		lea	(PalPointers).l,a1
+		lea		(PalPointers).l,a1
 		lsl.w	#3,d0
 		adda.w	d0,a1
 		movea.l	(a1)+,a2	; get palette data address
@@ -1414,6 +1415,22 @@ PalLoad2:
 		dbf	d7,.loop
 		rts	
 ; End of function PalLoad2
+
+	if SuperMod=1
+; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+; Used to load in proper flower colors to overwrite the cyan emerald colors.
+
+PalLoad_EndFlowers:
+		lea		Pal_EndFlowers,a2		; get palette data address
+		lea		v_pal_dry_dup+$2C,a3	; get target RAM address
+		move.w	#3,d7					; get length of palette
+
+.loop:
+		move.l	(a2)+,(a3)+				; move data to RAM
+		dbf		d7,.loop
+		rts	
+; End of function PalLoad_EndFlowers
+	endif
 
 ; ---------------------------------------------------------------------------
 ; Underwater palette loading subroutine
@@ -1519,7 +1536,13 @@ Pal_SBZ3SonWat:	binclude	"palette/Sonic - SBZ3 Underwater.bin"
 
 Pal_SSResult:	binclude	"palette/Special Stage Results.bin"
 Pal_Continue:	binclude	"palette/Special Stage Continue Bonus.bin"
+
+	if SuperMod=1
+Pal_Ending:		binclude	"palette/Ending - SuperMod.bin"
+Pal_EndFlowers:	binclude	"palette/Ending - SuperMod - Flowers.bin"
+	else
 Pal_Ending:		binclude	"palette/Ending.bin"
+	endif
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	wait for VBlank routines to complete
@@ -1936,7 +1959,7 @@ PlayLevel:
 ; ===========================================================================
 
 ResetLevel:
-		move.b	#1,(v_lives).w				; set lives to 3
+		move.b	#3,(v_lives).w				; set lives to 3
 		clr.w	(v_rings).w					; clear rings
 		clr.l	(v_time).w					; clear time
 		clr.l	(v_score).w					; clear score
@@ -1944,7 +1967,11 @@ ResetLevel:
 		clr.b	(v_emeralds).w				; clear emerald count
 		clr.l	(v_emldlist).w				; clear emeralds
 		clr.l	(v_emldlist+4).w			; clear emeralds
-		move.b	#3,(v_continues).w			; clear continues
+		clr.b	(v_continues).w				; clear continues
+		move.b	#7,(v_emeralds).w
+		move.l	#$010203,(v_emldlist).w
+		move.l	#$04050600,(v_emldlist+4).w
+		move.b	#6,(v_lastspecial).w
 		move.l	#5000,(v_scorelife).w		; extra life is awarded at 50000 points
 		rts
 ; ===========================================================================
@@ -2166,8 +2193,7 @@ LevSel_DrawSnd:
 		lsr.b	#4,d0
 		bsr.w	LevSel_ChgSnd	; draw 1st digit
 		move.b	d2,d0
-		bsr.w	LevSel_ChgSnd	; draw 2nd digit
-		rts	
+		bra.w	LevSel_ChgSnd	; draw 2nd digit
 ; End of function LevSelTextLoad
 
 
@@ -2717,14 +2743,14 @@ Demo_SS:	binclude	"demodata/Intro - Special Stage.bin"
 
 GM_Special:
 		move.w	#sfx_EnterSS,d0
-		bsr.w	PlaySound_Special ; play special stage entry sound
+		bsr.w	PlaySound_Special	; play special stage entry sound
 		bsr.w	PaletteWhiteOut
 		disable_ints
 		lea		(vdp_control_port).l,a6
-		move.w	#$8B03,(a6)	; line scroll mode
-		move.w	#$8004,(a6)	; 8-colour mode
+		move.w	#$8B03,(a6)			; line scroll mode
+		move.w	#$8004,(a6)			; 8-colour mode
 		move.w	#$8A00+175,(v_hbla_hreg).w
-		move.w	#$9011,(a6)	; 128-cell hscroll size
+		move.w	#$9011,(a6)			; 128-cell hscroll size
 		move.w	(v_vdp_buffer1).w,d0
 		andi.b	#$BF,d0
 		move.w	d0,(vdp_control_port).l
@@ -2772,11 +2798,11 @@ GM_Special:
 		clr.b	(v_lifecount).w
 		clr.w	(v_debuguse).w
 		move.w	#1800,(v_demolength).w
-		tst.b	(f_debugcheat).w ; has debug cheat been entered?
-		beq.s	SS_NoDebug	; if not, branch
-		btst	#bitA,(v_jpadhold1).w ; is A button pressed?
-		beq.s	SS_NoDebug	; if not, branch
-		move.b	#1,(f_debugmode).w ; enable debug mode
+		tst.b	(f_debugcheat).w				; has debug cheat been entered?
+		beq.s	SS_NoDebug						; if not, branch
+		btst	#bitA,(v_jpadhold1).w			; is A button pressed?
+		beq.s	SS_NoDebug						; if not, branch
+		move.b	#1,(f_debugmode).w				; enable debug mode
 
 SS_NoDebug:
 		move.w	(v_vdp_buffer1).w,d0
@@ -2889,8 +2915,7 @@ SS_NormalExit:
 		bne.s	SS_NormalExit
 		move.w	#sfx_EnterSS,d0
 		bsr.w	PlaySound_Special ; play special stage exit sound
-		bsr.w	PaletteWhiteOut
-		rts	
+		bra.w	PaletteWhiteOut
 ; ===========================================================================
 
 SS_ToSegaScreen:
@@ -3313,7 +3338,7 @@ GM_Ending:
 		move.w	(v_hbla_hreg).w,(a6)
 		move.b	#30,(v_air).w
 		move.w	#id_EndZ<<8,(v_zone).w ; set level number to 0600 (extra flowers)
-		cmpi.b	#6,(v_emeralds).w ; do you have all 6 emeralds?
+		cmpi.b	#emldCount,(v_emeralds).w ; do you have all emeralds?
 		beq.s	End_LoadData	; if yes, branch
 		move.w	#(id_EndZ<<8)+1,(v_zone).w ; set level number to 0601 (no flowers)
 
@@ -3360,9 +3385,6 @@ End_LoadSonic:
 		clr.w	(f_restart).w
 		clr.w	(v_framecount).w
 		bsr.w	OscillateNumInit
-		move.b	#1,(f_scorecount).w
-		move.b	#1,(f_ringcount).w
-		clr.b	(f_timecount).w
 		move.w	#1800,(v_demolength).w
 		move.b	#$18,(v_vbla_routine).w
 		bsr.w	WaitForVBla
@@ -3389,19 +3411,18 @@ End_MainLoop:
 		bsr.w	PaletteCycle
 		bsr.w	OscillateNumDo
 		bsr.w	SynchroAnimate
-		cmpi.b	#id_Ending,(v_gamemode).w ; is game mode $18 (ending)?
-		beq.s	End_ChkEmerald	; if yes, branch
+		cmpi.b	#id_Ending,(v_gamemode).w	; is game mode $18 (ending)?
+		beq.s	End_ChkEmerald				; if yes, branch
 
-		move.b	#id_Credits,(v_gamemode).w ; goto credits
+		move.b	#id_Credits,(v_gamemode).w	; goto credits
+		clr.w	(v_creditsnum).w			; set credits index number to 0
 		move.b	#bgm_Credits,d0
-		bsr.w	PlaySound_Special ; play credits music
-		clr.w	(v_creditsnum).w ; set credits index number to 0
-		rts	
+		bra.w	PlaySound_Special			; play credits music
 ; ===========================================================================
 
 End_ChkEmerald:
-		tst.w	(f_restart).w	; has Sonic released the emeralds?
-		beq.w	End_MainLoop	; if not, branch
+		tst.w	(f_restart).w				; has Sonic released the emeralds?
+		beq.w	End_MainLoop				; if not, branch
 
 		clr.w	(f_restart).w
 		move.w	#$3F,(v_pfade_start).w
@@ -3413,10 +3434,10 @@ End_AllEmlds:
 		bsr.w	WaitForVBla
 		addq.w	#1,(v_framecount).w
 		bsr.w	End_MoveSonic
-		jsr	(ExecuteObjects).l
+		jsr		(ExecuteObjects).l
 		bsr.w	DeformLayers
-		jsr	(BuildSprites).l
-		jsr	(ObjPosLoad).l
+		jsr		(BuildSprites).l
+		jsr		(ObjPosLoad).l
 		bsr.w	OscillateNumDo
 		bsr.w	SynchroAnimate
 		subq.w	#1,(v_palchgspeed).w
@@ -3428,16 +3449,19 @@ End_SlowFade:
 		tst.w	(f_restart).w
 		beq.w	End_AllEmlds
 		clr.w	(f_restart).w
-		move.l	#$AAABAE9A,(v_lvllayout+$200).w ; MJ: modify level layout
+		move.l	#$AAABAE9A,(v_lvllayout+$200).w	; MJ: modify level layout
 		move.l	#$ACADAFB0,(v_lvllayout+$300).w
-		lea	(vdp_control_port).l,a5
-		lea	(vdp_data_port).l,a6
-		lea	(v_screenposx).w,a3
-		lea	(v_lvllayout).w,a4
+		lea		(vdp_control_port).l,a5
+		lea		(vdp_data_port).l,a6
+		lea		(v_screenposx).w,a3
+		lea		(v_lvllayout).w,a4
 		move.w	#$4000,d2
 		bsr.w	DrawChunks
 		moveq	#palid_Ending,d0
-		bsr.w	PalLoad1	; load ending palette
+		bsr.w	PalLoad1						; load ending palette
+	if SuperMod=1
+		bsr.w	PalLoad_EndFlowers
+	endif
 		bsr.w	PaletteWhiteIn
 		bra.w	End_MainLoop
 
@@ -3793,7 +3817,7 @@ loc_6938:
 		bsr.w	Calc_VRAM_Pos
 		moveq	#-16,d4
 		move.w	#336,d5			; Was 320 -- Spirituinsanum top-right corner reloading glitch Fix
-		bsr.w	DrawBlocks_TB
+		bra.w	DrawBlocks_TB
 
 locret_6952:
 		rts	
@@ -3871,7 +3895,7 @@ locj_6D88:
 		move.w	#224,d4
 		moveq	#0,d5
 		moveq	#(512/16)-1,d6
-		bsr.w	DrawBlocks_LR_3
+		bra.w	DrawBlocks_LR_3
 
 locret_69F2:
 		rts	
@@ -3907,7 +3931,7 @@ locj_6DD2:
 		move.w	#224/2,d4
 		move.w	#320,d5
 		moveq	#3-1,d6
-		bsr.w	DrawBlocks_TB_2
+		bra.w	DrawBlocks_TB_2
 locj_6DF2:
 		rts
 ;===============================================================================
@@ -3997,7 +4021,7 @@ locj_6ED0:
 		move.w	#$40,d4
 		move.w	#320,d5
 		moveq	#3-1,d6
-		bsr.w	DrawBlocks_TB_2
+		bra.w	DrawBlocks_TB_2
 locj_6EF0:
 		rts
 locj_6EF2:
@@ -4451,7 +4475,7 @@ locj_72da:
 		bsr.w	Calc_VRAM_Pos_2
 		movem.l	(sp)+,d4/d5
 		moveq	#(512/16)-1,d6
-		bsr.w	DrawBlocks_LR_3
+		bra.w	DrawBlocks_LR_3
 locj_72EE:
 		rts
 
@@ -4541,7 +4565,7 @@ LevelDataLoad:
 		moveq	#0,d0
 		move.b	(a2),d0
 		beq.s	.skipPLC	; if 2nd PLC is 0 (i.e. the ending sequence), branch
-		bsr.w	AddPLC		; load pattern load cues
+		bra.w	AddPLC		; load pattern load cues
 
 .skipPLC:
 		rts	
@@ -6190,21 +6214,26 @@ Sonic_Control:	; Routine 2
 ; ===========================================================================
 
 loc_12C58:
-		tst.b	(f_lockctrl).w	; are controls locked?
-		bne.s	loc_12C64	; if yes, branch
-		move.w	(v_jpadhold1).w,(v_jpadhold2).w ; enable joypad control
+		tst.b	(f_lockctrl).w					; are controls locked?
+		bne.s	loc_12C64						; if yes, branch
+		move.w	(v_jpadhold1).w,(v_jpadhold2).w	; enable joypad control
 
 loc_12C64:
-		btst	#0,(f_playerctrl).w			; are controls locked?
-		bne.s	loc_12C7E					; if yes, branch
+		btst	#0,(f_playerctrl).w				; are controls locked?
+		bne.s	loc_12C7E						; if yes, branch
 		moveq	#0,d0
 		move.b	obStatus(a0),d0
-		andi.w	#(maskAir+maskSpin),d0		; Use current air and spin states to determine Control Mode
+		andi.w	#(maskAir+maskSpin),d0			; Use current air and spin states to determine Control Mode
 		move.w	Sonic_Modes(pc,d0.w),d1
 		jsr		Sonic_Modes(pc,d1.w)
 
 loc_12C7E:
+	if SuperMod=1
+		bsr.s	Sonic_Super
+		bsr.w	Sonic_Display
+	else
 		bsr.s	Sonic_Display
+	endif
 		bsr.w	Sonic_RecordPosition
 		bsr.w	Sonic_Water
 		move.b	(v_anglebuffer).w,obFrontAngle(a0)
@@ -6223,8 +6252,7 @@ loc_12CA6:
 
 loc_12CB6:
 		bsr.w	Sonic_Loops
-		bsr.w	Sonic_LoadGfx
-		rts	
+		bra.w	Sonic_LoadGfx	
 ; ===========================================================================
 Sonic_Modes:
 		dc.w Sonic_MdNormal-Sonic_Modes
@@ -6245,6 +6273,9 @@ MusicList2:
 		; The ending doesn't get an entry
 		even
 
+	if SuperMod=1
+		include	"_incObj\Sonic Super.asm"
+	endif
 		include	"_incObj/Sonic Display.asm"
 		include	"_incObj/Sonic RecordPosition.asm"
 		include	"_incObj/Sonic Water.asm"
@@ -6378,8 +6409,15 @@ ResumeMusic:
 		move.w	#bgm_SBZ,d0					; play SBZ music
 
 .notsbz:
+	if SuperMod=1
+		btst	#sta2ndSuper,(v_player+obStatus2nd).w	; is player in Super Form?
+		bne.s	.playinvinc								; if yes, branch
+	endif
+
 		btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; is Sonic invincible?
 		beq.s	.notinvinc								; if not, branch
+
+.playinvinc:
 		move.w	#bgm_Invincible,d0
 
 .notinvinc:
@@ -7208,7 +7246,11 @@ loc_1B210:
 		moveq	#0,d0
 		move.b	(a0)+,d0
 		beq.s	loc_1B268
+	if SuperMod=1
+		cmpi.b	#$4F,d0		; Adjustment for 7th emerald
+	else
 		cmpi.b	#$4E,d0
+	endif
 		bhi.s	loc_1B268
 		move.w	(a4),d3
 		addi.w	#$120,d3
@@ -7304,6 +7346,9 @@ loc_1B2E4:
 		move.b	d0,$1F0(a1)
 		move.b	d0,$1F8(a1)
 		move.b	d0,$200(a1)
+	if SuperMod=1
+		move.b	d0,$208(a1)
+	endif
 		subq.b	#1,(v_ani3_time).w
 		bpl.s	loc_1B326
 		move.b	#4,(v_ani3_time).w
@@ -7415,14 +7460,14 @@ SS_WaRiVramSet:	dc.w $142, $6142, $142,	$142, $142, $142, $142,	$6142
 
 
 SS_RemoveCollectedItem:
-		lea	(v_ssitembuffer&$FFFFFF).l,a2
+		lea		(v_ssitembuffer&$FFFFFF).l,a2
 		move.w	#(v_ssitembuffer_end-v_ssitembuffer)/8-1,d0
 
 loc_1B4C4:
 		tst.b	(a2)
 		beq.s	locret_1B4CE
 		addq.w	#8,a2
-		dbf	d0,loc_1B4C4
+		dbf		d0,loc_1B4C4
 
 locret_1B4CE:
 		rts	
@@ -7436,7 +7481,7 @@ locret_1B4CE:
 
 
 SS_AniItems:
-		lea	(v_ssitembuffer&$FFFFFF).l,a0
+		lea		(v_ssitembuffer&$FFFFFF).l,a0
 		move.w	#(v_ssitembuffer_end-v_ssitembuffer)/8-1,d7
 
 loc_1B4DA:
@@ -7445,19 +7490,20 @@ loc_1B4DA:
 		beq.s	loc_1B4E8
 		lsl.w	#2,d0
 		movea.l	SS_AniIndex-4(pc,d0.w),a1
-		jsr	(a1)
+		jsr		(a1)
 
 loc_1B4E8:
 		addq.w	#8,a0
 
 loc_1B4EA:
-		dbf	d7,loc_1B4DA
+		dbf		d7,loc_1B4DA
 
 		rts	
 ; End of function SS_AniItems
 
 ; ===========================================================================
-SS_AniIndex:	dc.l SS_AniRingSparks
+SS_AniIndex:
+		dc.l SS_AniRingSparks
 		dc.l SS_AniBumper
 		dc.l SS_Ani1Up
 		dc.l SS_AniReverse
@@ -7482,7 +7528,7 @@ SS_AniRingSparks:
 locret_1B530:
 		rts	
 ; ===========================================================================
-SS_AniRingData:	dc.b $42, $43, $44, $45, 0, 0
+SS_AniRingData:	dc.b SSBlock_RingSparkle1, SSBlock_RingSparkle2, SSBlock_RingSparkle3, SSBlock_RingSparkle4, 0, 0
 ; ===========================================================================
 
 SS_AniBumper:
@@ -7497,17 +7543,17 @@ SS_AniBumper:
 		bne.s	loc_1B564
 		clr.l	(a0)
 		clr.l	4(a0)
-		move.b	#$25,(a1)
+		move.b	#SSBlock_Bumper,(a1)	; Revert to the original bumper block
 		rts	
 ; ===========================================================================
 
 loc_1B564:
-		move.b	d0,(a1)
+		move.b	d0,(a1)					; set animation frame
 
 locret_1B566:
 		rts	
 ; ===========================================================================
-SS_AniBumpData:	dc.b $32, $33, $32, $33, 0, 0
+SS_AniBumpData:	dc.b SSBlock_BumperHit1, SSBlock_BumperHit2, SSBlock_BumperHit1, SSBlock_BumperHit2, 0, 0
 ; ===========================================================================
 
 SS_Ani1Up:
@@ -7527,7 +7573,7 @@ SS_Ani1Up:
 locret_1B596:
 		rts	
 ; ===========================================================================
-SS_Ani1UpData:	dc.b $46, $47, $48, $49, 0, 0
+SS_Ani1UpData:	dc.b SSBlock_ItemSparkle1, SSBlock_ItemSparkle2, SSBlock_ItemSparkle3, SSBlock_ItemSparkle4, 0, 0
 ; ===========================================================================
 
 SS_AniReverse:
@@ -7552,7 +7598,7 @@ loc_1B5CA:
 locret_1B5CC:
 		rts	
 ; ===========================================================================
-SS_AniRevData:	dc.b $2B, $31, $2B, $31, 0, 0
+SS_AniRevData:	dc.b SSBlock_R, SSBlock_R2, SSBlock_R, SSBlock_R2, 0, 0
 ; ===========================================================================
 
 SS_AniEmeraldSparks:
@@ -7570,12 +7616,12 @@ SS_AniEmeraldSparks:
 		clr.l	4(a0)
 		move.b	#4,(v_player+obRoutine).w
 		move.w	#sfx_SSGoal,d0
-		jsr	(PlaySound_Special).l	; play special stage GOAL sound
+		jsr		(PlaySound_Special).l	; play special stage GOAL sound
 
 locret_1B60C:
 		rts	
 ; ===========================================================================
-SS_AniEmerData:	dc.b $46, $47, $48, $49, 0, 0
+SS_AniEmerData:	dc.b SSBlock_ItemSparkle1, SSBlock_ItemSparkle2, SSBlock_ItemSparkle3, SSBlock_ItemSparkle4, 0, 0
 ; ===========================================================================
 
 SS_AniGlassBlock:
@@ -7596,7 +7642,10 @@ SS_AniGlassBlock:
 locret_1B640:
 		rts	
 ; ===========================================================================
-SS_AniGlassData:dc.b $4B, $4C, $4D, $4E, $4B, $4C, $4D,	$4E, 0,	0
+SS_AniGlassData:
+		dc.b SSBlock_GlassAni1, SSBlock_GlassAni2, SSBlock_GlassAni3, SSBlock_GlassAni4
+		dc.b SSBlock_GlassAni1, SSBlock_GlassAni2, SSBlock_GlassAni3, SSBlock_GlassAni4, 0,	0
+; ===========================================================================
 
 ; ---------------------------------------------------------------------------
 ; Special stage	layout pointers
@@ -7608,6 +7657,9 @@ SS_LayoutIndex:
 		dc.l SS_4
 		dc.l SS_5
 		dc.l SS_6
+	if SuperMod=1
+		dc.l SS_7
+	endif
 		even
 
 ; ---------------------------------------------------------------------------
@@ -7621,23 +7673,28 @@ SS_StartLoc:	include	"_inc/Start Location Array - Special Stages.asm"
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
+	if SuperMod=1
+emldCount: = 7
+	else
+emldCount: = 6
+	endif
 
 SS_Load:
 		moveq	#0,d0
-		move.b	(v_lastspecial).w,d0 ; load number of last special stage entered
+		move.b	(v_lastspecial).w,d0		; load number of last special stage entered
 		addq.b	#1,(v_lastspecial).w
-		cmpi.b	#6,(v_lastspecial).w
+		cmpi.b	#emldCount,(v_lastspecial).w
 		blo.s	SS_ChkEmldNum
-		clr.b	(v_lastspecial).w ; reset if higher than 6
+		clr.b	(v_lastspecial).w			; reset if higher than 6/7 (emldCount)
 
 SS_ChkEmldNum:
-		cmpi.b	#6,(v_emeralds).w ; do you have all emeralds?
-		beq.s	SS_LoadData	; if yes, branch
+		cmpi.b	#emldCount,(v_emeralds).w	; do you have all emeralds?
+		beq.s	SS_LoadData					; if yes, branch
 		moveq	#0,d1
 		move.b	(v_emeralds).w,d1
 		subq.b	#1,d1
 		blo.s	SS_LoadData
-		lea	(v_emldlist).w,a3 ; check which emeralds you have
+		lea		(v_emldlist).w,a3			; check which emeralds you have
 
 SS_ChkEmldLoop:	
 		cmp.b	(a3,d1.w),d0
@@ -7646,33 +7703,33 @@ SS_ChkEmldLoop:
 ; ===========================================================================
 
 SS_ChkEmldRepeat:
-		dbf	d1,SS_ChkEmldLoop
+		dbf		d1,SS_ChkEmldLoop
 
 SS_LoadData:
 		; Load player position data
 		lsl.w	#2,d0
-		lea	SS_StartLoc(pc,d0.w),a1
+		lea		SS_StartLoc(pc,d0.w),a1
 		move.w	(a1)+,(v_player+obX).w
 		move.w	(a1)+,(v_player+obY).w
 
 		; Load layout data
 		movea.l	SS_LayoutIndex(pc,d0.w),a0
-		lea	(v_ssbuffer2&$FFFFFF).l,a1
+		lea		(v_ssbuffer2&$FFFFFF).l,a1
 		clr.w	d0
-		jsr	(EniDec).l
+		jsr		(EniDec).l
 
 		; Clear everything from v_ssbuffer1 to v_ssbuffer2
-		lea	(v_ssbuffer1&$FFFFFF).l,a1
+		lea		(v_ssbuffer1&$FFFFFF).l,a1
 		move.w	#(v_ssbuffer2-v_ssbuffer1)/4-1,d0
 
 SS_ClrRAM3:
 		clr.l	(a1)+
-		dbf	d0,SS_ClrRAM3
+		dbf		d0,SS_ClrRAM3
 
 		; Copy $1000 of data from v_ssbuffer2 to v_ssblockbuffer,
 		; inserting $40 bytes of padding for every $40 bytes copied.
-		lea	(v_ssblockbuffer&$FFFFFF).l,a1
-		lea	(v_ssbuffer2&$FFFFFF).l,a0
+		lea		(v_ssblockbuffer&$FFFFFF).l,a1
+		lea		(v_ssbuffer2&$FFFFFF).l,a0
 		moveq	#(v_ssblockbuffer_end-v_ssblockbuffer)/$80-1,d1
 
 loc_1B6F6:
@@ -7680,13 +7737,13 @@ loc_1B6F6:
 
 loc_1B6F8:
 		move.b	(a0)+,(a1)+
-		dbf	d2,loc_1B6F8
+		dbf		d2,loc_1B6F8
 
-		lea	$40(a1),a1
-		dbf	d1,loc_1B6F6
+		lea		$40(a1),a1
+		dbf		d1,loc_1B6F6
 
-		lea	((v_ssblocktypes+8)&$FFFFFF).l,a1
-		lea	(SS_MapIndex).l,a0
+		lea		((v_ssblocktypes+8)&$FFFFFF).l,a1
+		lea		(SS_MapIndex).l,a0
 		moveq	#(SS_MapIndex_End-SS_MapIndex)/6-1,d1
 
 loc_1B714:
@@ -7694,15 +7751,15 @@ loc_1B714:
 		clr.w	(a1)+
 		move.b	-4(a0),-1(a1)
 		move.w	(a0)+,(a1)+
-		dbf	d1,loc_1B714
+		dbf		d1,loc_1B714
 
-		lea	(v_ssitembuffer&$FFFFFF).l,a1
+		lea		(v_ssitembuffer&$FFFFFF).l,a1
 		move.w	#(v_ssitembuffer_end-v_ssitembuffer)/4-1,d1
 
 loc_1B730:
 
 		clr.l	(a1)+
-		dbf	d1,loc_1B730
+		dbf		d1,loc_1B730
 
 		rts	
 ; End of function SS_Load
@@ -8317,6 +8374,24 @@ Col_SBZ_2:	binclude	"collide/SBZ2.kos"	; SBZ index 2
 ; ---------------------------------------------------------------------------
 ; Special Stage layouts
 ; ---------------------------------------------------------------------------
+	if SuperMod=1
+SS_1:		binclude	"sslayout/Super Mod/1.eni"
+		even
+SS_2:		binclude	"sslayout/Super Mod/2.eni"
+		even
+SS_3:		binclude	"sslayout/Super Mod/3.eni"
+		even
+SS_4:		binclude	"sslayout/Super Mod/4.eni"
+		even
+SS_5:		binclude	"sslayout/Super Mod/5.eni"
+		even
+SS_6:		binclude	"sslayout/Super Mod/6.eni"
+		even
+SS_7:		binclude	"sslayout/Super Mod/7.eni"
+		even
+	
+	else
+
 SS_1:		binclude	"sslayout/1.eni"
 		even
 SS_2:		binclude	"sslayout/2.eni"
@@ -8329,6 +8404,7 @@ SS_5:		binclude	"sslayout/5.eni"
 		even
 SS_6:		binclude	"sslayout/6.eni"
 		even
+	endif
 ; ---------------------------------------------------------------------------
 ; Animated uncompressed graphics
 ; ---------------------------------------------------------------------------

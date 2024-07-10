@@ -9,27 +9,28 @@ Animals:
 		jmp		Anml_Index(pc,d1.w)
 ; ===========================================================================
 Anml_Index:		offsetTable
-		offsetTableEntry.w Anml_Ending
-		offsetTableEntry.w loc_912A
+		offsetTableEntry.w Anml_Main
+		offsetTableEntry.w Anml_Freed
 		offsetTableEntry.w loc_9184
 		offsetTableEntry.w loc_91C0
-		offsetTableEntry.w loc_9184
+		offsetTableEntry.w loc_9184		; $08
 		offsetTableEntry.w loc_9184
 		offsetTableEntry.w loc_9184
 		offsetTableEntry.w loc_91C0
-		offsetTableEntry.w loc_9184
+		offsetTableEntry.w loc_9184		; $10
 		offsetTableEntry.w loc_9240
-		offsetTableEntry.w loc_9260
-		offsetTableEntry.w loc_9260
-		offsetTableEntry.w loc_9280
-		offsetTableEntry.w loc_92BA
-		offsetTableEntry.w loc_9314
-		offsetTableEntry.w loc_9332
-		offsetTableEntry.w loc_9314
-		offsetTableEntry.w loc_9332
-		offsetTableEntry.w loc_9314
-		offsetTableEntry.w loc_9370
-		offsetTableEntry.w loc_92D6
+	; Ending Animals
+		offsetTableEntry.w Ending_Flicky	; $14
+		offsetTableEntry.w Ending_Flicky	; $16
+		offsetTableEntry.w Ending_Flicky3	; $18
+		offsetTableEntry.w Ending_Rabbit1	; $1A
+		offsetTableEntry.w Ending_Rabbit2	; $1C
+		offsetTableEntry.w Ending_Penguin1	; $1E
+		offsetTableEntry.w Ending_Penguin2	; $20
+		offsetTableEntry.w Ending_Seal		; $22 - Doesn't follow you
+		offsetTableEntry.w Ending_Pig		; $24 - Doesn't follow you
+		offsetTableEntry.w Ending_Chicken	; $26
+		offsetTableEntry.w Ending_Squirrel	; $28
 
 Anml_VarIndex:
 		dc.b 0,	5 ; Green Hill Zone
@@ -79,26 +80,29 @@ Anml_EndVram:
 		dc.w make_art_tile(ArtTile_Ending_Squirrel,0,0)
 ; ===========================================================================
 
-Anml_Ending:	; Routine 0
-		tst.b	obSubtype(a0)	; did animal come from a destroyed enemy?
-		beq.w	Anml_FromEnemy	; if yes, branch
+Anml_Main:	; Routine 0
+		tst.b	obSubtype(a0)				; did animal come from a destroyed enemy?
+		beq.w	Anml_FromEnemy				; if yes (Subtype 00), branch
+
+	; non-zero subtype indicates an Ending Sequence Enemy
+;Anml_Ending:
 		moveq	#0,d0
-		move.b	obSubtype(a0),d0 ; move object type to d0
-		add.w	d0,d0		; multiply d0 by 2
-		move.b	d0,obRoutine(a0) ; move d0 to routine counter
+		move.b	obSubtype(a0),d0			; move object type to d0
+		add.w	d0,d0						; multiply d0 by 2
+		move.b	d0,obRoutine(a0)			; move d0 to routine counter
 		subi.w	#$14,d0
 		move.w	Anml_EndVram(pc,d0.w),obGfx(a0)
 		add.w	d0,d0
 		move.l	Anml_EndMap(pc,d0.w),obMap(a0)
 		lea		Anml_EndSpeed(pc),a1
-		move.w	(a1,d0.w),objoff_32(a0) ; load horizontal speed
+		move.w	(a1,d0.w),objoff_32(a0)		; load horizontal speed
 		move.w	(a1,d0.w),obVelX(a0)
-		move.w	2(a1,d0.w),objoff_34(a0) ; load vertical speed
+		move.w	2(a1,d0.w),objoff_34(a0)	; load vertical speed
 		move.w	2(a1,d0.w),obVelY(a0)
 		move.b	#$C,obHeight(a0)
 		move.b	#4,obRender(a0)
 		bset	#0,obRender(a0)
-		move.w	#$300,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#$300,obPriority(a0)		; RetroKoH S2 Priority Manager
 		move.b	#8,obActWid(a0)
 		move.b	#7,obTimeFrame(a0)
 		bra.w	DisplaySprite
@@ -138,15 +142,13 @@ loc_90C0:
 		tst.b	(v_bossstatus).w
 		bne.s	loc_911C
 		bsr.w	FindFreeObj
-		bne.s	Anml_Display
-		_move.b	#id_Points,obID(a1) ; load points object
+		bne.w	DisplaySprite
+		_move.b	#id_Points,obID(a1)		; load points object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.w	objoff_3E(a0),d0
 		lsr.w	#1,d0
 		move.b	d0,obFrame(a1)
-
-Anml_Display:
 		bra.w	DisplaySprite
 ; ===========================================================================
 
@@ -155,16 +157,16 @@ loc_911C:
 		clr.w	obVelX(a0)
 		bra.w	DisplaySprite
 ; ===========================================================================
-
-loc_912A:
+; Animals freed from Badnik enemies and Animal Prisons.
+Anml_Freed: ;loc_912A:	; Routine 2
 		tst.b	obRender(a0)
 		bpl.w	DeleteObject
 		bsr.w	ObjectFall
 		tst.w	obVelY(a0)
-		bmi.s	loc_9180
+		bmi.w	DisplaySprite
 		jsr		(ObjFloorDist).l
 		tst.w	d1
-		bpl.s	loc_9180
+		bpl.w	DisplaySprite
 		add.w	d1,obY(a0)
 		move.w	objoff_32(a0),obVelX(a0)
 		move.w	objoff_34(a0),obVelY(a0)
@@ -174,17 +176,15 @@ loc_912A:
 		addq.b	#4,d0
 		move.b	d0,obRoutine(a0)
 		tst.b	(v_bossstatus).w
-		beq.s	loc_9180
+		beq.w	DisplaySprite
 		btst	#4,(v_vbla_byte).w
-		beq.s	loc_9180
+		beq.w	DisplaySprite
 		neg.w	obVelX(a0)
 		bchg	#0,obRender(a0)
-
-loc_9180:
 		bra.w	DisplaySprite
 ; ===========================================================================
 
-loc_9184:
+loc_9184:	; Routine 04, 08, 0A, 0C, $10
 		bsr.w	ObjectFall
 		move.b	#1,obFrame(a0)
 		tst.w	obVelY(a0)
@@ -204,7 +204,7 @@ loc_91AE:
 		bra.w	DisplaySprite
 ; ===========================================================================
 
-loc_91C0:
+loc_91C0:	; Routine 06, 0E
 		bsr.w	SpeedToPos
 		addi.w	#$18,obVelY(a0)
 		tst.w	obVelY(a0)
@@ -239,17 +239,15 @@ loc_9212:
 loc_9224:
 		move.w	obX(a0),d0
 		sub.w	(v_player+obX).w,d0
-		bcs.s	loc_923C
+		bcs.w	DisplaySprite
 		subi.w	#$180,d0
-		bpl.s	loc_923C
+		bpl.w	DisplaySprite
 		tst.b	obRender(a0)
 		bpl.w	DeleteObject
-
-loc_923C:
 		bra.w	DisplaySprite
 ; ===========================================================================
 
-loc_9240:
+loc_9240:	; Routine $12
 		tst.b	obRender(a0)
 		bpl.w	DeleteObject
 		subq.w	#1,objoff_36(a0)
@@ -261,22 +259,18 @@ loc_925C:
 		bra.w	DisplaySprite
 ; ===========================================================================
 
-loc_9260:
+Ending_Flicky: ;loc_9260:
 		bsr.w	sub_9404
-		bcc.s	loc_927C
+		bcc.w	loc_9224
 		move.w	objoff_32(a0),obVelX(a0)
 		move.w	objoff_34(a0),obVelY(a0)
 		move.b	#$E,obRoutine(a0)
 		bra.w	loc_91C0
 ; ===========================================================================
 
-loc_927C:
-		bra.w	loc_9224
-; ===========================================================================
-
-loc_9280:
+Ending_Flicky3: ;loc_9280:
 		bsr.w	sub_9404
-		bpl.s	loc_92B6
+		bpl.w	loc_9224
 		clr.w	obVelX(a0)
 		clr.w	objoff_32(a0)
 		bsr.w	SpeedToPos
@@ -284,33 +278,31 @@ loc_9280:
 		bsr.w	loc_93C4
 		bsr.w	loc_93EC
 		subq.b	#1,obTimeFrame(a0)
-		bpl.s	loc_92B6
+		bpl.w	loc_9224
 		move.b	#1,obTimeFrame(a0)
 		addq.b	#1,obFrame(a0)
 		andi.b	#1,obFrame(a0)
-
-loc_92B6:
 		bra.w	loc_9224
 ; ===========================================================================
 
-loc_92BA:
+Ending_Rabbit1: ;loc_92BA:
 		bsr.w	sub_9404
-		bpl.s	loc_9310
+		bpl.w	loc_9224
 		move.w	objoff_32(a0),obVelX(a0)
 		move.w	objoff_34(a0),obVelY(a0)
 		move.b	#4,obRoutine(a0)
 		bra.w	loc_9184
 ; ===========================================================================
 
-loc_92D6:
+Ending_Squirrel: ;loc_92D6:
 		bsr.w	ObjectFall
 		move.b	#1,obFrame(a0)
 		tst.w	obVelY(a0)
-		bmi.s	loc_9310
+		bmi.w	loc_9224
 		clr.b	obFrame(a0)
 		jsr		(ObjFloorDist).l
 		tst.w	d1
-		bpl.s	loc_9310
+		bpl.w	loc_9224
 		not.b	objoff_29(a0)
 		bne.s	loc_9306
 		neg.w	obVelX(a0)
@@ -319,47 +311,44 @@ loc_92D6:
 loc_9306:
 		add.w	d1,obY(a0)
 		move.w	objoff_34(a0),obVelY(a0)
-
-loc_9310:
 		bra.w	loc_9224
 ; ===========================================================================
 
-loc_9314:
+Ending_Rabbit2:
+Ending_Penguin2:
+Ending_Pig: ;loc_9314:
 		bsr.w	sub_9404
-		bpl.s	loc_932E
+		bpl.w	loc_9224
 		clr.w	obVelX(a0)
 		clr.w	objoff_32(a0)
 		bsr.w	ObjectFall
 		bsr.w	loc_93C4
 		bsr.w	loc_93EC
-
-loc_932E:
 		bra.w	loc_9224
 ; ===========================================================================
 
-loc_9332:
+Ending_Penguin1:
+Ending_Seal: ;loc_9332:
 		bsr.w	sub_9404
-		bpl.s	loc_936C
+		bpl.w	loc_9224
 		bsr.w	ObjectFall
 		move.b	#1,obFrame(a0)
 		tst.w	obVelY(a0)
-		bmi.s	loc_936C
+		bmi.w	loc_9224
 		clr.b	obFrame(a0)
 		jsr		(ObjFloorDist).l
 		tst.w	d1
-		bpl.s	loc_936C
+		bpl.w	loc_9224
 		neg.w	obVelX(a0)
 		bchg	#0,obRender(a0)
 		add.w	d1,obY(a0)
 		move.w	objoff_34(a0),obVelY(a0)
-
-loc_936C:
 		bra.w	loc_9224
 ; ===========================================================================
 
-loc_9370:
+Ending_Chicken: ;loc_9370:
 		bsr.w	sub_9404
-		bpl.s	loc_93C0
+		bpl.w	loc_9224
 		bsr.w	SpeedToPos
 		addi.w	#$18,obVelY(a0)
 		tst.w	obVelY(a0)
@@ -378,12 +367,10 @@ loc_93A0:
 
 loc_93AA:
 		subq.b	#1,obTimeFrame(a0)
-		bpl.s	loc_93C0
+		bpl.w	loc_9224
 		move.b	#1,obTimeFrame(a0)
 		addq.b	#1,obFrame(a0)
 		andi.b	#1,obFrame(a0)
-
-loc_93C0:
 		bra.w	loc_9224
 ; ===========================================================================
 
@@ -410,7 +397,8 @@ loc_93EC:
 		bclr	#0,obRender(a0)
 
 locret_9402:
-		rts	
+		rts
+; ===========================================================================
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
@@ -419,5 +407,6 @@ sub_9404:
 		move.w	(v_player+obX).w,d0
 		sub.w	obX(a0),d0
 		subi.w	#$B8,d0
-		rts	
+		rts
+; ===========================================================================
 ; End of function sub_9404

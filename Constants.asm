@@ -34,41 +34,41 @@ security_addr:			equ $A14000
 
 ; Sound driver constants
 TrackPlaybackControl:	equ 0		; All tracks
-TrackVoiceControl:	equ 1		; All tracks
-TrackTempoDivider:	equ 2		; All tracks
-TrackDataPointer:	equ 4		; All tracks (4 bytes)
-TrackTranspose:		equ 8		; FM/PSG only (sometimes written to as a word, to include TrackVolume)
-TrackVolume:		equ 9		; FM/PSG only
-TrackAMSFMSPan:		equ $A		; FM/DAC only
-TrackVoiceIndex:	equ $B		; FM/PSG only
-TrackVolEnvIndex:	equ $C		; PSG only
-TrackStackPointer:	equ $D		; All tracks
+TrackVoiceControl:		equ 1		; All tracks
+TrackTempoDivider:		equ 2		; All tracks
+TrackDataPointer:		equ 4		; All tracks (4 bytes)
+TrackTranspose:			equ 8		; FM/PSG only (sometimes written to as a word, to include TrackVolume)
+TrackVolume:			equ 9		; FM/PSG only
+TrackAMSFMSPan:			equ $A		; FM/DAC only
+TrackVoiceIndex:		equ $B		; FM/PSG only
+TrackVolEnvIndex:		equ $C		; PSG only
+TrackStackPointer:		equ $D		; All tracks
 TrackDurationTimeout:	equ $E		; All tracks
-TrackSavedDuration:	equ $F		; All tracks
-TrackSavedDAC:		equ $10		; DAC only
-TrackFreq:		equ $10		; FM/PSG only (2 bytes)
-TrackNoteTimeout:	equ $12		; FM/PSG only
-TrackNoteTimeoutMaster:equ $13		; FM/PSG only
-TrackModulationPtr:	equ $14		; FM/PSG only (4 bytes)
+TrackSavedDuration:		equ $F		; All tracks
+TrackSavedDAC:			equ $10		; DAC only
+TrackFreq:				equ $10		; FM/PSG only (2 bytes)
+TrackNoteTimeout:		equ $12		; FM/PSG only
+TrackNoteTimeoutMaster:	equ $13		; FM/PSG only
+TrackModulationPtr:		equ $14		; FM/PSG only (4 bytes)
 TrackModulationWait:	equ $18		; FM/PSG only
 TrackModulationSpeed:	equ $19		; FM/PSG only
 TrackModulationDelta:	equ $1A		; FM/PSG only
 TrackModulationSteps:	equ $1B		; FM/PSG only
-TrackModulationVal:	equ $1C		; FM/PSG only (2 bytes)
-TrackDetune:		equ $1E		; FM/PSG only
-TrackPSGNoise:		equ $1F		; PSG only
-TrackFeedbackAlgo:	equ $1F		; FM only
-TrackVoicePtr:		equ $20		; FM SFX only (4 bytes)
-TrackLoopCounters:	equ $24		; All tracks (multiple bytes)
-TrackGoSubStack:	equ TrackSz	; All tracks (multiple bytes. This constant won't get to be used because of an optimisation that just uses TrackSz)
+TrackModulationVal:		equ $1C		; FM/PSG only (2 bytes)
+TrackDetune:			equ $1E		; FM/PSG only
+TrackPSGNoise:			equ $1F		; PSG only
+TrackFeedbackAlgo:		equ $1F		; FM only
+TrackVoicePtr:			equ $20		; FM SFX only (4 bytes)
+TrackLoopCounters:		equ $24		; All tracks (multiple bytes)
+TrackGoSubStack:		equ TrackSz	; All tracks (multiple bytes. This constant won't get to be used because of an optimisation that just uses TrackSz)
 
-TrackSz:	equ $30
+TrackSz:				equ $30
 
 ; VRAM data
-vram_fg:	equ $C000	; foreground namespace
-vram_bg:	equ $E000	; background namespace
-vram_sprites:	equ $F800	; sprite table
-vram_hscroll:	equ $FC00	; horizontal scroll table
+vram_fg:				equ $C000	; foreground namespace
+vram_bg:				equ $E000	; background namespace
+vram_sprites:			equ $F800	; sprite table
+vram_hscroll:			equ $FC00	; horizontal scroll table
 
 ; Game modes
 id_Sega:	equ ptr_GM_Sega-GameModeArray	; $00
@@ -190,14 +190,14 @@ obLRLock:		equ $3D			; flag for preventing left and right input
 obPlatformAddr:	equ $3E			; ost slot of the object Sonic's on top of (Convert to 2 bytes and swap with obLRLock)
 							; $3F obPlatformAddr
 
-	if (SpinDashEnabled|PeeloutEnabled)=1
+;	if (SpinDashEnabled|PeeloutEnabled)=1
 obSpinDashFlag:		equ $2A				; spin dash/peelout flag - if toggled off, this is unused.
 obSpinDashCounter:	equ obRestartTimer	; Counter used for the Spin Dash and/or Peelout (2 bytes) - if toggled off, this is unused.
-	endif
-	if ShieldsMode>0|DropDashEnabled=1
+;	endif
+;	if ShieldsMode>0|DropDashEnabled=1
 obDoubleJumpFlag:	equ	$2F				; Flag noting double jump status. 0 - not triggered. 1 - triggered. 2 - post-instashield (Begin Drop Dash revving). 3 - Drop Dash Cancelled.
 obDoubleJumpProp:	equ $25				; Counter for Sonic's Drop Dash (if enabled). Can also be utilized for remaining frames of flight / 2 for Tails, gliding-related for Knuckles.
-	endif
+;	endif
 ; ---------------------------------------------------------------------------
 ; obStatus bitfield variables
 ;
@@ -243,6 +243,7 @@ sta2ndShoes:		equ	2
 sta2ndFShield:		equ 4
 sta2ndBShield:		equ 5
 sta2ndLShield:		equ 6
+sta2ndSuper:		equ 7	; SuperMod
 
 ; obShieldProp bits
 shPropFlame:		equ sta2ndFShield
@@ -468,6 +469,7 @@ aniID_Shrink:		equ $1A		; Shrink animation
 aniID_Hurt:			equ $1B		; Hurt animation
 aniID_WaterSlide:	equ $1C		; Water Slide animation
 aniID_Peelout:		equ $1D		; Peelout
+aniID_Transform:	equ $1E		; Transform
 
 ; Frame IDs moved to mappings file
 
@@ -698,3 +700,72 @@ ArtTile_SS_Results_Emeralds:	equ $541
 ; Font
 ArtTile_Sonic_Team_Font:		equ $0A6
 ArtTile_Credits_Font:			equ $58C				; ✓
+
+
+; Special Stage Block IDs (Used in _incObj/09 Sonic in Special Stage.asm -- Obj09_ChkItems:)
+; I could consolidate the ZONE blocks into one block ID and dynamically load art in.
+; Possibly use the W block to warp Sonic.
+
+; Everything prior is standard wall
+SSBlock_Bumper:					equ $25
+; $26 is unused W block
+SSBlock_GOAL:					equ $27
+SSBlock_1Up:					equ $28
+SSBlock_UP:						equ $29
+SSBlock_DOWN:					equ $2A
+SSBlock_R:						equ $2B
+SSBlock_GhostSolid:				equ $2C
+SSBlock_Glass1:					equ $2D
+SSBlock_Glass2:					equ $2E
+SSBlock_Glass3:					equ $2F
+SSBlock_Glass4:					equ $30
+SSBlock_R2:						equ $31
+SSBlock_BumperHit1:				equ $32
+SSBlock_BumperHit2:				equ $33
+; $34-39 are unused ZONE Blocks
+SSBlock_Ring:					equ $3A
+SSBlock_Emld1:					equ $3B
+SSBlock_Emld2:					equ $3C
+SSBlock_Emld3:					equ $3D
+SSBlock_Emld4:					equ $3E
+SSBlock_Emld5:					equ $3F
+SSBlock_Emld6:					equ $40
+
+	if SuperMod=1
+
+SSBlock_Emld7:					equ $41
+SSBlock_EmldLast:				equ SSBlock_Emld7
+SSBlock_Ghost:					equ $42
+SSBlock_RingSparkle1:			equ $43
+SSBlock_RingSparkle2:			equ $44
+SSBlock_RingSparkle3:			equ $45
+SSBlock_RingSparkle4:			equ $46
+SSBlock_ItemSparkle1:			equ $47
+SSBlock_ItemSparkle2:			equ $48
+SSBlock_ItemSparkle3:			equ $49
+SSBlock_ItemSparkle4:			equ $4A
+SSBlock_GhostSwitch:			equ $4B
+SSBlock_GlassAni1:				equ $4C
+SSBlock_GlassAni2:				equ $4D
+SSBlock_GlassAni3:				equ $4E
+SSBlock_GlassAni4:				equ $4F
+
+	else
+
+SSBlock_EmldLast:				equ SSBlock_Emld6
+SSBlock_Ghost:					equ $41
+SSBlock_RingSparkle1:			equ $42
+SSBlock_RingSparkle2:			equ $43
+SSBlock_RingSparkle3:			equ $44
+SSBlock_RingSparkle4:			equ $45
+SSBlock_ItemSparkle1:			equ $46
+SSBlock_ItemSparkle2:			equ $47
+SSBlock_ItemSparkle3:			equ $48
+SSBlock_ItemSparkle4:			equ $49
+SSBlock_GhostSwitch:			equ $4A
+SSBlock_GlassAni1:				equ $4B
+SSBlock_GlassAni2:				equ $4C
+SSBlock_GlassAni3:				equ $4D
+SSBlock_GlassAni4:				equ $4E
+
+	endif

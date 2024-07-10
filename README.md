@@ -117,6 +117,12 @@
  Function: Applies After-Image effects to the Speed Shoes
  Date: 2024-07-07
  Variable: AfterImagesOn
+ 
+ Name: 7th Emerald and Super Sonic (Incomplete)
+ Credit: RetroKoH
+ Function: Adds 7th Special Stage, 7th Emerald and Super Sonic Form
+ Date: 2024-07-10
+ Variable: SuperMod
 
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format

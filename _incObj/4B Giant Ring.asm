@@ -22,18 +22,18 @@ GRing_Main:	; Routine 0
 		move.b	#$40,obActWid(a0)
 		tst.b	obRender(a0)
 		bpl.s	GRing_Animate
-		cmpi.b	#6,(v_emeralds).w ; do you have 6 emeralds?
-		beq.w	GRing_Delete	; if yes, branch
-		cmpi.w	#50,(v_rings).w	; do you have at least 50 rings?
-		bhs.s	GRing_Okay	; if yes, branch
+		cmpi.b	#emldCount,(v_emeralds).w	; do you have all emeralds?
+		beq.w	GRing_Delete				; if yes, branch
+		cmpi.w	#50,(v_rings).w				; do you have at least 50 rings?
+		bhs.s	GRing_Okay					; if yes, branch
 		rts	
 ; ===========================================================================
 
 GRing_Okay:
 		addq.b	#2,obRoutine(a0)
-		move.w	#$100,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#$100,obPriority(a0)			; RetroKoH S2 Priority Manager
 		move.b	#$52,obColType(a0)
-		move.w	#$C40,(v_gfxbigring).w	; Signal that Art_BigRing should be loaded ($C40 is the size of Art_BigRing)
+		move.w	#$C40,(v_gfxbigring).w			; Signal that Art_BigRing should be loaded ($C40 is the size of Art_BigRing)
 
 GRing_Animate:	; Routine 2
 		move.b	(v_ani1_frame).w,obFrame(a0)
@@ -47,14 +47,15 @@ GRing_Collect:	; Routine 4
 		clr.b	obColType(a0)
 		bsr.w	FindFreeObj
 		bne.w	GRing_PlaySnd
-		_move.b	#id_RingFlash,obID(a1) ; load giant ring flash object
+	; This loads a new object. Change to new animation/routine within the same object.
+		_move.b	#id_RingFlash,obID(a1)	; load giant ring flash object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.l	a0,objoff_3C(a1)
 		move.w	(v_player+obX).w,d0
-		cmp.w	obX(a0),d0	; has Sonic come from the left?
-		blo.s	GRing_PlaySnd	; if yes, branch
-		bset	#0,obRender(a1)	; reverse flash	object
+		cmp.w	obX(a0),d0				; has Sonic come from the left?
+		blo.s	GRing_PlaySnd			; if yes, branch
+		bset	#0,obRender(a1)			; reverse flash	object
 
 GRing_PlaySnd:
 		move.w	#sfx_GiantRing,d0

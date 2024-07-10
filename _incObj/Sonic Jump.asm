@@ -13,9 +13,15 @@ Sonic_Jump:
 		move.b	obAngle(a0),d0
 		addi.b	#$80,d0
 		bsr.w	sub_14D48
-		cmpi.w	#6,d1
-		blt.w	locret_1348E
+		cmpi.w	#6,d1					; does Sonic have enough room to jump?
+		blt.w	locret_1348E			; if not, branch
 		move.w	#$680,d2
+	if SuperMod=1
+		btst	#sta2ndSuper,obStatus2nd(a0)
+		beq.s	.notSuper
+		move.w	#$800,d2				; set higher jump speed if super
+.notSuper:
+	endif
 		btst	#staWater,obStatus(a0)
 		beq.s	loc_1341C
 		move.w	#$380,d2

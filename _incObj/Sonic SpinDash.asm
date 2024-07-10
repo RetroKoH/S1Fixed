@@ -53,6 +53,12 @@ Sonic_UpdateSpinDash:
 		add.w	d0,d0
 		move.w	#1,obVelX(a0)	; force X speed to nonzero for camera lag's benefit
 		move.w	SpinDashSpeeds(pc,d0.w),obInertia(a0)
+	if SuperMod=1
+		btst	#sta2ndSuper,obStatus2nd(a0)
+		beq.s	.notSuper
+		move.w	SpindashSpeedsSuper(pc,d0.w),obInertia(a0)
+.notSuper:
+	endif
 	; Use inertia to set camera lag effect
 		move.b	obInertia(a0),d0
 		subq.b	#$8,d0
@@ -94,6 +100,19 @@ SpinDashSpeeds:
 		dc.w  $B80		; 7
 		dc.w  $C00		; 8
 ; ---------------------------------------------------------------------------
+	if SuperMod=1
+SpindashSpeedsSuper:
+		dc.w  $B00		; 0
+		dc.w  $B80		; 1
+		dc.w  $C00		; 2
+		dc.w  $C80		; 3
+		dc.w  $D00		; 4
+		dc.w  $D80		; 5
+		dc.w  $E00		; 6
+		dc.w  $E80		; 7
+		dc.w  $F00		; 8
+; ---------------------------------------------------------------------------
+	endif
 
 Sonic_ChargingSpinDash:				; If still charging the dash...
 		tst.w	obSpinDashCounter(a0)

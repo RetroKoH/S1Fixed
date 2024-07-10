@@ -39,6 +39,12 @@ Sonic_DashLaunch:
 		move.b	#aniID_Dash,obAnim(a0)		; launches here
 		move.w	#1,obVelX(a0)				; force X speed to nonzero for camera lag's benefit
 		move.w	#$C00,obInertia(a0)			; set running speed
+	if SuperMod=1
+		btst	#sta2ndSuper,obStatus2nd(a0)
+		beq.s	.notSuper
+		move.w	#$F00,obInertia(a0)			; set running speed
+.notSuper:
+	endif
 		move.w	obInertia(a0),d0
 		subq.b	#$8,d0
 		add.b	d0,d0

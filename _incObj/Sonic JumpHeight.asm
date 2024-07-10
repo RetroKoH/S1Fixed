@@ -50,3 +50,7 @@ locret_134D2:
 	if DropDashEnabled=1
 		include "_incObj/Sonic DropDash.asm"
 	endif
+	
+	if SuperMod=1
+		include "_incObj/Sonic TurnSuper.asm"
+	endif

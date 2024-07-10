@@ -70,6 +70,11 @@ specialStageData: macro frame,mappings,palette,vram
 		specialStageData	0, Map_SS_Chaos3, 3, ArtTile_SS_Emerald
 		specialStageData	0, Map_SS_Chaos1, 0, ArtTile_SS_Emerald
 		specialStageData	0, Map_SS_Chaos2, 0, ArtTile_SS_Emerald
+
+	if SuperMod=1
+		specialStageData	0, Map_SS_Chaos2, 1, ArtTile_SS_Emerald
+	endif
+
 		specialStageData	0, Map_SS_R,      0, ArtTile_SS_Ghost_Block
 	; RetroKoH VRAM Overhaul
 		specialStageData	8, Map_Ring,      1, ArtTile_SS_Ring

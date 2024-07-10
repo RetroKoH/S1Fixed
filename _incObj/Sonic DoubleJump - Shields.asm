@@ -23,19 +23,34 @@ Sonic_DoubleJump:
 ; Unlike w/ S3K, we will only branch IF we meet the conditions.
 		moveq	#0,d0
 		move.b	(v_player+obStatus2nd).w,d0
-		btst	#sta2ndInvinc,d0				; first, does Sonic have invincibility?
-		bne.s	Sonic_SetDoubleJumpFlag			; if so, no shield ability is uaable.
-		btst	#sta2ndShield,d0				; does Sonic have any Shield?
-		beq.s	Sonic_InstaShieldAttack			; if not, branch to the Insta-Shield.
 
+; Check for elemental shields first, as we cannot turn super or insta-shield with these.
 	if ShieldsMode>1
 		btst	#sta2ndFShield,d0				; does Sonic have a Flame Shield?
 		bne.s	Sonic_FlameShieldAttack			; if yes, branch
 		btst	#sta2ndBShield,d0				; does Sonic have a Bubble Shield?
 		bne.s	Sonic_BubbleShieldAttack		; if yes, branch
 		btst	#sta2ndLShield,d0				; does Sonic have a Lightning Shield?
-		bne.s	Sonic_LightningShieldAttack		; if yes, branch
+		bne.w	Sonic_LightningShieldAttack		; if yes, branch
 	endif
+
+; if we don't have elementals, start checking for Super, then insta-shield.
+	if SuperMod=1
+		btst	#sta2ndSuper,d0					; is Sonic currently in his Super form?
+		bne.s	Sonic_SetDoubleJumpFlag			; if yes, branch towards the exit
+		;cmpi.b	#emldCount,(v_emeralds).w		; does Sonic have all Chaos Emeralds?
+		;bcs.s	Sonic_NoSuper					; if not, branch
+		cmpi.w	#10,(v_rings).w					; does Sonic have 50 rings or more?
+		bcs.s	Sonic_NoSuper					; if not, branch
+		tst.b	(f_timecount).w					; is the timer currently running? (Prevent the S2 bug)
+		bne.w	Sonic_TurnSuper					; if yes, branch
+
+Sonic_NoSuper:
+	endif
+		btst	#sta2ndInvinc,d0				; first, does Sonic have invincibility?
+		bne.s	Sonic_SetDoubleJumpFlag			; if so, no shield ability is uaable.
+		btst	#sta2ndShield,d0				; does Sonic have any Shield?
+		beq.s	Sonic_InstaShieldAttack			; if not, branch to the Insta-Shield.
 
 ; at this point, we must have a Blue shield. Fall through to do nothing.
 
@@ -99,7 +114,7 @@ loc_10DEC:
 		move.w	obX(a0),(a1)+
 		move.w	obY(a0),(a1)+
 		dbf		d0,loc_10DEC
-		move.w	#0,(v_trackpos).w
+		clr.w	(v_trackpos).w
 		rts
 ; End of function Reset_Sonic_Position_Array
 ; ===========================================================================

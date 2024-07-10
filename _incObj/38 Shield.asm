@@ -77,9 +77,13 @@ Shi_Main:	; Routine 0
 ; ===========================================================================
 
 Shi_Shield:	; Routine 2
+	if SuperMod=1
+		btst	#sta2ndSuper,(v_player+obStatus2nd).w	; is Sonic Super?
+		bne.s	.remove									; if yes, branch
+	endif
 		btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; does Sonic have invincibility?
 		bne.s	.remove									; if yes, branch
-		btst	#sta2ndShield,(v_player+obStatus2nd).w	; does Sonic have shield?
+		btst	#sta2ndShield,(v_player+obStatus2nd).w	; does Sonic have a shield?
 		beq.s	.delete									; if not, branch
 		move.w	(v_player+obX).w,obX(a0)
 		move.w	(v_player+obY).w,obY(a0)
@@ -136,6 +140,10 @@ Shi_Shield:	; Routine 2
 ; ===========================================================================
 	if ShieldsMode>0
 Shi_Insta:	; Routine 4
+	if SuperMod=1
+		btst	#sta2ndSuper,(v_player+obStatus2nd).w	; is Sonic Super?
+		bne.s	.remove									; if yes, branch
+	endif
 		btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; does Sonic have invincibility?
 		bne.s	.remove									; if yes, branch
 		move.w	(v_player+obX).w,obX(a0)
@@ -167,11 +175,13 @@ Shi_Insta:	; Routine 4
 	
 	if ShieldsMode>1
 Shi_Flame:	; Routine 6
+	if SuperMod=1
+		btst	#sta2ndSuper,(v_player+obStatus2nd).w	; is Sonic Super?
+		bne.w	.remove									; if yes, branch
+	endif
 		btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; does Sonic have invincibility?
 		bne.w	.remove									; if yes, branch
-		cmpi.b	#aniID_Null,(v_player+obAnim).w			; Is Sonic in a blank animation?
-		beq.w	.remove
-		btst	#sta2ndShield,(v_player+obStatus2nd).w	; does Sonic have shield?
+		btst	#sta2ndShield,(v_player+obStatus2nd).w	; does Sonic have a shield?
 		beq.w	.delete									; if not, branch
 		btst	#staWater,(v_player+obStatus).w			; is Sonic underwater?
 		bne.s	.dissipate								; if yes, branch, and destroy the shield
@@ -253,10 +263,12 @@ Flame_Dissipate:
 ; ===========================================================================
 
 Shi_Bubble:	; Routine 8
+	if SuperMod=1
+		btst	#sta2ndSuper,(v_player+obStatus2nd).w	; is Sonic Super?
+		bne.w	.remove									; if yes, branch
+	endif
 		btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; does Sonic have invincibility?
 		bne.w	.remove									; if yes, branch
-		cmpi.b	#aniID_Null,(v_player+obAnim).w			; Is Sonic in a blank animation?
-		beq.w	.remove
 		btst	#sta2ndShield,(v_player+obStatus2nd).w	; does Sonic have shield?
 		beq.s	.delete									; if not, branch
 		move.w	(v_player+obX).w,obX(a0)
@@ -315,10 +327,12 @@ Shi_Bubble:	; Routine 8
 ; ===========================================================================
 
 Shi_Lightning:	; Routine $A
+	if SuperMod=1
+		btst	#sta2ndSuper,(v_player+obStatus2nd).w	; is Sonic Super?
+		bne.w	.remove									; if yes, branch
+	endif
 		btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; does Sonic have invincibility?
 		bne.w	.remove									; if yes, branch
-		cmpi.b	#aniID_Null,(v_player+obAnim).w			; Is Sonic in a blank animation?
-		beq.w	.remove
 		btst	#sta2ndShield,(v_player+obStatus2nd).w	; does Sonic have shield?
 		beq.w	.delete									; if not, branch
 		btst	#staWater,(v_player+obStatus).w			; is Sonic underwater?

@@ -34,30 +34,30 @@ SSR_Main:
 		movea.l	a0,a1
 		lea		(SSR_Config).l,a2
 		moveq	#3,d1
-		cmpi.w	#50,(v_rings).w	; do you have 50 or more rings?
-		blo.s	SSR_Loop	; if no, branch
-		addq.w	#1,d1		; if yes, add 1	to d1 (number of sprites)
+		cmpi.w	#50,(v_rings).w		; do you have 50 or more rings?
+		blo.s	SSR_Loop			; if no, branch
+		addq.w	#1,d1				; if yes, add 1	to d1 (number of sprites)
 
 SSR_Loop:
 		_move.b	#id_SSResult,obID(a1)
-		move.w	(a2)+,obX(a1)	; load start x-position
-		move.w	(a2)+,ssr_mainX(a1) ; load main x-position
-		move.w	(a2)+,obScreenY(a1) ; load y-position
+		move.w	(a2)+,obX(a1)		; load start x-position
+		move.w	(a2)+,ssr_mainX(a1)	; load main x-position
+		move.w	(a2)+,obScreenY(a1)	; load y-position
 		move.b	(a2)+,obRoutine(a1)
 		move.b	(a2)+,obFrame(a1)
 		move.l	#Map_SSR,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Title_Card,0,1),obGfx(a1)
 		clr.b	obRender(a1)
 		lea		object_size(a1),a1
-		dbf		d1,SSR_Loop	; repeat sequence 3 or 4 times
+		dbf		d1,SSR_Loop			; repeat sequence 3 or 4 times
 
 		moveq	#7,d0
 		move.b	(v_emeralds).w,d1
 		beq.s	loc_C842
 		moveq	#0,d0
-		cmpi.b	#6,d1		; do you have all chaos	emeralds?
-		bne.s	loc_C842	; if not, branch
-		moveq	#8,d0		; load "Sonic got them all" text
+		cmpi.b	#emldCount,d1		; do you have all chaos	emeralds?
+		bne.s	loc_C842			; if not, branch
+		moveq	#8,d0				; load "Got Them All" text
 		move.w	#$18,obX(a0)
 		move.w	#$118,ssr_mainX(a0) ; change position of text
 

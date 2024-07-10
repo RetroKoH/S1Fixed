@@ -1,5 +1,5 @@
 ; ---------------------------------------------------------------------------
-; Object 8B - Eggman on "TRY AGAIN" and "END"	screens
+; Object 8B - Eggman on "TRY AGAIN" and "END" screens
 ; ---------------------------------------------------------------------------
 
 EndEggman:
@@ -10,10 +10,10 @@ EndEggman:
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 EEgg_Index:
-		bra.s EEgg_Main
-		bra.s EEgg_Animate
-		bra.s EEgg_Juggle
-		bra.w EEgg_Wait
+		bra.s	EEgg_Main
+		bra.s	EEgg_Animate
+		bra.s	EEgg_Juggle
+		bra.w	EEgg_Wait
 	; Object Routine Optimization End
 
 eegg_time = objoff_30		; time between juggle motions
@@ -28,7 +28,7 @@ EEgg_Main:	; Routine 0
 		clr.b	obRender(a0)
 		move.w	#$100,obPriority(a0)			; RetroKoH S2 Priority Manager
 		move.b	#2,obAnim(a0)					; use "END" animation
-		cmpi.b	#6,(v_emeralds).w				; do you have all 6 emeralds?
+		cmpi.b	#emldCount,(v_emeralds).w		; do you have all emeralds?
 		beq.s	EEgg_Animate					; if yes, branch
 
 		move.b	#id_CreditsText,(v_tryagain).w	; load credits object
@@ -37,8 +37,8 @@ EEgg_Main:	; Routine 0
 		clr.b	obAnim(a0)						; use "TRY AGAIN" animation
 
 EEgg_Animate:	; Routine 2
-		lea	(Ani_EEgg).l,a1
-		jmp	(AnimateSprite).l
+		lea		(Ani_EEgg).l,a1
+		jmp		(AnimateSprite).l
 ; ===========================================================================
 
 EEgg_Juggle:	; Routine 4
@@ -50,7 +50,7 @@ EEgg_Juggle:	; Routine 4
 
 .noflip:
 		lea		(v_eggmanchaos).w,a1	; get RAM address for emeralds
-		moveq	#5,d1
+		moveq	#emldCount-1,d1
 
 .emeraldloop:
 		move.b	d0,objoff_3E(a1)

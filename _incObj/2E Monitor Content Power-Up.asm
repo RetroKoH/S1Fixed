@@ -127,6 +127,11 @@ Pow_Shield:
 ; ===========================================================================
 
 Pow_Invinc:
+	if SuperMod=1
+		btst	#sta2ndSuper,(v_player+obStatus2nd).w	; is Sonic super?
+		bne.s	.nomusic								; if yes, branch
+	endif
+
 		bset	#sta2ndInvinc,(v_player+obStatus2nd).w	; make Sonic invincible
 		move.b	#$96,(v_player+obInvinc).w				; time limit for the power-up -- RetroKoH Sonic SST Compaction
 		move.b	#id_StarsItem,(v_starsobj1).w			; load stars object

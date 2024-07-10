@@ -10,7 +10,7 @@ Sonic_Move:
 		move.w	(v_sonspeedacc).w,d5
 		move.w	(v_sonspeeddec).w,d4
 		tst.b	(f_slidemode).w
-		bne.w	loc_12FEE
+		bne.w	Sonic_Traction
 		tst.b	obLRLock(a0)
 		bne.w	Sonic_ResetScr
 		btst	#bitL,(v_jpadhold2).w	; is left being pressed?
@@ -36,9 +36,10 @@ Sonic_Move:
 		moveq	#0,d0
 	; RetroKoH obPlatform SST mod
 		move.w	obPlatformAddr(a0),d0
+	; Current method
 		addi.l	#v_objspace,d0
 		movea.l	d0,a1	; a1=object
-		; Alt method
+	; Alt method
 ;		lea		(v_objspace).w,a1
 ;		lea		(a1,d0.w),a1
 	; obPlatform SST mod end
@@ -141,10 +142,10 @@ Sonic_LookUp:
 		
 	.skip:
 		cmp.w	(v_lookshift).w,d0
-		ble.s	loc_12FC2
+		ble.s	Sonic_UpdateSpeedOnGround
 		; Look Shift Fix end
 		addq.w	#2,(v_lookshift).w
-		bra.s	loc_12FC2
+		bra.s	Sonic_UpdateSpeedOnGround
 ; ===========================================================================
 
 Sonic_Duck:
@@ -169,10 +170,10 @@ Sonic_Duck:
 
 	.skip:
 		cmp.w	(v_lookshift).w,d0
-		bge.s	loc_12FC2
+		bge.s	Sonic_UpdateSpeedOnGround
 		; Look Shift Fix End
 		subq.w	#2,(v_lookshift).w
-		bra.s	loc_12FC2
+		bra.s	Sonic_UpdateSpeedOnGround
 ; ===========================================================================
 
 Sonic_ResetScr:
@@ -181,31 +182,34 @@ Sonic_ResetScr:
 
 Sonic_LookReset:	; added branch point that the new scroll delay code skips ahead to
 	endif
-		cmpi.w	#$60,(v_lookshift).w ; is screen in its default position?
-		beq.s	loc_12FC2	; if yes, branch
+		cmpi.w	#$60,(v_lookshift).w		; is screen in its default position?
+		beq.s	Sonic_UpdateSpeedOnGround	; if yes, branch
 		bcc.s	loc_12FBE
-		addq.w	#4,(v_lookshift).w ; move screen back to default
+		addq.w	#4,(v_lookshift).w			; move screen back to default
 
 loc_12FBE:
-		subq.w	#2,(v_lookshift).w ; move screen back to default
+		subq.w	#2,(v_lookshift).w			; move screen back to default
 
-loc_12FC2:
+Sonic_UpdateSpeedOnGround: ;loc_12FC2:
+; No need to update Super Sonic's d5 value here due to ApplySpeedSettings.
 		move.b	(v_jpadhold2).w,d0
-		andi.b	#btnL+btnR,d0	; is left/right	pressed?
-		bne.s	loc_12FEE	; if yes, branch
+		andi.b	#btnL+btnR,d0				; is left/right	pressed?
+		bne.s	Sonic_Traction				; if yes, branch
 		move.w	obInertia(a0),d0
-		beq.s	loc_12FEE
-		bmi.s	loc_12FE2
+		beq.s	Sonic_Traction
+		bmi.s	Sonic_SettleLeft
+
+; slow down when facing right and not pressing a direction
 		sub.w	d5,d0
 		bcc.s	loc_12FDC
 		clr.w	d0
 
 loc_12FDC:
 		move.w	d0,obInertia(a0)
-		bra.s	loc_12FEE
+		bra.s	Sonic_Traction
 ; ===========================================================================
-
-loc_12FE2:
+; slow down when facing left and not pressing a direction
+Sonic_SettleLeft: ;loc_12FE2:
 		add.w	d5,d0
 		bcc.s	loc_12FEA
 		clr.w	d0
@@ -213,7 +217,8 @@ loc_12FE2:
 loc_12FEA:
 		move.w	d0,obInertia(a0)
 
-loc_12FEE:
+; increase or decrease speed on the ground
+Sonic_Traction: ;loc_12FEE:
 	if SpinDashEnabled=1
 		tst.b	obSpinDashFlag(a0) 	
 		bne.s	loc_1300C
@@ -227,6 +232,7 @@ loc_12FEE:
 		asr.l	#8,d0
 		move.w	d0,obVelY(a0)
 
+; stops Sonic from running through walls that meet the ground
 loc_1300C:
 		move.b	obAngle(a0),d0
 		addi.b	#$40,d0

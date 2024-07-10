@@ -269,7 +269,11 @@ v_pcyc_num:			ds.w	1		; palette cycling - current reference number
 v_pcyc_time:		ds.w	1		; palette cycling - time until the next change
 v_random:			ds.l	1		; pseudo random number buffer
 f_pause:			ds.w	1		; flag set to pause the game
-				ds.b	4		; unused
+
+v_palette_frame:	ds.w	1
+v_palette_timer:	ds.b	1
+f_super_palette:	ds.b	1
+
 v_vdp_buffer2:		ds.w	1		; VDP instruction buffer
 				ds.b	2		; unused
 f_hbla_pal:			ds.w	1		; flag set to change palette during HBlank (0000 = no; 0001 = change)
@@ -432,28 +436,30 @@ v_pal_dry_dup:		ds.b	$80		; duplicate palette, used for transitions
 			ds.b	$140		; stack
 v_systemstack:
 v_crossresetram:				; RAM beyond this point is only cleared on a cold-boot
-			ds.b	2		; unused
-f_restart:		ds.w	1		; restart level flag
+				ds.b	2		; unused
+f_restart:			ds.w	1		; restart level flag
 v_framecount:		ds.w	1		; frame counter (adds 1 every frame)
-v_framebyte = v_framecount+1			; low byte for frame counter
+v_framebyte = v_framecount+1		; low byte for frame counter
+
+v_supersonic_frame:	ds.b	1		; frame counter for decrementing rings while Super
+
 v_debugitem:		ds.b	1		; debug item currently selected (NOT the object number of the item)
-			ds.b	1		; unused
-v_debuguse:		ds.w	1		; debug mode use & routine counter (when Sonic is a ring/item)
+v_debuguse:			ds.w	1		; debug mode use & routine counter (when Sonic is a ring/item)
 v_debugxspeed:		ds.b	1		; debug mode - horizontal speed
 v_debugyspeed:		ds.b	1		; debug mode - vertical speed
 v_vbla_count:		ds.l	1		; vertical interrupt counter (adds 1 every VBlank)
 v_vbla_word = v_vbla_count+2 			; low word for vertical interrupt counter (2 bytes)
 v_vbla_byte = v_vbla_word+1			; low byte for vertical interrupt counter
-v_zone:			ds.b	1		; current zone number
-v_act:			ds.b	1		; current act number
-v_lives:		ds.b	1		; number of lives
-			ds.b	1		; unused
+v_zone:				ds.b	1		; current zone number
+v_act:				ds.b	1		; current act number
+v_lives:			ds.b	1		; number of lives
+				ds.b	1		; unused
 v_air:				ds.b	1		; air remaining while underwater
-			ds.b	1		; unused
+				ds.b	1		; unused
 v_lastspecial:		ds.b	1		; last special stage number
-			ds.b	1		; unused
+				ds.b	1		; unused
 v_continues:		ds.b	1		; number of continues
-			ds.b	1		; unused
+				ds.b	1		; unused
 f_timeover:			ds.b	1		; time over flag
 v_lifecount:		ds.b	1		; lives counter value (for actual number, see "v_lives")
 f_lifecount:		ds.b	1		; lives counter update flag
@@ -489,9 +495,8 @@ v_lamp_wtrpos:		ds.w	1		; water position at lamppost
 v_lamp_wtrrout:		ds.b	1		; water routine at lamppost
 v_lamp_wtrstat:		ds.b	1		; water state at lamppost
 v_lamp_lives:		ds.b	1		; lives counter at lamppost
-				ds.b	2		; unused
 v_emeralds:			ds.b	1		; number of chaos emeralds
-v_emldlist:			ds.b	6		; which individual emeralds you have (00 = no; 01 = yes)
+v_emldlist:			ds.b	8		; which individual emeralds you have (00 = no; 01 = yes) -- increased to 7, if only 6 emeralds, the last byte goes unused. (SuperMod)
 v_oscillate:		ds.w	1		; oscillation bitfield
 v_timingandscreenvariables:
 v_timingvariables:	ds.b	$40		; values which oscillate - for swinging platforms, et al

@@ -24,9 +24,9 @@ eson_time = objoff_30	; time to wait between events
 ; ===========================================================================
 
 ESon_Main:	; Routine 0
-		cmpi.b	#6,(v_emeralds).w ; do you have all 6 emeralds?
-		beq.s	ESon_Main2	; if yes, branch
-		addi.b	#$10,ob2ndRout(a0) ; else, skip emerald sequence
+		cmpi.b	#emldCount,(v_emeralds).w	; do you have all emeralds?
+		beq.s	ESon_Main2					; if yes, branch
+		addi.b	#$10,ob2ndRout(a0)			; else, skip emerald sequence
 		move.w	#216,eson_time(a0)
 		jmp		(DisplaySprite).l	
 ; ===========================================================================

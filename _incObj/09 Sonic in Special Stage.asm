@@ -62,8 +62,8 @@ Obj09_InAir:
 		bsr.w	Obj09_Fall
 
 Obj09_Display:
-		bsr.w	Obj09_ChkItems
-		bsr.w	Obj09_ChkItems2
+		bsr.w	Obj09_ChkItems_Nonsolid
+		bsr.w	Obj09_ChkItems_Solid
 		jsr		(SpeedToPos).l
 		bsr.w	SS_FixCamera
 		move.w	(v_ssangle).w,d0
@@ -476,8 +476,10 @@ loc_1BD46:
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
+; See Constants.asm for Special Stage block IDs (Adjusted for SuperMod)
 
-Obj09_ChkItems:
+; Rework this in a similar manner to the Monitor Icon (Object 2E)
+Obj09_ChkItems_Nonsolid:
 		lea		(v_ssbuffer1&$FFFFFF).l,a1
 		moveq	#0,d4
 		move.w	obY(a0),d4
@@ -490,16 +492,16 @@ Obj09_ChkItems:
 		addi.w	#$20,d4
 		divu.w	#$18,d4
 		adda.w	d4,a1
-		move.b	(a1),d4
-		bne.s	Obj09_ChkCont
+		move.b	(a1),d4					; d4 = SS block being collided with.
+		bne.s	Obj09_ChkRing			; if d4 != 0, check collisions
 		tst.b	objoff_3A(a0)
 		bne.w	Obj09_MakeGhostSolid
 		moveq	#0,d4
 		rts	
 ; ===========================================================================
 
-Obj09_ChkCont:
-		cmpi.b	#$3A,d4		; is the item a	ring?
+Obj09_ChkRing:
+		cmpi.b	#SSBlock_Ring,d4	; is the item a	ring?
 		bne.s	Obj09_Chk1Up
 		bsr.w	SS_RemoveCollectedItem
 		bne.s	Obj09_GetCont
@@ -508,13 +510,13 @@ Obj09_ChkCont:
 
 Obj09_GetCont:
 		jsr		(CollectRing).l
-		cmpi.w	#50,(v_rings).w	; check if you have 50 rings
+		cmpi.w	#50,(v_rings).w		; check if you have 50 rings
 		blo.s	Obj09_NoCont
 		bset	#0,(v_lifecount).w
 		bne.s	Obj09_NoCont
-		addq.b	#1,(v_continues).w ; add 1 to number of continues
+		addq.b	#1,(v_continues).w	; add 1 to number of continues
 		move.w	#sfx_Continue,d0
-		jsr		(PlaySound).l	; play extra continue sound
+		jsr		(PlaySound).l		; play extra continue sound
 
 Obj09_NoCont:
 		moveq	#0,d4
@@ -522,7 +524,7 @@ Obj09_NoCont:
 ; ===========================================================================
 
 Obj09_Chk1Up:
-		cmpi.b	#$28,d4		; is the item an extra life?
+		cmpi.b	#SSBlock_1Up,d4		; is the item an extra life?
 		bne.s	Obj09_ChkEmer
 		bsr.w	SS_RemoveCollectedItem
 		bne.s	Obj09_Get1Up
@@ -545,9 +547,9 @@ Obj09_Get1Up:
 ; ===========================================================================
 
 Obj09_ChkEmer:
-		cmpi.b	#$3B,d4		; is the item an emerald?
+		cmpi.b	#SSBlock_Emld1,d4			; is the item an emerald?
 		blo.s	Obj09_ChkGhost
-		cmpi.b	#$40,d4
+		cmpi.b	#SSBlock_EmldLast,d4
 		bhi.s	Obj09_ChkGhost
 		bsr.w	SS_RemoveCollectedItem
 		bne.s	Obj09_GetEmer
@@ -555,33 +557,33 @@ Obj09_ChkEmer:
 		move.l	a1,4(a2)
 
 Obj09_GetEmer:
-		cmpi.b	#6,(v_emeralds).w ; do you have all the emeralds?
-		beq.s	Obj09_NoEmer	; if yes, branch
+		cmpi.b	#emldCount,(v_emeralds).w	; do you have all the emeralds?
+		beq.s	Obj09_NoEmer				; if yes, branch
 		subi.b	#$3B,d4
 		moveq	#0,d0
 		move.b	(v_emeralds).w,d0
 		lea		(v_emldlist).w,a2
 		move.b	d4,(a2,d0.w)
-		addq.b	#1,(v_emeralds).w ; add 1 to number of emeralds
+		addq.b	#1,(v_emeralds).w			; add 1 to number of emeralds
 
 Obj09_NoEmer:
 		move.w	#bgm_Emerald,d0
-		jsr		(PlaySound_Special).l ;	play emerald music
+		jsr		(PlaySound_Special).l		; play emerald music
 		moveq	#0,d4
 		rts	
 ; ===========================================================================
 
 Obj09_ChkGhost:
-		cmpi.b	#$41,d4		; is the item a	ghost block?
+		cmpi.b	#SSBlock_Ghost,d4			; is the item a	ghost block?
 		bne.s	Obj09_ChkGhostTag
-		move.b	#1,objoff_3A(a0)	; mark the ghost block as "passed"
+		move.b	#1,objoff_3A(a0)			; mark the ghost block as "passed"
 
 Obj09_ChkGhostTag:
-		cmpi.b	#$4A,d4		; is the item a	switch for ghost blocks?
+		cmpi.b	#SSBlock_GhostSwitch,d4		; is the item a	switch for ghost blocks?
 		bne.s	Obj09_NoGhost
-		cmpi.b	#1,objoff_3A(a0)	; have the ghost blocks	been passed?
-		bne.s	Obj09_NoGhost	; if not, branch
-		move.b	#2,objoff_3A(a0)	; mark the ghost blocks	as "solid"
+		cmpi.b	#1,objoff_3A(a0)			; have the ghost blocks	been passed?
+		bne.s	Obj09_NoGhost				; if not, branch
+		move.b	#2,objoff_3A(a0)			; mark the ghost blocks	as "solid"
 
 Obj09_NoGhost:
 		moveq	#-1,d4
@@ -589,8 +591,8 @@ Obj09_NoGhost:
 ; ===========================================================================
 
 Obj09_MakeGhostSolid:
-		cmpi.b	#2,objoff_3A(a0)	; is the ghost marked as "solid"?
-		bne.s	Obj09_GhostNotSolid ; if not, branch
+		cmpi.b	#2,objoff_3A(a0)			; is the ghost marked as "solid"?
+		bne.s	Obj09_GhostNotSolid			; if not, branch
 		lea		(v_ssblockbuffer&$FFFFFF).l,a1
 		moveq	#(v_ssblockbuffer_end-v_ssblockbuffer)/$80-1,d1
 
@@ -598,9 +600,9 @@ Obj09_GhostLoop2:
 		moveq	#$40-1,d2
 
 Obj09_GhostLoop:
-		cmpi.b	#$41,(a1)	; is the item a	ghost block?
-		bne.s	Obj09_NoReplace	; if not, branch
-		move.b	#$2C,(a1)	; replace ghost	block with a solid block
+		cmpi.b	#SSBlock_Ghost,(a1)			; is the item a	ghost block?
+		bne.s	Obj09_NoReplace				; if not, branch
+		move.b	#SSBlock_GhostSolid,(a1)	; replace ghost	block with a solid block
 
 Obj09_NoReplace:
 		addq.w	#1,a1
@@ -612,15 +614,15 @@ Obj09_GhostNotSolid:
 		clr.b	objoff_3A(a0)
 		moveq	#0,d4
 		rts	
-; End of function Obj09_ChkItems
+; End of function Obj09_ChkItems_Nonsolid
 
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-Obj09_ChkItems2:
-		move.b	objoff_30(a0),d0
-		bne.s	Obj09_ChkBumper
+Obj09_ChkItems_Solid:
+		move.b	objoff_30(a0),d0	; d0 = SS block being collided with.
+		bne.s	Obj09_ChkBumper		; if d0 != 0, check collisions
 		subq.b	#1,objoff_36(a0)
 		bpl.s	loc_1BEA0
 		clr.b	objoff_36(a0)
@@ -635,7 +637,7 @@ locret_1BEAC:
 ; ===========================================================================
 
 Obj09_ChkBumper:
-		cmpi.b	#$25,d0				; is the item a	bumper?
+		cmpi.b	#SSBlock_Bumper,d0			; is the item a	bumper?
 		bne.s	Obj09_GOAL
 		move.l	objoff_32(a0),d1
 		subi.l	#$FF0001,d1
@@ -668,55 +670,55 @@ Obj09_ChkBumper:
 
 Obj09_BumpSnd:
 		move.w	#sfx_Bumper,d0
-		jmp		(PlaySound_Special).l	; play bumper sound
+		jmp		(PlaySound_Special).l		; play bumper sound
 ; ===========================================================================
 
 Obj09_GOAL:
-		cmpi.b	#$27,d0		; is the item a	"GOAL"?
+		cmpi.b	#SSBlock_GOAL,d0			; is the item a	"GOAL"?
 		bne.s	Obj09_UPblock
-		addq.b	#2,obRoutine(a0) ; run routine "Obj09_ExitStage"
+		addq.b	#2,obRoutine(a0)			; run routine "Obj09_ExitStage"
 		move.w	#sfx_SSGoal,d0
-		jmp		(PlaySound_Special).l	; play "GOAL" sound
+		jmp		(PlaySound_Special).l		; play "GOAL" sound
 ; ===========================================================================
 
 Obj09_UPblock:
-		cmpi.b	#$29,d0		; is the item an "UP" block?
+		cmpi.b	#SSBlock_UP,d0				; is the item an "UP" block?
 		bne.s	Obj09_DOWNblock
 		tst.b	objoff_36(a0)
 		bne.w	Obj09_NoGlass
 		move.b	#$1E,objoff_36(a0)
 		btst	#6,(v_ssrotate+1).w
 		beq.s	Obj09_UPsnd
-		asl		(v_ssrotate).w	; increase stage rotation speed
+		asl		(v_ssrotate).w				; increase stage rotation speed
 		movea.l	objoff_32(a0),a1
 		subq.l	#1,a1
-		move.b	#$2A,(a1)	; change item to a "DOWN" block
+		move.b	#SSBlock_DOWN,(a1)			; change item to a "DOWN" block
 
 Obj09_UPsnd:
 		move.w	#sfx_SSItem,d0
-		jmp		(PlaySound_Special).l	; play up/down sound
+		jmp		(PlaySound_Special).l		; play up/down sound
 ; ===========================================================================
 
 Obj09_DOWNblock:
-		cmpi.b	#$2A,d0		; is the item a	"DOWN" block?
+		cmpi.b	#SSBlock_DOWN,d0			; is the item a	"DOWN" block?
 		bne.s	Obj09_Rblock
 		tst.b	objoff_36(a0)
 		bne.w	Obj09_NoGlass
 		move.b	#$1E,objoff_36(a0)
 		btst	#6,(v_ssrotate+1).w
 		bne.s	Obj09_DOWNsnd
-		asr		(v_ssrotate).w	; reduce stage rotation speed
+		asr		(v_ssrotate).w				; reduce stage rotation speed
 		movea.l	objoff_32(a0),a1
 		subq.l	#1,a1
-		move.b	#$29,(a1)	; change item to an "UP" block
+		move.b	#SSBlock_UP,(a1)			; change item to an "UP" block
 
 Obj09_DOWNsnd:
 		move.w	#sfx_SSItem,d0
-		jmp		(PlaySound_Special).l	; play up/down sound
+		jmp		(PlaySound_Special).l		; play up/down sound
 ; ===========================================================================
 
 Obj09_Rblock:
-		cmpi.b	#$2B,d0		; is the item an "R" block?
+		cmpi.b	#SSBlock_R,d0				; is the item an "R" block?
 		bne.s	Obj09_ChkGlass
 		tst.b	objoff_37(a0)
 		bne.w	Obj09_NoGlass
@@ -729,22 +731,19 @@ Obj09_Rblock:
 		move.l	d0,4(a2)
 
 Obj09_RevStage:
-		neg.w	(v_ssrotate).w	; reverse stage rotation
+		neg.w	(v_ssrotate).w				; reverse stage rotation
 		move.w	#sfx_SSItem,d0
-		jmp		(PlaySound_Special).l	; play sound
+		jmp		(PlaySound_Special).l		; play sound
 ; ===========================================================================
 
 Obj09_ChkGlass:
-		cmpi.b	#$2D,d0		; is the item a	glass block?
-		beq.s	Obj09_Glass	; if yes, branch
-		cmpi.b	#$2E,d0
-		beq.s	Obj09_Glass
-		cmpi.b	#$2F,d0
-		beq.s	Obj09_Glass
-		cmpi.b	#$30,d0
-		bne.s	Obj09_NoGlass	; if not, branch
+	; Optimized check (RetroKoH)
+		cmpi.b	#SSBlock_Glass1,d0			; is the item a	glass block?
+		blo.s	Obj09_NoGlass
+		cmpi.b	#SSBlock_Glass4,d0
+		bhi.s	Obj09_NoGlass
 
-Obj09_Glass:
+;Obj09_Glass:
 		bsr.w	SS_RemoveCollectedItem
 		bne.s	Obj09_GlassSnd
 		move.b	#6,(a2)
@@ -752,13 +751,13 @@ Obj09_Glass:
 		subq.l	#1,a1
 		move.l	a1,4(a2)
 		move.b	(a1),d0
-		addq.b	#1,d0		; change glass type when touched
-		cmpi.b	#$30,d0
-		bls.s	Obj09_GlassUpdate ; if glass is	still there, branch
-		clr.b	d0		; remove the glass block when it's destroyed
+		addq.b	#1,d0					; change glass type when touched
+		cmpi.b	#SSBlock_Glass4,d0
+		bls.s	Obj09_GlassUpdate		; if glass is still there, branch
+		clr.b	d0						; remove the glass block when it's destroyed
 
 Obj09_GlassUpdate:
-		move.b	d0,4(a2)	; update the stage layout
+		move.b	d0,4(a2)				; update the stage layout
 
 Obj09_GlassSnd:
 		move.w	#sfx_SSGlass,d0
@@ -767,4 +766,4 @@ Obj09_GlassSnd:
 
 Obj09_NoGlass:
 		rts	
-; End of function Obj09_ChkItems2
+; End of function Obj09_ChkItems_Solid

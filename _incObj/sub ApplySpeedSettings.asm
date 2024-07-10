@@ -22,6 +22,13 @@ ApplySpeedSettings:
 		addi.b  #$10,d0
 
 .nowater:
+	if SuperMod=1
+		btst	#sta2ndSuper,obStatus2nd(a0)		; Is character Super?
+		beq.s   .nosuper							; If not, branch
+		addi.b  #$20,d0
+
+.nosuper:
+	endif
 		lea		SpeedSettings(pc,d0.w),a1			; Load correct speed settings into a1
 		addq.l  #2,a1                           	; Increment a1 by 2 quickly
 		move.l  (a1)+,(a2)+                     	; Set character's new top speed and acceleration
@@ -38,4 +45,10 @@ SpeedSettings:
         dc.w	$0,     $C00,           $18,            $80             ; $08   ; Normal Speedshoes
         dc.w	$0,     $300,           $6,             $40             ; $10   ; Normal Underwater
         dc.w	$0,     $600,           $C,             $40             ; $18   ; Normal Underwater Speedshoes
+	if SuperMod=1
+        dc.w	$0,     $A00,           $30,            $100            ; $20   ; Super
+        dc.w	$0,     $C00,           $30,            $100            ; $28   ; Super Speedshoes
+        dc.w	$0,     $500,           $18,            $80             ; $30   ; Super Underwater
+        dc.w	$0,     $A00,           $30,            $80             ; $38   ; Super Underwater Speedshoes
+	endif
 ; ===========================================================================

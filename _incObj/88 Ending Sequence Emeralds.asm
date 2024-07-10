@@ -14,10 +14,10 @@ EndChaos:
 	; Object Routine Optimization End
 
 ECha_Main:	; Routine 0
-		cmpi.b	#2,(v_player+obFrame).w ; this isn't `fr_Wait1`: `v_player` is Object 88, which has its own frames
+		cmpi.b	#2,(v_player+obFrame).w ; Note: `v_player` is Object 88, which has its own frames
 		beq.s	ECha_CreateEms
 		addq.l	#4,sp
-		jmp	(DisplaySprite).l	
+		jmp		(DisplaySprite).l	
 ; ===========================================================================
 
 ECha_CreateEms:
@@ -26,10 +26,10 @@ ECha_CreateEms:
 		movea.l	a0,a1
 		moveq	#0,d3
 		moveq	#1,d2
-		moveq	#5,d1
+		moveq	#emldCount-1,d1			; 5 (or 6 if SuperMod is on).
 
 ECha_LoadLoop:
-		move.b	#id_EndChaos,obID(a1) ; load chaos emerald object
+		move.b	#id_EndChaos,obID(a1)	; load chaos emerald object
 		addq.b	#2,obRoutine(a1)
 		move.l	#Map_ECha,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Ending_Emeralds,0,0),obGfx(a1)
@@ -41,15 +41,15 @@ ECha_LoadLoop:
 		move.b	d2,obFrame(a1)
 		addq.b	#1,d2
 		move.b	d3,obAngle(a1)
-		addi.b	#$100/6,d3	; angle between each emerald
-		lea	object_size(a1),a1
-		dbf	d1,ECha_LoadLoop ; repeat 5 more times
+		addi.b	#$100/emldCount,d3		; angle between each emerald
+		lea		object_size(a1),a1
+		dbf		d1,ECha_LoadLoop		; repeat for each emerald
 
 ECha_Move:	; Routine 2
 		move.w	echa_angle(a0),d0
 		add.w	d0,obAngle(a0)
 		move.b	obAngle(a0),d0
-		jsr	(CalcSine).l
+		jsr		(CalcSine).l
 		moveq	#0,d4
 		move.b	echa_radius(a0),d4
 		muls.w	d4,d1
@@ -77,4 +77,4 @@ ECha_Rise:
 		subq.w	#1,echa_origY(a0) ; make circle rise
 
 ECha_End:
-		jmp	(DisplaySprite).l	
+		jmp		(DisplaySprite).l	
