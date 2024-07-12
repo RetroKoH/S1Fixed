@@ -147,6 +147,7 @@ ptr_EndSTH:			dc.l EndSTH
 ptr_CreditsText:	dc.l CreditsText
 ptr_EndEggman:		dc.l EndEggman
 ptr_TryChaos:		dc.l TryChaos
+ptr_SuperStars:		dc.l SuperStars
 
 NullObject:
 		jmp	(DeleteObject).l	; Any invalid objects will delete themselves immediately.
@@ -164,7 +165,7 @@ id_Effects:				equ ((ptr_Effects-Obj_Index)/4)+1
 id_Obj07:				equ ((ptr_Obj07-Obj_Index)/4)+1
 	endif
 
-id_Splash:				equ ((ptr_Splash-Obj_Index)/4)+1		; $08
+id_Splash:				equ ((ptr_Splash-Obj_Index)/4)+1			; $08
 id_SonicSpecial:		equ ((ptr_SonicSpecial-Obj_Index)/4)+1
 id_DrownCount:			equ ((ptr_DrownCount-Obj_Index)/4)+1
 id_Pole:				equ ((ptr_Pole-Obj_Index)/4)+1
@@ -172,7 +173,7 @@ id_FlapDoor:			equ ((ptr_FlapDoor-Obj_Index)/4)+1
 id_Signpost:			equ ((ptr_Signpost-Obj_Index)/4)+1
 id_TitleSonic:			equ ((ptr_TitleSonic-Obj_Index)/4)+1
 id_PSBTM:				equ ((ptr_PSBTM-Obj_Index)/4)+1
-id_Obj10:				equ ((ptr_Obj10-Obj_Index)/4)+1			; $10
+id_Obj10:				equ ((ptr_Obj10-Obj_Index)/4)+1				; $10
 id_Bridge:				equ ((ptr_Bridge-Obj_Index)/4)+1
 id_SpinningLight:		equ ((ptr_SpinningLight-Obj_Index)/4)+1
 id_LavaMaker:			equ ((ptr_LavaMaker-Obj_Index)/4)+1
@@ -190,110 +191,111 @@ id_BallHog:				equ ((ptr_BallHog-Obj_Index)/4)+1
 id_Crabmeat:			equ ((ptr_Crabmeat-Obj_Index)/4)+1
 id_Cannonball:			equ ((ptr_Cannonball-Obj_Index)/4)+1		; $20
 id_AfterImages:			equ ((ptr_AfterImages-Obj_Index)/4)+1
-id_BuzzBomber:		equ ((ptr_BuzzBomber-Obj_Index)/4)+1
-id_Missile:		equ ((ptr_Missile-Obj_Index)/4)+1
-id_MissileDissolve:	equ ((ptr_MissileDissolve-Obj_Index)/4)+1
-id_Rings:		equ ((ptr_Rings-Obj_Index)/4)+1
-id_Monitor:		equ ((ptr_Monitor-Obj_Index)/4)+1
-id_ExplosionItem:	equ ((ptr_ExplosionItem-Obj_Index)/4)+1
-id_Animals:		equ ((ptr_Animals-Obj_Index)/4)+1		; $28
-id_Points:		equ ((ptr_Points-Obj_Index)/4)+1
-id_AutoDoor:		equ ((ptr_AutoDoor-Obj_Index)/4)+1
-id_Chopper:		equ ((ptr_Chopper-Obj_Index)/4)+1
-id_Jaws:		equ ((ptr_Jaws-Obj_Index)/4)+1
-id_Burrobot:		equ ((ptr_Burrobot-Obj_Index)/4)+1
-id_PowerUp:		equ ((ptr_PowerUp-Obj_Index)/4)+1
-id_LargeGrass:		equ ((ptr_LargeGrass-Obj_Index)/4)+1
-id_GlassBlock:		equ ((ptr_GlassBlock-Obj_Index)/4)+1		; $30
-id_ChainStomp:		equ ((ptr_ChainStomp-Obj_Index)/4)+1
-id_Button:		equ ((ptr_Button-Obj_Index)/4)+1
-id_PushBlock:		equ ((ptr_PushBlock-Obj_Index)/4)+1
-id_TitleCard:		equ ((ptr_TitleCard-Obj_Index)/4)+1
-id_GrassFire:		equ ((ptr_GrassFire-Obj_Index)/4)+1
-id_Spikes:		equ ((ptr_Spikes-Obj_Index)/4)+1
-id_RingLoss:		equ ((ptr_RingLoss-Obj_Index)/4)+1
-id_ShieldItem:		equ ((ptr_ShieldItem-Obj_Index)/4)+1		; $38
-id_GameOverCard:	equ ((ptr_GameOverCard-Obj_Index)/4)+1
-id_GotThroughCard:	equ ((ptr_GotThroughCard-Obj_Index)/4)+1
-id_PurpleRock:		equ ((ptr_PurpleRock-Obj_Index)/4)+1
-id_SmashWall:		equ ((ptr_SmashWall-Obj_Index)/4)+1
-id_BossGreenHill:	equ ((ptr_BossGreenHill-Obj_Index)/4)+1
-id_Prison:		equ ((ptr_Prison-Obj_Index)/4)+1
-id_ExplosionBomb:	equ ((ptr_ExplosionBomb-Obj_Index)/4)+1
-id_MotoBug:		equ ((ptr_MotoBug-Obj_Index)/4)+1		; $40
-id_Springs:		equ ((ptr_Springs-Obj_Index)/4)+1
-id_Newtron:		equ ((ptr_Newtron-Obj_Index)/4)+1
-id_Roller:		equ ((ptr_Roller-Obj_Index)/4)+1
-id_EdgeWalls:		equ ((ptr_EdgeWalls-Obj_Index)/4)+1
-id_SideStomp:		equ ((ptr_SideStomp-Obj_Index)/4)+1
-id_MarbleBrick:		equ ((ptr_MarbleBrick-Obj_Index)/4)+1
-id_Bumper:			equ ((ptr_Bumper-Obj_Index)/4)+1
-id_BossBall:		equ ((ptr_BossBall-Obj_Index)/4)+1		; $48
-id_WaterSound:		equ ((ptr_WaterSound-Obj_Index)/4)+1
-id_VanishSonic:		equ ((ptr_VanishSonic-Obj_Index)/4)+1
-id_GiantRing:		equ ((ptr_GiantRing-Obj_Index)/4)+1
-id_GeyserMaker:		equ ((ptr_GeyserMaker-Obj_Index)/4)+1
-id_LavaGeyser:		equ ((ptr_LavaGeyser-Obj_Index)/4)+1
-id_LavaWall:		equ ((ptr_LavaWall-Obj_Index)/4)+1
-id_StarsItem:		equ ((ptr_StarsItem-Obj_Index)/4)+1
-id_Yadrin:			equ ((ptr_Yadrin-Obj_Index)/4)+1		; $50
-id_SmashBlock:		equ ((ptr_SmashBlock-Obj_Index)/4)+1
-id_MovingBlock:		equ ((ptr_MovingBlock-Obj_Index)/4)+1
-id_CollapseFloor:	equ ((ptr_CollapseFloor-Obj_Index)/4)+1
-id_LavaTag:		equ ((ptr_LavaTag-Obj_Index)/4)+1
-id_Basaran:		equ ((ptr_Basaran-Obj_Index)/4)+1
-id_FloatingBlock:	equ ((ptr_FloatingBlock-Obj_Index)/4)+1
-id_SpikeBall:		equ ((ptr_SpikeBall-Obj_Index)/4)+1
-id_BigSpikeBall:	equ ((ptr_BigSpikeBall-Obj_Index)/4)+1		; $58
-id_Elevator:		equ ((ptr_Elevator-Obj_Index)/4)+1
+id_BuzzBomber:			equ ((ptr_BuzzBomber-Obj_Index)/4)+1
+id_Missile:				equ ((ptr_Missile-Obj_Index)/4)+1
+id_MissileDissolve:		equ ((ptr_MissileDissolve-Obj_Index)/4)+1
+id_Rings:				equ ((ptr_Rings-Obj_Index)/4)+1
+id_Monitor:				equ ((ptr_Monitor-Obj_Index)/4)+1
+id_ExplosionItem:		equ ((ptr_ExplosionItem-Obj_Index)/4)+1
+id_Animals:				equ ((ptr_Animals-Obj_Index)/4)+1			; $28
+id_Points:				equ ((ptr_Points-Obj_Index)/4)+1
+id_AutoDoor:			equ ((ptr_AutoDoor-Obj_Index)/4)+1
+id_Chopper:				equ ((ptr_Chopper-Obj_Index)/4)+1
+id_Jaws:				equ ((ptr_Jaws-Obj_Index)/4)+1
+id_Burrobot:			equ ((ptr_Burrobot-Obj_Index)/4)+1
+id_PowerUp:				equ ((ptr_PowerUp-Obj_Index)/4)+1
+id_LargeGrass:			equ ((ptr_LargeGrass-Obj_Index)/4)+1
+id_GlassBlock:			equ ((ptr_GlassBlock-Obj_Index)/4)+1		; $30
+id_ChainStomp:			equ ((ptr_ChainStomp-Obj_Index)/4)+1
+id_Button:				equ ((ptr_Button-Obj_Index)/4)+1
+id_PushBlock:			equ ((ptr_PushBlock-Obj_Index)/4)+1
+id_TitleCard:			equ ((ptr_TitleCard-Obj_Index)/4)+1
+id_GrassFire:			equ ((ptr_GrassFire-Obj_Index)/4)+1
+id_Spikes:				equ ((ptr_Spikes-Obj_Index)/4)+1
+id_RingLoss:			equ ((ptr_RingLoss-Obj_Index)/4)+1
+id_ShieldItem:			equ ((ptr_ShieldItem-Obj_Index)/4)+1		; $38
+id_GameOverCard:		equ ((ptr_GameOverCard-Obj_Index)/4)+1
+id_GotThroughCard:		equ ((ptr_GotThroughCard-Obj_Index)/4)+1
+id_PurpleRock:			equ ((ptr_PurpleRock-Obj_Index)/4)+1
+id_SmashWall:			equ ((ptr_SmashWall-Obj_Index)/4)+1
+id_BossGreenHill:		equ ((ptr_BossGreenHill-Obj_Index)/4)+1
+id_Prison:				equ ((ptr_Prison-Obj_Index)/4)+1
+id_ExplosionBomb:		equ ((ptr_ExplosionBomb-Obj_Index)/4)+1
+id_MotoBug:				equ ((ptr_MotoBug-Obj_Index)/4)+1			; $40
+id_Springs:				equ ((ptr_Springs-Obj_Index)/4)+1
+id_Newtron:				equ ((ptr_Newtron-Obj_Index)/4)+1
+id_Roller:				equ ((ptr_Roller-Obj_Index)/4)+1
+id_EdgeWalls:			equ ((ptr_EdgeWalls-Obj_Index)/4)+1
+id_SideStomp:			equ ((ptr_SideStomp-Obj_Index)/4)+1
+id_MarbleBrick:			equ ((ptr_MarbleBrick-Obj_Index)/4)+1
+id_Bumper:				equ ((ptr_Bumper-Obj_Index)/4)+1
+id_BossBall:			equ ((ptr_BossBall-Obj_Index)/4)+1			; $48
+id_WaterSound:			equ ((ptr_WaterSound-Obj_Index)/4)+1
+id_VanishSonic:			equ ((ptr_VanishSonic-Obj_Index)/4)+1
+id_GiantRing:			equ ((ptr_GiantRing-Obj_Index)/4)+1
+id_GeyserMaker:			equ ((ptr_GeyserMaker-Obj_Index)/4)+1
+id_LavaGeyser:			equ ((ptr_LavaGeyser-Obj_Index)/4)+1
+id_LavaWall:			equ ((ptr_LavaWall-Obj_Index)/4)+1
+id_StarsItem:			equ ((ptr_StarsItem-Obj_Index)/4)+1
+id_Yadrin:				equ ((ptr_Yadrin-Obj_Index)/4)+1			; $50
+id_SmashBlock:			equ ((ptr_SmashBlock-Obj_Index)/4)+1
+id_MovingBlock:			equ ((ptr_MovingBlock-Obj_Index)/4)+1
+id_CollapseFloor:		equ ((ptr_CollapseFloor-Obj_Index)/4)+1
+id_LavaTag:				equ ((ptr_LavaTag-Obj_Index)/4)+1
+id_Basaran:				equ ((ptr_Basaran-Obj_Index)/4)+1
+id_FloatingBlock:		equ ((ptr_FloatingBlock-Obj_Index)/4)+1
+id_SpikeBall:			equ ((ptr_SpikeBall-Obj_Index)/4)+1
+id_BigSpikeBall:		equ ((ptr_BigSpikeBall-Obj_Index)/4)+1		; $58
+id_Elevator:			equ ((ptr_Elevator-Obj_Index)/4)+1
 id_CirclingPlatform:	equ ((ptr_CirclingPlatform-Obj_Index)/4)+1
-id_Staircase:		equ ((ptr_Staircase-Obj_Index)/4)+1
-id_Pylon:		equ ((ptr_Pylon-Obj_Index)/4)+1
-id_Fan:			equ ((ptr_Fan-Obj_Index)/4)+1
-id_Seesaw:		equ ((ptr_Seesaw-Obj_Index)/4)+1
-id_Bomb:		equ ((ptr_Bomb-Obj_Index)/4)+1
-id_Orbinaut:		equ ((ptr_Orbinaut-Obj_Index)/4)+1		; $60
-id_LabyrinthBlock:	equ ((ptr_LabyrinthBlock-Obj_Index)/4)+1
-id_Gargoyle:		equ ((ptr_Gargoyle-Obj_Index)/4)+1
-id_LabyrinthConvey:	equ ((ptr_LabyrinthConvey-Obj_Index)/4)+1
-id_Bubble:		equ ((ptr_Bubble-Obj_Index)/4)+1
-id_Waterfall:		equ ((ptr_Waterfall-Obj_Index)/4)+1
-id_Junction:		equ ((ptr_Junction-Obj_Index)/4)+1
-id_RunningDisc:		equ ((ptr_RunningDisc-Obj_Index)/4)+1
-id_Conveyor:		equ ((ptr_Conveyor-Obj_Index)/4)+1		; $68
-id_SpinPlatform:	equ ((ptr_SpinPlatform-Obj_Index)/4)+1
-id_Saws:		equ ((ptr_Saws-Obj_Index)/4)+1
-id_ScrapStomp:		equ ((ptr_ScrapStomp-Obj_Index)/4)+1
-id_VanishPlatform:	equ ((ptr_VanishPlatform-Obj_Index)/4)+1
-id_Flamethrower:	equ ((ptr_Flamethrower-Obj_Index)/4)+1
-id_Electro:		equ ((ptr_Electro-Obj_Index)/4)+1
-id_SpinConvey:		equ ((ptr_SpinConvey-Obj_Index)/4)+1
-id_Girder:		equ ((ptr_Girder-Obj_Index)/4)+1		; $70
-id_Invisibarrier:	equ ((ptr_Invisibarrier-Obj_Index)/4)+1
-id_Teleport:		equ ((ptr_Teleport-Obj_Index)/4)+1
-id_BossMarble:		equ ((ptr_BossMarble-Obj_Index)/4)+1
-id_BossFire:		equ ((ptr_BossFire-Obj_Index)/4)+1
-id_BossSpringYard:	equ ((ptr_BossSpringYard-Obj_Index)/4)+1
-id_BossBlock:		equ ((ptr_BossBlock-Obj_Index)/4)+1
-id_BossLabyrinth:	equ ((ptr_BossLabyrinth-Obj_Index)/4)+1
-id_Caterkiller:		equ ((ptr_Caterkiller-Obj_Index)/4)+1		; $78
-id_Lamppost:		equ ((ptr_Lamppost-Obj_Index)/4)+1
-id_BossStarLight:	equ ((ptr_BossStarLight-Obj_Index)/4)+1
-id_BossSpikeball:	equ ((ptr_BossSpikeball-Obj_Index)/4)+1
-id_RingFlash:		equ ((ptr_RingFlash-Obj_Index)/4)+1
-id_HiddenBonus:		equ ((ptr_HiddenBonus-Obj_Index)/4)+1
-id_SSResult:		equ ((ptr_SSResult-Obj_Index)/4)+1
-id_SSRChaos:		equ ((ptr_SSRChaos-Obj_Index)/4)+1
-id_ContScrItem:		equ ((ptr_ContScrItem-Obj_Index)/4)+1		; $80
-id_ContSonic:		equ ((ptr_ContSonic-Obj_Index)/4)+1
-id_ScrapEggman:		equ ((ptr_ScrapEggman-Obj_Index)/4)+1
-id_FalseFloor:		equ ((ptr_FalseFloor-Obj_Index)/4)+1
-id_EggmanCylinder:	equ ((ptr_EggmanCylinder-Obj_Index)/4)+1
-id_BossFinal:		equ ((ptr_BossFinal-Obj_Index)/4)+1
-id_BossPlasma:		equ ((ptr_BossPlasma-Obj_Index)/4)+1
-id_EndSonic:		equ ((ptr_EndSonic-Obj_Index)/4)+1
-id_EndChaos:		equ ((ptr_EndChaos-Obj_Index)/4)+1		; $88
-id_EndSTH:		equ ((ptr_EndSTH-Obj_Index)/4)+1
-id_CreditsText:		equ ((ptr_CreditsText-Obj_Index)/4)+1
-id_EndEggman:		equ ((ptr_EndEggman-Obj_Index)/4)+1
-id_TryChaos:		equ ((ptr_TryChaos-Obj_Index)/4)+1
+id_Staircase:			equ ((ptr_Staircase-Obj_Index)/4)+1
+id_Pylon:				equ ((ptr_Pylon-Obj_Index)/4)+1
+id_Fan:					equ ((ptr_Fan-Obj_Index)/4)+1
+id_Seesaw:				equ ((ptr_Seesaw-Obj_Index)/4)+1
+id_Bomb:				equ ((ptr_Bomb-Obj_Index)/4)+1
+id_Orbinaut:			equ ((ptr_Orbinaut-Obj_Index)/4)+1			; $60
+id_LabyrinthBlock:		equ ((ptr_LabyrinthBlock-Obj_Index)/4)+1
+id_Gargoyle:			equ ((ptr_Gargoyle-Obj_Index)/4)+1
+id_LabyrinthConvey:		equ ((ptr_LabyrinthConvey-Obj_Index)/4)+1
+id_Bubble:				equ ((ptr_Bubble-Obj_Index)/4)+1
+id_Waterfall:			equ ((ptr_Waterfall-Obj_Index)/4)+1
+id_Junction:			equ ((ptr_Junction-Obj_Index)/4)+1
+id_RunningDisc:			equ ((ptr_RunningDisc-Obj_Index)/4)+1
+id_Conveyor:			equ ((ptr_Conveyor-Obj_Index)/4)+1			; $68
+id_SpinPlatform:		equ ((ptr_SpinPlatform-Obj_Index)/4)+1
+id_Saws:				equ ((ptr_Saws-Obj_Index)/4)+1
+id_ScrapStomp:			equ ((ptr_ScrapStomp-Obj_Index)/4)+1
+id_VanishPlatform:		equ ((ptr_VanishPlatform-Obj_Index)/4)+1
+id_Flamethrower:		equ ((ptr_Flamethrower-Obj_Index)/4)+1
+id_Electro:				equ ((ptr_Electro-Obj_Index)/4)+1
+id_SpinConvey:			equ ((ptr_SpinConvey-Obj_Index)/4)+1
+id_Girder:				equ ((ptr_Girder-Obj_Index)/4)+1			; $70
+id_Invisibarrier:		equ ((ptr_Invisibarrier-Obj_Index)/4)+1
+id_Teleport:			equ ((ptr_Teleport-Obj_Index)/4)+1
+id_BossMarble:			equ ((ptr_BossMarble-Obj_Index)/4)+1
+id_BossFire:			equ ((ptr_BossFire-Obj_Index)/4)+1
+id_BossSpringYard:		equ ((ptr_BossSpringYard-Obj_Index)/4)+1
+id_BossBlock:			equ ((ptr_BossBlock-Obj_Index)/4)+1
+id_BossLabyrinth:		equ ((ptr_BossLabyrinth-Obj_Index)/4)+1
+id_Caterkiller:			equ ((ptr_Caterkiller-Obj_Index)/4)+1		; $78
+id_Lamppost:			equ ((ptr_Lamppost-Obj_Index)/4)+1
+id_BossStarLight:		equ ((ptr_BossStarLight-Obj_Index)/4)+1
+id_BossSpikeball:		equ ((ptr_BossSpikeball-Obj_Index)/4)+1
+id_RingFlash:			equ ((ptr_RingFlash-Obj_Index)/4)+1
+id_HiddenBonus:			equ ((ptr_HiddenBonus-Obj_Index)/4)+1
+id_SSResult:			equ ((ptr_SSResult-Obj_Index)/4)+1
+id_SSRChaos:			equ ((ptr_SSRChaos-Obj_Index)/4)+1
+id_ContScrItem:			equ ((ptr_ContScrItem-Obj_Index)/4)+1		; $80
+id_ContSonic:			equ ((ptr_ContSonic-Obj_Index)/4)+1
+id_ScrapEggman:			equ ((ptr_ScrapEggman-Obj_Index)/4)+1
+id_FalseFloor:			equ ((ptr_FalseFloor-Obj_Index)/4)+1
+id_EggmanCylinder:		equ ((ptr_EggmanCylinder-Obj_Index)/4)+1
+id_BossFinal:			equ ((ptr_BossFinal-Obj_Index)/4)+1
+id_BossPlasma:			equ ((ptr_BossPlasma-Obj_Index)/4)+1
+id_EndSonic:			equ ((ptr_EndSonic-Obj_Index)/4)+1
+id_EndChaos:			equ ((ptr_EndChaos-Obj_Index)/4)+1			; $88
+id_EndSTH:				equ ((ptr_EndSTH-Obj_Index)/4)+1
+id_CreditsText:			equ ((ptr_CreditsText-Obj_Index)/4)+1
+id_EndEggman:			equ ((ptr_EndEggman-Obj_Index)/4)+1
+id_TryChaos:			equ ((ptr_TryChaos-Obj_Index)/4)+1
+id_SuperStars:			equ ((ptr_SuperStars-Obj_Index)/4)+1

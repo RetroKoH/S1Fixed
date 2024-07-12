@@ -104,7 +104,9 @@ v_trails		= v_objspace+object_size*17	; ($D440) object variable space for after-
 v_followobject	= v_objspace+object_size*18
 v_trails2		= v_objspace+object_size*19
 
-; - 3 Slots Unused
+v_sstarsobj		= v_objspace+object_size*20 ; object variable space for super stars
+
+; - 2 Slots Unused
 
 v_endcard		= v_objspace+object_size*23	; ($D5C0) object variable space for the level results card ($1C0 bytes)
 v_endcardsonic	= v_endcard+object_size*0	; ($D5C0) object variable space for the level results card "SONIC HAS" text ($40 bytes)

@@ -6153,6 +6153,9 @@ Map_Bub:	include	"_maps/Bubbles.asm"
 		include	"_anim/Waterfalls.asm"
 Map_WFall:	include	"_maps/Waterfalls.asm"
 
+		include "_incObj/8D Super Sonic Stars.asm"
+Map_SStars:	include	"_maps/Super Stars.asm"
+
 	if (SpinDashEnabled|SkidDustEnabled)=1
 		include "_incObj/07 Effects.asm"	; Skid Dust and/or Spindash Dust
 	endif
@@ -8203,6 +8206,9 @@ Nem_Hud:	binclude	"artnem/HUD.nem"	; HUD (rings, time, score)
 Nem_Lives:	binclude	"artnem/HUD - Life Counter Icon.nem"
 		even
 Nem_Ring:	binclude	"artnem/Rings.nem"
+		even
+
+Nem_SuperStars:	binclude	"artnem/Super Sonic Stars.nem"
 		even
 
 	if ShieldsMode>1

@@ -12,7 +12,14 @@ Sonic_TurnSuper: ;loc_11A16:
 		;move.l	#Map_SuperSonic,obMap(a0)
 		move.b	#$81,obLRLock(a0)
 		move.b	#aniID_Transform,obAnim(a0)
-		;move.b	#id_SuperSonicStars,(v_starspace).w ; load super sonic stars object
+		move.b	#id_SuperStars,(v_sstarsobj).w	; load super sonic stars object
+
+		move.l	a0,-(sp)
+		locVRAM	ArtTile_Shield*$20
+		lea		(Nem_SuperStars).l,a0			; load super star art
+		jsr		(NemDec).l
+		move.l	(sp)+,a0
+		
 		lea		(v_sonspeedmax).w,a2			; Load Sonic_top_speed into a2
 		jsr		(ApplySpeedSettings).l
 		clr.b	obInvinc(a0)
