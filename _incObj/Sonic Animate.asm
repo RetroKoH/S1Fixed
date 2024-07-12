@@ -119,15 +119,16 @@ Sonic_Animate:
 
 		lsr.b	#4,d0				; divide angle by $10
 		andi.b	#6,d0				; angle	must be	0, 2, 4	or 6
+		moveq	#0,d2
 		move.w	obInertia(a0),d2	; get Sonic's speed
 		bpl.s	.nomodspeed
 		neg.w	d2					; modulus speed
 
 .nomodspeed:
 	if PeeloutEnabled=1
-		lea		(SonAni_Dash).l,a1 ; use Dashing animation
-		cmpi.w	#$A00,d2	; is Sonic at Dashing speed?
-		bcc.s	.running	; if yes, branch
+		lea		(SonAni_Dash).l,a1	; use Dashing animation
+		cmpi.w	#$A00,d2			; is Sonic at Dashing speed?
+		bhs.s	.running			; if yes, branch
 	endif
 
 		lea		(SonAni_Run).l,a1	; use running animation
@@ -135,12 +136,17 @@ Sonic_Animate:
 		bhs.s	.running			; if yes, branch
 
 		lea		(SonAni_Walk).l,a1	; use walking animation
-		move.b	d0,d1
-		lsr.b	#1,d1
-		add.b	d1,d0
+
+; Get correct walking frame.
+	;	move.b	d0,d1
+	;	lsr.b	#1,d1
+	;	add.b	d1,d0				; Angle 0 = 0; Angle 2 = 3 (+6 frames); Angle 4 = 6 (+12 frames); Angle 6 = 9 (+18 frames).
+.walking:
+		; Sonic 2 method for 8 frames (Sometimes accesses Dash frames when running)
+		add.b	d0,d0				; Angle 0 = 0; Angle 2 = 4 (+8 frames); Angle 4 = 8 (+16 frames); Angle 6 = 12 (+24 frames).
 
 .running:
-		add.b	d0,d0
+		add.b	d0,d0				; Angle 0 = 0; Angle 2 = +4 frames; Angle 4 = (+8 frames); Angle 6 = (+12 frames).
 		move.b	d0,d3
 		neg.w	d2
 		addi.w	#$800,d2
@@ -152,7 +158,13 @@ Sonic_Animate:
 		move.b	d2,obTimeFrame(a0)	; modify frame duration
 		bsr.w	.loadframe
 		add.b	d3,obFrame(a0)		; modify frame number
-		rts	
+		cmpi.b	#fr_SonRun44,d3
+		bgt.s	.softlock
+		rts
+
+.softlock:
+		nop
+		bra.s	.softlock
 ; ===========================================================================
 
 .rolljump:

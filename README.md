@@ -256,6 +256,11 @@
  Credit: RetroKoH (Giant Ring Sprite from Sonic 1 iOS)
  Function: Rings and Giant Rings now use smooth rotation akin to the remakes.
  Date: 2024-06-12
+ 
+ Name: 8-Frame Walking Sonic
+ Credit: RetroKoH (Art by Bennascar on DeviantArt: https://www.deviantart.com/bennascar/art/The-Ultimate-Sonic-1-Sheet-690414373)
+ Function: Sonic now has an 8-frame walking cycle, like in later games.
+ Date: 2024-07-12
 
 # Fixes
  Name: Sonic Roll Frame Fix

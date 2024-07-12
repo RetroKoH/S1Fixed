@@ -36,17 +36,17 @@ Ani_Sonic:
 
 SonAni_Null:	dc.b $77, fr_SonNull, afChange, aniID_Walk
 		even
-SonAni_Walk:	dc.b $FF, fr_SonWalk13, fr_SonWalk14, fr_SonWalk15, fr_SonWalk16, fr_SonWalk11, fr_SonWalk12, afEnd
+SonAni_Walk:	dc.b $FF, fr_SonWalk14, fr_SonWalk15, fr_SonWalk16, fr_SonWalk17, fr_SonWalk18, fr_SonWalk11, fr_SonWalk12, fr_SonWalk13, afEnd
 		even
-SonAni_Run:	dc.b $FF,  fr_SonRun11, fr_SonRun12, fr_SonRun13, fr_SonRun14, afEnd, afEnd, afEnd
+SonAni_Run:		dc.b $FF, fr_SonRun11, fr_SonRun12, fr_SonRun13, fr_SonRun14, afEnd, afEnd, afEnd, afEnd, afEnd
 		even
-SonAni_Dash:	dc.b $FF,  fr_SonDash11, fr_SonDash12, fr_SonDash13, fr_SonDash14, afEnd, afEnd, afEnd
+SonAni_Dash:	dc.b $FF, fr_SonDash11, fr_SonDash12, fr_SonDash13, fr_SonDash14, afEnd, afEnd, afEnd, afEnd, afEnd
 		even
-SonAni_Roll:	dc.b $FE,  fr_SonRoll1, fr_SonRoll2, fr_SonRoll3, fr_SonRoll4, fr_SonRoll5, afEnd, afEnd
+SonAni_Roll:	dc.b $FE, fr_SonRoll1, fr_SonRoll2, fr_SonRoll3, fr_SonRoll4, fr_SonRoll5, afEnd, afEnd
 		even
-SonAni_Roll2:	dc.b $FE,  fr_SonRoll1, fr_SonRoll2, fr_SonRoll5, fr_SonRoll3, fr_SonRoll4, fr_SonRoll5, afEnd
+SonAni_Roll2:	dc.b $FE, fr_SonRoll1, fr_SonRoll2, fr_SonRoll5, fr_SonRoll3, fr_SonRoll4, fr_SonRoll5, afEnd
 		even
-SonAni_Push:	dc.b $FD,  fr_SonPush1, fr_SonPush2, fr_SonPush3, fr_SonPush4, afEnd, afEnd, afEnd
+SonAni_Push:	dc.b $FD, fr_SonPush1, fr_SonPush2, fr_SonPush3, fr_SonPush4, afEnd, afEnd, afEnd
 		even
 SonAni_Wait:	dc.b $17, fr_SonStand, fr_SonStand, fr_SonStand, fr_SonStand, fr_SonStand, fr_SonStand, fr_SonStand, fr_SonStand, fr_SonStand
 		dc.b fr_SonStand, fr_SonStand, fr_SonStand, fr_SonWait2, fr_SonWait1, fr_SonWait1, fr_SonWait1, fr_SonWait2, fr_SonWait3, afBack, 2
@@ -92,8 +92,8 @@ SonAni_Hurt:	dc.b 3,	fr_SonHurt, afEnd
 		even
 SonAni_WaterSlide: dc.b 7, fr_SonHurt, fr_SonWaterSlide, afEnd
 		even
-SonAni_Peelout:	dc.b 0,  fr_SonWalk13, fr_SonWalk13, fr_SonWalk13, fr_SonWalk13, fr_SonWalk13, fr_SonWalk13, fr_SonWalk13, fr_SonWalk13
-		dc.b	fr_SonWalk14, fr_SonWalk14, fr_SonWalk14, fr_SonWalk14, fr_SonWalk15, fr_SonWalk15, fr_SonRun14, fr_SonRun14
+SonAni_Peelout:	dc.b 0,  fr_SonWalk14, fr_SonWalk14, fr_SonWalk14, fr_SonWalk14, fr_SonWalk14, fr_SonWalk14, fr_SonWalk14, fr_SonWalk14
+		dc.b	fr_SonWalk15, fr_SonWalk15, fr_SonWalk15, fr_SonWalk15, fr_SonWalk16, fr_SonWalk16, fr_SonRun14, fr_SonRun14
 		dc.b	fr_SonRun11,  fr_SonRun12,  fr_SonRun13,  fr_SonRun14, fr_SonRun11,  fr_SonRun12,  fr_SonRun13,  fr_SonRun14
 		dc.b	fr_SonDash11,  fr_SonDash12,  fr_SonDash13,  fr_SonDash14, afBack, 4
 		even
