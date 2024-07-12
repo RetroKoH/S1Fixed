@@ -45,7 +45,7 @@ CDBalancing: = 1						; if set to 1, Sonic has 2 Balancing animations, taken fro
 DropDashEnabled: = 1					; if set to 1, Drop dashing is enabled for Sonic.
 HUDScrolling: = 1						; if set to 1, HUD Scrolls in and out of view during gameplay.
 AfterImagesOn: = 1						; if set to 1, an after-image effect is applied to the Speed Shoes.
-SuperMod: = 1
+SuperMod: = 1							; if set to 1, a 7th emerald is available and you can turn Super.
 
 	include "MacroSetup.asm"
 	include	"Constants.asm"
