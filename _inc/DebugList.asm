@@ -39,13 +39,23 @@ standards:	macro
 	dbug	Map_Spring,		id_Springs,			0,		0,		make_art_tile(ArtTile_Spring_Horizontal,0,0)	; Red Horizontal Spring
 	dbug	Map_Spring,		id_Springs,			$10,	3,		make_art_tile(ArtTile_Spring_Vertical,0,0)		; Red Vertical Spring
 	dbug	Map_Lamp,		id_Lamppost,		1,		0,		make_art_tile(ArtTile_Lamppost,0,0)				; Lamppost
-	dbug	Map_Spike,		id_Spikes,			0,		0,		make_art_tile(ArtTile_Spikes,0,0)				; Spikes
+	dbug	Map_Spike,		id_Spikes,			0,		0,		make_art_tile(ArtTile_Spikes,0,0)				; Upward static spikes
+	dbug	Map_Spike,		id_Spikes,			1,		0,		make_art_tile(ArtTile_Spikes,0,0)				; Upward moving spikes
+	dbug	Map_Spike,		id_Spikes,			$10,	1,		make_art_tile(ArtTile_Spikes,0,0)				; Horizontal static spikes
+	dbug	Map_Spike,		id_Spikes,			$12,	1,		make_art_tile(ArtTile_Spikes,0,0)				; Horizontal moving spikes
+	dbug	Map_Spike,		id_Spikes,			$20,	2,		make_art_tile(ArtTile_Spikes,0,0)				; Upward static single spike
+	dbug	Map_Spike,		id_Spikes,			$21,	2,		make_art_tile(ArtTile_Spikes,0,0)				; Upward moving single spike
+	dbug	Map_Spike,		id_Spikes,			$50,	5,		make_art_tile(ArtTile_Spikes,0,0)				; Horizontal static single spike
+	dbug	Map_Spike,		id_Spikes,			$52,	5,		make_art_tile(ArtTile_Spikes,0,0)				; Horizontal moving single spike
+	dbug	Map_Spike,		id_Spikes,			$30,	3,		make_art_tile(ArtTile_Spikes,0,0)				; Static 3 wide spikes
+	dbug	Map_Spike,		id_Spikes,			$31,	3,		make_art_tile(ArtTile_Spikes,0,0)				; Moving 3 wide spikes
+	dbug	Map_Spike,		id_Spikes,			$40,	4,		make_art_tile(ArtTile_Spikes,0,0)				; Static 6 wide spikes
+	dbug	Map_Spike,		id_Spikes,			$41,	4,		make_art_tile(ArtTile_Spikes,0,0)				; Moving 6 wide spikes
 	dbug	Map_Invis,		id_Invisibarrier,	$11,	0,		make_art_tile(ArtTile_Monitor,0,1)				; Invisible Solid Block
 	endm
 
 .GHZ:
 	dc.w (.GHZend-.GHZ-2)/8
-
 ;			mappings		object				subtype	frame	VRAM setting
 	; Standard Objects
 	standards
@@ -77,37 +87,39 @@ standards:	macro
 
 .LZ:
 	dc.w (.LZend-.LZ-2)/8
-
 ;			mappings		object				subtype	frame	VRAM setting
 	; Standard Objects
 	standards
 	; Badniks
 	dbug	Map_Jaws,		id_Jaws,			8,		0,		make_art_tile(ArtTile_Jaws,1,0)
 	dbug	Map_Burro,		id_Burrobot,		0,		2,		make_art_tile(ArtTile_Burrobot,0,1)
-	dbug	Map_Orb,		id_Orbinaut,		0,		0,		make_art_tile(ArtTile_Orbinaut,0,0)
+	dbug	Map_Orb,		id_Orbinaut,		0,		0,		make_art_tile(ArtTile_Orbinaut,0,0)				; LZ Orbinaut
+	dbug	Map_Orb,		id_Orbinaut,		2,		0,		make_art_tile(ArtTile_Orbinaut,0,0)				; SLZ Orbinaut
 	; Level Objects
-	dbug	Map_Harp,		id_Harpoon,			0,		0,		make_art_tile(ArtTile_LZ_Harpoon,0,0)
-	dbug	Map_Harp,		id_Harpoon,			2,		3,		make_art_tile(ArtTile_LZ_Harpoon,0,0)
-	dbug	Map_Push,		id_PushBlock,		0,		0,		make_art_tile(ArtTile_LZ_Push_Block,2,0)
-	dbug	Map_But,		id_Button,			0,		0,		make_art_tile(ArtTile_Button,0,0)
-	dbug	Map_MBlockLZ,	id_MovingBlock,		4,		0,		make_art_tile(ArtTile_LZ_Moving_Block,2,0)
-	dbug	Map_LBlock,		id_LabyrinthBlock,	1,		0,		make_art_tile(ArtTile_LZ_Blocks,2,0)
-	dbug	Map_LBlock,		id_LabyrinthBlock,	$13,	1,		make_art_tile(ArtTile_LZ_Blocks,2,0)
-	dbug	Map_LBlock,		id_LabyrinthBlock,	5,		0,		make_art_tile(ArtTile_LZ_Blocks,2,0)
-	dbug	Map_Gar,		id_Gargoyle,		0,		0,		make_art_tile(ArtTile_LZ_Gargoyle,2,0)
-	dbug	Map_LBlock,		id_LabyrinthBlock,	$27,	2,		make_art_tile(ArtTile_LZ_Blocks,2,0)
-	dbug	Map_LBlock,		id_LabyrinthBlock,	$30,	3,		make_art_tile(ArtTile_LZ_Blocks,2,0)
-	dbug	Map_LConv,		id_LabyrinthConvey,	$7F,	0,		make_art_tile(ArtTile_LZ_Conveyor_Belt,0,0)
-	dbug	Map_Bub,		id_Bubble,			$84,	$13,	make_art_tile(ArtTile_LZ_Bubbles,0,1)
-	dbug	Map_WFall,		id_Waterfall,		2,		2,		make_art_tile(ArtTile_LZ_Waterfall,2,1)
-	dbug	Map_WFall,		id_Waterfall,		9,		9,		make_art_tile(ArtTile_LZ_Waterfall,2,1)
-	dbug	Map_Pole,		id_Pole,			0,		0,		make_art_tile(ArtTile_LZ_Pole,2,0)
-	dbug	Map_Flap,		id_FlapDoor,		2,		0,		make_art_tile(ArtTile_LZ_Flapping_Door,2,0)
+	dbug	Map_Bub,		id_Bubble,			$84,	$13,	make_art_tile(ArtTile_LZ_Bubbles,0,1)			; Bubble Spawner
+	dbug	Map_Harp,		id_Harpoon,			0,		0,		make_art_tile(ArtTile_LZ_Harpoon,0,0)			; Vertical Harpoon
+	dbug	Map_Harp,		id_Harpoon,			2,		3,		make_art_tile(ArtTile_LZ_Harpoon,0,0)			; Horizontal Harpoon
+	dbug	Map_Gar,		id_Gargoyle,		0,		0,		make_art_tile(ArtTile_LZ_Gargoyle,2,0)			; Gargoyle
+	dbug	Map_LConv,		id_LabyrinthConvey,	$7F,	0,		make_art_tile(ArtTile_LZ_Conveyor_Belt,0,0)		; Conveyor Belt Wheel
+	dbug	Map_SBall,		id_SpikeBall,		$D5,	0,		make_art_tile(ArtTile_SYZ_Spikeball_Chain,0,0)	; Chained Spikeball (5 links, speed: 3, counter-clockwise)
+	dbug	Map_Flap,		id_FlapDoor,		2,		0,		make_art_tile(ArtTile_LZ_Flapping_Door,2,0)		; Flapping Door
+	dbug	Map_But,		id_Button,			0,		0,		make_art_tile(ArtTile_Button,0,0)				; Button
+	dbug	Map_LBlock,		id_LabyrinthBlock,	$30,	3,		make_art_tile(ArtTile_LZ_Blocks,2,0)			; Solid Masked Block
+	dbug	Map_MBlockLZ,	id_MovingBlock,		4,		0,		make_art_tile(ArtTile_LZ_Moving_Block,2,0)		; Small Moving Block
+	dbug	Map_FBlock,		id_FloatingBlock,	$E0,	6,		make_art_tile(ArtTile_LZ_Door,2,0)				; Switch activated door
+	dbug	Map_LBlock,		id_LabyrinthBlock,	$27,	2,		make_art_tile(ArtTile_LZ_Blocks,2,0)			; Cork
+	dbug	Map_FBlock,		id_FloatingBlock,	$F0,	7,		make_art_tile(ArtTile_LZ_Door,2,0)				; Horizontal witch activated block door
+	dbug	Map_LBlock,		id_LabyrinthBlock,	$13,	1,		make_art_tile(ArtTile_LZ_Blocks,2,0)			; Lifting Platform
+	dbug	Map_Push,		id_PushBlock,		0,		0,		make_art_tile(ArtTile_LZ_Push_Block,2,0)		; Pushable Block
+	dbug	Map_Push,		id_PushBlock,		$81,	1,		make_art_tile(ArtTile_LZ_Push_Block,2,0)		; Long Pushable Block
+	dbug	Map_LBlock,		id_LabyrinthBlock,	5,		0,		make_art_tile(ArtTile_LZ_Blocks,2,0)			; Sinking Block (Only sinks when pushed)
+	dbug	Map_LBlock,		id_LabyrinthBlock,	1,		0,		make_art_tile(ArtTile_LZ_Blocks,2,0)			; Sinking Block (Sinks when stood upon)
+	dbug	Map_Pole,		id_Pole,			0,		0,		make_art_tile(ArtTile_LZ_Pole,2,0)				; Grabbable Pole
+	dbug	Map_Stomp,		id_ScrapStomp,		$CB,	4,		make_art_tile(ArtTile_LZ_Block_2,2,0)			; SBZ3 Giant Platform
 .LZend:
 
 .MZ:
 	dc.w (.MZend-.MZ-2)/8
-
 ;			mappings		object				subtype	frame	VRAM setting
 	; Standard Objects
 	standards

@@ -43,7 +43,11 @@ PushB_Main:	; Routine 0
 		tst.b	obSubtype(a0)
 		beq.s	.chkgone
 		move.w	#make_art_tile(ArtTile_MZ_Block,2,1),obGfx(a0)	; MZ long block
+		cmpi.b	#id_LZ,(v_zone).w
+		bne.s	.notLZ2
+		move.w	#make_art_tile(ArtTile_LZ_Push_Block,2,1),obGfx(a0) ; LZ specific code
 
+.notLZ2:
 .chkgone:
 	; ProjectFM S3K Objects Manager
 		move.w	obRespawnNo(a0),d0	; get address in respawn table

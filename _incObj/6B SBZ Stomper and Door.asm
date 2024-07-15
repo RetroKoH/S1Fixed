@@ -9,11 +9,11 @@ sto_active = objoff_38		; flag set when a switch is pressed
 ; ===========================================================================
 Sto_Var:
 			; width,	height, ????,	type number
-		dc.b  $40,		$C,		$80,	1
-		dc.b  $1C,		$20,	$38,	3
-		dc.b  $1C,		$20,	$40,	4
-		dc.b  $1C,		$20,	$60,	4
-		dc.b  $80,		$40,	0,		5
+		dc.b  $40,		$C,		$80,	1		; 00
+		dc.b  $1C,		$20,	$38,	3		; 04
+		dc.b  $1C,		$20,	$40,	4		; 08
+		dc.b  $1C,		$20,	$60,	4		; 0C
+		dc.b  $80,		$40,	0,		5		; 10
 ; ===========================================================================
 
 ScrapStomp:
@@ -52,7 +52,7 @@ Sto_Main:	; Routine 0
 ; ===========================================================================
 
 .isSBZ3:
-		move.w	#make_art_tile($1D6,2,0),obGfx(a0)
+		move.w	#make_art_tile(ArtTile_LZ_Block_2,2,0),obGfx(a0)
 		cmpi.w	#$A80,obX(a0)
 		bne.s	.isSBZ12
 		move.w	obRespawnNo(a0),d0		; get address in respawn table
