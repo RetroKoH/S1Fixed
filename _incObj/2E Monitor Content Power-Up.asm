@@ -72,8 +72,8 @@ Pow_Types:	offsetTable
 		offsetTableEntry.w Pow_BShield	; 8 - Bubble Shield		; Added
 		offsetTableEntry.w Pow_LShield	; 9 - Lightning Shield	; Added
 	endif
-		offsetTableEntry.w Pow_S		; A - S
-		offsetTableEntry.w Pow_Goggles	; B - Goggles
+		offsetTableEntry.w Pow_S		; 7/A - S
+		offsetTableEntry.w Pow_Goggles	; 8/B - Goggles
 ; ===========================================================================
 	; Each powerup no longer requires a series of cmpi checks and branches.
 

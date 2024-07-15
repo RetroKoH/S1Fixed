@@ -17,9 +17,9 @@ Sonic_DoubleJump:
 		if SuperMod=1
 			btst	#sta2ndSuper,d0					; is Sonic currently in his Super form?
 			bne.s	Sonic_SetDoubleJumpFlag			; if yes, branch towards the exit
-			;cmpi.b	#emldCount,(v_emeralds).w		; does Sonic have all Chaos Emeralds?
-			;bcs.s	Sonic_NoSuper					; if not, branch
-			cmpi.w	#10,(v_rings).w					; does Sonic have 50 rings or more?
+			cmpi.b	#emldCount,(v_emeralds).w		; does Sonic have all Chaos Emeralds?
+			bcs.s	Sonic_NoSuper					; if not, branch
+			cmpi.w	#50,(v_rings).w					; does Sonic have 50 rings or more?
 			bcs.s	Sonic_NoSuper					; if not, branch
 			tst.b	(f_timecount).w					; is the timer currently running? (Prevent the S2 bug)
 			bne.s	Sonic_TurnSuper					; if yes, branch
@@ -38,9 +38,9 @@ Sonic_NoSuper:
 			beq.s	Sonic_ShieldDoNothing			; if not, branch
 			btst	#sta2ndSuper,d0					; is Sonic currently in his Super form?
 			bne.s	Sonic_NoSuper					; if yes, branch towards the exit
-			;cmpi.b	#emldCount,(v_emeralds).w		; does Sonic have all Chaos Emeralds?
-			;bcs.s	Sonic_NoSuper					; if not, branch
-			cmpi.w	#10,(v_rings).w					; does Sonic have 50 rings or more?
+			cmpi.b	#emldCount,(v_emeralds).w		; does Sonic have all Chaos Emeralds?
+			bcs.s	Sonic_NoSuper					; if not, branch
+			cmpi.w	#50,(v_rings).w					; does Sonic have 50 rings or more?
 			bcs.s	Sonic_NoSuper					; if not, branch
 			tst.b	(f_timecount).w					; is the timer currently running? (Prevent the S2 bug)
 			bne.s	Sonic_TurnSuper					; if yes, branch

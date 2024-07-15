@@ -42,9 +42,9 @@ Sonic_DoubleJump:
 
 ; if we don't have elementals, start checking for Super, then insta-shield.
 	if SuperMod=1
-		;cmpi.b	#emldCount,(v_emeralds).w		; does Sonic have all Chaos Emeralds?
-		;bcs.s	Sonic_NoSuper					; if not, branch
-		cmpi.w	#10,(v_rings).w					; does Sonic have 50 rings or more?
+		cmpi.b	#emldCount,(v_emeralds).w		; does Sonic have all Chaos Emeralds?
+		bcs.s	Sonic_NoSuper					; if not, branch
+		cmpi.w	#50,(v_rings).w					; does Sonic have 50 rings or more?
 		bcs.s	Sonic_NoSuper					; if not, branch
 		tst.b	(f_timecount).w					; is the timer currently running? (Prevent the S2 bug)
 		bne.w	Sonic_TurnSuper					; if yes, branch
