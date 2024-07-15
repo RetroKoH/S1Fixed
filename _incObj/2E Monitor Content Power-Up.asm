@@ -160,13 +160,13 @@ Pow_Invinc:
 ; ===========================================================================
 
 Pow_Rings:
-		addi.w	#10,(v_rings).w	; add 10 rings to the number of rings you have
-		ori.b	#1,(f_ringcount).w ; update the ring counter
-		cmpi.w	#100,(v_rings).w ; check if you have 100 rings
+		addi.w	#10,(v_rings).w		; add 10 rings to the number of rings you have
+		ori.b	#1,(f_ringcount).w	; update the ring counter
+		cmpi.w	#100,(v_rings).w	; check if you have 100 rings
 		blo.s	Pow_RingSound
 		bset	#1,(v_lifecount).w
 		beq.w	ExtraLife
-		cmpi.w	#200,(v_rings).w ; check if you have 200 rings
+		cmpi.w	#200,(v_rings).w	; check if you have 200 rings
 		blo.s	Pow_RingSound
 		bset	#2,(v_lifecount).w
 		beq.w	ExtraLife
@@ -177,8 +177,25 @@ Pow_RingSound:
 ; ===========================================================================
 
 Pow_S:
+		addi.w	#50,(v_rings).w
+		movem.l a0-a2,-(sp)								; Move a0, a1 and a2 onto stack
+		lea     (v_player).w,a0							; Load Sonic to a0
+		jsr		Sonic_TurnSuper							; turn super
+		movem.l (sp)+,a0-a2								; Move a0, a1 and a2 from stack
+
+		ori.b	#1,(f_ringcount).w						; update the ring counter
+		cmpi.w	#100,(v_rings).w						; check if you have 100 rings
+		blo.s	Pow_RingSound
+		bset	#1,(v_lifecount).w
+		beq.w	ExtraLife
+		cmpi.w	#200,(v_rings).w						; check if you have 200 rings
+		blo.s	Pow_RingSound
+		bset	#2,(v_lifecount).w
+		beq.w	ExtraLife
+; ===========================================================================
+
 Pow_Goggles:
-		rts			; 'S' and goggles monitors do nothing
+		rts			; Goggles monitors do nothing
 ; ===========================================================================
 
 	if ShieldsMode>1
