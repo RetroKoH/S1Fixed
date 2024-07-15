@@ -45,7 +45,7 @@ CDBalancing: = 1						; if set to 1, Sonic has 2 Balancing animations, taken fro
 DropDashEnabled: = 1					; if set to 1, Drop dashing is enabled for Sonic.
 HUDScrolling: = 1						; if set to 1, HUD Scrolls in and out of view during gameplay.
 AfterImagesOn: = 1						; if set to 1, an after-image effect is applied to the Speed Shoes.
-SuperMod: = 1							; if set to 1, a 7th emerald is available and you can turn Super.
+SuperMod: = 0							; if set to 1, a 7th emerald is available and you can turn Super.
 
 	include "MacroSetup.asm"
 	include	"Constants.asm"
@@ -1968,10 +1968,6 @@ ResetLevel:
 		clr.l	(v_emldlist).w				; clear emeralds
 		clr.l	(v_emldlist+4).w			; clear emeralds
 		clr.b	(v_continues).w				; clear continues
-		move.b	#7,(v_emeralds).w
-		move.l	#$010203,(v_emldlist).w
-		move.l	#$04050600,(v_emldlist+4).w
-		move.b	#6,(v_lastspecial).w
 		move.l	#5000,(v_scorelife).w		; extra life is awarded at 50000 points
 		rts
 ; ===========================================================================
