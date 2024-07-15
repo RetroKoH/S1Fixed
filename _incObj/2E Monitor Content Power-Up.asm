@@ -61,7 +61,7 @@ Pow_Checks:
 	; Lookup table replaces the old system
 Pow_Types:	offsetTable
 		offsetTableEntry.w Pow_Null		; 0 - Static
-		offsetTableEntry.w Pow_Eggman	; 1 - Eggman/Robotnik
+		offsetTableEntry.w Pow_Eggman	; 1 - Eggman/Robotnik -- Credit: Nineko
 		offsetTableEntry.w Pow_Sonic	; 2 - 1-Up
 		offsetTableEntry.w Pow_Shoes	; 3 - Speed Shoes
 		offsetTableEntry.w Pow_Shield	; 4 - Shield
@@ -77,9 +77,14 @@ Pow_Types:	offsetTable
 ; ===========================================================================
 	; Each powerup no longer requires a series of cmpi checks and branches.
 
-Pow_Null:
 Pow_Eggman:
-		rts					; Eggman monitor does nothing
+		move.l	a0,a1				; move a0 to a1, because Touch_ChkHurt wants the damaging object to be in a1
+		move.l	a0,-(sp)			; push a0 on the stack, and decrement stack pointer
+		lea		(v_player).w,a0		; put Sonic's ram address in a0, because Touch_ChkHurt wants the damaged object to be in a0
+		jsr		(React_ChkHurt).l	; run the Touch_ChkHurt routine
+		move.l	(sp)+,a0			; pop the previous value of a0 from the stack, and increment stack pointer
+Pow_Null:
+		rts							; Monitor does nothing.
 ; ===========================================================================
 
 Pow_Sonic:

@@ -89,7 +89,7 @@ standards:	macro
 	dbug	Map_Harp,		id_Harpoon,			0,		0,		make_art_tile(ArtTile_LZ_Harpoon,0,0)
 	dbug	Map_Harp,		id_Harpoon,			2,		3,		make_art_tile(ArtTile_LZ_Harpoon,0,0)
 	dbug	Map_Push,		id_PushBlock,		0,		0,		make_art_tile(ArtTile_LZ_Push_Block,2,0)
-	dbug	Map_But,		id_Button,			0,		0,		make_art_tile(ArtTile_Button+4,0,0)
+	dbug	Map_But,		id_Button,			0,		0,		make_art_tile(ArtTile_Button,0,0)
 	dbug	Map_MBlockLZ,	id_MovingBlock,		4,		0,		make_art_tile(ArtTile_LZ_Moving_Block,2,0)
 	dbug	Map_LBlock,		id_LabyrinthBlock,	1,		0,		make_art_tile(ArtTile_LZ_Blocks,2,0)
 	dbug	Map_LBlock,		id_LabyrinthBlock,	$13,	1,		make_art_tile(ArtTile_LZ_Blocks,2,0)
@@ -184,7 +184,7 @@ standards:	macro
 	dbug	Map_Plat_SYZ,	id_BasicPlatform,	3,		0,		make_art_tile(ArtTile_Level,2,0)				; Falling Platform
 	dbug	Map_Plat_SYZ,	id_BasicPlatform,	1,		0,		make_art_tile(ArtTile_Level,2,0)				; Horizontally Moving Platform
 	dbug	Map_Plat_SYZ,	id_BasicPlatform,	2,		0,		make_art_tile(ArtTile_Level,2,0)				; Vertically Moving Platform
-	dbug	Map_But,		id_Button,			0,		0,		make_art_tile(ArtTile_Button+4,0,0)
+	dbug	Map_But,		id_Button,			0,		0,		make_art_tile(ArtTile_Button,0,0)
 .SYZend:
 
 .SBZ:
@@ -199,10 +199,10 @@ standards:	macro
 ; Can we add Orbinauts?
 	dbug	Map_Hog,		id_BallHog,			4,		0,		make_art_tile(ArtTile_Ball_Hog,1,0)
 	; Level Objects
+	dbug	Map_But,		id_Button,			0,		0,		make_art_tile(ArtTile_Button,0,0)
 	dbug	Map_BBall,		id_SwingingPlatform, 7,		2,		make_art_tile(ArtTile_SYZ_Big_Spikeball,2,0)
 	dbug	Map_Disc,		id_RunningDisc,		$E0,	0,		make_art_tile(ArtTile_SBZ_Disc,2,1)
 	dbug	Map_MBlock,		id_MovingBlock,		$28,	2,		make_art_tile(ArtTile_SBZ_Moving_Block_Short,1,0)
-	dbug	Map_But,		id_Button,			0,		0,		make_art_tile(ArtTile_Button+4,0,0)
 	dbug	Map_Trap,		id_SpinPlatform,	3,		0,		make_art_tile(ArtTile_SBZ_Trap_Door,2,0)
 	dbug	Map_Spin,		id_SpinPlatform,	$83,	0,		make_art_tile(ArtTile_SBZ_Spinning_Platform,0,0)
 	dbug	Map_Saw,		id_Saws,			2,		0,		make_art_tile(ArtTile_SBZ_Saw,2,0)
