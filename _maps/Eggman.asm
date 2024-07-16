@@ -26,11 +26,13 @@ Map_Eggman_internal:	mappingsTable
 .ship_End
 
 .facenormal1:	spriteHeader
+	spritePiece	$C, -$14, 1, 2, $C, 0, 0, 0, 0	; Mercury additional mapping
 	spritePiece	-$C, -$1C, 2, 1, 0, 0, 0, 0, 0
 	spritePiece	-$14, -$14, 4, 2, 2, 0, 0, 0, 0
 .facenormal1_End
 
 .facenormal2:	spriteHeader
+	spritePiece	$C, -$14, 1, 2, $C, 0, 0, 0, 0	; Mercury additional mapping
 	spritePiece	-$C, -$1C, 2, 1, 0, 0, 0, 0, 0
 	spritePiece	-$14, -$14, 4, 2, $35, 0, 0, 0, 0
 .facenormal2_End
@@ -54,6 +56,7 @@ Map_Eggman_internal:	mappingsTable
 .facehit_End
 
 .facepanic:	spriteHeader
+	spritePiece	$C, -$14, 1, 2, $C, 0, 0, 0, 0	; Mercury additional mapping
 	spritePiece	4, -$1C, 2, 1, $64, 0, 0, 0, 0
 	spritePiece	-$C, -$1C, 2, 1, 0, 0, 0, 0, 0
 	spritePiece	-$14, -$14, 4, 2, $35, 0, 0, 0, 0

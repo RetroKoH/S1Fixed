@@ -607,4 +607,8 @@
  Depends On: Exit DLE In Special Stage And Title
  Modifies: levels\mz2.bin, objpos\mz2.bin, _inc\LevelSizeLoad & BgScrollSpeed.asm
 
- 
+ Name: Eggman Art Fix
+ Credit: Mercury
+ Function: Fixes Eggman's mappings so that his moustache isn't cut off.
+ Date: 2024/07/16
+ Modifies: _maps\Eggman.asm
