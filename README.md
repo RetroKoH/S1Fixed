@@ -594,3 +594,9 @@
  Credit: RHS/Esrael?
  Function: Fixed a bug that caused Sonic to lock in place when trying to spindash at the edge of the screen.
  Date: 2024/07/07
+ 
+ Name: SLZ Solidity Fix
+ Credit: Mercury/RetroKoH (Fixed a few things that Mercury missed)
+ Function: Fixes goofy solidity in SLZ that allows Sonic to fall through the tops of some chunks.
+ Date: 2024/07/16
+ 
