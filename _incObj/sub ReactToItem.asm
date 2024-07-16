@@ -202,8 +202,11 @@ React_Monitor:
 
 .movingdown:
 		cmpi.b	#aniID_Roll,obAnim(a0)	; is Sonic rolling/jumping?
-		bne.s	.donothing
+		bne.s	.donothing				; if not, branch
 		neg.w	obVelY(a0)				; reverse Sonic's y-motion
+	if ReboundMod=1	; Mercury Rebound Mod
+		move.b	#1,obJumping(a0)
+	endif	; end Rebound Mod
 		addq.b	#2,obRoutine(a1)		; advance the monitor's routine counter
 
 .donothing:
@@ -266,6 +269,9 @@ React_Enemy:
 		cmp.w	obY(a1),d0
 		bhs.s	.bounceup
 		neg.w	obVelY(a0)
+	if ReboundMod=1	; Mercury Rebound Mod
+		move.b	#1,obJumping(a0)
+	endif	; end Rebound Mod
 		rts
 ; ===========================================================================
 

@@ -123,6 +123,12 @@
  Function: Adds 7th Special Stage, 7th Emerald and Super Sonic Form
  Date: 2024-07-10
  Variable: SuperMod
+ 
+ Name: Rebound Mod
+ Credit: Mercury
+ Function: Makes rebounding from enemies/monitors after rolling off a cliff onto them function the same as if they were jumped on - the rebound is cut short if the jump button is released.
+ Date: 2011-07-16
+ Variable: ReboundMod
 
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format
@@ -593,22 +599,22 @@
  Name: Boundary SpinDash Bugfix
  Credit: RHS/Esrael?
  Function: Fixed a bug that caused Sonic to lock in place when trying to spindash at the edge of the screen.
- Date: 2024/07/07
+ Date: 2024-07-07
  
  Name: SLZ Solidity Fix
  Credit: Mercury/RetroKoH (Fixed a few things that Mercury missed)
  Function: Fixes goofy solidity in SLZ that allows Sonic to fall through the tops of some chunks.
- Date: 2024/07/16
+ Date: 2024-07-16
  
  Name: MZ2 Layout Fix
  Credit: Mercury
  Function: Moves the End Sign further right so the level won't feel so truncated.
- Date: 2024/07/16
+ Date: 2024-07-16
  Depends On: Exit DLE In Special Stage And Title
  Modifies: levels\mz2.bin, objpos\mz2.bin, _inc\LevelSizeLoad & BgScrollSpeed.asm
 
  Name: Eggman Art Fix
  Credit: Mercury
  Function: Fixes Eggman's mappings so that his moustache isn't cut off.
- Date: 2024/07/16
+ Date: 2024-07-16
  Modifies: _maps\Eggman.asm
