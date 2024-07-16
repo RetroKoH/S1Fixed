@@ -498,7 +498,8 @@ v_lamp_wtrrout:		ds.b	1		; water routine at lamppost
 v_lamp_wtrstat:		ds.b	1		; water state at lamppost
 v_lamp_lives:		ds.b	1		; lives counter at lamppost
 v_emeralds:			ds.b	1		; number of chaos emeralds
-v_emldlist:			ds.b	8		; which individual emeralds you have (00 = no; 01 = yes) -- increased to 7, if only 6 emeralds, the last byte goes unused. (SuperMod)
+v_emldlist:			ds.b	1		; emerald bitfield
+				ds.b	7		; unused
 v_oscillate:		ds.w	1		; oscillation bitfield
 v_timingandscreenvariables:
 v_timingvariables:	ds.b	$40		; values which oscillate - for swinging platforms, et al

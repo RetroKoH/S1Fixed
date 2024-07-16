@@ -26,21 +26,29 @@ SSRC_Main:	; Routine 0
 		move.b	(v_emeralds).w,d1	; d1 is number of emeralds
 		subq.b	#1,d1				; subtract 1 from d1
 		bcs.w	DeleteObject		; if you have 0	emeralds, branch
+		move.b	(v_emldlist).w,d3	; d3 is the array stating which emeralds we have
 
 .loop:
+		btst	d2,d3				; Did you get the emerald?
+		beq.s   .noemerald			; if not, skip and check for the next emerald
+
 		_move.b	#id_SSRChaos,obID(a1)
 		move.w	(a2)+,obX(a1)		; set x-position
 		move.w	#$F0,obScreenY(a1)	; set y-position
-		lea		(v_emldlist).w,a3	; check which emeralds you have
-		move.b	(a3,d2.w),d3
-		move.b	d3,obFrame(a1)
-		move.b	d3,obAnim(a1)
-		addq.b	#1,d2
+		move.b	d2,obFrame(a1)
+		move.b	d2,obAnim(a1)
 		addq.b	#2,obRoutine(a1)
 		move.l	#Map_SSRC,obMap(a1)
 		move.w	#make_art_tile(ArtTile_SS_Results_Emeralds,0,1),obGfx(a1)
 		clr.b	obRender(a1)
 		lea		object_size(a1),a1	; next object
+		addq.b  #1,d2				; check for the next emerald
+		dbf		d1,.loop			; loop for d1 number of	emeralds
+		bra.s	SSRC_Flash
+
+.noemerald:
+		addq.b	#1,d2				; check for the next emerald
+		addq.b  #1,d1				; +1 to the loop, to continue checking for the rest of the emeralds
 		dbf		d1,.loop			; loop for d1 number of	emeralds
 
 SSRC_Flash:	; Routine 2

@@ -7690,19 +7690,14 @@ SS_ChkEmldNum:
 		cmpi.b	#emldCount,(v_emeralds).w		; do you have all emeralds?
 		beq.s	SS_LoadData						; if yes, branch
 		moveq	#0,d1
-		move.b	(v_emeralds).w,d1				; move total # of emeralds to d1
-		subq.b	#1,d1							; decrement, as this is a loop counter
-		blo.s	SS_LoadData						; if no emeralds, skip emerald check
-		lea		(v_emldlist).w,a3				; check which emeralds you have
+		tst.b	(v_emeralds).w					; check total # of emeralds
+		beq.s	SS_LoadData						; if no emeralds, skip emerald check
+		move.b	(v_emldlist).w,d1				; d1 = bit field that tells which emeralds we do/don't have
 
-SS_ChkEmldLoop:	
-		cmp.b	(a3,d1.w),d0
-		bne.s	SS_ChkEmldRepeat
-		bra.s	SS_Load
+		btst	d0,d1							; Did you get this emerald?
+		beq.s	SS_LoadData						; if not, branch
+		bra.s	SS_Load							; infinite loop if emerald is already obtained
 ; ===========================================================================
-
-SS_ChkEmldRepeat:
-		dbf		d1,SS_ChkEmldLoop
 
 SS_LoadData:
 		; Load player position data

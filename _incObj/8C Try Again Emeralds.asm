@@ -12,11 +12,11 @@ TCha_Main:	; Routine 0
 		movea.l	a0,a1
 		moveq	#0,d2
 		moveq	#0,d3
-		moveq	#emldCount-1,d1		; d1 = load total emeralds - 1
-		sub.b	(v_emeralds).w,d1	; d1 = number of emeralds we don't have - 1
+		moveq	#emldCount-1,d1			; d1 = load total emeralds - 1
+		sub.b	(v_emeralds).w,d1		; d1 = number of emeralds we don't have - 1
 
 .makeemerald:
-		move.b	#id_TryChaos,obID(a1) ; load emerald object
+		move.b	#id_TryChaos,obID(a1)	; load emerald object
 		addq.b	#2,obRoutine(a1)
 		move.l	#Map_ECha,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Try_Again_Emeralds,0,0),obGfx(a1)
@@ -27,23 +27,17 @@ TCha_Main:	; Routine 0
 		move.w	#$EC,obScreenY(a1)
 		move.w	obScreenY(a1),objoff_3A(a1)
 		move.b	#$1C,objoff_3C(a1)
-		lea		(v_emldlist).w,a3
-
-.chkemerald:
+		move.b	(v_emldlist).w,d4		; d4 = bit field that tells which emeralds we do/don't have
 		moveq	#0,d0
-		move.b	(v_emeralds).w,d0	; load # of total emeralds to d0
-		subq.w	#1,d0
-		bcs.s	.loc_5B42			; branch ahead if you have no emeralds
+		move.b	(v_emeralds).w,d0		; load # of total emeralds to d0
+		beq.s	.loc_5B42				; branch ahead if you have no emeralds
 
-.chkloop:
-		cmp.b	(a3,d0.w),d2		; Did you get the emerald?
-		bne.s	.notgot				; if not, branch ahead and set the mappings.
-		addq.b	#1,d2				; Check for the next emerald.
-		bra.s	.chkemerald			; Jump back and check again.
+	.chkemerald:
+		btst	d2,d4			; Did you get the emerald?
+		beq.s	.loc_5B42		; if not, branch ahead and set the mappings.
+		addq.b	#1,d2			; Check for the next emerald.
+		bra.s	.chkemerald		; Jump back and check again.
 ; ===========================================================================
-
-.notgot:
-		dbf		d0,.chkloop
 
 .loc_5B42:
 		move.b	d2,obFrame(a1)

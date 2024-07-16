@@ -560,10 +560,7 @@ Obj09_GetEmer:
 		cmpi.b	#emldCount,(v_emeralds).w	; do you have all the emeralds?
 		beq.s	Obj09_NoEmer				; if yes, branch
 		subi.b	#$3B,d4
-		moveq	#0,d0
-		move.b	(v_emeralds).w,d0
-		lea		(v_emldlist).w,a2
-		move.b	d4,(a2,d0.w)
+		bset	d4,(v_emldlist).w			; set the appropriate bit in the emerald bitfield
 		addq.b	#1,(v_emeralds).w			; add 1 to number of emeralds
 
 Obj09_NoEmer:
