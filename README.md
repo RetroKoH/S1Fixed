@@ -600,3 +600,11 @@
  Function: Fixes goofy solidity in SLZ that allows Sonic to fall through the tops of some chunks.
  Date: 2024/07/16
  
+ Name: MZ2 Layout Fix
+ Credit: Mercury
+ Function: Moves the End Sign further right so the level won't feel so truncated.
+ Date: 2024/07/16
+ Depends On: Exit DLE In Special Stage And Title
+ Modifies: levels\mz2.bin, objpos\mz2.bin, _inc\LevelSizeLoad & BgScrollSpeed.asm
+
+ 
