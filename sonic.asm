@@ -1966,8 +1966,7 @@ ResetLevel:
 		clr.l	(v_score).w					; clear score
 		clr.b	(v_lastspecial).w			; clear special stage number
 		clr.b	(v_emeralds).w				; clear emerald count
-		clr.l	(v_emldlist).w				; clear emeralds
-		clr.l	(v_emldlist+4).w			; clear emeralds
+		clr.b	(v_emldlist).w				; clear emerald array
 		clr.b	(v_continues).w				; clear continues
 		move.l	#5000,(v_scorelife).w		; extra life is awarded at 50000 points
 		rts
@@ -7681,20 +7680,20 @@ emldCount: = 6
 
 SS_Load:
 		moveq	#0,d0
-		move.b	(v_lastspecial).w,d0		; load number of last special stage entered
-		addq.b	#1,(v_lastspecial).w
+		move.b	(v_lastspecial).w,d0			; load number of last special stage entered
+		addq.b	#1,(v_lastspecial).w			; increment, as we are entering a special stage
 		cmpi.b	#emldCount,(v_lastspecial).w
 		blo.s	SS_ChkEmldNum
-		clr.b	(v_lastspecial).w			; reset if higher than 6/7 (emldCount)
+		clr.b	(v_lastspecial).w				; reset if higher than 6/7 (emldCount)
 
 SS_ChkEmldNum:
-		cmpi.b	#emldCount,(v_emeralds).w	; do you have all emeralds?
-		beq.s	SS_LoadData					; if yes, branch
+		cmpi.b	#emldCount,(v_emeralds).w		; do you have all emeralds?
+		beq.s	SS_LoadData						; if yes, branch
 		moveq	#0,d1
-		move.b	(v_emeralds).w,d1
-		subq.b	#1,d1
-		blo.s	SS_LoadData
-		lea		(v_emldlist).w,a3			; check which emeralds you have
+		move.b	(v_emeralds).w,d1				; move total # of emeralds to d1
+		subq.b	#1,d1							; decrement, as this is a loop counter
+		blo.s	SS_LoadData						; if no emeralds, skip emerald check
+		lea		(v_emldlist).w,a3				; check which emeralds you have
 
 SS_ChkEmldLoop:	
 		cmp.b	(a3,d1.w),d0

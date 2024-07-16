@@ -437,14 +437,14 @@ sub_1BCE8:
 		adda.w	d4,a1
 		moveq	#0,d5
 		move.b	(a1)+,d4
-		bsr.s	sub_1BD30
+		bsr.s	Obj09_ChkForSolids
 		move.b	(a1)+,d4
-		bsr.s	sub_1BD30
+		bsr.s	Obj09_ChkForSolids
 		adda.w	#$7E,a1
 		move.b	(a1)+,d4
-		bsr.s	sub_1BD30
+		bsr.s	Obj09_ChkForSolids
 		move.b	(a1)+,d4
-		bsr.s	sub_1BD30
+		bsr.s	Obj09_ChkForSolids
 		tst.b	d5
 		rts	
 ; End of function sub_1BCE8
@@ -453,25 +453,25 @@ sub_1BCE8:
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-sub_1BD30:
-		beq.s	locret_1BD44
-		cmpi.b	#$28,d4
-		beq.s	locret_1BD44
-		cmpi.b	#$3A,d4
-		blo.s	loc_1BD46
-		cmpi.b	#$4B,d4
-		bhs.s	loc_1BD46
+Obj09_ChkForSolids: ;sub_1BD30:
+		beq.s	.noSolidFound			; if no object detected, branch and exit
+		cmpi.b	#SSBlock_1Up,d4			; did Sonic collide w/ a 1-Up icon?
+		beq.s	.noSolidFound			; if yes, branch and exit
+		cmpi.b	#SSBlock_Ring,d4		; is the object ID < $3A (ring)?
+		blo.s	.solidFound				; if yes, this object was solid.
+		cmpi.b	#SSBlock_GlassAni1,d4	; is this object animated glass?
+		bhs.s	.solidFound				; if yes, this object was solid
 
-locret_1BD44:
+.noSolidFound:
 		rts	
 ; ===========================================================================
 
-loc_1BD46:
+.solidFound:
 		move.b	d4,objoff_30(a0)
 		move.l	a1,objoff_32(a0)
 		moveq	#-1,d5
 		rts	
-; End of function sub_1BD30
+; End of function Obj09_ChkForSolids
 
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
