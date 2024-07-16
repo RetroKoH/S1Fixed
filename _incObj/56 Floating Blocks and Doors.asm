@@ -5,7 +5,7 @@
 fb_origX = objoff_34		; original x-axis position
 fb_origY = objoff_30		; original y-axis position
 fb_height = objoff_3A		; total object height
-fb_type = objoff_3C		; subtype (2nd digit only)
+fb_type = objoff_3C			; subtype (2nd digit only)
 
 ; ===========================================================================
 FBlock_Var:	; width/2, height/2
@@ -17,6 +17,8 @@ FBlock_Var:	; width/2, height/2
 		dc.b  $10, $10	; subtype 5x/Dx
 		dc.b	8, $20	; subtype 6x/Ex
 		dc.b  $40, $10	; subtype 7x/Fx
+		
+	; Giant stairs seem to be formed by subtypes $58, 59, 5A, and 5B placed together
 ; ===========================================================================
 
 FloatingBlock:
@@ -37,10 +39,10 @@ FBlock_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.w	#$180,obPriority(a0)	; RetroKoH S2 Priority Manager
 		moveq	#0,d0
-		move.b	obSubtype(a0),d0 ; get subtype
+		move.b	obSubtype(a0),d0		; get subtype
 		lsr.w	#3,d0
-		andi.w	#$E,d0		; read only the 1st digit
-		lea		FBlock_Var(pc,d0.w),a2 ; get size data
+		andi.w	#$E,d0					; read only the 1st digit
+		lea		FBlock_Var(pc,d0.w),a2	; get size data
 		move.b	(a2)+,obActWid(a0)
 		move.b	(a2),obHeight(a0)
 		lsr.w	#1,d0

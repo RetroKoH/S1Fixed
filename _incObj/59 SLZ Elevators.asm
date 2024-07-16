@@ -45,8 +45,9 @@ Elev_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
-		bpl.s	.normal		; branch for types 00-7F
-		addq.b	#4,obRoutine(a0) ; goto Elev_MakeMulti next
+		bpl.s	.normal				; branch for types 00-7F
+	; Elevator Spawners:
+		addq.b	#4,obRoutine(a0)	; goto Elev_MakeMulti next
 		andi.w	#$7F,d0
 		mulu.w	#6,d0
 		move.w	d0,elev_dist(a0)
@@ -58,18 +59,18 @@ Elev_Main:	; Routine 0
 .normal:
 		lsr.w	#3,d0
 		andi.w	#$1E,d0
-		lea	Elev_Var1(pc,d0.w),a2
-		move.b	(a2)+,obActWid(a0) ; set width
-		move.b	(a2)+,obFrame(a0) ; set frame
+		lea		Elev_Var1(pc,d0.w),a2
+		move.b	(a2)+,obActWid(a0)		; set width
+		move.b	(a2)+,obFrame(a0)		; set frame
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
 		add.w	d0,d0
 		andi.w	#$1E,d0
-		lea	Elev_Var2(pc,d0.w),a2
+		lea		Elev_Var2(pc,d0.w),a2
 		move.b	(a2)+,d0
 		lsl.w	#2,d0
-		move.w	d0,elev_dist(a0)	; set distance to move
-		move.b	(a2)+,obSubtype(a0)	; set type
+		move.w	d0,elev_dist(a0)		; set distance to move
+		move.b	(a2)+,obSubtype(a0)		; set type
 		move.l	#Map_Elev,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a0)
 		move.b	#4,obRender(a0)
