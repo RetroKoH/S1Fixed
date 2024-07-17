@@ -129,6 +129,12 @@
  Function: Makes rebounding from enemies/monitors after rolling off a cliff onto them function the same as if they were jumped on - the rebound is cut short if the jump button is released.
  Date: 2011-07-16
  Variable: ReboundMod
+ 
+ Name: HUD Centiseconds
+ Credit: Mercury
+ Function: Adds Sonic CD-style centiseconds to the HUD
+ Date: 2024-07-17
+ Variable: HUDCentiseconds
 
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format

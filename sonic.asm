@@ -47,6 +47,7 @@ HUDScrolling: = 1						; if set to 1, HUD Scrolls in and out of view during game
 AfterImagesOn: = 1						; if set to 1, an after-image effect is applied to the Speed Shoes.
 SuperMod: = 1							; if set to 1, a 7th emerald is available and you can turn Super.
 ReboundMod: = 1							; if set to 1, rebounding from enemies/monitors after rolling off a cliff onto them functions the same as if they were jumped on - the rebound is cut short if the jump button is released.
+HUDCentiseconds: = 1					; if set to 1, HUD TIME uses Centiseconds, a la Sonic CD
 
 	include "MacroSetup.asm"
 	include	"Constants.asm"
@@ -2427,6 +2428,11 @@ Level_LoadObj:
 		bne.s	Level_SkipClr			; if yes, branch
 		clr.w	(v_rings).w				; clear rings
 		clr.l	(v_time).w				; clear time
+
+	if HUDCentiseconds=1	; Mercury HUD Centiseconds
+		clr.b	(v_centstep).w
+	endif	; HUD Centiseconds end
+
 		clr.b	(v_lifecount).w			; clear lives counter
 
 Level_SkipClr:
@@ -2437,7 +2443,11 @@ Level_SkipClr:
 		bsr.w	OscillateNumInit
 		move.b	#1,(f_scorecount).w		; update score counter
 		move.b	#1,(f_ringcount).w		; update rings counter
+
+	if HUDCentiseconds=0	; Mercury HUD Centiseconds
 		move.b	#1,(f_timecount).w		; update time counter
+	endif	; HUD Centiseconds end
+
 		clr.w	(v_btnpushtime1).w
 		lea		(DemoDataPtr).l,a1		; load demo data
 		moveq	#0,d0
@@ -2503,10 +2513,16 @@ Level_ClrCardArt:
 
 Level_StartGame:
 		; The above check is for the S2 HUD Manager (RetroKoH)
+		; This also removes rings from the end demos. Need to fix this another way.
 		tst.w	(f_demo).w
-		bmi.s	.demo
-		move.b	#1,(f_levelstarted).w ; RetroKoH S2 Rings Manager
+		bmi.s	.demo					; Branch if End Credits Demo
+		move.b	#1,(f_levelstarted).w	; RetroKoH S2 Rings Manager
 .demo:
+
+	if HUDCentiseconds=1	;Mercury HUD Centiseconds
+		move.b	#1,(f_timecount).w ; update time counter
+	endif	;end HUD Centiseconds
+
 		bclr	#7,(v_gamemode).w ; subtract $80 from mode to end pre-level stuff
 
 ; ---------------------------------------------------------------------------
@@ -3291,6 +3307,11 @@ Cont_GotoLevel:
 		move.b	#3,(v_lives).w				; set lives to 3
 		clr.w	(v_rings).w					; clear rings
 		clr.l	(v_time).w					; clear time
+
+	if HUDCentiseconds=1	; Mercury HUD Centiseconds
+		clr.b	(v_centstep).w
+	endif	; HUD Centiseconds End
+
 		clr.l	(v_score).w					; clear score
 		clr.b	(v_lastlamp).w				; clear lamppost count
 		subq.b	#1,(v_continues).w			; subtract 1 from continues
@@ -7778,7 +7799,15 @@ Map_SS_Down:	include	"_maps/SS DOWN Block.asm"
 
 		include	"_incObj/21 AfterImages.asm"
 
+	if HUDCentiseconds=1	;Mercury HUD Centiseconds
+
+Map_HUD:	include	"_maps/HUD (centiseconds).asm"
+	
+	else
+	
 Map_HUD:	include	"_maps/HUD.asm"
+	
+	endif	;end HUD Centiseconds
 
 ; ---------------------------------------------------------------------------
 ; Add points subroutine
@@ -7813,7 +7842,7 @@ AddPoints:
 	; Lives Over/Underflow Fix end
 		
 		move.w	#bgm_ExtraLife,d0
-		jmp	(PlaySound).l
+		jmp		(PlaySound).l
 
 
 .locret_1C6B6:
@@ -7878,8 +7907,15 @@ loc_1C962:
 
 		include	"_inc/HUD (part 2).asm"
 
+	if HUDCentiseconds=1	; Mercury HUD Centiseconds
+Art_Hud:	binclude	"artunc/HUD Numbers (centiseconds).bin" ; 8x16 pixel numbers on HUD
+		even
+	else
 Art_Hud:	binclude	"artunc/HUD Numbers.bin" ; 8x16 pixel numbers on HUD
 		even
+	endif	; HUD Centiseconds End
+
+
 Art_LivesNums:	binclude	"artunc/Lives Counter Numbers.bin" ; 8x8 pixel numbers on lives counter
 		even
 

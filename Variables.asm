@@ -470,13 +470,13 @@ f_timecount:		ds.b	1		; time counter update flag
 f_scorecount:		ds.b	1		; score counter update flag
 v_rings:			ds.w	1		; rings
 v_ringbyte = v_rings+1				; low byte for rings
-v_time:				ds.l	1		; time
+v_time:				ds.l	1		; time (First byte is unused)
 v_timemin = v_time+1				; time - minutes
 v_timesec = v_time+2				; time - seconds
 v_timecent = v_time+3				; time - centiseconds
 v_score:			ds.l	1		; score
-			ds.b	6		; unused
-
+			ds.b	5		; unused
+v_centstep:			ds.b	1		; value used to increment centiseconds
 v_lastlamp:			ds.b	2		; number of the last lamppost you hit
 v_lamp_xpos:		ds.w	1		; x-axis for Sonic to respawn at lamppost
 v_lamp_ypos:		ds.w	1		; y-axis for Sonic to respawn at lamppost

@@ -30,35 +30,69 @@ HUD_Update:
 
 .chktime:
 		tst.b	(f_timecount).w				; does the time	need updating?
-		beq.s	.chklives					; if not, branch
+		beq.w	.chklives					; if not, branch
 		tst.w	(f_pause).w					; is the game paused?
 		bne.s	.chklives					; if yes, branch
 		lea		(v_time).w,a1
-		cmpi.l	#(9*$10000)+(59*$100)+59,(a1)+ ; is the time 9:59:59?
-		beq.s	TimeOver					; if yes, branch
 
-		addq.b	#1,-(a1)					; increment 1/60s counter
-		cmpi.b	#60,(a1)					; check if passed 60
+	if HUDCentiseconds=1	; Mercury HUD Centiseconds
+		cmpi.l	#(9*$10000)+(59*$100)+59,(a1)+	; is the time 9:59:59?
+		beq.w	TimeOver						; if yes, branch
+
+		move.b	(v_centstep).w,d1
+		addi.b	#1,d1
+		cmpi.b	#3,d1
+		bne.s	.skip
+		move.b	#0,d1
+		
+.skip:
+		move.b	d1,(v_centstep).w
+		cmpi.b	#2,d1
+		beq.s	.skip2
+		addi.b	#1,d1
+		
+.skip2:
+		add.b	d1,-(a1)
+		cmpi.b	#100,(a1)
+		bcs.s	.docent
+
+	else
+
+		cmpi.l	#(9*$10000)+(59*$100)+59,(a1)+	; is the time 9:59:59?
+		beq.s	TimeOver						; if yes, branch
+
+		addq.b	#1,-(a1)						; increment 1/60s counter
+		cmpi.b	#60,(a1)						; check if passed 60
 		blo.s	.chklives
+	endif	; HUD Centiseconds End
+
 		clr.b	(a1)
-		addq.b	#1,-(a1)					; increment second counter
-		cmpi.b	#60,(a1)					; check if passed 60
+		addq.b	#1,-(a1)						; increment second counter
+		cmpi.b	#60,(a1)						; check if passed 60
 		blo.s	.updatetime
 		clr.b	(a1)
-		addq.b	#1,-(a1)					; increment minute counter
-		cmpi.b	#9,(a1)						; check if passed 9
+		addq.b	#1,-(a1)						; increment minute counter
+		cmpi.b	#9,(a1)							; check if passed 9
 		blo.s	.updatetime
-		move.b	#9,(a1)						; keep as 9
+		move.b	#9,(a1)							; keep as 9
 
 .updatetime:
 		locVRAM	(ArtTile_HUD+$26)*$20,d0	; set VRAM address -- RetroKoH VRAM Overhaul
 		moveq	#0,d1
-		move.b	(v_timemin).w,d1 ; load	minutes
+		move.b	(v_timemin).w,d1 			; load minutes
 		bsr.w	Hud_Mins
 		locVRAM	(ArtTile_HUD+$2A)*$20,d0	; set VRAM address -- RetroKoH VRAM Overhaul
 		moveq	#0,d1
-		move.b	(v_timesec).w,d1 ; load	seconds
+		move.b	(v_timesec).w,d1 			; load seconds
 		bsr.w	Hud_Secs
+
+	if HUDCentiseconds=1	; Mercury HUD Centiseconds
+.docent:
+		locVRAM	$F440,d0			; Temporary location
+		moveq	#0,d1
+		move.b	(v_timecent).w,d1	; load centiseconds
+		bsr.w	Hud_Secs
+	endc	; HUD Centiseconds End
 
 .chklives:
 		tst.b	(f_lifecount).w ; does the lives counter need updating?
@@ -145,8 +179,24 @@ Hud_LoadZero:
 		bra.s	loc_1C83E
 ; End of function Hud_LoadZero
 
+	if HUDCentiseconds=1	;Mercury HUD Centiseconds
 ; ---------------------------------------------------------------------------
-; Subroutine to	load uncompressed HUD patterns ("E", "0", colon)
+; Subroutine to	load " on the HUD
+; ---------------------------------------------------------------------------
+
+; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+
+
+Hud_LoadMarks:				; XREF: HUD_Update
+		locVRAM	$F400		; Temporary location
+		lea		Hud_TilesMarks(pc),a2
+		move.w	#2,d2
+		bra.s	loc_1C83E
+; End of function Hud_LoadMarks
+	endif	; HUD Centiseconds End
+
+; ---------------------------------------------------------------------------
+; Subroutine to	load uncompressed HUD patterns ("E", "0", colon or ')
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -155,6 +205,11 @@ Hud_LoadZero:
 Hud_Base:
 		lea		(vdp_data_port).l,a6
 		bsr.w	Hud_Lives
+
+	if HUDCentiseconds=1	; Mercury HUD Centiseconds
+		bsr.s	Hud_LoadMarks
+	endif	; HUD Centiseconds End
+
 		locVRAM	(ArtTile_HUD+$16)*$20	; set VRAM address -- RetroKoH VRAM Overhaul
 		lea		Hud_TilesBase(pc),a2
 		moveq	#$E,d2					; Optimized from move.w
@@ -188,7 +243,13 @@ loc_1C85E:
 ; End of function Hud_Base
 
 ; ===========================================================================
+	if HUDCentiseconds=1	;Mercury HUD Centiseconds
+Hud_TilesMarks:	dc.b $1A, 0, 0, 0
+Hud_TilesBase:	dc.b $16, $FF, $FF, $FF, $FF, $FF, $FF,	0, 0, $18, 0, 0
+	else
 Hud_TilesBase:	dc.b $16, $FF, $FF, $FF, $FF, $FF, $FF,	0, 0, $14, 0, 0
+	endif	; HUD Centiseconds End
+
 Hud_TilesZero:	dc.b $FF, $FF, 0, 0
 ; ---------------------------------------------------------------------------
 ; Subroutine to	load debug mode	numbers	patterns
