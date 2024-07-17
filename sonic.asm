@@ -47,7 +47,7 @@ HUDScrolling: = 1						; if set to 1, HUD Scrolls in and out of view during game
 AfterImagesOn: = 1						; if set to 1, an after-image effect is applied to the Speed Shoes.
 SuperMod: = 1							; if set to 1, a 7th emerald is available and you can turn Super.
 ReboundMod: = 1							; if set to 1, rebounding from enemies/monitors after rolling off a cliff onto them functions the same as if they were jumped on - the rebound is cut short if the jump button is released.
-HUDCentiseconds: = 1					; if set to 1, HUD TIME uses Centiseconds, a la Sonic CD
+HUDCentiseconds: = 0					; if set to 1, HUD TIME uses Centiseconds, a la Sonic CD (CURRENTLY BREAKS RING COUNT in Labyrinth Zone)
 
 	include "MacroSetup.asm"
 	include	"Constants.asm"
@@ -2302,7 +2302,7 @@ Level_ClrRam:
 
 		disable_ints
 		bsr.w	ClearScreen
-		lea	(vdp_control_port).l,a6
+		lea		(vdp_control_port).l,a6
 		move.w	#$8B03,(a6)	; line scroll mode
 		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
 		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
@@ -2322,7 +2322,7 @@ Level_ClrRam:
 		moveq	#0,d0
 		move.b	(v_act).w,d0
 		add.w	d0,d0
-		lea	(WaterHeight).l,a1 ; load water	height array
+		lea		(WaterHeight).l,a1 ; load water	height array
 		move.w	(a1,d0.w),d0
 		move.w	d0,(v_waterpos1).w ; set water heights
 		move.w	d0,(v_waterpos2).w
@@ -2365,7 +2365,7 @@ Level_BgmNotLZ4:
 		moveq	#6,d0		; use 6th music (FZ)
 
 Level_PlayBgm:
-		lea	(MusicList).l,a1 ; load	music playlist
+		lea		(MusicList).l,a1 ; load	music playlist
 		move.b	(a1,d0.w),d0
 		bsr.w	PlaySound	; play music
 		move.b	#id_TitleCard,(v_titlecard).w ; load title card object

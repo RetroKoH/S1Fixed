@@ -372,7 +372,7 @@ loc_1C8FE:
 
 loc_1C92C:
 		addi.l	#$400000,d0
-		dbf	d6,Hud_ScoreLoop
+		dbf		d6,Hud_ScoreLoop
 
 		rts	
 ; End of function Hud_Score

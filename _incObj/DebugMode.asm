@@ -192,6 +192,9 @@ Debug_ChgItem:
 		rts	
 ; ===========================================================================
 
+.stayindebug:
+		rts
+
 .backtonormal:
 	; RetroKoH Debug Mode Fix
 		btst	#bitB,(v_jpadpress1).w				; is button B pressed?
@@ -219,10 +222,9 @@ Debug_ChgItem:
 		move.w	(v_limittopdb).w,(v_limittop2).w	; restore level boundaries
 		move.w	(v_limitbtmdb).w,(v_limitbtm1).w
 		jsr		(Hud_Base).l						; reload basic HUD gfx	-- RetroKoH Debug Mode Improvement
-		move.l	#$01010101,(f_lifecount).w			; update all counters (life, ring, time score)
-		
-.stayindebug:
-		rts
+		move.b	#1,(f_ringcount).w					; update ring counter
+		move.b	#1,(f_scorecount).w					; update score counter
+		jmp		(HUD_Update.updatetime).l			; directly update timer
 
 .special
 		clr.w	(v_ssangle).w
