@@ -20,9 +20,9 @@ Cbal_Main:	; Routine 0
 		move.b	#$87,obColType(a0)
 		move.b	#8,obActWid(a0)
 		moveq	#0,d0
-		move.b	obSubtype(a0),d0 ; move subtype to d0
-		mulu.w	#60,d0		; multiply by 60 frames	(1 second)
-		move.w	d0,cbal_time(a0) ; set explosion time
+		move.b	obSubtype(a0),d0	; move subtype to d0
+		mulu.w	#60,d0				; multiply by 60 frames	(1 second)
+		move.w	d0,cbal_time(a0)	; set explosion time
 		move.b	#4,obFrame(a0)
 
 Cbal_Bounce:	; Routine 2
@@ -30,11 +30,11 @@ Cbal_Bounce:	; Routine 2
 		tst.w	obVelY(a0)
 		bmi.s	Cbal_ChkExplode
 		jsr		(ObjFloorDist).l
-		tst.w	d1		; has ball hit the floor?
-		bpl.s	Cbal_ChkExplode	; if not, branch
+		tst.w	d1					; has ball hit the floor?
+		bpl.s	Cbal_ChkExplode		; if not, branch
 
 		add.w	d1,obY(a0)
-		move.w	#-$300,obVelY(a0) ; bounce
+		move.w	#-$300,obVelY(a0)	; bounce
 		tst.b	d3
 		beq.s	Cbal_ChkExplode
 		bmi.s	loc_8CA4
@@ -50,25 +50,25 @@ loc_8CA4:
 		neg.w	obVelX(a0)
 
 Cbal_ChkExplode:
-		subq.w	#1,cbal_time(a0) ; subtract 1 from explosion time
-		bpl.s	Cbal_Animate	; if time is > 0, branch
+		subq.w	#1,cbal_time(a0)			; subtract 1 from explosion time
+		bpl.s	Cbal_Animate				; if time is > 0, branch
 
 Cbal_Explode:
 		_move.b	#id_MissileDissolve,obID(a0)
 		_move.b	#id_ExplosionBomb,obID(a0)	; change object	to an explosion	($3F)
-		clr.b	obRoutine(a0) ; reset routine counter
-		bra.w	ExplosionBomb	; jump to explosion code
+		clr.b	obRoutine(a0)				; reset routine counter
+		bra.w	ExplosionBomb				; jump to explosion code
 ; ===========================================================================
 
 Cbal_Animate:
-		subq.b	#1,obTimeFrame(a0) ; subtract 1 from frame duration
+		subq.b	#1,obTimeFrame(a0)	; subtract 1 from frame duration
 		bpl.s	Cbal_Display
-		move.b	#5,obTimeFrame(a0) ; set frame duration to 5 frames
-		bchg	#0,obFrame(a0)	; change frame
+		move.b	#5,obTimeFrame(a0)	; set frame duration to 5 frames
+		bchg	#0,obFrame(a0)		; change frame
 
 Cbal_Display:
 		move.w	(v_limitbtm2).w,d0
 		addi.w	#$E0,d0
-		cmp.w	obY(a0),d0		; has object fallen off	the level?
-		blo.w	DeleteObject	; if yes, branch
-		bra.w	DisplaySprite	; Clownacy DisplaySprite Fix
+		cmp.w	obY(a0),d0			; has object fallen off	the level?
+		blo.w	DeleteObject		; if yes, branch
+		bra.w	DisplayAndCollision	; Clownacy DisplaySprite Fix
