@@ -31,7 +31,6 @@ RollJumpLockActive: = 0					; if set to 1, the original roll jump lock is mainta
 SpikeBugFix: = 1						; if set to 1, the spike "bug" is fixed
 GHZForeverPal: = 1						; if set to 1, GHZ is set to Sonic 1 Forever's palette
 EndLevelFadeMusic: = 1					; if set to 1, music will fade out as the level ends (Signpost or Prison Capsule)
-WarmPalettes: = 0						; if set to 1, palettes take on a warmer hue (Continuation of Mercury's mod)
 ObjectsFreeze: = 0						; if set to 1, objects freeze on death as normal
 SpeedUpScoreTally: = 2					; if set to 1, score tally can be sped up w/ ABC. If 2, it automatically tallies immediately.
 SpinDashEnabled: = 1					; if set to 1, Spin dashing is enabled for Sonic.
@@ -39,14 +38,20 @@ SkidDustEnabled: = 1					; if set to 1, Skid dust will occur when coming to a st
 SpinDashCancel: = SpinDashEnabled*1		; if set to 1, Spin Dash can be cancelled by not pressing ABC
 SpinDashNoRevDown: = SpinDashEnabled*1	; if set to 1, Spin Dash will not rev down so long as ABC is held down
 PeeloutEnabled: = 1						; if set to 1, Peelout is enabled for Sonic (SFX still don't work properly)
-ShieldsMode: = 3						; 0 - Blue Shield only, 1 - Blue Shield + Instashield, 2 - Blue Shield + Elementals, 3 - Elemental only.
 AirRollEnabled: = 1						; if set to 1, Air rolling is enabled for Sonic.
 CDBalancing: = 1						; if set to 1, Sonic has 2 Balancing animations, taken from Sonic CD.
-DropDashEnabled: = 1					; if set to 1, Drop dashing is enabled for Sonic.
 HUDScrolling: = 1						; if set to 1, HUD Scrolls in and out of view during gameplay.
+ReboundMod: = 1							; if set to 1, rebounding from enemies/monitors after rolling off a cliff onto them functions the same as if they were jumped on - the rebound is cut short if the jump button is released.
+BlocksInROM: = 1
+ChunksInROM: = 1
+
+
+; Incomplete Mods (Either missing features, or contains bugs)
+WarmPalettes: = 0						; if set to 1, palettes take on a warmer hue (Continuation of Mercury's mod)
+ShieldsMode: = 3						; 0 - Blue Shield only, 1 - Blue Shield + Instashield, 2 - Blue Shield + Elementals, 3 - Elemental only.
+DropDashEnabled: = 1					; if set to 1, Drop dashing is enabled for Sonic.
 AfterImagesOn: = 1						; if set to 1, an after-image effect is applied to the Speed Shoes.
 SuperMod: = 1							; if set to 1, a 7th emerald is available and you can turn Super.
-ReboundMod: = 1							; if set to 1, rebounding from enemies/monitors after rolling off a cliff onto them functions the same as if they were jumped on - the rebound is cut short if the jump button is released.
 HUDCentiseconds: = 0					; if set to 1, HUD TIME uses Centiseconds, a la Sonic CD (CURRENTLY BREAKS RING COUNT in Labyrinth Zone)
 
 	include "MacroSetup.asm"
@@ -1729,13 +1734,24 @@ Tit_LoadText:
 		clr.w	(v_pcyc_time).w			; disable palette cycling
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformLayers
-		lea		(v_16x16).w,a1
-		lea		(Blk16_GHZ).l,a0		; load GHZ 16x16 mappings
+
+	if BlocksInROM=1	;Mercury Blocks In ROM
+		move.l	#Blk16_GHZ,(v_16x16).l		; store the ROM address for the block mappings
+	else
+		lea		(v_16x16).w,a1				; address to load decompressed blocks to
+		lea		(Blk16_GHZ).l,a0			; load GHZ 16x16 mappings
 		clr.w	d0
 		bsr.w	EniDec
-		lea		(Blk128_GHZ).l,a0		; load GHZ 128x128 mappings
-		lea		(v_128x128&$FFFFFF).l,a1
+	endif
+
+	if ChunksInROM=1	;Mercury Chunks In ROM
+		move.l	#Blk128_GHZ,(v_128x128).l	; store the ROM address for the chunk mappings
+	else
+		lea		(Blk128_GHZ).l,a0			; load GHZ 128x128 mappings
+		lea		(v_128x128&$FFFFFF).l,a1	; address to load decompressed chunks to
 		bsr.w	KosDec
+	endif
+
 		bsr.w	LevelLayoutLoad
 		bsr.w	PaletteFadeOut
 		disable_ints
@@ -1746,12 +1762,17 @@ Tit_LoadText:
 		lea		(v_lvllayout+$80).w,a4	; MJ: Load address of layout BG
 		move.w	#$6000,d2
 		bsr.w	DrawChunks
-		lea		(v_128x128&$FFFFFF).l,a1
-		lea		(Eni_Title).l,a0		; load title screen mappings
+
+	if ChunksInROM=1	;Mercury Chunks In ROM
+		copyTilemap	Eni_Title,$C208,$21,$15				; RetroKoH Title Screen Adjustment
+	else
+		lea		(v_128x128&$FFFFFF).l,a1				; address to load decompressed chunks to
+		lea		(Eni_Title).l,a0						; load title screen mappings
 		clr.w	d0
 		bsr.w	EniDec
 
 		copyTilemap	v_128x128&$FFFFFF,$C208,$21,$15		; RetroKoH Title Screen Adjustment
+	endif
 
 		locVRAM	ArtTile_Level*$20
 		lea		(Nem_Title).l,a0		; load Title Screen patterns -- Clownacy S2 Level Art Loading
@@ -4290,7 +4311,13 @@ GetBlockData:
 		add.w	(a3),d5		; MJ: load X position to d5
 GetBlockData_2:
 		add.w	4(a3),d4	; MJ: load Y position to d4
+
+	if BlocksInROM=1	;Mercury Blocks In ROM
+		movea.l	(v_16x16).l,a1
+	else
 		lea	(v_16x16).w,a1	; MJ: load Block's location
+	endif	;end Blocks In ROM
+
 		; Turn Y coordinate into index into level layout
 		move.w	d4,d3		; MJ: copy Y position to d3
 		andi.w	#$780,d3	; MJ: get within 780 (Not 380) (E00 pixels (not 700)) in multiples of 80
@@ -4302,7 +4329,13 @@ GetBlockData_2:
 		; Get chunk from level layout
 		lsl.w	#1,d3		; MJ: multiply by 2 (So it skips the BG)
 		add.w	d3,d0		; MJ: add calc'd Y pos
+
+	if ChunksInROM=1	;Mercury Chunks In ROM
+		moveq	#0,d3
+	else
 		moveq	#-1,d3		; MJ: prepare FFFF in d3
+	endif	;Chunks In ROM
+
 		move.b	(a4,d0.w),d3	; MJ: collect correct chunk ID from layout
 		; Turn chunk ID into index into chunk table
 		andi.w	#$FF,d3		; MJ: keep within FF
@@ -4314,6 +4347,11 @@ GetBlockData_2:
 		; Get block metadata from chunk
 		add.w	d4,d3		; MJ: add calc'd Y pos to ror'd d3
 		add.w	d5,d3		; MJ: add calc'd X pos to ror'd d3
+
+	if ChunksInROM=1	;Mercury Chunks In ROM
+		add.l	(v_128x128).l,d3
+	endif	;Chunks In ROM
+
 		movea.l	d3,a0		; MJ: set address (Chunk to read)
 		move.w	(a0),d3
 		; Turn block ID into address
@@ -4547,17 +4585,29 @@ LevelDataLoad:
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
 		lsl.w	#4,d0
-		lea	(LevelHeaders).l,a2
-		lea	(a2,d0.w),a2
+		lea		(LevelHeaders).l,a2
+		lea		(a2,d0.w),a2
 		move.l	a2,-(sp)
 		addq.l	#4,a2
+
+	if BlocksInROM=1	;Mercury Blocks In ROM
+		move.l	(a2)+,(v_16x16).l	; store the ROM address for the block mappings
+		andi.l	#$FFFFFF,(v_16x16).l
+	else
 		movea.l	(a2)+,a0
-		lea	(v_16x16).w,a1	; RAM address for 16x16 mappings
+		lea		(v_16x16).w,a1	; RAM address for 16x16 mappings
 		clr.w	d0
 		bsr.w	EniDec
+	endif
+
+	if ChunksInROM=1	;Mercury Chunks In ROM
+		move.l	(a2)+,(v_128x128).l	; store the ROM address for the chunk mappings
+	else
 		movea.l	(a2)+,a0
-		lea	(v_128x128&$FFFFFF).l,a1 ; RAM address for 128x128 mappings
+		lea		(v_128x128&$FFFFFF).l,a1 ; RAM address for 128x128 mappings
 		bsr.w	KosDec
+	endif
+
 		bsr.w	LevelLayoutLoad
 		move.w	(a2)+,d0
 		move.w	(a2),d0
@@ -7934,8 +7984,17 @@ Nem_SegaLogo:	binclude	"artnem/Sega Logo.nem" ; large Sega logo
 			even
 Eni_SegaLogo:	binclude	"tilemaps/Sega Logo.eni" ; large Sega logo (mappings)
 			even
-Eni_Title:		binclude	"tilemaps/Title Screen.eni" ; title screen foreground (mappings)
+
+
+	if ChunksInROM=1	;Mercury Chunks In ROM
+Eni_Title:	binclude	"tilemaps_u\Title Screen.bin" ; title screen foreground (mappings)
 		even
+	else
+Eni_Title:	binclude	"tilemaps\Title Screen.bin" ; title screen foreground (mappings)
+		even
+	endif	;Chunks In ROM
+
+
 Nem_TitleFg:	binclude	"artnem/Title Screen Foreground.nem"
 		even
 Nem_TitleSonic:	binclude	"artnem/Title Screen Sonic.nem"
@@ -8286,47 +8345,87 @@ Nem_Flicky:	binclude	"artnem/Animal Flicky.nem"
 		even
 Nem_Squirrel:	binclude	"artnem/Animal Squirrel.nem"
 		even
+
 ; ---------------------------------------------------------------------------
-; Compressed graphics - primary patterns and block mappings
+; Block mappings
 ; ---------------------------------------------------------------------------
+	if BlocksInROM=1	;Mercury Blocks In ROM
+Blk16_GHZ:	binclude	"map16_u/GHZ.bin"
+		even
+Blk16_LZ:	binclude	"map16_u/LZ.bin"
+		even
+Blk16_MZ:	binclude	"map16_u/MZ.bin"
+		even
+Blk16_SLZ:	binclude	"map16_u/SLZ.bin"
+		even
+Blk16_SYZ:	binclude	"map16_u/SYZ.bin"
+		even
+Blk16_SBZ:	binclude	"map16_u/SBZ.bin"
+		even
+	else
 Blk16_GHZ:	binclude	"map16/GHZ.eni"
-		even
-Nem_Title:	binclude	"artnem/8x8 - Title.nem"	; Title Screen GHZ patterns -- Clownacy S2 Level Art Loading
-		even
-ArtKos_GHZ:	binclude	"artkos/8x8 - GHZ.kos"	; GHZ patterns -- Clownacy S2 Level Art Loading
-		even
-Blk128_GHZ:	binclude	"map128/GHZ.kos"
 		even
 Blk16_LZ:	binclude	"map16/LZ.eni"
 		even
-ArtKos_LZ:	binclude	"artkos/8x8 - LZ.kos"	; LZ primary patterns -- Clownacy S2 Level Art Loading
-		even
-Blk128_LZ:	binclude	"map128/LZ.kos"
-		even
 Blk16_MZ:	binclude	"map16/MZ.eni"
-		even
-ArtKos_MZ:	binclude	"artkos/8x8 - MZ.kos"	; MZ primary patterns -- Clownacy S2 Level Art Loading
-		even
-Blk128_MZ:	binclude	"map128/MZ.kos"
 		even
 Blk16_SLZ:	binclude	"map16/SLZ.eni"
 		even
-ArtKos_SLZ:	binclude	"artkos/8x8 - SLZ.kos"	; SLZ primary patterns -- Clownacy S2 Level Art Loading
-		even
-Blk128_SLZ:	binclude	"map128/SLZ.kos"
-		even
 Blk16_SYZ:	binclude	"map16/SYZ.eni"
-		even
-ArtKos_SYZ:	binclude	"artkos/8x8 - SYZ.kos"	; SYZ primary patterns -- Clownacy S2 Level Art Loading
-		even
-Blk128_SYZ:	binclude	"map128/SYZ.kos"
 		even
 Blk16_SBZ:	binclude	"map16/SBZ.eni"
 		even
-ArtKos_SBZ:	binclude	"artkos/8x8 - SBZ.kos"	; SBZ primary patterns -- Clownacy S2 Level Art Loading
+	endif	;end Blocks In ROM
+
+; ---------------------------------------------------------------------------
+; Chunk data
+; ---------------------------------------------------------------------------
+	if ChunksInROM=1	;Mercury Chunks In ROM
+Blk128_GHZ:	binclude	"map128_u/GHZ.bin"
+		even
+Blk128_LZ:	binclude	"map128_u/LZ.bin"
+		even
+Blk128_MZ:	binclude	"map128_u/MZ.bin"
+		even
+Blk128_SLZ:	binclude	"map128_u/SLZ.bin"
+		even
+Blk128_SYZ:	binclude	"map128_u/SYZ.bin"
+		even
+Blk128_SBZ:	binclude	"map128_u/SBZ.bin"
+		even
+	else
+Blk128_GHZ:	binclude	"map128/GHZ.kos"
+		even
+Blk128_LZ:	binclude	"map128/LZ.kos"
+		even
+Blk128_MZ:	binclude	"map128/MZ.kos"
+		even
+Blk128_SLZ:	binclude	"map128/SLZ.kos"
+		even
+Blk128_SYZ:	binclude	"map128/SYZ.kos"
 		even
 Blk128_SBZ:	binclude	"map128/SBZ.kos"
 		even
+	endif	;end Chunks In ROM
+
+; ---------------------------------------------------------------------------
+; Compressed level graphics
+; ---------------------------------------------------------------------------
+Nem_Title:	binclude	"artnem/8x8 - Title.nem"	; Title Screen GHZ patterns -- Clownacy S2 Level Art Loading
+		even
+ArtKos_GHZ:	binclude	"artkos/8x8 - GHZ.kos"		; GHZ patterns -- Clownacy S2 Level Art Loading
+		even
+ArtKos_LZ:	binclude	"artkos/8x8 - LZ.kos"		; LZ primary patterns -- Clownacy S2 Level Art Loading
+		even
+ArtKos_MZ:	binclude	"artkos/8x8 - MZ.kos"		; MZ primary patterns -- Clownacy S2 Level Art Loading
+		even
+ArtKos_SLZ:	binclude	"artkos/8x8 - SLZ.kos"		; SLZ primary patterns -- Clownacy S2 Level Art Loading
+		even
+ArtKos_SYZ:	binclude	"artkos/8x8 - SYZ.kos"		; SYZ primary patterns -- Clownacy S2 Level Art Loading
+		even
+ArtKos_SBZ:	binclude	"artkos/8x8 - SBZ.kos"		; SBZ primary patterns -- Clownacy S2 Level Art Loading
+		even
+
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - bosses and ending sequence
 ; ---------------------------------------------------------------------------

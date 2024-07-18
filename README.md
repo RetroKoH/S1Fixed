@@ -136,6 +136,18 @@
  Date: 2024-07-17
  Variable: HUDCentiseconds
 
+ Name: Chunks In ROM
+ Credit: Mercury/FraGag
+ Function: Loads Chunks (256x256) directly from ROM, freeing a huge amount of RAM ($0000-$A3FF)
+ Date: 2024-07-18
+ Variable: ChunksInROM
+
+ Name: Blocks In ROM
+ Credit: Mercury/FraGag
+ Function: Similar to "Chunks In ROM" only with Blocks (16x16), freeing a huge amount of RAM ($B000-$C7FF)
+ Date: 2024-07-18
+ Variable: BlocksInROM
+
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format
  Credit: Clownacy

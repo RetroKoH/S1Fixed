@@ -16,8 +16,13 @@ Rings_Space = (Max_Rings+1)*2
 	phase ramaddr ( $FFFF0000 )
 v_ram_start:
 
-v_128x128:				ds.b	$100*$80		; 128x128 tile mappings ($100 chunks)
+	if ChunksInROM=0
+v_128x128:				ds.b	$8000			; 128x128 chunk mappings ($100 chunks * $80 bytes)
 v_128x128_end:
+	else
+v_128x128:				ds.l	1				; address location of 128x128 chunk mappings
+					ds.l	$1FFF	; unused ($8000 - 4) bytes
+	endif
 
 v_lvllayout:			ds.b	$1000			; level and background layouts
 v_collision1:			ds.b	$300
@@ -37,7 +42,7 @@ v_ringsroutine:			ds.b	1				; $9A8A (Rings_manager_routine)
 v_ringend:
 ; S3K Rings Manager End
 
-						ds.b	1	; unused
+					ds.b	1	; unused
 
 v_objstate:				ds.w	$C0				; object state list (Moved and Expanded -- ProjectFM/MoDule S3K Objects Manager)
 v_objstate_end:
@@ -50,7 +55,13 @@ v_bgscroll_buffer:		ds.b	$200			; $A800 - background scroll buffer
 v_ngfx_buffer:			ds.b	$200			; Nemesis graphics decompression buffer
 v_ngfx_buffer_end:
 v_spritequeue:			ds.b	$400			; sprite display queue, in order of priority
+
+	if BlocksInROM=0
 v_16x16:				ds.b	$1800			; 16x16 tile mappings
+	else
+v_16x16:				ds.l	1				; address location of 16x16 block mappings
+					ds.l	$5FF	; unused ($1800 - 4) bytes
+	endif
 
 ; Flamewing/MarkeyJester improved DMA Queue
 v_vdp_comm_buffer:		ds.b	$FC				; buffer for DMA Queue replacing the old art buffer.
