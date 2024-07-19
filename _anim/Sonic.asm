@@ -69,7 +69,7 @@ SonAni_Spindash:
 		dc.b	0, fr_SonSpindash1, fr_SonSpindash2, fr_SonSpindash1, fr_SonSpindash3, fr_SonSpindash1, fr_SonSpindash4
 		dc.b	fr_SonSpindash1, fr_SonSpindash5, fr_SonSpindash1, fr_SonSpindash6, afEnd
 		even
-SonAni_Stop:	dc.b 7,	fr_SonStop1, fr_SonStop2, afEnd
+SonAni_Stop:	dc.b 5,	fr_SonStop1, fr_SonStop2, fr_SonStop1, fr_SonStop2, afChange, aniID_Walk
 		even
 SonAni_Float1:	dc.b 7,	fr_SonFloat1, fr_SonFloat4, afEnd
 		even
