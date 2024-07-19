@@ -469,7 +469,8 @@ aniID_Shrink:		equ $1A		; Shrink animation
 aniID_Hurt:			equ $1B		; Hurt animation
 aniID_WaterSlide:	equ $1C		; Water Slide animation
 aniID_Peelout:		equ $1D		; Peelout
-aniID_Transform:	equ $1E		; Transform
+aniID_DropDash:		equ $1E		; Drop Dash
+aniID_Transform:	equ $1F		; Transform
 
 ; Frame IDs moved to mappings file
 

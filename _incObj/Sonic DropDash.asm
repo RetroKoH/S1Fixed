@@ -17,6 +17,7 @@ Sonic_ChkDropDash:
 		cmpi.b	#$14,obDoubleJumpProp(a0)	; is the Drop Dash fully charged? (20 frames)
 		blt.s	.ret						; if not yet, exit
 		bgt.s	.skipsound					; if yes, and sound has played, skip ahead
+		move.b	#aniID_DropDash,obAnim(a0)	; Set new animation
 		move.w	#sfx_SpinDash,d0
 		jsr		(PlaySound_Special).l		; play charge sound
 
