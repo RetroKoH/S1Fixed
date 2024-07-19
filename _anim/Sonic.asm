@@ -49,21 +49,25 @@ SonAni_Roll2:	dc.b $FE, fr_SonRoll1, fr_SonRoll2, fr_SonRoll5, fr_SonRoll3, fr_S
 		even
 SonAni_Push:	dc.b $FD, fr_SonPush1, fr_SonPush2, fr_SonPush3, fr_SonPush4, afEnd, afEnd, afEnd
 		even
-SonAni_Wait:	dc.b $17, fr_SonStand, fr_SonStand, fr_SonStand, fr_SonStand, fr_SonStand, fr_SonStand, fr_SonStand, fr_SonStand, fr_SonStand
-		dc.b fr_SonStand, fr_SonStand, fr_SonStand, fr_SonWait2, fr_SonWait1, fr_SonWait1, fr_SonWait1, fr_SonWait2, fr_SonWait3, afBack, 2
+SonAni_Wait:
+		dc.b	$17, fr_SonStand, fr_SonStand, fr_SonStand, fr_SonStand, fr_SonStand, fr_SonStand, fr_SonStand, fr_SonStand, fr_SonStand
+		dc.b	fr_SonStand, fr_SonStand, fr_SonStand, fr_SonWait2, fr_SonWait1, fr_SonWait1, fr_SonWait1, fr_SonWait2, fr_SonWait3, afBack, 2
 		even
 SonAni_Balance:	dc.b $1F, fr_SonBalance1, fr_SonBalance2, afEnd
 		even
-SonAni_BalanceForward: dc.b $F, fr_SonBalanceForward1, fr_SonBalanceForward2, fr_SonBalanceForward3, fr_SonBalanceForward4, afEnd
+SonAni_BalanceForward:
+		dc.b	$F, fr_SonBalanceForward1, fr_SonBalanceForward2, fr_SonBalanceForward3, fr_SonBalanceForward4, afEnd
 		even
-SonAni_BalanceBack: dc.b $F, fr_SonBalanceBack1, fr_SonBalanceBack2, fr_SonBalanceBack3,fr_SonBalanceBack4, afEnd
+SonAni_BalanceBack:
+		dc.b	$F, fr_SonBalanceBack1, fr_SonBalanceBack2, fr_SonBalanceBack3,fr_SonBalanceBack4, afEnd
 		even
 SonAni_LookUp:	dc.b 1, fr_SonLookUp1, fr_SonLookUp2, afBack, 1
 		even
 SonAni_Duck:	dc.b 1, fr_SonDuck1, fr_SonDuck2, afBack, 1
 		even
-SonAni_Spindash: dc.b 0, fr_SonSpindash1, fr_SonSpindash2, fr_SonSpindash1, fr_SonSpindash3, fr_SonSpindash1, fr_SonSpindash4
-		dc.b fr_SonSpindash1, fr_SonSpindash5, fr_SonSpindash1, fr_SonSpindash6, afEnd
+SonAni_Spindash:
+		dc.b	0, fr_SonSpindash1, fr_SonSpindash2, fr_SonSpindash1, fr_SonSpindash3, fr_SonSpindash1, fr_SonSpindash4
+		dc.b	fr_SonSpindash1, fr_SonSpindash5, fr_SonSpindash1, fr_SonSpindash6, afEnd
 		even
 SonAni_Stop:	dc.b 7,	fr_SonStop1, fr_SonStop2, afEnd
 		even
@@ -91,18 +95,23 @@ SonAni_Shrink:	dc.b 3,	fr_SonShrink1, fr_SonShrink2, fr_SonShrink3, fr_SonShrink
 		even
 SonAni_Hurt:	dc.b 3,	fr_SonHurt, afEnd
 		even
-SonAni_WaterSlide: dc.b 7, fr_SonHurt, fr_SonWaterSlide, afEnd
+SonAni_WaterSlide:
+		dc.b	7, fr_SonHurt, fr_SonWaterSlide, afEnd
 		even
-SonAni_Peelout:	dc.b 0,  fr_SonWalk14, fr_SonWalk14, fr_SonWalk14, fr_SonWalk14, fr_SonWalk14, fr_SonWalk14, fr_SonWalk14, fr_SonWalk14
+SonAni_Peelout:
+		dc.b	0, fr_SonWalk14, fr_SonWalk14, fr_SonWalk14, fr_SonWalk14, fr_SonWalk14, fr_SonWalk14, fr_SonWalk14, fr_SonWalk14
 		dc.b	fr_SonWalk15, fr_SonWalk15, fr_SonWalk15, fr_SonWalk15, fr_SonWalk16, fr_SonWalk16, fr_SonRun14, fr_SonRun14
 		dc.b	fr_SonRun11,  fr_SonRun12,  fr_SonRun13,  fr_SonRun14, fr_SonRun11,  fr_SonRun12,  fr_SonRun13,  fr_SonRun14
 		dc.b	fr_SonDash11,  fr_SonDash12,  fr_SonDash13,  fr_SonDash14, afBack, 4
 		even
-SonAni_DropDash:	dc.b $0, fr_SonRoll5, afEnd
+SonAni_DropDash:
+		dc.b	$0, fr_SonDropDash1, fr_SonRoll5, fr_SonDropDash2, fr_SonRoll5, fr_SonDropDash3, fr_SonRoll5, fr_SonDropDash4, fr_SonRoll5
+		dc.b	fr_SonDropDash5, fr_SonRoll5, fr_SonDropDash6, fr_SonRoll5, fr_SonDropDash7, fr_SonRoll5, fr_SonDropDash8, fr_SonRoll5, afEnd
 		even
-SonAni_Transform:	dc.b 2, fr_SonTransform1, fr_SonTransform1, fr_SonTransform2, fr_SonTransform2, fr_SonTransform3
-					dc.b fr_SonTransform4, fr_SonTransform5, fr_SonTransform4, fr_SonTransform5, fr_SonTransform4
-					dc.b fr_SonTransform5, fr_SonTransform4, fr_SonTransform5, $FD,  aniID_Walk
+SonAni_Transform:
+		dc.b	2, fr_SonTransform1, fr_SonTransform1, fr_SonTransform2, fr_SonTransform2, fr_SonTransform3
+		dc.b	fr_SonTransform4, fr_SonTransform5, fr_SonTransform4, fr_SonTransform5, fr_SonTransform4
+		dc.b	fr_SonTransform5, fr_SonTransform4, fr_SonTransform5, $FD,  aniID_Walk
 		even
 
 ;Ani_SuperSonic:

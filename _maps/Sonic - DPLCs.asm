@@ -33,32 +33,32 @@ SonicDynPLC_internal: mappingsTable
 		mappingsTableEntry.w	SonPLC_Walk41
 		mappingsTableEntry.w	SonPLC_Walk42
 		mappingsTableEntry.w	SonPLC_Walk43
-		mappingsTableEntry.w	SonicDynPLC_internal_34
-		mappingsTableEntry.w	SonicDynPLC_internal_35
-		mappingsTableEntry.w	SonicDynPLC_internal_36
-		mappingsTableEntry.w	SonicDynPLC_internal_37
-		mappingsTableEntry.w	SonicDynPLC_internal_38
-		mappingsTableEntry.w	SonicDynPLC_internal_39
-		mappingsTableEntry.w	SonicDynPLC_internal_40
-		mappingsTableEntry.w	SonicDynPLC_internal_41
-		mappingsTableEntry.w	SonicDynPLC_internal_42
-		mappingsTableEntry.w	SonicDynPLC_internal_43
-		mappingsTableEntry.w	SonicDynPLC_internal_44
-		mappingsTableEntry.w	SonicDynPLC_internal_45
-		mappingsTableEntry.w	SonicDynPLC_internal_46
-		mappingsTableEntry.w	SonicDynPLC_internal_47
-		mappingsTableEntry.w	SonicDynPLC_internal_48
-		mappingsTableEntry.w	SonicDynPLC_internal_49
-		mappingsTableEntry.w	SonicDynPLC_internal_50
-		mappingsTableEntry.w	SonicDynPLC_internal_51
-		mappingsTableEntry.w	SonicDynPLC_internal_52
-		mappingsTableEntry.w	SonicDynPLC_internal_53
-		mappingsTableEntry.w	SonicDynPLC_internal_54
-		mappingsTableEntry.w	SonicDynPLC_internal_55
-		mappingsTableEntry.w	SonicDynPLC_internal_56
-		mappingsTableEntry.w	SonicDynPLC_internal_57
-		mappingsTableEntry.w	SonicDynPLC_internal_58
-		mappingsTableEntry.w	SonicDynPLC_internal_59
+		mappingsTableEntry.w	SonPLC_Walk44
+		mappingsTableEntry.w	SonPLC_Walk45
+		mappingsTableEntry.w	SonPLC_Walk46
+		mappingsTableEntry.w	SonPLC_Walk47
+		mappingsTableEntry.w	SonPLC_Walk48
+		mappingsTableEntry.w	SonPLC_Run11
+		mappingsTableEntry.w	SonPLC_Run12
+		mappingsTableEntry.w	SonPLC_Run13
+		mappingsTableEntry.w	SonPLC_Run14
+		mappingsTableEntry.w	SonPLC_Run21
+		mappingsTableEntry.w	SonPLC_Run22
+		mappingsTableEntry.w	SonPLC_Run23
+		mappingsTableEntry.w	SonPLC_Run24
+		mappingsTableEntry.w	SonPLC_Run31
+		mappingsTableEntry.w	SonPLC_Run32
+		mappingsTableEntry.w	SonPLC_Run33
+		mappingsTableEntry.w	SonPLC_Run34
+		mappingsTableEntry.w	SonPLC_Run41
+		mappingsTableEntry.w	SonPLC_Run42
+		mappingsTableEntry.w	SonPLC_Run43
+		mappingsTableEntry.w	SonPLC_Run44
+		mappingsTableEntry.w	SonPLC_Roll1
+		mappingsTableEntry.w	SonPLC_Roll2
+		mappingsTableEntry.w	SonPLC_Roll3
+		mappingsTableEntry.w	SonPLC_Roll4
+		mappingsTableEntry.w	SonPLC_Roll5
 		mappingsTableEntry.w	SonicDynPLC_internal_60
 		mappingsTableEntry.w	SonicDynPLC_internal_61
 		mappingsTableEntry.w	SonicDynPLC_internal_62
@@ -119,11 +119,19 @@ SonicDynPLC_internal: mappingsTable
 		mappingsTableEntry.w	SonicDynPLC_internal_117
 		mappingsTableEntry.w	SonicDynPLC_internal_118
 		mappingsTableEntry.w	SonicDynPLC_internal_119
-		mappingsTableEntry.w	SonicDynPLC_internal_120
-		mappingsTableEntry.w	SonicDynPLC_internal_121
-		mappingsTableEntry.w	SonicDynPLC_internal_122
-		mappingsTableEntry.w	SonicDynPLC_internal_123
-		mappingsTableEntry.w	SonicDynPLC_internal_124
+		mappingsTableEntry.w	SonPLC_DropDash1
+		mappingsTableEntry.w	SonPLC_DropDash2
+		mappingsTableEntry.w	SonPLC_DropDash3
+		mappingsTableEntry.w	SonPLC_DropDash4
+		mappingsTableEntry.w	SonPLC_DropDash5
+		mappingsTableEntry.w	SonPLC_DropDash6
+		mappingsTableEntry.w	SonPLC_DropDash7
+		mappingsTableEntry.w	SonPLC_DropDash8
+		mappingsTableEntry.w	SonPLC_Transform1
+		mappingsTableEntry.w	SonPLC_Transform2
+		mappingsTableEntry.w	SonPLC_Transform3
+		mappingsTableEntry.w	SonPLC_Transform4
+		mappingsTableEntry.w	SonPLC_Transform5
 
 SonPLC_Null:	dplcHeader
 SonPLC_Null_End
@@ -294,143 +302,143 @@ SonPLC_Walk43:	dplcHeader
  dplcEntry 1, $1EC
 SonPLC_Walk43_End
 
-SonicDynPLC_internal_34:	dplcHeader
+SonPLC_Walk44:	dplcHeader
  dplcEntry $10, $1ED
  dplcEntry 3, $1FD
-SonicDynPLC_internal_34_End
+SonPLC_Walk44_End
 
-SonicDynPLC_internal_35:	dplcHeader
+SonPLC_Walk45:	dplcHeader
  dplcEntry 6, $200
  dplcEntry $10, $206
-SonicDynPLC_internal_35_End
+SonPLC_Walk45_End
 
-SonicDynPLC_internal_36:	dplcHeader
+SonPLC_Walk46:	dplcHeader
  dplcEntry 6, $200
  dplcEntry $D, $216
-SonicDynPLC_internal_36_End
+SonPLC_Walk46_End
 
-SonicDynPLC_internal_37:	dplcHeader
+SonPLC_Walk47:	dplcHeader
  dplcEntry $10, $223
  dplcEntry 1, $233
-SonicDynPLC_internal_37_End
+SonPLC_Walk47_End
 
-SonicDynPLC_internal_38:	dplcHeader
+SonPLC_Walk48:	dplcHeader
  dplcEntry 6, $1B7
  dplcEntry 9, $234
  dplcEntry 2, $1D1
  dplcEntry 2, $23D
  dplcEntry 1, $1CA
-SonicDynPLC_internal_38_End
+SonPLC_Walk48_End
 
-SonicDynPLC_internal_39:	dplcHeader
+SonPLC_Run11:	dplcHeader
  dplcEntry 6, $23F
  dplcEntry $C, $245
-SonicDynPLC_internal_39_End
+SonPLC_Run11_End
 
-SonicDynPLC_internal_40:	dplcHeader
+SonPLC_Run12:	dplcHeader
  dplcEntry 6, $71
  dplcEntry $C, $251
-SonicDynPLC_internal_40_End
+SonPLC_Run12_End
 
-SonicDynPLC_internal_41:	dplcHeader
+SonPLC_Run13:	dplcHeader
  dplcEntry 6, $23F
  dplcEntry $C, $25D
-SonicDynPLC_internal_41_End
+SonPLC_Run13_End
 
-SonicDynPLC_internal_42:	dplcHeader
+SonPLC_Run14:	dplcHeader
  dplcEntry 6, $71
  dplcEntry $C, $269
-SonicDynPLC_internal_42_End
+SonPLC_Run14_End
 
-SonicDynPLC_internal_43:	dplcHeader
+SonPLC_Run21:	dplcHeader
  dplcEntry 6, $275
  dplcEntry 2, $27B
  dplcEntry $C, $27D
  dplcEntry 1, $289
-SonicDynPLC_internal_43_End
+SonPLC_Run21_End
 
-SonicDynPLC_internal_44:	dplcHeader
+SonPLC_Run22:	dplcHeader
  dplcEntry 6, $28A
  dplcEntry 2, $290
  dplcEntry $C, $292
-SonicDynPLC_internal_44_End
+SonPLC_Run22_End
 
-SonicDynPLC_internal_45:	dplcHeader
+SonPLC_Run23:	dplcHeader
  dplcEntry 6, $275
  dplcEntry 2, $29E
  dplcEntry $C, $2A0
  dplcEntry 1, $289
-SonicDynPLC_internal_45_End
+SonPLC_Run23_End
 
-SonicDynPLC_internal_46:	dplcHeader
+SonPLC_Run24:	dplcHeader
  dplcEntry 6, $28A
  dplcEntry 2, $290
  dplcEntry $C, $2AC
-SonicDynPLC_internal_46_End
+SonPLC_Run24_End
 
-SonicDynPLC_internal_47:	dplcHeader
+SonPLC_Run31:	dplcHeader
  dplcEntry 6, $2B8
  dplcEntry $C, $2BE
-SonicDynPLC_internal_47_End
+SonPLC_Run31_End
 
-SonicDynPLC_internal_48:	dplcHeader
+SonPLC_Run32:	dplcHeader
  dplcEntry 6, $173
  dplcEntry $C, $2CA
-SonicDynPLC_internal_48_End
+SonPLC_Run32_End
 
-SonicDynPLC_internal_49:	dplcHeader
+SonPLC_Run33:	dplcHeader
  dplcEntry 6, $2B8
  dplcEntry $C, $2D6
-SonicDynPLC_internal_49_End
+SonPLC_Run33_End
 
-SonicDynPLC_internal_50:	dplcHeader
+SonPLC_Run34:	dplcHeader
  dplcEntry 6, $173
  dplcEntry $C, $2E2
-SonicDynPLC_internal_50_End
+SonPLC_Run34_End
 
-SonicDynPLC_internal_51:	dplcHeader
+SonPLC_Run41:	dplcHeader
  dplcEntry 6, $2EE
  dplcEntry 2, $2F4
  dplcEntry $C, $2F6
  dplcEntry 1, $302
-SonicDynPLC_internal_51_End
+SonPLC_Run41_End
 
-SonicDynPLC_internal_52:	dplcHeader
+SonPLC_Run42:	dplcHeader
  dplcEntry 8, $303
  dplcEntry $C, $30B
-SonicDynPLC_internal_52_End
+SonPLC_Run42_End
 
-SonicDynPLC_internal_53:	dplcHeader
+SonPLC_Run43:	dplcHeader
  dplcEntry 6, $2EE
  dplcEntry 2, $317
  dplcEntry $C, $319
  dplcEntry 1, $302
-SonicDynPLC_internal_53_End
+SonPLC_Run43_End
 
-SonicDynPLC_internal_54:	dplcHeader
+SonPLC_Run44:	dplcHeader
  dplcEntry 8, $303
  dplcEntry $C, $325
-SonicDynPLC_internal_54_End
+SonPLC_Run44_End
 
-SonicDynPLC_internal_55:	dplcHeader
+SonPLC_Roll1:	dplcHeader
  dplcEntry $10, $331
-SonicDynPLC_internal_55_End
+SonPLC_Roll1_End
 
-SonicDynPLC_internal_56:	dplcHeader
+SonPLC_Roll2:	dplcHeader
  dplcEntry $10, $341
-SonicDynPLC_internal_56_End
+SonPLC_Roll2_End
 
-SonicDynPLC_internal_57:	dplcHeader
+SonPLC_Roll3:	dplcHeader
  dplcEntry $10, $351
-SonicDynPLC_internal_57_End
+SonPLC_Roll3_End
 
-SonicDynPLC_internal_58:	dplcHeader
+SonPLC_Roll4:	dplcHeader
  dplcEntry $10, $361
-SonicDynPLC_internal_58_End
+SonPLC_Roll4_End
 
-SonicDynPLC_internal_59:	dplcHeader
+SonPLC_Roll5:	dplcHeader
  dplcEntry $10, $371
-SonicDynPLC_internal_59_End
+SonPLC_Roll5_End
 
 SonicDynPLC_internal_60:	dplcHeader
  dplcEntry $10, $381
@@ -731,36 +739,68 @@ SonicDynPLC_internal_119:	dplcHeader
  dplcEntry 5, $760
 SonicDynPLC_internal_119_End
 
-SonicDynPLC_internal_120:	dplcHeader
- dplcEntry $C, $765
-SonicDynPLC_internal_120_End
+SonPLC_DropDash1:	dplcHeader
+ dplcEntry $10, $7B0
+SonPLC_DropDash1_End
 
-SonicDynPLC_internal_121:	dplcHeader
+SonPLC_DropDash2:	dplcHeader
+ dplcEntry $10, $7C0
+SonPLC_DropDash2_End
+
+SonPLC_DropDash3:	dplcHeader
+ dplcEntry $10, $7D0
+SonPLC_DropDash3_End
+
+SonPLC_DropDash4:	dplcHeader
+ dplcEntry $10, $7E0
+SonPLC_DropDash4_End
+
+SonPLC_DropDash5:	dplcHeader
+ dplcEntry $10, $7F0
+SonPLC_DropDash5_End
+
+SonPLC_DropDash6:	dplcHeader
+ dplcEntry $10, $800
+SonPLC_DropDash6_End
+
+SonPLC_DropDash7:	dplcHeader
+ dplcEntry $10, $810
+SonPLC_DropDash7_End
+
+SonPLC_DropDash8:	dplcHeader
+ dplcEntry $10, $820
+SonPLC_DropDash8_End
+
+SonPLC_Transform1:	dplcHeader
+ dplcEntry $C, $765
+SonPLC_Transform1_End
+
+SonPLC_Transform2:	dplcHeader
  dplcEntry $C, $771
  dplcEntry 2, $77D
  dplcEntry 6, $77F
-SonicDynPLC_internal_121_End
+SonPLC_Transform2_End
 
-SonicDynPLC_internal_122:	dplcHeader
+SonPLC_Transform3:	dplcHeader
  dplcEntry 9, $785
  dplcEntry 1, $78E
  dplcEntry 9, $78F
-SonicDynPLC_internal_122_End
+SonPLC_Transform3_End
 
-SonicDynPLC_internal_123:	dplcHeader
+SonPLC_Transform4:	dplcHeader
  dplcEntry 3, $798
  dplcEntry 2, $79B
  dplcEntry 4, $79D
  dplcEntry 9, $7A1
  dplcEntry 1, $7AA
-SonicDynPLC_internal_123_End
+SonPLC_Transform4_End
 
-SonicDynPLC_internal_124:	dplcHeader
+SonPLC_Transform5:	dplcHeader
  dplcEntry 3, $7AB
  dplcEntry 2, $7AE
  dplcEntry 4, $79D
  dplcEntry 9, $7A1
  dplcEntry 1, $7AA
-SonicDynPLC_internal_124_End
+SonPLC_Transform5_End
 
 	even
