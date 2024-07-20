@@ -153,6 +153,7 @@ SonMap_LookUp1:	spriteHeader
 	spritePiece	-$12, -$14, 3, 4, 0, 0, 0, 0, 0
 	spritePiece	6, -$C, 1, 1, $C, 0, 0, 0, 0
 	spritePiece	-8, $C, 3, 1, $D, 0, 0, 0, 0
+	spritePiece 6, 4, 1, 1, $10, 0, 0, 0, 0 ; New Tile for larger hand
 SonMap_LookUp1_End
 
 SonMap_LookUp2:	spriteHeader

@@ -159,6 +159,7 @@ SonPLC_Wait3_End
 SonPLC_LookUp1:	dplcHeader
 	dplcEntry	$D, $29
 	dplcEntry	3, $E
+	dplcEntry	1, $830		; New Tile
 SonPLC_LookUp1_End
 
 SonPLC_LookUp2:	dplcHeader

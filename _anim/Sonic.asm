@@ -23,12 +23,12 @@ Ani_Sonic:
 		dc.w SonAni_Float4-Ani_Sonic
 		dc.w SonAni_Spring-Ani_Sonic
 		dc.w SonAni_Hang-Ani_Sonic
-		dc.w SonAni_Null-Ani_Sonic ; FALL
+		dc.w SonAni_Null-Ani_Sonic			; FALL
 		dc.w SonAni_GetAir-Ani_Sonic
-		dc.w SonAni_GetAirStand-Ani_Sonic
+		dc.w SonAni_GetAirStand-Ani_Sonic	; Toggleable
 		dc.w SonAni_Death-Ani_Sonic
 		dc.w SonAni_Drown-Ani_Sonic
-		dc.w SonAni_Shrink-Ani_Sonic
+		dc.w SonAni_Shrink-Ani_Sonic		; Special Stage (Toggle)
 		dc.w SonAni_Hurt-Ani_Sonic
 		dc.w SonAni_WaterSlide-Ani_Sonic
 		dc.w SonAni_Peelout-Ani_Sonic
