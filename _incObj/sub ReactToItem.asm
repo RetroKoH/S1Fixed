@@ -201,8 +201,15 @@ React_Monitor:
 ; ===========================================================================
 
 .movingdown:
+	if DropDashEnabled=1	; RetroKoH Drop Dash
+		cmpi.b	#aniID_DropDash,obAnim(a0)	; is Sonic Drop Dashing? -- Fix to allow rebounding
+		beq.s	.spinning					; if yes, branch
+	endif	; Drop Dash End
+
 		cmpi.b	#aniID_Roll,obAnim(a0)	; is Sonic rolling/jumping?
 		bne.s	.donothing				; if not, branch
+
+.spinning:
 		neg.w	obVelY(a0)				; reverse Sonic's y-motion
 	if ReboundMod=1	; Mercury Rebound Mod
 		move.b	#1,obJumping(a0)
@@ -221,6 +228,11 @@ React_Enemy:
 		cmpi.b	#aniID_SpinDash,obAnim(a0)	; is Sonic Spin Dashing?
 		beq.w	.breakenemy					; if yes, branch
 	endif	; Spin Dash End
+	
+	if DropDashEnabled=1	; RetroKoH Drop Dash
+		cmpi.b	#aniID_DropDash,obAnim(a0)	; is Sonic Drop Dashing?
+		beq.w	.breakenemy					; if yes, branch
+	endif	; Drop Dash End
 
 		cmpi.b	#aniID_Roll,obAnim(a0)		; is Sonic rolling/jumping?
 		bne.w	React_ChkHurt				; if not, branch

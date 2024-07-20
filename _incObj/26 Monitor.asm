@@ -108,6 +108,11 @@ Mon_Solid:	; Routine 2
 		cmpi.b	#aniID_Roll,obAnim(a1)	; is Sonic rolling?
 		beq.s	loc_A25C				; if yes, branch
 
+	if DropDashEnabled=1	; RetroKoH Drop Dash
+		cmpi.b	#aniID_DropDash,obAnim(a1)	; is Sonic Drop Dashing? -- Fix to allow rebounding
+		beq.s	loc_A25C					; if yes, branch
+	endif	; Drop Dash End
+
 loc_A20A:
 		tst.w	d1
 		bpl.s	loc_A220
