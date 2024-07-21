@@ -147,6 +147,18 @@
  Function: Similar to "Chunks In ROM" only with Blocks (16x16), freeing a huge amount of RAM ($B000-$C7FF)
  Date: 2024-07-18
  Variable: BlocksInROM
+ 
+ Name: Sonic 4 Controls in Special Stage
+ Credit: RetroKoH
+ Function: If toggled on, player rotates the stage instead of moving Sonic, a la Sonic 4. (Removes UP/DOWN, and R Blocks)
+ Date: 2024-07-21
+ Variable: S4SpecialStages
+
+ Name: Special Stage Index Increases Only If Won
+ Credit: Mercury
+ Function: Makes the Special Stage index not increase if you fail the stage.
+ Date: 2024-07-21
+ Variable: SpecialStageAdvancementMod
 
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format

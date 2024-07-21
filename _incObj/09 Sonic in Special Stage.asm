@@ -531,13 +531,13 @@ Obj09_ChkRing:
 
 Obj09_GetCont:
 		jsr		(CollectRing).l
-		cmpi.w	#50,(v_rings).w		; check if you have 50 rings
+		cmpi.w	#50,(v_rings).w				; check if you have 50 rings
 		blo.s	Obj09_NoCont
 		bset	#0,(v_lifecount).w
 		bne.s	Obj09_NoCont
-		addq.b	#1,(v_continues).w	; add 1 to number of continues
+		addq.b	#1,(v_continues).w			; add 1 to number of continues
 		move.w	#sfx_Continue,d0
-		jsr		(PlaySound).l		; play extra continue sound
+		jsr		(PlaySound).l				; play extra continue sound
 
 Obj09_NoCont:
 		moveq	#0,d4
@@ -545,7 +545,7 @@ Obj09_NoCont:
 ; ===========================================================================
 
 Obj09_Chk1Up:
-		cmpi.b	#SSBlock_1Up,d4		; is the item an extra life?
+		cmpi.b	#SSBlock_1Up,d4				; is the item an extra life?
 		bne.s	Obj09_ChkEmer
 		bsr.w	SS_RemoveCollectedItem
 		bne.s	Obj09_Get1Up
@@ -554,15 +554,15 @@ Obj09_Chk1Up:
 
 Obj09_Get1Up:
 	; Mercury Lives Over/Underflow Fix
-		cmpi.b	#99,(v_lives).w		; are lives at max?
+		cmpi.b	#99,(v_lives).w				; are lives at max?
 		beq.s	.playbgm
-		addq.b	#1,(v_lives).w		; add 1 to number of lives
-		addq.b	#1,(f_lifecount).w	; update the lives counter
+		addq.b	#1,(v_lives).w				; add 1 to number of lives
+		addq.b	#1,(f_lifecount).w			; update the lives counter
 
 .playbgm:
 	; Lives Over/Underflow Fix End
 		move.w	#bgm_ExtraLife,d0
-		jsr		(PlaySound).l		; play extra life music
+		jsr		(PlaySound).l				; play extra life music
 		moveq	#0,d4
 		rts	
 ; ===========================================================================
@@ -583,6 +583,10 @@ Obj09_GetEmer:
 		subi.b	#$3B,d4
 		bset	d4,(v_emldlist).w			; set the appropriate bit in the emerald bitfield
 		addq.b	#1,(v_emeralds).w			; add 1 to number of emeralds
+
+	if SpecialStageAdvancementMod=1	; Mercury Special Stage Index Increases Only If Won
+		addq.b	#1,(v_lastspecial).w		; increment SS index
+	endif	;end Special Stage Index Increases Only If Won
 
 Obj09_NoEmer:
 		move.w	#bgm_Emerald,d0

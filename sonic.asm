@@ -22,8 +22,10 @@ zeroOffsetOptimization = 0	; if 1, makes a handful of zero-offset instructions s
 ; S1Fixed Variables (Sorted by Context)
 DebugPathSwappers: = 1
 
-DynamicSpecialStageWalls: = 1			; If set to 1, Special Stage walls are dynamically loaded. (might make this permanent)
-SmoothSpecialStages: = 1				; if set to 1, Special Stage scrolls smoothly. Jump angles are also affected.
+DynamicSpecialStageWalls: = 1			; if set to 1, Special Stage walls are dynamically loaded. (might make this permanent)
+SmoothSpecialStages: = 1				; if set to 1, Special Stage scrolls smoothly. Movement/Jump angles are also affected.
+SpecialStageAdvancementMod: = 1			; if set to 1, Special Stages will not advance when you fail the stage, allowing you to retry.
+; Mods listed below alter the layouts:
 S4SpecialStages: = 1					; if set to 1, Special Stages control like Sonic 4 Ep 1 (Left/Right rotate the stage.)
 
 FadeInSEGA: = 1							; if set to 1, the SEGA screen smoothly fades in
@@ -7757,10 +7759,18 @@ emldCount: = 6
 SS_Load:
 		moveq	#0,d0
 		move.b	(v_lastspecial).w,d0			; load number of last special stage entered
+
+	if SpecialStageAdvancementMod=1	; Mercury Special Stage Index Increases Only If Won
+		cmpi.b	#emldCount,d0
+		bcs.s	SS_ChkEmldNum					; We don't increment here (This will instead be done in Obj09)
+		move.b	#0,d0
+		move.b	d0,(v_lastspecial).w			; reset if higher than 6/7 (emldCount)
+	else
 		addq.b	#1,(v_lastspecial).w			; increment, as we are entering a special stage
 		cmpi.b	#emldCount,(v_lastspecial).w
 		blo.s	SS_ChkEmldNum
 		clr.b	(v_lastspecial).w				; reset if higher than 6/7 (emldCount)
+	endif
 
 SS_ChkEmldNum:
 		cmpi.b	#emldCount,(v_emeralds).w		; do you have all emeralds?
