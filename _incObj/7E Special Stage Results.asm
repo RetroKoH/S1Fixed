@@ -34,8 +34,15 @@ SSR_Main:
 		movea.l	a0,a1
 		lea		(SSR_Config).l,a2
 		moveq	#3,d1
+
+	if SpecialStagesWithAllEmeralds=1	; Mercury Special Stages Still Appear With All Emeralds
+		btst	#7,(v_continues).w
+		beq.s	SSR_Loop			; if no, branch
+	else
 		cmpi.w	#50,(v_rings).w		; do you have 50 or more rings?
 		blo.s	SSR_Loop			; if no, branch
+	endif	; Special Stages Still Appear With All Emeralds	End
+
 		addq.w	#1,d1				; if yes, add 1	to d1 (number of sprites)
 
 SSR_Loop:

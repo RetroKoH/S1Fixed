@@ -27,6 +27,8 @@ SmoothSpecialStages: = 1				; if set to 1, Special Stage scrolls smoothly. Movem
 SpecialStageAdvancementMod: = 1			; if set to 1, Special Stages will not advance when you fail the stage, allowing you to retry.
 ; Mods listed below alter the layouts:
 S4SpecialStages: = 1					; if set to 1, Special Stages control like Sonic 4 Ep 1 (Left/Right rotate the stage.)
+SpecialStagesWithAllEmeralds: = 1		; if set to 1, Special Stages are still accessible even once all emeralds are collected.
+AlteredSpecialStages: = (S4SpecialStages+SpecialStagesWithAllEmeralds)
 
 FadeInSEGA: = 1							; if set to 1, the SEGA screen smoothly fades in
 PaletteFadeSetting: = 6					; 0 - Blue (Original), 1 - Green, 2 - Red, 3 - Cyan (B+G), 4 - Pink (B+R), 5 - Yellow (G+R), 6 - Full
@@ -7647,6 +7649,10 @@ SS_Ani1Up:
 		clr.l	(a0)
 		clr.l	4(a0)
 
+	if SpecialStagesWithAllEmeralds=1	; Mercury Special Stages Still Appear With All Emeralds
+		move.b	#4,($FFFFD024).w
+	endc	; Special Stages Still Appear With All Emeralds End
+
 locret_1B596:
 		rts	
 ; ===========================================================================
@@ -7816,14 +7822,29 @@ loc_1B6F6:
 		moveq	#$40-1,d2
 
 loc_1B6F8:
-	; S4 Special Stage Mode removes UP, DOWN, and R blocks
-	if S4SpecialStages=1
+	if AlteredSpecialStages>0
 		move.b	(a0)+,d0				; load the layout item into d0
-		cmpi.b	#SSBlock_UP,d0			; is the item an UP Block?
-		bcs.s	.loaditem
-		cmpi.b	#SSBlock_R,d0			; is the item an R or DOWN Block?
-		bhi.s	.loaditem				; if not any of these items, branch
-		move.b	#SSBlock_GhostSolid,d0	; else, make a solid mint block
+
+		if S4SpecialStages=1
+		; S4 Special Stage Mode removes UP, DOWN, and R blocks
+			cmpi.b	#SSBlock_UP,d0			; is the item an UP Block?
+			bcs.s	.loaditem
+			cmpi.b	#SSBlock_R,d0			; is the item an R or DOWN Block?
+			bhi.s	.loaditem				; if not any of these items, branch
+			move.b	#SSBlock_GhostSolid,d0	; else, make a solid mint block
+			bra.s	.loaditem				; if the next mod is disabled, this will become nop
+		endif
+		
+		if SpecialStagesWithAllEmeralds=1
+		; Emeralds are replaced with 1-Ups if already collected
+			cmpi.b	#SSBlock_Emld1,d0			; is the item an emerald?
+			bcs.s	.loaditem
+			cmpi.b	#SSBlock_EmldLast,d0
+			bhi.s	.loaditem
+			cmpi.b	#emldCount,(v_emeralds).w	; do you have all the emeralds?
+			bne.s	.loaditem					; if not, branch
+			move.b	#SSBlock_1Up,d0				; else, make a 1up
+		endif
 		
 	.loaditem:
 		move.b	d0,(a1)+				; load the item into memory

@@ -23,8 +23,12 @@ GRing_Main:	; Routine 0
 		move.b	#$40,obActWid(a0)
 		tst.b	obRender(a0)
 		bpl.s	GRing_Animate
+
+	if SpecialStagesWithAllEmeralds=0	; Mercury Special Stages Still Appear With All Emeralds
 		cmpi.b	#emldCount,(v_emeralds).w	; do you have all emeralds?
 		beq.w	GRing_Delete				; if yes, branch
+	endif	; Special Stages Still Appear With All Emeralds End
+
 		cmpi.w	#50,(v_rings).w				; do you have at least 50 rings?
 		bhs.s	GRing_Okay					; if yes, branch
 		rts	

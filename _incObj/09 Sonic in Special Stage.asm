@@ -536,6 +536,11 @@ Obj09_GetCont:
 		bset	#0,(v_lifecount).w
 		bne.s	Obj09_NoCont
 		addq.b	#1,(v_continues).w			; add 1 to number of continues
+
+	if SpecialStagesWithAllEmeralds=1	; Mercury Special Stages Still Appear With All Emeralds
+		bset	#7,(v_continues).w	; set "got continue" flag bit
+	endc	; Special Stages Still Appear With All Emeralds	End
+
 		move.w	#sfx_Continue,d0
 		jsr		(PlaySound).l				; play extra continue sound
 
@@ -553,6 +558,19 @@ Obj09_Chk1Up:
 		move.l	a1,4(a2)
 
 Obj09_Get1Up:
+
+	if SpecialStagesWithAllEmeralds=1	; Mercury Special Stages Still Appear With All Emeralds
+		addq.b	#1,(v_continues).w		; add 1 to number of continues
+		bset	#7,(v_continues).w		; set "got continue" flag bit
+		move.w	#sfx_Continue,d0
+		jsr		(PlaySound_Special).l	; play continues jingle
+	
+	if SpecialStageAdvancementMod=1		; Mercury Special Stage Index Increases Only If Won
+		addq.b	#1,(v_lastspecial).w	; increment SS index
+	endif	; Special Stage Index Increases Only If Won End
+	
+	else
+
 	; Mercury Lives Over/Underflow Fix
 		cmpi.b	#99,(v_lives).w				; are lives at max?
 		beq.s	.playbgm
@@ -563,6 +581,8 @@ Obj09_Get1Up:
 	; Lives Over/Underflow Fix End
 		move.w	#bgm_ExtraLife,d0
 		jsr		(PlaySound).l				; play extra life music
+	endif	; Special Stages Still Appear With All Emeralds End
+
 		moveq	#0,d4
 		rts	
 ; ===========================================================================
