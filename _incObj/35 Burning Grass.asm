@@ -23,7 +23,7 @@ GFire_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Fireball,0,0),obGfx(a0)
 		move.w	obX(a0),gfire_origX(a0)
 		move.b	#4,obRender(a0)
-		move.w	#$80,obPriority(a0)				; RetroKoH S2 Priority Manager
+		move.w	#priority1,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$8B,obColType(a0)
 
 		bset	#shPropFlame,obShieldProp(a0)	; Negated by Flame Shield

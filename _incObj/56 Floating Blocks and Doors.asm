@@ -37,12 +37,12 @@ FBlock_Main:	; Routine 0
 
 .notLZ:
 		move.b	#4,obRender(a0)
-		move.w	#$180,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		moveq	#0,d0
-		move.b	obSubtype(a0),d0		; get subtype
+		move.b	obSubtype(a0),d0			; get subtype
 		lsr.w	#3,d0
-		andi.w	#$E,d0					; read only the 1st digit
-		lea		FBlock_Var(pc,d0.w),a2	; get size data
+		andi.w	#$E,d0						; read only the 1st digit
+		lea		FBlock_Var(pc,d0.w),a2		; get size data
 		move.b	(a2)+,obActWid(a0)
 		move.b	(a2),obHeight(a0)
 		lsr.w	#1,d0

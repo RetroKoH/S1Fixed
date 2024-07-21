@@ -66,7 +66,7 @@ Sto_Main:	; Routine 0
 
 .isSBZ12:
 		ori.b	#4,obRender(a0)
-		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.w	obX(a0),sto_origX(a0)
 		move.w	obY(a0),sto_origY(a0)
 		moveq	#0,d0

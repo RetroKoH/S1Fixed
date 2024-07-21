@@ -3280,10 +3280,10 @@ GM_Continue:
 		move.w	#659,(v_demolength).w	; set time delay to 11 seconds
 		clr.l	(v_screenposx).w
 		move.l	#$1000000,(v_screenposy).w
-		move.b	#id_ContSonic,(v_player).w				; load Sonic object
-		move.b	#id_ContScrItem,(v_continuetext).w		; load continue screen objects
+		move.b	#id_ContSonic,(v_player).w					; load Sonic object
+		move.b	#id_ContScrItem,(v_continuetext).w			; load continue screen objects
 		move.b	#id_ContScrItem,(v_continuelight).w
-		move.w	#$180,(v_continuelight+obPriority).w	; RetroKoH S2 Priority Manager
+		move.w	#priority3,(v_continuelight+obPriority).w	; RetroKoH S3K+ Priority Manager
 		move.b	#4,(v_continuelight+obFrame).w
 		move.b	#id_ContScrItem,(v_continueicon).w
 		move.b	#4,(v_continueicon+obRoutine).w
@@ -4927,7 +4927,7 @@ loc_8486:
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.w	obGfx(a0),obGfx(a1)
-		move.w	obPriority(a0),obPriority(a1)	; RetroKoH S2 Priority Manager
+		move.w	obPriority(a0),obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	obActWid(a0),obActWid(a1)
 		move.b	(a4)+,ledge_timedelay(a1)
 		subq.w	#1,d1				; decrement for the first ring created
@@ -4953,7 +4953,7 @@ loc_8486:
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.w	obGfx(a0),obGfx(a1)
-		move.w	obPriority(a0),obPriority(a1)	; RetroKoH S2 Priority Manager
+		move.w	obPriority(a0),obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	obActWid(a0),obActWid(a1)
 		move.b	(a4)+,ledge_timedelay(a1)
 		; cmpa.l a0,a1 ; Finally, this isn't necessary anymore, its only purpose was to skip DisplaySprite1 on the first object
@@ -6266,11 +6266,11 @@ Sonic_Main:	; Routine 0
 		move.b	#9,obWidth(a0)
 		move.l	#Map_Sonic,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Sonic,0,0),obGfx(a0)
-		move.w	#$100,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#priority2,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$18,obActWid(a0)
 		move.b	#4,obRender(a0)
-		lea     (v_sonspeedmax).w,a2	; Load Sonic_top_speed into a2
-		bsr.w   ApplySpeedSettings		; Fetch Speed settings
+		lea     (v_sonspeedmax).w,a2		; Load Sonic_top_speed into a2
+		bsr.w   ApplySpeedSettings			; Fetch Speed settings
 
 	if (SpinDashEnabled|SkidDustEnabled)=1
 		move.b	#id_Effects,(v_playerdust).w

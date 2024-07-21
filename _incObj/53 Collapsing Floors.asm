@@ -37,12 +37,12 @@ CFlo_Main:	; Routine 0
 
 .notSBZ:
 		ori.b	#4,obRender(a0)
-		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#7,cflo_timedelay(a0)
 		move.b	#$44,obActWid(a0)
 
 CFlo_Touch:	; Routine 2
-		tst.b	cflo_collapse_flag(a0)	; has Sonic touched the	object?
+		tst.b	cflo_collapse_flag(a0)		; has Sonic touched the	object?
 		beq.s	.solid					; if not, branch
 		tst.b	cflo_timedelay(a0)		; has time delay reached zero?
 		beq.w	CFlo_Fragment			; if yes, branch

@@ -14,7 +14,7 @@ Bump_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_SYZ_Bumper,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.b	#$10,obActWid(a0)
-		move.w	#$80,obPriority(a0)		; RetroKoH S2 Priority Manager
+		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$D7,obColType(a0)
 
 Bump_Hit:	; Routine 2

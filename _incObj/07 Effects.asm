@@ -17,7 +17,7 @@ Effects_Init:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Effects,obMap(a0)
 		ori.b	#4,obRender(a0)
-		move.b	#1,obPriority(a0)
+		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$10,obActWid(a0)
 		clr.b	obAnim(a0)
 		move.w	#ArtTile_Dust,obGfx(a0)
@@ -95,7 +95,7 @@ Effects_SkidDust:
 		addq.b	#2,obRoutine(a1)
 		move.l	obMap(a0),obMap(a1)
 		move.b	obRender(a0),obRender(a1)
-		move.w	#$80,obPriority(a1)
+		move.w	#priority1,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#4,obActWid(a1)
 		move.w	obGfx(a0),obGfx(a1)
 ;fallthrough

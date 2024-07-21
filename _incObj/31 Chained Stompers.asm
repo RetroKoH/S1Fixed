@@ -79,7 +79,7 @@ CStom_MakeStomper:
 		move.b	obSubtype(a0),obSubtype(a1)
 		move.b	#$10,obActWid(a1)
 		move.w	d2,objoff_34(a1)
-		move.w	#$200,obPriority(a1)		; RetroKoH S2 Priority Manager
+		move.w	#priority4,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	(a2)+,obFrame(a1)
 		cmpi.b	#1,obFrame(a1)
 		bne.s	loc_B76A
@@ -96,7 +96,7 @@ loc_B76A:
 		move.l	a0,objoff_3C(a1)
 		dbf		d1,CStom_Loop
 
-		move.w	#$180,obPriority(a1)		; RetroKoH S2 Priority Manager
+		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 
 CStom_SetSize:
 		moveq	#0,d0

@@ -16,8 +16,8 @@ Bridge:
 ; ===========================================================================
 .SubSprs:
 	; child sprite objects only need to be drawn
-		move.w	#$180,d0			; Display sprites
-		bra.w	DisplaySprite2
+		move.w	#priority3,d0			; RetroKoH/Devon S3K+ Priority Manager
+		bra.w	DisplaySprite2			; Display sprites
 ; ===========================================================================
 Bri_Index:	offsetTable
 		offsetTableEntry.w	Bri_Main
@@ -30,7 +30,7 @@ Bri_Main:	; Routine 0
 		move.l	#Map_Bri,obMap(a0)
 		move.w	#make_art_tile(ArtTile_GHZ_Bridge,2,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.w	#$180,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$80,obActWid(a0)
 		move.w	obY(a0),d2
 		move.w	d2,objoff_3C(a0)

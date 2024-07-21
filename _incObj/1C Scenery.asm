@@ -19,16 +19,7 @@ Scen_Main:	; Routine 0
 		ori.b	#4,obRender(a0)
 		move.b	(a1)+,obFrame(a0)
 		move.b	(a1)+,obActWid(a0)
-		move.b	(a1)+,obPriority(a0)
-
-	; RetroKoH S2 Priority Manager
-		move.w  obPriority(a0),d0
-		lsr.w   #1,d0
-		andi.w  #$380,d0
-		move.w  d0,obPriority(a0)
-	; S2 Priority Manager End
-
-		move.b	(a1)+,obColType(a0)
+		move.w	(a1)+,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 
 Scen_ChkDel:	; Routine 2
 		offscreen.w	DeleteObject		; ProjectFM S3K Objects Manager
@@ -40,14 +31,22 @@ Scen_ChkDel:	; Routine 2
 Scen_Values:
 		dc.l Map_Scen											; mappings address
 		dc.w make_art_tile(ArtTile_SLZ_Fireball_Launcher,2,0)	; VRAM setting
-		dc.b 0,	8, 2, 0                                   		; frame, width, priority, collision response
+		dc.b 0,	8                                   			; frame, width
+		dc.w priority2											; priority
+
 		dc.l Map_Scen
 		dc.w make_art_tile(ArtTile_SLZ_Fireball_Launcher,2,0)
-		dc.b 0,	8, 2, 0
+		dc.b 0,	8
+		dc.w priority2
+
 		dc.l Map_Scen
 		dc.w make_art_tile(ArtTile_SLZ_Fireball_Launcher,2,0)
-		dc.b 0,	8, 2, 0
+		dc.b 0,	8
+		dc.w priority2
+
 		dc.l Map_Bri
 		dc.w make_art_tile(ArtTile_GHZ_Bridge,2,0)
-		dc.b 1,	$10, 1,	0
+		dc.b 1,	$10
+		dc.w priority1
+
 		even

@@ -12,7 +12,7 @@ SStars_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_SStars,obMap(a0)
 		move.b	#4,obRender(a0)
-		move.w	#$80,obPriority(a0)
+		move.w	#priority1,obPriority(a0)
 		move.b	#$18,obActWid(a0)
 		move.w	#make_art_tile(ArtTile_Shield,0,0),obGfx(a0)
 

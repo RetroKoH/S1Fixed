@@ -33,7 +33,7 @@ BossBlock_MakeBlock:
 		move.b	#4,obRender(a1)
 		move.b	#$10,obActWid(a1)
 		move.b	#$10,obHeight(a1)
-		move.w	#$180,obPriority(a1)	; RetroKoH S2 Priority Manager
+		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.w	d5,obX(a1)	; set x-position
 		move.w	#$582,obY(a1)
 		move.w	d4,obSubtype(a1)

@@ -33,7 +33,7 @@ Bonus_Main:	; Routine 0
 		move.l	#Map_Bonus,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Hidden_Points,0,1),obGfx(a0)
 		ori.b	#4,obRender(a0)
-		clr.w	obPriority(a0)		; RetroKoH S2 Priority Manager
+		move.w	#priority0,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$10,obActWid(a0)
 		move.b	obSubtype(a0),obFrame(a0)
 		move.w	#119,bonus_timelen(a0) ; set display time to 2 seconds

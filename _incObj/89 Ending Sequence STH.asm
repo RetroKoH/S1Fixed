@@ -23,7 +23,7 @@ ESth_Main:	; Routine 0
 		move.l	#Map_ESth,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Ending_STH,0,0),obGfx(a0)
 		clr.b	obRender(a0)
-		clr.w	obPriority(a0)		; RetroKoH S2 Priority Manager
+		move.w	#priority0,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 
 ESth_Move:	; Routine 2
 		cmpi.w	#$C0,obX(a0)	; has object reached $C0?

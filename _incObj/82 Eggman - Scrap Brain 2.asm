@@ -12,25 +12,18 @@ SEgg_Index:		offsetTable
 		offsetTableEntry.w SEgg_Main
 		offsetTableEntry.w SEgg_Eggman
 		offsetTableEntry.w SEgg_Switch
-
-SEgg_ObjData:
-		;		routine,		priority-hi
-		;				anim,			priority-lo
-		dc.b	2,		0,		1,		$80
-		dc.b	4,		0,		1,		$80
 ; ===========================================================================
 
 SEgg_Main:	; Routine 0
-		lea		SEgg_ObjData(pc),a2
 		move.w	#boss_sbz2_x+$110,obX(a0)
 		move.w	#boss_sbz2_y+$94,obY(a0)
 		move.b	#$F,obColType(a0)
 		move.b	#$10,obColProp(a0)
 		bclr	#staFlipX,obStatus(a0)
 		clr.b	ob2ndRout(a0)
-		move.b	(a2)+,obRoutine(a0)
-		move.b	(a2)+,obAnim(a0)
-		move.w	(a2)+,obPriority(a1)	; RetroKoH S3K Priority
+		move.b	#2,obRoutine(a0)
+		clr.b	obAnim(a0)
+		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.l	#Map_SEgg,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
@@ -39,13 +32,13 @@ SEgg_Main:	; Routine 0
 		jsr		(FindNextFreeObj).l
 		bne.s	SEgg_Eggman
 		move.l	a0,objoff_34(a1)
-		move.b	#id_ScrapEggman,obID(a1) ; load switch object
+		move.b	#id_ScrapEggman,obID(a1)	; load switch object
 		move.w	#boss_sbz2_x+$E0,obX(a1)
 		move.w	#boss_sbz2_y+$AC,obY(a1)
-		clr.b	ob2ndRout(a0)
-		move.b	(a2)+,obRoutine(a1)
-		move.b	(a2)+,obAnim(a1)
-		move.w	(a2)+,obPriority(a1)	; RetroKoH S3K Priority
+		clr.b	ob2ndRout(a1)
+		move.b	#4,obRoutine(a1)
+		clr.b	obAnim(a1)
+		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.l	#Map_But,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman_Button,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)

@@ -34,7 +34,7 @@ Swing_Main:	; Routine 0
 		move.l	#Map_Swing_GHZ,obMap(a0)	; GHZ and MZ specific code
 		move.w	#make_art_tile(ArtTile_GHZ_MZ_Swing,2,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.w	#$180,obPriority(a0)		; RetroKoH S2 Priority Manager
+		move.w	#priority3,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$18,obActWid(a0)
 		move.b	#8,obHeight(a0)
 		move.w	obY(a0),swing_origY(a0)
@@ -105,14 +105,14 @@ Swing_Main:	; Routine 0
 		move.w	obGfx(a0),obGfx(a1)
 		bclr	#6,obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.w	#$200,obPriority(a1)	; RetroKoH S2 Priority Manager
+		move.w	#priority4,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#8,obActWid(a1)
 		move.b	#1,obFrame(a1)
 		move.b	d3,objoff_3C(a1)
 		subi.b	#$10,d3
 		bcc.s	.notanchor
 		move.b	#2,obFrame(a1)
-		move.w	#$180,obPriority(a1)	; RetroKoH S2 Priority Manager
+		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		bset	#6,obGfx(a1)
 
 .notanchor:
@@ -128,17 +128,17 @@ Swing_Main:	; Routine 0
 		move.b	swing_angle(a0),obAngle(a0)
 		move.w	#-$200,objoff_3E(a0)
 		move.w	(sp)+,d1
-		btst	#4,d1					; is object type $1X ?
-		beq.s	.not1X					; if not, branch
-		move.l	#Map_GBall,obMap(a0)	; use GHZ ball mappings
+		btst	#4,d1						; is object type $1X ?
+		beq.s	.not1X						; if not, branch
+		move.l	#Map_GBall,obMap(a0)		; use GHZ ball mappings
 		move.w	#make_art_tile(ArtTile_GHZ_Giant_Ball,2,0),obGfx(a0)
 		move.b	#1,obFrame(a0)
-		move.w	#$100,obPriority(a0)	; RetroKoH S2 Priority Manager
-		move.b	#$81,obColType(a0)		; make object hurt when touched
+		move.w	#priority2,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
+		move.b	#$81,obColType(a0)			; make object hurt when touched
 
 .not1X:
-		cmpi.b	#id_SBZ,(v_zone).w ; is zone SBZ?
-		beq.s	Swing_Action	; if yes, branch
+		cmpi.b	#id_SBZ,(v_zone).w	; is zone SBZ?
+		beq.s	Swing_Action		; if yes, branch
 
 Swing_SetSolid:	; Routine 2
 		moveq	#0,d1

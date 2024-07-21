@@ -25,7 +25,7 @@ LGrass_Main:	; Routine 0
 		move.l	#Map_LGrass,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Level,2,1),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.w	#$280,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#priority5,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.w	obY(a0),lgrass_origY(a0)
 		move.w	obX(a0),lgrass_origX(a0)
 		moveq	#0,d0

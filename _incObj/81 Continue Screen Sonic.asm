@@ -22,16 +22,16 @@ CSon_Main:	; Routine 0
 		move.l	#Map_Sonic,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Sonic,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.w	#$100,obPriority(a0)	; RetroKoH S2 Priority Manager
-		move.b	#aniID_Float3,obAnim(a0) ; use "floating" animation
-		move.w	#$400,obVelY(a0) ; make Sonic fall from above
+		move.w	#priority2,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
+		move.b	#aniID_Float3,obAnim(a0)	; use "floating" animation
+		move.w	#$400,obVelY(a0)			; make Sonic fall from above
 
 CSon_ChkLand:	; Routine 2
 		cmpi.w	#$1A0,obY(a0)	; has Sonic landed yet?
 		bne.s	CSon_ShowFall	; if not, branch
 
 		addq.b	#2,obRoutine(a0)
-		clr.w	obVelY(a0)	; stop Sonic falling
+		clr.w	obVelY(a0)		; stop Sonic falling
 		move.l	#Map_ContScr,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Continue_Sonic,0,1),obGfx(a0)
 		clr.b	obAnim(a0)

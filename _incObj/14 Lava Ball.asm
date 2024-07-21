@@ -25,7 +25,7 @@ LBall_Main:	; Routine 0
 		move.l	#Map_Fire,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Fireball,0,0),obGfx(a0)	; RetroKoH VRAM Overhaul
 		move.b	#4,obRender(a0)
-		move.w	#$180,obPriority(a0)			; RetroKoH S2 Priority Manager
+		move.w	#priority3,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$8B,obColType(a0)
 		
 		bset	#shPropFlame,obShieldProp(a0)	; Negated by Flame Shield
@@ -33,7 +33,7 @@ LBall_Main:	; Routine 0
 		move.w	obY(a0),objoff_30(a0)
 		tst.b	objoff_29(a0)
 		beq.s	.speed
-		addq.b	#1,obPriority(a0)				; Add to upper byte, to add $100 to priority value -- RetroKoH S2 Priority Manager
+		move.w	#priority5,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 
 .speed:
 		moveq	#0,d0

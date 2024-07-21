@@ -24,9 +24,9 @@ Hel_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Hel,obMap(a0)
 		move.w	#make_art_tile(ArtTile_GHZ_Spike_Pole,2,0),obGfx(a0)
-		move.b	#7,obStatus(a0)			; bit 2 is also set... is this used?
+		move.b	#7,obStatus(a0)				; bit 2 is also set... is this used?
 		move.b	#4,obRender(a0)
-		move.w	#$180,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#8,obActWid(a0)
 		move.w	obY(a0),d2
 		move.w	obX(a0),d3
@@ -69,7 +69,7 @@ Hel_Main:	; Routine 0
 		move.l	obMap(a0),obMap(a1)
 		move.w	#make_art_tile(ArtTile_GHZ_Spike_Pole,2,0),obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.w	#$180,obPriority(a1)	; RetroKoH S2 Priority Manager
+		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#8,obActWid(a1)
 		move.b	d6,hel_frame(a1)
 		addq.b	#1,d6

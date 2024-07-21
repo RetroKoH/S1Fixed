@@ -23,10 +23,10 @@ Moto_Main:	; Routine 0
 		move.l	#Map_Moto,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Moto_Bug,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$14,obActWid(a0)
-		tst.b	obAnim(a0)	; is object a smoke trail?
-		bne.s	.smoke		; if yes, branch
+		tst.b	obAnim(a0)					; is object a smoke trail?
+		bne.s	.smoke						; if yes, branch
 		move.b	#$E,obHeight(a0)
 		move.b	#8,obWidth(a0)
 		move.b	#$C,obColType(a0)
@@ -34,9 +34,9 @@ Moto_Main:	; Routine 0
 		jsr		(ObjFloorDist).l
 		tst.w	d1
 		bpl.s	.notonfloor
-		add.w	d1,obY(a0)	; match	object's position with the floor
+		add.w	d1,obY(a0)					; match	object's position with the floor
 		clr.w	obVelY(a0)
-		addq.b	#2,obRoutine(a0) ; goto Moto_Action next
+		addq.b	#2,obRoutine(a0)			; goto Moto_Action next
 		bchg	#staFlipX,obStatus(a0)
 
 .notonfloor:

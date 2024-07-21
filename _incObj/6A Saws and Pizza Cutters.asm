@@ -17,12 +17,12 @@ Saw_Main:	; Routine 0
 		move.l	#Map_Saw,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Saw,2,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$20,obActWid(a0)
 		move.w	obX(a0),saw_origX(a0)
 		move.w	obY(a0),saw_origY(a0)
-		cmpi.b	#3,obSubtype(a0)		; is object a ground saw?
-		bhs.s	Saw_Action				; if yes, branch
+		cmpi.b	#3,obSubtype(a0)			; is object a ground saw?
+		bhs.s	Saw_Action					; if yes, branch
 		move.b	#$A2,obColType(a0)
 
 Saw_Action:	; Routine 2

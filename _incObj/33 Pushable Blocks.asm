@@ -30,7 +30,7 @@ PushB_Main:	; Routine 0
 
 .notLZ:
 		move.b	#4,obRender(a0)
-		move.w	#$180,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.w	obX(a0),objoff_34(a0)
 		move.w	obY(a0),objoff_36(a0)
 		moveq	#0,d0

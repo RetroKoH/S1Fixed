@@ -13,8 +13,8 @@ Flame_Main:	; Routine 0
 		move.l	#Map_Flame,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Flamethrower,0,1),obGfx(a0)
 		ori.b	#4,obRender(a0)
-		move.w	#$80,obPriority(a0)		; RetroKoH S2 Priority Manager
-		move.w	obY(a0),objoff_30(a0)	; store obY (gets overwritten later though)
+		move.w	#priority1,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
+		move.w	obY(a0),objoff_30(a0)			; store obY (gets overwritten later though)
 		move.b	#$C,obActWid(a0)
 
 		bset	#shPropFlame,obShieldProp(a0)	; Negated by Flame Shield

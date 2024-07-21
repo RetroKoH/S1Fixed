@@ -26,7 +26,7 @@ EEgg_Main:	; Routine 0
 		move.l	#Map_EEgg,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Try_Again_Eggman,0,0),obGfx(a0)
 		clr.b	obRender(a0)
-		move.w	#$100,obPriority(a0)			; RetroKoH S2 Priority Manager
+		move.w	#priority2,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#2,obAnim(a0)					; use "END" animation
 		cmpi.b	#emldCount,(v_emeralds).w		; do you have all emeralds?
 		beq.s	EEgg_Animate					; if yes, branch

@@ -29,12 +29,12 @@ Ring_Main:	; Routine 0 -- Stripped down init routine -- RetroKoH S2 Rings Manage
 		move.l	#Map_Ring,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Ring,1,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.w	#$100,obPriority(a0)			; RetroKoH S2 Priority Manager
+		move.w	#priority2,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$47,obColType(a0)
 		move.b	#8,obActWid(a0
 
 Ring_Animate:	; Routine 2
-		move.b	(v_ani1_frame).w,obFrame(a0)		; set frame
+		move.b	(v_ani1_frame).w,obFrame(a0)	; set frame
 	; ProjectFM S3K Objects Manager
 		move.w	objoff_32(a0),d0
 		bra.w	RememberState
@@ -44,7 +44,7 @@ Ring_Animate:	; Routine 2
 Ring_Collect:	; Routine 4
 		addq.b	#2,obRoutine(a0)
 		clr.b	obColType(a0)
-		move.w	#$80,obPriority(a0)		; RetroKoH S2 Priority Manager
+		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		bsr.w	CollectRing
 		; Code Removed -- ProjectFM S3K Objects Manager
 
@@ -150,7 +150,7 @@ RLoss_Count:	; Routine 0
 		move.l	#Map_Ring,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Ring,1,0),obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.w	#$180,obPriority(a1)	; RetroKoH S2 Priority Manager
+		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$47,obColType(a1)
 		move.b	#8,obActWid(a1)
 		move.w  (a3)+,obVelX(a1)	; move the data contained in the array to the x velocity and increment the address in a3
@@ -179,7 +179,7 @@ RLoss_Count:	; Routine 0
 		move.l	#Map_Ring,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Ring,1,0),obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.w	#$180,obPriority(a1)	; RetroKoH S2 Priority Manager
+		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$47,obColType(a1)
 		move.b	#8,obActWid(a1)
 		move.w  (a3)+,obVelX(a1)	; move the data contained in the array to the x velocity and increment the address in a3
@@ -265,7 +265,7 @@ RLoss_Bounce:	; Routine 2
 RLoss_Collect:	; Routine 4
 		addq.b	#2,obRoutine(a0)
 		clr.b	obColType(a0)
-		move.w	#$80,obPriority(a0)		; RetroKoH S2 Priority Manager
+		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		bsr.w	CollectRing
 
 RLoss_Sparkle:	; Routine 6
@@ -316,7 +316,7 @@ RAttract_Init:
 		move.l	#Map_Ring,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Ring,1,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.w	#$100,obPriority(a0)
+		move.w	#priority2,obPriority(a0)
 		move.b	#$47,obColType(a0)
 		move.b	#8,obActWid(a0)
 		move.b	#8,obHeight(a0)

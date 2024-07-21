@@ -22,7 +22,7 @@ BossPlasma_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_FZ_Boss,0,0),obGfx(a0)
 		move.l	#Map_PLaunch,obMap(a0)
 		clr.b	obAnim(a0)
-		move.w	#$180,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#8,obWidth(a0)
 		move.b	#8,obHeight(a0)
 		move.b	#4,obRender(a0)
@@ -92,7 +92,7 @@ BossPlasma_Loop:
 
 		bset	#shPropLightning,obShieldProp(a1)	; Negated by Lightning Shield
 
-		move.w	#$180,obPriority(a1)	; RetroKoH S2 Priority Manager
+		move.w	#priority3,obPriority(a1)			; RetroKoH/Devon S3K+ Priority Manager
 		move.w	#$3E,obSubtype(a1)
 		move.b	#4,obRender(a1)
 		bset	#7,obRender(a1)
@@ -107,7 +107,7 @@ BossPlasma_Loop:
 		move.w	d0,objoff_30(a1)
 		addq.w	#1,objoff_32(a0)
 		move.w	objoff_32(a0),objoff_38(a0)
-		dbf		d2,BossPlasma_Loop	; repeat sequence 3 more times
+		dbf		d2,BossPlasma_Loop					; repeat sequence 3 more times
 
 loc_1A954:
 		tst.w	objoff_32(a0)

@@ -25,8 +25,8 @@ Ledge_Main:	; Routine 0
 		move.l	#Map_Ledge,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
-		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
-		move.b	#7,ledge_timedelay(a0) ; set time delay for collapse
+		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
+		move.b	#7,ledge_timedelay(a0)		; set time delay for collapse
 		move.b	#$64,obActWid(a0)
 		move.b	obSubtype(a0),obFrame(a0)
 		move.b	#$38,obHeight(a0)

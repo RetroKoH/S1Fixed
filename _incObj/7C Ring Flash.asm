@@ -17,7 +17,7 @@ Flash_Main:	; Routine 0
 		move.l	#Map_Flash,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Giant_Ring_Flash,1,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
-		clr.w	obPriority(a0)		; RetroKoH S2 Priority Manager
+		move.w	#priority0,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$20,obActWid(a0)
 		move.b	#$FF,obFrame(a0)
 

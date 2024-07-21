@@ -28,7 +28,7 @@ Bub_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_LZ_Bubbles,0,1),obGfx(a0)
 		move.b	#$84,obRender(a0)
 		move.b	#$10,obActWid(a0)
-		move.w	#$80,obPriority(a0)		; RetroKoH S2 Priority Manager
+		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	obSubtype(a0),d0		; get bubble type
 		bpl.s	.bubble					; if type is $0-$7F, branch
 

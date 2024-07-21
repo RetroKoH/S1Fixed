@@ -19,7 +19,7 @@ AfterImages_Init:
 .skip:
 		move.l	obMap(a1),obMap(a0)				; Character obMap = afterimage obMap
 		move.w	obGfx(a1),obGfx(a0)				; use player 1's art
-		move.w	#$100,obPriority(a0)
+		move.w	#priority2,obPriority(a0)
 		move.b	#$18,obWidth(a0)
 		move.b	#$18,obHeight(a0)
 		move.b	#4,obRender(a0)	

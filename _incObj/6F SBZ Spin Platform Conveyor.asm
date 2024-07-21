@@ -42,7 +42,7 @@ SpinC_Rout1:
 		move.w	#make_art_tile(ArtTile_SBZ_Spinning_Platform,0,0),obGfx(a0)
 		move.b	#$10,obActWid(a0)
 		ori.b	#4,obRender(a0)
-		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
 		move.w	d0,d1

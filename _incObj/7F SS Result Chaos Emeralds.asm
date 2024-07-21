@@ -33,17 +33,18 @@ SSRC_Main:	; Routine 0
 		beq.s   .noemerald			; if not, skip and check for the next emerald
 
 		_move.b	#id_SSRChaos,obID(a1)
-		move.w	(a2)+,obX(a1)		; set x-position
-		move.w	#$F0,obScreenY(a1)	; set y-position
+		move.w	(a2)+,obX(a1)				; set x-position
+		move.w	#$F0,obScreenY(a1)			; set y-position
 		move.b	d2,obFrame(a1)
 		move.b	d2,obAnim(a1)
 		addq.b	#2,obRoutine(a1)
 		move.l	#Map_SSRC,obMap(a1)
 		move.w	#make_art_tile(ArtTile_SS_Results_Emeralds,0,1),obGfx(a1)
 		clr.b	obRender(a1)
-		lea		object_size(a1),a1	; next object
-		addq.b  #1,d2				; check for the next emerald
-		dbf		d1,.loop			; loop for d1 number of	emeralds
+		move.w	#priority0,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
+		lea		object_size(a1),a1			; next object
+		addq.b  #1,d2						; check for the next emerald
+		dbf		d1,.loop					; loop for d1 number of	emeralds
 		bra.s	SSRC_Flash
 
 .noemerald:

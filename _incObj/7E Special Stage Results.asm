@@ -48,6 +48,7 @@ SSR_Loop:
 		move.l	#Map_SSR,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Title_Card,0,1),obGfx(a1)
 		clr.b	obRender(a1)
+		move.w	#priority0,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		lea		object_size(a1),a1
 		dbf		d1,SSR_Loop			; repeat sequence 3 or 4 times
 

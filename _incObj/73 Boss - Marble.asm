@@ -16,10 +16,14 @@ BossMarble_Index:	offsetTable
 		offsetTableEntry.w BossMarble_TubeMain
 
 BossMarble_ObjData:
-		dc.b 2,	0, 4		; routine number, animation, priority
-		dc.b 4,	1, 4
-		dc.b 6,	7, 4
-		dc.b 8,	0, 3
+		dc.b 2,	0			; routine number, animation
+		dc.w priority4		; priority
+		dc.b 4,	1
+		dc.w priority4
+		dc.b 6,	7
+		dc.w priority4
+		dc.b 8,	0
+		dc.w priority3
 ; ===========================================================================
 
 BossMarble_Main:	; Routine 0
@@ -45,21 +49,13 @@ BossMarble_LoadBoss:
 		clr.b	ob2ndRout(a1)
 		move.b	(a2)+,obRoutine(a1)
 		move.b	(a2)+,obAnim(a1)
-		move.b	(a2)+,obPriority(a1)
-
-	; RetroKoH S2 Priority Manager
-		move.w  obPriority(a1),d0
-		lsr.w   #1,d0
-		andi.w  #$380,d0
-		move.w  d0,obPriority(a1)
-	; S2 Priority Manager End
-
+		move.w	(a2)+,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.l	#Map_Eggman,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.b	#$20,obActWid(a1)
 		move.l	a0,objoff_34(a1)
-		dbf		d1,BossMarble_Loop	; repeat sequence 3 more times
+		dbf		d1,BossMarble_Loop		; repeat sequence 3 more times
 
 BossMarble_ShipMain:	; Routine 2
 		moveq	#0,d0

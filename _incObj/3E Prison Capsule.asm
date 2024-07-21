@@ -21,11 +21,15 @@ Pri_Index:	offsetTable
 pri_origY = objoff_30		; original y-axis position
 
 Pri_Var:
-		; 		routine,	width,	priority,	frame
-		dc.b 	2,			$20,	4,			0		; 0 (subtype 0: body)
-		dc.b 	4,			$C,		5,			1		; 4 (subtype 1: button)
-		dc.b 	6,			$10,	4,			3		; 8 (subtype 2: button 2)
-		dc.b 	8,			$10,	3,			5		; $C (subtype 3: ???)
+		; 		routine,	width,	frame,	priority
+		dc.b 	2,			$20,	0,0		; 0 (subtype 0: body)
+		dc.w	priority4
+		dc.b 	4,			$C,		1,0		; 4+2=6 (subtype 1: button)
+		dc.w	priority5
+		dc.b 	6,			$10,	3,0		; 8+4=$C (subtype 2: button 2)
+		dc.w	priority4
+		dc.b 	8,			$10,	5,0		; $C+6=$12 (subtype 3: ???)
+		dc.w	priority3
 ; ===========================================================================
 
 Pri_Main:	; Routine 0
@@ -35,18 +39,17 @@ Pri_Main:	; Routine 0
 		move.w	obY(a0),pri_origY(a0)
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
+		move.b	d0,d1
 		lsl.w	#2,d0
+		lsl.b	#1,d1
+		add.b	d1,d0
 		lea		Pri_Var(pc,d0.w),a1
 		move.b	(a1)+,obRoutine(a0)
 		move.b	(a1)+,obActWid(a0)
-		move.b	(a1)+,obPriority(a0)
-	; RetroKoH S2 Priority Manager
-		move.w  obPriority(a0),d0
-		lsr.w   #1,d0
-		andi.w  #$380,d0
-		move.w  d0,obPriority(a0)
-	; S2 Priority Manager End
 		move.b	(a1)+,obFrame(a0)
+		move.b	(a1)+,obPriority(a0)	; Temp solution to increment address at a1
+		move.w	(a1)+,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
+
 		cmpi.w	#8,d0					; is object type number	02?
 		bne.s	.not02					; if not, branch
 

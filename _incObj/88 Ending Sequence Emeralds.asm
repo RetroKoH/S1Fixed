@@ -34,7 +34,7 @@ ECha_LoadLoop:
 		move.l	#Map_ECha,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Ending_Emeralds,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.w	#$80,obPriority(a1)		; RetroKoH S2 Priority Manager
+		move.w	#priority1,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.w	obX(a0),echa_origX(a1)
 		move.w	obY(a0),echa_origY(a1)
 		move.b	d2,obAnim(a1)

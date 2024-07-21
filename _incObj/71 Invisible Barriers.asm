@@ -13,19 +13,20 @@ Invis_Main:	; Routine 0
 		move.l	#Map_Invis,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Monitor,0,1),obGfx(a0)
 		ori.b	#4,obRender(a0)
-		move.b	obSubtype(a0),d0 ; get object type
+		move.w	#priority0,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
+		move.b	obSubtype(a0),d0			; get object type
 		move.b	d0,d1
-		andi.w	#$F0,d0		; read only the	1st byte
+		andi.w	#$F0,d0						; read only the	1st byte
 		addi.w	#$10,d0
 		lsr.w	#1,d0
-		move.b	d0,obActWid(a0)	; set object width
-		andi.w	#$F,d1		; read only the	2nd byte
+		move.b	d0,obActWid(a0)				; set object width
+		andi.w	#$F,d1						; read only the	2nd byte
 		addq.w	#1,d1
 		lsl.w	#3,d1
-		move.b	d1,obHeight(a0) ; set object height
+		move.b	d1,obHeight(a0)				; set object height
 
 Invis_Solid:	; Routine 2
-		bsr.w	ChkSizedObjVisible		; Ralakimus Checking For Solids Fix
+		bsr.w	ChkSizedObjVisible			; Ralakimus Checking For Solids Fix
 		bne.s	.chkdel
 		moveq	#0,d1
 		move.b	obActWid(a0),d1
@@ -38,13 +39,13 @@ Invis_Solid:	; Routine 2
 		bsr.w	SolidObject71
 
 .chkdel:
-		offscreen.s	.delete			; ProjectFM S3K Object Manager
-		tst.w	(v_debuguse).w		; are you using	debug mode?
-		beq.s	.nodisplay			; if not, branch
-		jmp		(DisplaySprite).l	; if yes, display the object
+		offscreen.s	.delete					; ProjectFM S3K Object Manager
+		tst.w	(v_debuguse).w				; are you using	debug mode?
+		beq.s	.nodisplay					; if not, branch
+		jmp		(DisplaySprite).l			; if yes, display the object
 
 .nodisplay:
 		rts	
 
 .delete:
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l

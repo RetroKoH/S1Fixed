@@ -37,7 +37,7 @@ LWall_Main:	; Routine 0
 		move.b	#$50,obActWid(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		move.w	#$80,obPriority(a1)		; RetroKoH S2 Priority Manager
+		move.w	#priority1,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		clr.b	obAnim(a1)
 		move.b	#$94,obColType(a1)
 		

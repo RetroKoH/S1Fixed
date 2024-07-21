@@ -49,7 +49,7 @@ Cat_Main:	; Routine 0
 		andi.b	#3,obRender(a0)
 		ori.b	#4,obRender(a0)
 		move.b	obRender(a0),obStatus(a0)
-		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#8,obActWid(a0)
 		move.b	#$B,obColType(a0)
 		move.w	obX(a0),d2
@@ -83,7 +83,7 @@ Cat_Main:	; Routine 0
 		addq.b	#2,d6						; alternate between the two
 		move.l	obMap(a0),obMap(a1)
 		move.w	obGfx(a0),obGfx(a1)
-		move.w	#$280,obPriority(a1)		; RetroKoH S2 Priority Manager
+		move.w	#priority5,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#8,obActWid(a1)
 		move.b	#$CB,obColType(a1)
 		add.w	d5,d2

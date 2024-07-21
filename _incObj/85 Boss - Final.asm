@@ -36,14 +36,20 @@ BossFinal_ObjData:
 		dc.l Map_Eggman
 
 BossFinal_ObjData2:
-	; 			routine,		priority-hi,		width,
-	;					anim,		priority-lo,			height
-		dc.b	2,		0, 		2,	$00,			$20,	$19
-		dc.b	4,		0,		0,	$80,			$12,	8
-		dc.b	6,		0,		1,	$80,			0,		0
-		dc.b	8,		0,		1,	$80,			0,		0
-		dc.b	$A, 	0,		1,	$80,			$20,	$20
-		dc.b	$C, 	0,		1,	$80,			0,		0
+	; 			routine,		width,
+	;					anim,			height
+		dc.b	2,		0, 		$20,	$19		
+		dc.w	priority4
+		dc.b	4,		0,		$12,	8		
+		dc.w	priority1
+		dc.b	6,		0,		0,		0		
+		dc.w	priority3
+		dc.b	8,		0,		0,		0		
+		dc.w	priority3
+		dc.b	$A, 	0,		$20,	$20		
+		dc.w	priority3
+		dc.b	$C, 	0,		0,		0		
+		dc.w	priority3
 ; ===========================================================================
 
 BossFinal_Main:	; Routine 0
@@ -66,9 +72,9 @@ BossFinal_LoadBoss:
 		move.l	(a2)+,obMap(a1)
 		move.b	(a3)+,obRoutine(a1)
 		move.b	(a3)+,obAnim(a1)
-		move.w	(a3)+,obPriority(a1)	; RetroKoH S3K Priority
 		move.b	(a3)+,obActWid(a1)
 		move.b	(a3)+,obHeight(a1)
+		move.w	(a3)+,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#4,obRender(a1)
 		bset	#7,obRender(a0)
 		move.l	a0,objoff_34(a1)
@@ -512,7 +518,7 @@ loc_1A312:
 		tst.b	obRender(a0)
 		bpl.w	BossFinal_Delete
 		bsr.w	BossDefeated
-		move.w	#$100,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#priority2,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		clr.b	obAnim(a0)
 		move.l	#Map_FZDamaged,obMap(a0)
 		move.w	#make_art_tile(ArtTile_FZ_Eggman_Fleeing,0,0),obGfx(a0)

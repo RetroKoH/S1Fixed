@@ -38,7 +38,7 @@ Swing_Main:
 		move.l	#Map_Swing_GHZ,obMap(a0)	; GHZ and MZ specific code
 		move.w	#make_art_tile(ArtTile_GHZ_MZ_Swing,2,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.w	#$180,obPriority(a0)		; RetroKoH S3K Priority Manager
+		move.w	#priority3,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$18,obActWid(a0)
 		move.b	#8,obHeight(a0)
 		move.w	obY(a0),swing_origY(a0)
@@ -84,7 +84,7 @@ Swing_Main:
 		cmpi.b	#$20,d4
 		bne.s	.subspr
 		move.b	#4,obRoutine(a1)
-		move.w	#$200,obPriority(a1)	; RetroKoH S3K Priority Manager
+		move.w	#priority4,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#8,obActWid(a1)
 		bset	#4,obRender(a1)	
 		move.b	#1,obFrame(a1)

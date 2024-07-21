@@ -33,16 +33,16 @@ FFloor_MakeBlock:
 		jsr		(FindFreeObj).l
 		bne.s	FFloor_ExitMake
 		move.w	a1,(a2)+
-		move.b	#id_FalseFloor,obID(a1)	; load block object
+		move.b	#id_FalseFloor,obID(a1)		; load block object
 		move.l	#Map_FFloor,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman_Trap_Floor,2,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.b	#$10,obActWid(a1)
 		move.b	#$10,obHeight(a1)
-		move.w	#$180,obPriority(a1)	; RetroKoH S2 Priority Manager
-		move.w	d5,obX(a1)				; set X	position
+		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
+		move.w	d5,obX(a1)					; set X	position
 		move.w	#boss_sbz2_y+$C0,obY(a1)
-		addi.w	#$20,d5					; add $20 for next X position
+		addi.w	#$20,d5						; add $20 for next X position
 		move.b	#8,obRoutine(a1)
 		dbf		d6,FFloor_MakeBlock			; repeat sequence 7 more times
 

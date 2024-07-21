@@ -28,7 +28,7 @@ Smash_Main:	; Routine 0
 .isGHZ:
 		move.b	#4,obRender(a0)
 		move.b	#$10,obActWid(a0)
-		move.w	#$200,obPriority(a0)				; RetroKoH S2 Priority Manager
+		move.w	#priority4,obPriority(a0)			; RetroKoH/Devon S3K+ Priority Manager
 		move.b	obSubtype(a0),obFrame(a0)
 
 Smash_Solid:	; Routine 2

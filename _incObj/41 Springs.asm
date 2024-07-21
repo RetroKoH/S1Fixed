@@ -35,7 +35,7 @@ Spring_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Spring_Horizontal,0,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
 		move.b	#$10,obActWid(a0)
-		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	obSubtype(a0),d0
 		btst	#4,d0		; does the spring face left/right?
 		beq.s	Spring_NotLR	; if not, branch

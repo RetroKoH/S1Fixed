@@ -29,7 +29,7 @@ Mon_Main:	; Routine 0
 		move.l	#Map_Monitor,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Monitor,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.w	#$180,obPriority(a0)				; RetroKoH S2 Priority Manager
+		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$F,obActWid(a0)
 
 	; ProjectFM S3K Objects Manager

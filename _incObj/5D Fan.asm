@@ -17,26 +17,26 @@ Fan_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_SLZ_Fan,2,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
 		move.b	#$10,obActWid(a0)
-		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 
 Fan_Delay:	; Routine 2
-		btst	#1,obSubtype(a0) ; is object type 02/03 (always on)?
-		bne.s	.blow		; if yes, branch
-		subq.w	#1,fan_time(a0)	; subtract 1 from time delay
-		bpl.s	.blow		; if time remains, branch
-		move.w	#120,fan_time(a0) ; set delay to 2 seconds
-		bchg	#0,fan_switch(a0) ; switch fan on/off
-		beq.s	.blow		; if fan is off, branch
-		move.w	#180,fan_time(a0) ; set delay to 3 seconds
+		btst	#1,obSubtype(a0)	; is object type 02/03 (always on)?
+		bne.s	.blow				; if yes, branch
+		subq.w	#1,fan_time(a0)		; subtract 1 from time delay
+		bpl.s	.blow				; if time remains, branch
+		move.w	#120,fan_time(a0)	; set delay to 2 seconds
+		bchg	#0,fan_switch(a0)	; switch fan on/off
+		beq.s	.blow				; if fan is off, branch
+		move.w	#180,fan_time(a0)	; set delay to 3 seconds
 
 .blow:
-		tst.b	fan_switch(a0)	; is fan switched on?
-		bne.w	.chkdel		; if not, branch
+		tst.b	fan_switch(a0)		; is fan switched on?
+		bne.w	.chkdel				; if not, branch
 		lea	(v_player).w,a1
 		move.w	obX(a1),d0
 		sub.w	obX(a0),d0
 		btst	#staFlipX,obStatus(a0)	; is fan facing right?
-		bne.s	.chksonic	; if yes, branch
+		bne.s	.chksonic				; if yes, branch
 		neg.w	d0
 
 .chksonic:

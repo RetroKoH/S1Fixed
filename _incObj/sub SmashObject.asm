@@ -32,7 +32,7 @@ SmashObject:
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.w	obGfx(a0),obGfx(a1)
-		move.w	obPriority(a0),obPriority(a1)	; RetroKoH S2 Priority Manager
+		move.w	obPriority(a0),obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	obActWid(a0),obActWid(a1)
 		move.w	(a4)+,obVelX(a1)
 		move.w	(a4)+,obVelY(a1)

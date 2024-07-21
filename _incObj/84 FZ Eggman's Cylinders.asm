@@ -24,7 +24,7 @@ EggmanCylinder_PosData:
 		dc.w boss_fz_x+$C0,  boss_fz_y-$50
 ; ===========================================================================
 
-EggmanCylinder_Main:	; Routine
+EggmanCylinder_Main:	; Routine 0
 		lea		EggmanCylinder_PosData(pc),a1
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
@@ -42,7 +42,7 @@ EggmanCylinder_Main:	; Routine
 		move.b	#$60,obWidth(a0)
 		move.b	#$20,obActWid(a0)
 		move.b	#$60,obHeight(a0)
-		move.w	#$180,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		addq.b	#2,obRoutine(a0)
 
 loc_1A4CE:	; Routine 2

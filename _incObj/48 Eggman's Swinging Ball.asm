@@ -50,7 +50,7 @@ loc_17B60:
 		move.b	d5,(a2)+
 		move.b	#4,obRender(a1)
 		move.b	#8,obActWid(a1)
-		move.w	#$300,obPriority(a1)	; RetroKoH S2 Priority Manager
+		move.w	#priority6,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.l	objoff_34(a0),objoff_34(a1)
 		dbf		d1,GBall_MakeLinks ; repeat sequence 5 more times
 
@@ -59,7 +59,7 @@ GBall_MakeBall:
 		move.l	#Map_GBall,obMap(a1) ; load different mappings for final link
 		move.w	#make_art_tile(ArtTile_GHZ_Giant_Ball,2,0),obGfx(a1) ; use different graphics
 		move.b	#1,obFrame(a1)
-		move.w	#$280,obPriority(a1)	; RetroKoH S2 Priority Manager
+		move.w	#priority5,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$81,obColType(a1) ; make object hurt Sonic
 		rts	
 ; ===========================================================================

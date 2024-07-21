@@ -32,7 +32,7 @@ Over_1stWord:
 		move.l	#Map_Over,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Game_Over,0,1),obGfx(a0)
 		clr.b	obRender(a0)
-		clr.w	obPriority(a0)		; RetroKoH S2 Priority Manager
+		move.w	#priority0,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 
 Over_Move:	; Routine 2
 		moveq	#$10,d1		; set horizontal speed

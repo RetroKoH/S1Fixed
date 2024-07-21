@@ -22,7 +22,7 @@ BBall_Main:	; Routine 0
 		move.l	#Map_BBall,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SYZ_Big_Spikeball,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$18,obActWid(a0)
 		move.w	obX(a0),bball_origX(a0)
 		move.w	obY(a0),bball_origY(a0)

@@ -263,6 +263,16 @@ mask2ndLShield:		equ	1<<sta2ndLShield	; $40
 mask2ndChkElement:	equ $70					; Elemental Shield bits checked
 mask2ndChkShield:	equ $71					; Every shield bit checked
 mask2ndRmvShield:	equ	~mask2ndChkShield	; ~$71
+; ---------------------------------------------------------------------------
+; priority address variables -- RetroKoH/Devon S3K+ Priority Manager
+priority0:	equ	v_spritequeue
+priority1:	equ	v_spritequeue+$80
+priority2:	equ	v_spritequeue+$100
+priority3:	equ	v_spritequeue+$180
+priority4:	equ	v_spritequeue+$200
+priority5:	equ	v_spritequeue+$280
+priority6:	equ	v_spritequeue+$300
+priority7:	equ	v_spritequeue+$380
 
 ; Miscellaneous object scratch-RAM
 objoff_25:	equ $25
@@ -292,8 +302,8 @@ objoff_3D:	equ $3D
 objoff_3E:	equ $3E
 objoff_3F:	equ $3F
 
-object_size_bits:	equ 6
-object_size:	equ 1<<object_size_bits
+object_size_bits:		equ 6
+object_size:			equ 1<<object_size_bits
 
 ; Devon Subsprite SSTs -- Subsprite properties set DO override some standard object SSTs.
 ; What is overridden really depends on the amount of sub sprites you have set to display.
@@ -328,11 +338,11 @@ sub9_mapframe:			equ $3F
 next_subspr:			equ $6
 
 ; Animation flags
-afEnd:		equ $FF	; return to beginning of animation
-afBack:		equ $FE	; go back (specified number) bytes
-afChange:	equ $FD	; run specified animation
-afRoutine:	equ $FC	; increment routine counter
-afReset:	equ $FB	; reset animation and 2nd object routine counter
+afEnd:			equ $FF	; return to beginning of animation
+afBack:			equ $FE	; go back (specified number) bytes
+afChange:		equ $FD	; run specified animation
+afRoutine:		equ $FC	; increment routine counter
+afReset:		equ $FB	; reset animation and 2nd object routine counter
 af2ndRoutine:	equ $FA	; increment 2nd routine counter
 
 ; Background music

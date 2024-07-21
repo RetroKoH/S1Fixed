@@ -42,12 +42,12 @@ LCon_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_LZ_Conveyor_Belt,2,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
 		move.b	#$10,obActWid(a0)
-		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		cmpi.b	#$7F,obSubtype(a0)
 		bne.s	loc_123E2
 		addq.b	#4,obRoutine(a0)
 		move.w	#make_art_tile(ArtTile_LZ_Conveyor_Belt,0,0),obGfx(a0)
-		move.w	#$80,obPriority(a0)		; RetroKoH S2 Priority Manager
+		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		bra.w	loc_124DE
 ; ===========================================================================
 

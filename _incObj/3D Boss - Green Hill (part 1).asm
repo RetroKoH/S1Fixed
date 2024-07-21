@@ -40,7 +40,7 @@ BGHZ_LoadBoss:
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.b	#$20,obActWid(a1)
-		move.w	#$180,obPriority(a1)	; RetroKoH S2 Priority Manager
+		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	(a2)+,obAnim(a1)
 		move.l	a0,objoff_34(a1)
 		dbf		d1,BGHZ_Loop	; repeat sequence 2 more times

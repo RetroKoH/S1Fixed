@@ -16,10 +16,10 @@ BossSpringYard_Index:	offsetTable
 		offsetTableEntry.w BossSpringYard_SpikeMain
 
 BossSpringYard_ObjData:
-		dc.b 2,	0, 5		; routine number, animation, priority
-		dc.b 4,	1, 5
-		dc.b 6,	7, 5
-		dc.b 8,	0, 5
+		dc.b 2,	0		; routine number, animation
+		dc.b 4,	1
+		dc.b 6,	7
+		dc.b 8,	0
 ; ===========================================================================
 
 BossSpringYard_Main:	; Routine 0
@@ -47,15 +47,7 @@ BossSpringYard_LoadBoss:
 		clr.b	ob2ndRout(a1)
 		move.b	(a2)+,obRoutine(a1)
 		move.b	(a2)+,obAnim(a1)
-		move.b	(a2)+,obPriority(a1)
-
-	; RetroKoH S2 Priority Manager
-		move.w  obPriority(a1),d0
-		lsr.w   #1,d0
-		andi.w  #$380,d0
-		move.w  d0,obPriority(a1)
-	; S2 Priority Manager End
-
+		move.w	#priority5,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.l	#Map_Eggman,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)

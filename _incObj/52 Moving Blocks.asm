@@ -50,7 +50,7 @@ loc_FE60:
 		lea		MBlock_Var(pc,d0.w),a2
 		move.b	(a2)+,obActWid(a0)
 		move.b	(a2)+,obFrame(a0)
-		move.w	#$200,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.w	obX(a0),mblock_origX(a0)
 		move.w	obY(a0),mblock_origY(a0)
 		andi.b	#$F,obSubtype(a0)

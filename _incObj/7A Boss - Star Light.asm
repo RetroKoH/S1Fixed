@@ -18,13 +18,13 @@ BossStarLight_Index:	offsetTable
 BossStarLight_ObjData:
 		; 	routine, anim, priority
 		dc.b 2,	0
-		dc.w	$200
+		dc.w	priority4
 		dc.b 4,	1
-		dc.w	$200
+		dc.w	priority4
 		dc.b 6,	7
-		dc.w	$200
+		dc.w	priority4
 		dc.b 8,	0
-		dc.w	$180
+		dc.w	priority3
 ; ===========================================================================
 
 BossStarLight_Main:
@@ -52,7 +52,7 @@ BossStarLight_LoadBoss:
 		clr.b	ob2ndRout(a1)
 		move.b	(a2)+,obRoutine(a1)
 		move.b	(a2)+,obAnim(a1)
-		move.w	(a2)+,obPriority(a1)	; RetroKoH S3K Priority Manager
+		move.w	(a2)+,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.l	#Map_Eggman,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)

@@ -16,6 +16,7 @@ Surf_Main:	; Routine 0
 		move.l	#Map_Surf,obMap(a0)
 		move.w	#make_art_tile(ArtTile_LZ_Water_Surface,2,1),obGfx(a0)
 		move.b	#4,obRender(a0)
+		move.w	#priority0,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$80,obActWid(a0)
 		move.w	obX(a0),surf_origX(a0)
 

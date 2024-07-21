@@ -31,7 +31,7 @@ Shi_Index:		offsetTable
 
 Shi_Main:	; Routine 0
 		move.b	#4,obRender(a0)
-		move.w	#$80,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$10,obActWid(a0)
 		move.w	#make_art_tile(ArtTile_Shield,0,0),obGfx(a0)
 	if ShieldsMode=0
@@ -219,10 +219,10 @@ Shi_Flame:	; Routine 6
 
 		lea		(Ani_Shield).l,a1
 		jsr		(AnimateSprite).l
-		move.w	#$80,obPriority(a0)
+		move.w	#priority1,obPriority(a0)
 		cmpi.b	#$F,obFrame(a0)
 		bcs.s	.display
-		move.w	#$200,obPriority(a0)
+		move.w	#priority4,obPriority(a0)
 
 .display:
 		bsr.w	Shield_LoadGfx
@@ -254,7 +254,7 @@ Flame_Dissipate:
 		move.l	#Map_ExplodeItem,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Explosion,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.w	#$280,obPriority(a1)
+		move.w	#priority5,obPriority(a1)
 		move.b	#$C,obActWid(a1)
 		move.b	#3,obTimeFrame(a1)
 		move.b	#1,obFrame(a1)
@@ -303,10 +303,10 @@ Shi_Bubble:	; Routine 8
 
 		lea		(Ani_Shield).l,a1
 		jsr		(AnimateSprite).l
-		move.w	#$80,obPriority(a0)
+		move.w	#priority1,obPriority(a0)
 		cmpi.b	#$F,obFrame(a0)
 		bcs.s	.display
-		move.w	#$200,obPriority(a0)
+		move.w	#priority4,obPriority(a0)
 
 .display:
 		bsr.w	Shield_LoadGfx
@@ -375,10 +375,10 @@ Shi_Lightning:	; Routine $A
 .animate:
 		lea		(Ani_Shield).l,a1
 		jsr		(AnimateSprite).l
-		move.w	#$80,obPriority(a0)
+		move.w	#priority1,obPriority(a0)
 		cmpi.b	#$F,obFrame(a0)
 		bcs.s	.display
-		move.w	#$200,obPriority(a0)
+		move.w	#priority4,obPriority(a0)
 
 .display:
 		bsr.w	Shield_LoadGfx
@@ -429,7 +429,7 @@ Lightning_CreateSpark:
 		move.l	obMap(a0),obMap(a1)
 		move.w	obGfx(a0),obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.w	#$80,obPriority(a1)
+		move.w	#priority1,obPriority(a1)
 		move.b	#8,obActWid(a1)
 		move.b	#aniID_LightningSpark,obAnim(a1)
 		move.w	(a2)+,obVelX(a1)

@@ -22,27 +22,28 @@ Spin_Main:	; Routine 0
 		move.l	#Map_Trap,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Trap_Door,2,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
-		move.b	#$40,obActWid(a0)	; Ralakimus Trapdoor Glitch Fix
+		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
+		move.b	#$40,obActWid(a0)			; Ralakimus Trapdoor Glitch Fix
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
 		andi.w	#$F,d0
 		mulu.w	#$3C,d0
 		move.w	d0,spin_timelen(a0)
-		tst.b	obSubtype(a0)	; is subtype $8x?
-		bpl.s	Spin_Trapdoor	; if not, branch
+		tst.b	obSubtype(a0)		; is subtype $8x?
+		bpl.s	Spin_Trapdoor		; if not, branch
 
-		addq.b	#2,obRoutine(a0) ; goto Spin_Spinner next
+		addq.b	#2,obRoutine(a0)	; goto Spin_Spinner next
 		move.l	#Map_Spin,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Spinning_Platform,0,0),obGfx(a0)
 		move.b	#$10,obActWid(a0)
 		move.b	#2,obAnim(a0)
 		moveq	#0,d0
-		move.b	obSubtype(a0),d0 ; get object type
+		move.b	obSubtype(a0),d0	; get object type
 		move.w	d0,d1
-		andi.w	#$F,d0		; read only the	2nd digit
-		mulu.w	#6,d0		; multiply by 6
+		andi.w	#$F,d0				; read only the	2nd digit
+		mulu.w	#6,d0				; multiply by 6
 		move.w	d0,spin_timer(a0)
-		move.w	d0,spin_timelen(a0) ; set time delay
+		move.w	d0,spin_timelen(a0)	; set time delay
 		andi.w	#$70,d1
 		addi.w	#$10,d1
 		lsl.w	#2,d1
@@ -52,19 +53,19 @@ Spin_Main:	; Routine 0
 ; ===========================================================================
 
 Spin_Trapdoor:	; Routine 2
-		subq.w	#1,spin_timer(a0) ; decrement timer
-		bpl.s	.animate	; if time remains, branch
+		subq.w	#1,spin_timer(a0)		; decrement timer
+		bpl.s	.animate				; if time remains, branch
 
 		move.w	spin_timelen(a0),spin_timer(a0)
 		bchg	#0,obAnim(a0)
 		tst.b	obRender(a0)
 		bpl.s	.animate
 		move.w	#sfx_Door,d0
-		jsr	(PlaySound_Special).l	; play door sound
+		jsr		(PlaySound_Special).l	; play door sound
 
 .animate:
-		lea	(Ani_Spin).l,a1
-		jsr	(AnimateSprite).l
+		lea		(Ani_Spin).l,a1
+		jsr		(AnimateSprite).l
 		tst.b	obFrame(a0)	; is frame number 0 displayed?
 		bne.s	.notsolid	; if not, branch
 		move.w	#$4B,d1
@@ -78,7 +79,7 @@ Spin_Trapdoor:	; Routine 2
 
 .notsolid:
 		btst	#staSonicOnObj,obStatus(a0)	; is Sonic standing on the trapdoor?
-		beq.s	.display					; if not, branch
+		beq.w	RememberState				; if not, branch
 		lea		(v_player).w,a1
 		bclr	#staOnObj,obStatus(a1)
 		bclr	#staSonicOnObj,obStatus(a0)
@@ -104,8 +105,8 @@ Spin_Spinner:	; Routine 4
 		bchg	#0,obAnim(a0)
 
 .animate:
-		lea	(Ani_Spin).l,a1
-		jsr	(AnimateSprite).l
+		lea		(Ani_Spin).l,a1
+		jsr		(AnimateSprite).l
 		tst.b	obFrame(a0)	; check	if frame number	0 is displayed
 		bne.s	.notsolid2	; if not, branch
 		move.w	#$1B,d1
@@ -119,7 +120,7 @@ Spin_Spinner:	; Routine 4
 
 .notsolid2:
 		btst	#staSonicOnObj,obStatus(a0)
-		beq.s	.display
+		beq.w	RememberState
 		lea		(v_player).w,a1
 		bclr	#staOnObj,obStatus(a1)
 		bclr	#staSonicOnObj,obStatus(a0)

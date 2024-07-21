@@ -27,7 +27,7 @@ GMake_Main:	; Routine 0
 		move.l	#Map_Geyser,obMap(a0)
 		move.w	#make_art_tile(ArtTile_MZ_Lava,3,1),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.w	#$80,obPriority(a0)		; RetroKoH S2 Priority Manager
+		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$38,obActWid(a0)
 		move.w	#120,gmake_time(a0)		; set time delay to 2 seconds
 
@@ -152,7 +152,7 @@ Geyser_Main:	; Routine 0
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.b	obSubtype(a0),obSubtype(a1)
-		move.w	#$80,obPriority(a1)		; RetroKoH S2 Priority Manager
+		move.w	#priority1,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#5,obAnim(a1)
 		tst.b	obSubtype(a0)
 		beq.s	.fail
@@ -182,7 +182,7 @@ Geyser_Main:	; Routine 0
 		addq.b	#2,obRoutine(a1)
 		bset	#4,obGfx(a1)
 		addi.w	#$100,obY(a1)
-		clr.w	obPriority(a1)		; RetroKoH S2 Priority Manager
+		move.w	#priority0,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
 		move.w	objoff_30(a0),objoff_30(a1)
 		move.l	objoff_3C(a0),objoff_3C(a1)
 		clr.b	obSubtype(a0)

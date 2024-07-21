@@ -37,17 +37,17 @@ ESon_Main2:
 		move.w	#make_art_tile(ArtTile_Ending_Sonic,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		clr.b	obStatus(a0)
-		move.w	#$100,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#priority2,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		clr.b	obFrame(a0)
-		move.w	#80,eson_time(a0) ; set duration for Sonic to pause
+		move.w	#80,eson_time(a0)				; set duration for Sonic to pause
 
 ESon_MakeEmeralds:
 		; Routine 2
-		subq.w	#1,eson_time(a0) ; subtract 1 from duration
+		subq.w	#1,eson_time(a0)				; subtract 1 from duration
 		bne.s	ESon_Wait
 		addq.b	#2,ob2ndRout(a0)
 		move.w	#1,obAnim(a0)
-		move.b	#id_EndChaos,(v_endemeralds).w ; load chaos emeralds objects
+		move.b	#id_EndChaos,(v_endemeralds).w	; load chaos emeralds objects
 
 ESon_Wait:
 		jmp		(DisplaySprite).l	
@@ -104,10 +104,10 @@ Obj87_Leap:	; Routine $10
 		move.w	#make_art_tile(ArtTile_Ending_Sonic,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		clr.b	obStatus(a0)
-		move.w	#$100,obPriority(a0)	; RetroKoH S2 Priority Manager
+		move.w	#priority2,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#5,obFrame(a0)
-		move.b	#2,obAnim(a0)	; use "leaping"	animation
-		move.b	#id_EndSTH,(v_endlogo).w ; load "SONIC THE HEDGEHOG" object
+		move.b	#2,obAnim(a0)				; use "leaping"	animation
+		move.b	#id_EndSTH,(v_endlogo).w	; load "SONIC THE HEDGEHOG" object
 
 Obj87_Animate:	; Routine 4, $A, $E, $12
 		lea		(AniScript_ESon).l,a1
