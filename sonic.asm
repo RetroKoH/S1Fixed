@@ -19,10 +19,13 @@ FixBugs		  = 0	; change to 1 to enable bugfixes
 
 zeroOffsetOptimization = 0	; if 1, makes a handful of zero-offset instructions smaller
 
-; S1Fixed Variables
+; S1Fixed Variables (Sorted by Context)
 DebugPathSwappers: = 1
+
 DynamicSpecialStageWalls: = 1			; If set to 1, Special Stage walls are dynamically loaded. (might make this permanent)
-SmoothSpecialStages: = 1				; if set to 1, stage scrolls smoothly. Jump angles are also affected.
+SmoothSpecialStages: = 1				; if set to 1, Special Stage scrolls smoothly. Jump angles are also affected.
+S4SpecialStages: = 1					; if set to 1, Special Stages control like Sonic 4 Ep 1 (Left/Right rotate the stage.)
+
 FadeInSEGA: = 1							; if set to 1, the SEGA screen smoothly fades in
 PaletteFadeSetting: = 6					; 0 - Blue (Original), 1 - Green, 2 - Red, 3 - Cyan (B+G), 4 - Pink (B+R), 5 - Yellow (G+R), 6 - Full
 GroundSpeedCapEnabled: = 0				; if set to 1, the ground speed cap is active (includes Roll Speed Cap fix by Devon)
@@ -42,9 +45,8 @@ AirRollEnabled: = 1						; if set to 1, Air rolling is enabled for Sonic.
 CDBalancing: = 1						; if set to 1, Sonic has 2 Balancing animations, taken from Sonic CD.
 HUDScrolling: = 1						; if set to 1, HUD Scrolls in and out of view during gameplay.
 ReboundMod: = 1							; if set to 1, rebounding from enemies/monitors after rolling off a cliff onto them functions the same as if they were jumped on - the rebound is cut short if the jump button is released.
-BlocksInROM: = 1
-ChunksInROM: = 1
-
+BlocksInROM: = 1						; if set to 1, 16x16 Blocks are uncompressed in ROM, saving RAM
+ChunksInROM: = 1						; if set to 1, 128x128 Chunks are uncompressed in ROM, saving RAM
 
 ; Incomplete Mods (Either missing features, or contains bugs)
 WarmPalettes: = 0						; if set to 1, palettes take on a warmer hue (Continuation of Mercury's mod)
@@ -2817,7 +2819,11 @@ GM_Special:
 
 		bsr.w	PalCycle_SS
 		clr.w	(v_ssangle).w					; set stage angle to "upright"
+	if S4SpecialStages=0
 		move.w	#$40,(v_ssrotate).w				; set stage rotation speed
+	else
+		move.w	#$100,(v_ssrotate).w			; set stage rotation speed
+	endif
 		move.w	#bgm_SS,d0
 		bsr.w	PlaySound						; play special stage BG	music
 		clr.w	(v_btnpushtime1).w
@@ -2853,9 +2859,9 @@ SS_MainLoop:
 		bsr.w	WaitForVBla
 		bsr.w	MoveSonicInDemo
 		move.w	(v_jpadhold1).w,(v_jpadhold2).w
-		jsr	(ExecuteObjects).l
-		jsr	(BuildSprites).l
-		jsr	(SS_ShowLayout).l
+		jsr		(ExecuteObjects).l
+		jsr		(BuildSprites).l
+		jsr		(SS_ShowLayout).l
 		bsr.w	SS_BGAnimate
 		tst.w	(f_demo).w	; is demo mode on?
 		beq.s	SS_ChkEnd	; if not, branch
@@ -2883,9 +2889,9 @@ SS_FinLoop:
 		bsr.w	WaitForVBla
 		bsr.w	MoveSonicInDemo
 		move.w	(v_jpadhold1).w,(v_jpadhold2).w
-		jsr	(ExecuteObjects).l
-		jsr	(BuildSprites).l
-		jsr	(SS_ShowLayout).l
+		jsr		(ExecuteObjects).l
+		jsr		(BuildSprites).l
+		jsr		(SS_ShowLayout).l
 		bsr.w	SS_BGAnimate
 		subq.w	#1,(v_palchgspeed).w
 		bpl.s	loc_47D4
@@ -2897,7 +2903,7 @@ loc_47D4:
 		bne.s	SS_FinLoop
 
 		disable_ints
-		lea	(vdp_control_port).l,a6
+		lea		(vdp_control_port).l,a6
 		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
 		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
 		move.w	#$9001,(a6)		; 64-cell hscroll size
@@ -2910,7 +2916,7 @@ loc_47D4:
 		jsr		LoadUncArt
 	; Title Card Optimization End
 		
-		jsr	(Hud_Base).l
+		jsr		(Hud_Base).l
 
 	; Mercury Use DMA Queue
 		ResetDMAQueue
@@ -2929,7 +2935,7 @@ loc_47D4:
 		mulu.w	#10,d0		; multiply rings by 10
 		move.w	d0,(v_ringbonus).w ; set rings bonus
 		move.w	#bgm_GotThrough,d0
-		jsr	(PlaySound_Special).l	 ; play end-of-level music
+		jsr		(PlaySound_Special).l	 ; play end-of-level music
 
 		clearRAM v_objspace,v_objend
 
@@ -2939,8 +2945,8 @@ SS_NormalExit:
 		bsr.w	PauseGame
 		move.b	#$C,(v_vbla_routine).w
 		bsr.w	WaitForVBla
-		jsr	(ExecuteObjects).l
-		jsr	(BuildSprites).l
+		jsr		(ExecuteObjects).l
+		jsr		(BuildSprites).l
 		bsr.w	RunPLC
 		tst.w	(f_restart).w
 		beq.s	SS_NormalExit
@@ -7242,14 +7248,14 @@ SS_ShowLayout:
 		bsr.w	SS_AniWallsRings
 		bsr.w	SS_AniItems
 		move.w	d5,-(sp)
-		lea	(v_ssbuffer3&$FFFFFF).l,a1
+		lea		(v_ssbuffer3&$FFFFFF).l,a1
 		move.b	(v_ssangle).w,d0
 
 	if SmoothSpecialStages=0	; Cinossu Smooth Special Stages
 		andi.b	#$FC,d0
 	endif						; Smooth Special Stages End
 
-		jsr	(CalcSine).l
+		jsr		(CalcSine).l
 		move.w	d0,d4
 		move.w	d1,d5
 		muls.w	#$18,d4
@@ -7292,14 +7298,14 @@ loc_1B1C0:
 		move.w	d0,(a1)+
 		add.l	d5,d2
 		add.l	d4,d1
-		dbf	d6,loc_1B1C0
+		dbf		d6,loc_1B1C0
 
 		movem.w	(sp)+,d0-d2
 		addi.w	#$18,d3
-		dbf	d7,loc_1B19E
+		dbf		d7,loc_1B19E
 
 		move.w	(sp)+,d5
-		lea	(v_ssbuffer1&$FFFFFF).l,a0
+		lea		(v_ssbuffer1&$FFFFFF).l,a0
 		moveq	#0,d0
 		move.w	(v_screenposy).w,d0
 		divu.w	#$18,d0
@@ -7309,7 +7315,7 @@ loc_1B1C0:
 		move.w	(v_screenposx).w,d0
 		divu.w	#$18,d0
 		adda.w	d0,a0
-		lea	(v_ssbuffer3&$FFFFFF).l,a4
+		lea		(v_ssbuffer3&$FFFFFF).l,a4
 		move.w	#$10-1,d7
 
 loc_1B20C:
@@ -7319,12 +7325,8 @@ loc_1B210:
 		moveq	#0,d0
 		move.b	(a0)+,d0
 		beq.s	loc_1B268
-	if SuperMod=1
-		cmpi.b	#$4F,d0		; Adjustment for 7th emerald
-	else
-		cmpi.b	#$4E,d0
-	endif
-		bhi.s	loc_1B268
+		cmpi.b	#SSBlock_GlassAni4,d0	; is the block ID higher than the last valid ID?
+		bhi.s	loc_1B268				; if yes, branch
 		move.w	(a4),d3
 		addi.w	#$120,d3
 		cmpi.w	#$70,d3
@@ -7337,9 +7339,9 @@ loc_1B210:
 		blo.s	loc_1B268
 		cmpi.w	#$170,d2
 		bhs.s	loc_1B268
-		lea	(v_ssblocktypes&$FFFFFF).l,a5
+		lea		(v_ssblocktypes&$FFFFFF).l,a5
 		lsl.w	#3,d0
-		lea	(a5,d0.w),a5
+		lea		(a5,d0.w),a5
 		movea.l	(a5)+,a1
 		move.w	(a5)+,d1
 		add.w	d1,d1
@@ -7353,10 +7355,10 @@ loc_1B210:
 
 loc_1B268:
 		addq.w	#4,a4
-		dbf	d6,loc_1B210
+		dbf		d6,loc_1B210
 
-		lea	$70(a0),a0
-		dbf	d7,loc_1B20C
+		lea		$70(a0),a0
+		dbf		d7,loc_1B20C
 
 		move.b	d5,(v_spritecount).w
 		cmpi.b	#$50,d5
@@ -7379,7 +7381,7 @@ loc_1B288:
 
 SS_AniWallsRings:
 	if DynamicSpecialStageWalls=0	; Mercury Dynamic Special Stage Walls
-		lea	((v_ssblocktypes+$C)&$FFFFFF).l,a1
+		lea		((v_ssblocktypes+$C)&$FFFFFF).l,a1
 		moveq	#0,d0
 		move.b	(v_ssangle).w,d0
 		lsr.b	#2,d0
@@ -7389,10 +7391,10 @@ SS_AniWallsRings:
 loc_1B2A4:
 		move.w	d0,(a1)
 		addq.w	#8,a1
-		dbf	d1,loc_1B2A4
+		dbf		d1,loc_1B2A4
 	endif	; Dynamic Special Stage Walls End
 
-		lea	((v_ssblocktypes+5)&$FFFFFF).l,a1
+		lea		((v_ssblocktypes+5)&$FFFFFF).l,a1
 		subq.b	#1,(v_ani1_time).w
 		bpl.s	loc_1B2C8
 		move.b	#3,(v_ani1_time).w		; Smooth Rings
@@ -7441,12 +7443,12 @@ loc_1B326:
 		andi.b	#7,(v_ani0_frame).w
 
 loc_1B350:
-		lea	((v_ssblocktypes+$16)&$FFFFFF).l,a1
-		lea	(SS_WaRiVramSet).l,a0
+		lea		((v_ssblocktypes+$16)&$FFFFFF).l,a1
+		lea		(SS_WaRiVramSet).l,a0
 		moveq	#0,d0
 		move.b	(v_ani0_frame).w,d0
 		add.w	d0,d0
-		lea	(a0,d0.w),a0
+		lea		(a0,d0.w),a0
 		move.w	(a0),(a1)
 		move.w	2(a0),8(a1)
 		move.w	4(a0),$10(a1)
@@ -7804,7 +7806,21 @@ loc_1B6F6:
 		moveq	#$40-1,d2
 
 loc_1B6F8:
-		move.b	(a0)+,(a1)+
+	; S4 Special Stage Mode removes UP, DOWN, and R blocks
+	if S4SpecialStages=1
+		move.b	(a0)+,d0				; load the layout item into d0
+		cmpi.b	#SSBlock_UP,d0			; is the item an UP Block?
+		bcs.s	.loaditem
+		cmpi.b	#SSBlock_R,d0			; is the item an R or DOWN Block?
+		bhi.s	.loaditem				; if not any of these items, branch
+		move.b	#SSBlock_GhostSolid,d0	; else, make a solid mint block
+		
+	.loaditem:
+		move.b	d0,(a1)+				; load the item into memory
+	else
+		move.b	(a0)+,(a1)+				; load the item into memory
+	endif
+
 		dbf		d2,loc_1B6F8
 
 		lea		$40(a1),a1

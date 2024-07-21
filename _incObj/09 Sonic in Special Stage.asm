@@ -66,50 +66,59 @@ Obj09_Display:
 		bsr.w	Obj09_ChkItems_Solid
 		jsr		(SpeedToPos).l
 		bsr.w	SS_FixCamera
+
+	if S4SpecialStages=0
 		move.w	(v_ssangle).w,d0
 		add.w	(v_ssrotate).w,d0
 		move.w	d0,(v_ssangle).w
+	endif
+
 		jsr		(Sonic_Animate).l
 		jsr		(Sonic_LoadGfx).l
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+; ---------------------------------------------------------------------------
+; Subroutine to	move Sonic in the Special Stage
+; ---------------------------------------------------------------------------
+
+; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
 
 
 Obj09_Move:
-		btst	#bitL,(v_jpadhold2).w ; is left being pressed?
-		beq.s	Obj09_ChkRight	; if not, branch
+		btst	#bitL,(v_jpadhold2).w	; is left being pressed?
+		beq.s	Obj09_ChkRight			; if not, branch
 		bsr.w	Obj09_MoveLeft
 
 Obj09_ChkRight:
-		btst	#bitR,(v_jpadhold2).w ; is right being pressed?
-		beq.s	loc_1BA78	; if not, branch
+		btst	#bitR,(v_jpadhold2).w	; is right being pressed?
+		beq.s	loc_1BA78				; if not, branch
 		bsr.w	Obj09_MoveRight
 
 loc_1BA78:
 		move.b	(v_jpadhold2).w,d0
-		andi.b	#btnL+btnR,d0
-		bne.s	loc_1BAA8
+		andi.b	#btnL+btnR,d0			; is left/right being pressed?
+		bne.s	loc_1BAA8				; if yes, branch
+	; Apply friction
 		move.w	obInertia(a0),d0
-		beq.s	loc_1BAA8
-		bmi.s	loc_1BA9A
-		subi.w	#$C,d0
+		beq.s	loc_1BAA8				; if inertia == 0
+		bmi.s	loc_1BA9A				; if inertia < 0
+		subi.w	#$C,d0					; decelerate
 		bcc.s	loc_1BA94
-		clr.w	d0
+		clr.w	d0						; clear to 0 if negative following deceleration
 
 loc_1BA94:
-		move.w	d0,obInertia(a0)
+		move.w	d0,obInertia(a0)		; apply change to inertia
 		bra.s	loc_1BAA8
 ; ===========================================================================
 
 loc_1BA9A:
-		addi.w	#$C,d0
+		addi.w	#$C,d0					; decelerate
 		bcc.s	loc_1BAA4
-		clr.w	d0
+		clr.w	d0						; clear to 0 if negative following deceleration
 
 loc_1BAA4:
-		move.w	d0,obInertia(a0)
+		move.w	d0,obInertia(a0)		; apply change to inertia
 
 loc_1BAA8:
 		move.b	(v_ssangle).w,d0
@@ -144,6 +153,7 @@ loc_1BAF2:
 
 Obj09_MoveLeft:
 		bset	#staFacing,obStatus(a0)
+	if S4SpecialStages=0
 		move.w	obInertia(a0),d0
 		beq.s	loc_1BB06
 		bpl.s	loc_1BB1A
@@ -156,7 +166,7 @@ loc_1BB06:
 
 loc_1BB14:
 		move.w	d0,obInertia(a0)
-		rts	
+		rts
 ; ===========================================================================
 
 loc_1BB1A:
@@ -166,7 +176,13 @@ loc_1BB1A:
 
 loc_1BB22:
 		move.w	d0,obInertia(a0)
-		rts	
+
+	else
+		move.w	(v_ssangle).w,d0
+		sub.w	(v_ssrotate).w,d0
+		move.w	d0,(v_ssangle).w
+	endif
+		rts
 ; End of function Obj09_MoveLeft
 
 
@@ -175,6 +191,7 @@ loc_1BB22:
 
 Obj09_MoveRight:
 		bclr	#staFacing,obStatus(a0)
+	if S4SpecialStages=0
 		move.w	obInertia(a0),d0
 		bmi.s	loc_1BB48
 		addi.w	#$C,d0
@@ -184,7 +201,7 @@ Obj09_MoveRight:
 
 loc_1BB42:
 		move.w	d0,obInertia(a0)
-		bra.s	locret_1BB54
+		rts
 ; ===========================================================================
 
 loc_1BB48:
@@ -195,8 +212,12 @@ loc_1BB48:
 loc_1BB50:
 		move.w	d0,obInertia(a0)
 
-locret_1BB54:
-		rts	
+	else
+		move.w	(v_ssangle).w,d0
+		add.w	(v_ssrotate).w,d0
+		move.w	d0,(v_ssangle).w
+	endif
+		rts
 ; End of function Obj09_MoveRight
 
 
