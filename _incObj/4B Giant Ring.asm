@@ -19,6 +19,7 @@ GRing_Main:	; Routine 0
 		move.l	#Map_GRing,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Giant_Ring,1,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
+		move.w	#priority2,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager - Moved here to fix a bug caused by the new manager
 		move.b	#$40,obActWid(a0)
 		tst.b	obRender(a0)
 		bpl.s	GRing_Animate
@@ -31,7 +32,6 @@ GRing_Main:	; Routine 0
 
 GRing_Okay:
 		addq.b	#2,obRoutine(a0)
-		move.w	#priority2,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$52,obColType(a0)
 		move.w	#$C40,(v_gfxbigring).w			; Signal that Art_BigRing should be loaded ($C40 is the size of Art_BigRing)
 

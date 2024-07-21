@@ -23,7 +23,7 @@ Flash_Main:	; Routine 0
 
 Flash_ChkDel:	; Routine 2
 		bsr.s	Flash_Collect
-		offscreen.w	DeleteObject	; ProjectFM S3K Objects Manager
+		offscreen.w	DeleteObject			; ProjectFM S3K Objects Manager
 		bra.w	DisplaySprite
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
