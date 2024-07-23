@@ -335,7 +335,7 @@ locret_1BBDE:
 
 ; ===========================================================================
 
-Obj09_ExitStage:
+Obj09_ExitStage:		; Routine 4
 		addi.w	#$40,(v_ssrotate).w
 		cmpi.w	#$1800,(v_ssrotate).w
 		bne.s	loc_1BBF4
@@ -359,7 +359,7 @@ loc_1BC12:
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 
-Obj09_Exit2:
+Obj09_Exit2:		; Routine 6
 		subq.w	#1,objoff_38(a0)
 		bne.s	loc_1BC40
 		move.b	#id_Level,(v_gamemode).w
@@ -560,16 +560,16 @@ Obj09_Chk1Up:
 Obj09_Get1Up:
 
 	if SpecialStagesWithAllEmeralds=1	; Mercury Special Stages Still Appear With All Emeralds
-		addq.b	#1,(v_continues).w		; add 1 to number of continues
-		bset	#7,(v_continues).w		; set "got continue" flag bit
-		move.w	#sfx_Continue,d0
-		jsr		(PlaySound_Special).l	; play continues jingle
-	
+
 	if SpecialStageAdvancementMod=1		; Mercury Special Stage Index Increases Only If Won
 		addq.b	#1,(v_lastspecial).w	; increment SS index
 	endif	; Special Stage Index Increases Only If Won End
 	
-	else
+	if HUDInSpecialStage=1	; Mercury HUD in Special Stage
+		clr.b	(f_timecount).w				; stop the time counter
+	endif	; HUD in Special Stage End
+	
+	endif	; Special Stages Still Appear With All Emeralds End
 
 	; Mercury Lives Over/Underflow Fix
 		cmpi.b	#99,(v_lives).w				; are lives at max?
@@ -581,7 +581,6 @@ Obj09_Get1Up:
 	; Lives Over/Underflow Fix End
 		move.w	#bgm_ExtraLife,d0
 		jsr		(PlaySound).l				; play extra life music
-	endif	; Special Stages Still Appear With All Emeralds End
 
 		moveq	#0,d4
 		rts	
@@ -607,6 +606,10 @@ Obj09_GetEmer:
 	if SpecialStageAdvancementMod=1	; Mercury Special Stage Index Increases Only If Won
 		addq.b	#1,(v_lastspecial).w		; increment SS index
 	endif	;end Special Stage Index Increases Only If Won
+	
+	if HUDInSpecialStage=1	;Mercury HUD in Special Stage
+		clr.b	(f_timecount).w				; stop the time counter
+	endif	; HUD in Special Stage End
 
 Obj09_NoEmer:
 		move.w	#bgm_Emerald,d0
@@ -719,6 +722,11 @@ Obj09_GOAL:
 		cmpi.b	#SSBlock_GOAL,d0			; is the item a	"GOAL"?
 		bne.s	Obj09_UPblock
 		addq.b	#2,obRoutine(a0)			; run routine "Obj09_ExitStage"
+
+	if HUDInSpecialStage=1	; Mercury HUD in Special Stage
+		clr.b	(f_timecount).w	; stop the time counter
+	endIF	; HUD in Special Stage End
+
 		move.w	#sfx_SSGoal,d0
 		jmp		(PlaySound_Special).l		; play "GOAL" sound
 ; ===========================================================================

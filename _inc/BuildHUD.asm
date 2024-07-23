@@ -16,8 +16,10 @@ BuildHUD:
 		cmpi.b	#9,(v_timemin).w			; have 9 minutes elapsed?
 		bne.s	.skip						; if not, branch
 		addq.w	#2,d1						; set mapping frame time counter blink
+
 .skip:
 		bra.s	.goahead
+
 .norings:
 		moveq	#0,d1
 		btst	#3,(v_framebyte).w
@@ -27,6 +29,7 @@ BuildHUD:
 		cmpi.b	#9,(v_timemin).w			; have 9 minutes elapsed?
 		bne.s	.skip						; if not, branch
 		addq.w	#2,d1						; set mapping frame for double blink
+
 .goahead:
 
 	if HUDScrolling=1
@@ -39,6 +42,15 @@ BuildHUD:
 		move.w	#128+136,d2					; set Y pos
 		lea		(Map_HUD).l,a1
 		movea.w	#make_art_tile(ArtTile_HUD,0,0),a3	; set art tile and flags
+	
+	if HUDInSpecialStage=1	; Mercury HUD in Special Stage
+		cmpi.b	#2,(f_levelstarted).w		; are we building the Sp. Stage HUD?
+		bne.s	.notSS						; if not, branch ahead
+		lea		(Map_HUD_SS).l,a1
+		movea.w	#ArtTile_SS_HUD,a3			; set art tile and flags
+
+.notSS:
+	endif	; HUD in Special Stage End
 
 		add.w	d1,d1
 		adda.w	(a1,d1.w),a1				; load frame

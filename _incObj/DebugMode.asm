@@ -228,12 +228,24 @@ Debug_ChgItem:
 
 .special
 		clr.w	(v_ssangle).w
-		move.w	#$40,(v_ssrotate).w					; set new level rotation speed
+	if S4SpecialStages=0
+		move.w	#$40,(v_ssrotate).w					; set new stage rotation speed
+	else
+		move.w	#$100,(v_ssrotate).w				; set new stage rotation speed
+	endif
 		move.l	#Map_Sonic,obMap(a1)
 		move.w	#ArtTile_Sonic,obGfx(a1)
 		move.b	#aniID_Roll,obAnim(a1)
 		move.b	#maskAir+maskSpin,obStatus(a1)		; Set spin and in air bits. all other bits clear.
-		rts	
+
+	if HUDInSpecialStage=1
+		jsr		(Hud_Base_SS).l						; reload basic HUD gfx	-- RetroKoH Debug Mode Improvement
+		move.b	#1,(f_ringcount).w					; update ring counter
+		move.b	#1,(f_scorecount).w					; update score counter
+		jmp		(HUD_Update_SS.updatetime).l		; directly update timer
+	else
+		rts
+	endif
 ; End of function Debug_Control
 
 

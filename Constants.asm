@@ -691,6 +691,8 @@ ArtTile_Try_Again_Eggman:		equ $3E1
 ArtTile_SS_Background_Clouds:	equ $000
 ArtTile_SS_Background_Fish:		equ $051
 ArtTile_SS_Wall:				equ $142
+ArtTile_SS_HUD:					equ $1F9
+ArtTile_SS_Lives:				equ $22F
 ArtTile_SS_Bumper:				equ $23B
 ArtTile_SS_Goal:				equ $251
 ArtTile_SS_Up_Down:				equ $263

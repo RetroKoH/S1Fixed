@@ -159,6 +159,18 @@
  Function: Makes the Special Stage index not increase if you fail the stage.
  Date: 2024-07-21
  Variable: SpecialStageAdvancementMod
+ 
+ Name: Special Stages Still Appear With All Emeralds
+ Credit: Mercury
+ Function: Makes the Special Stages still accessible even once all emeralds are collected.
+ Date: 2024-07-21
+ Variable: SpecialStagesWithAllEmeralds
+
+ Name: HUD In Special Stage
+ Function: Adds HUD to Special Stage.
+ Date: 2024-07-22
+ Depends On: Dynamic Special Stage Walls
+ Variables: HUDInSpecialStage, SpecialStageHUDType
 
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format

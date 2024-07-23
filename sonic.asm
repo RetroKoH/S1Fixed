@@ -22,9 +22,12 @@ zeroOffsetOptimization = 0	; if 1, makes a handful of zero-offset instructions s
 ; S1Fixed Variables (Sorted by Context)
 DebugPathSwappers: = 1
 
+; Special Stage mods
 DynamicSpecialStageWalls: = 1			; if set to 1, Special Stage walls are dynamically loaded. (might make this permanent)
 SmoothSpecialStages: = 1				; if set to 1, Special Stage scrolls smoothly. Movement/Jump angles are also affected.
 SpecialStageAdvancementMod: = 1			; if set to 1, Special Stages will not advance when you fail the stage, allowing you to retry.
+HUDInSpecialStage: = DynamicSpecialStageWalls*1
+	SpecialStageHUDType: = 1	; 0=normal; 1=score not shown; 2=score & time not shown; 3=rings only
 ; Mods listed below alter the layouts:
 S4SpecialStages: = 1					; if set to 1, Special Stages control like Sonic 4 Ep 1 (Left/Right rotate the stage.)
 SpecialStagesWithAllEmeralds: = 1		; if set to 1, Special Stages are still accessible even once all emeralds are collected.
@@ -47,7 +50,7 @@ SpinDashNoRevDown: = SpinDashEnabled*1	; if set to 1, Spin Dash will not rev dow
 PeeloutEnabled: = 1						; if set to 1, Peelout is enabled for Sonic (SFX still don't work properly)
 AirRollEnabled: = 1						; if set to 1, Air rolling is enabled for Sonic.
 CDBalancing: = 1						; if set to 1, Sonic has 2 Balancing animations, taken from Sonic CD.
-HUDScrolling: = 1						; if set to 1, HUD Scrolls in and out of view during gameplay.
+HUDScrolling: = 0						; if set to 1, HUD Scrolls in and out of view during gameplay.
 ReboundMod: = 1							; if set to 1, rebounding from enemies/monitors after rolling off a cliff onto them functions the same as if they were jumped on - the rebound is cut short if the jump button is released.
 BlocksInROM: = 1						; if set to 1, 16x16 Blocks are uncompressed in ROM, saving RAM
 ChunksInROM: = 1						; if set to 1, 128x128 Chunks are uncompressed in ROM, saving RAM
@@ -611,8 +614,8 @@ VBla_08:
 
 Demo_Time:
 		bsr.w	LoadTilesAsYouMove
-		jsr	(AnimateLevelGfx).l
-		jsr	(HUD_Update).l
+		jsr		(AnimateLevelGfx).l
+		jsr		(HUD_Update).l
 		bsr.w	ProcessDPLC2
 		tst.w	(v_demolength).w ; is there time left on the demo?
 		beq.w	.end		; if not, branch
@@ -642,7 +645,11 @@ VBla_0A:
 		bra.s	.end
 		
 .update:
-		jsr	SS_LoadWalls	
+		jsr		(SS_LoadWalls).l
+
+	if HUDInSpecialStage=1	; Mercury HUD in Special Stage
+		jsr		(HUD_Update_SS).l
+	endif	; HUD in Special Stage End
 	endif	; Dynamic Special Stage Walls End
 
 		tst.w	(v_demolength).w	; is there time left on the demo?
@@ -714,7 +721,10 @@ VBla_16:
 		bra.s	.end
 		
 .update:
-		jsr	SS_LoadWalls	
+		jsr		(SS_LoadWalls).l
+	if HUDInSpecialStage=1	; Mercury HUD in Special Stage
+		jsr		(HUD_Update_SS).l
+	endif	; HUD in Special Stage End
 	endif	; Dynamic Special Stage Walls End
 
 		tst.w	(v_demolength).w
@@ -823,8 +833,8 @@ JoypadInit:
 		; removed Z80 macro
 		; removed Z80 macro
 		moveq	#$40,d0
-		move.b	d0,(z80_port_1_control+1).l	; init port 1 (joypad 1)
-		move.b	d0,(z80_port_2_control+1).l	; init port 2 (joypad 2)
+		move.b	d0,(z80_port_1_control+1).l		; init port 1 (joypad 1)
+		move.b	d0,(z80_port_2_control+1).l		; init port 2 (joypad 2)
 		move.b	d0,(z80_expansion_control+1).l	; init port 3 (expansion/extra)
 		; removed Z80 macro
 		rts	
@@ -2819,7 +2829,17 @@ GM_Special:
 
 	if DynamicSpecialStageWalls=1	; Mercury Dynamic Special Stage Walls
 		move.b	#$FF,(v_ssangleprev).w			; fill previous angle with obviously false value to force an update
-	endif							; Dynamic Special Stage Walls End
+
+	if HUDInSpecialStage=1	; Mercury HUD in Special Stage
+		move.b	#1,(f_timecount).w				; update time counter
+		move.b	#1,(f_scorecount).w				; update score counter
+
+		clr.l	(v_time).w						; reset time
+
+		jsr		(Hud_Base_SS).l					; load basic HUD gfx
+	endif	; HUD in Special Stage End
+
+	endif	; Dynamic Special Stage Walls End
 
 		bsr.w	PalCycle_SS
 		clr.w	(v_ssangle).w					; set stage angle to "upright"
@@ -2852,6 +2872,9 @@ SS_NoDebug:
 		ori.b	#$40,d0
 		move.w	d0,(vdp_control_port).l
 		bsr.w	PaletteWhiteIn
+	if HUDInSpecialStage=1
+		move.b	#2,(f_levelstarted).w			; Mercury HUD In Special Stage
+	endif
 
 ; ---------------------------------------------------------------------------
 ; Main Special Stage loop
@@ -2861,9 +2884,31 @@ SS_MainLoop:
 		bsr.w	PauseGame
 		move.b	#$A,(v_vbla_routine).w
 		bsr.w	WaitForVBla
+
+	if HUDInSpecialStage=1	; Mercury HUD in Special Stage
+		addq.w	#1,(v_framecount).w		; add 1 to level timer
+	endc	; HUD in Special Stage End
+
 		bsr.w	MoveSonicInDemo
 		move.w	(v_jpadhold1).w,(v_jpadhold2).w
 		jsr		(ExecuteObjects).l
+
+	if (HUDInSpecialStage=1&HUDScrolling=1)
+		tst.b	(f_timecount).w
+		beq.s	.remove
+		cmpi.b	#$90,(v_hudscrollpos).w
+		beq.s	SS_SkipHUDScroll
+		add.b	#4,(v_hudscrollpos).w
+		bra.s	SS_SkipHUDScroll
+
+.remove:
+		tst.b	(v_hudscrollpos).w
+		beq.s	SS_SkipHUDScroll
+		subq.b	#2,(v_hudscrollpos).w
+
+SS_SkipHUDScroll:
+	endif
+
 		jsr		(BuildSprites).l
 		jsr		(SS_ShowLayout).l
 		bsr.w	SS_BGAnimate
@@ -2943,7 +2988,11 @@ loc_47D4:
 
 		clearRAM v_objspace,v_objend
 
-		move.b	#id_SSResult,(v_ssrescard).w ; load results screen object
+		move.b	#id_SSResult,(v_ssrescard).w	; load results screen object
+
+	if HUDInSpecialStage=1
+		clr.b	(f_levelstarted).w				; remove HUD
+	endif
 
 SS_NormalExit:
 		bsr.w	PauseGame
@@ -7902,12 +7951,20 @@ Map_SS_Down:	include	"_maps/SS DOWN Block.asm"
 	if HUDCentiseconds=1	;Mercury HUD Centiseconds
 
 Map_HUD:	include	"_maps/HUD (centiseconds).asm"
+
+	if HUDInSpecialStage=1	; Mercury HUD in Special Stage
+Map_HUD_SS:	include	"_maps\HUD SS (centiseconds).asm"
+	endif	; HUD in Special Stage End
 	
 	else
 	
 Map_HUD:	include	"_maps/HUD.asm"
+
+	if HUDInSpecialStage=1	; Mercury HUD in Special Stage
+Map_HUD_SS:	include	"_maps\HUD SS.asm"
+	endif	; HUD in Special Stage End
 	
-	endif	;end HUD Centiseconds
+	endif	; HUD Centiseconds End
 
 ; ---------------------------------------------------------------------------
 ; Add points subroutine
@@ -7950,7 +8007,11 @@ AddPoints:
 		rts	
 ; End of function AddPoints
 
-		include	"_inc/HUD_Update.asm"
+		include	"_inc/HUD Update.asm"
+
+	if HUDInSpecialStage=1	; Mercury HUD In Special Stage
+		include	"_inc\HUD Update SS.asm"
+	endif	; HUD In Special Stage End
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	load countdown numbers on the continue screen
