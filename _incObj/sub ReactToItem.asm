@@ -467,6 +467,26 @@ HurtSonic:
 KillSonic:
 		tst.w	(v_debuguse).w					; is debug mode	active?
 		bne.s	.dontdie						; if yes, branch
+
+	if HUDInSpecialStage=1	; Mercury Time Limit In Special Stage
+		cmpi.b	#id_SonicSpecial,obID(a0)		; test if it's Special Stage Sonic that's trying to die
+		bne.s	.normal
+		
+		move.b	#4,obRoutine(a0)				; change Sonic to Special Stage dying routine
+		
+		;move.w	obY(a0),$38(a0)
+		
+		bset	#staAir,obStatus(a0)
+		move.b	#aniID_Shrink,obAnim(a0)
+		bset	#7,obGfx(a0)
+		move.w	#sfx_Death,d0					; play normal death sound
+		jsr		(PlaySound_Special).l
+		moveq	#-1,d0
+		rts	
+
+	.normal:
+	endif	; Time Limit In Special Stage End
+
 		bclr	#sta2ndInvinc,obStatus2nd(a0)	; remove invincibility
 		move.b	#6,obRoutine(a0)
 		jsr		(Sonic_ResetOnFloor).l

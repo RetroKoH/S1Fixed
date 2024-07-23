@@ -27,7 +27,8 @@ DynamicSpecialStageWalls: = 1			; if set to 1, Special Stage walls are dynamical
 SmoothSpecialStages: = 1				; if set to 1, Special Stage scrolls smoothly. Movement/Jump angles are also affected.
 SpecialStageAdvancementMod: = 1			; if set to 1, Special Stages will not advance when you fail the stage, allowing you to retry.
 HUDInSpecialStage: = DynamicSpecialStageWalls*1
-	SpecialStageHUDType: = 1	; 0=normal; 1=score not shown; 2=score & time not shown; 3=rings only
+	SpecialStageHUDType: = 1		; 0=normal; 1=score not shown; 2=score & time not shown; 3=rings only
+	TimeLimitInSpecialStage: = 1	; if set, time counts down in the Special Stage
 ; Mods listed below alter the layouts:
 S4SpecialStages: = 1					; if set to 1, Special Stages control like Sonic 4 Ep 1 (Left/Right rotate the stage.)
 SpecialStagesWithAllEmeralds: = 1		; if set to 1, Special Stages are still accessible even once all emeralds are collected.
@@ -2833,8 +2834,11 @@ GM_Special:
 	if HUDInSpecialStage=1	; Mercury HUD in Special Stage
 		move.b	#1,(f_timecount).w				; update time counter
 		move.b	#1,(f_scorecount).w				; update score counter
-
 		clr.l	(v_time).w						; reset time
+
+	if TimeLimitInSpecialStage=1	; Mercury Time Limit In Special Stage
+		move.b	#1,(v_timemin).w				; start with 1:00 on the clock
+	endif	; Time Limit In Special Stage End
 
 		jsr		(Hud_Base_SS).l					; load basic HUD gfx
 	endif	; HUD in Special Stage End

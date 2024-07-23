@@ -167,10 +167,18 @@
  Variable: SpecialStagesWithAllEmeralds
 
  Name: HUD In Special Stage
- Function: Adds HUD to Special Stage.
+ Credit: Mercury/RetroKoH
+ Function: Adds HUD to Special Stage. I also fixed one bug w/ Mercury's implementation.
  Date: 2024-07-22
  Depends On: Dynamic Special Stage Walls
  Variables: HUDInSpecialStage, SpecialStageHUDType
+
+ Name: Time Limits in Special Stages
+ Credit: Mercury/RetroKoH
+ Function: Adds countdown time limits to Special Stages. Makes use of the Shrink animation.
+ Date: 2024-07-23
+ Depends On: HUD In Special Stage
+ Variable: TimeLimitInSpecialStage
 
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format

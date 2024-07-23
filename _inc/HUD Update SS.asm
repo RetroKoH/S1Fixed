@@ -37,36 +37,74 @@ HUD_Update_SS:
 		bne.w	.chklives								; if yes, branch
 		lea		(v_time).w,a1
 
-	
-	if HUDCentiseconds=1	; Mercury HUD Centiseconds
-		cmpi.l	#$93B63,(a1)+							; is the time 9'59"99?
-		beq.w	TimeOver_SS								; if yes, branch
-		move.b	(v_centstep).w,d1
-		addi.b	#1,d1
-		cmpi.b	#3,d1
-		bne.s	.skip
-		clr.b	d1
-		
-.skip:
-		move.b	d1,(v_centstep).w
-		cmpi.b	#2,d1
-		beq.s	.skip2
-		addi.b	#1,d1
-		
-.skip2:
-		add.b	d1,-(a1)
-		cmpi.b	#100,(a1)
-		bcs.s	.docent
+	if TimeLimitInSpecialStage=1	; Mercury Time Limit In Special Stage
+
+		if HUDCentiseconds=1	;Mercury HUD Centiseconds
+			tst.l	(a1)+				; has the time run out?
+			beq.w	TimeOver_SS			; if yes, branch
+			move.b	(v_centstep).w,d1
+			addi.b	#1,d1
+			cmpi.b	#3,d1
+			bne.s	.skip
+			clr.b	d1
+			
+		.skip:
+			move.b	d1,(v_centstep).w
+			cmpi.b	#2,d1
+			beq.s	.skip2
+			addi.b	#1,d1
+			
+		.skip2:
+			sub.b	d1,-(a1)
+			cmpi.b	#-1,(a1)
+			bgt.s	.docent
+			move.b	#99,(a1)			; set cent to 59
+		else
+			tst.l	(a1)+				; has the time run out?
+			beq.w	TimeOver_SS			; if yes, branch
+			subq.b	#1,-(a1)			; dec jiffy
+			cmpi.b	#-1,(a1)			; if -1
+			bgt.s	.chklives
+			move.b	#59,(a1)			; set jiffy to 59
+		endif	; HUD Centiseconds End
+
+		subq.b	#1,-(a1)		; dec sec
+		cmpi.b	#-1,(a1)		; if -1
+		bgt.s	.updatetime
+		move.b	#59,(a1)		; set sec to 59
+		subq.b	#1,-(a1)		; dec min
+		cmpi.b	#-1,(a1)		; if -1
+		bgt.s	.updatetime
+		clr.l	(v_time).w		; set time to 0
 
 	else
 
-		cmpi.l	#$93B3B,(a1)+							; is the time 9.59?
-		beq.s	TimeOver_SS								; if yes, branch
-
-		addq.b	#1,-(a1)								; increment 1/60s counter
-		cmpi.b	#60,(a1)								; check if passed 60
-		bcs.s	.chklives
-	endif	; HUD Centiseconds End
+		if HUDCentiseconds=1	; Mercury HUD Centiseconds
+			cmpi.l	#$93B63,(a1)+							; is the time 9'59"99?
+			beq.w	TimeOver_SS								; if yes, branch
+			move.b	(v_centstep).w,d1
+			addi.b	#1,d1
+			cmpi.b	#3,d1
+			bne.s	.skip
+			clr.b	d1
+			
+		.skip:
+			move.b	d1,(v_centstep).w
+			cmpi.b	#2,d1
+			beq.s	.skip2
+			addi.b	#1,d1
+			
+		.skip2:
+			add.b	d1,-(a1)
+			cmpi.b	#100,(a1)
+			bcs.s	.docent
+		else
+			cmpi.l	#$93B3B,(a1)+							; is the time 9.59?
+			beq.s	TimeOver_SS								; if yes, branch
+			addq.b	#1,-(a1)								; increment 1/60s counter
+			cmpi.b	#60,(a1)								; check if passed 60
+			bcs.s	.chklives
+		endif	; HUD Centiseconds End
 	
 		clr.b	(a1)									; clear 1/60s counter
 		addq.b	#1,-(a1)								; increment second counter
@@ -77,6 +115,7 @@ HUD_Update_SS:
 		cmpi.b	#9,(a1)									; check if passed 9
 		bcs.s	.updatetime
 		move.b	#9,(a1)									; keep to 9
+	endif	; Mercury Time Limit In Special Stage End
 
 .updatetime:
 		locVRAM	(ArtTile_SS_HUD+$26)*$20,d0				; ($43E0) set VRAM address -- RetroKoH VRAM Overhaul
@@ -102,13 +141,20 @@ HUD_Update_SS:
 		beq.s	.finish									; if not, branch
 		clr.b	(f_lifecount).w
 		bsr.w	Hud_Lives_SS
-		
+
 .finish:
 		rts	
 ; ===========================================================================
 
 TimeOver_SS:				; XREF: Hud_ChkTime_SS
-		clr.b	(f_timecount).w	; stop the time counter
+		clr.b	(f_timecount).w							; stop the time counter
+
+	if HUDInSpecialStage=1	; Mercury Time Limit In Special Stage
+		lea		(v_objspace).w,a0
+		movea.l	a0,a2
+		bsr.w	KillSonic								; Will run a slightly different routine for SS Sonic.
+		move.b	#1,(f_timeover).w						; Set time over flag
+	endif	; Time Limit In Special Stage End
 
 		rts	
 ; ===========================================================================

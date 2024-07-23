@@ -283,11 +283,11 @@ PLC_SpecialStage:	dc.w ((PLC_SpeStageend-PLC_SpecialStage-2)/6)-1
 		plcm	Nem_SSBgFish,   ArtTile_SS_Background_Fish   ; bird and fish background
 
 	if DynamicSpecialStageWalls=1	; Mercury Dynamic Special Stage Walls
-		plcm	Nem_Hud, ArtTile_SS_HUD							; HUD
-		plcm	Nem_Lives, ArtTile_SS_Lives						; lives
+		plcm	Nem_Hud,		ArtTile_SS_HUD					; HUD
+		plcm	Nem_Lives,		ArtTile_SS_Lives				; lives
 	else
-		plcm	Nem_SSWalls, ArtTile_SS_Wall					; walls
-	endc	; Dynamic Special Stage Walls End
+		plcm	Nem_SSWalls,	ArtTile_SS_Wall					; walls
+	endif	; Dynamic Special Stage Walls End
 
 		plcm	Nem_Bumper,     ArtTile_SS_Bumper				; bumper
 		plcm	Nem_SSGOAL,     ArtTile_SS_Goal					; GOAL block

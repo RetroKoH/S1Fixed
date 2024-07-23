@@ -1,5 +1,6 @@
 ; ---------------------------------------------------------------------------
 ; Subroutine to draw the HUD
+; Blinking function refactored by RetroKoH
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
@@ -8,30 +9,34 @@
 BuildHUD:
 		moveq	#0,d1
 		tst.w	(v_rings).w
-		beq.s	.norings					; blink ring counter if 0
-		cmpi.b	#id_Special,(v_gamemode).w	; is this the Special Stage?
-		beq.s	.goahead					; if yes, branch ahead
+		bne.s	.chktime					; blink ring counter if 0
 		btst	#3,(v_framebyte).w
-		bne.s	.skip						; only blink on certain frames
-		cmpi.b	#9,(v_timemin).w			; have 9 minutes elapsed?
-		bne.s	.skip						; if not, branch
-		addq.w	#2,d1						; set mapping frame time counter blink
+		bne.s	.chktime					; only blink on certain frames
+		addq.w	#1,d1						; set mapping frame for ring count blink
 
-.skip:
+.chktime:
+	if TimeLimitInSpecialStage=1
+		cmpi.b	#id_Special,(v_gamemode).w	; is this the Special Stage?
+		bne.s	.countup					; if no, behave like normal
+
+	; blink at under 30 seconds
+		cmpi.l	#$1E00,(v_time).w			; under 30 seconds remaining?
+		bcc.s	.goahead
+		btst	#3,(v_framebyte).w
+		bne.s	.goahead					; only blink on certain frames
+		addq.w	#2,d1						; set mapping frame time counter blink
 		bra.s	.goahead
 
-.norings:
-		moveq	#0,d1
+	.countup:
+	endif
+	; Blink at 9 minutes
 		btst	#3,(v_framebyte).w
-		bne.s	.skip						; only blink on certain frames
-		addq.w	#1,d1						; set mapping frame for ring count blink
-		
+		bne.s	.goahead					; only blink on certain frames
 		cmpi.b	#9,(v_timemin).w			; have 9 minutes elapsed?
-		bne.s	.skip						; if not, branch
-		addq.w	#2,d1						; set mapping frame for double blink
+		bne.s	.goahead					; if not, branch
+		addq.w	#2,d1						; set mapping frame time counter blink
 
 .goahead:
-
 	if HUDScrolling=1
 		moveq	#0,d3
 		move.b	(v_hudscrollpos).w,d3		; set X pos. Will scroll to $90.
