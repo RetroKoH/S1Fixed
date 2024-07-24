@@ -15,7 +15,7 @@ AddressSRAM	  = 3	; 0 = odd+even; 2 = even only; 3 = odd only
 
 ZoneCount	  = 6	; discrete zones are: GHZ, MZ, SYZ, LZ, SLZ, and SBZ
 
-zeroOffsetOptimization = 0	; if 1, makes a handful of zero-offset instructions smaller
+zeroOffsetOptimization = 1	; if 1, makes a handful of zero-offset instructions smaller
 
 ; S1Fixed Variables (Sorted by Context)
 DebugPathSwappers: = 1
@@ -49,7 +49,7 @@ SpinDashNoRevDown: = SpinDashEnabled*1	; if set to 1, Spin Dash will not rev dow
 PeeloutEnabled: = 1						; if set to 1, Peelout is enabled for Sonic (SFX still don't work properly)
 AirRollEnabled: = 1						; if set to 1, Air rolling is enabled for Sonic.
 CDBalancing: = 1						; if set to 1, Sonic has 2 Balancing animations, taken from Sonic CD.
-HUDScrolling: = 0						; if set to 1, HUD Scrolls in and out of view during gameplay.
+HUDScrolling: = 1						; if set to 1, HUD Scrolls in and out of view during gameplay.
 ReboundMod: = 1							; if set to 1, rebounding from enemies/monitors after rolling off a cliff onto them functions the same as if they were jumped on - the rebound is cut short if the jump button is released.
 BlocksInROM: = 1						; if set to 1, 16x16 Blocks are uncompressed in ROM, saving RAM
 ChunksInROM: = 1						; if set to 1, 128x128 Chunks are uncompressed in ROM, saving RAM
@@ -2311,7 +2311,7 @@ Level_NoMusicFade:
 	; AURORA☆FIELDS Title Card Optimization
 		lea		Art_TitleCard,a0								; load title card patterns
 		move.l	#((Art_TitleCard_End-Art_TitleCard)/$20)-1,d0	; # of tiles
-		jsr		LoadUncArt
+		jsr		(LoadUncArt).w
 	; Title Card Optimization End
 		
 		enable_ints
@@ -2541,11 +2541,11 @@ Level_DelayLoop:
 
 Level_ClrCardArt:
 		moveq	#plcid_Explode,d0
-		jsr	(AddPLC).l	; load explosion gfx
+		jsr	(AddPLC).w	; load explosion gfx
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
 		addi.w	#plcid_GHZAnimals,d0
-		jsr	(AddPLC).l	; load animal gfx (level no. + $15)
+		jsr	(AddPLC).w	; load animal gfx (level no. + $15)
 
 Level_StartGame:
 		; The above check is for the S2 HUD Manager (RetroKoH)
@@ -2964,7 +2964,7 @@ loc_47D4:
 	; AURORA☆FIELDS Title Card Optimization
 		lea		Art_TitleCard,a0								; load title card patterns
 		move.l	#((Art_TitleCard_End-Art_TitleCard)/$20)-1,d0	; # of tiles
-		jsr		LoadUncArt
+		jsr		(LoadUncArt).w
 	; Title Card Optimization End
 		
 		jsr		(Hud_Base).l
@@ -2986,7 +2986,7 @@ loc_47D4:
 		mulu.w	#10,d0		; multiply rings by 10
 		move.w	d0,(v_ringbonus).w ; set rings bonus
 		move.w	#bgm_GotThrough,d0
-		jsr		(PlaySound_Special).l	 ; play end-of-level music
+		jsr		(PlaySound_Special).w	 ; play end-of-level music
 
 		clearRAM v_objspace,v_objend
 
@@ -3323,7 +3323,7 @@ GM_Continue:
 	; AURORA☆FIELDS Title Card Optimization
 		lea		Art_TitleCard,a0								; load title card patterns
 		move.l	#((Art_TitleCard_End-Art_TitleCard)/$20)-1,d0	; # of tiles
-		jsr		LoadUncArt
+		jsr		(LoadUncArt).w
 	; Title Card Optimization End
 
 		locVRAM	ArtTile_Continue_Sonic*$20
@@ -4626,7 +4626,7 @@ LoadZoneTiles:
 		lsl.w	#5,d2					; Shift (left) d2 by $C, making it high nibble of the high byte, d2 is now the size of the decompressed file rounded down to the nearest $1000 bytes, d2 becomes the 'destination address'
 		move.l	#$FFFFFF,d1				; Fill d1 with $FF
 		move.w	d2,d1					; Move d2 to d1, overwriting the last word of $FF's with d2, this turns d1 into 'StartOfRAM'+'However many $1000 bytes the decompressed art is', d1 becomes the 'source address'
-		jsr		(QueueDMATransfer).l	; Use d1, d2, and d3 to locate the decompressed art and ready for transfer to VRAM
+		jsr		(QueueDMATransfer).w	; Use d1, d2, and d3 to locate the decompressed art and ready for transfer to VRAM
 		move.w	d7,-(sp)				; Store d7 in the Stack
 		move.b	#$C,(v_vbla_routine).w
 		bsr.w	WaitForVBla
@@ -5025,7 +5025,7 @@ loc_8486:
 	; Mass Object Load Optimization End
 		bsr.w	DisplaySprite
 		move.w	#sfx_Collapse,d0
-		jmp		(PlaySound_Special).l	; play collapsing sound
+		jmp		(PlaySound_Special).w	; play collapsing sound
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Disintegration data for collapsing ledges (MZ, SLZ, SBZ)
@@ -6560,7 +6560,7 @@ ResumeMusic:
 		move.w	#bgm_Boss,d0
 
 .playselected:
-		jsr		(PlaySound).l
+		jsr		(PlaySound).w
 
 .over12:
 		move.b	#30,(v_air).w				; reset air to 30 seconds
@@ -7210,7 +7210,7 @@ BossDefeated:
 		_move.b	#id_ExplosionBomb,obID(a1)	; load explosion object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		jsr	(RandomNumber).l
+		jsr	(RandomNumber).w
 		move.w	d0,d1
 		moveq	#0,d1
 		move.b	d0,d1
@@ -7310,7 +7310,7 @@ SS_ShowLayout:
 		andi.b	#$FC,d0
 	endif						; Smooth Special Stages End
 
-		jsr		(CalcSine).l
+		jsr		(CalcSine).w
 		move.w	d0,d4
 		move.w	d1,d5
 		muls.w	#$18,d4
@@ -7750,7 +7750,7 @@ SS_AniEmeraldSparks:
 		clr.l	4(a0)
 		move.b	#4,(v_player+obRoutine).w
 		move.w	#sfx_SSGoal,d0
-		jsr		(PlaySound_Special).l	; play special stage GOAL sound
+		jsr		(PlaySound_Special).w	; play special stage GOAL sound
 
 locret_1B60C:
 		rts	
@@ -8001,7 +8001,7 @@ AddPoints:
 	; Lives Over/Underflow Fix end
 		
 		move.w	#bgm_ExtraLife,d0
-		jmp		(PlaySound).l
+		jmp		(PlaySound).w
 
 
 .locret_1C6B6:

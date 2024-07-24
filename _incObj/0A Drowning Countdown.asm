@@ -188,7 +188,7 @@ Drown_Countdown:; Routine $A
 		bpl.w	.nochange								; branch if time remains
 		move.w	#59,drown_time(a0)
 		move.w	#1,objoff_36(a0)
-		jsr		(RandomNumber).l
+		jsr		(RandomNumber).w
 		andi.w	#1,d0
 		move.b	d0,objoff_34(a0)
 		move.b	(v_air).w,d0	; check air remaining
@@ -203,7 +203,7 @@ Drown_Countdown:; Routine $A
 
 		bne.s	.skipmusic		; if air is less than 12, branch
 		move.w	#bgm_Drowning,d0
-		jsr		(PlaySound).l	; play countdown music
+		jsr		(PlaySound).w	; play countdown music
 
 .skipmusic:
 		subq.b	#1,objoff_32(a0)
@@ -218,7 +218,7 @@ Drown_Countdown:; Routine $A
 
 .warnsound:
 		move.w	#sfx_Warning,d0
-		jsr		(PlaySound_Special).l		; play "ding-ding" warning sound
+		jsr		(PlaySound_Special).w		; play "ding-ding" warning sound
 
 .reduceair:
 		subq.b	#1,(v_air).w			; subtract 1 from air remaining
@@ -228,7 +228,7 @@ Drown_Countdown:; Routine $A
 		bsr.w	ResumeMusic
 		move.b	#$81,(f_playerctrl).w	; lock controls and disable object interaction
 		move.w	#sfx_Drown,d0
-		jsr		(PlaySound_Special).l	; play drowning sound
+		jsr		(PlaySound_Special).w	; play drowning sound
 		move.b	#$A,objoff_34(a0)
 		move.w	#1,objoff_36(a0)
 		move.w	#$78,objoff_2C(a0)
@@ -267,7 +267,7 @@ Drown_Countdown:; Routine $A
 		bpl.w	.nocountdown
 
 .makenum:
-		jsr		(RandomNumber).l
+		jsr		(RandomNumber).w
 		andi.w	#$F,d0
 		move.w	d0,objoff_3A(a0)
 		jsr		(FindFreeObj).l
@@ -291,7 +291,7 @@ Drown_Countdown:; Routine $A
 		move.w	(v_player+obY).w,d0
 		subi.w	#$C,d0
 		move.w	d0,obY(a1)
-		jsr		(RandomNumber).l
+		jsr		(RandomNumber).w
 		move.b	d0,obAngle(a1)
 		move.w	(v_framecount).w,d0
 		andi.b	#3,d0
@@ -305,7 +305,7 @@ Drown_Countdown:; Routine $A
 		beq.s	.loc_14082
 		move.b	(v_air).w,d2
 		lsr.b	#1,d2
-		jsr		(RandomNumber).l
+		jsr		(RandomNumber).w
 		andi.w	#3,d0
 		bne.s	.loc_1406A
 		bset	#6,objoff_36(a0)

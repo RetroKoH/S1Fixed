@@ -68,7 +68,7 @@ Shi_Main:	; Routine 0
 		move.l	#Art_Shield_L2,d1				; Load art for sparks
 		move.w	#ArtTile_LShield_Sparks*$20,d2	; load it just after the lightning shield art
 		move.w	#$50,d3
-		jsr		(QueueDMATransfer).l
+		jsr		(QueueDMATransfer).w
 
 .notLightning:
 	endif
@@ -543,7 +543,7 @@ ShieldPLC_ReadEntry:
 		move.w	d4,d2
 		add.w	d3,d4
 		add.w	d3,d4
-		jsr		(QueueDMATransfer).l
+		jsr		(QueueDMATransfer).w
 		dbf		d5,ShieldPLC_ReadEntry		; repeat for number of entries
 
 ShieldDPLC_Return:

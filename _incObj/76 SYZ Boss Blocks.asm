@@ -139,7 +139,7 @@ loc_197AA:
 
 loc_197D4:
 		move.w	#sfx_WallSmash,d0
-		jmp		(PlaySound_Special).l	; play smashing sound
+		jmp		(PlaySound_Special).w	; play smashing sound
 ; End of function BossBlock_Break
 
 ; ===========================================================================

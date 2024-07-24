@@ -364,8 +364,8 @@ React_ChkHurt:
 		move.w	obY(a0),d2
 		sub.w	obX(a1),d1
 		sub.w	obY(a1),d2
-		jsr		(CalcAngle).l
-		jsr		(CalcSine).l
+		jsr		(CalcAngle).w
+		jsr		(CalcSine).w
 		muls.w	#-$800,d1
 		asr.l	#8,d1
 		move.w	d1,obVelX(a1)
@@ -448,7 +448,7 @@ HurtSonic:
 		move.w	#sfx_HitSpikes,d0		; load spikes damage sound
 
 .sound:
-		jsr		(PlaySound_Special).l
+		jsr		(PlaySound_Special).w
 		moveq	#-1,d0
 		rts	
 ; ===========================================================================
@@ -480,7 +480,7 @@ KillSonic:
 		move.b	#aniID_Shrink,obAnim(a0)
 		bset	#7,obGfx(a0)
 		move.w	#sfx_Death,d0					; play normal death sound
-		jsr		(PlaySound_Special).l
+		jsr		(PlaySound_Special).w
 		moveq	#-1,d0
 		rts	
 
@@ -506,7 +506,7 @@ KillSonic:
 	; Spike SFX Fix End
 
 .sound:
-		jsr		(PlaySound_Special).l
+		jsr		(PlaySound_Special).w
 
 .dontdie:
 		moveq	#-1,d0

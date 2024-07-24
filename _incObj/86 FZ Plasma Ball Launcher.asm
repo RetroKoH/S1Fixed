@@ -97,7 +97,7 @@ BossPlasma_Loop:
 		move.b	#4,obRender(a1)
 		bset	#7,obRender(a1)
 		move.l	a0,objoff_34(a1)
-		jsr		(RandomNumber).l
+		jsr		(RandomNumber).w
 		move.w	objoff_32(a0),d1
 		muls.w	#-$4F,d1
 		addi.w	#boss_fz_x+$128,d1

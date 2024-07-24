@@ -20,7 +20,7 @@ Sonic_ChkAirRoll:
 		move.b	#2,obDoubleJumpFlag(a0)	; disable shield abilities
 	endif
 		move.w	#sfx_Roll,d0
-		jsr		(PlaySound_Special).l	; play rolling sound
+		jsr		(PlaySound_Special).w	; play rolling sound
 
 .noAirRoll:
 		cmpi.w	#-$FC0,obVelY(a0)

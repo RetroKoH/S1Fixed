@@ -76,7 +76,7 @@ Lamp_Blue:	; Routine 2
 		bhs.s	.donothing
 
 		move.w	#sfx_Lamppost,d0
-		jsr		(PlaySound_Special).l	; play lamppost sound
+		jsr		(PlaySound_Special).w	; play lamppost sound
 		addq.b	#2,obRoutine(a0)
 		jsr		(FindFreeObj).l
 		bne.s	.fail
@@ -119,7 +119,7 @@ Lamp_Twirl:	; Routine 6
 		move.b	obAngle(a0),d0
 		subi.b	#$10,obAngle(a0)
 		subi.b	#$40,d0
-		jsr		(CalcSine).l
+		jsr		(CalcSine).w
 		muls.w	#$C00,d1
 		swap	d1
 		add.w	lamp_origX(a0),d1

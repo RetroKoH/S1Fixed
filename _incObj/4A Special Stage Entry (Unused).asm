@@ -41,7 +41,7 @@ Van_RmvSonic:	; Routine 2
 		beq.s	.display
 		clr.b	(v_player).w	; remove Sonic
 		move.w	#sfx_SSGoal,d0
-		jsr		(PlaySound_Special).l	; play Special Stage "GOAL" sound
+		jsr		(PlaySound_Special).w	; play Special Stage "GOAL" sound
 
 .display:
 		jmp		(DisplaySprite).l

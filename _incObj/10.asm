@@ -60,7 +60,7 @@ OT_Main:
 
 OT_SetSubSprs:
 		move.b	obAngle(a0),d0 ; Get sine and cosine of the current angle
-		jsr		(CalcSine).l
+		jsr		(CalcSine).w
 		asr.w	#3,d0 ; Get Y position
 		add.w	obY(a0),d0
 		asr.w	#3,d1 ; Get X position

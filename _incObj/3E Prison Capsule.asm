@@ -131,7 +131,7 @@ Pri_Explosion:	; Routine 6, 8, $A
 		_move.b	#id_ExplosionBomb,obID(a1)	; load explosion object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		jsr		(RandomNumber).l
+		jsr		(RandomNumber).w
 		moveq	#0,d1
 		move.b	d0,d1
 		lsr.b	#2,d1
@@ -189,7 +189,7 @@ Pri_Animals:	; Routine $C
 		_move.b	#id_Animals,obID(a1)	; load animal object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		jsr		(RandomNumber).l
+		jsr		(RandomNumber).w
 		andi.w	#$1F,d0
 		subq.w	#6,d0
 		tst.w	d1

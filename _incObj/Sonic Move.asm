@@ -224,7 +224,7 @@ Sonic_Traction: ;loc_12FEE:
 		bne.s	loc_1300C
 	endif
 		move.b	obAngle(a0),d0
-		jsr		(CalcSine).l
+		jsr		(CalcSine).w
 		muls.w	obInertia(a0),d1
 		asr.l	#8,d1
 		move.w	d1,obVelX(a0)
@@ -336,7 +336,7 @@ loc_130BA:
 		move.b	#aniID_Stop,obAnim(a0)	; use "stopping" animation
 		bclr	#staFacing,obStatus(a0)
 		move.w	#sfx_Skid,d0
-		jsr		(PlaySound_Special).l	; play stopping sound
+		jsr		(PlaySound_Special).w	; play stopping sound
 	if SkidDustEnabled=1
 		cmpi.b	#$C,(v_air)
 		bcs.s	locret_130E8			; if he's drowning, branch to not make dust
@@ -394,7 +394,7 @@ loc_13120:
 		move.b	#aniID_Stop,obAnim(a0) ; use "stopping" animation
 		bset	#staFacing,obStatus(a0)
 		move.w	#sfx_Skid,d0
-		jsr		(PlaySound_Special).l	; play stopping sound
+		jsr		(PlaySound_Special).w	; play stopping sound
 	if SkidDustEnabled=1
 		cmpi.b	#$C,(v_air)
 		bcs.s	locret_1314E			; if he's drowning, branch to not make dust

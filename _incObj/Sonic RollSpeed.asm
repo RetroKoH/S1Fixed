@@ -86,7 +86,7 @@ loc_131CC:
 .cont2:
 	; Screen Scroll While Rolling Fix End
 		move.b	obAngle(a0),d0
-		jsr		(CalcSine).l
+		jsr		(CalcSine).w
 	; Devon Rolling speed cap fix
 		move.w  obInertia(a0),d2
 	if GroundSpeedCapEnabled=1 ; RetroKoH Disable Rolling Speed Cap

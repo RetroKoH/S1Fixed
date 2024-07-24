@@ -38,7 +38,7 @@ BossFire_Main:	; Routine 0
 loc_1870A:
 		move.b	#$1E,objoff_29(a0)
 		move.w	#sfx_Fireball,d0
-		jsr		(PlaySound_Special).l	; play lava sound
+		jsr		(PlaySound_Special).w	; play lava sound
 
 BossFire_Action:	; Routine 2
 		moveq	#0,d0

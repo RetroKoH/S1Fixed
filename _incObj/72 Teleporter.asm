@@ -69,7 +69,7 @@ loc_1670E:
 		move.w	obY(a0),obY(a1)
 		clr.b	objoff_32(a0)
 		move.w	#sfx_Roll,d0
-		jsr		(PlaySound_Special).l	; play Sonic rolling sound
+		jsr		(PlaySound_Special).w	; play Sonic rolling sound
 
 locret_1675C:
 		rts	
@@ -79,7 +79,7 @@ loc_1675E:	; Routine 4
 		lea	(v_player).w,a1
 		move.b	objoff_32(a0),d0
 		addq.b	#2,objoff_32(a0)
-		jsr	(CalcSine).l
+		jsr	(CalcSine).w
 		asr.w	#5,d0
 		move.w	obY(a0),d2
 		sub.w	d0,d2
@@ -89,7 +89,7 @@ loc_1675E:	; Routine 4
 		bsr.w	sub_1681C
 		addq.b	#2,obRoutine(a0)
 		move.w	#sfx_Teleport,d0
-		jsr	(PlaySound_Special).l	; play teleport sound
+		jsr	(PlaySound_Special).w	; play teleport sound
 
 locret_16796:
 		rts	

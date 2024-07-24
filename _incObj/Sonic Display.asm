@@ -49,7 +49,7 @@ Sonic_Display:
 .music:
 		lea		(MusicList2).l,a1
 		move.b	(a1,d0.w),d0
-		jsr		(PlaySound).l					; play normal music
+		jsr		(PlaySound).w					; play normal music
 
 .removeinvincible:
 		bclr	#sta2ndInvinc,obStatus2nd(a0)	; cancel invincibility
@@ -73,7 +73,7 @@ Sonic_Display:
 		bsr.w   ApplySpeedSettings				; Fetch Speed settings
 		bclr	#sta2ndShoes,obStatus2nd(a0)	; cancel speed shoes
 		move.w	#bgm_Slowdown,d0
-		jmp		(PlaySound).l					; run music at normal speed
+		jmp		(PlaySound).w					; run music at normal speed
 
 .exit:
 		rts	

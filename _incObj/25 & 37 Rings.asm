@@ -88,7 +88,7 @@ CollectRing:
 		move.w	#bgm_ExtraLife,d0	; play extra life music
 
 .playsnd:
-		jmp	(PlaySound_Special).l
+		jmp	(PlaySound_Special).w
 ; End of function CollectRing
 
 ; ===========================================================================
@@ -197,7 +197,7 @@ RLoss_Count:	; Routine 0
 		move.b  d0,(v_ani3_time).w		; Move d0 to old timer (for animated purposes)
 		; Ring Timers Fix End
 		move.w	#sfx_RingLoss,d0
-		jsr		(PlaySound_Special).l	; play ring loss sound
+		jsr		(PlaySound_Special).w	; play ring loss sound
 
 
 RLoss_Bounce:	; Routine 2

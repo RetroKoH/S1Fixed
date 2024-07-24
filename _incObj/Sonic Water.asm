@@ -30,7 +30,7 @@ Sonic_Water:
 		beq.s	.exit								; branch if Sonic stops moving
 		move.b	#id_Splash,(v_splash).w				; load splash object
 		move.w	#sfx_Splash,d0
-		jmp		(PlaySound_Special).l				; play splash sound
+		jmp		(PlaySound_Special).w				; play splash sound
 ; ===========================================================================
 
 .abovewater:
@@ -48,5 +48,5 @@ Sonic_Water:
 
 .belowmaxspeed:
 		move.w	#sfx_Splash,d0
-		jmp		(PlaySound_Special).l				; play splash sound
+		jmp		(PlaySound_Special).w				; play splash sound
 ; End of function Sonic_Water

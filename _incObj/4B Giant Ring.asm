@@ -63,7 +63,7 @@ GRing_Collect:	; Routine 4
 
 GRing_PlaySnd:
 		move.w	#sfx_GiantRing,d0
-		jsr		(PlaySound_Special).l	; play giant ring sound
+		jsr		(PlaySound_Special).w	; play giant ring sound
 		bra.s	GRing_Animate
 ; ===========================================================================
 
@@ -103,7 +103,7 @@ GRingDPLC_ReadEntry:
 		move.w	d4,d2
 		add.w	d3,d4
 		add.w	d3,d4
-		jsr		(QueueDMATransfer).l
+		jsr		(QueueDMATransfer).w
 		dbf		d5,GRingDPLC_ReadEntry	; repeat for number of entries
 
 GRingDPLC_Return:

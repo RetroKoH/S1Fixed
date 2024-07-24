@@ -106,7 +106,7 @@ BubbleShield_Bounce:
 		move.b	#aniID_BubbleBounceUp,(v_shieldobj+obAnim).w
 		clr.b	obDoubleJumpFlag(a0)
 		move.w	#sfx_BShieldAtk,d0
-		jmp		(PlaySound_Special).l
+		jmp		(PlaySound_Special).w
 ; End of function BubbleShield_Bounce
 	endif
 
@@ -155,7 +155,7 @@ DropDash_Release:
 .setspeed:
 		move.w	d3,obInertia(a0)		; move dash speed into inertia	
 		move.w	#sfx_Teleport,d0
-		jsr		(PlaySound_Special).l	; play spindash release sfx
+		jsr		(PlaySound_Special).w	; play spindash release sfx
 
 .finish:
 		bset	#staSpin,obStatus(a0)

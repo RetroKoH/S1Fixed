@@ -189,7 +189,7 @@ Geyser_Main:	; Routine 0
 
 .sound:
 		move.w	#sfx_Burning,d0
-		jsr		(PlaySound_Special).l	; play flame sound
+		jsr		(PlaySound_Special).w	; play flame sound
 
 Geyser_Action:	; Routine 2
 	; LavaGaming Object Routine Optimization

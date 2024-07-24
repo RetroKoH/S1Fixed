@@ -131,7 +131,7 @@ SBall_Move:	; Routine 2
 		add.w	d0,sball_angle(a0)
 		move.b	sball_angle(a0),obAngle(a0)	; To prevent insta-shield bug.
 		move.b	obAngle(a0),d0
-		jsr		(CalcSine).l
+		jsr		(CalcSine).w
 		move.w	sball_origY(a0),d2
 		move.w	sball_origX(a0),d3
 		lea		sball_childs(a0),a2

@@ -15,7 +15,7 @@ Sonic_ChkSpinDash:
 		beq.w	.return					; if not pressing ABC, return
 		move.b	#aniID_SpinDash,obAnim(a0)
 		move.w	#sfx_SpinDash,d0
-		jsr		(PlaySound_Special).l
+		jsr		(PlaySound_Special).w
 		addq.l	#4,sp
 		bset	#0,obSpinDashFlag(a0)
 
@@ -76,10 +76,10 @@ Sonic_UpdateSpinDash:
 		bset	#staSpin,obStatus(a0)		; Sonic is now spinning
 		clr.b	(v_playerdust+obAnim).w
 		move.w	#sfx_Teleport,d0
-		jsr		(PlaySound_Special).l
+		jsr		(PlaySound_Special).w
 	; RHS/Esrael Boundary Spindash bugfix
 		move.b	obAngle(a0),d0
-		jsr		(CalcSine).l
+		jsr		(CalcSine).w
 		muls.w	obInertia(a0),d1
 		asr.l	#8,d1
 		move.w	d1,obVelX(a0)
@@ -152,7 +152,7 @@ loc_1AD48:
 		move.w	#$800,obSpinDashCounter(a0)
 .sound:
 		move.w	#sfx_SpinDash,d0				; sfx_SpinDash
-		jsr		(PlaySound_Special).l
+		jsr		(PlaySound_Special).w
 
 SpinDash_ResetScr:
 		addq.l	#4,sp							; increase stack ptr

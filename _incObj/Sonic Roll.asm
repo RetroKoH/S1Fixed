@@ -57,7 +57,7 @@ Sonic_ChkRoll:
 		move.b	#fr_SonRoll1,obFrame(a0)	; hard sets frame so no flicker when roll in tunnels - Mercury Roll Frame Fix
 		addq.w	#5,obY(a0)					; Add to y-pos the difference in height radius
 		move.w	#sfx_Roll,d0
-		jsr		(PlaySound_Special).l		; play rolling sound
+		jsr		(PlaySound_Special).w		; play rolling sound
 		tst.w	obInertia(a0)
 		bne.s	.ismoving
 		move.w	#$200,obInertia(a0) 		; set inertia if 0

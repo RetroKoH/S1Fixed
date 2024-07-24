@@ -129,7 +129,7 @@ EffectsDPLC_ReadEntry:
 		move.w	d4,d2
 		add.w	d3,d4
 		add.w	d3,d4
-		jsr		(QueueDMATransfer).l
+		jsr		(QueueDMATransfer).w
 		dbf		d5,EffectsDPLC_ReadEntry	; repeat for number of entries
 
 EffectsDPLC_Return:

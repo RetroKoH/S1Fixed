@@ -36,7 +36,7 @@ Sonic_LoadGfx:
 		move.w	d4,d2					; d2 = Sonic's VRAM location			-- DMATransfer Destination
 		add.w	d3,d4
 		add.w	d3,d4					; d4 = Sonic's VRAM loc + (tile count * 2)
-		jsr		(QueueDMATransfer).l
+		jsr		(QueueDMATransfer).w
 		dbf		d5,.readentry			; repeat for number of entries
 
 .nochange:

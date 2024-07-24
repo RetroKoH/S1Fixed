@@ -103,7 +103,7 @@ loc_17F48:
 		bne.s	loc_17F70
 		move.b	#$20,objoff_3E(a0)
 		move.w	#sfx_HitBoss,d0
-		jsr		(PlaySound_Special).l
+		jsr		(PlaySound_Special).w
 
 loc_17F70:
 		lea		(v_pal_dry+$22).w,a1
@@ -195,7 +195,7 @@ loc_1804E:
 		bset	#staFlipX,obStatus(a0)
 		addq.b	#2,objoff_3F(a0)
 		move.b	objoff_3F(a0),d0
-		jsr		(CalcSine).l
+		jsr		(CalcSine).w
 		tst.w	d1
 		bpl.s	loc_1806C
 		bclr	#staFlipX,obStatus(a0)
@@ -267,7 +267,7 @@ loc_180F6:
 
 loc_18112:
 		move.w	#bgm_LZ,d0
-		jsr		(PlaySound).l		; play LZ music
+		jsr		(PlaySound).w		; play LZ music
 		clr.b	(f_lockscreen).w
 		bset	#staFlipX,obStatus(a0)
 		addq.b	#2,ob2ndRout(a0)

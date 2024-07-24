@@ -150,7 +150,7 @@ loc_19CC4:
 
 FFloor_BreakSnd:
 		move.w	#sfx_WallSmash,d0
-		jsr		(PlaySound_Special).l	; play smashing sound
+		jsr		(PlaySound_Special).w	; play smashing sound
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 FFloor_FragSpeed:

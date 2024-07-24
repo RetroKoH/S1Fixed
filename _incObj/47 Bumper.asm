@@ -26,8 +26,8 @@ Bump_Hit:	; Routine 2
 		move.w	obY(a0),d2
 		sub.w	obX(a1),d1
 		sub.w	obY(a1),d2
-		jsr		(CalcAngle).l
-		jsr		(CalcSine).l
+		jsr		(CalcAngle).w
+		jsr		(CalcSine).w
 		muls.w	#-$700,d1
 		asr.l	#8,d1
 		move.w	d1,obVelX(a1)			; bounce Sonic away
@@ -40,7 +40,7 @@ Bump_Hit:	; Routine 2
 		clr.b	obJumping(a1)
 		move.b	#1,obAnim(a0)			; use "hit" animation
 		move.w	#sfx_Bumper,d0
-		jsr		(PlaySound_Special).l	; play bumper sound
+		jsr		(PlaySound_Special).w	; play bumper sound
 		move.w	obRespawnNo(a0),d0		; get address in respawn table
 		beq.s	.addscore				; if it's zero, don't remember object
 		movea.w	d0,a2					; load address into a2

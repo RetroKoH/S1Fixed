@@ -110,9 +110,9 @@ GameOver:
 
 loc_138C2:
 		move.w	#bgm_GameOver,d0
-		jsr		(PlaySound).l	; play game over music
+		jsr		(PlaySound).w	; play game over music
 		moveq	#3,d0
-		jmp		(AddPLC).l		; load game over patterns
+		jmp		(AddPLC).w		; load game over patterns
 ; ===========================================================================
 
 loc_138D4:

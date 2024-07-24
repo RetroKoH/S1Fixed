@@ -161,7 +161,7 @@ loc_B010:
 
 loc_B01C:
 		move.b	d0,objoff_34(a0)
-		jsr	(CalcSine).l
+		jsr	(CalcSine).w
 		lsr.w	#4,d0
 		move.w	d0,d1
 		add.w	lgrass_origY(a0),d0

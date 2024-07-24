@@ -97,7 +97,7 @@ ExtraLife:
 .playbgm:
 	; Lives Over/Underflow Fix End
 		move.w	#bgm_ExtraLife,d0
-		jmp		(PlaySound).l		; play extra life music
+		jmp		(PlaySound).w		; play extra life music
 ; ===========================================================================
 
 Pow_Shoes:
@@ -118,7 +118,7 @@ Pow_Shoes:
 		jsr		ApplySpeedSettings						; Fetch Speed settings
 		movem.l (sp)+,a0-a2								; Move a0, a1 and a2 from stack
 		move.w	#bgm_Speedup,d0
-		jmp		(PlaySound).l							; Speed	up the music
+		jmp		(PlaySound).w							; Speed	up the music
 ; ===========================================================================
 
 Pow_Shield:
@@ -128,7 +128,7 @@ Pow_Shield:
 		clr.b	(v_shieldobj+obRoutine).w
 		clr.b	(v_shieldobj+obSubtype).w
 		move.w	#sfx_Shield,d0
-		jmp		(PlaySound).l								; play shield sound
+		jmp		(PlaySound).w								; play shield sound
 ; ===========================================================================
 
 Pow_Invinc:
@@ -152,7 +152,7 @@ Pow_Invinc:
 		cmpi.b	#$C,(v_air).w
 		bls.s	.nomusic
 		move.w	#bgm_Invincible,d0
-		jmp		(PlaySound).l							; play invincibility music
+		jmp		(PlaySound).w							; play invincibility music
 ; ===========================================================================
 
 .nomusic:
@@ -173,7 +173,7 @@ Pow_Rings:
 
 Pow_RingSound:
 		move.w	#sfx_Ring,d0
-		jmp		(PlaySound).l	; play ring sound
+		jmp		(PlaySound).w	; play ring sound
 ; ===========================================================================
 
 Pow_S:
@@ -227,7 +227,7 @@ Pow_FShield:
 		clr.b	(v_shieldobj+obRoutine).w
 		move.b	#2,(v_shieldobj+obSubtype).w
 		move.w	#sfx_FShield,d0
-		jmp		(PlaySound_Special).l						; play shield sound
+		jmp		(PlaySound_Special).w						; play shield sound
 ; ===========================================================================
 
 Pow_BShield:
@@ -238,7 +238,7 @@ Pow_BShield:
 		clr.b	(v_shieldobj+obRoutine).w
 		move.b	#3,(v_shieldobj+obSubtype).w
 		move.w	#sfx_BShield,d0
-		jmp		(PlaySound_Special).l						; play shield sound
+		jmp		(PlaySound_Special).w						; play shield sound
 ; ===========================================================================
 
 Pow_LShield:
@@ -249,6 +249,6 @@ Pow_LShield:
 		clr.b	(v_shieldobj+obRoutine).w
 		move.b	#4,(v_shieldobj+obSubtype).w
 		move.w	#sfx_LShield,d0
-		jmp		(PlaySound_Special).l						; play shield sound
+		jmp		(PlaySound_Special).w						; play shield sound
 ; ===========================================================================
 	endif

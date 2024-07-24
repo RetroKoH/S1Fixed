@@ -44,7 +44,7 @@ Bub_Main:	; Routine 0
 		move.b	d0,obAnim(a0)
 		move.w	obX(a0),bub_origX(a0)
 		move.w	#-$88,obVelY(a0) ; float bubble upwards
-		jsr		(RandomNumber).l
+		jsr		(RandomNumber).w
 		move.b	d0,obAngle(a0)
 
 Bub_Animate:	; Routine 2
@@ -87,7 +87,7 @@ Bub_ChkWater:	; Routine 4
 
 		bsr.w	ResumeMusic	; cancel countdown music
 		move.w	#sfx_Bubble,d0
-		jsr		(PlaySound_Special).l	; play collecting bubble sound
+		jsr		(PlaySound_Special).w	; play collecting bubble sound
 		lea		(v_player).w,a1
 		clr.w	obVelX(a1)
 		clr.w	obVelY(a1)
@@ -143,7 +143,7 @@ Bub_BblMaker:	; Routine $A
 		move.w	#1,objoff_36(a0)
 
 .tryagain:
-		jsr		(RandomNumber).l
+		jsr		(RandomNumber).w
 		move.w	d0,d1
 		andi.w	#7,d0
 		cmpi.w	#6,d0		; random number over 6?
@@ -168,14 +168,14 @@ Bub_BblMaker:	; Routine $A
 		bpl.w	.loc_12914
 
 .loc_1287C:
-		jsr		(RandomNumber).l
+		jsr		(RandomNumber).w
 		andi.w	#$1F,d0
 		move.w	d0,objoff_38(a0)
 		bsr.w	FindFreeObj
 		bne.s	.fail
 		_move.b	#id_Bubble,obID(a1) ; load bubble object
 		move.w	obX(a0),obX(a1)
-		jsr		(RandomNumber).l
+		jsr		(RandomNumber).w
 		andi.w	#$F,d0
 		subq.w	#8,d0
 		add.w	d0,obX(a1)
@@ -186,7 +186,7 @@ Bub_BblMaker:	; Routine $A
 		move.b	(a2,d0.w),obSubtype(a1)
 		btst	#7,objoff_36(a0)
 		beq.s	.fail
-		jsr		(RandomNumber).l
+		jsr		(RandomNumber).w
 		andi.w	#3,d0
 		bne.s	.loc_buh
 		bset	#6,objoff_36(a0)
@@ -203,7 +203,7 @@ Bub_BblMaker:	; Routine $A
 .fail:
 		subq.b	#1,objoff_34(a0)
 		bpl.s	.loc_12914
-		jsr		(RandomNumber).l
+		jsr		(RandomNumber).w
 		andi.w	#$7F,d0
 		addi.w	#$80,d0
 		add.w	d0,objoff_38(a0)

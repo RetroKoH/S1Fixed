@@ -109,7 +109,7 @@ loc_189CA:
 		bsr.w	BossMove
 		move.b	objoff_3F(a0),d0
 		addq.b	#2,objoff_3F(a0)
-		jsr		(CalcSine).l
+		jsr		(CalcSine).w
 		asr.w	#6,d0
 		add.w	objoff_38(a0),d0
 		move.w	d0,obY(a0)
@@ -133,7 +133,7 @@ loc_189FE:
 		bne.s	loc_18A28
 		move.b	#$20,objoff_3E(a0)
 		move.w	#sfx_HitBoss,d0
-		jsr		(PlaySound_Special).l	; play boss damage sound
+		jsr		(PlaySound_Special).w	; play boss damage sound
 
 loc_18A28:
 		lea		(v_pal_dry+$22).w,a1
@@ -310,7 +310,7 @@ loc_18BAE:
 loc_18BB4:
 		clr.w	obVelY(a0)
 		move.w	#bgm_SLZ,d0
-		jsr		(PlaySound).l	; play SLZ music
+		jsr		(PlaySound).w	; play SLZ music
 
 loc_18BC2:
 		bra.w	loc_189EE

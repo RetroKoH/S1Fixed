@@ -172,7 +172,7 @@ Orb_MoveOrb:	; Routine 6
 
 .circle:
 		move.b	obAngle(a0),d0
-		jsr		(CalcSine).l
+		jsr		(CalcSine).w
 		asr.w	#4,d1
 		add.w	obX(a1),d1
 		move.w	d1,obX(a0)

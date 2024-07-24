@@ -132,7 +132,7 @@ Disc_MoveSpot:
 		move.w	objoff_36(a0),d0
 		add.w	d0,obAngle(a0)
 		move.b	obAngle(a0),d0
-		jsr	(CalcSine).l
+		jsr	(CalcSine).w
 		move.w	disc_origY(a0),d2
 		move.w	disc_origX(a0),d3
 		moveq	#0,d4

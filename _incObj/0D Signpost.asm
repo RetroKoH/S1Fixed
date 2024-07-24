@@ -55,7 +55,7 @@ Sign_Touch:	; Routine 2
 		cmpi.w	#$20,d0								; is Sonic within $20 pixels of	the signpost?
 		bhs.s	.notouch							; if not, branch
 		move.w	#sfx_Signpost,d0
-		jsr		(PlaySound).l						; play signpost sound
+		jsr		(PlaySound).w						; play signpost sound
 		clr.b	(v_player+obShoes).w				; Mercury Remove Speed Shoes At Signpost Fix (Moved from the Got_Through Card and improved) -- RetroKoH Sonic SST Compaction
 		clr.b	(f_timecount).w						; stop time counter
 		move.w	(v_limitright2).w,(v_limitleft2).w	; lock screen position
@@ -168,7 +168,7 @@ GotThroughAct:
 		locVRAM	ArtTile_Title_Card*$20
 		lea		Art_TitleCard,a0								; load title card patterns
 		move.l	#((Art_TitleCard_End-Art_TitleCard)/$20)-1,d0	; the title card art lenght, in tiles
-		jsr		LoadUncArt										; load uncompressed art
+		jsr		(LoadUncArt).w									; load uncompressed art
 		move.l	(sp)+,a0										; get object address from stack
 	; Title Card Optimization End
 		
@@ -192,7 +192,7 @@ GotThroughAct:
 		mulu.w	#10,d0		; multiply by 10
 		move.w	d0,(v_ringbonus).w ; set ring bonus
 		move.w	#bgm_GotThrough,d0
-		jsr		(PlaySound_Special).l	; play "Sonic got through" music
+		jsr		(PlaySound_Special).w	; play "Sonic got through" music
 
 locret_ECEE:
 		rts	
@@ -239,7 +239,7 @@ SignpostPLC_ReadEntry:
 		move.w	d4,d2
 		add.w	d3,d4
 		add.w	d3,d4
-		jsr		(QueueDMATransfer).l
+		jsr		(QueueDMATransfer).w
 		dbf		d5,SignpostPLC_ReadEntry	; repeat for number of entries
 
 SignpostDPLC_Return:

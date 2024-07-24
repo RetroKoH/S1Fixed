@@ -170,7 +170,7 @@ Got_TimeBonus:	; Routine 6
 	endif	;end Instant Score Tally
 
 		move.w	#sfx_Cash,d0
-		jsr		(PlaySound_Special).l	; play "ker-ching" sound
+		jsr		(PlaySound_Special).w	; play "ker-ching" sound
 		addq.b	#2,obRoutine(a0)
 		cmpi.w	#(id_SBZ<<8)+1,(v_zone).w
 		bne.s	Got_SetDelay
@@ -189,7 +189,7 @@ Got_AddBonus:
 		andi.b	#3,d0
 		bne.s	locret_C692
 		move.w	#sfx_Switch,d0
-		jmp		(PlaySound_Special).l	; play "blip" sound
+		jmp		(PlaySound_Special).w	; play "blip" sound
 	endif
 ; ===========================================================================
 
@@ -293,7 +293,7 @@ Got_SBZ2:
 		addq.b	#2,obRoutine(a0)
 		clr.b	(f_lockctrl).w	; unlock controls
 		move.w	#bgm_FZ,d0
-		jmp		(PlaySound).l	; play FZ music
+		jmp		(PlaySound).w	; play FZ music
 ; ===========================================================================
 
 loc_C766:	; Routine $10

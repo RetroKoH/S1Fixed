@@ -84,7 +84,7 @@ BGHZ_ShipStart:
 
 loc_177E6:
 		move.b	objoff_3F(a0),d0
-		jsr		(CalcSine).l
+		jsr		(CalcSine).w
 		asr.w	#6,d0
 		add.w	objoff_38(a0),d0
 		move.w	d0,obY(a0)
@@ -100,7 +100,7 @@ loc_177E6:
 		bne.s	BGHZ_ShipFlash
 		move.b	#$20,objoff_3E(a0)	; set number of	times for ship to flash
 		move.w	#sfx_HitBoss,d0
-		jsr		(PlaySound_Special).l	; play boss damage sound
+		jsr		(PlaySound_Special).w	; play boss damage sound
 
 BGHZ_ShipFlash:
 		lea		(v_pal_dry+$22).w,a1 ; load 2nd pallet, 2nd entry

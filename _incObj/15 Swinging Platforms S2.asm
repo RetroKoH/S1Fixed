@@ -201,7 +201,7 @@ loc_FEC2:
 		neg.w	d0
 		add.w	d1,d0
 +
-		jsr		(CalcSine).l
+		jsr		(CalcSine).w
 		move.w	objoff_38(a0),d2
 		move.w	objoff_3A(a0),d3
 		moveq	#0,d6

@@ -42,7 +42,7 @@ Flame_Action:	; Routine 2
 		beq.s	loc_E57A
 		move.w	objoff_32(a0),objoff_30(a0)	; begin	flaming	time
 		move.w	#sfx_Flamethrower,d0
-		jsr		(PlaySound_Special).l ; play flame sound
+		jsr		(PlaySound_Special).w ; play flame sound
 
 loc_E57A:
 		lea		(Ani_Flame).l,a1

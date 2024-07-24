@@ -86,7 +86,7 @@ loc_191CC:
 loc_191DE:
 		move.b	objoff_3F(a0),d0
 		addq.b	#2,objoff_3F(a0)
-		jsr		(CalcSine).l
+		jsr		(CalcSine).w
 		asr.w	#2,d0
 		move.w	d0,obVelY(a0)
 
@@ -110,7 +110,7 @@ loc_19202:
 		bne.s	loc_1923A
 		move.b	#$20,objoff_3E(a0)
 		move.w	#sfx_HitBoss,d0
-		jsr		(PlaySound_Special).l	; play boss damage sound
+		jsr		(PlaySound_Special).w	; play boss damage sound
 
 loc_1923A:
 		lea		(v_pal_dry+$22).w,a1
@@ -414,7 +414,7 @@ loc_194DA:
 loc_194E0:
 		clr.w	obVelY(a0)
 		move.w	#bgm_SYZ,d0
-		jsr		(PlaySound).l		; play SYZ music
+		jsr		(PlaySound).w		; play SYZ music
 		bra.w	loc_191F2
 ; ===========================================================================
 

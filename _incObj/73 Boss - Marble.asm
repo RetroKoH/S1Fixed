@@ -81,7 +81,7 @@ BossMarble_ShipIndex:	offsetTable
 loc_18302:
 		move.b	objoff_3F(a0),d0
 		addq.b	#2,objoff_3F(a0)
-		jsr		(CalcSine).l
+		jsr		(CalcSine).w
 		asr.w	#2,d0
 		move.w	d0,obVelY(a0)
 		move.w	#-$100,obVelX(a0)
@@ -93,7 +93,7 @@ loc_18302:
 		clr.l	obVelX(a0)
 
 loc_18334:
-		jsr		(RandomNumber).l
+		jsr		(RandomNumber).w
 		move.b	d0,objoff_34(a0)
 
 loc_1833E:
@@ -109,7 +109,7 @@ loc_1833E:
 		bne.s	loc_18374
 		move.b	#$28,objoff_3E(a0)
 		move.w	#sfx_HitBoss,d0
-		jsr		(PlaySound_Special).l	; play boss damage sound
+		jsr		(PlaySound_Special).w	; play boss damage sound
 
 loc_18374:
 		lea		(v_pal_dry+$22).w,a1
@@ -186,7 +186,7 @@ BossMarble_MakeLava:
 		bne.s	loc_1844A
 		_move.b	#id_LavaBall,obID(a1) ; load lava ball object
 		move.w	#boss_mz_y+$D8,obY(a1)	; set Y	position
-		jsr		(RandomNumber).l
+		jsr		(RandomNumber).w
 		andi.l	#$FFFF,d0
 		divu.w	#$50,d0
 		swap	d0
@@ -196,7 +196,7 @@ BossMarble_MakeLava:
 		move.w	#$FF,obSubtype(a1)
 
 loc_1844A:
-		jsr		(RandomNumber).l
+		jsr		(RandomNumber).w
 		andi.b	#$1F,d0
 		addi.b	#$40,d0
 		move.b	d0,objoff_34(a0)
@@ -312,7 +312,7 @@ loc_18566:
 loc_1856C:
 		clr.w	obVelY(a0)
 		move.w	#bgm_MZ,d0
-		jsr		(PlaySound).l		; play MZ music
+		jsr		(PlaySound).w		; play MZ music
 
 loc_1857A:
 		bsr.w	BossMove

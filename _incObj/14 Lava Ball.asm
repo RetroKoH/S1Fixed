@@ -51,7 +51,7 @@ LBall_Main:	; Routine 0
 
 .sound:
 		move.w	#sfx_Fireball,d0
-		jsr		(PlaySound_Special).l	; play lava ball sound
+		jsr		(PlaySound_Special).w	; play lava ball sound
 
 LBall_Action:	; Routine 2
 		moveq	#0,d0

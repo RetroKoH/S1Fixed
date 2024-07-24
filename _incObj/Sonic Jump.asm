@@ -30,7 +30,7 @@ loc_1341C:
 		moveq	#0,d0
 		move.b	obAngle(a0),d0
 		subi.b	#$40,d0
-		jsr		(CalcSine).l
+		jsr		(CalcSine).w
 		muls.w	d2,d1
 		asr.l	#8,d1
 		add.w	d1,obVelX(a0)				; make Sonic jump
@@ -44,7 +44,7 @@ loc_1341C:
 		clr.b	obOnWheel(a0)
 		clr.b	obLRLock(a0)				; Mercury Clear Control Lock When Jump
 		move.w	#sfx_Jump,d0
-		jsr		(PlaySound_Special).l		; play jumping sound
+		jsr		(PlaySound_Special).w		; play jumping sound
 	; Removed code expanding Sonic's radius -- RetroKoH Rolling Jump Fix
 		btst	#staSpin,obStatus(a0)		; Is Sonic already in a ball?
 		bne.s	loc_13490

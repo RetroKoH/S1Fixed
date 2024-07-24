@@ -125,7 +125,7 @@ loc_1BAA8:
 		addi.b	#$20,d0
 		andi.b	#$C0,d0
 		neg.b	d0
-		jsr		(CalcSine).l
+		jsr		(CalcSine).w
 		muls.w	obInertia(a0),d1
 		add.l	d1,obX(a0)
 		muls.w	obInertia(a0),d0
@@ -236,7 +236,7 @@ Obj09_Jump:
 
 		neg.b	d0
 		subi.b	#$40,d0
-		jsr		(CalcSine).l
+		jsr		(CalcSine).w
 		muls.w	#$680,d1
 		asr.l	#8,d1
 		move.w	d1,obVelX(a0)
@@ -246,7 +246,7 @@ Obj09_Jump:
 		bset	#staAir,obStatus(a0)
 		bset	#staSSJump,obStatus(a0)	; set "Sonic has jumped" flag -- Mercury Fixed SS Jumping Physics
 		move.w	#sfx_Jump,d0
-		jmp		(PlaySound_Special).l	; play jumping sound
+		jmp		(PlaySound_Special).w	; play jumping sound
 
 Obj09_NoJump:
 		rts	
@@ -275,7 +275,7 @@ Obj09_JumpHeight:
 
 		neg.b	d0
 		subi.b	#$40,d0
-		jsr		(CalcSine).l			
+		jsr		(CalcSine).w			
 		move.w	obVelY(a0),d2		; get Y speed
 		muls.w	d2,d0				; multiply Y speed by sin
 		asr.l	#8,d0				; find the new Y speed
@@ -293,7 +293,7 @@ Obj09_JumpHeight:
 
 		neg.b	d0
 		subi.b	#$40,d0
-		jsr		(CalcSine).l
+		jsr		(CalcSine).w
 		muls.w	#$400,d1
 		asr.l	#8,d1
 		move.w	d1,obVelX(a0)
@@ -382,7 +382,7 @@ Obj09_Fall:
 		andi.b	#$FC,d0
 	endif						; Smooth Special Stages End
 
-		jsr		(CalcSine).l
+		jsr		(CalcSine).w
 		move.w	obVelX(a0),d4
 		ext.l	d4
 		asl.l	#8,d4
@@ -542,7 +542,7 @@ Obj09_GetCont:
 	endc	; Special Stages Still Appear With All Emeralds	End
 
 		move.w	#sfx_Continue,d0
-		jsr		(PlaySound).l				; play extra continue sound
+		jsr		(PlaySound).w				; play extra continue sound
 
 Obj09_NoCont:
 		moveq	#0,d4
@@ -580,7 +580,7 @@ Obj09_Get1Up:
 .playbgm:
 	; Lives Over/Underflow Fix End
 		move.w	#bgm_ExtraLife,d0
-		jsr		(PlaySound).l				; play extra life music
+		jsr		(PlaySound).w				; play extra life music
 
 		moveq	#0,d4
 		rts	
@@ -613,7 +613,7 @@ Obj09_GetEmer:
 
 Obj09_NoEmer:
 		move.w	#bgm_Emerald,d0
-		jsr		(PlaySound_Special).l		; play emerald music
+		jsr		(PlaySound_Special).w		; play emerald music
 		moveq	#0,d4
 		rts	
 ; ===========================================================================
@@ -696,8 +696,8 @@ Obj09_ChkBumper:
 		subi.w	#$44,d2
 		sub.w	obX(a0),d1
 		sub.w	obY(a0),d2
-		jsr		(CalcAngle).l
-		jsr		(CalcSine).l
+		jsr		(CalcAngle).w
+		jsr		(CalcSine).w
 		muls.w	#-$700,d1
 		asr.l	#8,d1
 		move.w	d1,obVelX(a0)
@@ -715,7 +715,7 @@ Obj09_ChkBumper:
 
 Obj09_BumpSnd:
 		move.w	#sfx_Bumper,d0
-		jmp		(PlaySound_Special).l		; play bumper sound
+		jmp		(PlaySound_Special).w		; play bumper sound
 ; ===========================================================================
 
 Obj09_GOAL:
@@ -728,7 +728,7 @@ Obj09_GOAL:
 	endIF	; HUD in Special Stage End
 
 		move.w	#sfx_SSGoal,d0
-		jmp		(PlaySound_Special).l		; play "GOAL" sound
+		jmp		(PlaySound_Special).w		; play "GOAL" sound
 ; ===========================================================================
 
 Obj09_UPblock:
@@ -746,7 +746,7 @@ Obj09_UPblock:
 
 Obj09_UPsnd:
 		move.w	#sfx_SSItem,d0
-		jmp		(PlaySound_Special).l		; play up/down sound
+		jmp		(PlaySound_Special).w		; play up/down sound
 ; ===========================================================================
 
 Obj09_DOWNblock:
@@ -764,7 +764,7 @@ Obj09_DOWNblock:
 
 Obj09_DOWNsnd:
 		move.w	#sfx_SSItem,d0
-		jmp		(PlaySound_Special).l		; play up/down sound
+		jmp		(PlaySound_Special).w		; play up/down sound
 ; ===========================================================================
 
 Obj09_Rblock:
@@ -783,7 +783,7 @@ Obj09_Rblock:
 Obj09_RevStage:
 		neg.w	(v_ssrotate).w				; reverse stage rotation
 		move.w	#sfx_SSItem,d0
-		jmp		(PlaySound_Special).l		; play sound
+		jmp		(PlaySound_Special).w		; play sound
 ; ===========================================================================
 
 Obj09_ChkGlass:
@@ -811,7 +811,7 @@ Obj09_GlassUpdate:
 
 Obj09_GlassSnd:
 		move.w	#sfx_SSGlass,d0
-		jmp		(PlaySound_Special).l	; play glass block sound
+		jmp		(PlaySound_Special).w	; play glass block sound
 ; ===========================================================================
 
 Obj09_NoGlass:

@@ -140,7 +140,7 @@ loc_19EA8:
 		tst.w	objoff_30(a0)
 		bpl.s	loc_19F10
 		clr.w	objoff_30(a0)
-		jsr		(RandomNumber).l
+		jsr		(RandomNumber).w
 		andi.w	#$C,d0
 		move.w	d0,d1
 		addq.w	#2,d1
@@ -165,7 +165,7 @@ loc_19EC6:
 		move.w	#1,objoff_32(a0)
 		clr.b	objoff_35(a0)
 		move.w	#sfx_Rumbling,d0
-		jsr		(PlaySound_Special).l	; play rumbling sound
+		jsr		(PlaySound_Special).w	; play rumbling sound
 
 loc_19F10:
 		tst.w	objoff_32(a0)
@@ -212,7 +212,7 @@ loc_19F6A:
 		subq.b	#1,obColProp(a0)
 		move.b	#$64,objoff_35(a0)
 		move.w	#sfx_HitBoss,d0
-		jsr		(PlaySound_Special).l	; play boss damage sound
+		jsr		(PlaySound_Special).w	; play boss damage sound
 
 loc_19F88:
 		subq.b	#1,objoff_35(a0)
@@ -279,7 +279,7 @@ locret_1A01E:
 
 loc_1A020:
 		move.w	#sfx_Electric,d0
-		jmp		(PlaySound_Special).l	; play electricity sound
+		jmp		(PlaySound_Special).w	; play electricity sound
 ; ===========================================================================
 
 loc_1A02A:
@@ -417,7 +417,7 @@ loc_1A1D4:
 		bne.s	loc_1A216
 		move.w	#$1E,objoff_30(a0)
 		move.w	#sfx_HitBoss,d0
-		jsr		(PlaySound_Special).l	; play boss damage sound
+		jsr		(PlaySound_Special).w	; play boss damage sound
 
 loc_1A1FC:
 		subq.w	#1,objoff_30(a0)
