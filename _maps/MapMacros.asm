@@ -83,8 +83,8 @@ dplcEntry macro tiles,offset
 	dc.w	(((tiles-1)&$F)<<12)|(offset&$FFF)
 	endif
 	if dplcTiles <> 0
-    if ((dplcTiles+(offset*$20))/131072) <> ((dplcTiles+(offset*$20)+(tiles*$20)-1)/131072)
-    message "Warning: DPLC crosses 128K boundary! line: \{MOMLINE/1.0} start: offset count: tiles overflow: $\{(dplcTiles+(offset*$20)+(tiles*$20))#131072}"
-    endif
-    endif
+	if ((dplcTiles+(offset*$20))/131072) <> ((dplcTiles+(offset*$20)+(tiles*$20)-1)/131072)
+	message "Warning: DPLC crosses 128K boundary! line: \{MOMLINE/1.0} start: offset count: tiles overflow: $\{(dplcTiles+(offset*$20)+(tiles*$20))#131072}"
+	endif
+	endif
 	endm

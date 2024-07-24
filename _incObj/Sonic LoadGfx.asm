@@ -7,35 +7,35 @@
 
 Sonic_LoadGfx:
 		moveq	#0,d0
-		move.b	obFrame(a0),d0			; load frame number
+		move.b	obFrame(a0),d0			; d0 = Sonic's current frame number
 		cmp.b	(v_sonframenum).w,d0	; has frame changed?
-		beq.s	.nochange				; if not, branch
+		beq.s	.nochange				; if not, branch and exit
 
-		move.b	d0,(v_sonframenum).w
-		lea		(SonicDynPLC).l,a2		; load PLC script
-		add.w	d0,d0
-		adda.w	(a2,d0.w),a2
+		move.b	d0,(v_sonframenum).w	; update frame number for next check
+		lea		(SonicDynPLC).l,a2		; a2 = PLC script
+		add.w	d0,d0					; multiply current frame number by 2
+		adda.w	(a2,d0.w),a2			; a2 = corresponding PLC
 		moveq	#0,d5
-		move.b	(a2)+,d5				; read "number of entries" value
-		subq.w	#1,d5
-		bmi.s	.nochange				; if zero, branch
-		move.w	#(ArtTile_Sonic*$20),d4
+		move.b	(a2)+,d5				; read "number of PLC entries" value
+		subq.w	#1,d5					; decrement for .readentry loop
+		bmi.s	.nochange				; if there are no entries, branch and exit
+		move.w	#(ArtTile_Sonic*$20),d4	; d4 = Sonic's VRAM location
 
 .readentry:
 		moveq	#0,d1
-		move.b	(a2)+,d1
-		lsl.w	#8,d1
-		move.b	(a2)+,d1
+		move.b	(a2)+,d1				; d1 = (number of tiles to load - 1)*$10; aka "tile count"
+		lsl.w	#8,d1					; tile count is now in the upper byte, left nybble
+		move.b	(a2)+,d1				; d1 = tile offset ID (lower byte), tile count (uppermost nybble)
 		move.w	d1,d3
-		lsr.w	#8,d3
+		lsr.w	#8,d3					; d3 = (tile count-1)*$10
 		andi.w	#$F0,d3
-		addi.w	#$10,d3
-		andi.w	#$FFF,d1				; clear the counter to remove # of tiles from far left nybble
-		lsl.l	#5,d1					; changed to .l (more than FFFF bytes)
-		add.l	#Art_Sonic,d1
-		move.w	d4,d2
+		addi.w	#$10,d3					; get actual tile count*$10				-- DMATransfer Length
+		andi.w	#$FFF,d1				; clear the counter to remove tile count from the far left nybble
+		lsl.l	#5,d1					; changed to .l (allows for more than $FFFF bytes)
+		add.l	#Art_Sonic,d1			; d1 = (Sonic's art file + tile offset)	-- DMATransfer Source
+		move.w	d4,d2					; d2 = Sonic's VRAM location			-- DMATransfer Destination
 		add.w	d3,d4
-		add.w	d3,d4
+		add.w	d3,d4					; d4 = Sonic's VRAM loc + (tile count * 2)
 		jsr		(QueueDMATransfer).l
 		dbf		d5,.readentry			; repeat for number of entries
 

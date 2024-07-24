@@ -1,3 +1,5 @@
+dplcTiles := Art_Sonic
+
 SonicDynPLC_internal: mappingsTable
 		mappingsTableEntry.w	SonPLC_Null
 		mappingsTableEntry.w	SonPLC_Stand
@@ -805,3 +807,5 @@ SonPLC_Transform5:	dplcHeader
 SonPLC_Transform5_End
 
 	even
+
+dplcTiles := 0

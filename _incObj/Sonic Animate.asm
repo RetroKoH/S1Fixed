@@ -35,7 +35,7 @@ Sonic_Animate:
 		move.b	1(a1,d1.w),d0		; read sprite number from script
 		; MarkeyJester Art Limit Extensions
 		; Animations extended from [$00 - $7F] to [$00 - $FC]
-		cmp.b	#$FD,d0				; is it a flag from FD to FF?
+		cmpi.b	#$FD,d0				; is it a flag from FD to FF?
 		bhs.s	.end_FF				; if so, branch to flag routines
 		; Art Limit Extensions End
 

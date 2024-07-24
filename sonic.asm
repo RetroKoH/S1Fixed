@@ -5806,13 +5806,13 @@ BuildSprites:
 		sub.w	(a1),d3
 		move.w	d3,d1
 		add.w	d0,d1
-		bmi.w	.skipObject	; left edge out of bounds
+		bmi.w	.skipObject		; left edge out of bounds
 		move.w	d3,d1
 		sub.w	d0,d1
 		cmpi.w	#320,d1
-		bge.s	.skipObject	; right edge out of bounds
-		addi.w	#128,d3		; VDP sprites start at 128px
-		btst	#4,d4		; is assume height flag on?
+		bge.s	.skipObject		; right edge out of bounds
+		addi.w	#128,d3			; VDP sprites start at 128px
+		btst	#4,d4			; is assume height flag on?
 		beq.s	.assumeHeight	; if yes, branch
 		moveq	#0,d0
 		move.b	obHeight(a0),d0
@@ -5820,12 +5820,12 @@ BuildSprites:
 		sub.w	4(a1),d2
 		move.w	d2,d1
 		add.w	d0,d1
-		bmi.s	.skipObject	; top edge out of bounds
+		bmi.s	.skipObject		; top edge out of bounds
 		move.w	d2,d1
 		sub.w	d0,d1
 		cmpi.w	#224,d1
 		bge.s	.skipObject
-		addi.w	#128,d2		; VDP sprites start at 128px
+		addi.w	#128,d2			; VDP sprites start at 128px
 		bra.s	.drawObject
 ; ===========================================================================
 
@@ -5852,20 +5852,20 @@ BuildSprites:
 		move.b	obFrame(a0),d1
 		add.w	d1,d1				; changed to .w (we want more than 7F sprites) -- MarkeyJester Art Limit Extensions
 		adda.w	(a1,d1.w),a1		; get mappings frame address
-		moveq	#$00,d1				; clear d1 (because of our byte to word change) -- MarkeyJester Art Limit Extensions
+		moveq	#0,d1				; clear d1 (because of our byte to word change) -- MarkeyJester Art Limit Extensions
 		move.b	(a1)+,d1			; number of sprite pieces
 		subq.b	#1,d1
 		bmi.s	.setVisible
 
 	.drawFrame:
-		bsr.w	BuildSpr_Draw	; write data from sprite pieces to buffer
+		bsr.w	BuildSpr_Draw		; write data from sprite pieces to buffer
 
 	.setVisible:
 		bset	#7,obRender(a0)		; set object as visible
 
 	.skipObject:
 		addq.w	#2,d6
-		subq.w	#2,(a4)			; number of objects left
+		subq.w	#2,(a4)				; number of objects left
 		bne.w	.objectLoop
 
 	.nextPriority:
@@ -5979,7 +5979,7 @@ BuildSpritesMulti_DrawSprite:
 
 .nochildleft:
 		swap	d0
-		dbf	d0,.drawchildloop	         ; repeat for number of child sprites
+		dbf	d0,.drawchildloop					; repeat for number of child sprites
 
 ; loc_16804:
 BuildSprites_MultiDraw_NextObj:
