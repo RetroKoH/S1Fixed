@@ -292,6 +292,7 @@ loc_16C0C:
 		moveq	#0,d0
 		move.b	cat_parent(a0),d0
 		clr.b	objoff_2C(a0,d0.w)
+
 locj_173E4:
 		bchg	#staFlipX,obStatus(a0)
 		move.b	obStatus(a0),obRender(a0)
@@ -324,20 +325,16 @@ loc_16C64:
 		cmpi.b	#$A,obRoutine(a1)
 		bne.s	.display
 
-	if FixBugs
 		; Delete the parent.
 		jsr		(DeleteChild).l ; Don't mind this misnomer.
-	endif
 
 .delete:
 		; Mark self for deletion.
 		move.b	#$A,obRoutine(a0)
 
-	if FixBugs
 		; Do not queue self for display, since it will be deleted by
 		; its child later.
 		rts
-	endif
 
 .display:
 		jmp		(DisplayAndCollision).l	; S3K TouchResponse

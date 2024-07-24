@@ -97,7 +97,7 @@ BossPlasma_Loop:
 		move.b	#4,obRender(a1)
 		bset	#7,obRender(a1)
 		move.l	a0,objoff_34(a1)
-		jsr	(RandomNumber).l
+		jsr		(RandomNumber).l
 		move.w	objoff_32(a0),d1
 		muls.w	#-$4F,d1
 		addi.w	#boss_fz_x+$128,d1
@@ -132,12 +132,12 @@ loc_1A982:	; Routine 8
 		jmp		BossPlasma_Index2(pc,d0.w)
 ; ===========================================================================
 BossPlasma_Index2:
-		bra.s	loc_1A9A6
-		bra.s	loc_1A9C0
-		bra.w	loc_1AA1E
+		bra.s	BossPlasma_2ndRout0
+		bra.s	BossPlasma_2ndRout2
+		bra.w	BossPlasma_2ndRout4
 ; ===========================================================================
 
-loc_1A9A6:
+BossPlasma_2ndRout0: ;loc_1A9A6:
 		move.w	objoff_30(a0),d0
 		sub.w	obX(a0),d0
 		asl.w	#4,d0
@@ -149,7 +149,7 @@ loc_1A9A6:
 		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 ; ===========================================================================
 
-loc_1A9C0:
+BossPlasma_2ndRout2: ;loc_1A9C0:
 		tst.w	obVelX(a0)
 		beq.s	loc_1A9E6
 		jsr		(SpeedToPos).l
@@ -181,7 +181,7 @@ locret_1AA1C:
 		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 ; ===========================================================================
 
-loc_1AA1E:
+BossPlasma_2ndRout4: ;loc_1AA1E:
 		jsr		(SpeedToPos).l
 		cmpi.w	#boss_fz_y+$D0,obY(a0)
 		bhs.s	loc_1AA34
@@ -195,8 +195,4 @@ loc_1AA1E:
 loc_1AA34:
 		movea.l	objoff_34(a0),a1
 		subq.w	#1,objoff_38(a1)
-	if FixBugs
-		; Avoid returning to loc_1A982 to prevent a display-and-delete bug.
-		addq.l	#4,sp
-	endif
 		bra.w	EggmanCylinder_Delete

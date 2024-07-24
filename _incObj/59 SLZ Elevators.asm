@@ -97,11 +97,9 @@ Elev_Action:	; Routine 4
 		jmp	(MvSonicOnPtfm2).l
 
 .deleted:
-	if FixBugs
 		; Avoid returning to Elevator to prevent display-and-delete
 		; and double-delete bugs.
 		addq.l	#4,sp
-	endif
 		rts	
 ; ===========================================================================
 

@@ -6,8 +6,8 @@ Bomb:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Bom_Index(pc,d0.w),d1
-		jsr		Bom_Index(pc,d1.w)
-		jmp		Add_SpriteToCollisionResponseList
+		jmp		Bom_Index(pc,d1.w)
+		; Slightly altered to prevent display-and-delete bug -- Clownacy DisplaySprite Fix
 ; ===========================================================================
 Bom_Index:	offsetTable
 		offsetTableEntry.w Bom_Main
@@ -30,7 +30,7 @@ Bom_Main:	; Routine 0
 		move.b	obSubtype(a0),d0
 		beq.s	loc_11A3C
 		move.b	d0,obRoutine(a0)
-		rts	
+		jmp		Add_SpriteToCollisionResponseList	
 ; ===========================================================================
 
 loc_11A3C:
@@ -153,11 +153,6 @@ loc_11B70:
 ; ===========================================================================
 
 loc_11B7C:
-	if FixBugs
-		; Avoid returning to Bom_Display to prevent display-and-delete
-		; and double-delete bugs.
-		addq.l	#4,sp
-	endif
 		clr.w	bom_time(a0)
 		clr.b	obRoutine(a0)
 		move.w	bom_origY(a0),obY(a0)
@@ -197,6 +192,6 @@ Bom_End:	; Routine 6
 		bsr.w	AnimateSprite
 		tst.b	obRender(a0)
 		bpl.w	DeleteObject
-		bra.w	DisplaySprite
+		bra.w	DisplayAndCollision
 ; ===========================================================================
 Bom_ShrSpeed:	dc.w -$200, -$300, -$100, -$200, $200, -$300, $100, -$200

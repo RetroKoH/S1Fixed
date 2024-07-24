@@ -15,8 +15,6 @@ AddressSRAM	  = 3	; 0 = odd+even; 2 = even only; 3 = odd only
 
 ZoneCount	  = 6	; discrete zones are: GHZ, MZ, SYZ, LZ, SLZ, and SBZ
 
-FixBugs		  = 0	; change to 1 to enable bugfixes
-
 zeroOffsetOptimization = 0	; if 1, makes a handful of zero-offset instructions smaller
 
 ; S1Fixed Variables (Sorted by Context)

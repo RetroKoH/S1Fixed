@@ -302,39 +302,29 @@ LZWindTunnels:
 		bhs.w	.chknext
 		move.w	obY(a1),d2
 		cmp.w	2(a2),d2
-	if FixBugs
 		blo.w	.chknext
-	else
-		blo.s	.chknext
-	endif
 		cmp.w	6(a2),d2
-		bhs.s	.chknext	; branch if Sonic is outside a range
-	if FixBugs
-		; d0 is overwritten but later used as if it wasn't!
-		move.w	d0,d1
-	endif
+		bhs.s	.chknext			; branch if Sonic is outside a range
+		move.w	d0,d1				; FixBugs
 		move.b	(v_vbla_byte).w,d0
-		andi.b	#$3F,d0		; does VInt counter fall on 0, $40, $80 or $C0?
-		bne.s	.skipsound	; if not, branch
+		andi.b	#$3F,d0				; does VInt counter fall on 0, $40, $80 or $C0?
+		bne.s	.skipsound			; if not, branch
 		move.w	#sfx_Waterfall,d0
 		jsr	(PlaySound_Special).l	; play rushing water sound (only every $40 frames)
 
 .skipsound:
-		tst.b	(f_wtunnelallow).w ; are wind tunnels disabled?
-		bne.w	.quit	; if yes, branch
-		cmpi.b	#4,obRoutine(a1) ; is Sonic hurt/dying?
-		bhs.s	.clrquit	; if yes, branch
+		tst.b	(f_wtunnelallow).w	; are wind tunnels disabled?
+		bne.w	.quit				; if yes, branch
+		cmpi.b	#4,obRoutine(a1)	; is Sonic hurt/dying?
+		bhs.s	.clrquit			; if yes, branch
 		move.b	#1,(f_wtunnelmode).w
-	if FixBugs
-		; See above.
-		move.w	d1,d0
-	endif
+		move.w	d1,d0				; FixBugs
 		subi.w	#$80,d0
 		cmp.w	(a2),d0
 		bhs.s	.movesonic
 		moveq	#2,d0
-		cmpi.b	#1,(v_act).w	; is act number 2?
-		bne.s	.notact2	; if not, branch
+		cmpi.b	#1,(v_act).w		; is act number 2?
+		bne.s	.notact2			; if not, branch
 		neg.w	d0
 
 .notact2:

@@ -6,8 +6,7 @@ Gargoyle:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Gar_Index(pc,d0.w),d1
-		jsr		Gar_Index(pc,d1.w)
-		bra.w	RememberState
+		jmp		Gar_Index(pc,d1.w)
 ; ===========================================================================
 Gar_Index:	offsetTable
 		offsetTableEntry.w Gar_Main
@@ -32,23 +31,21 @@ Gar_Main:	; Routine 0
 		andi.b	#$F,obSubtype(a0)
 
 Gar_MakeFire:	; Routine 2
-		subq.b	#1,obTimeFrame(a0) ; decrement timer
-		bne.s	.nofire		; if time remains, branch
+		subq.b	#1,obTimeFrame(a0)				; decrement timer
+		bne.w	RememberState					; if time remains, branch
 
-		move.b	obDelayAni(a0),obTimeFrame(a0) ; reset timer
+		move.b	obDelayAni(a0),obTimeFrame(a0)	; reset timer
 		bsr.w	ChkObjectVisible
-		bne.s	.nofire
+		bne.w	RememberState
 		bsr.w	FindFreeObj
-		bne.s	.nofire
-		_move.b	#id_Gargoyle,obID(a1) ; load fireball object
-		addq.b	#4,obRoutine(a1) ; use Gar_FireBall routine
+		bne.w	RememberState
+		_move.b	#id_Gargoyle,obID(a1)			; load fireball object
+		addq.b	#4,obRoutine(a1)				; use Gar_FireBall routine
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.b	obRender(a0),obRender(a1)
 		move.b	obStatus(a0),obStatus(a1)
-
-.nofire:
-		rts	
+		bra.w	RememberState	
 ; ===========================================================================
 
 Gar_FireBall:	; Routine 4
@@ -88,28 +85,12 @@ Gar_AniFire:	; Routine 6
 		moveq	#-8,d3
 		bsr.w	ObjHitWallLeft
 		tst.w	d1
-	if FixBugs
-		bmi.s	.delete		; delete if the	fireball hits a	wall
-	else
 		bmi.w	DeleteObject	; delete if the	fireball hits a	wall
-	endif
-		rts	
+		bra.w	RememberState	
 
 .isright:
 		moveq	#8,d3
 		bsr.w	ObjHitWallRight
 		tst.w	d1
-	if FixBugs
-		bmi.s	.delete
-	else
 		bmi.w	DeleteObject
-	endif
-		rts	
-
-	if FixBugs
-		; Avoid returning to Gargoyle to prevent display-and-delete
-		; and double-delete bugs.
-.delete:
-		addq.l	#4,sp
-		bra.w	DeleteObject
-	endif
+		bra.w	RememberState
