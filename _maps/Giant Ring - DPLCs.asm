@@ -13,6 +13,14 @@ GRingDynPLC:	mappingsTable
 		mappingsTableEntry.w	GRing_DPLC3 ; third rotation REVERSE
 		mappingsTableEntry.w	GRing_DPLC2 ; second rotation REVERSE
 		mappingsTableEntry.w	GRing_DPLC1 ; first rotation REVERSE
+		mappingsTableEntry.w	GFlash_DPLC0
+		mappingsTableEntry.w	GFlash_DPLC1
+		mappingsTableEntry.w	GFlash_DPLC2
+		mappingsTableEntry.w	GFlash_DPLC3
+		mappingsTableEntry.w	GFlash_DPLC2
+		mappingsTableEntry.w	GFlash_DPLC1
+		mappingsTableEntry.w	GFlash_DPLC0
+		mappingsTableEntry.w	GFlash_DPLC4
 
 GRing_DPLC0:	dplcHeader
 		dplcEntry	$10, 0
@@ -46,4 +54,27 @@ GRing_DPLC4:	dplcHeader
 		dplcEntry	8, $AA
 		dplcEntry	8, $B2
 GRing_DPLC4_End
+
+GFlash_DPLC0:	dplcHeader
+		dplcEntry	$10, $BA
+GFlash_DPLC0_End
+
+GFlash_DPLC1:	dplcHeader
+		dplcEntry	$10, $CA
+		dplcEntry	8, $DA
+GFlash_DPLC1_End
+
+GFlash_DPLC2:	dplcHeader
+		dplcEntry	$10, $E2
+		dplcEntry	$C, $F2
+GFlash_DPLC2_End
+
+GFlash_DPLC3:	dplcHeader
+		dplcEntry	$10, $EE
+GFlash_DPLC3_End
+
+GFlash_DPLC4:	dplcHeader
+		dplcEntry	$10, $FE
+GFlash_DPLC4_End
+
 	even

@@ -273,7 +273,6 @@ PLC_Boss_SLZend:
 ; ---------------------------------------------------------------------------
 PLC_Signpost:	dc.w ((PLC_Signpostend-PLC_Signpost-2)/6)-1
 		plcm	Nem_Bonus,			ArtTile_Hidden_Points			; hidden bonus points
-		plcm	Nem_BigFlash,		ArtTile_Giant_Ring_Flash		; giant ring flash effect -- Will make uncompressed
 PLC_Signpostend:
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - special stage

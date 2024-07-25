@@ -5274,9 +5274,10 @@ Map_RingBIN:
 		binclude	"_maps/Rings.bin" ; RetroKoH S2 Rings Manager
 		even
 
+	; Now includes the ring flash
 Map_GRing:	include	"_maps/Giant Ring.asm"
-			include "_maps/Giant Ring - Dynamic Gfx Script.asm"
-Map_Flash:	include	"_maps/Ring Flash.asm"
+			include "_maps/Giant Ring - DPLCs.asm"
+
 		include	"_incObj/26 Monitor.asm"
 		include	"_incObj/2E Monitor Content Power-Up.asm"
 		include	"_incObj/26 Monitor (SolidSides subroutine).asm"
@@ -8430,8 +8431,6 @@ Nem_HSpring:	binclude	"artnem/Spring Horizontal.nem"
 Nem_VSpring:	binclude	"artnem/Spring Vertical.nem"
 		even
 Nem_Lamp:	binclude	"artnem/Lamppost.nem"
-		even
-Nem_BigFlash:	binclude	"artnem/Giant Ring Flash.nem"
 		even
 Nem_Bonus:	binclude	"artnem/Hidden Bonuses.nem" ; hidden bonuses at end of a level
 		even

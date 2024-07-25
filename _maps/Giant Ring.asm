@@ -14,6 +14,14 @@ Map_GRing_internal:	mappingsTable
 	mappingsTableEntry.w	GRing_5 ; third rotation REVERSE
 	mappingsTableEntry.w	GRing_6 ; second rotation REVERSE
 	mappingsTableEntry.w	GRing_7 ; first rotation REVERSE
+	mappingsTableEntry.w	GFlash_0
+	mappingsTableEntry.w	GFlash_1
+	mappingsTableEntry.w	GFlash_2
+	mappingsTableEntry.w	GFlash_3
+	mappingsTableEntry.w	GFlash_4
+	mappingsTableEntry.w	GFlash_5
+	mappingsTableEntry.w	GFlash_6
+	mappingsTableEntry.w	GFlash_7
 
 GRing_0:	spriteHeader
 	spritePiece	-$20, -$20, 4, 2, 0, 0, 0, 0, 0
@@ -88,5 +96,57 @@ GRing_7:	spriteHeader
 	spritePiece	0, $10, 3, 2, $22, 1, 0, 0, 0
 	spritePiece	-$18, $10, 3, 2, $28, 1, 0, 0, 0
 GRing_7_End
+
+GFlash_0:	spriteHeader
+	spritePiece	0, -$20, 4, 4, 0, 0, 0, 0, 0		; Tile Offset $BA
+	spritePiece	0, 0, 4, 4, 0, 0, 1, 0, 0
+GFlash_0_End
+
+GFlash_1:	spriteHeader
+	spritePiece	-$10, -$20, 4, 4, 0, 0, 0, 0, 0	; Tile Offset $CA
+	spritePiece	$10, -$20, 2, 4, $10, 0, 0, 0, 0
+	spritePiece	-$10, 0, 4, 4, 0, 0, 1, 0, 0
+	spritePiece	$10, 0, 2, 4, $10, 0, 1, 0, 0
+GFlash_1_End
+
+GFlash_2:	spriteHeader
+	spritePiece	-$18, -$20, 4, 4, 0, 0, 0, 0, 0	; Tile Offset $E2
+	spritePiece	8, -$20, 3, 4, $10, 0, 0, 0, 0	; Tile Offset $F2
+	spritePiece	-$18, 0, 4, 4, 0, 0, 1, 0, 0	; Tile Offset $E2
+	spritePiece	8, 0, 3, 4, $10, 0, 1, 0, 0		; Tile Offset $FA
+GFlash_2_End
+
+GFlash_3:	spriteHeader
+	spritePiece	-$20, -$20, 4, 4, 0, 1, 0, 0, 0	; Tile Offset $EE
+	spritePiece	0, -$20, 4, 4, 0, 0, 0, 0, 0
+	spritePiece	-$20, 0, 4, 4, 0, 1, 1, 0, 0
+	spritePiece	0, 0, 4, 4, 0, 0, 1, 0, 0
+GFlash_3_End
+
+GFlash_4:	spriteHeader
+	spritePiece	-$20, -$20, 3, 4, $10, 1, 0, 0, 0	; Tile Offset $E2
+	spritePiece	-8, -$20, 4, 4, 0, 1, 0, 0, 0
+	spritePiece	-$20, 0, 3, 4, $10, 1, 1, 0, 0
+	spritePiece	-8, 0, 4, 4, 0, 1, 1, 0, 0
+GFlash_4_End
+
+GFlash_5:	spriteHeader
+	spritePiece	-$20, -$20, 2, 4, $10, 1, 0, 0, 0	; Tile Offset $CA
+	spritePiece	-$10, -$20, 4, 4, 0, 1, 0, 0, 0
+	spritePiece	-$20, 0, 2, 4, $10, 1, 1, 0, 0
+	spritePiece	-$10, 0, 4, 4, 0, 1, 1, 0, 0
+GFlash_5_End
+
+GFlash_6:	spriteHeader
+	spritePiece	-$20, -$20, 4, 4, 0, 1, 0, 0, 0		; Tile Offset $BA
+	spritePiece	-$20, 0, 4, 4, 0, 1, 1, 0, 0
+GFlash_6_End
+
+GFlash_7:	spriteHeader
+	spritePiece	-$20, -$20, 4, 4, 0, 0, 0, 0, 0	; Tile Offset $FE
+	spritePiece	0, -$20, 4, 4, 0, 1, 0, 0, 0
+	spritePiece	-$20, 0, 4, 4, 0, 0, 1, 0, 0
+	spritePiece	0, 0, 4, 4, 0, 1, 1, 0, 0
+GFlash_7_End
 
 	even
