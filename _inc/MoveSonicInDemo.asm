@@ -6,59 +6,36 @@
 
 
 MoveSonicInDemo:
-		tst.w	(f_demo).w	; is demo mode on?
-		bne.s	MDemo_On	; if yes, branch
-		rts	
-; ===========================================================================
-
-; This is an unused subroutine for recording a demo
-
-DemoRecorder:
-		; This was likely intended for a developer cartridge that used RAM instead of ROM.
-		lea		(EndOfRom).l,a1			; Write past the end of the ROM.
-		move.w	(v_btnpushtime1).w,d0
-		adda.w	d0,a1
-		move.b	(v_jpadhold1).w,d0
-		cmp.b	(a1),d0
-		bne.s	.next
-		addq.b	#1,1(a1)
-		cmpi.b	#$FF,1(a1)
-		beq.s	.next
-		rts	
-
-.next:
-		move.b	d0,2(a1)
-		clr.b	3(a1)
-		addq.w	#2,(v_btnpushtime1).w
-		andi.w	#$3FF,(v_btnpushtime1).w
+		tst.w	(f_demo).w					; is demo mode on?
+		bne.s	MDemo_On					; if yes, branch
 		rts	
 ; ===========================================================================
 
 MDemo_On:
-		tst.b	(v_jpadhold1).w	; is start button pressed?
-		bpl.s	.dontquit	; if not, branch
-		tst.w	(f_demo).w	; is this an ending sequence demo?
-		bmi.s	.dontquit	; if yes, branch
-		move.b	#id_Title,(v_gamemode).w ; go to title screen
+		tst.b	(v_jpadhold1).w				; is start button pressed?
+		bpl.s	.dontquit					; if not, branch
+		tst.w	(f_demo).w					; is this an ending sequence demo?
+		bmi.s	.dontquit					; if yes, branch
+		move.b	#id_Title,(v_gamemode).w	; go to title screen
 
 .dontquit:
 		lea		(DemoDataPtr).l,a1
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
-		cmpi.b	#id_Special,(v_gamemode).w ; is this a special stage?
-		bne.s	.notspecial	; if not, branch
-		moveq	#6,d0		; use demo #6
+		cmpi.b	#id_Special,(v_gamemode).w	; is this a special stage?
+		bne.s	.notspecial					; if not, branch
+		moveq	#6,d0						; use demo #6
 
 .notspecial:
 		lsl.w	#2,d0
-		movea.l	(a1,d0.w),a1	; fetch address for demo data
-		tst.w	(f_demo).w	; is this an ending sequence demo?
-		bpl.s	.notcredits	; if not, branch
+		movea.l	(a1,d0.w),a1				; fetch address for demo data
+		tst.w	(f_demo).w					; is this an ending sequence demo?
+		bpl.s	.notcredits					; if not, branch
 		lea		(DemoEndDataPtr).l,a1
 		move.w	(v_creditsnum).w,d0
 		subq.w	#1,d0
 		lsl.w	#2,d0
-		movea.l	(a1,d0.w),a1	; fetch address for credits demo
+		movea.l	(a1,d0.w),a1				; fetch address for credits demo
 
 .notcredits:
 		move.w	(v_btnpushtime1).w,d0
@@ -66,7 +43,7 @@ MDemo_On:
 		move.b	(a1),d0
 		lea		(v_jpadhold1).w,a0
 		move.b	d0,d1
-		move.b	-2(a0),d2 ; FraGag Demo Playback Fix
+		move.b	-2(a0),d2					; FraGag Demo Playback Fix
 		eor.b	d2,d0
 		move.b	d1,(a0)+
 		and.b	d1,d0
@@ -84,7 +61,8 @@ MDemo_On:
 ; ---------------------------------------------------------------------------
 ; Demo sequence	pointers
 ; ---------------------------------------------------------------------------
-DemoDataPtr:	dc.l Demo_GHZ		; demos run after the title screen
+DemoDataPtr:
+		dc.l Demo_GHZ		; demos run after the title screen
 		dc.l Demo_GHZ
 		dc.l Demo_MZ
 		dc.l Demo_MZ
@@ -93,7 +71,8 @@ DemoDataPtr:	dc.l Demo_GHZ		; demos run after the title screen
 		dc.l Demo_SS
 		dc.l Demo_SS
 
-DemoEndDataPtr:	dc.l Demo_EndGHZ1	; demos run during the credits
+DemoEndDataPtr:
+		dc.l Demo_EndGHZ1	; demos run during the credits
 		dc.l Demo_EndMZ
 		dc.l Demo_EndSYZ
 		dc.l Demo_EndLZ

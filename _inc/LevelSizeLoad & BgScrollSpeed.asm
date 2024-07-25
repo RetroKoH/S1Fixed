@@ -7,10 +7,6 @@
 
 LevelSizeLoad:
 		moveq	#0,d0
-		move.b	d0,(v_unused7).w
-		move.b	d0,(v_unused8).w
-		move.b	d0,(v_unused9).w
-		move.b	d0,(v_unused10).w
 		move.b	d0,(v_dle_routine).w
 		move.w	(v_zone).w,d0
 		lsl.b	#6,d0
@@ -18,9 +14,9 @@ LevelSizeLoad:
 		move.w	d0,d1
 		add.w	d0,d0
 		add.w	d1,d0
-		lea	LevelSizeArray(pc,d0.w),a0 ; load level	boundaries
+		lea		LevelSizeArray(pc,d0.w),a0	; load level boundaries
 		move.w	(a0)+,d0
-		move.w	d0,(v_unused11).w
+		move.w	d0,(v_unused11).w			; always loads 0004 (unused)
 		move.l	(a0)+,d0
 		move.l	d0,(v_limitleft2).w
 		move.l	d0,(v_limitleft1).w
@@ -30,7 +26,7 @@ LevelSizeLoad:
 		move.w	(v_limitleft2).w,d0
 		addi.w	#$240,d0
 		move.w	d0,(v_limitleft3).w
-		move.w	#$1010,(v_fg_xblock).w ; and v_fg_yblock
+		move.w	#$1010,(v_fg_xblock).w		; and v_fg_yblock
 		move.w	(a0)+,d0
 		move.w	d0,(v_lookshift).w
 		bra.w	LevSz_ChkLamp

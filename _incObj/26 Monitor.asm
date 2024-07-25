@@ -24,8 +24,9 @@ Mon_Index:		offsetTable
 
 Mon_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
-		move.b	#$E,obHeight(a0)
-		move.b	#$E,obWidth(a0)
+		moveq	#$E,d0						; load to d0 to save cycles
+		move.b	d0,obHeight(a0)
+		move.b	d0,obWidth(a0)
 		move.l	#Map_Monitor,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Monitor,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
@@ -33,10 +34,10 @@ Mon_Main:	; Routine 0
 		move.b	#$F,obActWid(a0)
 
 	; ProjectFM S3K Objects Manager
-		move.w	obRespawnNo(a0),d0	; get address in respawn table
-		movea.w	d0,a2				; load address into a2
-		;bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again
-		btst	#0,(a2)				; has monitor been broken?
+		move.w	obRespawnNo(a0),d0			; get address in respawn table
+		movea.w	d0,a2						; load address into a2
+		;bclr	#7,(a2)						; clear respawn table entry, so object can be loaded again
+		btst	#0,(a2)						; has monitor been broken?
 	; S3K Objects Manager End
 
 		beq.s	.notbroken					; if not, branch
