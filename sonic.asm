@@ -2541,11 +2541,11 @@ Level_DelayLoop:
 
 Level_ClrCardArt:
 		moveq	#plcid_Explode,d0
-		jsr	(AddPLC).w	; load explosion gfx
+		jsr		(AddPLC).w	; load explosion gfx
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
 		addi.w	#plcid_GHZAnimals,d0
-		jsr	(AddPLC).w	; load animal gfx (level no. + $15)
+		jsr		(AddPLC).w	; load animal gfx (level no. + $15)
 
 Level_StartGame:
 		; The above check is for the S2 HUD Manager (RetroKoH)
@@ -2750,29 +2750,30 @@ SyncEnd:
 
 ; ---------------------------------------------------------------------------
 ; End-of-act signpost pattern loading subroutine
+; No longer loads signpost art. Actually loads Hidden Points and Ring Flash
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
 SignpostArtLoad:
-		tst.w	(v_debuguse).w	; is debug mode	being used?
-		bne.w	.exit		; if yes, branch
-		cmpi.b	#2,(v_act).w	; is act number 02 (act 3)?
-		beq.s	.exit		; if yes, branch
+		tst.w	(v_debuguse).w		; is debug mode	being used?
+		bne.w	.exit				; if yes, branch
+		cmpi.b	#2,(v_act).w		; is act number 02 (act 3)?
+		beq.s	.exit				; if yes, branch
 
 		move.w	(v_screenposx).w,d0
 		move.w	(v_limitright2).w,d1
 		subi.w	#$100,d1
-		cmp.w	d1,d0		; has Sonic reached the	edge of	the level?
-		blt.s	.exit		; if not, branch
+		cmp.w	d1,d0				; has Sonic reached the	edge of	the level?
+		blt.s	.exit				; if not, branch
 		tst.b	(f_timecount).w
 		beq.s	.exit
 		cmp.w	(v_limitleft2).w,d1
 		beq.s	.exit
-		move.w	d1,(v_limitleft2).w ; move left boundary to current screen position
+		move.w	d1,(v_limitleft2).w	; move left boundary to current screen position
 		moveq	#plcid_Signpost,d0
-		bra.w	NewPLC		; load signpost	patterns
+		bra.w	NewPLC				; load signpost	patterns
 
 .exit:
 		rts	

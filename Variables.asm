@@ -411,8 +411,7 @@ v_lani4_frame:			ds.b	1		; level graphics animation 4 - current frame
 v_lani4_time:			ds.b	1		; level graphics animation 4 - time until next frame
 v_lani5_frame:			ds.b	1		; level graphics animation 5 - current frame
 v_lani5_time:			ds.b	1		; level graphics animation 5 - time until next frame
-					ds.b	2		; unused
-v_gfxbigring:			ds.w	1		; settings for giant ring graphics loading
+					ds.b	4		; unused
 f_conveyrev:			ds.b	1		; flag set to reverse conveyor belts in LZ/SBZ
 v_obj63:				ds.b	6		; object 63 (LZ/SBZ platforms) variables
 f_wtunnelmode:			ds.b	1		; LZ water tunnel mode

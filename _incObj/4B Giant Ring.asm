@@ -37,7 +37,6 @@ GRing_Main:	; Routine 0
 GRing_Okay:
 		addq.b	#2,obRoutine(a0)
 		move.b	#$52,obColType(a0)
-		move.w	#$C40,(v_gfxbigring).w			; Signal that Art_BigRing should be loaded ($C40 is the size of Art_BigRing)
 
 GRing_Animate:	; Routine 2
 		move.b	(v_ani1_frame).w,obFrame(a0)
