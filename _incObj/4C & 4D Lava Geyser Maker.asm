@@ -89,7 +89,7 @@ GMake_Display:	; Routine 8
 		; FixBugs - Deletion has been changed to eliminate potential double-delete and display-and-delete bugs.
 		offscreen.w	DeleteObject
 		lea		(Ani_Geyser).l,a1
-		bsr.w	AnimateSprite
+		jsr		(AnimateSprite).w
 		jmp		(DisplayAndCollision).l		; S3K TouchResponse
 ; ===========================================================================
 
@@ -209,7 +209,7 @@ Geyser_Type00:
 loc_EFDA:
 		bsr.w	SpeedToPos
 		lea		(Ani_Geyser).l,a1
-		bsr.w	AnimateSprite
+		jsr		(AnimateSprite).w
 		offscreen.w	DeleteObject			; ProjectFM S3k OBject Manager
 		jmp		(DisplayAndCollision).l		; FixBugs - Moved to prevent a delete-and-display bug.
 ; ===========================================================================
@@ -226,7 +226,7 @@ Geyser_Type01:
 loc_EFFA:
 		bsr.w	SpeedToPos
 		lea		(Ani_Geyser).l,a1
-		bsr.w	AnimateSprite
+		jsr		(AnimateSprite).w
 		offscreen.w	DeleteObject			; ProjectFM S3k OBject Manager
 		jmp		(DisplayAndCollision).l		; FixBugs - Moved to prevent a delete-and-display bug.	
 ; ===========================================================================

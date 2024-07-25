@@ -52,7 +52,7 @@ SEgg_Eggman:	; Routine 2
 	; RetroKoH Object Routine Optimization
 		jsr		SEgg_EggIndex(pc,d0.w)
 		lea		Ani_SEgg(pc),a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 SEgg_EggIndex:

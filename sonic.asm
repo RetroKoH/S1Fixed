@@ -4721,6 +4721,8 @@ LevelLayoutLoad:
 ; End of function LevelLayoutLoad
 
 		include	"_inc/DynamicLevelEvents.asm"
+		
+		include	"_incObj/sub AnimateSprite.asm"		; Moved here to make every jmp use ().w address mode
 
 		include	"_incObj/11 Bridge.asm"
 Map_Bri:	include	"_maps/Bridge.asm"
@@ -5285,8 +5287,6 @@ Map_Monitor:	include	"_maps/Monitor.asm"
 
 		include	"_anim/Title Screen Sonic.asm"
 		include	"_anim/Press Start and TM.asm"
-
-		include	"_incObj/sub AnimateSprite.asm"
 
 Map_PSB:	include	"_maps/Press Start and TM.asm"
 Map_TSon:	include	"_maps/Title Screen Sonic.asm"

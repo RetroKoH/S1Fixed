@@ -50,7 +50,7 @@ Yad_Move:
 
 Yad_Animate:
 		lea		(Ani_Yad).l,a1
-		bsr.w	AnimateSprite
+		jsr		(AnimateSprite).w
 		bra.w	RememberState	
 ; ===========================================================================
 
@@ -66,7 +66,7 @@ Yad_FixToFloor:
 		bne.s	Yad_Pause
 	; Animate
 		lea		(Ani_Yad).l,a1
-		bsr.w	AnimateSprite
+		jsr		(AnimateSprite).w
 		bra.w	RememberState	
 ; ===========================================================================
 
@@ -77,7 +77,7 @@ Yad_Pause:
 		clr.b	obAnim(a0)
 	; Animate
 		lea		(Ani_Yad).l,a1
-		bsr.w	AnimateSprite
+		jsr		(AnimateSprite).w
 		bra.w	RememberState
 ; ===========================================================================
 

@@ -111,7 +111,7 @@ Obj87_Leap:	; Routine $10
 
 Obj87_Animate:	; Routine 4, $A, $E, $12
 		lea		(AniScript_ESon).l,a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 
 ESon_Wait4:
 		jmp		(DisplaySprite).l

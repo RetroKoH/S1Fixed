@@ -62,7 +62,7 @@ loc_1A86C:
 
 loc_1A89A:
 		lea		Ani_PLaunch(pc),a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 
@@ -145,7 +145,7 @@ BossPlasma_2ndRout0: ;loc_1A9A6:
 		move.w	#$B4,obSubtype(a0)
 		addq.b	#2,ob2ndRout(a0)
 		lea		Ani_Plasma(pc),a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 ; ===========================================================================
 
@@ -177,7 +177,7 @@ loc_1A9E6:
 
 locret_1AA1C:
 		lea		Ani_Plasma(pc),a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 ; ===========================================================================
 
@@ -188,7 +188,7 @@ BossPlasma_2ndRout4: ;loc_1AA1E:
 		subq.w	#1,obSubtype(a0)
 		beq.s	loc_1AA34
 		lea		Ani_Plasma(pc),a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 ; ===========================================================================
 

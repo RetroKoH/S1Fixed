@@ -35,7 +35,7 @@ Flap_OpenClose:	; Routine 2
 .wait:
 .nosound:
 		lea		(Ani_Flap).l,a1
-		bsr.w	AnimateSprite
+		jsr		(AnimateSprite).w
 		clr.b	(f_wtunnelallow).w		; enable wind tunnel
 		tst.b	obFrame(a0)				; is the door open?
 		bne.w	RememberState			; if yes, branch

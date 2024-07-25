@@ -38,7 +38,7 @@ EEgg_Main:	; Routine 0
 
 EEgg_Animate:	; Routine 2
 		lea		(Ani_EEgg).l,a1
-		jmp		(AnimateSprite).l
+		jmp		(AnimateSprite).w
 ; ===========================================================================
 
 EEgg_Juggle:	; Routine 4

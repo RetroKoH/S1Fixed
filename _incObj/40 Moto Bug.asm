@@ -48,7 +48,7 @@ Moto_Main:	; Routine 0
 
 Moto_Animate:	; Routine 4
 		lea		(Ani_Moto).l,a1
-		bsr.w	AnimateSprite
+		jsr		(AnimateSprite).w
 		bra.w	DisplaySprite
 ; ===========================================================================
 
@@ -74,7 +74,7 @@ Moto_Action:	; Routine 2
 
 .wait:
 		lea		(Ani_Moto).l,a1
-		bsr.w	AnimateSprite
+		jsr		(AnimateSprite).w
 		bra.s	RememberState
 ; ===========================================================================
 
@@ -106,6 +106,6 @@ Moto_Action:	; Routine 2
 
 .nosmoke:
 		lea		(Ani_Moto).l,a1
-		bsr.w	AnimateSprite
+		jsr		(AnimateSprite).w
 
 		include	"_incObj/sub RememberState.asm"	; Moto_Action terminates in this file

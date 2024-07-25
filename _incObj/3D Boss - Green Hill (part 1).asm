@@ -57,7 +57,7 @@ BGHZ_ShipMain:	; Routine 2
 		move.w	BGHZ_ShipIndex(pc,d0.w),d1
 		jsr		BGHZ_ShipIndex(pc,d1.w)
 		lea		(Ani_Eggman).l,a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 		move.b	obStatus(a0),d0
 		andi.b	#(maskFlipX+maskFlipY),d0
 		andi.b	#$FC,obRender(a0)

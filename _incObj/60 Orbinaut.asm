@@ -110,7 +110,7 @@ Orb_ChkSonic:	; Routine 2
 
 .animate:
 		lea		(Ani_Orb).l,a1
-		bsr.w	AnimateSprite
+		jsr		(AnimateSprite).w
 		bra.w	Orb_ChkDel
 ; ===========================================================================
 

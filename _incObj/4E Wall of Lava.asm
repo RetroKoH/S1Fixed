@@ -96,7 +96,7 @@ LWall_Solid:	; Routine 2
 
 .animate:
 		lea		(Ani_LWall).l,a1
-		bsr.w	AnimateSprite
+		jsr		(AnimateSprite).w
 		cmpi.b	#4,(v_player+obRoutine).w
 		bhs.s	.rangechk
 		bsr.w	SpeedToPos

@@ -139,7 +139,7 @@ loc_163D8:	; Routine 2
 
 SpinC_Rout2:
 		lea		(Ani_SpinConvey).l,a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 		tst.b	obFrame(a0)
 		bne.s	loc_16404
 		move.w	obX(a0),-(sp)

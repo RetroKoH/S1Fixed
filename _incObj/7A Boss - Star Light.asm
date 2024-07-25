@@ -83,7 +83,7 @@ BossStarLight_ShipMain:	; Routine 2
 		move.w	BossStarLight_ShipIndex(pc,d0.w),d0
 		jsr		BossStarLight_ShipIndex(pc,d0.w)
 		lea		(Ani_Eggman).l,a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 		moveq	#(maskFlipX+maskFlipY),d0
 		and.b	obStatus(a0),d0
 		andi.b	#$FC,obRender(a0)
@@ -395,7 +395,7 @@ loc_18C56:
 
 loc_18C6C:
 		lea		(Ani_Eggman).l,a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 
 loc_18C78:
 		movea.l	objoff_34(a0),a1

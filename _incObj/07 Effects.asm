@@ -52,7 +52,7 @@ Effects_MdSpindashDust:
 
 Effects_MdDisplay:
 		lea		(Ani_Effects).l,a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 		bsr.w	Effects_LoadGfx
 		jmp		(DisplaySprite).l
 

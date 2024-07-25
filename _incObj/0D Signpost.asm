@@ -12,7 +12,7 @@ Signpost:
 		move.w	Sign_Index(pc,d0.w),d1
 		jsr		Sign_Index(pc,d1.w)
 		lea		(Ani_Sign).l,a1
-		bsr.w	AnimateSprite
+		jsr		(AnimateSprite).w
 	; RetroKoH VRAM Overhaul Edit
 	; The code below checks how close to the signpost the camera is,
 	; If the sign is nearly onscreen, the art loads.

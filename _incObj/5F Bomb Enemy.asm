@@ -43,7 +43,7 @@ Bom_Action:	; Routine 2
 		move.w	Bom_ActIndex(pc,d0.w),d1
 		jsr		Bom_ActIndex(pc,d1.w)
 		lea		(Ani_Bomb).l,a1
-		bsr.w	AnimateSprite
+		jsr		(AnimateSprite).w
 		bra.w	RememberState
 ; ===========================================================================
 Bom_ActIndex:	offsetTable
@@ -142,7 +142,7 @@ Bom_ActIndex:	offsetTable
 Bom_Display:	; Routine 4
 		bsr.s	loc_11B70
 		lea		(Ani_Bomb).l,a1
-		bsr.w	AnimateSprite
+		jsr		(AnimateSprite).w
 		bra.w	RememberState
 ; ===========================================================================
 
@@ -189,7 +189,7 @@ Bom_End:	; Routine 6
 		bsr.w	SpeedToPos
 		addi.w	#$18,obVelY(a0)
 		lea		(Ani_Bomb).l,a1
-		bsr.w	AnimateSprite
+		jsr		(AnimateSprite).w
 		tst.b	obRender(a0)
 		bpl.w	DeleteObject
 		bra.w	DisplayAndCollision

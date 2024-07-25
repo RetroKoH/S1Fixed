@@ -27,7 +27,7 @@ Harp_Main:	; Routine 0
 
 Harp_Move:	; Routine 2
 		lea		(Ani_Harp).l,a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 		moveq	#0,d0
 		move.b	obFrame(a0),d0					; get frame number
 		move.b	.types(pc,d0.w),obColType(a0)	; get collision type

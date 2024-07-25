@@ -226,7 +226,7 @@ loc_19F96:
 
 loc_19F9C:
 		lea		Ani_SEgg(pc),a1
-		jmp		(AnimateSprite).l
+		jmp		(AnimateSprite).w
 ; ===========================================================================
 
 loc_19FA6:
@@ -372,7 +372,7 @@ loc_1A142:
 
 loc_1A15C:
 		lea		Ani_SEgg(pc),a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 
 loc_1A166:
 		cmpi.w	#boss_fz_end,(v_limitright2).w
@@ -474,7 +474,7 @@ loc_1A280:
 
 loc_1A28C:
 		lea		Ani_Eggman(pc),a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 
 loc_1A296:
 		movea.l	objoff_34(a0),a1
@@ -510,7 +510,7 @@ loc_1A2E4:
 		move.l	#Map_Eggman,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
 		lea		Ani_Eggman(pc),a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 		bra.w	loc_1A296
 ; ===========================================================================
 
@@ -523,7 +523,7 @@ loc_1A312:
 		move.l	#Map_FZDamaged,obMap(a0)
 		move.w	#make_art_tile(ArtTile_FZ_Eggman_Fleeing,0,0),obGfx(a0)
 		lea		Ani_FZEgg(pc),a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 		bra.w	loc_1A296
 ; ===========================================================================
 

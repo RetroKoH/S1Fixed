@@ -209,7 +209,7 @@ BGHZ_Display:
 		move.w	obY(a1),obY(a0)
 		move.b	obStatus(a1),obStatus(a0)
 		lea		(Ani_Eggman).l,a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 		move.b	obStatus(a0),d0
 		andi.b	#(maskFlipX+maskFlipY),d0
 		andi.b	#$FC,obRender(a0)

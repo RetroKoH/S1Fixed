@@ -47,7 +47,7 @@ WFall_Main:	; Routine 0
 
 WFall_Animate:	; Routine 2
 		lea		(Ani_WFall).l,a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 
 WFall_ChkDel:	; Routine 4
 		bra.w	RememberState
@@ -58,7 +58,7 @@ WFall_OnWater:	; Routine 6
 		subi.w	#$10,d0
 		move.w	d0,obY(a0)	; match	object position	to water height
 		lea		(Ani_WFall).l,a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 		bra.w	RememberState
 ; ===========================================================================
 
@@ -70,5 +70,5 @@ loc_12B36:	; Routine 8
 
 .animate:
 		lea		(Ani_WFall).l,a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 		bra.w	RememberState

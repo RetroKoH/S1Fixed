@@ -60,7 +60,7 @@ Bump_Hit:	; Routine 2
 
 .display:
 		lea		(Ani_Bump).l,a1
-		bsr.w	AnimateSprite
+		jsr		(AnimateSprite).w
 		out_of_range.s	.resetcount
 		bra.w	DisplayAndCollision		; S3K TouchResponse
 ; ===========================================================================

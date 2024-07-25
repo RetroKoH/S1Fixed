@@ -57,7 +57,7 @@ Drown_Main:	; Routine 0
 
 Drown_Animate:	; Routine 2
 		lea		(Ani_Drown).l,a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 
 Drown_ChkWater:	; Routine 4
 		move.w	(v_waterpos1).w,d0
@@ -100,7 +100,7 @@ Drown_ChkWater:	; Routine 4
 Drown_Display:	; Routine 6, Routine $E
 		bsr.s	Drown_ShowNumber
 		lea		(Ani_Drown).l,a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 
@@ -120,7 +120,7 @@ Drown_AirLeft:	; Routine $C
 
 .display:
 		lea		(Ani_Drown).l,a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 		tst.b	obRender(a0)
 		bpl.s	Drown_AirLeft_Delete
 		jmp		(DisplaySprite).l

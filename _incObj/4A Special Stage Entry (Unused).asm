@@ -34,7 +34,7 @@ Van_RmvSonic:	; Routine 2
 		move.w	(v_player+obY).w,obY(a0)
 		move.b	(v_player+obStatus).w,obStatus(a0)
 		lea		(Ani_Vanish).l,a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 		cmpi.b	#2,obFrame(a0)
 		bne.s	.display
 		tst.b	(v_player).w

@@ -47,7 +47,7 @@ BossFire_Action:	; Routine 2
 		jsr		BossFire_Index2(pc,d0.w)
 		jsr		(SpeedToPos).l
 		lea		(Ani_Fire).l,a1
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 		cmpi.w	#boss_mz_y+$D8,obY(a0)
 		bhi.s	BossFire_Delete
 		jmp		(DisplayAndCollision).l		; Clownacy DisplaySprite Fix; S3K TouchResponse
@@ -204,7 +204,7 @@ loc_18886:	; Routine 4
 BossFire_Animate:
 		lea		(Ani_Fire).l,a1
 		; DisplaySprite has been moved to avoid a display-after-free bug.
-		jsr		(AnimateSprite).l
+		jsr		(AnimateSprite).w
 		jmp		(DisplayAndCollision).l	; S3K TouchResponse; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
