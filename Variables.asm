@@ -391,7 +391,7 @@ v_palss_num:			ds.w	1		; palette cycling in Special Stage - reference number
 v_palss_time:			ds.w	1		; palette cycling in Special Stage - time until next change
 v_palss_index:			ds.w	1		; palette cycling in Special Stage - index into palette cycle 2 (unused?)
 v_ssbganim:				ds.w	1		; Special Stage background animation
-					ds.b	2		; unused
+v_camera_pan:			ds.w	1		; Extended Camera - how far the camera/view is panned to the left or right of Sonic (2 bytes)
 v_obj31ypos:			ds.w	1		; y-position of object 31 (MZ stomper)
 					ds.b	1		; unused
 v_bossstatus:			ds.b	1		; status of boss and prison capsule (01 = boss defeated; 02 = prison opened)

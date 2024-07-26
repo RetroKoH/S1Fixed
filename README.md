@@ -179,6 +179,12 @@
  Date: 2024-07-23
  Depends On: HUD In Special Stage
  Variable: TimeLimitInSpecialStage
+ 
+ Name: CD Camera Panning
+ Credit: DeltaW's Wooloo Engine
+ Function: Applies a panning effect to the screen when moving quickly, a la Sonic CD
+ Date: 2024-07-26
+ Variable: CDCamera
 
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format

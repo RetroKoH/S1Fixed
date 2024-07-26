@@ -697,9 +697,9 @@ MoveScreenHoriz:
 	if SpinDashEnabled=1	; Spin Dash Enabled
 		move.b	(v_cameralag).w,d1
 		beq.s	.cont1
-		tst.w	(v_player+obVelX).w	; is Sonic moving horizontally?
+		tst.w	(v_player+obVelX).w		; is Sonic moving horizontally?
 		bne.s	.cont0
-		clr.b	(v_cameralag).w	; clear lag
+		clr.b	(v_cameralag).w			; clear lag
 		bra.s	.cont1
 
 	.cont0:
@@ -721,19 +721,34 @@ MoveScreenHoriz:
 	else
 		move.w	(v_player+obX).w,d0
 	endif	; Spin Dash Enabled End
-		sub.w	(v_screenposx).w,d0 ; Sonic's distance from left edge of screen
-		subi.w	#144,d0				; is distance less than 144px?
-		bmi.s	SH_BehindMid		; if yes, branch	<---- cs to mi (for negative) MarkeyJester Horizontal Screen Scrolling Fix
-		subi.w	#16,d0				; is distance more than 160px?
-		bpl.s	SH_AheadOfMid		; if yes, branch	<---- cc to pl (for negative) MarkeyJester Horizontal Screen Scrolling Fix
+		sub.w	(v_screenposx).w,d0		; Sonic's distance from left edge of screen
+		
+	if CDCamera=1
+		sub.w	(v_camera_pan).w,d0		; Horizontal camera pan value
+		beq.s	SH_ProperlyFramed		; if zero, branch
+		bcs.s	SH_BehindMid			; if less than, branch
+		bra.s	SH_AheadOfMid			; branch
+	endif
+		
+		subi.w	#144,d0					; is distance less than 144px?
+		bmi.s	SH_BehindMid			; if yes, branch	<---- cs to mi (for negative) MarkeyJester Horizontal Screen Scrolling Fix
+		subi.w	#16,d0					; is distance more than 160px?
+		bpl.s	SH_AheadOfMid			; if yes, branch	<---- cc to pl (for negative) MarkeyJester Horizontal Screen Scrolling Fix
 		clr.w	(v_scrshiftx).w
-		rts	
+		rts
+	if CDCamera=1
+; ===========================================================================
+
+SH_ProperlyFramed:
+		clr.w	(v_scrshiftx).w
+		rts
+	endif
 ; ===========================================================================
 
 SH_AheadOfMid:
-		cmpi.w	#16,d0		; is Sonic within 16px of middle area?
-		blo.s	SH_Ahead16	; if yes, branch
-		move.w	#16,d0		; set to 16 if greater
+		cmpi.w	#16,d0					; is Sonic within 16px of middle area?
+		blo.s	SH_Ahead16				; if yes, branch
+		move.w	#16,d0					; set to 16 if greater
 
 SH_Ahead16:
 		add.w	(v_screenposx).w,d0
@@ -745,16 +760,16 @@ SH_SetScreen:
 		move.w	d0,d1
 		sub.w	(v_screenposx).w,d1
 		asl.w	#8,d1
-		move.w	d0,(v_screenposx).w ; set new screen position
-		move.w	d1,(v_scrshiftx).w ; set distance for screen movement
+		move.w	d0,(v_screenposx).w		; set new screen position
+		move.w	d1,(v_scrshiftx).w		; set distance for screen movement
 		rts	
 ; ===========================================================================
 
 SH_BehindMid:
 	; MarkeyJester Horizontal Screen Scrolling Fix
-		cmpi.w	#$FFF0,d0	; has the screen moved more than 10 pixels left?
+		cmpi.w	#-16,d0	; has the screen moved more than 16 pixels left?
 		bcc.s	SH_Behind16	; if not, branch
-		move.w	#$FFF0,d0	; set the maximum move distance to 10 pixels left
+		move.w	#-16,d0	; set the maximum move distance to 16 pixels left
 
 SH_Behind16:
 	; Horizontal Screen Scrolling Fix End

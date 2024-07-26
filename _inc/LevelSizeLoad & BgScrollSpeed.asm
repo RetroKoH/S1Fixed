@@ -15,8 +15,7 @@ LevelSizeLoad:
 		add.w	d0,d0
 		add.w	d1,d0
 		lea		LevelSizeArray(pc,d0.w),a0	; load level boundaries
-		move.w	(a0)+,d0
-		move.w	d0,(v_unused11).w			; always loads 0004 (unused)
+		move.w	(a0)+,d0					; always loads 0004 (unused)
 		move.l	(a0)+,d0
 		move.l	d0,(v_limitleft2).w
 		move.l	d0,(v_limitleft1).w
@@ -29,6 +28,11 @@ LevelSizeLoad:
 		move.w	#$1010,(v_fg_xblock).w		; and v_fg_yblock
 		move.w	(a0)+,d0
 		move.w	d0,(v_lookshift).w
+	
+	if CDCamera=1
+		move.w	#160,(v_camera_pan).w	; reset the horizontal camera pan value to 160 pixels
+	endif
+
 		bra.w	LevSz_ChkLamp
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
