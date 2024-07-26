@@ -279,98 +279,119 @@ locret_1B64:
 ; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
 
 PalCycle_SuperSonic:
-	move.b	(f_super_palette).w,d0
-	beq.s	.return						; return, if Sonic isn't super
-	bmi.w	.normal						; branch, if fade-in is done
-	subq.b	#1,d0
-	bne.s	.revert						; branch for values greater than 1
+		move.b	(f_super_palette).w,d0
+		beq.s	.return						; return, if Sonic isn't super
+		bmi.w	.normal						; branch, if fade-in is done
+		subq.b	#1,d0
+		bne.s	.revert						; branch for values greater than 1
 
-	; fade from Sonic's to Super Sonic's palette
-	; run frame timer
-	subq.b	#1,(v_palette_timer).w
-	bpl.s	.return
-	move.b	#3,(v_palette_timer).w
+		; fade from Sonic's to Super Sonic's palette
+		; run frame timer
+		subq.b	#1,(v_palette_timer).w
+		bpl.s	.return
+		move.b	#3,(v_palette_timer).w
 
-	; increment palette frame and update Sonic's palette
-	lea		(CyclingPal_SSTransformation).l,a0
-	move.w	(v_palette_frame).w,d0
-	addq.w	#8,(v_palette_frame).w		; 1 palette entry = 1 word, Sonic uses 4 shades of blue
-	cmpi.w	#$30,(v_palette_frame).w	; has palette cycle reached the 6th frame?
-	blo.s	+							; if not, branch
-	move.b	#-1,(f_super_palette).w		; mark fade-in as done
-	clr.b	(v_player+obLRLock).w		; restore Sonic's movement
+		; increment palette frame and update Sonic's palette
+		lea		(CyclingPal_SSTransformation).l,a0
+		move.w	(v_palette_frame).w,d0
+		addq.w	#8,(v_palette_frame).w		; 1 palette entry = 1 word, Sonic uses 4 shades of blue (8 bytes)
+		cmpi.w	#$30,(v_palette_frame).w	; has palette cycle reached the 6th frame?
+		blo.s	+							; if not, branch
+		move.b	#-1,(f_super_palette).w		; mark fade-in as done
+		clr.b	(v_player+obLRLock).w		; restore Sonic's movement
+
 +
-	lea		(v_pal_dry+4).w,a1
-	move.l	(a0,d0.w),(a1)+
-	move.l	4(a0,d0.w),(a1)
+		lea		(v_pal_dry+4).w,a1
+		move.l	(a0,d0.w),(a1)+
+		move.l	4(a0,d0.w),(a1)
  
-	; underwater palette
-	cmpi.b	#id_LZ,(v_zone).w
-	bne.s	.return
-	lea		(CyclingPal_LZUWTransformation).l,a0
-+	lea		(v_pal_water+4).w,a1
-	move.l	(a0,d0.w),(a1)+
-	move.l	4(a0,d0.w),(a1)
+		; underwater palette
+		cmpi.b	#id_LZ,(v_zone).w			; are we in Labyrinth Zone?
+		bne.s	.return						; if not, branch
+		lea		(CyclingPal_LZUWTransformation).l,a0
+		cmpi.b	#3,(v_act).w				; are we in act 4 (SBZ3)?
+		bne.s	+							; if not, branch
+		lea		(CyclingPal_SBZ3UWTransformation).l,a0
+
++
+		lea		(v_pal_water+4).w,a1
+		move.l	(a0,d0.w),(a1)+
+		move.l	4(a0,d0.w),(a1)
 
 .return:
-	rts
+		rts
 ; ===========================================================================
 ; loc_2188: PalCycle_SuperSonic_revert:
 .revert:	; runs the fade in transition backwards
-	; run frame timer
-	subq.b	#1,(v_palette_timer).w
-	bpl.s	.return
-	move.b	#3,(v_palette_timer).w
+		; run frame timer
+		subq.b	#1,(v_palette_timer).w
+		bpl.s	.return2
+		move.b	#3,(v_palette_timer).w
 
-	; decrement palette frame and update Sonic's palette
-	lea		(CyclingPal_SSTransformation).l,a0
-	move.w	(v_palette_frame).w,d0
-	subq.w	#8,(v_palette_frame).w		; previous frame
-	bcc.s	+							; branch, if it isn't the first frame
-	clr.w	(v_palette_frame).w
-	clr.b	(f_super_palette).w			; stop palette cycle
+		; decrement palette frame and update Sonic's palette
+		lea		(CyclingPal_SSTransformation).l,a0
+		move.w	(v_palette_frame).w,d0
+		subq.w	#8,(v_palette_frame).w		; previous frame
+		bcc.s	+							; branch, if it isn't the first frame
+		clr.w	(v_palette_frame).w
+		clr.b	(f_super_palette).w			; stop palette cycle
+
 +
-	lea		(v_pal_dry+4).w,a1
-	move.l	(a0,d0.w),(a1)+
-	move.l	4(a0,d0.w),(a1)
+		lea		(v_pal_dry+4).w,a1
+		move.l	(a0,d0.w),(a1)+
+		move.l	4(a0,d0.w),(a1)
 
-	; underwater palette
-	cmpi.b	#id_LZ,(v_zone).w
-	bne.s	.return2
-	lea		(CyclingPal_LZUWTransformation).l,a0
-+	lea		(v_pal_water+4).w,a1
-	move.l	(a0,d0.w),(a1)+
-	move.l	4(a0,d0.w),(a1)
+		; underwater palette
+		cmpi.b	#id_LZ,(v_zone).w			; are we in Labyrinth Zone?
+		bne.s	.return2					; if not, branch
+		lea		(CyclingPal_LZUWTransformation).l,a0
+		cmpi.b	#3,(v_act).w				; are we in act 4 (SBZ3)?
+		bne.s	+							; if not, branch
+		lea		(CyclingPal_SBZ3UWTransformation).l,a0
+	
++
+		lea		(v_pal_water+4).w,a1
+		move.l	(a0,d0.w),(a1)+
+		move.l	4(a0,d0.w),(a1)
 
 .return2:
 	rts
 ; ===========================================================================
 ; loc_21E6: PalCycle_SuperSonic_normal:
 .normal:
-	; run frame timer
-	subq.b	#1,(v_palette_timer).w
-	bpl.s	.return
-	move.b	#7,(v_palette_timer).w
+		; run frame timer
+		subq.b	#1,(v_palette_timer).w
+		bpl.s	.return3
+		move.b	#7,(v_palette_timer).w
 
-	; increment palette frame and update Sonic's palette
-	lea		(CyclingPal_SSTransformation).l,a0
-	move.w	(v_palette_frame).w,d0
-	addq.w	#8,(v_palette_frame).w		; next frame
-	cmpi.w	#$78,(v_palette_frame).w	; is it the last frame?
-	bls.s	+							; if not, branch
-	move.w	#$30,(v_palette_frame).w	; reset frame counter (Super Sonic's normal palette cycle starts at $30. Everything before that is for the palette fade)
+		; increment palette frame and update Sonic's palette
+		lea		(CyclingPal_SSTransformation).l,a0
+		move.w	(v_palette_frame).w,d0
+		addq.w	#8,(v_palette_frame).w		; next frame
+		cmpi.w	#$78,(v_palette_frame).w	; is it the last frame?
+		bls.s	+							; if not, branch
+		move.w	#$30,(v_palette_frame).w	; reset frame counter (Super Sonic's normal palette cycle starts at $30. Everything before that is for the palette fade)
+
 +
-	lea		(v_pal_dry+4).w,a1
-	move.l	(a0,d0.w),(a1)+
-	move.l	4(a0,d0.w),(a1)
-	; underwater palettes
-	cmpi.b	#id_LZ,(v_zone).w
-	bne.w	.return
-	lea		(CyclingPal_LZUWTransformation).l,a0
-+	lea		(v_pal_water+4).w,a1
-	move.l	(a0,d0.w),(a1)+
-	move.l	4(a0,d0.w),(a1)
-	rts
+		lea		(v_pal_dry+4).w,a1
+		move.l	(a0,d0.w),(a1)+
+		move.l	4(a0,d0.w),(a1)
+
+		; underwater palettes
+		cmpi.b	#id_LZ,(v_zone).w			; are we in Labyrinth Zone?
+		bne.s	.return3					; if not, branch
+		lea		(CyclingPal_LZUWTransformation).l,a0
+		cmpi.b	#3,(v_act).w				; are we in act 4 (SBZ3)?
+		bne.s	+							; if not, branch
+		lea		(CyclingPal_SBZ3UWTransformation).l,a0
+
++
+		lea		(v_pal_water+4).w,a1
+		move.l	(a0,d0.w),(a1)+
+		move.l	4(a0,d0.w),(a1)
+
+.return3:
+		rts
 ; End of function PalCycle_SuperSonic
 ; ===========================================================================
 ;----------------------------------------------------------------------------
