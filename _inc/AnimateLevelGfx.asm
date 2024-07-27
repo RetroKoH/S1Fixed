@@ -6,8 +6,8 @@
 
 
 AnimateLevelGfx:
-		tst.w	(f_pause).w	; is the game paused?
-		bne.s	.ispaused	; if yes, branch
+		tst.b	(f_pause).w				; is the game paused?
+		bne.s	.ispaused				; if yes, branch
 		lea		(vdp_data_port).l,a6
 		moveq	#0,d0
 		move.b	(v_zone).w,d0

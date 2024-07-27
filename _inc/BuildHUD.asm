@@ -27,7 +27,7 @@ BuildHUD:
 		addq.w	#2,d1						; set mapping frame time counter blink
 		bra.s	.goahead
 
-	.countup:
+.countup:
 	endif
 	; Blink at 9 minutes
 		btst	#3,(v_framebyte).w
@@ -60,9 +60,9 @@ BuildHUD:
 		add.w	d1,d1
 		adda.w	(a1,d1.w),a1				; load frame
 		move.b	(a1)+,d1					; load # of pieces in frame
-		subq.w	#1,d1
+		subq.b	#1,d1
 		bmi.s	.end
-		bsr.w	BuildSpr_Normal				; draw frame
+		bra.w	BuildSpr_Normal				; draw frame
 .end:
 		rts
 ; End of function BuildHUD

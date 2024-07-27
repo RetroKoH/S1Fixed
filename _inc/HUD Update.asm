@@ -31,7 +31,7 @@ HUD_Update:
 .chktime:
 		tst.b	(f_timecount).w				; does the time	need updating?
 		beq.w	.chklives					; if not, branch
-		tst.w	(f_pause).w					; is the game paused?
+		tst.b	(f_pause).w					; is the game paused?
 		bne.s	.chklives					; if yes, branch
 		lea		(v_time).w,a1
 
@@ -95,21 +95,21 @@ HUD_Update:
 	endif	; HUD Centiseconds End
 
 .chklives:
-		tst.b	(f_lifecount).w ; does the lives counter need updating?
-		beq.s	.chkbonus	; if not, branch
+		tst.b	(f_lifecount).w				; does the lives counter need updating?
+		beq.s	.chkbonus					; if not, branch
 		clr.b	(f_lifecount).w
 		bsr.w	Hud_Lives
 
 .chkbonus:
-		tst.b	(f_endactbonus).w ; do time/ring bonus counters need updating?
-		beq.s	.finish		; if not, branch
+		tst.b	(f_endactbonus).w			; do time/ring bonus counters need updating?
+		beq.s	.finish						; if not, branch
 		clr.b	(f_endactbonus).w
 		locVRAM	ArtTile_Bonuses*$20
 		moveq	#0,d1
-		move.w	(v_timebonus).w,d1 ; load time bonus
+		move.w	(v_timebonus).w,d1			; load time bonus
 		bsr.w	Hud_TimeRingBonus
 		moveq	#0,d1
-		move.w	(v_ringbonus).w,d1 ; load ring bonus
+		move.w	(v_ringbonus).w,d1			; load ring bonus
 		bra.w	Hud_TimeRingBonus
 
 .finish:

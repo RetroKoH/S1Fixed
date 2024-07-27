@@ -281,7 +281,8 @@ v_spritecount:		ds.b	1		; number of sprites on-screen
 v_pcyc_num:			ds.w	1		; palette cycling - current reference number
 v_pcyc_time:		ds.w	1		; palette cycling - time until the next change
 v_random:			ds.l	1		; pseudo random number buffer
-f_pause:			ds.w	1		; flag set to pause the game
+f_pause:			ds.b	1		; flag set to pause the game
+				ds.b	1		; unused
 
 v_palette_frame:	ds.w	1
 v_palette_timer:	ds.b	1

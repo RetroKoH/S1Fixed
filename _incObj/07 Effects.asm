@@ -51,7 +51,7 @@ Effects_MdSpindashDust:
 	endif
 
 Effects_MdDisplay:
-		lea		(Ani_Effects).l,a1
+		lea		Ani_Effects(pc),a1
 		jsr		(AnimateSprite).w
 		bsr.w	Effects_LoadGfx
 		jmp		(DisplaySprite).l
@@ -105,7 +105,7 @@ Effects_SkidDust:
 Effects_LoadGfx:
 		moveq	#0,d0
 		move.b	obFrame(a0),d0	; load frame number
-		lea		(DynPLC_Effects).l,a2
+		lea		DynPLC_Effects(pc),a2
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2
 		moveq	#0,d5

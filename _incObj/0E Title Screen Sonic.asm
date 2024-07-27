@@ -22,7 +22,7 @@ TSon_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Title_Sonic,1,0),obGfx(a0)
 		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#29,obDelayAni(a0)			; set time delay to 0.5 seconds
-		lea		(Ani_TSon).l,a1
+		lea		Ani_TSon(pc),a1
 		bsr.w	AnimateSprite
 
 TSon_Delay:	;Routine 2
@@ -38,14 +38,12 @@ TSon_Delay:	;Routine 2
 TSon_Move:	; Routine 4
 		subq.w	#8,obScreenY(a0)	; move Sonic up
 		cmpi.w	#$96,obScreenY(a0)	; has Sonic reached final position?
-		bne.s	.display			; if not, branch
+		bne.w	DisplaySprite		; if not, branch
 		addq.b	#2,obRoutine(a0)
-
-.display:
 		bra.w	DisplaySprite
 ; ===========================================================================
 
 TSon_Animate:	; Routine 6
-		lea		(Ani_TSon).l,a1
+		lea		Ani_TSon(pc),a1
 		bsr.w	AnimateSprite
 		bra.w	DisplaySprite

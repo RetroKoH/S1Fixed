@@ -171,18 +171,18 @@ Touch_Rings_NoAttraction:
 ; loc_17112:
 Touch_Rings_Loop:
 		tst.w	(a4)			; has this ring already been collided with?
-		bne.w	Touch_NextRing	; if it has, branch
+		bne.s	Touch_NextRing	; if it has, branch
 		move.w	(a1),d0			; get ring X pos
 		sub.w	d1,d0			; get ring left edge X pos
 		sub.w	d2,d0			; subtract Sonic's left edge X pos
 		bcc.s	.TRL_2			; if Sonic's to the left of the ring, branch
 		add.w	d6,d0			; add ring diameter
 		bcs.s	.TRL_3			; if Sonic's colliding, branch
-		bra.w	Touch_NextRing	; otherwise, test next ring
+		bra.s	Touch_NextRing	; otherwise, test next ring
 
 .TRL_2:
 		cmp.w	d4,d0			; has Sonic crossed the ring?
-		bhi.w	Touch_NextRing	; if he has, branch
+		bhi.s	Touch_NextRing	; if he has, branch
 
 .TRL_3:
 		move.w	2(a1),d0		; get ring Y pos
@@ -191,11 +191,11 @@ Touch_Rings_Loop:
 		bcc.s	.TRL_4			; if Sonic's above the ring, branch
 		add.w	d6,d0			; add ring diameter
 		bcs.s	.chkshield		; if Sonic's colliding, branch
-		bra.w	Touch_NextRing	; otherwise, test next ring
+		bra.s	Touch_NextRing	; otherwise, test next ring
 
 .TRL_4:
 		cmp.w	d5,d0			; has Sonic crossed the ring?
-		bhi.w	Touch_NextRing	; if he has, branch
+		bhi.s	Touch_NextRing	; if he has, branch
 
 .chkshield:
 	if ShieldsMode>1
@@ -219,7 +219,7 @@ Touch_NextRing:
 		addq.w	#4,a1
 		addq.w	#2,a4
 		cmpa.l	a1,a2				; are we at the last ring for this area?
-		bne.w	Touch_Rings_Loop	; if not, branch
+		bne.s	Touch_Rings_Loop	; if not, branch
 
 ; return_17166:
 Touch_Rings_Done:

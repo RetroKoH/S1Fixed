@@ -34,7 +34,7 @@ PSB_Main:	; Routine 0
 ; ===========================================================================
 
 PSB_PrsStart:	; Routine 2
-		lea		(Ani_PSBTM).l,a1
+		lea		Ani_PSBTM(pc),a1
 		bsr.w	AnimateSprite				; "PRESS START" is animated
 		bra.w	DisplaySprite
 ; ===========================================================================

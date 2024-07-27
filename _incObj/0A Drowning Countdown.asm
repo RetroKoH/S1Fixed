@@ -56,7 +56,7 @@ Drown_Main:	; Routine 0
 		move.w	#-$88,obVelY(a0)
 
 Drown_Animate:	; Routine 2
-		lea		(Ani_Drown).l,a1
+		lea		Ani_Drown(pc),a1
 		jsr		(AnimateSprite).w
 
 Drown_ChkWater:	; Routine 4
@@ -82,7 +82,7 @@ Drown_ChkWater:	; Routine 4
 		move.b	obAngle(a0),d0
 		addq.b	#1,obAngle(a0)
 		andi.w	#$7F,d0
-		lea		(Drown_WobbleData).l,a1
+		lea		Drown_WobbleData(pc),a1
 		move.b	(a1,d0.w),d0
 		ext.w	d0
 		add.w	drown_origX(a0),d0
@@ -99,7 +99,7 @@ Drown_ChkWater:	; Routine 4
 
 Drown_Display:	; Routine 6, Routine $E
 		bsr.s	Drown_ShowNumber
-		lea		(Ani_Drown).l,a1
+		lea		Ani_Drown(pc),a1
 		jsr		(AnimateSprite).w
 		jmp		(DisplaySprite).l
 ; ===========================================================================
@@ -119,7 +119,7 @@ Drown_AirLeft:	; Routine $C
 ; ===========================================================================
 
 .display:
-		lea		(Ani_Drown).l,a1
+		lea		Ani_Drown(pc),a1
 		jsr		(AnimateSprite).w
 		tst.b	obRender(a0)
 		bpl.s	Drown_AirLeft_Delete
@@ -202,7 +202,7 @@ Drown_Countdown:; Routine $A
 		bhi.s	.reduceair		; if air is above 12, branch
 
 		bne.s	.skipmusic		; if air is less than 12, branch
-		move.w	#bgm_Drowning,d0
+		move.b	#bgm_Drowning,d0
 		jsr		(PlaySound).w	; play countdown music
 
 .skipmusic:
@@ -217,7 +217,7 @@ Drown_Countdown:; Routine $A
 ; ===========================================================================
 
 .warnsound:
-		move.w	#sfx_Warning,d0
+		move.b	#sfx_Warning,d0
 		jsr		(PlaySound_Special).w		; play "ding-ding" warning sound
 
 .reduceair:
@@ -227,7 +227,7 @@ Drown_Countdown:; Routine $A
 		; Sonic drowns here
 		bsr.w	ResumeMusic
 		move.b	#$81,(f_playerctrl).w	; lock controls and disable object interaction
-		move.w	#sfx_Drown,d0
+		move.b	#sfx_Drown,d0
 		jsr		(PlaySound_Special).w	; play drowning sound
 		move.b	#$A,objoff_34(a0)
 		move.w	#1,objoff_36(a0)

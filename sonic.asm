@@ -592,7 +592,7 @@ VBla_08:
 		writeVRAM	v_hscrolltablebuffer,$380,vram_hscroll
 		writeVRAM	v_spritetablebuffer,$280,vram_sprites
 
-		jsr		(ProcessDMAQueue).l	; Mercury Use DMA Queue
+		bsr.w		ProcessDMAQueue	; Mercury Use DMA Queue
 
 		; removed Z80 macro
 		movem.l	(v_screenposx).w,d0-d7
@@ -637,7 +637,7 @@ VBla_0A:
 		; removed Z80 macro
 		bsr.w	PalCycle_SS
 		
-		jsr		(ProcessDMAQueue).l	; Mercury Use DMA Queue
+		bsr.w		ProcessDMAQueue	; Mercury Use DMA Queue
 
 	if DynamicSpecialStageWalls=1 ; Mercury Dynamic Special Stage Walls
 		cmpi.b	#96,(v_hbla_line).w
@@ -678,7 +678,7 @@ VBla_0C:
 		writeVRAM	v_hscrolltablebuffer,$380,vram_hscroll
 		writeVRAM	v_spritetablebuffer,$280,vram_sprites
 		
-		jsr		(ProcessDMAQueue).l	; Mercury Use DMA Queue
+		bsr.w		ProcessDMAQueue	; Mercury Use DMA Queue
 
 		; removed Z80 macro
 		movem.l	(v_screenposx).w,d0-d7
@@ -713,7 +713,7 @@ VBla_16:
 		writeVRAM	v_hscrolltablebuffer,$380,vram_hscroll
 		; removed Z80 macro
 		
-		jsr		(ProcessDMAQueue).l	; Mercury Use DMA Queue
+		bsr.w		ProcessDMAQueue	; Mercury Use DMA Queue
 
 	if DynamicSpecialStageWalls=1 ; Mercury Dynamic Special Stage Walls
 		cmpi.b	#96,(v_hbla_line).w
@@ -879,25 +879,24 @@ ReadJoypads:
 
 
 VDPSetupGame:
-		lea	(vdp_control_port).l,a0
-		lea	(vdp_data_port).l,a1
-		lea	(VDPSetupArray).l,a2
+		lea		(vdp_control_port).l,a0
+		lea		(vdp_data_port).l,a1
+		lea		VDPSetupArray(pc),a2
 		moveq	#$12,d7
 
 .setreg:
 		move.w	(a2)+,(a0)
-		dbf	d7,.setreg	; set the VDP registers
+		dbf		d7,.setreg	; set the VDP registers
 
-		move.w	(VDPSetupArray+2).l,d0
-		move.w	d0,(v_vdp_buffer1).w
-		move.w	#$8A00+223,(v_hbla_hreg).w	; H-INT every 224th scanline
+		move.w	VDPSetupArray+2(pc),(v_vdp_buffer1).w	; Saves 8 cycles
+		move.w	#$8A00+223,(v_hbla_hreg).w				; H-INT every 224th scanline
 		moveq	#0,d0
-		move.l	#$C0000000,(vdp_control_port).l ; set VDP to CRAM write
-		move.w	#$3F,d7
+		move.l	#$C0000000,(vdp_control_port).l			; set VDP to CRAM write
+		moveq	#$3F,d7
 
 .clrCRAM:
 		move.w	d0,(a1)
-		dbf	d7,.clrCRAM	; clear	the CRAM
+		dbf		d7,.clrCRAM	; clear	the CRAM
 
 		clr.l	(v_scrposy_vdp).w
 		clr.l	(v_scrposx_vdp).w
@@ -908,7 +907,8 @@ VDPSetupGame:
 ; End of function VDPSetupGame
 
 ; ===========================================================================
-VDPSetupArray:	dc.w $8004		; 8-colour mode
+VDPSetupArray:
+		dc.w $8004		; 8-colour mode
 		dc.w $8134		; enable V.interrupts, enable DMA
 		dc.w $8200+(vram_fg>>10) ; set foreground nametable address
 		dc.w $8300+($A000>>10)	; set window nametable address
@@ -1097,12 +1097,12 @@ NewPLC:
 
 
 ClearPLC:
-		lea	(v_plc_buffer).w,a2 ; PLC buffer space in RAM
+		lea		(v_plc_buffer).w,a2 ; PLC buffer space in RAM
 		moveq	#(v_plc_buffer_end-v_plc_buffer)/4-1,d0
 
 .loop:
 		clr.l	(a2)+
-		dbf	d0,.loop
+		dbf		d0,.loop
 		rts	
 ; End of function ClearPLC
 
@@ -1119,8 +1119,8 @@ RunPLC:
 		tst.w	(v_plc_patternsleft).w
 		bne.s	Rplc_Exit
 		movea.l	(v_plc_buffer).w,a0
-		lea	(NemDec_WriteRowToVDP).l,a3
-		lea	(v_ngfx_buffer).w,a1
+		lea		NemDec_WriteRowToVDP(pc),a3
+		lea		(v_ngfx_buffer).w,a1
 		move.w	(a0)+,d2
 		bpl.s	loc_160E
 		adda.w	#$A,a3
@@ -1152,7 +1152,7 @@ Rplc_Exit:
 
 sub_1642:
 		tst.w	(v_plc_patternsleft).w
-		beq.w	locret_16DA
+		beq.s	Rplc_Exit
 		move.w	#9,(v_plc_framepatternsleft).w
 		moveq	#0,d0
 		move.w	(v_plc_buffer+4).w,d0
@@ -3097,7 +3097,7 @@ loc_491C:
 
 
 PalCycle_SS:
-		tst.w	(f_pause).w
+		tst.b	(f_pause).w
 		bne.s	locret_49E6
 		subq.w	#1,(v_palss_time).w
 		bpl.s	locret_49E6
@@ -6298,6 +6298,8 @@ Map_SStars:	include	"_maps/Super Stars.asm"
 
 	if (SpinDashEnabled|SkidDustEnabled)=1
 		include "_incObj/07 Effects.asm"	; Skid Dust and/or Spindash Dust
+		include "_maps/Effects - DPLCs.asm"
+		include "_anim/Effects.asm"
 	endif
 
 ; ===========================================================================
@@ -6539,6 +6541,8 @@ loc_12EA6:
 		include	"_incObj/Sonic LoadGfx.asm"
 
 		include "_incObj/sub ApplySpeedSettings.asm"
+
+		include	"_anim/Drowning Countdown.asm"
 		include	"_incObj/0A Drowning Countdown.asm"
 
 
@@ -6585,17 +6589,18 @@ ResumeMusic:
 
 ; ===========================================================================
 
-				include	"_anim/Drowning Countdown.asm"
+				
 Map_Drown:		include	"_maps/Drowning Countdown.asm"
+Map_Shield:		include	"_maps/Shield and Invincibility.asm"
 
 				include	"_incObj/38 Shield.asm"
 				include	"_incObj/4F Invincibility.asm"						; Split from Shields (RetroKoH)
 				include	"_incObj/4A Special Stage Entry (Unused).asm"
 				include	"_incObj/03 Collision Switcher.asm"
 				include	"_incObj/08 Water Splash.asm"
+				include	"_anim/Water Splash.asm"
 
 				include	"_anim/Shield and Invincibility.asm"
-Map_Shield:		include	"_maps/Shield and Invincibility.asm"
 				include "_maps/Shield and Invincibility - DPLCs.asm"		; RetroKoH VRAM Overhaul
 
 	if ShieldsMode>0
@@ -6615,7 +6620,6 @@ Map_Shield:		include	"_maps/Shield and Invincibility.asm"
 
 Map_Vanish:	include	"_maps/Special Stage Entry (Unused).asm"
 Map_PathSwapper: include "_maps/Collision Switcher.asm"
-		include	"_anim/Water Splash.asm"
 Map_Splash:	include	"_maps/Water Splash.asm"
 
 		include	"_incObj/Sonic AnglePos.asm"
@@ -8170,11 +8174,8 @@ Art_BigRing:	binclude	"artunc/Giant Ring.bin"				; Giant Ring -- RetroKoH VRAM O
 	if (SpinDashEnabled|SkidDustEnabled)=1
 Art_Effects:	binclude	"artunc/Dust Effects.bin"			; Spindash/Skid Dust
 		even
+				include "_maps/Effects.asm"
 	endif
-
-		include "_maps/Effects.asm"
-		include "_maps/Effects - DPLCs.asm"
-		include "_anim/Effects.asm"
 
 ; AURORA☆FIELDS Title Card Optimization
 Art_TitleCard:	binclude	"artunc/Title Cards.bin"			; Title Card patterns

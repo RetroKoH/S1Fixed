@@ -7,41 +7,41 @@
 
 HUD_Update_SS:
 		lea		(vdp_data_port).l,a6
-		tst.w	(v_debuguse).w							; is debug mode	on?
-		bne.w	HudDebug_SS								; if yes, branch
-		tst.b	(f_scorecount).w						; does the score need updating?
-		beq.s	.chkrings								; if not, branch
+		tst.w	(v_debuguse).w				; is debug mode	on?
+		bne.w	HudDebug_SS					; if yes, branch
+		tst.b	(f_scorecount).w			; does the score need updating?
+		beq.s	.chkrings					; if not, branch
 
 		clr.b	(f_scorecount).w
-		locVRAM	(ArtTile_SS_HUD+$18)*$20,d0				; ($4220) set VRAM address -- RetroKoH VRAM Overhaul		
-		move.l	(v_score).w,d1							; load score
+		locVRAM	(ArtTile_SS_HUD+$18)*$20,d0	; ($4220) set VRAM address -- RetroKoH VRAM Overhaul		
+		move.l	(v_score).w,d1				; load score
 		bsr.w	Hud_Score
 
 .chkrings:
-		tst.b	(f_ringcount).w							; does the ring	counter	need updating?
-		beq.s	.chktime								; if not, branch
+		tst.b	(f_ringcount).w				; does the ring	counter	need updating?
+		beq.s	.chktime					; if not, branch
 		bpl.s	.notzero
-		bsr.w	Hud_LoadZero_SS							; reset rings count to 0
+		bsr.w	Hud_LoadZero_SS				; reset rings count to 0
 
 .notzero:
 		clr.b	(f_ringcount).w
-		locVRAM	(ArtTile_SS_HUD+$2E)*$20,d0				; ($44E0) set VRAM address -- RetroKoH VRAM Overhaul
+		locVRAM	(ArtTile_SS_HUD+$2E)*$20,d0	; ($44E0) set VRAM address -- RetroKoH VRAM Overhaul
 		moveq	#0,d1
-		move.w	(v_rings).w,d1							; load number of rings
+		move.w	(v_rings).w,d1				; load number of rings
 		bsr.w	Hud_Rings
 
 .chktime:
-		tst.b	(f_timecount).w							; does the time	need updating?
-		beq.w	.chklives								; if not, branch
-		tst.w	(f_pause).w								; is the game paused?
-		bne.w	.chklives								; if yes, branch
+		tst.b	(f_timecount).w				; does the time	need updating?
+		beq.w	.chklives					; if not, branch
+		tst.b	(f_pause).w					; is the game paused?
+		bne.w	.chklives					; if yes, branch
 		lea		(v_time).w,a1
 
 	if TimeLimitInSpecialStage=1	; Mercury Time Limit In Special Stage
 
 		if HUDCentiseconds=1	;Mercury HUD Centiseconds
-			tst.l	(a1)+				; has the time run out?
-			beq.w	TimeOver_SS			; if yes, branch
+			tst.l	(a1)+					; has the time run out?
+			beq.w	TimeOver_SS				; if yes, branch
 			move.b	(v_centstep).w,d1
 			addi.b	#1,d1
 			cmpi.b	#3,d1
@@ -58,14 +58,14 @@ HUD_Update_SS:
 			sub.b	d1,-(a1)
 			cmpi.b	#-1,(a1)
 			bgt.s	.docent
-			move.b	#99,(a1)			; set cent to 59
+			move.b	#99,(a1)				; set cent to 59
 		else
-			tst.l	(a1)+				; has the time run out?
-			beq.w	TimeOver_SS			; if yes, branch
-			subq.b	#1,-(a1)			; dec jiffy
-			cmpi.b	#-1,(a1)			; if -1
+			tst.l	(a1)+					; has the time run out?
+			beq.w	TimeOver_SS				; if yes, branch
+			subq.b	#1,-(a1)				; dec jiffy
+			cmpi.b	#-1,(a1)				; if -1
 			bgt.s	.chklives
-			move.b	#59,(a1)			; set jiffy to 59
+			move.b	#59,(a1)				; set jiffy to 59
 		endif	; HUD Centiseconds End
 
 		subq.b	#1,-(a1)		; dec sec

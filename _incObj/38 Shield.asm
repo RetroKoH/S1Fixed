@@ -114,7 +114,7 @@ Shi_Shield:	; Routine 2
 .noshift:
 	; Shield/Invincibility Positioning Fix End
 
-		lea		(Ani_Shield).l,a1
+		lea		Ani_Shield(pc),a1
 		jsr		(AnimateSprite).w
 		bsr.w	Shield_LoadGfx		; RetroKoH VRAM Overhaul
 		jmp		(DisplaySprite).l
@@ -150,7 +150,7 @@ Shi_Insta:	; Routine 4
 		move.w	(v_player+obY).w,obY(a0)
 		move.b	(v_player+obStatus).w,obStatus(a0)
 		andi.b	#maskFlipX,obStatus(a0)					; Copy first bit, so the Shield is always facing in the same direction as the player.
-		lea		(Ani_Shield).l,a1
+		lea		Ani_Shield(pc),a1
 		jsr		(AnimateSprite).w
 		cmpi.b	#7,obFrame(a0)
 		bne.s	.chkframe
@@ -217,7 +217,7 @@ Shi_Flame:	; Routine 6
 .noshift:
 	; Shield/Invincibility Positioning Fix End
 
-		lea		(Ani_Shield).l,a1
+		lea		Ani_Shield(pc),a1
 		jsr		(AnimateSprite).w
 		move.w	#priority1,obPriority(a0)
 		cmpi.b	#$F,obFrame(a0)
@@ -301,7 +301,7 @@ Shi_Bubble:	; Routine 8
 .noshift:
 	; Shield/Invincibility Positioning Fix End
 
-		lea		(Ani_Shield).l,a1
+		lea		Ani_Shield(pc),a1
 		jsr		(AnimateSprite).w
 		move.w	#priority1,obPriority(a0)
 		cmpi.b	#$F,obFrame(a0)
@@ -373,7 +373,7 @@ Shi_Lightning:	; Routine $A
 		move.b	#aniID_LightningShield,obAnim(a0)
 
 .animate:
-		lea		(Ani_Shield).l,a1
+		lea		Ani_Shield(pc),a1
 		jsr		(AnimateSprite).w
 		move.w	#priority1,obPriority(a0)
 		cmpi.b	#$F,obFrame(a0)
@@ -468,7 +468,7 @@ Shi_FlameDissipate: ; Routine $C
 Shi_LightningSpark: ; Routine $E
 		jsr		(SpeedToPos).l
 		addi.w	#$18,obVelY(a0)
-		lea		(Ani_Shield).l,a1
+		lea		Ani_Shield(pc),a1
 		jsr		(AnimateSprite).w
 		cmpi.b	#$E,obRoutine(a0)
 		bne.s	.delete

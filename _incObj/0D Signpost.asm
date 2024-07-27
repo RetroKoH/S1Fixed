@@ -11,7 +11,7 @@ Signpost:
 		move.b	obRoutine(a0),d0
 		move.w	Sign_Index(pc,d0.w),d1
 		jsr		Sign_Index(pc,d1.w)
-		lea		(Ani_Sign).l,a1
+		lea		Ani_Sign(pc),a1
 		jsr		(AnimateSprite).w
 	; RetroKoH VRAM Overhaul Edit
 	; The code below checks how close to the signpost the camera is,
@@ -54,7 +54,7 @@ Sign_Touch:	; Routine 2
 		bcs.s	.notouch
 		cmpi.w	#$20,d0								; is Sonic within $20 pixels of	the signpost?
 		bhs.s	.notouch							; if not, branch
-		move.w	#sfx_Signpost,d0
+		move.b	#sfx_Signpost,d0
 		jsr		(PlaySound).w						; play signpost sound
 		clr.b	(v_player+obShoes).w				; Mercury Remove Speed Shoes At Signpost Fix (Moved from the Got_Through Card and improved) -- RetroKoH Sonic SST Compaction
 		clr.b	(f_timecount).w						; stop time counter
@@ -66,22 +66,22 @@ Sign_Touch:	; Routine 2
 ; ===========================================================================
 
 Sign_Spin:	; Routine 4
-		subq.w	#1,spintime(a0)		; subtract 1 from spin time
-		bpl.s	.chksparkle			; if time remains, branch
-		move.w	#60,spintime(a0)	; set spin cycle time to 1 second
-		addq.b	#1,obAnim(a0)		; next spin cycle
-		cmpi.b	#3,obAnim(a0)		; have 3 spin cycles completed?
-		bne.s	.chksparkle			; if not, branch
+		subq.w	#1,spintime(a0)			; subtract 1 from spin time
+		bpl.s	.chksparkle				; if time remains, branch
+		move.w	#60,spintime(a0)		; set spin cycle time to 1 second
+		addq.b	#1,obAnim(a0)			; next spin cycle
+		cmpi.b	#3,obAnim(a0)			; have 3 spin cycles completed?
+		bne.s	.chksparkle				; if not, branch
 	if EndLevelFadeMusic=1
 		move.b	#bgm_Fade,d0
-		jsr		PlaySound_Special	; fade out music (RetroKoH)
+		jsr		(PlaySound_Special).w	; fade out music (RetroKoH)
 	endif
 		addq.b	#2,obRoutine(a0)
 
 .chksparkle:
-		subq.w	#1,sparkletime(a0) ; subtract 1 from time delay
-		bpl.s	.fail		; if time remains, branch
-		move.w	#$B,sparkletime(a0) ; set time between sparkles to $B frames
+		subq.w	#1,sparkletime(a0)		; subtract 1 from time delay
+		bpl.s	.fail					; if time remains, branch
+		move.w	#$B,sparkletime(a0)		; set time between sparkles to $B frames
 		moveq	#0,d0
 		move.b	sparkle_id(a0),d0 ; get sparkle id
 		addq.b	#2,sparkle_id(a0) ; increment sparkle counter
@@ -187,12 +187,12 @@ GotThroughAct:
 
 .hastimebonus:
 		add.w	d0,d0
-		move.w	TimeBonuses(pc,d0.w),(v_timebonus).w ; set time bonus
-		move.w	(v_rings).w,d0	; load number of rings
-		mulu.w	#10,d0		; multiply by 10
-		move.w	d0,(v_ringbonus).w ; set ring bonus
-		move.w	#bgm_GotThrough,d0
-		jsr		(PlaySound_Special).w	; play "Sonic got through" music
+		move.w	TimeBonuses(pc,d0.w),(v_timebonus).w	; set time bonus
+		move.w	(v_rings).w,d0							; load number of rings
+		mulu.w	#10,d0									; multiply by 10
+		move.w	d0,(v_ringbonus).w						; set ring bonus
+		move.b	#bgm_GotThrough,d0
+		jmp		(PlaySound_Special).w					; play "Sonic got through" music
 
 locret_ECEE:
 		rts	

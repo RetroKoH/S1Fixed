@@ -38,17 +38,17 @@ Surf_Action:	; Routine 2
 		move.w	d1,obY(a0)	; match	obj y-position to water	height
 		tst.b	surf_freeze(a0)
 		bne.s	.stopped
-		btst	#bitStart,(v_jpadpress1).w ; is Start button pressed?
-		beq.s	.animate	; if not, branch
-		addq.b	#3,obFrame(a0)	; use different	frames
-		move.b	#1,surf_freeze(a0) ; stop animation
+		btst	#bitStart,(v_jpadpress1).w	; is Start button pressed?
+		beq.s	.animate					; if not, branch
+		addq.b	#3,obFrame(a0)				; use different	frames
+		move.b	#1,surf_freeze(a0)			; stop animation
 		bra.w	DisplaySprite
 ; ===========================================================================
 
 .stopped:
-		tst.w	(f_pause).w	; is the game paused?
+		tst.b	(f_pause).w		; is the game paused?
 		bne.w	DisplaySprite	; if yes, branch
-		clr.b	surf_freeze(a0) ; resume animation
+		clr.b	surf_freeze(a0)	; resume animation
 		subq.b	#3,obFrame(a0)	; use normal frames
 
 .animate:

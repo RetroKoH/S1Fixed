@@ -107,7 +107,7 @@ LevSz_StartLoc:
 		move.w	(v_creditsnum).w,d0
 		subq.w	#1,d0
 		lsl.w	#2,d0
-		lea	EndingStLocArray(pc,d0.w),a1 ; load Sonic's start location
+		lea		EndingStLocArray(pc,d0.w),a1 ; load Sonic's start location
 
 LevSz_SonicPos:
 		moveq	#0,d1
@@ -162,7 +162,7 @@ SetScr_WithinTop:
 
 SetScr_WithinBottom:
 		move.w	d0,(v_screenposy).w ; set vertical screen position
-		bra.w	BgScrollSpeed
+		bra.s	BgScrollSpeed
 
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
