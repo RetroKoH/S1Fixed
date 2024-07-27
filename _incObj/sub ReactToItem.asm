@@ -212,7 +212,12 @@ React_Monitor:
 .spinning:
 		neg.w	obVelY(a0)				; reverse Sonic's y-motion
 	if ReboundMod=1	; Mercury Rebound Mod
+		tst.b	obJumping(a0)
+		bne.s	.isjumping
 		move.b	#1,obJumping(a0)
+		move.b	#3,obDoubleJumpFlag(a0)	; disable double jumps if we didn't jump
+
+.isjumping:
 	endif	; end Rebound Mod
 		addq.b	#2,obRoutine(a1)		; advance the monitor's routine counter
 
@@ -282,7 +287,12 @@ React_Enemy:
 		bhs.s	.bounceup
 		neg.w	obVelY(a0)
 	if ReboundMod=1	; Mercury Rebound Mod
+		tst.b	obJumping(a0)
+		bne.s	.isjumping
 		move.b	#1,obJumping(a0)
+		move.b	#3,obDoubleJumpFlag(a0)	; disable double jumps if we didn't jump
+
+.isjumping:
 	endif	; end Rebound Mod
 		rts
 ; ===========================================================================
