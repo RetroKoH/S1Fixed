@@ -21,7 +21,6 @@ LabyrinthBlock:
 		bne.s	LBlk_Action
 	; Object Routine Optimization End
 
-
 LBlk_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_LBlock,obMap(a0)
@@ -29,28 +28,28 @@ LBlk_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		moveq	#0,d0
-		move.b	obSubtype(a0),d0		; get block type
-		lsr.w	#3,d0					; read only the 1st digit
+		move.b	obSubtype(a0),d0			; get block type
+		lsr.w	#3,d0						; read only the 1st digit
 		andi.w	#$E,d0
 		lea		LBlk_Var(pc,d0.w),a2
-		move.b	(a2)+,obActWid(a0)		; set width
-		move.b	(a2),obHeight(a0)		; set height
+		move.b	(a2)+,obActWid(a0)			; set width
+		move.b	(a2),obHeight(a0)			; set height
 		lsr.w	#1,d0
 		move.b	d0,obFrame(a0)
 		move.w	obX(a0),lblk_origX(a0)
 		move.w	obY(a0),lblk_origY(a0)
-		move.b	obSubtype(a0),d0		; get block type
-		andi.b	#$F,d0					; read only the 2nd digit
-		beq.s	LBlk_Action				; branch if 0
+		move.b	obSubtype(a0),d0			; get block type
+		andi.b	#$F,d0						; read only the 2nd digit
+		beq.s	LBlk_Action					; branch if 0
 		cmpi.b	#7,d0
-		beq.s	LBlk_Action				; branch if 7
+		beq.s	LBlk_Action					; branch if 7
 		move.b	#1,lblk_untouched(a0)
 
 LBlk_Action:	; Routine 2
 		move.w	obX(a0),-(sp)
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
-		andi.w	#$F,d0					; read only the 2nd digit (it does this EVERY frame. Let's optimize this)
+		andi.w	#$F,d0						; read only the 2nd digit (it does this EVERY frame. Let's optimize this)
 		add.w	d0,d0
 		move.w	.index(pc,d0.w),d1
 		jsr		.index(pc,d1.w)
@@ -136,8 +135,8 @@ LBlk_Action:	; Routine 2
 
 .type05:
 		cmpi.b	#1,objoff_3F(a0)	; is Sonic touching the	block?
-		bne.s	.notouch05	; if not, branch
-		addq.b	#1,obSubtype(a0) ; goto .type06
+		bne.s	.notouch05			; if not, branch
+		addq.b	#1,obSubtype(a0)	; goto .type06
 		clr.b	lblk_untouched(a0)
 
 .notouch05:
@@ -154,11 +153,11 @@ LBlk_Action:	; Routine 2
 		moveq	#-2,d0
 
 .loc_1214E:
-		add.w	d0,obY(a0)	; make the block rise with water level
+		add.w	d0,obY(a0)		; make the block rise with water level
 		bsr.w	ObjHitCeiling
-		tst.w	d1		; has block hit the ceiling?
+		tst.w	d1				; has block hit the ceiling?
 		bpl.w	.noceiling07	; if not, branch
-		sub.w	d1,obY(a0)	; stop block
+		sub.w	d1,obY(a0)		; stop block
 
 .noceiling07:
 		rts	

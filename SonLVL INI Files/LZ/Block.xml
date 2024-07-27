@@ -6,15 +6,15 @@
       <MapFile type="ASM" filename="../_maps/LZ Blocks.asm" frame="0" startpal="2"/>
     </ImageFromMappings>
     <ImageFromMappings id="wideplatform">
-      <ArtFile filename="../artnem/LZ Rising Platform.nem" offset="3360"/>
+      <ArtFile filename="../artnem/LZ Rising Platform.nem" offset="2816"/>
       <MapFile type="ASM" filename="../_maps/LZ Blocks.asm" frame="1" startpal="2"/>
     </ImageFromMappings>
     <ImageFromMappings id="cork">
-      <ArtFile filename="../artnem/LZ Cork.nem" offset="9024"/>
+      <ArtFile filename="../artnem/LZ Cork.nem" offset="4576"/>
       <MapFile type="ASM" filename="../_maps/LZ Blocks.asm" frame="2" startpal="2"/>
     </ImageFromMappings>
     <ImageFromMappings id="staticplatform">
-      <ArtFile filename="../artnem/LZ 32x32 Block.nem" offset="48960" />
+      <ArtFile filename="../artnem/LZ 32x32 Block.nem" offset="50560"/>
       <MapFile type="ASM" filename="../_maps/LZ Blocks.asm" frame="3" startpal="3"/>
     </ImageFromMappings>
   </Images>

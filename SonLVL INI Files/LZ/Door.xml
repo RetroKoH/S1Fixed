@@ -6,7 +6,7 @@
       <MapFile type="ASM" filename="../_maps/Floating Blocks and Doors.asm" frame="6" startpal="2"/>
     </ImageFromMappings>
     <ImageFromMappings id="horizontal">
-      <ArtFile filename="../artnem/LZ Horizontal Door.nem" offset="1088"/>
+      <ArtFile filename="../artnem/LZ Horizontal Door.nem" offset="832"/>
       <MapFile type="ASM" filename="../_maps/Floating Blocks and Doors.asm" frame="7" startpal="2"/>
     </ImageFromMappings>
   </Images>

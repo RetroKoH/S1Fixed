@@ -1,5 +1,5 @@
 ; ---------------------------------------------------------------------------
-; Sprite mappings - monitors
+; Sprite mappings - monitors (standard)
 ; Corrected art by Mercury. Adjustments for VRAM made by RetroKoH
 ; ---------------------------------------------------------------------------
 Map_Monitor_internal:	mappingsTable
@@ -12,13 +12,6 @@ Map_Monitor_internal:	mappingsTable
 	mappingsTableEntry.w	.shield
 	mappingsTableEntry.w	.invincible
 	mappingsTableEntry.w	.rings
-
-	if ShieldsMode>1
-	mappingsTableEntry.w	.fshield	; Added
-	mappingsTableEntry.w	.bshield	; Added
-	mappingsTableEntry.w	.lshield	; Added
-	endif
-
 	mappingsTableEntry.w	.s
 	mappingsTableEntry.w	.goggles
 	mappingsTableEntry.w	.broken

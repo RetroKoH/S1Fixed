@@ -5283,7 +5283,13 @@ Map_GRing:	include	"_maps/Giant Ring.asm"
 		include	"_incObj/2E Monitor Content Power-Up.asm"
 		include	"_incObj/26 Monitor (SolidSides subroutine).asm"
 		include	"_anim/Monitor.asm"
+
+; Split these into seperate files so SonLVL can render monitors properly	
+	if ShieldsMode<2
 Map_Monitor:	include	"_maps/Monitor.asm"
+	else
+Map_Monitor:	include	"_maps/Monitor - S3K.asm"
+	endif
 
 		include	"_incObj/0E Title Screen Sonic.asm"
 		include	"_incObj/0F Press Start and TM.asm"
@@ -8820,39 +8826,39 @@ ObjPosSBZPlatform_Index:
 		dc.b $FF, $FF, 0, 0, 0,	0
 
 	if ShieldsMode>1
-ObjPos_GHZ1:	binclude	"objpos/Elemental Monitors/ghz1.bin"
+ObjPos_GHZ1:	binclude	"objpos/S3K Monitors/ghz1.bin"
 		even
-ObjPos_GHZ2:	binclude	"objpos/Elemental Monitors/ghz2.bin"
+ObjPos_GHZ2:	binclude	"objpos/S3K Monitors/ghz2.bin"
 		even
-ObjPos_GHZ3:	binclude	"objpos/Elemental Monitors/ghz3.bin"
+ObjPos_GHZ3:	binclude	"objpos/S3K Monitors/ghz3.bin"
 		even
-ObjPos_LZ1:		binclude	"objpos/Elemental Monitors/lz1.bin"
+ObjPos_LZ1:		binclude	"objpos/S3K Monitors/lz1.bin"
 		even
-ObjPos_LZ2:		binclude	"objpos/Elemental Monitors/lz2.bin"
+ObjPos_LZ2:		binclude	"objpos/S3K Monitors/lz2.bin"
 		even
-ObjPos_LZ3:		binclude	"objpos/Elemental Monitors/lz3.bin"
+ObjPos_LZ3:		binclude	"objpos/S3K Monitors/lz3.bin"
 		even
-ObjPos_MZ1:		binclude	"objpos/Elemental Monitors/mz1.bin"
+ObjPos_MZ1:		binclude	"objpos/S3K Monitors/mz1.bin"
 		even
-ObjPos_MZ2:		binclude	"objpos/Elemental Monitors/mz2.bin"
+ObjPos_MZ2:		binclude	"objpos/S3K Monitors/mz2.bin"
 		even
-ObjPos_MZ3:		binclude	"objpos/Elemental Monitors/mz3.bin"
+ObjPos_MZ3:		binclude	"objpos/S3K Monitors/mz3.bin"
 		even
-ObjPos_SLZ1:	binclude	"objpos/Elemental Monitors/slz1.bin"
+ObjPos_SLZ1:	binclude	"objpos/S3K Monitors/slz1.bin"
 		even
-ObjPos_SLZ2:	binclude	"objpos/Elemental Monitors/slz2.bin"
+ObjPos_SLZ2:	binclude	"objpos/S3K Monitors/slz2.bin"
 		even
-ObjPos_SLZ3:	binclude	"objpos/Elemental Monitors/slz3.bin"
+ObjPos_SLZ3:	binclude	"objpos/S3K Monitors/slz3.bin"
 		even
-ObjPos_SYZ1:	binclude	"objpos/Elemental Monitors/syz1.bin"
+ObjPos_SYZ1:	binclude	"objpos/S3K Monitors/syz1.bin"
 		even
-ObjPos_SYZ2:	binclude	"objpos/Elemental Monitors/syz2.bin"
+ObjPos_SYZ2:	binclude	"objpos/S3K Monitors/syz2.bin"
 		even
-ObjPos_SYZ3:	binclude	"objpos/Elemental Monitors/syz3.bin"
+ObjPos_SYZ3:	binclude	"objpos/S3K Monitors/syz3.bin"
 		even
-ObjPos_SBZ1:	binclude	"objpos/Elemental Monitors/sbz1.bin"
+ObjPos_SBZ1:	binclude	"objpos/S3K Monitors/sbz1.bin"
 		even
-ObjPos_SBZ2:	binclude	"objpos/Elemental Monitors/sbz2.bin"
+ObjPos_SBZ2:	binclude	"objpos/S3K Monitors/sbz2.bin"
 		even
 
 	else
