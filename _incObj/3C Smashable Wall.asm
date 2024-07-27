@@ -2,19 +2,18 @@
 ; Object 3C - smashable	wall (GHZ, SLZ)
 ; ---------------------------------------------------------------------------
 
+smash_speed = objoff_30		; Sonic's horizontal speed
+
 SmashWall:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
-		move.w	Smash_Index(pc,d0.w),d1
-		jsr		Smash_Index(pc,d1.w)
+		jsr		Smash_Index(pc,d0.w)
 		bra.w	RememberState
 ; ===========================================================================
-Smash_Index:	offsetTable
-		offsetTableEntry.w Smash_Main
-		offsetTableEntry.w Smash_Solid
-		offsetTableEntry.w Smash_FragMove
-
-smash_speed = objoff_30		; Sonic's horizontal speed
+Smash_Index:
+		bra.s	Smash_Main
+		bra.s	Smash_Solid
+		bra.w	Smash_FragMove
 ; ===========================================================================
 
 Smash_Main:	; Routine 0
@@ -33,21 +32,21 @@ Smash_Main:	; Routine 0
 
 Smash_Solid:	; Routine 2
 		move.w	(v_player+obVelX).w,smash_speed(a0)	; load Sonic's horizontal speed
-		move.w	#$1B,d1
-		move.w	#$20,d2
-		move.w	#$20,d3
+		moveq	#$1B,d1								; save 4 cycles - Filter
+		moveq	#$20,d2								; save 4 cycles - Filter
+		move.w	d2,d3								; save 4 cycles - Filter
 		move.w	obX(a0),d4
 		bsr.w	SolidObject
 
 	if ShieldsMode>1
 		beq.s	.donothing
 
-;		tst.b	obCharID(a1)					; is the player Sonic?
-;		bne.s	.chkPush						; if not, skip and check if player is rolling on the ground
-		btst	#sta2ndFShield,obStatus2nd(a1)	; does Sonic have the Flame Shield
-		beq.s	.chkPush						; if not, skip and check if player is rolling on the ground
-		tst.b	obDoubleJumpFlag(a1)			; is Sonic using his ability?
-		bne.s	.cont							; if yes, branch. ABILITY TIME
+;		tst.b	obCharID(a1)						; is the player Sonic?
+;		bne.s	.chkPush							; if not, skip and check if player is rolling on the ground
+		btst	#sta2ndFShield,obStatus2nd(a1)		; does Sonic have the Flame Shield
+		beq.s	.chkPush							; if not, skip and check if player is rolling on the ground
+		cmpi.b	#8,(v_shieldobj+obAnim).w			; is Sonic using his ability? (Check Flame Shield's animation)
+		beq.s	.cont								; if yes, branch. ABILITY TIME
 
 	.chkPush:
 	endif
@@ -60,37 +59,41 @@ Smash_Solid:	; Routine 2
 ; ===========================================================================
 
 .chkroll:
-		cmpi.b	#aniID_Roll,obAnim(a1)	; is Sonic rolling?
-		bne.s	.donothing				; if not, branch
+	if SuperMod=1
+		btst	#sta2ndSuper,obStatus2nd(a1)	; is Sonic Super?
+		bne.s	.cont							; if yes, break wall
+	endif
+		cmpi.b	#aniID_Roll,obAnim(a1)			; is Sonic rolling?
+		bne.s	.donothing						; if not, branch
 		move.w	smash_speed(a0),d0
 		bpl.s	.chkspeed
 		neg.w	d0
 
 .chkspeed:
-		cmpi.w	#$480,d0	; is Sonic's speed $480 or higher?
-		blo.s	.donothing	; if not, branch
+		cmpi.w	#$480,d0						; is Sonic's speed $480 or higher?
+		blo.s	.donothing						; if not, branch
 
 .cont:
 		move.w	smash_speed(a0),obVelX(a1)
 		addq.w	#4,obX(a1)
-		lea		(Smash_FragSpd1).l,a4 ;	use fragments that move	right
+		lea		Smash_FragSpd1(pc),a4			; use fragments that move right -- save 4 cycles - Filter
 		move.w	obX(a0),d0
-		cmp.w	obX(a1),d0	; is Sonic to the right	of the block?
-		blo.s	.smash		; if yes, branch
+		cmp.w	obX(a1),d0						; is Sonic to the right	of the block?
+		blo.s	.smash							; if yes, branch
 		subq.w	#8,obX(a1)
-		lea		(Smash_FragSpd2).l,a4 ;	use fragments that move	left
+		lea		Smash_FragSpd2(pc),a4			; use fragments that move left -- save 4 cycles - Filter
 
 .smash:
 		move.w	obVelX(a1),obInertia(a1)
 		bclr	#staSonicPush,obStatus(a0)
 		bclr	#staPush,obStatus(a1)
-		moveq	#7,d1		; load 8 fragments
+		moveq	#7,d1							; load 8 fragments
 		move.w	#$70,d2
 		bsr.s	SmashObject
 
 Smash_FragMove:	; Routine 4
 		bsr.w	SpeedToPos
-		addi.w	#$70,obVelY(a0)	; make fragment	fall faster
+		addi.w	#$70,obVelY(a0)					; make fragment	fall faster
 		tst.b	obRender(a0)
 		bpl.w	DeleteObject
-		bra.w	DisplaySprite	; Clownacy DisplaySprite Fix
+		bra.w	DisplaySprite					; Clownacy DisplaySprite Fix
