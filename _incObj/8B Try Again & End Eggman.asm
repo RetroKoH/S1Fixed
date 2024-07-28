@@ -37,7 +37,7 @@ EEgg_Main:	; Routine 0
 		clr.b	obAnim(a0)						; use "TRY AGAIN" animation
 
 EEgg_Animate:	; Routine 2
-		lea		(Ani_EEgg).l,a1
+		lea		Ani_EEgg(pc),a1
 		jmp		(AnimateSprite).w
 ; ===========================================================================
 

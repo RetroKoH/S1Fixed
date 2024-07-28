@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - smashable green block (MZ)
 ; ---------------------------------------------------------------------------
-Map_Smab_internal:	mappingsTable
+Map_Smab:	mappingsTable
 	mappingsTableEntry.w	.two
 	mappingsTableEntry.w	.four
 

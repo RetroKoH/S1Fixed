@@ -2,7 +2,7 @@
 ; Sprite mappings - rings
 ; RetroKoH 8-Frame Rings Change
 ; ---------------------------------------------------------------------------
-Map_Ring_internal:	mappingsTable
+Map_Ring:	mappingsTable
 	mappingsTableEntry.w	.front
 	mappingsTableEntry.w	.angle1
 	mappingsTableEntry.w	.angle2

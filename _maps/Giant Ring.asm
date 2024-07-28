@@ -5,7 +5,7 @@
 
 ; RetroKoH VRAM Overhaul
 
-Map_GRing_internal:	mappingsTable
+Map_GRing:	mappingsTable
 	mappingsTableEntry.w	GRing_0 ; O
 	mappingsTableEntry.w	GRing_1 ; first rotation
 	mappingsTableEntry.w	GRing_2 ; second rotation (OLD first rotation)

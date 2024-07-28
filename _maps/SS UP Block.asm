@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - special stage "UP" block
 ; ---------------------------------------------------------------------------
-Map_SS_Up_internal:	mappingsTable
+Map_SS_Up:	mappingsTable
 	mappingsTableEntry.w	byte_1B944
 	mappingsTableEntry.w	byte_1B94A
 

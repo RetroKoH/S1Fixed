@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - special stage "DOWN" block
 ; ---------------------------------------------------------------------------
-Map_SS_Down_internal:	mappingsTable
+Map_SS_Down:	mappingsTable
 	mappingsTableEntry.w	byte_1B954
 	mappingsTableEntry.w	byte_1B95A
 

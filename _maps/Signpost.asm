@@ -2,7 +2,7 @@
 ; Sprite mappings - signpost
 ; RetroKoH VRAM Overhaul
 ; ---------------------------------------------------------------------------
-Map_Sign_internal:	mappingsTable
+Map_Sign:	mappingsTable
 	mappingsTableEntry.w	.eggman
 	mappingsTableEntry.w	.spin1
 	mappingsTableEntry.w	.spin2

@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - GHZ	collapsing ledge
 ; ---------------------------------------------------------------------------
-Map_Ledge_internal:	mappingsTable
+Map_Ledge:	mappingsTable
 	mappingsTableEntry.w	.left
 	mappingsTableEntry.w	.right
 	mappingsTableEntry.w	.leftsmash

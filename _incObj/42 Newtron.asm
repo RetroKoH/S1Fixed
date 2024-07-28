@@ -27,7 +27,7 @@ Newt_Action:	; Routine 2
 		move.b	ob2ndRout(a0),d0
 		move.w	.index(pc,d0.w),d1
 		jsr		.index(pc,d1.w)
-		lea		(Ani_Newt).l,a1
+		lea		Ani_Newt(pc),a1
 		bsr.w	AnimateSprite
 		bra.w	RememberState
 ; ===========================================================================

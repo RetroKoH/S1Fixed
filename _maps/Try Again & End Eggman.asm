@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Robotnik on	the "TRY AGAIN"	and "END" screens
 ; ---------------------------------------------------------------------------
-Map_EEgg_internal:	mappingsTable
+Map_EEgg:	mappingsTable
 	mappingsTableEntry.w	M_EEgg_Try1
 	mappingsTableEntry.w	M_EEgg_Try2
 	mappingsTableEntry.w	M_EEgg_Try3

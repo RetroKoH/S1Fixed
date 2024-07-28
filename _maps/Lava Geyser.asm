@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - lava geyser / lava that falls from the ceiling (MZ)
 ; ---------------------------------------------------------------------------
-Map_Geyser_internal:	mappingsTable
+Map_Geyser:	mappingsTable
 	mappingsTableEntry.w	.bubble1
 	mappingsTableEntry.w	.bubble2
 	mappingsTableEntry.w	.bubble3

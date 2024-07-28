@@ -83,7 +83,7 @@ Stars_Next:	; Routine 2
 .noshift:
 	; Shield/Invincibility Positioning Fix End
 
-		lea		(Ani_Shield).l,a1
+		lea		Ani_Shield(pc),a1
 		jsr		(AnimateSprite).w
 		bsr.w	Stars_LoadGfx		; RetroKoH VRAM Overhaul
 		jmp		(DisplaySprite).l

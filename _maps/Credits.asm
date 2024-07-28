@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - "SONIC TEAM	PRESENTS" and credits
 ; ---------------------------------------------------------------------------
-Map_Cred_internal:	mappingsTable
+Map_Cred:	mappingsTable
 	mappingsTableEntry.w	.staff
 	mappingsTableEntry.w	.gameplan
 	mappingsTableEntry.w	.program

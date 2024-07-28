@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - GHZ	bridge
 ; ---------------------------------------------------------------------------
-Map_Bri_internal:	mappingsTable
+Map_Bri:	mappingsTable
 	mappingsTableEntry.w	M_Bri_Log
 	mappingsTableEntry.w	M_Bri_Stump
 	mappingsTableEntry.w	M_Bri_Rope

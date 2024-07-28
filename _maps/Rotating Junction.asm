@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - rotating disc that grabs Sonic (SBZ)
 ; ---------------------------------------------------------------------------
-Map_Jun_internal:	mappingsTable
+Map_Jun:	mappingsTable
 	mappingsTableEntry.w	.gap0
 	mappingsTableEntry.w	.gap1
 	mappingsTableEntry.w	.gap2

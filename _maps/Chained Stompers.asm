@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - metal stomping blocks on chains (MZ)
 ; ---------------------------------------------------------------------------
-Map_CStom_internal:	mappingsTable
+Map_CStom:	mappingsTable
 	mappingsTableEntry.w	.wideblock
 	mappingsTableEntry.w	.spikes
 	mappingsTableEntry.w	.ceiling

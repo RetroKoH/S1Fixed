@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Chopper enemy (GHZ)
 ; ---------------------------------------------------------------------------
-Map_Chop_internal:	mappingsTable
+Map_Chop:	mappingsTable
 	mappingsTableEntry.w	.mouthshut
 	mappingsTableEntry.w	.mouthopen
 

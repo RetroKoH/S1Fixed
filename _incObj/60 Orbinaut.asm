@@ -109,7 +109,7 @@ Orb_ChkSonic:	; Routine 2
 		move.b	#1,obAnim(a0)	; use "angry" animation
 
 .animate:
-		lea		(Ani_Orb).l,a1
+		lea		Ani_Orb(pc),a1
 		jsr		(AnimateSprite).w
 		bra.w	Orb_ChkDel
 ; ===========================================================================
@@ -143,7 +143,6 @@ loc_11E40:
 		bsr.w	DeleteChild
 		dbf		d2,loc_11E40
 
-Orb_Delete:
 		bra.w	DeleteObject
 ; ===========================================================================
 

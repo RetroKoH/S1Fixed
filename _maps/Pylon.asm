@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - metal pylons in foreground (SLZ)
 ; ---------------------------------------------------------------------------
-Map_Pylon_internal:	mappingsTable
+Map_Pylon:	mappingsTable
 	mappingsTableEntry.w	.pylon
 
 .pylon:	spriteHeader

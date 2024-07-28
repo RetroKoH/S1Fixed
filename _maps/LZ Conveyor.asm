@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - platforms on a conveyor belt (LZ)
 ; ---------------------------------------------------------------------------
-Map_LConv_internal:	mappingsTable
+Map_LConv:	mappingsTable
 	mappingsTableEntry.w	.wheel1
 	mappingsTableEntry.w	.wheel2
 	mappingsTableEntry.w	.wheel3

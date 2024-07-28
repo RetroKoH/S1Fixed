@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - SYZ	platforms
 ; ---------------------------------------------------------------------------
-Map_Plat_SYZ_internal:	mappingsTable
+Map_Plat_SYZ:	mappingsTable
 	mappingsTableEntry.w	.platform
 
 .platform:	spriteHeader

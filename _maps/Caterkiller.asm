@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Caterkiller	enemy (MZ, SBZ)
 ; ---------------------------------------------------------------------------
-Map_Cat_internal:	mappingsTable
+Map_Cat:	mappingsTable
 	mappingsTableEntry.w	byte_16D9E
 	mappingsTableEntry.w	byte_16DA4
 	mappingsTableEntry.w	byte_16DAA

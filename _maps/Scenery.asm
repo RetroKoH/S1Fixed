@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - SLZ	lava thrower
 ; ---------------------------------------------------------------------------
-Map_Scen_internal:	mappingsTable
+Map_Scen:	mappingsTable
 	mappingsTableEntry.w	byte_8858
 
 byte_8858:	spriteHeader

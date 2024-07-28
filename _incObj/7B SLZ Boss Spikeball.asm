@@ -17,7 +17,7 @@ BossSpikeball:
 		cmpi.w	#$280,d0
 		bls.s	BossStarLight_NoDel
 		move.w	obRespawnNo(a0),d0		; get address in respawn table
-		beq.w	BossStarLight_Delete	; if it's zero, don't remember object
+		beq.s	BossStarLight_Delete	; if it's zero, don't remember object
 		movea.w	d0,a2					; load address into a2
 		bclr	#7,(a2)					; clear respawn table entry, so object can be loaded again
 		jmp		DeleteObject			; and delete object
@@ -56,9 +56,9 @@ loc_18D68:
 		addq.b	#2,obRoutine(a0)
 
 BossSpikeball_Fall:	; Routine 2
-		jsr	(ObjectFall).l
+		jsr		(ObjectFall).l
 		movea.l	objoff_3C(a0),a1
-		lea	(word_19018).l,a2
+		lea		word_19018(pc),a2
 		moveq	#0,d0
 		move.b	obFrame(a1),d0
 		move.w	obX(a0),d1
@@ -126,7 +126,7 @@ loc_18E16:
 ; ===========================================================================
 
 loc_18E2A:
-		lea	(word_19018).l,a2
+		lea		word_19018(pc),a2
 		moveq	#0,d0
 		move.b	obFrame(a1),d0
 		move.w	#$28,d2
@@ -238,21 +238,19 @@ loc_18EC0:
 loc_18F38:
 		tst.w	obVelY(a0)
 		bpl.s	loc_18F5C
-		jsr	(ObjectFall).l
+		jsr		(ObjectFall).l
 		move.w	objoff_34(a0),d0
 		subi.w	#$2F,d0
 		cmp.w	obY(a0),d0
-		bgt.s	loc_18F58
-		jsr	(ObjectFall).l
-
-loc_18F58:
+		bgt.w	loc_18E7A
+		jsr		(ObjectFall).l
 		bra.w	loc_18E7A
 ; ===========================================================================
 
 loc_18F5C:
 		jsr		(ObjectFall).l
 		movea.l	objoff_3C(a0),a1
-		lea		(word_19018).l,a2
+		lea		word_19018(pc),a2
 		moveq	#0,d0
 		move.b	obFrame(a1),d0
 		move.w	obX(a0),d1
@@ -265,7 +263,7 @@ loc_18F7E:
 		move.w	objoff_34(a0),d1
 		add.w	(a2,d0.w),d1
 		cmp.w	obY(a0),d1
-		bgt.s	loc_18F58
+		bgt.w	loc_18E7A
 		movea.l	objoff_3C(a0),a1
 		moveq	#2,d1
 		tst.w	obVelX(a0)
@@ -332,10 +330,10 @@ BossSpikeball_Explode:	; Routine 8
 BossSpikeball_MakeFrag:
 		move.w	objoff_34(a0),obY(a0)
 		moveq	#3,d1
-		lea	BossSpikeball_FragSpeed(pc),a2
+		lea		BossSpikeball_FragSpeed(pc),a2
 
 BossSpikeball_Loop:
-		jsr	(FindFreeObj).l
+		jsr		(FindFreeObj).l
 		bne.s	loc_1909A
 		move.b	#id_BossSpikeball,obID(a1)			; load shrapnel object
 		move.b	#$A,obRoutine(a1)
@@ -355,7 +353,7 @@ BossSpikeball_Loop:
 		move.b	#$C,obActWid(a1)
 
 loc_1909A:
-		dbf	d1,BossSpikeball_Loop	; repeat sequence 3 more times
+		dbf		d1,BossSpikeball_Loop	; repeat sequence 3 more times
 
 		rts	
 ; ===========================================================================
@@ -367,7 +365,7 @@ BossSpikeball_FragSpeed:
 ; ===========================================================================
 
 BossSpikeball_MoveFrag:	; Routine $A
-		jsr	(SpeedToPos).l
+		jsr		(SpeedToPos).l
 		move.w	obX(a0),objoff_30(a0)
 		move.w	obY(a0),objoff_34(a0)
 		addi.w	#$18,obVelY(a0)
@@ -379,6 +377,7 @@ BossSpikeball_MoveFrag:	; Routine $A
 	; Clownacy DisplaySprite Fix
 		bmi.s   .locret
         addq.l  #4,sp
-        bra.w   BossStarLight_Delete
+		jmp		(DeleteObject).l
+
 .locret:
 		rts	

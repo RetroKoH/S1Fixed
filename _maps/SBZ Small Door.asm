@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - doors (SBZ)
 ; ---------------------------------------------------------------------------
-Map_ADoor_internal:	mappingsTable
+Map_ADoor:	mappingsTable
 	mappingsTableEntry.w	.closed
 	mappingsTableEntry.w	.f01
 	mappingsTableEntry.w	.f02

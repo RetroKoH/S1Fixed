@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - waterfalls (LZ)
 ; ---------------------------------------------------------------------------
-Map_WFall_internal:	mappingsTable
+Map_WFall:	mappingsTable
 	mappingsTableEntry.w	.vertnarrow
 	mappingsTableEntry.w	.cornerwide
 	mappingsTableEntry.w	.cornermedium

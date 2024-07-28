@@ -2,7 +2,7 @@
 ; Sprite mappings - SCORE, TIME, RINGS (Special Stage)
 ; Mercury HUD Centiseconds + RetroKoH VRAM Overhaul
 ; ---------------------------------------------------------------------------
-Map_HUD_SS_internal:	mappingsTable
+Map_HUD_SS:	mappingsTable
 		mappingsTableEntry.w	.allyellow
 		mappingsTableEntry.w	.ringred
 		mappingsTableEntry.w	.timered

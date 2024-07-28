@@ -95,7 +95,7 @@ LWall_Solid:	; Routine 2
 		clr.b	lwall_flag(a0)
 
 .animate:
-		lea		(Ani_LWall).l,a1
+		lea		Ani_LWall(pc),a1
 		jsr		(AnimateSprite).w
 		cmpi.b	#4,(v_player+obRoutine).w
 		bhs.s	.rangechk

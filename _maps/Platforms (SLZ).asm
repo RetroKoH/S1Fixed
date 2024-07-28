@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - SLZ	platforms
 ; ---------------------------------------------------------------------------
-Map_Plat_SLZ_internal:	mappingsTable
+Map_Plat_SLZ:	mappingsTable
 	mappingsTableEntry.w	.platform
 
 .platform:	spriteHeader

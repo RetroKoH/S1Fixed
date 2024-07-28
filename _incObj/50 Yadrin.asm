@@ -49,7 +49,7 @@ Yad_Move:
 		neg.w	obVelX(a0)				; change direction
 
 Yad_Animate:
-		lea		(Ani_Yad).l,a1
+		lea		Ani_Yad(pc),a1
 		jsr		(AnimateSprite).w
 		bra.w	RememberState	
 ; ===========================================================================
@@ -65,7 +65,7 @@ Yad_FixToFloor:
 		bsr.s	Yad_ChkWall
 		bne.s	Yad_Pause
 	; Animate
-		lea		(Ani_Yad).l,a1
+		lea		Ani_Yad(pc),a1
 		jsr		(AnimateSprite).w
 		bra.w	RememberState	
 ; ===========================================================================
@@ -76,7 +76,7 @@ Yad_Pause:
 		clr.w	obVelX(a0)
 		clr.b	obAnim(a0)
 	; Animate
-		lea		(Ani_Yad).l,a1
+		lea		Ani_Yad(pc),a1
 		jsr		(AnimateSprite).w
 		bra.w	RememberState
 ; ===========================================================================

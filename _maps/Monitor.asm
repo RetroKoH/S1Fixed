@@ -2,7 +2,7 @@
 ; Sprite mappings - monitors (standard)
 ; Corrected art by Mercury. Adjustments for VRAM made by RetroKoH
 ; ---------------------------------------------------------------------------
-Map_Monitor_internal:	mappingsTable
+Map_Monitor:	mappingsTable
 	mappingsTableEntry.w	.static0
 	mappingsTableEntry.w	.static1
 	mappingsTableEntry.w	.static2

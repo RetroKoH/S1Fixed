@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Eggman (SBZ2)
 ; ---------------------------------------------------------------------------
-Map_SEgg_internal:	mappingsTable
+Map_SEgg:	mappingsTable
 	mappingsTableEntry.w	.stand
 	mappingsTableEntry.w	.laugh1
 	mappingsTableEntry.w	.laugh2

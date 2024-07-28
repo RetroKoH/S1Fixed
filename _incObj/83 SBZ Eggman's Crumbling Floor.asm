@@ -91,10 +91,14 @@ loc_19C36:	; Routine 4
 		bra.s	FFloor_Solid
 ; ===========================================================================
 
+FFloor_Delete:
+		jmp	(DeleteObject).l	; Moved here to optimize two branches below
+; ===========================================================================
+
 loc_19C62:	; Routine 6
 		bclr	#staSonicOnObj,obStatus(a0)
 		bclr	#staOnObj,(v_player+obStatus).w
-		bra.w	loc_1982C
+		bra.s	FFloor_Delete
 ; ===========================================================================
 
 loc_19C72:	; Routine 8
@@ -105,7 +109,7 @@ loc_19C72:	; Routine 8
 
 loc_19C80:	; Routine $A
 		tst.b	obRender(a0)
-		bpl.w	loc_1982C
+		bpl.s	FFloor_Delete
 		jsr		(ObjectFall).l
 		jmp		(DisplaySprite).l
 ; ===========================================================================

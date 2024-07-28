@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - gargoyle head (LZ)
 ; ---------------------------------------------------------------------------
-Map_Gar_internal:	mappingsTable
+Map_Gar:	mappingsTable
 	mappingsTableEntry.w	.head
 	mappingsTableEntry.w	.head
 	mappingsTableEntry.w	.fireball1

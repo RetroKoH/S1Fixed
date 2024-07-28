@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - SLZ	swinging platforms
 ; ---------------------------------------------------------------------------
-Map_Swing_SLZ_internal:	mappingsTable
+Map_Swing_SLZ:	mappingsTable
 	mappingsTableEntry.w	.block
 	mappingsTableEntry.w	.chain
 	mappingsTableEntry.w	.anchor

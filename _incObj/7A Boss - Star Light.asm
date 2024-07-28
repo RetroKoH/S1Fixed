@@ -82,7 +82,7 @@ BossStarLight_ShipMain:	; Routine 2
 		move.b	ob2ndRout(a0),d0
 		move.w	BossStarLight_ShipIndex(pc,d0.w),d0
 		jsr		BossStarLight_ShipIndex(pc,d0.w)
-		lea		(Ani_Eggman).l,a1
+		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
 		moveq	#(maskFlipX+maskFlipY),d0
 		and.b	obStatus(a0),d0
@@ -337,7 +337,7 @@ BossStarLight_PopAndDelete:
 		; Avoid returning to BossStarLight_ShipMain to prevent a
 		; display-and-delete bug.
 		addq.l	#4,sp
-		bra.w	BossStarLight_Delete
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 BossStarLight_FaceMain:	; Routine 4
@@ -366,12 +366,10 @@ loc_18C10:
 loc_18C1A:
 		move.b	d1,obAnim(a0)
 		cmpi.b	#$A,d0
-		bne.s	loc_18C32
+		bne.s	loc_18C6C
 		move.b	#6,obAnim(a0)
 		tst.b	obRender(a0)
 		bpl.w	BossStarLight_Delete
-
-loc_18C32:
 		bra.s	loc_18C6C
 ; ===========================================================================
 
@@ -381,7 +379,7 @@ BossStarLight_FlameMain:; Routine 6
 		cmpi.b	#$A,ob2ndRout(a1)
 		bne.s	loc_18C56
 		tst.b	obRender(a0)
-		bpl.w	BossStarLight_Delete
+		bpl.s	BossStarLight_Delete
 		move.b	#$B,obAnim(a0)
 		bra.s	loc_18C6C
 ; ===========================================================================
@@ -394,7 +392,7 @@ loc_18C56:
 		move.b	#7,obAnim(a0)
 
 loc_18C6C:
-		lea		(Ani_Eggman).l,a1
+		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
 
 loc_18C78:
@@ -414,10 +412,14 @@ BossStarLight_TubeMain:	; Routine 8
 		cmpi.b	#$A,ob2ndRout(a1)
 		bne.s	loc_18CB8
 		tst.b	obRender(a0)
-		bpl.w	BossStarLight_Delete
+		bpl.s	BossStarLight_Delete
 
 loc_18CB8:
 		move.l	#Map_BossItems,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Eggman_Weapons,1,0),obGfx(a0)
 		move.b	#3,obFrame(a0)
 		bra.s	loc_18C78
+; ===========================================================================
+
+BossStarLight_Delete:
+		jmp	(DeleteObject).l

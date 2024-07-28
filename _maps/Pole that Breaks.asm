@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - pole that breaks (LZ)
 ; ---------------------------------------------------------------------------
-Map_Pole_internal:	mappingsTable
+Map_Pole:	mappingsTable
 	mappingsTableEntry.w	.normal
 	mappingsTableEntry.w	.broken
 

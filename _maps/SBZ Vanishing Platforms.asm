@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - vanishing platforms	(SBZ)
 ; ---------------------------------------------------------------------------
-Map_VanP_internal:	mappingsTable
+Map_VanP:	mappingsTable
 	mappingsTableEntry.w	.whole
 	mappingsTableEntry.w	.half
 	mappingsTableEntry.w	.quarter

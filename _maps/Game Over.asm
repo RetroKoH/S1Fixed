@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - "GAME OVER"	and "TIME OVER"
 ; ---------------------------------------------------------------------------
-Map_Over_internal:	mappingsTable
+Map_Over:	mappingsTable
 	mappingsTableEntry.w	byte_CBAC
 	mappingsTableEntry.w	byte_CBB7
 	mappingsTableEntry.w	byte_CBC2

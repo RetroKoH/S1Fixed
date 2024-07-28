@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - spinning platforms (SBZ)
 ; ---------------------------------------------------------------------------
-Map_Spin_internal:	mappingsTable
+Map_Spin:	mappingsTable
 	mappingsTableEntry.w	.flat
 	mappingsTableEntry.w	.spin1
 	mappingsTableEntry.w	.spin2

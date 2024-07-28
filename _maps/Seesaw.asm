@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - seesaws (SLZ)
 ; ---------------------------------------------------------------------------
-Map_Seesaw_internal:	mappingsTable
+Map_Seesaw:	mappingsTable
 	mappingsTableEntry.w	.sloping
 	mappingsTableEntry.w	.flat
 	mappingsTableEntry.w	.sloping

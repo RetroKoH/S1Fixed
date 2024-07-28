@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - unused
 ; ---------------------------------------------------------------------------
-Map_Plat_Unused_internal:	mappingsTable
+Map_Plat_Unused:	mappingsTable
 	mappingsTableEntry.w	.small
 	mappingsTableEntry.w	.large
 

@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Continue screen
 ; ---------------------------------------------------------------------------
-Map_ContScr_internal:	mappingsTable
+Map_ContScr:	mappingsTable
 	mappingsTableEntry.w	M_Cont_text
 	mappingsTableEntry.w	M_Cont_Sonic1
 	mappingsTableEntry.w	M_Cont_Sonic2

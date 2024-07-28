@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - chaos emeralds on the ending sequence
 ; ---------------------------------------------------------------------------
-Map_ECha_internal:	mappingsTable
+Map_ECha:	mappingsTable
 	mappingsTableEntry.w	M_ECha_1
 	mappingsTableEntry.w	M_ECha_2
 	mappingsTableEntry.w	M_ECha_3

@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - flapping door (LZ)
 ; ---------------------------------------------------------------------------
-Map_Flap_internal:	mappingsTable
+Map_Flap:	mappingsTable
 	mappingsTableEntry.w	.closed
 	mappingsTableEntry.w	.halfway
 	mappingsTableEntry.w	.open

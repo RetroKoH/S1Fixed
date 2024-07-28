@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Ball Hog enemy (SBZ)
 ; ---------------------------------------------------------------------------
-Map_Hog_internal:	mappingsTable
+Map_Hog:	mappingsTable
 	mappingsTableEntry.w	M_Hog_Stand
 	mappingsTableEntry.w	M_Hog_Open
 	mappingsTableEntry.w	M_Hog_Squat

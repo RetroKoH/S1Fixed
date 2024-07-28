@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - hidden points at the end of	a level
 ; ---------------------------------------------------------------------------
-Map_Bonus_internal:	mappingsTable
+Map_Bonus:	mappingsTable
 	mappingsTableEntry.w	.blank
 	mappingsTableEntry.w	._10000
 	mappingsTableEntry.w	._1000

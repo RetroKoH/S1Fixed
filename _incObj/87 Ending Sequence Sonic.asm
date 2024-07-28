@@ -110,7 +110,7 @@ Obj87_Leap:	; Routine $10
 		move.b	#id_EndSTH,(v_endlogo).w	; load "SONIC THE HEDGEHOG" object
 
 Obj87_Animate:	; Routine 4, $A, $E, $12
-		lea		(AniScript_ESon).l,a1
+		lea		AniScript_ESon(pc),a1
 		jsr		(AnimateSprite).w
 
 ESon_Wait4:

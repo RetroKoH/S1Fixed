@@ -96,7 +96,7 @@ Spring_BounceUp:
 		jsr		(PlaySound_Special).w		; play spring sound
 
 Spring_AniUp:	; Routine 4
-		lea		(Ani_Spring).l,a1
+		lea		Ani_Spring(pc),a1
 		bra.w	AnimateSprite
 ; ===========================================================================
 
@@ -151,7 +151,7 @@ loc_DC56:
 		jsr		(PlaySound_Special).w	; play spring sound
 
 Spring_AniLR:	; Routine $A
-		lea		(Ani_Spring).l,a1
+		lea		Ani_Spring(pc),a1
 		bra.w	AnimateSprite
 ; ===========================================================================
 
@@ -195,7 +195,7 @@ Spring_BounceDwn:
 		jsr		(PlaySound_Special).w	; play spring sound
 
 Spring_AniDwn:	; Routine $10
-		lea		(Ani_Spring).l,a1
+		lea		Ani_Spring(pc),a1
 		bra.w	AnimateSprite
 ; ===========================================================================
 

@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - spiked metal block from beta version (MZ)
 ; ---------------------------------------------------------------------------
-Map_SStom_internal:	mappingsTable
+Map_SStom:	mappingsTable
 	mappingsTableEntry.w	.block
 	mappingsTableEntry.w	.spikes
 	mappingsTableEntry.w	.wallbracket

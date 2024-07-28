@@ -49,7 +49,7 @@ Ring_Collect:	; Routine 4
 		; Code Removed -- ProjectFM S3K Objects Manager
 
 Ring_Sparkle:	; fallthrough / Routine 6
-		lea		(Ani_Ring).l,a1
+		lea		Ani_Ring(pc),a1
 		bsr.w	AnimateSprite
 		bra.w	DisplaySprite
 ; ===========================================================================
@@ -269,7 +269,7 @@ RLoss_Collect:	; Routine 4
 		bsr.w	CollectRing
 
 RLoss_Sparkle:	; Routine 6
-		lea		(Ani_Ring).l,a1
+		lea		Ani_Ring(pc),a1
 		bsr.w	AnimateSprite
 		bra.w	DisplaySprite
 ; ===========================================================================

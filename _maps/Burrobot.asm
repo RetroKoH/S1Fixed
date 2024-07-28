@@ -2,7 +2,7 @@
 ; Sprite mappings - Burrobot enemy (LZ)
 ; ---------------------------------------------------------------------------
 
-Map_Burro_internal:	mappingsTable
+Map_Burro:	mappingsTable
 	mappingsTableEntry.w	.walk1
 	mappingsTableEntry.w	.walk2
 	mappingsTableEntry.w	.digging1

@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - moving blocks (SYZ/SLZ/LZ)
 ; ---------------------------------------------------------------------------
-Map_FBlock_internal:	mappingsTable
+Map_FBlock:	mappingsTable
 	mappingsTableEntry.w	.syz1x1
 	mappingsTableEntry.w	.syz2x2
 	mappingsTableEntry.w	.syz1x2

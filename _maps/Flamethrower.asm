@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - flame thrower (SBZ)
 ; ---------------------------------------------------------------------------
-Map_Flame_internal:	mappingsTable
+Map_Flame:	mappingsTable
 	mappingsTableEntry.w	.pipe1
 	mappingsTableEntry.w	.pipe2
 	mappingsTableEntry.w	.pipe3

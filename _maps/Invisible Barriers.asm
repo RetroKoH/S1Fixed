@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - invisible solid blocks
 ; ---------------------------------------------------------------------------
-Map_Invis_internal:	mappingsTable
+Map_Invis:	mappingsTable
 	mappingsTableEntry.w	.solid
 
 .solid:	spriteHeader

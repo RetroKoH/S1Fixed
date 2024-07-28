@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - "PRESS START BUTTON" and "TM" from title screen
 ; ---------------------------------------------------------------------------
-Map_PSB_internal:	mappingsTable
+Map_PSB:	mappingsTable
 	mappingsTableEntry.w	byte_A7CD
 	mappingsTableEntry.w	M_PSB_PSB
 	mappingsTableEntry.w	M_PSB_Limiter

@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - smashable walls (GHZ, SLZ)
 ; ---------------------------------------------------------------------------
-Map_Smash_internal:	mappingsTable
+Map_Smash:	mappingsTable
 	mappingsTableEntry.w	.left
 	mappingsTableEntry.w	.middle
 	mappingsTableEntry.w	.right

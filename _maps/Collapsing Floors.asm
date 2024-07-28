@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - collapsing floors (MZ, SLZ,	SBZ)
 ; ---------------------------------------------------------------------------
-Map_CFlo_internal:	mappingsTable
+Map_CFlo:	mappingsTable
 	mappingsTableEntry.w	byte_874E
 	mappingsTableEntry.w	byte_8763
 	mappingsTableEntry.w	byte_878C

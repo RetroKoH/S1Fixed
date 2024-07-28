@@ -38,7 +38,7 @@ Elec_Shock:	; Routine 2
 		jsr		(PlaySound_Special).w				; play electricity sound
 
 .animate:
-		lea		(Ani_Elec).l,a1
+		lea		Ani_Elec(pc),a1
 		jsr		(AnimateSprite).w
 		clr.b	obColType(a0)
 		cmpi.b	#4,obFrame(a0)						; is 4th frame displayed?

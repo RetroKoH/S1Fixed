@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - spiked ball	on a chain (LZ)
 ; ---------------------------------------------------------------------------
-Map_SBall2_internal:	mappingsTable
+Map_SBall2:	mappingsTable
 	mappingsTableEntry.w	.chain
 	mappingsTableEntry.w	.spikeball
 	mappingsTableEntry.w	.base

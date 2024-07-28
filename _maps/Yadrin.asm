@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Yadrin enemy (SYZ)
 ; ---------------------------------------------------------------------------
-Map_Yad_internal:	mappingsTable
+Map_Yad:	mappingsTable
 	mappingsTableEntry.w	.walk0
 	mappingsTableEntry.w	.walk1
 	mappingsTableEntry.w	.walk2

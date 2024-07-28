@@ -22,7 +22,7 @@ Chop_Main:	; Routine 0
 		move.w	obY(a0),chop_origY(a0)		; save original position
 
 Chop_ChgSpeed:	; Routine 2
-		lea		(Ani_Chop).l,a1
+		lea		Ani_Chop(pc),a1
 		bsr.w	AnimateSprite
 		bsr.w	SpeedToPos
 		addi.w	#$18,obVelY(a0)	; reduce speed

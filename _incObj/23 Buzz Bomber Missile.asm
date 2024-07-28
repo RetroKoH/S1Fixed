@@ -51,7 +51,7 @@ Msl_Animate:	; Routine 2
 		; code in its BuildSprites function for detecting this type
 		; of bug.
 		beq.s	Msl_ChkCancel.return
-		lea		(Ani_Missile).l,a1
+		lea		Ani_Missile(pc),a1
 		bsr.w	AnimateSprite
 		jmp		(DisplayAndCollision).l		; S3K TouchResponse
 
@@ -87,7 +87,7 @@ Msl_FromBuzz:	; Routine 4
 		addi.w	#$E0,d0
 		cmp.w	obY(a0),d0			; has object moved below the level boundary?
 		blo.w	DeleteObject		; if yes, branch
-		lea		(Ani_Missile).l,a1
+		lea		Ani_Missile(pc),a1
 		bsr.w	AnimateSprite
 		bra.w	DisplayAndCollision	; S3K TouchResponse; Clownacy DisplaySprite Fix
 ; ===========================================================================
@@ -108,6 +108,6 @@ Msl_FromNewt:	; Routine 8
 		bsr.w	SpeedToPos
 
 Msl_Animate2:
-		lea		(Ani_Missile).l,a1
+		lea		Ani_Missile(pc),a1
 		bsr.w	AnimateSprite
 		bra.w	DisplayAndCollision	; S3K TouchResponse

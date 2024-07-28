@@ -64,7 +64,7 @@ Spin_Trapdoor:	; Routine 2
 		jsr		(PlaySound_Special).w	; play door sound
 
 .animate:
-		lea		(Ani_Spin).l,a1
+		lea		Ani_Spin(pc),a1
 		jsr		(AnimateSprite).w
 		tst.b	obFrame(a0)	; is frame number 0 displayed?
 		bne.s	.notsolid	; if not, branch
@@ -105,7 +105,7 @@ Spin_Spinner:	; Routine 4
 		bchg	#0,obAnim(a0)
 
 .animate:
-		lea		(Ani_Spin).l,a1
+		lea		Ani_Spin(pc),a1
 		jsr		(AnimateSprite).w
 		tst.b	obFrame(a0)	; check	if frame number	0 is displayed
 		bne.s	.notsolid2	; if not, branch

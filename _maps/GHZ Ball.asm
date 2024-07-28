@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - swinging ball on a chain from GHZ boss
 ; ---------------------------------------------------------------------------
-Map_GBall_internal:	mappingsTable
+Map_GBall:	mappingsTable
 	mappingsTableEntry.w	.shiny
 	mappingsTableEntry.w	.check1
 	mappingsTableEntry.w	.check2

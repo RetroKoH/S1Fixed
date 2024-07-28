@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - spiked ball on a chain (SBZ) and big spiked ball (SYZ)
 ; ---------------------------------------------------------------------------
-Map_BBall_internal:	mappingsTable
+Map_BBall:	mappingsTable
 	mappingsTableEntry.w	.ball
 	mappingsTableEntry.w	.chain
 	mappingsTableEntry.w	.anchor

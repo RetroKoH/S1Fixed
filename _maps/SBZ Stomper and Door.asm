@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - stomper and	platforms (SBZ)
 ; ---------------------------------------------------------------------------
-Map_Stomp_internal:	mappingsTable
+Map_Stomp:	mappingsTable
 	mappingsTableEntry.w	.door
 	mappingsTableEntry.w	.stomper
 	mappingsTableEntry.w	.stomper

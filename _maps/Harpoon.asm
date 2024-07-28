@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - harpoon (LZ)
 ; ---------------------------------------------------------------------------
-Map_Harp_internal:	mappingsTable
+Map_Harp:	mappingsTable
 	mappingsTableEntry.w	.h_retracted
 	mappingsTableEntry.w	.h_middle
 	mappingsTableEntry.w	.h_extended

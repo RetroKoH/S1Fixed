@@ -96,7 +96,7 @@ Pri_Switched:	; Routine 4
 		move.w	#8,d3
 		move.w	obX(a0),d4
 		jsr		(SolidObject).l
-		lea		(Ani_Pri).l,a1
+		lea		Ani_Pri(pc),a1
 		jsr		(AnimateSprite).w
 		move.w	pri_origY(a0),obY(a0)
 		tst.b	ob2ndRout(a0)					; has prison already been opened?

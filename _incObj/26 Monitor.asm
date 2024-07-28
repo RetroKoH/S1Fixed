@@ -159,7 +159,7 @@ loc_A26A:
 		bclr	#staPush,obStatus(a1)
 
 Mon_Animate:	; Routine 6
-		lea		(Ani_Monitor).l,a1
+		lea		Ani_Monitor(pc),a1
 		bsr.w	AnimateSprite
 
 Mon_Display:	; Routine 8

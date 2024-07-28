@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - energy balls (FZ)
 ; ---------------------------------------------------------------------------
-Map_Plasma_internal:	mappingsTable
+Map_Plasma:	mappingsTable
 	mappingsTableEntry.w	.fuzzy1
 	mappingsTableEntry.w	.fuzzy2
 	mappingsTableEntry.w	.white1

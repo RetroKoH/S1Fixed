@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Moto Bug enemy (GHZ)
 ; ---------------------------------------------------------------------------
-Map_Moto_internal:	mappingsTable
+Map_Moto:	mappingsTable
 	mappingsTableEntry.w	.moto1
 	mappingsTableEntry.w	.moto2
 	mappingsTableEntry.w	.moto3

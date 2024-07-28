@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Unused switch thingy
 ; ---------------------------------------------------------------------------
-Map_Swi_internal:	mappingsTable
+Map_Swi:	mappingsTable
 	mappingsTableEntry.w	byte_891E
 
 byte_891E:	spriteHeader

@@ -2,7 +2,7 @@
 ; Sprite mappings - missile that Buzz Bomber throws
 ; ---------------------------------------------------------------------------
 
-Map_Missile_internal:	mappingsTable
+Map_Missile:	mappingsTable
 	mappingsTableEntry.w	.Flare1
 	mappingsTableEntry.w	.Flare2
 	mappingsTableEntry.w	.Ball1

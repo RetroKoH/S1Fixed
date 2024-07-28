@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - moving block (LZ)
 ; ---------------------------------------------------------------------------
-Map_MBlockLZ_internal:	mappingsTable
+Map_MBlockLZ:	mappingsTable
 	mappingsTableEntry.w	.f0
 
 .f0:	spriteHeader

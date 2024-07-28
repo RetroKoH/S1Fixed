@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - large moving grass-covered platforms (MZ)
 ; ---------------------------------------------------------------------------
-Map_LGrass_internal:	mappingsTable
+Map_LGrass:	mappingsTable
 	mappingsTableEntry.w	.wide
 	mappingsTableEntry.w	.sloped
 	mappingsTableEntry.w	.narrow

@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - blocks that	Robotnik picks up (SYZ)
 ; ---------------------------------------------------------------------------
-Map_BossBlock_internal:	mappingsTable
+Map_BossBlock:	mappingsTable
 	mappingsTableEntry.w	.wholeblock
 	mappingsTableEntry.w	.topleft
 	mappingsTableEntry.w	.topright

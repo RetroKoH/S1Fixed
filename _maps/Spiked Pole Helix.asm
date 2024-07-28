@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - helix of spikes on a pole (GHZ)
 ; ---------------------------------------------------------------------------
-Map_Hel_internal:	mappingsTable
+Map_Hel:	mappingsTable
 	mappingsTableEntry.w	byte_7E08
 	mappingsTableEntry.w	byte_7E0E
 	mappingsTableEntry.w	byte_7E14

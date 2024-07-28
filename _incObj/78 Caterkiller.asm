@@ -109,7 +109,7 @@ Cat_Head:	; Routine 2
 		jsr		Cat_Index2(pc,d0.w)
 		move.b	objoff_2B(a0),d1
 		bpl.s	.display
-		lea		(Ani_Cat).l,a1
+		lea		Ani_Cat(pc),a1
 		move.b	obAngle(a0),d0
 		andi.w	#$7F,d0
 		addq.b	#4,obAngle(a0)
@@ -236,7 +236,7 @@ Cat_BodySeg2:	; Routine 6
 		movea.l	cat_parent(a0),a1
 		move.b	objoff_2B(a1),objoff_2B(a0)
 		bpl.s	Cat_BodySeg1
-		lea		(Ani_Cat).l,a1
+		lea		Ani_Cat(pc),a1
 		move.b	obAngle(a0),d0
 		andi.w	#$7F,d0
 		addq.b	#4,obAngle(a0)

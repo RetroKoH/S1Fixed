@@ -2,7 +2,7 @@
 ; Sprite mappings - exploding spikeys that the SLZ boss	drops
 ; RetroKoH VRAM Overhaul
 ; ---------------------------------------------------------------------------
-Map_BSBall_internal:	mappingsTable
+Map_BSBall:	mappingsTable
 	mappingsTableEntry.w	.fireball1
 	mappingsTableEntry.w	.fireball2
 

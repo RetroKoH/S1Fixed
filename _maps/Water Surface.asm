@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - water surface (LZ)
 ; ---------------------------------------------------------------------------
-Map_Surf_internal:	mappingsTable
+Map_Surf:	mappingsTable
 	mappingsTableEntry.w	.normal1
 	mappingsTableEntry.w	.normal2
 	mappingsTableEntry.w	.normal3

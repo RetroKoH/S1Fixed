@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - extra boss items (e.g. swinging ball on a chain in GHZ)
 ; ---------------------------------------------------------------------------
-Map_BossItems_internal:	mappingsTable
+Map_BossItems:	mappingsTable
 	mappingsTableEntry.w	.chainanchor1
 	mappingsTableEntry.w	.chainanchor2
 	mappingsTableEntry.w	.cross

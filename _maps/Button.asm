@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - switches (MZ, SYZ, LZ, SBZ)
 ; ---------------------------------------------------------------------------
-Map_But_internal:	mappingsTable
+Map_But:	mappingsTable
 	mappingsTableEntry.w	byte_BEAC
 	mappingsTableEntry.w	byte_BEB7
 

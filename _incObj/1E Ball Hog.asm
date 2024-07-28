@@ -32,7 +32,7 @@ Hog_Main:	; Routine 0
 ; ===========================================================================
 
 Hog_Action:	; Routine 2
-		lea		(Ani_Hog).l,a1
+		lea		Ani_Hog(pc),a1
 		bsr.w	AnimateSprite
 		cmpi.b	#1,obFrame(a0)	; is final frame (01) displayed?
 		bne.s	.setlaunchflag	; if not, branch

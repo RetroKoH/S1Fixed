@@ -54,7 +54,7 @@ loc_16068:	; Routine 6
 ; ===========================================================================
 
 .animate:
-		lea		(Ani_Van).l,a1
+		lea		Ani_Van(pc),a1
 		jsr		(AnimateSprite).w
 		jmp		(RememberState).l
 ; ===========================================================================
@@ -72,7 +72,7 @@ VanP_Appear:	; Routine 4
 		bchg	#0,obAnim(a0)
 
 .wait:
-		lea		(Ani_Van).l,a1
+		lea		Ani_Van(pc),a1
 		jsr		(AnimateSprite).w
 		btst	#1,obFrame(a0)	; has platform vanished?
 		bne.s	.notsolid	; if yes, branch

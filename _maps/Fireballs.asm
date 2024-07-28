@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - fire balls (MZ, SLZ)
 ; ---------------------------------------------------------------------------
-Map_Fire_internal:	mappingsTable
+Map_Fire:	mappingsTable
 	mappingsTableEntry.w	.vertical1
 	mappingsTableEntry.w	.vertical2
 	mappingsTableEntry.w	.vertcollide

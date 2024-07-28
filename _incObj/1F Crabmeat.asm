@@ -74,7 +74,7 @@ Crab_Action:	; Routine 2
 
 .dontmove:
 .noflip:
-		lea		(Ani_Crab).l,a1
+		lea		Ani_Crab(pc),a1
 		bsr.w	AnimateSprite
 		bra.w	RememberState	
 ; ===========================================================================
@@ -102,7 +102,7 @@ Crab_Action:	; Routine 2
 		move.w	#$100,obVelX(a1)
 
 .failright:
-		lea		(Ani_Crab).l,a1
+		lea		Ani_Crab(pc),a1
 		bsr.w	AnimateSprite
 		bra.w	RememberState	
 ; ===========================================================================
@@ -120,12 +120,12 @@ Crab_Action:	; Routine 2
 		subi.w	#$20,d3
 
 loc_9640:
-		jsr	(ObjFloorDist2).l
+		jsr		(ObjFloorDist2).l
 		cmpi.w	#-8,d1
 		blt.s	loc_966E
 		cmpi.w	#$C,d1
 		bge.s	loc_966E
-		lea		(Ani_Crab).l,a1
+		lea		Ani_Crab(pc),a1
 		bsr.w	AnimateSprite
 		bra.w	RememberState	
 ; ===========================================================================
@@ -137,7 +137,7 @@ loc_9654:
 		bsr.s	Crab_SetAni
 		addq.b	#3,d0
 		move.b	d0,obAnim(a0)
-		lea		(Ani_Crab).l,a1
+		lea		Ani_Crab(pc),a1
 		bsr.w	AnimateSprite
 		bra.w	RememberState	
 ; ===========================================================================
@@ -148,7 +148,7 @@ loc_966E:
 		clr.w	obVelX(a0)
 		bsr.s	Crab_SetAni
 		move.b	d0,obAnim(a0)
-		lea		(Ani_Crab).l,a1
+		lea		Ani_Crab(pc),a1
 		bsr.w	AnimateSprite
 		bra.w	RememberState	
 ; ---------------------------------------------------------------------------
@@ -208,7 +208,7 @@ Crab_BallMain:	; Routine 6
 		bset	#shPropReflect,obShieldProp(a0)	; Reflected by Elemental Shields
 
 Crab_BallMove:	; Routine 8
-		lea	(Ani_Crab).l,a1
+		lea		Ani_Crab(pc),a1
 		bsr.w	AnimateSprite
 		bsr.w	ObjectFall
 		move.w	(v_limitbtm2).w,d0

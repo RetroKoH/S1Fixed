@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Eggman (boss levels)
 ; ---------------------------------------------------------------------------
-Map_Eggman_internal:	mappingsTable
+Map_Eggman:	mappingsTable
 	mappingsTableEntry.w	.ship
 	mappingsTableEntry.w	.facenormal1
 	mappingsTableEntry.w	.facenormal2

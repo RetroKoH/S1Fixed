@@ -45,7 +45,7 @@ Flame_Action:	; Routine 2
 		jsr		(PlaySound_Special).w ; play flame sound
 
 loc_E57A:
-		lea		(Ani_Flame).l,a1
+		lea		Ani_Flame(pc),a1
 		bsr.w	AnimateSprite
 		clr.b	obColType(a0)
 		move.b	objoff_36(a0),d0

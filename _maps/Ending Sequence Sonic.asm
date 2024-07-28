@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Sonic on the ending	sequence
 ; ---------------------------------------------------------------------------
-Map_ESon_internal:	mappingsTable
+Map_ESon:	mappingsTable
 	mappingsTableEntry.w	M_ESon_Hold1
 	mappingsTableEntry.w	M_ESon_Hold2
 	mappingsTableEntry.w	M_ESon_Up

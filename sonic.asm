@@ -3405,7 +3405,6 @@ Cont_GotoLevel:
 		include	"_incObj/80 Continue Screen Elements.asm"
 		include	"_incObj/81 Continue Screen Sonic.asm"
 		include	"_anim/Continue Screen Sonic.asm"
-Map_ContScr:	include	"_maps/Continue Screen.asm"
 
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -3621,9 +3620,6 @@ End_MoveSonExit:
 		include "_anim/Ending Sequence Sonic.asm"
 		include	"_incObj/88 Ending Sequence Emeralds.asm"
 		include	"_incObj/89 Ending Sequence STH.asm"
-Map_ESon:	include	"_maps/Ending Sequence Sonic.asm"
-Map_ECha:	include	"_maps/Ending Sequence Emeralds.asm"
-Map_ESth:	include	"_maps/Ending Sequence STH.asm"
 
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -3804,7 +3800,6 @@ TryAg_Exit:
 		include	"_incObj/8B Try Again & End Eggman.asm"
 		include "_anim/Try Again & End Eggman.asm"
 		include	"_incObj/8C Try Again Emeralds.asm"
-Map_EEgg:	include	"_maps/Try Again & End Eggman.asm"
 
 ; ---------------------------------------------------------------------------
 ; Ending sequence demos
@@ -4727,7 +4722,6 @@ LevelLayoutLoad:
 		include	"_incObj/sub AnimateSprite.asm"		; Moved here to make every jmp use ().w address mode
 
 		include	"_incObj/11 Bridge.asm"
-Map_Bri:	include	"_maps/Bridge.asm"
 
 ; ---------------------------------------------------------------------------
 ; Platform subroutine
@@ -4946,17 +4940,13 @@ locret_7B62:
 ; End of function MvSonicOnPtfm2
 
 		include	"_incObj/15 Swinging Platforms (part 2).asm"
-Map_Swing_GHZ:	include	"_maps/Swinging Platforms (GHZ).asm"
-Map_Swing_SLZ:	include	"_maps/Swinging Platforms (SLZ).asm"
+		
 		include	"_incObj/17 Spiked Pole Helix.asm"
-Map_Hel:	include	"_maps/Spiked Pole Helix.asm"
+
 		include	"_incObj/18 Platforms.asm"
-Map_Plat_Unused:include	"_maps/Platforms (unused).asm"
-Map_Plat_GHZ:	include	"_maps/Platforms (GHZ).asm"
-Map_Plat_SYZ:	include	"_maps/Platforms (SYZ).asm"
-Map_Plat_SLZ:	include	"_maps/Platforms (SLZ).asm"
+
 		include	"_incObj/19.asm"
-Map_GBall:	include	"_maps/GHZ Ball.asm"
+
 		include	"_incObj/1A Collapsing Ledge (part 1).asm"
 		include	"_incObj/53 Collapsing Floors.asm"
 
@@ -5086,18 +5076,13 @@ Ledge_SlopeData:
 		binclude	"misc/GHZ Collapsing Ledge Heightmap.bin"
 		even
 
-Map_Ledge:	include	"_maps/Collapsing Ledge.asm"
-Map_CFlo:	include	"_maps/Collapsing Floors.asm"
-
 		include	"_incObj/1C Scenery.asm"
-Map_Scen:	include	"_maps/Scenery.asm"
 
 		include	"_incObj/1D Unused Switch.asm"
-Map_Swi:	include	"_maps/Unused Switch.asm"
 
 		include	"_incObj/2A SBZ Small Door.asm"
 		include	"_anim/SBZ Small Door.asm"
-Map_ADoor:	include	"_maps/SBZ Small Door.asm"
+
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
@@ -5238,58 +5223,35 @@ loc_8B48:
 
 ; ===========================================================================
 
+		include	"_anim/Ball Hog.asm"
 		include	"_incObj/1E Ball Hog.asm"
 		include	"_incObj/20 Cannonball.asm"
+
 		include	"_incObj/24, 27 & 3F Explosions.asm"
-		include	"_anim/Ball Hog.asm"
-Map_Hog:	include	"_maps/Ball Hog.asm"
-Map_MisDissolve:include	"_maps/Buzz Bomber Missile Dissolve.asm"
-		include	"_maps/Explosions.asm"
 
 		include	"_incObj/28 Animals.asm"
 		include	"_incObj/29 Points.asm"
-Map_Animal1:	include	"_maps/Animals 1.asm"
-Map_Animal2:	include	"_maps/Animals 2.asm"
-Map_Animal3:	include	"_maps/Animals 3.asm"
-Map_Poi:	include	"_maps/Points.asm"
 
 		include	"_incObj/1F Crabmeat.asm"
 		include	"_anim/Crabmeat.asm"
-Map_Crab:	include	"_maps/Crabmeat.asm"
+
 		include	"_incObj/22 Buzz Bomber.asm"
 		include	"_incObj/23 Buzz Bomber Missile.asm"
 		include	"_anim/Buzz Bomber.asm"
 		include	"_anim/Buzz Bomber Missile.asm"
-Map_Buzz:	include	"_maps/Buzz Bomber.asm"
-Map_Missile:	include	"_maps/Buzz Bomber Missile.asm"
+
 
 		include	"_incObj/25 & 37 Rings.asm"
 		include	"_incObj/4B Giant Ring.asm"
-		include	"_incObj/7C Ring Flash.asm"
+		include	"_incObj/7C Ring Flash.asm"		; No longer used
 
 		include	"_anim/Rings.asm"
-
-Map_Ring:	include	"_maps/Rings.asm" ; THESE normal mappings will be for debug rings, lost rings, and SS rings
-
-Map_RingBIN:
-		binclude	"_maps/Rings.bin" ; RetroKoH S2 Rings Manager
-		even
-
-	; Now includes the ring flash
-Map_GRing:	include	"_maps/Giant Ring.asm"
-			include "_maps/Giant Ring - DPLCs.asm"
+		include "_maps/Giant Ring - DPLCs.asm"
 
 		include	"_incObj/26 Monitor.asm"
 		include	"_incObj/2E Monitor Content Power-Up.asm"
 		include	"_incObj/26 Monitor (SolidSides subroutine).asm"
 		include	"_anim/Monitor.asm"
-
-; Split these into seperate files so SonLVL can render monitors properly	
-	if ShieldsMode<2
-Map_Monitor:	include	"_maps/Monitor.asm"
-	else
-Map_Monitor:	include	"_maps/Monitor - S3K.asm"
-	endif
 
 		include	"_incObj/0E Title Screen Sonic.asm"
 		include	"_incObj/0F Press Start and TM.asm"
@@ -5297,36 +5259,28 @@ Map_Monitor:	include	"_maps/Monitor - S3K.asm"
 		include	"_anim/Title Screen Sonic.asm"
 		include	"_anim/Press Start and TM.asm"
 
-Map_PSB:	include	"_maps/Press Start and TM.asm"
-Map_TSon:	include	"_maps/Title Screen Sonic.asm"
-
 		include	"_incObj/2B Chopper.asm"
 		include	"_anim/Chopper.asm"
-Map_Chop:	include	"_maps/Chopper.asm"
+
 		include	"_incObj/2C Jaws.asm"
 		include	"_anim/Jaws.asm"
-Map_Jaws:	include	"_maps/Jaws.asm"
+
 		include	"_incObj/2D Burrobot.asm"
 		include	"_anim/Burrobot.asm"
-Map_Burro:	include	"_maps/Burrobot.asm"
+
 
 		include	"_incObj/2F MZ Large Grassy Platforms.asm"
 		include	"_incObj/35 Burning Grass.asm"
 		include	"_anim/Burning Grass.asm"
-Map_LGrass:	include	"_maps/MZ Large Grassy Platforms.asm"
-Map_Fire:	include	"_maps/Fireballs.asm"
+
 		include	"_incObj/30 MZ Large Green Glass Blocks.asm"
-Map_Glass:	include	"_maps/MZ Large Green Glass Blocks.asm"
+
 		include	"_incObj/31 Chained Stompers.asm"
 		include	"_incObj/45 Sideways Stomper.asm"
-Map_CStom:	include	"_maps/Chained Stompers.asm"
-Map_SStom:	include	"_maps/Sideways Stomper.asm"
 
 		include	"_incObj/32 Button.asm"
-Map_But:	include	"_maps/Button.asm"
 
 		include	"_incObj/33 Pushable Blocks.asm"
-Map_Push:	include	"_maps/Pushable Blocks.asm"
 
 		include	"_incObj/34 Title Cards.asm"
 		include	"_incObj/39 Game Over.asm"
@@ -5334,324 +5288,11 @@ Map_Push:	include	"_maps/Pushable Blocks.asm"
 		include	"_incObj/7E Special Stage Results.asm"
 		include	"_incObj/7F SS Result Chaos Emeralds.asm"
 
-; ---------------------------------------------------------------------------
-; Sprite mappings - zone title cards
-; ---------------------------------------------------------------------------
-Map_Card:	mappingsTable
-	mappingsTableEntry.w	M_Card_GHZ
-	mappingsTableEntry.w	M_Card_LZ
-	mappingsTableEntry.w	M_Card_MZ
-	mappingsTableEntry.w	M_Card_SLZ
-	mappingsTableEntry.w	M_Card_SYZ
-	mappingsTableEntry.w	M_Card_SBZ
-	mappingsTableEntry.w	M_Card_Zone
-	mappingsTableEntry.w	M_Card_Act1
-	mappingsTableEntry.w	M_Card_Act2
-	mappingsTableEntry.w	M_Card_Act3
-	mappingsTableEntry.w	M_Card_Oval
-	mappingsTableEntry.w	M_Card_FZ
-
-M_Card_GHZ:	spriteHeader		; GREEN HILL
-	spritePiece	-$4C, -8, 2, 2, $18, 0, 0, 0, 0
-	spritePiece	-$3C, -8, 2, 2, $3A, 0, 0, 0, 0
-	spritePiece	-$2C, -8, 2, 2, $10, 0, 0, 0, 0
-	spritePiece	-$1C, -8, 2, 2, $10, 0, 0, 0, 0
-	spritePiece	-$C, -8, 2, 2, $2E, 0, 0, 0, 0
-	spritePiece	$14, -8, 2, 2, $1C, 0, 0, 0, 0
-	spritePiece	$24, -8, 1, 2, $20, 0, 0, 0, 0
-	spritePiece	$2C, -8, 2, 2, $26, 0, 0, 0, 0
-	spritePiece	$3C, -8, 2, 2, $26, 0, 0, 0, 0
-M_Card_GHZ_End
-	even
-
-M_Card_LZ:	spriteHeader		; LABYRINTH
-	spritePiece	-$44, -8, 2, 2, $26, 0, 0, 0, 0
-	spritePiece	-$34, -8, 2, 2, 0, 0, 0, 0, 0
-	spritePiece	-$24, -8, 2, 2, 4, 0, 0, 0, 0
-	spritePiece	-$14, -8, 2, 2, $4A, 0, 0, 0, 0
-	spritePiece	-4, -8, 2, 2, $3A, 0, 0, 0, 0
-	spritePiece	$C, -8, 1, 2, $20, 0, 0, 0, 0
-	spritePiece	$14, -8, 2, 2, $2E, 0, 0, 0, 0
-	spritePiece	$24, -8, 2, 2, $42, 0, 0, 0, 0
-	spritePiece	$34, -8, 2, 2, $1C, 0, 0, 0, 0
-M_Card_LZ_End
-	even
-
-M_Card_MZ:	spriteHeader		; MARBLE
-	spritePiece	-$31, -8, 2, 2, $2A, 0, 0, 0, 0
-	spritePiece	-$20, -8, 2, 2, 0, 0, 0, 0, 0
-	spritePiece	-$10, -8, 2, 2, $3A, 0, 0, 0, 0
-	spritePiece	 0, -8, 2, 2, 4, 0, 0, 0, 0
-	spritePiece	 $10, -8, 2, 2, $26, 0, 0, 0, 0
-	spritePiece	 $20, -8, 2, 2, $10, 0, 0, 0, 0
-M_Card_MZ_End
-	even
-
-M_Card_SLZ:	spriteHeader		; STAR LIGHT
-	spritePiece	-$4C, -8, 2, 2, $3E, 0, 0, 0, 0
-	spritePiece	-$3C, -8, 2, 2, $42, 0, 0, 0, 0
-	spritePiece	-$2C, -8, 2, 2, 0, 0, 0, 0, 0
-	spritePiece	-$1C, -8, 2, 2, $3A, 0, 0, 0, 0
-	spritePiece	4, -8, 2, 2, $26, 0, 0, 0, 0
-	spritePiece	$14, -8, 1, 2, $20, 0, 0, 0, 0
-	spritePiece	$1C, -8, 2, 2, $18, 0, 0, 0, 0
-	spritePiece	$2C, -8, 2, 2, $1C, 0, 0, 0, 0
-	spritePiece	$3C, -8, 2, 2, $42, 0, 0, 0, 0
-M_Card_SLZ_End
-	even
-
-M_Card_SYZ:	spriteHeader		; SPRING YARD
-	spritePiece	-$54, -8, 2, 2, $3E, 0, 0, 0, 0
-	spritePiece	-$44, -8, 2, 2, $36, 0, 0, 0, 0
-	spritePiece	-$34, -8, 2, 2, $3A, 0, 0, 0, 0
-	spritePiece	-$24, -8, 1, 2, $20, 0, 0, 0, 0
-	spritePiece	-$1C, -8, 2, 2, $2E, 0, 0, 0, 0
-	spritePiece	-$C, -8, 2, 2, $18, 0, 0, 0, 0
-	spritePiece	$14, -8, 2, 2, $4A, 0, 0, 0, 0
-	spritePiece	$24, -8, 2, 2, 0, 0, 0, 0, 0
-	spritePiece	$34, -8, 2, 2, $3A, 0, 0, 0, 0
-	spritePiece	$44, -8, 2, 2, $C, 0, 0, 0, 0
-M_Card_SYZ_End
-	even
-
-M_Card_SBZ:	spriteHeader		; SCRAP BRAIN
-	spritePiece	-$54, -8, 2, 2, $3E, 0, 0, 0, 0
-	spritePiece	-$44, -8, 2, 2, 8, 0, 0, 0, 0
-	spritePiece	-$34, -8, 2, 2, $3A, 0, 0, 0, 0
-	spritePiece	-$24, -8, 2, 2, 0, 0, 0, 0, 0
-	spritePiece	-$14, -8, 2, 2, $36, 0, 0, 0, 0
-	spritePiece	$C, -8, 2, 2, 4, 0, 0, 0, 0
-	spritePiece	$1C, -8, 2, 2, $3A, 0, 0, 0, 0
-	spritePiece	$2C, -8, 2, 2, 0, 0, 0, 0, 0
-	spritePiece	$3C, -8, 1, 2, $20, 0, 0, 0, 0
-	spritePiece	$44, -8, 2, 2, $2E, 0, 0, 0, 0
-M_Card_SBZ_End
-	even
-
-M_Card_Zone:	spriteHeader		; ZONE
-	spritePiece	-$20, -8, 2, 2, $4E, 0, 0, 0, 0
-	spritePiece	-$10, -8, 2, 2, $32, 0, 0, 0, 0
-	spritePiece	0, -8, 2, 2, $2E, 0, 0, 0, 0
-	spritePiece	$10, -8, 2, 2, $10, 0, 0, 0, 0
-M_Card_Zone_End
-	even
-
-M_Card_Act1:	spriteHeader		; ACT 1
-	spritePiece	-$14, 4, 4, 1, $53, 0, 0, 0, 0
-	spritePiece	$C, -$C, 1, 3, $57, 0, 0, 0, 0
-M_Card_Act1_End
-
-M_Card_Act2:	spriteHeader		; ACT 2
-	spritePiece	-$14, 4, 4, 1, $53, 0, 0, 0, 0
-	spritePiece	8, -$C, 2, 3, $5A, 0, 0, 0, 0
-M_Card_Act2_End
-
-M_Card_Act3:	spriteHeader		; ACT 3
-	spritePiece	-$14, 4, 4, 1, $53, 0, 0, 0, 0
-	spritePiece	8, -$C, 2, 3, $60, 0, 0, 0, 0
-M_Card_Act3_End
-
-M_Card_Oval:	spriteHeader		; Oval
-	spritePiece	-$C, -$1C, 4, 1, $70, 0, 0, 0, 0
-	spritePiece	$14, -$1C, 1, 3, $74, 0, 0, 0, 0
-	spritePiece	-$14, -$14, 2, 1, $77, 0, 0, 0, 0
-	spritePiece	-$1C, -$C, 2, 2, $79, 0, 0, 0, 0
-	spritePiece	-$14, $14, 4, 1, $70, 1, 1, 0, 0
-	spritePiece	-$1C, 4, 1, 3, $74, 1, 1, 0, 0
-	spritePiece	4, $C, 2, 1, $77, 1, 1, 0, 0
-	spritePiece	$C, -4, 2, 2, $79, 1, 01, 0, 0
-	spritePiece	-4, -$14, 3, 1, $7D, 0, 0, 0, 0
-	spritePiece	-$C, -$C, 4, 1, $7C, 0, 0, 0, 0
-	spritePiece	-$C, -4, 3, 1, $7C, 0, 0, 0, 0
-	spritePiece	-$14, 4, 4, 1, $7C, 0, 0, 0, 0
-	spritePiece	-$14, $C, 3, 1, $7C, 0, 0, 0, 0
-M_Card_Oval_End
-	even
-
-M_Card_FZ:	spriteHeader		; FINAL
-	spritePiece	-$24, -8, 2, 2, $14, 0, 0, 0, 0
-	spritePiece	-$14, -8, 1, 2, $20, 0, 0, 0, 0
-	spritePiece	-$C, -8, 2, 2, $2E, 0, 0, 0, 0
-	spritePiece	4, -8, 2, 2, 0, 0, 0, 0, 0
-	spritePiece	$14, -8, 2, 2, $26, 0, 0, 0, 0
-M_Card_FZ_End
-	even
-
-Map_Over:	include	"_maps/Game Over.asm"
-
-; ---------------------------------------------------------------------------
-; Sprite mappings - "SONIC HAS PASSED" title card
-; ---------------------------------------------------------------------------
-Map_Got:	mappingsTable
-	mappingsTableEntry.w	M_Got_SonicHas
-	mappingsTableEntry.w	M_Got_Passed
-	mappingsTableEntry.w	M_Got_Score
-	mappingsTableEntry.w	M_Got_TBonus
-	mappingsTableEntry.w	M_Got_RBonus
-	mappingsTableEntry.w	M_Card_Oval
-	mappingsTableEntry.w	M_Card_Act1
-	mappingsTableEntry.w	M_Card_Act2
-	mappingsTableEntry.w	M_Card_Act3
-	
-M_Got_SonicHas:	spriteHeader		; SONIC HAS
-	spritePiece	-$48, -8, 2, 2, $3E, 0, 0, 0, 0
-	spritePiece	-$38, -8, 2, 2, $32, 0, 0, 0, 0
-	spritePiece	-$28, -8, 2, 2, $2E, 0, 0, 0, 0
-	spritePiece	-$18, -8, 1, 2, $20, 0, 0, 0, 0
-	spritePiece	-$10, -8, 2, 2, 8, 0, 0, 0, 0
-	spritePiece	$10, -8, 2, 2, $1C, 0, 0, 0, 0
-	spritePiece	$20, -8, 2, 2, 0, 0, 0, 0, 0
-	spritePiece	$30, -8, 2, 2, $3E, 0, 0, 0, 0
-M_Got_SonicHas_End
-
-M_Got_Passed:	spriteHeader		; PASSED
-	spritePiece	-$30, -8, 2, 2, $36, 0, 0, 0, 0
-	spritePiece	-$20, -8, 2, 2, 0, 0, 0, 0, 0
-	spritePiece	-$10, -8, 2, 2, $3E, 0, 0, 0, 0
-	spritePiece	0, -8, 2, 2, $3E, 0, 0, 0, 0
-	spritePiece	$10, -8, 2, 2, $10, 0, 0, 0, 0
-	spritePiece	$20, -8, 2, 2, $C, 0, 0, 0, 0
-M_Got_Passed_End
-
-M_Got_Score:	spriteHeader		; SCORE
-	spritePiece	-$50, -8, 4, 2, $162, 0, 0, 0, 0	; SCOR
-	spritePiece	-$30, -8, 1, 2, $176, 0, 0, 0, 0	; E - USE TIME's E SO IT WONT GET OVERWRITTEN BY DEBUG
-	spritePiece	$18, -8, 3, 2, $17A, 0, 0, 0, 0		; SCORE VALUE
-	spritePiece	$30, -8, 4, 2, $180, 0, 0, 0, 0		; SCORE VALUE
-	spritePiece	-$33, -9, 2, 1, $6E, 0, 0, 0, 0		; Small oval
-	spritePiece	-$33, -1, 2, 1, $6E, 1, 1, 0, 0		; Small oval
-M_Got_Score_End
-
-M_Got_TBonus:	spriteHeader		; TIME BONUS
-	spritePiece	-$50, -8, 4, 2, $170, 0, 0, 0, 0	; TIME
-	spritePiece	-$27, -8, 4, 2, $66, 0, 0, 0, 0		; BONU
-	spritePiece	-7, -8, 1, 2, $162, 0, 0, 0, 0		; S - USE SCORE's S
-	spritePiece	-$A, -9, 2, 1, $6E, 0, 0, 0, 0		; Small oval
-	spritePiece	-$A, -1, 2, 1, $6E, 1, 1, 0, 0		; Small oval
-	spritePiece	$28, -8, 4, 2, $148, 0, 0, 0, 0		; TIME BONUS VALUE
-	spritePiece	$48, -8, 1, 2, $186, 0, 0, 0, 0		; 0
-M_Got_TBonus_End
-
-M_Got_RBonus:	spriteHeader		; RING BONUS
-	spritePiece	-$50, -8, 4, 2, $168, 0, 0, 0, 0	; RING
-	spritePiece	-$27, -8, 4, 2, $66, 0, 0, 0, 0		; BONU
-	spritePiece	-7, -8, 1, 2, $162, 0, 0, 0, 0		; S - USE SCORE's S
-	spritePiece	-$A, -9, 2, 1, $6E, 0, 0, 0, 0		; Small oval
-	spritePiece	-$A, -1, 2, 1, $6E, 1, 1, 0, 0		; Small oval
-	spritePiece	$28, -8, 4, 2, $150, 0, 0, 0, 0		; RING BONUS VALUE
-	spritePiece	$48, -8, 1, 2, $186, 0, 0, 0, 0		; 0
-M_Got_RBonus_End
-	even
-; ---------------------------------------------------------------------------
-; Sprite mappings - special stage results screen
-; ---------------------------------------------------------------------------
-Map_SSR:	mappingsTable
-	mappingsTableEntry.w	M_SSR_Chaos
-	mappingsTableEntry.w	M_SSR_Score
-	mappingsTableEntry.w	M_SSR_Ring
-	mappingsTableEntry.w	M_Card_Oval
-	mappingsTableEntry.w	M_SSR_ContSonic1
-	mappingsTableEntry.w	M_SSR_ContSonic2
-	mappingsTableEntry.w	M_SSR_Continue
-	mappingsTableEntry.w	M_SSR_SpecStage
-	mappingsTableEntry.w	M_SSR_GotAll
-
-M_SSR_Chaos:	spriteHeader		; "CHAOS EMERALDS"
-	spritePiece	-$70, -8, 2, 2, 8, 0, 0, 0, 0
-	spritePiece	-$60, -8, 2, 2, $1C, 0, 0, 0, 0
-	spritePiece	-$50, -8, 2, 2, 0, 0, 0, 0, 0
-	spritePiece	-$40, -8, 2, 2, $32, 0, 0, 0, 0
-	spritePiece	-$30, -8, 2, 2, $3E, 0, 0, 0, 0
-	spritePiece	-$10, -8, 2, 2, $10, 0, 0, 0, 0
-	spritePiece	0, -8, 2, 2, $2A, 0, 0, 0, 0
-	spritePiece	$10, -8, 2, 2, $10, 0, 0, 0, 0
-	spritePiece	$20, -8, 2, 2, $3A, 0, 0, 0, 0
-	spritePiece	$30, -8, 2, 2, 0, 0, 0, 0, 0
-	spritePiece	$40, -8, 2, 2, $26, 0, 0, 0, 0
-	spritePiece	$50, -8, 2, 2, $C, 0, 0, 0, 0
-	spritePiece	$60, -8, 2, 2, $3E, 0, 0, 0, 0
-M_SSR_Chaos_End
-
-M_SSR_Score:	spriteHeader		; "SCORE"
-	spritePiece	-$50, -8, 4, 2, $162, 0, 0, 0, 0	; SCOR
-	spritePiece	-$30, -8, 1, 2, $176, 0, 0, 0, 0	; E - USE TIME's E SO IT WONT GET OVERWRITTEN BY DEBUG
-	spritePiece	$18, -8, 3, 2, $17A, 0, 0, 0, 0		; SCORE VALUE
-	spritePiece	$30, -8, 4, 2, $180, 0, 0, 0, 0		; SCORE VALUE
-	spritePiece	-$33, -9, 2, 1, $6E, 0, 0, 0, 0		; Small oval
-	spritePiece	-$33, -1, 2, 1, $6E, 1, 1, 0, 0		; Small oval
-M_SSR_Score_End
-
-M_SSR_Ring:	spriteHeader
-	spritePiece	-$50, -8, 4, 2, $168, 0, 0, 0, 0	; RING
-	spritePiece	-$27, -8, 4, 2, $66, 0, 0, 0, 0		; BONU
-	spritePiece	-7, -8, 1, 2, $162, 0, 0, 0, 0		; S - USE SCORE's S
-	spritePiece	-$A, -9, 2, 1, $6E, 0, 0, 0, 0		; Small oval
-	spritePiece	-$A, -1, 2, 1, $6E, 1, 1, 0, 0		; Small oval
-	spritePiece	$28, -8, 4, 2, $150, 0, 0, 0, 0		; RING BONUS VALUE
-	spritePiece	$48, -8, 1, 2, $186, 0, 0, 0, 0		; 0
-M_SSR_Ring_End
-
-M_SSR_ContSonic1:	spriteHeader
-	spritePiece	-$50, -8, 4, 2, $118, 0, 0, 0, 0
-	spritePiece	-$30, -8, 4, 2, $120, 0, 0, 0, 0
-	spritePiece	-$10, -8, 1, 2, $128, 0, 0, 0, 0
-	spritePiece	$40, -8, 2, 3, $12A, 0, 0, 1, 0
-M_SSR_ContSonic1_End
-
-M_SSR_ContSonic2:	spriteHeader
-	spritePiece	-$50, -8, 4, 2, $118, 0, 0, 0, 0
-	spritePiece	-$30, -8, 4, 2, $120, 0, 0, 0, 0
-	spritePiece	-$10, -8, 1, 2, $128, 0, 0, 0, 0
-	spritePiece	$40, -8, 2, 3, $130, 0, 0, 1, 0
-M_SSR_ContSonic2_End
-
-M_SSR_Continue:	spriteHeader
-	spritePiece	-$50, -8, 4, 2, $118, 0, 0, 0, 0
-	spritePiece	-$30, -8, 4, 2, $120, 0, 0, 0, 0
-	spritePiece	-$10, -8, 1, 2, $128, 0, 0, 0, 0
-M_SSR_Continue_End
-
-M_SSR_SpecStage:	spriteHeader		; "SPECIAL STAGE"
-	spritePiece	-$64, -8, 2, 2, $3E, 0, 0, 0, 0
-	spritePiece	-$54, -8, 2, 2, $36, 0, 0, 0, 0
-	spritePiece	-$44, -8, 2, 2, $10, 0, 0, 0, 0
-	spritePiece	-$34, -8, 2, 2, 8, 0, 0, 0, 0
-	spritePiece	-$24, -8, 1, 2, $20, 0, 0, 0, 0
-	spritePiece	-$1C, -8, 2, 2, 0, 0, 0, 0, 0
-	spritePiece	-$C, -8, 2, 2, $26, 0, 0, 0, 0
-	spritePiece	$14, -8, 2, 2, $3E, 0, 0, 0, 0
-	spritePiece	$24, -8, 2, 2, $42, 0, 0, 0, 0
-	spritePiece	$34, -8, 2, 2, 0, 0, 0, 0, 0
-	spritePiece	$44, -8, 2, 2, $18, 0, 0, 0, 0
-	spritePiece	$54, -8, 2, 2, $10, 0, 0, 0, 0
-M_SSR_SpecStage_End
-
-M_SSR_GotAll:	spriteHeader		; "SONIC GOT THEM ALL"
-	spritePiece	-$78, -8, 2, 2, $3E, 0, 0, 0, 0
-	spritePiece	-$68, -8, 2, 2, $32, 0, 0, 0, 0
-	spritePiece	-$58, -8, 2, 2, $2E, 0, 0, 0, 0
-	spritePiece	-$48, -8, 1, 2, $20, 0, 0, 0, 0
-	spritePiece	-$40, -8, 2, 2, 8, 0, 0, 0, 0
-	spritePiece	-$28, -8, 2, 2, $18, 0, 0, 0, 0
-	spritePiece	-$18, -8, 2, 2, $32, 0, 0, 0, 0
-	spritePiece	-8, -8, 2, 2, $42, 0, 0, 0, 0
-	spritePiece	$10, -8, 2, 2, $42, 0, 0, 0, 0
-	spritePiece	$20, -8, 2, 2, $1C, 0, 0, 0, 0
-	spritePiece	$30, -8, 2, 2, $10, 0, 0, 0, 0
-	spritePiece	$40, -8, 2, 2, $2A, 0, 0, 0, 0
-	spritePiece	$58, -8, 2, 2, 0, 0, 0, 0, 0
-	spritePiece	$68, -8, 2, 2, $26, 0, 0, 0, 0
-	spritePiece	$78, -8, 2, 2, $26, 0, 0, 0, 0
-M_SSR_GotAll_End
-	even
-
-Map_SSRC:	include	"_maps/SS Result Chaos Emeralds.asm"
-
 		include	"_incObj/36 Spikes.asm"
-Map_Spike:	include	"_maps/Spikes.asm"
+
 		include	"_incObj/3B Purple Rock.asm"
 		include	"_incObj/49 Waterfall Sound.asm"
-Map_PRock:	include	"_maps/Purple Rock.asm"
+
 		include	"_incObj/3C Smashable Wall.asm"
 
 		include	"_incObj/sub SmashObject.asm"
@@ -5676,8 +5317,6 @@ Smash_FragSpd2:	dc.w -$600, -$600
 		dc.w -$600, -$100
 		dc.w -$600, $100
 		dc.w -$400, $500
-
-Map_Smash:	include	"_maps/Smashable Walls.asm"
 
 ; ---------------------------------------------------------------------------
 ; Object code execution subroutine
@@ -6172,129 +5811,108 @@ BuildSpr_FlipXY:
 		include	"_incObj/sub FindFreeObj.asm"
 		include	"_incObj/41 Springs.asm"
 		include	"_anim/Springs.asm"
-Map_Spring:	include	"_maps/Springs.asm"
 
 		include	"_incObj/42 Newtron.asm"
 		include	"_anim/Newtron.asm"
-Map_Newt:	include	"_maps/Newtron.asm"
+
 		include	"_incObj/43 Roller.asm"
 		include	"_anim/Roller.asm"
-Map_Roll:	include	"_maps/Roller.asm"
 
 		include	"_incObj/44 GHZ Edge Walls.asm"
-Map_Edge:	include	"_maps/GHZ Edge Walls.asm"
 
 		include	"_incObj/13 Lava Ball Maker.asm"
 		include	"_incObj/14 Lava Ball.asm"
 		include	"_anim/Fireballs.asm"
+		include	"_incObj/74 MZ Boss Fire.asm"		; Moved to enable short addressing w/ animation
 
 		include	"_incObj/6D Flamethrower.asm"
 		include	"_anim/Flamethrower.asm"
-Map_Flame:	include	"_maps/Flamethrower.asm"
 
 		include	"_incObj/46 MZ Bricks.asm"
-Map_Brick:	include	"_maps/MZ Bricks.asm"
 
 		include	"_incObj/12 Light.asm"
-Map_Light	include	"_maps/Light.asm"
+
 		include	"_incObj/47 Bumper.asm"
 		include	"_anim/Bumper.asm"
-Map_Bump:	include	"_maps/Bumper.asm"
 
-			include	"_incObj/0D Signpost.asm" ; includes "GotThroughAct" subroutine
-			include	"_anim/Signpost.asm"
-Map_Sign:	include	"_maps/Signpost.asm"
-			include	"_maps/Signpost - DPLCs.asm"
+		include	"_incObj/0D Signpost.asm" ; includes "GotThroughAct" subroutine
+		include	"_anim/Signpost.asm"
+		include	"_maps/Signpost - DPLCs.asm"
 
 		include	"_incObj/4C & 4D Lava Geyser Maker.asm"
 		include	"_incObj/4E Wall of Lava.asm"
 		include	"_incObj/54 Lava Tag.asm"
-Map_LTag:	include	"_maps/Lava Tag.asm"
+
 		include	"_anim/Lava Geyser.asm"
 		include	"_anim/Wall of Lava.asm"
-Map_Geyser:	include	"_maps/Lava Geyser.asm"
-Map_LWall:	include	"_maps/Wall of Lava.asm"
 
 		include	"_incObj/40 Moto Bug.asm" ; includes "_incObj/sub RememberState.asm"
 		include	"_anim/Moto Bug.asm"
-Map_Moto:	include	"_maps/Moto Bug.asm"
 
 		include	"_incObj/50 Yadrin.asm"
 		include	"_anim/Yadrin.asm"
-Map_Yad:	include	"_maps/Yadrin.asm"
 
 		include	"_incObj/sub SolidObject.asm"
 
 		include	"_incObj/51 Smashable Green Block.asm"
-Map_Smab:	include	"_maps/Smashable Green Block.asm"
 
 		include	"_incObj/52 Moving Blocks.asm"
-Map_MBlock:	include	"_maps/Moving Blocks (MZ and SBZ).asm"
-Map_MBlockLZ:	include	"_maps/Moving Blocks (LZ).asm"
+
 
 		include	"_incObj/55 Basaran.asm"
 		include	"_anim/Basaran.asm"
-Map_Bas:	include	"_maps/Basaran.asm"
+
 
 		include	"_incObj/56 Floating Blocks and Doors.asm"
-Map_FBlock:	include	"_maps/Floating Blocks and Doors.asm"
 
 		include	"_incObj/57 Spiked Ball and Chain.asm"
-Map_SBall:	include	"_maps/Spiked Ball and Chain (SYZ).asm"
-Map_SBall2:	include	"_maps/Spiked Ball and Chain (LZ).asm"
+
 		include	"_incObj/58 Big Spiked Ball.asm"
-Map_BBall:	include	"_maps/Big Spiked Ball.asm"
+
 		include	"_incObj/59 SLZ Elevators.asm"
-Map_Elev:	include	"_maps/SLZ Elevators.asm"
+
 		include	"_incObj/5A SLZ Circling Platform.asm"
-Map_Circ:	include	"_maps/SLZ Circling Platform.asm"
+
 		include	"_incObj/5B Staircase.asm"
-Map_Stair:	include	"_maps/Staircase.asm"
+
 		include	"_incObj/5C Pylon.asm"
-Map_Pylon:	include	"_maps/Pylon.asm"
+
 
 		include	"_incObj/1B Water Surface.asm"
-Map_Surf:	include	"_maps/Water Surface.asm"
+
 		include	"_incObj/0B Pole that Breaks.asm"
-Map_Pole:	include	"_maps/Pole that Breaks.asm"
+
 		include	"_incObj/0C Flapping Door.asm"
 		include	"_anim/Flapping Door.asm"
-Map_Flap:	include	"_maps/Flapping Door.asm"
+
 
 		include	"_incObj/71 Invisible Barriers.asm"
-Map_Invis:	include	"_maps/Invisible Barriers.asm"
+
 
 		include	"_incObj/5D Fan.asm"
-Map_Fan:	include	"_maps/Fan.asm"
+
 		include	"_incObj/5E Seesaw.asm"
-Map_Seesaw:	include	"_maps/Seesaw.asm"
-Map_SSawBall:	include	"_maps/Seesaw Ball.asm"
+
 		include	"_incObj/5F Bomb Enemy.asm"
 		include	"_anim/Bomb Enemy.asm"
-Map_Bomb:	include	"_maps/Bomb Enemy.asm"
+
 
 		include	"_incObj/60 Orbinaut.asm"
 		include	"_anim/Orbinaut.asm"
-Map_Orb:	include	"_maps/Orbinaut.asm"
+
 
 		include	"_incObj/16 Harpoon.asm"
 		include	"_anim/Harpoon.asm"
-Map_Harp:	include	"_maps/Harpoon.asm"
+
 		include	"_incObj/61 LZ Blocks.asm"
-Map_LBlock:	include	"_maps/LZ Blocks.asm"
 		include	"_incObj/62 Gargoyle.asm"
-Map_Gar:	include	"_maps/Gargoyle.asm"
 		include	"_incObj/63 LZ Conveyor.asm"
-Map_LConv:	include	"_maps/LZ Conveyor.asm"
 		include	"_incObj/64 Bubbles.asm"
 		include	"_anim/Bubbles.asm"
-Map_Bub:	include	"_maps/Bubbles.asm"
 		include	"_incObj/65 Waterfalls.asm"
 		include	"_anim/Waterfalls.asm"
-Map_WFall:	include	"_maps/Waterfalls.asm"
 
 		include "_incObj/8D Super Sonic Stars.asm"
-Map_SStars:	include	"_maps/Super Stars.asm"
 
 	if (SpinDashEnabled|SkidDustEnabled)=1
 		include "_incObj/07 Effects.asm"	; Skid Dust and/or Spindash Dust
@@ -6539,6 +6157,7 @@ loc_12EA6:
 		include	"_incObj/Sonic Animate.asm"
 		include	"_anim/Sonic.asm"
 		include	"_incObj/Sonic LoadGfx.asm"
+		include	"_maps/Sonic - DPLCs.asm"
 
 		include "_incObj/sub ApplySpeedSettings.asm"
 
@@ -6589,10 +6208,6 @@ ResumeMusic:
 
 ; ===========================================================================
 
-				
-Map_Drown:		include	"_maps/Drowning Countdown.asm"
-Map_Shield:		include	"_maps/Shield and Invincibility.asm"
-
 				include	"_incObj/38 Shield.asm"
 				include	"_incObj/4F Invincibility.asm"						; Split from Shields (RetroKoH)
 				include	"_incObj/4A Special Stage Entry (Unused).asm"
@@ -6616,11 +6231,7 @@ Map_Shield:		include	"_maps/Shield and Invincibility.asm"
 				include "_maps\Shield - Lightning - DPLCs.asm"
 	endif
 
-				include	"_anim/Special Stage Entry (Unused).asm"
-
-Map_Vanish:	include	"_maps/Special Stage Entry (Unused).asm"
-Map_PathSwapper: include "_maps/Collision Switcher.asm"
-Map_Splash:	include	"_maps/Water Splash.asm"
+		include	"_anim/Special Stage Entry (Unused).asm"
 
 		include	"_incObj/Sonic AnglePos.asm"
 
@@ -7164,24 +6775,23 @@ locret_15098:
 ; ===========================================================================
 
 		include	"_incObj/66 Rotating Junction.asm"
-Map_Jun:	include	"_maps/Rotating Junction.asm"
+
 		include	"_incObj/67 Running Disc.asm"
-Map_Disc:	include	"_maps/Running Disc.asm"
+
 		include	"_incObj/68 Conveyor Belt.asm"
 		include	"_incObj/69 SBZ Spinning Platforms.asm"
 		include	"_anim/SBZ Spinning Platforms.asm"
-Map_Trap:	include	"_maps/Trapdoor.asm"
-Map_Spin:	include	"_maps/SBZ Spinning Platforms.asm"
+
 		include	"_incObj/6A Saws and Pizza Cutters.asm"
-Map_Saw:	include	"_maps/Saws and Pizza Cutters.asm"
+
 		include	"_incObj/6B SBZ Stomper and Door.asm"
-Map_Stomp:	include	"_maps/SBZ Stomper and Door.asm"
+
 		include	"_incObj/6C SBZ Vanishing Platforms.asm"
 		include	"_anim/SBZ Vanishing Platforms.asm"
-Map_VanP:	include	"_maps/SBZ Vanishing Platforms.asm"
+
 		include	"_incObj/6E Electrocuter.asm"
 		include	"_anim/Electrocuter.asm"
-Map_Elec:	include	"_maps/Electrocuter.asm"
+
 		include	"_incObj/6F SBZ Spin Platform Conveyor.asm"
 		include	"_anim/SBZ Spin Platform Conveyor.asm"
 
@@ -7196,20 +6806,19 @@ word_16516:	dc.w $10, $1C80, $1C14,	$5E0, $1CEF, $572, $1CEF, $5B0,	$1C14, $61E
 ; ===========================================================================
 
 		include	"_incObj/70 Girder Block.asm"
-Map_Gird:	include	"_maps/Girder Block.asm"
+
 		include	"_incObj/72 Teleporter.asm"
 
 		include	"_incObj/78 Caterkiller.asm"
 		include	"_anim/Caterkiller.asm"
-Map_Cat:	include	"_maps/Caterkiller.asm"
 
 		include	"_incObj/79 Lamppost.asm"
-Map_Lamp:	include	"_maps/Lamppost.asm"
+
 		include	"_incObj/7D Hidden Bonuses.asm"
-Map_Bonus:	include	"_maps/Hidden Bonuses.asm"
+
 
 		include	"_incObj/8A Credits.asm"
-Map_Cred:	include	"_maps/Credits.asm"
+
 
 		include	"_incObj/3D Boss - Green Hill (part 1).asm"
 
@@ -7269,45 +6878,33 @@ BossMove:
 		include	"_incObj/3D Boss - Green Hill (part 2).asm"
 		include	"_incObj/48 Eggman's Swinging Ball.asm"
 		include	"_anim/Eggman.asm"
-Map_Eggman:	include	"_maps/Eggman.asm"
-Map_BossItems:	include	"_maps/Boss Items.asm"
+
 		include	"_incObj/77 Boss - Labyrinth.asm"
 		include	"_incObj/73 Boss - Marble.asm"
-		include	"_incObj/74 MZ Boss Fire.asm"
-
-BossStarLight_Delete:
-		jmp	(DeleteObject).l
 
 		include	"_incObj/7A Boss - Star Light.asm"
 		include	"_incObj/7B SLZ Boss Spikeball.asm"
-Map_BSBall:	include	"_maps/SLZ Boss Spikeball.asm"
+
 		include	"_incObj/75 Boss - Spring Yard.asm"
 		include	"_incObj/76 SYZ Boss Blocks.asm"
-Map_BossBlock:	include	"_maps/SYZ Boss Blocks.asm"
-
-loc_1982C:
-		jmp	(DeleteObject).l
 
 		include	"_incObj/82 Eggman - Scrap Brain 2.asm"
 		include	"_anim/Eggman - Scrap Brain 2 & Final.asm"
-Map_SEgg:	include	"_maps/Eggman - Scrap Brain 2.asm"
+
 		include	"_incObj/83 SBZ Eggman's Crumbling Floor.asm"
-Map_FFloor:	include	"_maps/SBZ Eggman's Crumbling Floor.asm"
+
 		include	"_incObj/85 Boss - Final.asm"
 		include	"_anim/FZ Eggman in Ship.asm"
-Map_FZDamaged:	include	"_maps/FZ Damaged Eggmobile.asm"
-Map_FZLegs:	include	"_maps/FZ Eggmobile Legs.asm"
+
 		include	"_incObj/84 FZ Eggman's Cylinders.asm"
-Map_EggCyl:	include	"_maps/FZ Eggman's Cylinders.asm"
+
 		include	"_incObj/86 FZ Plasma Ball Launcher.asm"
 		include	"_anim/Plasma Ball Launcher.asm"
-Map_PLaunch:	include	"_maps/Plasma Ball Launcher.asm"
+
 		include	"_anim/Plasma Balls.asm"
-Map_Plasma:	include	"_maps/Plasma Balls.asm"
 
 		include	"_incObj/3E Prison Capsule.asm"
 		include	"_anim/Prison Capsule.asm"
-Map_Pri:	include	"_maps/Prison Capsule.asm"
 
 		include	"_incObj/sub ReactToItem.asm"
 
@@ -7955,12 +7552,6 @@ SS_MapIndex:
 		include	"_inc/Special Stage Mappings & VRAM Pointers.asm"
 SS_MapIndex_End:
 
-Map_SS_R:	include	"_maps/SS R Block.asm"
-Map_SS_Glass:	include	"_maps/SS Glass Block.asm"
-Map_SS_Up:	include	"_maps/SS UP Block.asm"
-Map_SS_Down:	include	"_maps/SS DOWN Block.asm"
-		include	"_maps/SS Chaos Emeralds.asm"
-
 		include	"_incObj/09 Sonic in Special Stage.asm"
 
 		include	"_incObj/10.asm"
@@ -7968,24 +7559,6 @@ Map_SS_Down:	include	"_maps/SS DOWN Block.asm"
 		include	"_inc/AnimateLevelGfx.asm"
 
 		include	"_incObj/21 AfterImages.asm"
-
-	if HUDCentiseconds=1	;Mercury HUD Centiseconds
-
-Map_HUD:	include	"_maps/HUD (centiseconds).asm"
-
-	if HUDInSpecialStage=1	; Mercury HUD in Special Stage
-Map_HUD_SS:	include	"_maps\HUD SS (centiseconds).asm"
-	endif	; HUD in Special Stage End
-	
-	else
-	
-Map_HUD:	include	"_maps/HUD.asm"
-
-	if HUDInSpecialStage=1	; Mercury HUD in Special Stage
-Map_HUD_SS:	include	"_maps\HUD SS.asm"
-	endif	; HUD in Special Stage End
-	
-	endif	; HUD Centiseconds End
 
 ; ---------------------------------------------------------------------------
 ; Add points subroutine
@@ -8138,9 +7711,6 @@ Eni_JapNames:	binclude	"tilemaps/Hidden Japanese Credits.eni" ; Japanese credits
 Nem_JapNames:	binclude	"artnem/Hidden Japanese Credits.nem"
 		even
 
-Map_Sonic:	include	"_maps/Sonic.asm"
-SonicDynPLC:	include	"_maps/Sonic - DPLCs.asm"
-
 ; ---------------------------------------------------------------------------
 ; Uncompressed graphics	- Sonic
 ; ---------------------------------------------------------------------------
@@ -8181,7 +7751,7 @@ Art_Effects:	binclude	"artunc/Dust Effects.bin"			; Spindash/Skid Dust
 Art_TitleCard:	binclude	"artunc/Title Cards.bin"			; Title Card patterns
 Art_TitleCard_End:	even
 
-Map_SSWalls:	include	"_maps/SS Walls.asm"	; Now includes dynamic mappings -- Mercury Dynamic Special Stage Walls
+				include	"_maps/SS Walls.asm"	; Now includes dynamic mappings -- Mercury Dynamic Special Stage Walls
 
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - special stage
@@ -8681,6 +8251,179 @@ Art_MzTorch:	binclude	"artunc/MZ Background Torch.bin"
 		even
 Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.bin"
 		even
+
+
+; ---------------------------------------------------------------------------
+; Sprite mappings
+; Moved out of the way of code and data
+; ---------------------------------------------------------------------------
+		include	"_maps/Sonic.asm"
+
+		include	"_maps/Continue Screen.asm"
+		include	"_maps/Ending Sequence Sonic.asm"
+		include	"_maps/Ending Sequence Emeralds.asm"
+		include	"_maps/Ending Sequence STH.asm"
+		include	"_maps/Try Again & End Eggman.asm"
+		include	"_maps/Bridge.asm"
+		include	"_maps/Swinging Platforms (GHZ).asm"
+		include	"_maps/Swinging Platforms (SLZ).asm"
+		include	"_maps/Spiked Pole Helix.asm"
+		include	"_maps/Platforms (unused).asm"
+		include	"_maps/Platforms (GHZ).asm"
+		include	"_maps/Platforms (SYZ).asm"
+		include	"_maps/Platforms (SLZ).asm"
+		include	"_maps/GHZ Ball.asm"
+		include	"_maps/Collapsing Ledge.asm"
+		include	"_maps/Collapsing Floors.asm"
+		include	"_maps/Scenery.asm"
+		include	"_maps/Unused Switch.asm"
+		include	"_maps/SBZ Small Door.asm"
+		include	"_maps/Ball Hog.asm"
+		include	"_maps/Buzz Bomber Missile Dissolve.asm"
+		include	"_maps/Explosions.asm"
+		include	"_maps/Animals 1.asm"
+		include	"_maps/Animals 2.asm"
+		include	"_maps/Animals 3.asm"
+		include	"_maps/Points.asm"
+		include	"_maps/Crabmeat.asm"
+		include	"_maps/Buzz Bomber.asm"
+		include	"_maps/Buzz Bomber Missile.asm"
+		include	"_maps/Rings.asm"		; THESE normal mappings are for debug rings, lost rings, and SS rings
+
+Map_RingBIN:
+		binclude	"_maps/Rings.bin"	; RetroKoH S3K Rings Manager
+		even
+
+		include	"_maps/Giant Ring.asm"	; Now includes the ring flash
+
+; Split these into seperate files so SonLVL can render monitors properly	
+	if ShieldsMode>1
+		include	"_maps/Monitor - S3K.asm"
+	else
+		include	"_maps/Monitor.asm"
+	endif
+
+		include	"_maps/Press Start and TM.asm"
+		include	"_maps/Title Screen Sonic.asm"
+		include	"_maps/Chopper.asm"
+		include	"_maps/Jaws.asm"
+		include	"_maps/Burrobot.asm"
+		include	"_maps/MZ Large Grassy Platforms.asm"
+		include	"_maps/Fireballs.asm"
+		include	"_maps/MZ Large Green Glass Blocks.asm"
+		include	"_maps/Chained Stompers.asm"
+		include	"_maps/Sideways Stomper.asm"
+		include	"_maps/Button.asm"
+		include	"_maps/Pushable Blocks.asm"
+		
+		include "_maps/Zone Title Cards.asm"
+
+		include	"_maps/Game Over.asm"
+		
+		include "_maps/Got Through Card.asm"
+		include "_maps/SS Results Card.asm"
+
+		include	"_maps/SS Result Chaos Emeralds.asm"
+		include	"_maps/Spikes.asm"
+		include	"_maps/Purple Rock.asm"
+		include	"_maps/Smashable Walls.asm"
+
+		include	"_maps/Springs.asm"
+		include	"_maps/Newtron.asm"
+		include	"_maps/Roller.asm"
+		include	"_maps/GHZ Edge Walls.asm"
+		include	"_maps/Flamethrower.asm"
+		include	"_maps/MZ Bricks.asm"
+		include	"_maps/Light.asm"
+		include	"_maps/Bumper.asm"
+		include	"_maps/Signpost.asm"
+		include	"_maps/Lava Tag.asm"
+		include	"_maps/Lava Geyser.asm"
+		include	"_maps/Wall of Lava.asm"
+		include	"_maps/Moto Bug.asm"
+		include	"_maps/Yadrin.asm"
+		include	"_maps/Smashable Green Block.asm"
+		include	"_maps/Moving Blocks (MZ and SBZ).asm"
+		include	"_maps/Moving Blocks (LZ).asm"
+		include	"_maps/Basaran.asm"
+		include	"_maps/Floating Blocks and Doors.asm"
+		include	"_maps/Spiked Ball and Chain (SYZ).asm"
+		include	"_maps/Spiked Ball and Chain (LZ).asm"
+		include	"_maps/Big Spiked Ball.asm"
+		include	"_maps/SLZ Elevators.asm"
+		include	"_maps/SLZ Circling Platform.asm"
+		include	"_maps/Staircase.asm"
+		include	"_maps/Pylon.asm"
+		include	"_maps/Water Surface.asm"
+		include	"_maps/Pole that Breaks.asm"
+		include	"_maps/Flapping Door.asm"
+		include	"_maps/Invisible Barriers.asm"
+		include	"_maps/Fan.asm"
+		include	"_maps/Seesaw.asm"
+		include	"_maps/Seesaw Ball.asm"
+		include	"_maps/Bomb Enemy.asm"
+		include	"_maps/Orbinaut.asm"
+		include	"_maps/Harpoon.asm"
+		include	"_maps/LZ Blocks.asm"
+		include	"_maps/Gargoyle.asm"
+		include	"_maps/LZ Conveyor.asm"
+		include	"_maps/Bubbles.asm"
+		include	"_maps/Waterfalls.asm"
+		include	"_maps/Super Stars.asm"
+
+				include	"_maps/Drowning Countdown.asm"
+				include	"_maps/Shield and Invincibility.asm"
+			include	"_maps/Special Stage Entry (Unused).asm"
+		 include "_maps/Collision Switcher.asm"
+			include	"_maps/Water Splash.asm"
+			include	"_maps/Rotating Junction.asm"
+			include	"_maps/Running Disc.asm"
+			include	"_maps/Trapdoor.asm"
+			include	"_maps/SBZ Spinning Platforms.asm"
+			include	"_maps/Saws and Pizza Cutters.asm"
+			include	"_maps/SBZ Stomper and Door.asm"
+			include	"_maps/SBZ Vanishing Platforms.asm"
+			include	"_maps/Electrocuter.asm"
+			include	"_maps/Girder Block.asm"
+			include	"_maps/Caterkiller.asm"
+			include	"_maps/Lamppost.asm"
+			include	"_maps/Hidden Bonuses.asm"
+			include	"_maps/Credits.asm"
+			include	"_maps/Eggman.asm"
+			include	"_maps/Boss Items.asm"
+			include	"_maps/SLZ Boss Spikeball.asm"
+			include	"_maps/SYZ Boss Blocks.asm"
+			include	"_maps/Eggman - Scrap Brain 2.asm"
+			include	"_maps/SBZ Eggman's Crumbling Floor.asm"
+			include	"_maps/FZ Damaged Eggmobile.asm"
+			include	"_maps/FZ Eggmobile Legs.asm"
+			include	"_maps/FZ Eggman's Cylinders.asm"
+			include	"_maps/Plasma Ball Launcher.asm"
+			include	"_maps/Plasma Balls.asm"
+			include	"_maps/Prison Capsule.asm"
+	if HUDCentiseconds=1	;Mercury HUD Centiseconds
+
+		include	"_maps/HUD (centiseconds).asm"
+
+	if HUDInSpecialStage=1	; Mercury HUD in Special Stage
+		include	"_maps\HUD SS (centiseconds).asm"
+	endif	; HUD in Special Stage End
+	
+	else
+	
+		include	"_maps/HUD.asm"
+
+	if HUDInSpecialStage=1	; Mercury HUD in Special Stage
+		include	"_maps\HUD SS.asm"
+	endif	; HUD in Special Stage End
+	
+	endif	; HUD Centiseconds End
+	
+		include	"_maps/SS R Block.asm"
+		include	"_maps/SS Glass Block.asm"
+		include	"_maps/SS UP Block.asm"
+		include	"_maps/SS DOWN Block.asm"
+		include	"_maps/SS Chaos Emeralds.asm"
 
 ; ---------------------------------------------------------------------------
 ; Level	layout index

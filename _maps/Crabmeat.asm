@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Crabmeat enemy (GHZ, SYZ)
 ; ---------------------------------------------------------------------------
-Map_Crab_internal:	mappingsTable
+Map_Crab:	mappingsTable
 	mappingsTableEntry.w	.stand
 	mappingsTableEntry.w	.walk
 	mappingsTableEntry.w	.slope1

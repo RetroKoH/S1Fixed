@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - cylinders Eggman hides in (FZ)
 ; ---------------------------------------------------------------------------
-Map_EggCyl_internal:	mappingsTable
+Map_EggCyl:	mappingsTable
 	mappingsTableEntry.w	.flat
 	mappingsTableEntry.w	.extending1
 	mappingsTableEntry.w	.extending2

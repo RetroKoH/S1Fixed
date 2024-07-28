@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Newtron enemy (GHZ)
 ; ---------------------------------------------------------------------------
-Map_Newt_internal:	mappingsTable
+Map_Newt:	mappingsTable
 	mappingsTableEntry.w	M_Newt_Trans
 	mappingsTableEntry.w	M_Newt_Norm
 	mappingsTableEntry.w	M_Newt_Fires

@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - platforms that move	when you stand on them (SLZ)
 ; ---------------------------------------------------------------------------
-Map_Elev_internal:	mappingsTable
+Map_Elev:	mappingsTable
 	mappingsTableEntry.w	.elevator
 
 .elevator:	spriteHeader

@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Buzz Bomber	enemy
 ; ---------------------------------------------------------------------------
-Map_Buzz_internal:	mappingsTable
+Map_Buzz:	mappingsTable
 	mappingsTableEntry.w	.Fly1
 	mappingsTableEntry.w	.Fly2
 	mappingsTableEntry.w	.Fly3

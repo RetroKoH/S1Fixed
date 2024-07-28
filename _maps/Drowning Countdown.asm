@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - drowning countdown numbers (LZ)
 ; ---------------------------------------------------------------------------
-Map_Drown_internal:	mappingsTable
+Map_Drown:	mappingsTable
 	mappingsTableEntry.w	.num
 
 .num:	spriteHeader

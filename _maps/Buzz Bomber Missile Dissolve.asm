@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - buzz bomber missile vanishing
 ; ---------------------------------------------------------------------------
-Map_MisDissolve_internal:	mappingsTable
+Map_MisDissolve:	mappingsTable
 	mappingsTableEntry.w	byte_8EAE
 	mappingsTableEntry.w	byte_8EB4
 	mappingsTableEntry.w	byte_8EBA

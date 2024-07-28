@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - moving blocks (MZ, SBZ)
 ; ---------------------------------------------------------------------------
-Map_MBlock_internal:	mappingsTable
+Map_MBlock:	mappingsTable
 	mappingsTableEntry.w	.mz1
 	mappingsTableEntry.w	.mz2
 	mappingsTableEntry.w	.sbz

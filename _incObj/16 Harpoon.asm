@@ -26,7 +26,7 @@ Harp_Main:	; Routine 0
 		move.w	#60,harp_time(a0)				; set time to 1 second
 
 Harp_Move:	; Routine 2
-		lea		(Ani_Harp).l,a1
+		lea		Ani_Harp(pc),a1
 		jsr		(AnimateSprite).w
 		moveq	#0,d0
 		move.b	obFrame(a0),d0					; get frame number

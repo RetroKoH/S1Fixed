@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - trapdoor (SBZ)
 ; ---------------------------------------------------------------------------
-Map_Trap_internal:	mappingsTable
+Map_Trap:	mappingsTable
 	mappingsTableEntry.w	.closed
 	mappingsTableEntry.w	.half
 	mappingsTableEntry.w	.open

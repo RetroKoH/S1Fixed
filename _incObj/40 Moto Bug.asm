@@ -47,7 +47,7 @@ Moto_Main:	; Routine 0
 		addq.b	#4,obRoutine(a0) ; goto Moto_Animate below
 
 Moto_Animate:	; Routine 4
-		lea		(Ani_Moto).l,a1
+		lea		Ani_Moto(pc),a1
 		jsr		(AnimateSprite).w
 		bra.w	DisplaySprite
 ; ===========================================================================
@@ -73,7 +73,7 @@ Moto_Action:	; Routine 2
 		neg.w	obVelX(a0)	; change direction
 
 .wait:
-		lea		(Ani_Moto).l,a1
+		lea		Ani_Moto(pc),a1
 		jsr		(AnimateSprite).w
 		bra.s	RememberState
 ; ===========================================================================
@@ -105,7 +105,7 @@ Moto_Action:	; Routine 2
 		clr.b	obAnim(a0)
 
 .nosmoke:
-		lea		(Ani_Moto).l,a1
+		lea		Ani_Moto(pc),a1
 		jsr		(AnimateSprite).w
 
 		include	"_incObj/sub RememberState.asm"	; Moto_Action terminates in this file

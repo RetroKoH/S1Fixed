@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Roller enemy (SYZ)
 ; ---------------------------------------------------------------------------
-Map_Roll_internal:	mappingsTable
+Map_Roll:	mappingsTable
 	mappingsTableEntry.w	M_Roll_Stand
 	mappingsTableEntry.w	M_Roll_Fold
 	mappingsTableEntry.w	M_Roll_Roll1

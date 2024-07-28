@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - electrocution orbs (SBZ)
 ; ---------------------------------------------------------------------------
-Map_Elec_internal:	mappingsTable
+Map_Elec:	mappingsTable
 	mappingsTableEntry.w	.normal
 	mappingsTableEntry.w	.zap1
 	mappingsTableEntry.w	.zap2

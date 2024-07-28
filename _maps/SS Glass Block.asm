@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - special stage breakable glass blocks and red-white blocks
 ; ---------------------------------------------------------------------------
-Map_SS_Glass_internal:	mappingsTable
+Map_SS_Glass:	mappingsTable
 	mappingsTableEntry.w	byte_1B928
 	mappingsTableEntry.w	byte_1B92E
 	mappingsTableEntry.w	byte_1B934

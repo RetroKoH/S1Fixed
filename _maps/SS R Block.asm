@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - special stage "R" block
 ; ---------------------------------------------------------------------------
-Map_SS_R_internal:	mappingsTable
+Map_SS_R:	mappingsTable
 	mappingsTableEntry.w	byte_1B912
 	mappingsTableEntry.w	byte_1B918
 	mappingsTableEntry.w	byte_1B91E

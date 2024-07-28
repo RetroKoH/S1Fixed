@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - energy ball	launcher (FZ)
 ; ---------------------------------------------------------------------------
-Map_PLaunch_internal:	mappingsTable
+Map_PLaunch:	mappingsTable
 	mappingsTableEntry.w	.red
 	mappingsTableEntry.w	.white
 	mappingsTableEntry.w	.sparking1

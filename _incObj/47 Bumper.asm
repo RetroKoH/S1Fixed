@@ -59,7 +59,7 @@ Bump_Hit:	; Routine 2
 		move.b	#4,obFrame(a1)
 
 .display:
-		lea		(Ani_Bump).l,a1
+		lea		Ani_Bump(pc),a1
 		jsr		(AnimateSprite).w
 		out_of_range.s	.resetcount
 		bra.w	DisplayAndCollision		; S3K TouchResponse

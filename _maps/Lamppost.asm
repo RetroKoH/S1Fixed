@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - lamppost
 ; ---------------------------------------------------------------------------
-Map_Lamp_internal:	mappingsTable
+Map_Lamp:	mappingsTable
 	mappingsTableEntry.w	.blue
 	mappingsTableEntry.w	.poleonly
 	mappingsTableEntry.w	.redballonly

@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - walls (GHZ)
 ; ---------------------------------------------------------------------------
-Map_Edge_internal:	mappingsTable
+Map_Edge:	mappingsTable
 	mappingsTableEntry.w	M_Edge_Shadow
 	mappingsTableEntry.w	M_Edge_Light
 	mappingsTableEntry.w	M_Edge_Dark

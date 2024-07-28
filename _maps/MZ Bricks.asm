@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - solid blocks and blocks that fall from the ceiling (MZ)
 ; ---------------------------------------------------------------------------
-Map_Brick_internal:	mappingsTable
+Map_Brick:	mappingsTable
 	mappingsTableEntry.w	.brick
 
 .brick:	spriteHeader

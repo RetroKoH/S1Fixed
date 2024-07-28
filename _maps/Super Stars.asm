@@ -1,4 +1,4 @@
-Map_SStars_internal:	mappingsTable
+Map_SStars:	mappingsTable
 	mappingsTableEntry.w	MapSStars_1
 	mappingsTableEntry.w	MapSStars_2
 	mappingsTableEntry.w	MapSStars_3

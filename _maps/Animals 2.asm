@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - animals
 ; ---------------------------------------------------------------------------
-Map_Animal2_internal:	mappingsTable
+Map_Animal2:	mappingsTable
 	mappingsTableEntry.w	byte_948A
 	mappingsTableEntry.w	byte_9490
 	mappingsTableEntry.w	byte_9484

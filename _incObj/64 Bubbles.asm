@@ -48,7 +48,7 @@ Bub_Main:	; Routine 0
 		move.b	d0,obAngle(a0)
 
 Bub_Animate:	; Routine 2
-		lea		(Ani_Bub).l,a1
+		lea		Ani_Bub(pc),a1
 		jsr		(AnimateSprite).w
 		cmpi.b	#6,obFrame(a0)	; is bubble full-size?
 		bne.s	Bub_ChkWater	; if not, branch
@@ -116,7 +116,7 @@ Bub_ChkWater:	; Routine 4
 ; ===========================================================================
 
 Bub_Display:	; Routine 6
-		lea		(Ani_Bub).l,a1
+		lea		Ani_Bub(pc),a1
 		jsr		(AnimateSprite).w
 		tst.b	obRender(a0)
 		bpl.s	.delete
@@ -210,7 +210,7 @@ Bub_BblMaker:	; Routine $A
 		clr.w	objoff_36(a0)
 
 .loc_12914:
-		lea		(Ani_Bub).l,a1
+		lea		Ani_Bub(pc),a1
 		jsr		(AnimateSprite).w
 
 .chkdel:

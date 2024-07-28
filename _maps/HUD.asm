@@ -2,7 +2,7 @@
 ; Sprite mappings - SCORE, TIME, RINGS
 ; RetroKoH VRAM Overhaul
 ; ---------------------------------------------------------------------------
-Map_HUD_internal:	mappingsTable
+Map_HUD:	mappingsTable
 		mappingsTableEntry.w	.allyellow
 		mappingsTableEntry.w	.ringred
 		mappingsTableEntry.w	.timered

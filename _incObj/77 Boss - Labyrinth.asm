@@ -60,7 +60,7 @@ BossLabyrinth_ShipMain:	; Routine 2
 		move.b	ob2ndRout(a0),d0
 		move.w	BossLabyrinth_ShipIndex(pc,d0.w),d1
 		jsr		BossLabyrinth_ShipIndex(pc,d1.w)
-		lea		(Ani_Eggman).l,a1
+		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
 		moveq	#(maskFlipX+maskFlipY),d0
 		and.b	obStatus(a0),d0
@@ -373,7 +373,7 @@ BossLabyrinth_FlameDel:
 ; ===========================================================================
 
 BossLabyrinth_Display:
-		lea		(Ani_Eggman).l,a1
+		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
 		movea.l	objoff_34(a0),a1
 		move.w	obX(a1),obX(a0)

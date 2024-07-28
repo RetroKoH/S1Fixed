@@ -7,7 +7,7 @@
 ; It won't display properly in the editor, but it does in-game.
 ;lwall_offset: equ $7E2 ; RetroKoH VRAM Overhaul
 
-Map_LWall_internal:	mappingsTable
+Map_LWall:	mappingsTable
 	mappingsTableEntry.w	byte_F538
 	mappingsTableEntry.w	byte_F566
 	mappingsTableEntry.w	byte_F594

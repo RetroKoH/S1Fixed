@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Sonic on the title screen
 ; ---------------------------------------------------------------------------
-Map_TSon_internal:	mappingsTable
+Map_TSon:	mappingsTable
 	mappingsTableEntry.w	byte_A898
 	mappingsTableEntry.w	byte_A8CB
 	mappingsTableEntry.w	byte_A917

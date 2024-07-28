@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - purple rock	(GHZ)
 ; ---------------------------------------------------------------------------
-Map_PRock_internal:	mappingsTable
+Map_PRock:	mappingsTable
 	mappingsTableEntry.w	byte_D110
 
 byte_D110:	spriteHeader

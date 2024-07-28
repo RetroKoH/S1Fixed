@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - lamp (SYZ)
 ; ---------------------------------------------------------------------------
-Map_Light_internal:	mappingsTable
+Map_Light:	mappingsTable
 	mappingsTableEntry.w	.f0
 	mappingsTableEntry.w	.f1
 	mappingsTableEntry.w	.f2

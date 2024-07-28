@@ -1,4 +1,4 @@
-Map_PathSwapper_Internal:	mappingsTable
+Map_PathSwapper:	mappingsTable
 	mappingsTableEntry.w	.f1
 	mappingsTableEntry.w	.f2
 	mappingsTableEntry.w	.f3

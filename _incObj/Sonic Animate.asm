@@ -6,7 +6,7 @@
 
 
 Sonic_Animate:
-		lea		(Ani_Sonic).l,a1
+		lea		Ani_Sonic(pc),a1
 		moveq	#0,d0
 		move.b	obAnim(a0),d0
 		cmp.b	obPrevAni(a0),d0		; has animation changed?

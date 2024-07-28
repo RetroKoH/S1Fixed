@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - chain of spiked balls (SYZ)
 ; ---------------------------------------------------------------------------
-Map_SBall_internal:	mappingsTable
+Map_SBall:	mappingsTable
 	mappingsTableEntry.w	.f0
 
 .f0:	spriteHeader

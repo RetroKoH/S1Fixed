@@ -3,7 +3,7 @@
 ; (It's just a small blob that moves around in a circle. The disc itself is
 ; part of the level tiles.)
 ; ---------------------------------------------------------------------------
-Map_Disc_internal:	mappingsTable
+Map_Disc:	mappingsTable
 	mappingsTableEntry.w	.spot
 
 .spot:	spriteHeader

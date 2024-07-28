@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Jaws enemy (LZ)
 ; ---------------------------------------------------------------------------
-Map_Jaws_internal:	mappingsTable
+Map_Jaws:	mappingsTable
 	mappingsTableEntry.w	.open1
 	mappingsTableEntry.w	.shut1
 	mappingsTableEntry.w	.open2

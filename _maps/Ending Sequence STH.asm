@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - "SONIC THE HEDGEHOG" text on the ending sequence
 ; ---------------------------------------------------------------------------
-Map_ESth_internal:	mappingsTable
+Map_ESth:	mappingsTable
 	mappingsTableEntry.w	M_ESth_1
 
 M_ESth_1:	spriteHeader

@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - fans (SLZ)
 ; ---------------------------------------------------------------------------
-Map_Fan_internal:	mappingsTable
+Map_Fan:	mappingsTable
 	mappingsTableEntry.w	.fan1
 	mappingsTableEntry.w	.fan2
 	mappingsTableEntry.w	.fan3

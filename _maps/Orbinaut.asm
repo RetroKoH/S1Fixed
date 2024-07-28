@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Orbinaut enemy (LZ,	SLZ, SBZ)
 ; ---------------------------------------------------------------------------
-Map_Orb_internal:	mappingsTable
+Map_Orb:	mappingsTable
 	mappingsTableEntry.w	.normal
 	mappingsTableEntry.w	.medium
 	mappingsTableEntry.w	.angry

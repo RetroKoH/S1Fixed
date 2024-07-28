@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - large girder block (SBZ)
 ; ---------------------------------------------------------------------------
-Map_Gird_internal:	mappingsTable
+Map_Gird:	mappingsTable
 	mappingsTableEntry.w	.girder
 
 .girder:	spriteHeader

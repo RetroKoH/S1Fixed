@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - GHZ	platforms
 ; ---------------------------------------------------------------------------
-Map_Plat_GHZ_internal:	mappingsTable
+Map_Plat_GHZ:	mappingsTable
 	mappingsTableEntry.w	.small
 	mappingsTableEntry.w	.large
 

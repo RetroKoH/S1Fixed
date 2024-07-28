@@ -43,7 +43,7 @@ ADoor_Open:
 		move.b	#1,obAnim(a0)	; use "opening"	animation
 
 ADoor_Animate:
-		lea		(Ani_ADoor).l,a1
+		lea		Ani_ADoor(pc),a1
 		bsr.w	AnimateSprite
 		tst.b	obFrame(a0)	; is the door open?
 		bne.s	.remember	; if yes, branch

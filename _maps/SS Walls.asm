@@ -4,7 +4,7 @@
 
 	if DynamicSpecialStageWalls=1
 
-Map_SSWalls_internal:	mappingsTable
+Map_SSWalls:	mappingsTable
 	mappingsTableEntry.w	byte_2C584
 
 byte_2C584:	spriteHeader
@@ -13,7 +13,7 @@ byte_2C584_End
 
 	else
 
-Map_SSWalls_internal:	mappingsTable
+Map_SSWalls:	mappingsTable
 	mappingsTableEntry.w	byte_2C584
 	mappingsTableEntry.w	byte_2C58A
 	mappingsTableEntry.w	byte_2C590

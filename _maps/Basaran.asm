@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Basaran enemy (MZ)
 ; ---------------------------------------------------------------------------
-Map_Bas_internal:	mappingsTable
+Map_Bas:	mappingsTable
 	mappingsTableEntry.w	.still
 	mappingsTableEntry.w	.fly1
 	mappingsTableEntry.w	.fly2

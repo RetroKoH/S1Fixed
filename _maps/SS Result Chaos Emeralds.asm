@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - chaos emeralds from	the special stage results screen
 ; ---------------------------------------------------------------------------
-Map_SSRC_internal:	mappingsTable
+Map_SSRC:	mappingsTable
 	mappingsTableEntry.w	SSRC_1
 	mappingsTableEntry.w	SSRC_2
 	mappingsTableEntry.w	SSRC_3

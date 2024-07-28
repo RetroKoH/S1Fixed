@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - legs on Eggman's escape ship (FZ)
 ; ---------------------------------------------------------------------------
-Map_FZLegs_internal:	mappingsTable
+Map_FZLegs:	mappingsTable
 	mappingsTableEntry.w	.extended
 	mappingsTableEntry.w	.halfway
 	mappingsTableEntry.w	.retracted

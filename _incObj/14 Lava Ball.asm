@@ -60,7 +60,7 @@ LBall_Action:	; Routine 2
 		move.w	LBall_TypeIndex(pc,d0.w),d1
 		jsr		LBall_TypeIndex(pc,d1.w)
 		bsr.w	SpeedToPos
-		lea		(Ani_Fire).l,a1
+		lea		Ani_Fire(pc),a1
 		bsr.w	AnimateSprite
 
 LBall_ChkDel:

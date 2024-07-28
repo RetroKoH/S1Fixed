@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - springs
 ; ---------------------------------------------------------------------------
-Map_Spring_internal:	mappingsTable
+Map_Spring:	mappingsTable
 	mappingsTableEntry.w	M_Spg_Up
 	mappingsTableEntry.w	M_Spg_UpFlat
 	mappingsTableEntry.w	M_Spg_UpExt

@@ -62,7 +62,7 @@ BossMarble_ShipMain:	; Routine 2
 		move.b	ob2ndRout(a0),d0
 		move.w	BossMarble_ShipIndex(pc,d0.w),d1
 		jsr		BossMarble_ShipIndex(pc,d1.w)
-		lea		(Ani_Eggman).l,a1
+		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
 		moveq	#(maskFlipX+maskFlipY),d0
 		and.b	obStatus(a0),d0
@@ -415,7 +415,7 @@ BossMarble_FlameDel:
 ; ===========================================================================
 
 BossMarble_Display:
-		lea		(Ani_Eggman).l,a1
+		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
 
 loc_1864A:

@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - platforms that move	in circles (SLZ)
 ; ---------------------------------------------------------------------------
-Map_Circ_internal:	mappingsTable
+Map_Circ:	mappingsTable
 	mappingsTableEntry.w	.platform
 
 .platform:	spriteHeader

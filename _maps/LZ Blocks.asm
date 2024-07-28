@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - blocks (LZ)
 ; ---------------------------------------------------------------------------
-Map_LBlock_internal:	mappingsTable
+Map_LBlock:	mappingsTable
 	mappingsTableEntry.w	.sinkblock
 	mappingsTableEntry.w	.riseplatform
 	mappingsTableEntry.w	.cork

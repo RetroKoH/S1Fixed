@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - spikes
 ; ---------------------------------------------------------------------------
-Map_Spike_internal:	mappingsTable
+Map_Spike:	mappingsTable
 	mappingsTableEntry.w	byte_CFF4
 	mappingsTableEntry.w	byte_D004
 	mappingsTableEntry.w	byte_D014

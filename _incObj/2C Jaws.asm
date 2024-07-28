@@ -39,7 +39,7 @@ Jaws_Turn:	; Routine 2
 		move.b	#1,obPrevAni(a0) ; reset animation
 
 .animate:
-		lea		(Ani_Jaws).l,a1
+		lea		Ani_Jaws(pc),a1
 		bsr.w	AnimateSprite
 		bsr.w	SpeedToPos
 		bra.w	RememberState

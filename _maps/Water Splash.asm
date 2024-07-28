@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - water splash (LZ)
 ; ---------------------------------------------------------------------------
-Map_Splash_internal:	mappingsTable
+Map_Splash:	mappingsTable
 	mappingsTableEntry.w	.splash1
 	mappingsTableEntry.w	.splash2
 	mappingsTableEntry.w	.splash3

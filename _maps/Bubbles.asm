@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - bubbles (LZ)
 ; ---------------------------------------------------------------------------
-Map_Bub_internal:	mappingsTable
+Map_Bub:	mappingsTable
 	mappingsTableEntry.w	.bubble1
 	mappingsTableEntry.w	.bubble2
 	mappingsTableEntry.w	.bubble3

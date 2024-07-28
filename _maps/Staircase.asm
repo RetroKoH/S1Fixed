@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - blocks that	form a staircase (SLZ)
 ; ---------------------------------------------------------------------------
-Map_Stair_internal:	mappingsTable
+Map_Stair:	mappingsTable
 	mappingsTableEntry.w	.block
 
 .block:	spriteHeader

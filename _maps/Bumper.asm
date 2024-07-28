@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - pinball bumper (SYZ)
 ; ---------------------------------------------------------------------------
-Map_Bump_internal:	mappingsTable
+Map_Bump:	mappingsTable
 	mappingsTableEntry.w	.normal
 	mappingsTableEntry.w	.bumped1
 	mappingsTableEntry.w	.bumped2

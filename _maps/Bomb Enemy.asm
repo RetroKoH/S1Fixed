@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - walking bomb enemy (SLZ, SBZ)
 ; ---------------------------------------------------------------------------
-Map_Bomb_internal:	mappingsTable
+Map_Bomb:	mappingsTable
 	mappingsTableEntry.w	.stand1
 	mappingsTableEntry.w	.stand2
 	mappingsTableEntry.w	.walk1

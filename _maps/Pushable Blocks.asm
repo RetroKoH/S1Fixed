@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - pushable blocks (MZ, LZ)
 ; ---------------------------------------------------------------------------
-Map_Push_internal:	mappingsTable
+Map_Push:	mappingsTable
 	mappingsTableEntry.w	.single
 	mappingsTableEntry.w	.four
 

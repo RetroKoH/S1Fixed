@@ -2,7 +2,7 @@
 ; Sprite mappings - shield and invincibility stars
 ; Reworked to work with DPLCs -- RetroKoH VRAM Overhaul
 ; ---------------------------------------------------------------------------
-Map_Shield_internal:	mappingsTable
+Map_Shield:	mappingsTable
 	mappingsTableEntry.w	.shield1
 	mappingsTableEntry.w	.shield2
 	mappingsTableEntry.w	.shield3
