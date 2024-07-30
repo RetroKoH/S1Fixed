@@ -301,6 +301,11 @@
  Function: Optimized Object Detection for Sonic
  Date: 2024-07-07
  
+ Name: S2+ DPLCs
+ Credit: DeltaW
+ Function: Uses the DPLC format from Sonic 2/3K
+ Date: 2024-07-28
+ 
 # Visual Changes
  Name: Title Screen Tweaks
  Credit: RetroKoH

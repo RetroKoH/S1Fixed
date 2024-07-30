@@ -12,20 +12,18 @@ Sonic_LoadGfx:
 		beq.s	.nochange				; if not, branch and exit
 
 		move.b	d0,(v_sonframenum).w	; update frame number for next check
-		lea		(SonicDynPLC).l,a2		; a2 = PLC script
+		lea		SonicDynPLC(pc),a2		; a2 = PLC script
 		add.w	d0,d0					; multiply current frame number by 2
 		adda.w	(a2,d0.w),a2			; a2 = corresponding PLC
 		moveq	#0,d5
-		move.b	(a2)+,d5				; read "number of PLC entries" value
+		move.w	(a2)+,d5				; read "number of PLC entries" value						; S3K Changed from .b to .w
 		subq.w	#1,d5					; decrement for .readentry loop
 		bmi.s	.nochange				; if there are no entries, branch and exit
 		move.w	#(ArtTile_Sonic*$20),d4	; d4 = Sonic's VRAM location
 
 .readentry:
 		moveq	#0,d1
-		move.b	(a2)+,d1				; d1 = (number of tiles to load - 1)*$10; aka "tile count"
-		lsl.w	#8,d1					; tile count is now in the upper byte, left nybble
-		move.b	(a2)+,d1				; d1 = tile offset ID (lower byte), tile count (uppermost nybble)
+		move.w	(a2)+,d1				; d1 = (number of tiles to load - 1)*$10; aka "tile count"	; S3K Changed from .b to .w
 		move.w	d1,d3
 		lsr.w	#8,d3					; d3 = (tile count-1)*$10
 		andi.w	#$F0,d3

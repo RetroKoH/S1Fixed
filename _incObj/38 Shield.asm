@@ -523,18 +523,16 @@ ShieldPLC_Cont:
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2
 		moveq	#0,d5
-		move.b	(a2)+,d5					; read "number of entries" value
+		move.w	(a2)+,d5					; read "number of entries" value -- S3k: .b to .w
 		subq.w	#1,d5
-		bmi.s	ShieldDPLC_Return			; if zero, branch
+		bmi.s	.nochange					; if zero, branch
 		move.w	#(ArtTile_Shield*$20),d4
 
-ShieldPLC_ReadEntry:
+.readentry:
 		moveq	#0,d1
-		move.b	(a2)+,d1
-		lsl.w	#8,d1
-		move.b	(a2)+,d1
-		move.w	d1,d3
-		lsr.w	#8,d3
+		move.w	(a2)+,d1	; S3K .b to .w
+		move.w	d1,d3		; S3K
+		lsr.w	#8,d3		; S3K
 		andi.w	#$F0,d3
 		addi.w	#$10,d3
 		andi.w	#$FFF,d1
@@ -544,9 +542,9 @@ ShieldPLC_ReadEntry:
 		add.w	d3,d4
 		add.w	d3,d4
 		jsr		(QueueDMATransfer).w
-		dbf		d5,ShieldPLC_ReadEntry		; repeat for number of entries
+		dbf		d5,.readentry		; repeat for number of entries
 
-ShieldDPLC_Return:
+.nochange:
 		rts
 	
 	if ShieldsMode>0

@@ -22,6 +22,7 @@ GRing_Main:	; Routine 0
 		ori.b	#4,obRender(a0)
 		move.w	#priority2,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager - Moved here to fix a bug caused by the new manager
 		move.b	#$40,obActWid(a0)
+		move.b	#$FF,objoff_3F(a0)			; Added for DPLC frame check
 		tst.b	obRender(a0)
 		bpl.s	GRing_Animate
 
@@ -102,22 +103,24 @@ GRing_Delete:	; Routine 8
 GRing_LoadGfx:
 		moveq	#0,d0
 		move.b	obFrame(a0),d0			; load frame number
-		lea		(GRingDynPLC).l,a2
+		cmp.b	objoff_3F(a0),d0		; has frame changed?
+		beq.s	.nochange				; if not, branch and exit
+
+		move.b	d0,objoff_3F(a0)		; update frame number for next check
+		lea		GRingDynPLC(pc),a2
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2
 		moveq	#0,d5
-		move.b	(a2)+,d5          		; read "number of entries" value
+		move.w	(a2)+,d5				; read "number of entries" value -- S3k: .b to .w
 		subq.w	#1,d5
-		bmi.s	GRingDPLC_Return		; if zero, branch
+		bmi.s	.nochange				; if zero, branch
 		move.w	#(ArtTile_Giant_Ring*$20),d4
 
-GRingDPLC_ReadEntry:
+.readentry:
 		moveq	#0,d1
-		move.b	(a2)+,d1
-		lsl.w	#8,d1
-		move.b	(a2)+,d1
-		move.w	d1,d3
-		lsr.w	#8,d3
+		move.w	(a2)+,d1	; S3K .b to .w
+		move.w	d1,d3		; S3K
+		lsr.w	#8,d3		; S3K
 		andi.w	#$F0,d3
 		addi.w	#$10,d3
 		andi.w	#$FFF,d1
@@ -127,7 +130,7 @@ GRingDPLC_ReadEntry:
 		add.w	d3,d4
 		add.w	d3,d4
 		jsr		(QueueDMATransfer).w
-		dbf		d5,GRingDPLC_ReadEntry	; repeat for number of entries
+		dbf		d5,.readentry	; repeat for number of entries
 
-GRingDPLC_Return:
+.nochange:
 		rts
