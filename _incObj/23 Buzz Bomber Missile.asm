@@ -25,16 +25,14 @@ Msl_Main:	; Routine 0
 		move.l	#Map_Missile,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Buzz_Bomber,1,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
+		move.w	#priority3,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#8,obActWid(a0)
 		andi.b	#(maskFlipX+maskFlipY),obStatus(a0)
-		
 		bset	#shPropReflect,obShieldProp(a0)	; Reflected by Elemental Shields
-		
-		tst.b	obSubtype(a0)			; was object created by	a Newtron?
-		beq.s	Msl_Animate				; if not, branch
+		tst.b	obSubtype(a0)					; was object created by	a Newtron?
+		beq.s	Msl_Animate						; if not, branch
 
-		move.b	#8,obRoutine(a0)		; run "Msl_FromNewt" routine
+		move.b	#8,obRoutine(a0)				; run "Msl_FromNewt" routine
 		move.b	#$87,obColType(a0)
 		move.b	#1,obAnim(a0)
 		bra.s	Msl_Animate2

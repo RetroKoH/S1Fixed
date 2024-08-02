@@ -11,7 +11,10 @@ SmashObject:
 		add.w	d0,d0
 		movea.l	obMap(a0),a3
 		adda.w	(a3,d0.w),a3
-		addq.w	#1,a3
+	; S2 BuildSprites
+		move.w	(a3)+,d1		; amount of pieces the frame consists of
+		subq.w	#1,d1
+	; S2 BuildSprites End
 		bset	#5,obRender(a0)
 		_move.b	obID(a0),d4
 		move.b	obRender(a0),d5
@@ -22,7 +25,7 @@ SmashObject:
 .loop:
 		bsr.w	FindFreeObj
 		bne.s	.playsnd
-		addq.w	#5,a3
+		addq.w	#8,a3			; S2 BuildSprites Change: 5 > 8
 
 .loadfrag:
 		move.b	#4,obRoutine(a1)

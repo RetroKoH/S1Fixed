@@ -59,8 +59,8 @@ BuildHUD:
 
 		add.w	d1,d1
 		adda.w	(a1,d1.w),a1				; load frame
-		move.b	(a1)+,d1					; load # of pieces in frame
-		subq.b	#1,d1
+		move.w	(a1)+,d1					; load # of pieces in frame ; S2 BuildSprites .b > .w
+		subq.w	#1,d1						; S2 BuildSprites .b > .w
 		bmi.s	.end
 		bra.w	BuildSpr_Normal				; draw frame
 .end:

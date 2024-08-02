@@ -34,10 +34,10 @@ Ledge_Main:	; Routine 0
 
 Ledge_Touch:	; Routine 2
 		tst.b	ledge_collapse_flag(a0)	; is ledge collapsing?
-		beq.s	.slope		; if not, branch
-		tst.b	ledge_timedelay(a0)	; has time reached zero?
-		beq.w	Ledge_Fragment	; if yes, branch
-		subq.b	#1,ledge_timedelay(a0) ; subtract 1 from time
+		beq.s	.slope					; if not, branch
+		tst.b	ledge_timedelay(a0)		; has time reached zero?
+		beq.w	Ledge_Fragment			; if yes, branch
+		subq.b	#1,ledge_timedelay(a0)	; subtract 1 from time
 
 .slope:
 		move.w	#$30,d1
@@ -98,7 +98,7 @@ locret_8308:
 Ledge_TimeZero:
 		bsr.w	ObjectFall
 		tst.b	obRender(a0)
-		bpl.s	Ledge_Delete
+		bpl.w	DeleteObject
 		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix
 ; ===========================================================================
 

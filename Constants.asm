@@ -311,6 +311,7 @@ mainspr_mapframe:		equ $B	; last byte of obX (2nd byte of obScreenY)
 mainspr_width:			equ $E
 mainspr_childsprites:	equ $F	; amount of child sprites
 mainspr_height:			equ $14
+subspr_data:			equ $10
 sub2_x_pos:				equ $10	; x_vel
 sub2_y_pos:				equ $12	; y_vel
 sub2_mapframe:			equ $15

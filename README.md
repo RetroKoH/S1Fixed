@@ -306,6 +306,11 @@
  Function: Uses the DPLC format from Sonic 2/3K
  Date: 2024-07-28
  
+ Name: S2 BuildSprites
+ Credit: RetroKoH
+ Function: Uses Sonic 2 format mappings (Display/Delete bug occurs w/ buzz bomber missile)
+ Date: 2024-08-02
+ 
 # Visual Changes
  Name: Title Screen Tweaks
  Credit: RetroKoH

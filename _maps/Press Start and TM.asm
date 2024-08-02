@@ -2,13 +2,16 @@
 ; Sprite mappings - "PRESS START BUTTON" and "TM" from title screen
 ; ---------------------------------------------------------------------------
 Map_PSB:	mappingsTable
-	mappingsTableEntry.w	byte_A7CD
+	mappingsTableEntry.w	M_PSB_Blank
 	mappingsTableEntry.w	M_PSB_PSB
 	mappingsTableEntry.w	M_PSB_Limiter
 	mappingsTableEntry.w	M_PSB_TM
 
+M_PSB_Blank:	spriteHeader
+M_PSB_Blank_End
+
 M_PSB_PSB:	spriteHeader
-byte_A7CD:spritePiece	0, 0, 4, 1, $F0, 0, 0, 0, 0	; "PRESS START BUTTON"
+	spritePiece	0, 0, 4, 1, $F0, 0, 0, 0, 0	; "PRESS START BUTTON"
 	spritePiece	$20, 0, 1, 1, $F3, 0, 0, 0, 0
 	spritePiece	$30, 0, 1, 1, $F3, 0, 0, 0, 0
 	spritePiece	$38, 0, 4, 1, $F4, 0, 0, 0, 0

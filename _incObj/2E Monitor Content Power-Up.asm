@@ -29,7 +29,7 @@ Pow_Main:	; Routine 0
 		movea.l	#Map_Monitor,a1
 		add.b	d0,d0
 		adda.w	(a1,d0.w),a1
-		addq.w	#1,a1
+		addq.w	#2,a1			; S2 BuildSprites Change 1 > 2
 		move.l	a1,obMap(a0)
 
 Pow_Move:	; Routine 2
