@@ -36,6 +36,7 @@ FadeInSEGA: = 1							; if set to 1, the SEGA screen smoothly fades in
 PaletteFadeSetting: = 6					; 0 - Blue (Original), 1 - Green, 2 - Red, 3 - Cyan (B+G), 4 - Pink (B+R), 5 - Yellow (G+R), 6 - Full
 GroundSpeedCapEnabled: = 0				; if set to 1, the ground speed cap is active (includes Roll Speed Cap fix by Devon)
 AirSpeedCapEnabled: = 0					; if set to 1, the air speed cap is active
+RollSpeedCapEnabled: = 0				; if set to 1, the rolling speed cap is active (fixed by Devon)
 RollJumpLockActive: = 0					; if set to 1, the original roll jump lock is maintained
 SpikeBugFix: = 1						; if set to 1, the spike "bug" is fixed
 GHZForeverPal: = 1						; if set to 1, GHZ is set to Sonic 1 Forever's palette
