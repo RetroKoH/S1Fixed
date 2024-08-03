@@ -1,1 +1,0 @@
-One of the intersecting conveyor platform sets doesn't load until within close proximity. This needs to be fixed.

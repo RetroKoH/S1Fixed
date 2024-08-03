@@ -6024,7 +6024,7 @@ sub_14D48:
 		cmpi.b	#$40,d0
 		beq.w	loc_14FD6
 		cmpi.b	#$80,d0
-		beq.w	Sonic_DontRunOnWalls
+		beq.w	Sonic_CheckCeilingDist
 		cmpi.b	#$C0,d0
 		beq.w	sub_14E50
 
@@ -6150,24 +6150,27 @@ sub_14E50:
 
 ; End of function sub_14E50
 
+; ---------------------------------------------------------------------------
+; Subroutine to	stop Sonic when	he jumps at a wall to his right
+; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-sub_14EB4:
+Sonic_CheckRightWallDist: ;sub_14EB4:
 		move.w	obY(a0),d2
 		move.w	obX(a0),d3
 
 loc_14EBC:
 		addi.w	#$A,d3
-		lea	(v_anglebuffer).w,a4
+		lea		(v_anglebuffer).w,a4
 		movea.w	#$10,a3
 		clr.w	d6
 		bsr.w	FindWall	; MJ: check solidity
 		move.b	#-$40,d2
 		bra.w	loc_14E0A
 
-; End of function sub_14EB4
+; End of function Sonic_CheckRightWallDist
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	detect when an object hits a wall to its right
@@ -6203,7 +6206,7 @@ locret_14F06:
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-Sonic_DontRunOnWalls:
+Sonic_CheckCeilingDist: ;Sonic_DontRunOnWalls:
 		move.w	obY(a0),d2
 		move.w	obX(a0),d3
 		moveq	#0,d0
@@ -6214,7 +6217,7 @@ Sonic_DontRunOnWalls:
 		move.b	obWidth(a0),d0
 		ext.w	d0
 		add.w	d0,d3
-		lea	(v_anglebuffer).w,a4
+		lea		(v_anglebuffer).w,a4
 		movea.w	#-$10,a3
 		move.w	#$800,d6	; MJ: $1000/2
 		bsr.w	FindFloor	; MJ: check solidity
@@ -6229,7 +6232,7 @@ Sonic_DontRunOnWalls:
 		move.b	obWidth(a0),d0
 		ext.w	d0
 		sub.w	d0,d3
-		lea	(v_anglebuffer2).w,a4
+		lea		(v_anglebuffer2).w,a4
 		movea.w	#-$10,a3
 		move.w	#$800,d6	; MJ: $1000/2
 		bsr.w	FindFloor	; MJ: check solidity
@@ -6239,13 +6242,11 @@ Sonic_DontRunOnWalls:
 ; End of function Sonic_DontRunOnWalls
 
 ; ===========================================================================
-		move.w	obY(a0),d2
-		move.w	obX(a0),d3
 
 loc_14F7C:
 		subi.w	#$A,d2
 		eori.w	#$F,d2
-		lea	(v_anglebuffer).w,a4
+		lea		(v_anglebuffer).w,a4
 		movea.w	#-$10,a3
 		move.w	#$800,d6	; MJ: $1000/2
 		bsr.w	FindFloor	; MJ: check solidity
@@ -6263,7 +6264,7 @@ ObjHitCeiling:
 		ext.w	d0
 		sub.w	d0,d2
 		eori.w	#$F,d2
-		lea	(v_anglebuffer).w,a4
+		lea		(v_anglebuffer).w,a4
 		movea.w	#-$10,a3
 		move.w	#$800,d6	; MJ: $1000/2
 		moveq	#$D,d5		; MJ: set solid type to check
@@ -6314,13 +6315,13 @@ loc_14FD6:
 		bra.w	loc_14DD0
 
 ; ---------------------------------------------------------------------------
-; Subroutine to	stop Sonic when	he jumps at a wall
+; Subroutine to	stop Sonic when	he jumps at a wall to his left
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-Sonic_HitWall:
+Sonic_CheckLeftWallDist:	;Sonic_HitWall:
 		move.w	obY(a0),d2
 		move.w	obX(a0),d3
 
@@ -6345,11 +6346,8 @@ loc_1504A:
 ObjHitWallLeft:
 		add.w	obX(a0),d3
 		move.w	obY(a0),d2
-		; Engine bug: colliding with left walls is erratic with this function.
-		; The cause is this: a missing instruction to flip collision on the found
-		; 16x16 block; this one:
-		;eori.w	#$F,d3
-		lea	(v_anglebuffer).w,a4
+		eori.w	#$F,d3		; added instruction to fix engine bug
+		lea		(v_anglebuffer).w,a4
 		clr.b	(a4)
 		movea.w	#-$10,a3
 		move.w	#$400,d6	; MJ: $800/2

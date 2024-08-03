@@ -102,20 +102,8 @@ Sonic_Animate:
 		andi.b	#$FC,obRender(a0)
 		eor.b	d1,d2
 		or.b	d2,obRender(a0)
-
-	if SpinDashEnabled=1
-	; DeltaWooloo/Gio Spindash check
-		tst.b   obSpinDashFlag(a0)		; GIO: Check if the Spin Dash is being charged
-		bne.s   .skip					; GIO: If yes, skip the check for the pushing status.
-	; Spindash check end
 		btst	#staPush,obStatus(a0)	; is Sonic pushing something?
 		bne.w	.push					; if yes, branch
-
-.skip:
-	else
-		btst	#staPush,obStatus(a0)	; is Sonic pushing something?
-		bne.w	.push					; if yes, branch
-	endif
 
 		lsr.b	#4,d0				; divide angle by $10
 		andi.b	#6,d0				; angle	must be	0, 2, 4	or 6
@@ -126,23 +114,23 @@ Sonic_Animate:
 
 .nomodspeed:
 	if PeeloutEnabled=1
-		lea		(SonAni_Dash).l,a1	; use Dashing animation
+		lea		SonAni_Dash(pc),a1	; use Dashing animation
 		cmpi.w	#$A00,d2			; is Sonic at Dashing speed?
 		bhs.s	.running			; if yes, branch
 	endif
 
-		lea		(SonAni_Run).l,a1	; use running animation
+		lea		SonAni_Run(pc),a1	; use running animation
 		cmpi.w	#$600,d2			; is Sonic at running speed?
 		bhs.s	.running			; if yes, branch
 
-		lea		(SonAni_Walk).l,a1	; use walking animation
+		lea		SonAni_Walk(pc),a1	; use walking animation
 
 ; Get correct walking frame.
 	;	move.b	d0,d1
 	;	lsr.b	#1,d1
 	;	add.b	d1,d0				; Angle 0 = 0; Angle 2 = 3 (+6 frames); Angle 4 = 6 (+12 frames); Angle 6 = 9 (+18 frames).
 .walking:
-		; Sonic 2 method for 8 frames (Sometimes accesses Dash frames when running)
+		; Sonic 2 method for 8 frames
 		add.b	d0,d0				; Angle 0 = 0; Angle 2 = 4 (+8 frames); Angle 4 = 8 (+16 frames); Angle 6 = 12 (+24 frames).
 
 .running:
@@ -158,13 +146,7 @@ Sonic_Animate:
 		move.b	d2,obTimeFrame(a0)	; modify frame duration
 		bsr.w	.loadframe
 		add.b	d3,obFrame(a0)		; modify frame number
-		cmpi.b	#fr_SonRun44,d3
-		bgt.s	.softlock
 		rts
-
-.softlock:
-		nop
-		bra.s	.softlock
 ; ===========================================================================
 
 .rolljump:
@@ -175,10 +157,10 @@ Sonic_Animate:
 		neg.w	d2
 
 .nomodspeed2:
-		lea		(SonAni_Roll2).l,a1	; use fast animation
+		lea		SonAni_Roll2(pc),a1	; use fast animation
 		cmpi.w	#$600,d2			; is Sonic moving fast?
 		bhs.s	.rollfast			; if yes, branch
-		lea		(SonAni_Roll).l,a1	; use slower animation
+		lea		SonAni_Roll(pc),a1	; use slower animation
 
 .rollfast:
 		neg.w	d2
@@ -197,6 +179,8 @@ Sonic_Animate:
 ; ===========================================================================
 
 .push:
+		subq.b	#1,obTimeFrame(a0)	; subtract 1 from frame duration
+		bpl.w	.delay				; if time remains, branch
 		move.w	obInertia(a0),d2	; get Sonic's speed
 		bmi.s	.negspeed
 		neg.w	d2
@@ -209,11 +193,10 @@ Sonic_Animate:
 .belowmax3:
 		lsr.w	#6,d2
 		move.b	d2,obTimeFrame(a0)	; modify frame duration
-		lea		(SonAni_Push).l,a1
+		lea		SonAni_Push(pc),a1
 		move.b	obStatus(a0),d1
 		andi.b	#maskFacing,d1
 		andi.b	#$FC,obRender(a0)
 		or.b	d1,obRender(a0)
 		bra.w	.loadframe
-
 ; End of function Sonic_Animate
