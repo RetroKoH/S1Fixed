@@ -54,7 +54,7 @@ HUDScrolling: = 1						; if set to 1, HUD Scrolls in and out of view during game
 ReboundMod: = 1							; if set to 1, rebounding from enemies/monitors after rolling off a cliff onto them functions the same as if they were jumped on - the rebound is cut short if the jump button is released.
 BlocksInROM: = 1						; if set to 1, 16x16 Blocks are uncompressed in ROM, saving RAM
 ChunksInROM: = 1						; if set to 1, 128x128 Chunks are uncompressed in ROM, saving RAM
-CDCamera: = 1							; if set to 1, screen will pan forward, a la Sonic CD
+CDCamera: = 0							; if set to 1, screen will pan forward, a la Sonic CD
 
 ; Incomplete Mods (Either missing features, or contains bugs)
 WarmPalettes: = 0						; if set to 1, palettes take on a warmer hue (Continuation of Mercury's mod)

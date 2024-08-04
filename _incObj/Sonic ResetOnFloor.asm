@@ -113,53 +113,96 @@ BubbleShield_Bounce:
 	if DropDashEnabled=1
 ; ---------------------------------------------------------------------------
 ; Subroutine to	allow Sonic to perform the Drop Dash
-; Modified (possibly fixed) thanks to Hitaxas
+; Modified (possibly fixed) thanks to Giovanni
 ; ---------------------------------------------------------------------------
 
 ; =============== S U B R O U T I N E =======================================
 
 
 DropDash_Release:
+		move.w	#$800,d2						; minimum speed
+		move.w	#$C00,d3						; maximum speed
+		btst	#sta2ndSuper,obStatus2nd(a0)	; is player super?
+		beq.s	.notSuper						; if not, branch
+		move.w	#$C00,d2						; else, use alt values
+		move.w	#$D00,d3
+
+.notSuper:
+		move.w	obInertia(a0),d4
+		btst	#bitL,(v_jpadhold2).w	; is left being pressed?
+		bne.s	.dropLeft				; if yes, branch	
+		btst	#bitR,(v_jpadhold2).w	; is right being pressed?
+		bne.s	.dropRight				; if yes, branch		
+		btst	#staFacing,obStatus(a0)	; if neither are being pressed, check orientation
+		beq.s	.dropRight
+
+.dropLeft:
+		neg.w	d2						; negate base value
+		neg.w	d3						; negate base value
+
+		bset	#staFacing,obStatus(a0)	; force orientation to correct one
+		tst.w	obVelX(a0)				; check if speed is greater than 0
+		bgt.s	.dropSlopeLeft			; if yes, branch
+		asr.w	#2,d4           		; divide ground speed by 4
+		add.w	d2,d4           		; add speed base to ground speed
+		cmp.w	d3,d4           		; check if current speed is lower than speed cap
+		bgt.s	.setspeed				; if not, branch
+		move.w	d3,d4					; if yes, cap speed
+		bra.s	.setspeed
+
+.dropSlopeLeft:
+		tst.b	obAngle(a0)				; check if Sonic is on a flat surface
+		beq.s	.dropBackLeft			; if yes, branch
+		asr.w	#1,d4					; divide ground speed by 2
+		add.w	d2,d4					; add speed base to ground speed
+		bra.s	.setspeed
+
+.dropBackLeft:
+		move.w	d2,d4					; move speed base to ground speed
+		bra.s	.setspeed
+		
+.dropMaxLeft:
+		move.w	d3,d4					; grant sonic the highest possible speed
+		bra.s	.setspeed
+
+.dropRight:
+		bclr	#staFacing,obStatus(a0)	; force orientation to correct one			
+		tst.w	obVelX(a0)				; check if speed is lower than 0
+		blt.s	.dropSlopeRight			; if yes, branch
+		asr.w	#2,d4           		; divide ground speed by 4
+		add.w	d2,d4           		; add speed base to ground speed
+		cmp.w	d3,d4           		; check if current speed is lower than speed cap
+		blt.s	.setspeed				; if not, branch
+		move.w	d3,d4			  		; if yes, cap speed
+		bra.s	.setspeed
+		
+.dropSlopeRight:
+		tst.b	obAngle(a0)				; check if Sonic is on a flat surface
+		beq.s	.dropBackRight			; if yes, branch
+		asr.w	#1,d4					; divide ground speed by 2
+		add.w	d2,d4					; add speed base to ground speed
+		bra.s	.setspeed
+	
+.dropBackRight:
+		move.w	d2,d4					; move speed base to ground speed 
+		bra.s	.setspeed
+	
+.dropMaxRight:
+		move.w	d3,d4
+		
+.setspeed:	
+		move.w	d4,obInertia(a0)		; move dash speed into inertia	
+
+
+		move.b	#$10,(v_cameralag).w
+		bsr.w	Reset_Sonic_Position_Array
 		move.b	#$E,obHeight(a0)
 		move.b	#7,obWidth(a0)
 		move.b	#aniID_Roll,obAnim(a0)
-		addq.w	#5,obY(a0)
-
-		move.w	#$800,d1				; base dash speed
-		move.w	#$C00,d2				; max dash speed
-
-		move.w	obInertia(a0),d3
-		bgt.s	.checkangle 			; if inertia>0, branch
-		asr.w	#2,d3					; divide ground speed by 4
-		add.w	d1,d3					; add speed base to ground speed
-		cmp.w	d2,d3					; check if current speed is lower than speed cap
-		blt.s	.noangle				; if not, branch
-		move.w	d2,d3					; if yes, cap speed
-		bra.s	.checkdir
-		
-.checkangle:
-		tst.b	obAngle(a0)				; test if Sonic is on an angle
-		beq.s	.noangle 				; if yes, branch
-		asr.w	#1,d3					; divide ground speed by 2
-		add.w	d1,d3					; add speed base to ground speed
-		bra.s	.checkdir				; set result as actual ground speed
-
-.noangle:
-		move.w	d1,d3 					; move base dash speed to inertia
-
-.checkdir:	
-		btst	#staFacing,obStatus(a0)	; is sonic facing left?
-		beq.s	.setspeed				; if no, branch
-		neg.w	d3
-
-.setspeed:
-		move.w	d3,obInertia(a0)		; move dash speed into inertia	
-		move.w	#sfx_Teleport,d0
-		jsr		(PlaySound_Special).w	; play spindash release sfx
-
-.finish:
+		addq.w	#5,obY(a0)				; add the difference between Sonic's rolling and standing heights
 		bset	#staSpin,obStatus(a0)
 		clr.b	obDoubleJumpFlag(a0)
 		clr.b	obDoubleJumpProp(a0)
-		rts
+		move.w	#sfx_Teleport,d0
+		jmp		(PlaySound_Special).w	; play spindash release sfx
 	endif

@@ -81,10 +81,7 @@ loc_1361E:
 
 loc_1364E:
 		clr.w	obVelY(a0)
-		cmpi.b  #$14,obDoubleJumpProp(a0)
-		bge.s   .cont					; skips over the code that would change Sonic's inertia down a slope when the dropdash is fully charged
 		move.w	obVelX(a0),obInertia(a0)
-	.cont:
 		bra.w	Sonic_ResetOnFloor		; Moved from loc_1361E -- Fix Bubble Bounce
 ; ===========================================================================
 
@@ -95,13 +92,14 @@ loc_1365C:
 		move.w	#$FC0,obVelY(a0)
 
 loc_13670:
-		bsr.w	Sonic_ResetOnFloor			; Added -- Fix Bubble Bounce
-		cmpi.b  #$14,obDoubleJumpProp(a0)
-        bge.s   locret_1367E				; skips over the code that would change Sonic's inertia down a slope when the dropdash is fully charged
+	; This might need to be fixed
 		move.w	obVelY(a0),obInertia(a0)
 		tst.b	d3
-		bpl.s	locret_1367E
+		bpl.s	.reset
 		neg.w	obInertia(a0)
+	
+	.reset:
+		bsr.w	Sonic_ResetOnFloor			; Added -- Fix Bubble Bounce
 
 locret_1367E:
 		rts	
@@ -145,11 +143,7 @@ Sonic_AirMode_LeftWall: ;loc_13680:
 		;bsr.w	Sonic_ResetOnFloor			; Moved -- Fix Bubble Bounce
 		move.b	#aniID_Walk,obAnim(a0)
 		clr.w	obVelY(a0)
-		cmpi.b  #$14,obDoubleJumpProp(a0)
-        bge.s   .skip						; skips over the code that would change Sonic's inertia down a slope when the dropdash is fully charged
 		move.w	obVelX(a0),obInertia(a0)
-
-	.skip:
 		bra.w	Sonic_ResetOnFloor			; Moved -- Fix Bubble Bounce
 
 	.end:
@@ -188,12 +182,15 @@ Sonic_AirMode_Ceiling: ;loc_136E2:
 ; ===========================================================================
 
 	.latchToCeiling:
+	; Might need to be fixed
 		move.b	d3,obAngle(a0)
-		bsr.w	Sonic_ResetOnFloor
 		move.w	obVelY(a0),obInertia(a0)
 		tst.b	d3
-		bpl.s	.ret
+		bpl.s	.reset
 		neg.w	obInertia(a0)
+	
+	.reset:
+		bra.w	Sonic_ResetOnFloor
 
 	.ret:
 		rts	
@@ -237,11 +234,7 @@ Sonic_AirMode_RightWall: ;loc_1373E:
 		;bsr.w	Sonic_ResetOnFloor			; Moved -- Fix Bubble Bounce
 		move.b	#aniID_Walk,obAnim(a0)
 		clr.w	obVelY(a0)
-		cmpi.b  #$14,obDoubleJumpProp(a0)
-        bge.s   .skip						; skips over the code that would change Sonic's inertia down a slope when the dropdash is fully charged
 		move.w	obVelX(a0),obInertia(a0)
-
-	.skip:
 		bra.w	Sonic_ResetOnFloor			; Moved -- Fix Bubble Bounce
 
 	.end:
