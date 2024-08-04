@@ -1,5 +1,5 @@
 ; ----------------------------------------------------------------------------
-; Object 07 - Visual Effects (Spin Dash, Skid Dust, Insta-Shield, etc.)
+; Object 07 - Visual Effects (Spin Dash, Skid Dust, Drop Dash Dust)
 ; ----------------------------------------------------------------------------
 Effects:
 		moveq	#0,d0
@@ -37,6 +37,7 @@ Effects_DisplayModes:	offsetTable
 		offsetTableEntry.w 	Effects_MdDisplay		; 0
 		offsetTableEntry.w 	Effects_MdSpindashDust	; 2
 		offsetTableEntry.w 	Effects_MdDisplay		; Effects_MdSkidDust-Effects_DisplayModes	; 4
+		offsetTableEntry.w 	Effects_MdDisplay		; 6: DropDash Dust
 ; ===========================================================================
 Effects_MdSpindashDust:
 	if SpinDashEnabled=1
@@ -82,10 +83,10 @@ Effects_ChkSkid:
 Effects_SkidDust:
 		subq.b	#1,objoff_32(a0)
 		bpl.s	Effects_LoadGfx
-		move.b	#3,objoff_32(a0)
+		move.b	#3,objoff_32(a0)	; create dust once every 4 frames
 		jsr		(FindFreeObj).l
 		bne.s	Effects_LoadGfx
-		move.b	obID(a0),obID(a1) ; load obj07
+		move.b	obID(a0),obID(a1)	; load obj07
 		move.w	obX(a2),obX(a1)
 		move.w	obY(a2),obY(a1)
 		addi.w	#$10,obY(a1)

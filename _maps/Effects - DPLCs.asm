@@ -15,6 +15,14 @@ DynPLC_Effects:	mappingsTable
 		mappingsTableEntry.w	.skid
 		mappingsTableEntry.w	.skid
 		mappingsTableEntry.w	.skid
+		mappingsTableEntry.w	.dropdash1
+		mappingsTableEntry.w	.dropdash2
+		mappingsTableEntry.w	.dropdash3
+		mappingsTableEntry.w	.dropdash4
+		mappingsTableEntry.w	.dropdash5
+		mappingsTableEntry.w	.dropdash6
+		mappingsTableEntry.w	.dropdash7
+		mappingsTableEntry.w	.dropdash8
 
 .null:	dplcHeader
 .null_End
@@ -54,4 +62,37 @@ DynPLC_Effects:	mappingsTable
 .skid:	dplcHeader
 	dplcEntry	$10, $4A
 .skid_End
+
+.dropdash1:	dplcHeader
+	dplcEntry	6, $5A		; $00 (3*2)
+.dropdash1_End
+
+.dropdash2:	dplcHeader
+	dplcEntry	6, $60		; $06 (3*2)
+.dropdash2_End
+
+.dropdash3:	dplcHeader
+	dplcEntry	9, $66		; $0C (3*3)
+.dropdash3_End
+
+.dropdash4:	dplcHeader
+	dplcEntry	9, $6F		; $15 (3*3)
+.dropdash4_End
+
+.dropdash5:	dplcHeader
+	dplcEntry	9, $78		; $1E (3*3)
+.dropdash5_End
+
+.dropdash6:	dplcHeader
+	dplcEntry	9, $81		; $27 (3*3)
+.dropdash6_End
+
+.dropdash7:	dplcHeader
+	dplcEntry	$C, $8A		; $30 (4*3)
+.dropdash7_End
+
+.dropdash8:	dplcHeader
+	dplcEntry	9, $96		; $3C (3*3)
+.dropdash8_End
+
 	even

@@ -193,16 +193,35 @@ DropDash_Release:
 .setspeed:	
 		move.w	d4,obInertia(a0)		; move dash speed into inertia	
 
-
 		move.b	#$10,(v_cameralag).w
 		bsr.w	Reset_Sonic_Position_Array
 		move.b	#$E,obHeight(a0)
 		move.b	#7,obWidth(a0)
 		move.b	#aniID_Roll,obAnim(a0)
-		addq.w	#5,obY(a0)				; add the difference between Sonic's rolling and standing heights
+		addq.w	#5,obY(a0)					; add the difference between Sonic's rolling and standing heights
 		bset	#staSpin,obStatus(a0)
 		clr.b	obDoubleJumpFlag(a0)
 		clr.b	obDoubleJumpProp(a0)
+
+	; Create drop dash dust
+		jsr		(FindFreeObj).l
+		bne.s	.noDust
+		_move.b	#id_Effects,obID(a1)		; load obj07
+		move.w	obX(a0),obX(a1)
+		move.w	obY(a0),obY(a1)
+		move.b	obStatus(a0),obStatus(a1)	; match Player's x orientation
+		andi.b	#maskFacing,obStatus(a1)	; only retain staFacing (staFlipX)
+		move.b	#3,obAnim(a1)
+		move.b	#2,obRoutine(a1)
+		move.l	#Map_Effects,obMap(a1)
+		ori.b	#4,obRender(a1)
+		move.w	#priority1,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
+		move.b	#$10,obActWid(a1)
+		move.w	#ArtTile_Dust,obGfx(a1)
+
 		move.w	#sfx_Teleport,d0
-		jmp		(PlaySound_Special).w	; play spindash release sfx
+		jmp		(PlaySound_Special).w		; play spindash release sfx
+
+.noDust:
+		rts
 	endif

@@ -15,6 +15,14 @@ Map_Effects:	mappingsTable
 	mappingsTableEntry.w	.skid2
 	mappingsTableEntry.w	.skid3
 	mappingsTableEntry.w	.skid4
+	mappingsTableEntry.w	.dropdash1
+	mappingsTableEntry.w	.dropdash2
+	mappingsTableEntry.w	.dropdash3
+	mappingsTableEntry.w	.dropdash4
+	mappingsTableEntry.w	.dropdash5
+	mappingsTableEntry.w	.dropdash6
+	mappingsTableEntry.w	.dropdash7
+	mappingsTableEntry.w	.dropdash8
 
 .null:	spriteHeader
 .null_End
@@ -53,6 +61,38 @@ Map_Effects:	mappingsTable
 .skid4:	spriteHeader
 	spritePiece	-8, -8, 2, 2, $C, 0, 0, 0, 0
 .skid4_End
+
+.dropdash1:	spriteHeader
+ spritePiece -$18, -4, 3, 2, 0, 0, 0, 0, 0
+.dropdash1_End
+
+.dropdash2:	spriteHeader
+ spritePiece -$18, -4, 3, 2, 0, 0, 0, 0, 0			; 6
+.dropdash2_End
+
+.dropdash3:	spriteHeader
+ spritePiece -$18, -$C, 3, 3, 0, 0, 0, 0, 0		; C
+.dropdash3_End
+
+.dropdash4:	spriteHeader
+ spritePiece -$18, -$C, 3, 3, 0, 0, 0, 0, 0		; $15
+.dropdash4_End
+
+.dropdash5:	spriteHeader
+ spritePiece -$18, -$C, 3, 3, 0, 0, 0, 0, 0		; $1E
+.dropdash5_End
+
+.dropdash6:	spriteHeader
+ spritePiece -$18, -$C, 3, 3, 0, 0, 0, 0, 0		; $27
+.dropdash6_End
+
+.dropdash7:	spriteHeader
+ spritePiece -$18, -$C, 4, 3, 0, 0, 0, 0, 0		; $30
+.dropdash7_End
+
+.dropdash8:	spriteHeader
+ spritePiece -$18, -$C, 3, 3, 0, 0, 0, 0, 0		; $3C
+.dropdash8_End
 	
         even
 

@@ -99,7 +99,7 @@ loc_13670:
 		neg.w	obInertia(a0)
 	
 	.reset:
-		bsr.w	Sonic_ResetOnFloor			; Added -- Fix Bubble Bounce
+		bra.w	Sonic_ResetOnFloor			; Added -- Fix Bubble Bounce
 
 locret_1367E:
 		rts	
