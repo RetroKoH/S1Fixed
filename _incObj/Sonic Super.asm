@@ -11,7 +11,7 @@ Sonic_Super:				; XREF: Obj01_MdNormal
 		tst.b	(f_timecount).w
 		beq.s	Sonic_RevertToNormal		; If time is stopped, revert to normal
 		subq.b	#1,(v_supersonic_frame).w
-		bpl.s	.return
+		bhi.s	.return						; Changed from bpl to bhi to ensure once every 60 frames, not 61 (MoDule)
 
 	; Only run the below code once every second.
 		move.b	#60,(v_supersonic_frame).w	; Reset frame counter to 60

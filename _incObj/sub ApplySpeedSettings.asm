@@ -38,6 +38,7 @@ ApplySpeedSettings:
 
 ; ----------------------------------------------------------------------------
 ; Speed Settings Array - This array defines what speeds the character should be set to.
+; Set one word value to roll deceleration to fix certain values?
 ; ----------------------------------------------------------------------------
 ;               blank   top_speed       acceleration    deceleration    ; #     ; Comment
 SpeedSettings:

@@ -1,0 +1,1 @@
+If turning Super via the S monitor while shielded, not only do you usually not get the animation, but the Super Stars art will be overwritten by the art of the shield you had.

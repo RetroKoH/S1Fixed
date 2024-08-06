@@ -8,8 +8,19 @@
 Sonic_RollSpeed:
 		move.w	(v_sonspeedmax).w,d6
 		asl.w	#1,d6
-		move.w	(v_sonspeedacc).w,d5
-		asr.w	#1,d5
+
+	; MoDule Super Sonic Roll Speed fix
+		moveq	#6,d5	; natural roll deceleration = 1/2 normal acceleration
+		btst    #staWater,obStatus(a0)				; Is the character underwater?
+		beq.s   .nowater							; If not, branch
+		moveq	#3,d5
+;		move.w	(v_sonspeedacc).w,d5
+;		asr.w	#1,d5
+	; This will also make roll decel the same when using speed shoes
+	; if you have another character with different acceleration, adjust accordingly
+	; I'll consider changing ApplySpeedSettings to add a value for roll deceleration
+
+.nowater:
 		move.w	(v_sonspeeddec).w,d4
 		asr.w	#2,d4
 		tst.b	(f_slidemode).w

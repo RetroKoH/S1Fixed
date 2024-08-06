@@ -32,6 +32,19 @@ S4SpecialStages: = 1					; if set to 1, Special Stages control like Sonic 4 Ep 1
 SpecialStagesWithAllEmeralds: = 1		; if set to 1, Special Stages are still accessible even once all emeralds are collected.
 AlteredSpecialStages: = (S4SpecialStages+SpecialStagesWithAllEmeralds)
 
+; Ability mods
+SpinDashEnabled: = 1					; if set to 1, Spin dashing is enabled for Sonic.
+SkidDustEnabled: = 1					; if set to 1, Skid dust will occur when coming to a stop.
+SpinDashCancel: = SpinDashEnabled*1		; if set to 1, Spin Dash can be cancelled by not pressing ABC
+SpinDashNoRevDown: = SpinDashEnabled*1	; if set to 1, Spin Dash will not rev down so long as ABC is held down
+PeeloutEnabled: = 0						; if set to 1, Peelout is enabled for Sonic
+AirRollEnabled: = 0						; if set to 1, Air rolling is enabled for Sonic.
+DropDashEnabled: = 1					; if set to 1, Drop dashing is enabled for Sonic.
+; Incomplete Ability mods
+ShieldsMode: = 0						; 0 - Blue Shield only, 1 - Blue Shield + Instashield, 2 - Blue Shield + Elementals, 3 - Elemental only.
+SuperMod: = 1							; if set to 1, a 7th emerald is available and you can turn Super.
+
+; Misc Mods
 FadeInSEGA: = 1							; if set to 1, the SEGA screen smoothly fades in
 PaletteFadeSetting: = 6					; 0 - Blue (Original), 1 - Green, 2 - Red, 3 - Cyan (B+G), 4 - Pink (B+R), 5 - Yellow (G+R), 6 - Full
 GroundSpeedCapEnabled: = 0				; if set to 1, the ground speed cap is active (includes Roll Speed Cap fix by Devon)
@@ -40,28 +53,19 @@ RollSpeedCapEnabled: = 0				; if set to 1, the rolling speed cap is active (fixe
 RollJumpLockActive: = 0					; if set to 1, the original roll jump lock is maintained
 SpikeBugFix: = 1						; if set to 1, the spike "bug" is fixed
 GHZForeverPal: = 1						; if set to 1, GHZ is set to Sonic 1 Forever's palette
-EndLevelFadeMusic: = 1					; if set to 1, music will fade out as the level ends (Signpost or Prison Capsule)
+EndLevelFadeMusic: = 0					; if set to 1, music will fade out as the level ends (Signpost or Prison Capsule)
 ObjectsFreeze: = 0						; if set to 1, objects freeze on death as normal
 SpeedUpScoreTally: = 2					; if set to 1, score tally can be sped up w/ ABC. If 2, it automatically tallies immediately.
-SpinDashEnabled: = 1					; if set to 1, Spin dashing is enabled for Sonic.
-SkidDustEnabled: = 1					; if set to 1, Skid dust will occur when coming to a stop.
-SpinDashCancel: = SpinDashEnabled*1		; if set to 1, Spin Dash can be cancelled by not pressing ABC
-SpinDashNoRevDown: = SpinDashEnabled*1	; if set to 1, Spin Dash will not rev down so long as ABC is held down
-PeeloutEnabled: = 1						; if set to 1, Peelout is enabled for Sonic (SFX still don't work properly)
-AirRollEnabled: = 1						; if set to 1, Air rolling is enabled for Sonic.
 CDBalancing: = 1						; if set to 1, Sonic has 2 Balancing animations, taken from Sonic CD.
 HUDScrolling: = 1						; if set to 1, HUD Scrolls in and out of view during gameplay.
-ReboundMod: = 1							; if set to 1, rebounding from enemies/monitors after rolling off a cliff onto them functions the same as if they were jumped on - the rebound is cut short if the jump button is released.
+ReboundMod: = 0							; if set to 1, rebounding from enemies/monitors after rolling off a cliff onto them functions the same as if they were jumped on - the rebound is cut short if the jump button is released.
 BlocksInROM: = 1						; if set to 1, 16x16 Blocks are uncompressed in ROM, saving RAM
 ChunksInROM: = 1						; if set to 1, 128x128 Chunks are uncompressed in ROM, saving RAM
 CDCamera: = 0							; if set to 1, screen will pan forward, a la Sonic CD
 
 ; Incomplete Mods (Either missing features, or contains bugs)
 WarmPalettes: = 0						; if set to 1, palettes take on a warmer hue (Continuation of Mercury's mod)
-ShieldsMode: = 0						; 0 - Blue Shield only, 1 - Blue Shield + Instashield, 2 - Blue Shield + Elementals, 3 - Elemental only.
-DropDashEnabled: = 1					; if set to 1, Drop dashing is enabled for Sonic.
 AfterImagesOn: = 0						; if set to 1, an after-image effect is applied to the Speed Shoes.
-SuperMod: = 0							; if set to 1, a 7th emerald is available and you can turn Super.
 HUDCentiseconds: = 0					; if set to 1, HUD TIME uses Centiseconds, a la Sonic CD (CURRENTLY BREAKS RING COUNT in Labyrinth Zone)
 
 	include "MacroSetup.asm"
