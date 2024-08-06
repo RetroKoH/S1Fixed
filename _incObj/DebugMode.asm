@@ -29,7 +29,8 @@ Debug_Main:	; Routine 0
 		bclr	#staOnObj,obStatus(a0)		; clear Sonic's standing flag
 		moveq	#0,d0
 	; RetroKoH obPlatform SST mod
-		movea.w	obPlatformAddr(a0),a2		; a2 = object being stood upon -- RetroKoH obPlatform SST mod
+		movea.w	obPlatformAddr(a0),a2		; get object's SST address
+		adda.l	#v_ram_start,a2				; a2 = object
 		clr.w	obPlatformAddr(a0)			; clear object's SST address
 	; obPlatform SST mod end
 		bclr	#staSonicOnObj,obStatus(a2)	; clear object's standing flag

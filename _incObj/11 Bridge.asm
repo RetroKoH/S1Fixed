@@ -351,14 +351,19 @@ loc_19DD8:
 ;RideObject_SetRide:
 		btst	#staOnObj,obStatus(a1)
 		beq.s	loc_19E30
-		moveq	#0,d0
-		movea.w	obPlatformAddr(a1),a3		; a3 = object being stood upon -- RetroKoH obPlatform SST mod
+	; RetroKoH obPlatform SST mod
+		movea.w	obPlatformAddr(a1),a3
+		adda.l	#v_ram_start,a3		; a3 = object being stood upon 
+	; obPlatform SST mod end
 		bclr	#staSonicOnObj,obStatus(a3)
+		clr.b	obSolid(a3)
 
 loc_19E30:
-		move.w	a0,obPlatformAddr(a1)	; RetroKoH obPlatform SST mod
-		move.b	#0,obAngle(a1)
-		move.w	#0,obVelY(a1)
+	; RetroKoH obPlatform SST mod
+		move.w	a0,obPlatformAddr(a1)
+	; obPlatform SST mod end
+		clr.b	obAngle(a1)
+		clr.w	obVelY(a1)
 		move.w	obVelX(a1),obInertia(a1)
 	; RetroKoH added check to prevent unwanted rolling
 		btst	#staAir,obStatus(a1)	; is Sonic in the air?

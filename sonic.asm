@@ -58,10 +58,10 @@ CDCamera: = 0							; if set to 1, screen will pan forward, a la Sonic CD
 
 ; Incomplete Mods (Either missing features, or contains bugs)
 WarmPalettes: = 0						; if set to 1, palettes take on a warmer hue (Continuation of Mercury's mod)
-ShieldsMode: = 1						; 0 - Blue Shield only, 1 - Blue Shield + Instashield, 2 - Blue Shield + Elementals, 3 - Elemental only.
+ShieldsMode: = 0						; 0 - Blue Shield only, 1 - Blue Shield + Instashield, 2 - Blue Shield + Elementals, 3 - Elemental only.
 DropDashEnabled: = 1					; if set to 1, Drop dashing is enabled for Sonic.
-AfterImagesOn: = 1						; if set to 1, an after-image effect is applied to the Speed Shoes.
-SuperMod: = 1							; if set to 1, a 7th emerald is available and you can turn Super.
+AfterImagesOn: = 0						; if set to 1, an after-image effect is applied to the Speed Shoes.
+SuperMod: = 0							; if set to 1, a 7th emerald is available and you can turn Super.
 HUDCentiseconds: = 0					; if set to 1, HUD TIME uses Centiseconds, a la Sonic CD (CURRENTLY BREAKS RING COUNT in Labyrinth Zone)
 
 	include "MacroSetup.asm"
@@ -4772,11 +4772,9 @@ Platform3:
 loc_74AE:
 		btst	#staOnObj,obStatus(a1)
 		beq.s	loc_74DC
-		moveq	#0,d0
 	; RetroKoH obPlatform SST mod
-		move.w	obPlatformAddr(a1),d0		; (Example: 1280)
-		addi.l	#v_objspace&$FFFFFF,d0		; (Example: FFE280)
-		movea.l	d0,a2	; a2=object
+		movea.w	obPlatformAddr(a1),a2
+		adda.l	#v_ram_start,a2		; a2 = object being stood upon 
 	; obPlatform SST mod end
 		bclr	#staSonicOnObj,obStatus(a2)
 		clr.b	ob2ndRout(a2)
@@ -4786,9 +4784,7 @@ loc_74AE:
 
 loc_74DC:
 	; RetroKoH obPlatform SST mod
-		move.w	a0,d0					; load object addr to d0	(Example: E280)
-		subi.w	#v_objspace&$FFFF,d0	; Subtract $D000			(Example: 1280)
-		move.w	d0,obPlatformAddr(a1)
+		move.w	a0,obPlatformAddr(a1)
 	; obPlatform SST mod end
 		clr.b	obAngle(a1)
 		clr.w	obVelY(a1)

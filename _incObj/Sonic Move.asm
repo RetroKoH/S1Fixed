@@ -33,8 +33,10 @@ Sonic_Move:
 		move.b	#aniID_Wait,obAnim(a0)	; use "standing" animation
 		btst	#staOnObj,obStatus(a0)	; is Sonic on an object?
 		beq.s	Sonic_Balance
-		moveq	#0,d0
-		movea.w	obPlatformAddr(a0),a1	; a1 = object being stood upon -- RetroKoH obPlatform SST mod
+	; RetroKoH obPlatform SST mod
+		movea.w	obPlatformAddr(a0),a1
+		adda.l	#v_ram_start,a1			; a1 = object being stood upon
+	; obPlatform SST mod end
 		tst.b	obStatus(a1)
 		bmi.s	Sonic_LookUp
 		moveq	#0,d1

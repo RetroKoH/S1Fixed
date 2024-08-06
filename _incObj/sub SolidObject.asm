@@ -298,7 +298,10 @@ Solid_ResetFloor:
 		beq.s	.notonobj					; if not, branch
 
 		moveq	#0,d0
-		movea.w	obPlatformAddr(a1),a2		; a2 = object being stood upon -- RetroKoH obPlatform SST mod
+	; RetroKoH obPlatform SST mod
+		movea.w	obPlatformAddr(a1),a2		; get object being stood on
+		adda.l	#v_ram_start,a2				; a2 = object being stood upon
+	; obPlatform SST mod end
 		bclr	#staSonicOnObj,obStatus(a2)	; clear object's standing flags
 		clr.b	obSolid(a2)
 
