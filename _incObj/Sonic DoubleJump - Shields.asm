@@ -107,17 +107,4 @@ Sonic_LightningShieldAttack:
 		move.w	#sfx_LShieldAtk,d0
 		jmp		(PlaySound_Special).w
 ; ===========================================================================
-
-Reset_Sonic_Position_Array:
-		lea		(v_tracksonic).w,a1
-		move.w	#$3F,d0
-
-loc_10DEC:
-		move.w	obX(a0),(a1)+
-		move.w	obY(a0),(a1)+
-		dbf		d0,loc_10DEC
-		clr.w	(v_trackpos).w
-		rts
-; End of function Reset_Sonic_Position_Array
-; ===========================================================================
 	endif

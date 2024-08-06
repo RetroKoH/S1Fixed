@@ -18,7 +18,7 @@ Sonic_ResetOnFloor:
 		move.b	#aniID_Walk,obAnim(a0)			; use running/walking animation
 		subq.w	#5,obY(a0)						; move Sonic up 5 pixels so the increased height doesn't push him into the ground
 
-	if ShieldsMode=0
+	if ShieldsMode<2
 
 		if DropDashEnabled=1
 			tst.b	obDoubleJumpFlag(a0)
@@ -35,28 +35,25 @@ Sonic_ResetOnFloor:
 		.ret:
 			rts	
 ; End of function Sonic_ResetOnFloor
-	else				; Mode 1+
-	
-		if ShieldsMode>1			; Mode 2+
-				tst.b	obDoubleJumpFlag(a0)
-				beq.s	.ret
-				btst	#sta2ndBShield,obStatus2nd(a0)	; does Sonic have a Bubble Shield?
-				beq.s	.nobubble
-				bra.s	BubbleShield_Bounce
+	else				; Mode 2+
 
-			.nobubble:
-			if DropDashEnabled=1
-					move.b	obStatus2nd(a0),d0
-					andi.b	#mask2ndChkElement,d0		; Check for any elemental shields
-					bne.s	.noability					; if he has, we will exit
-					cmpi.b	#$14,obDoubleJumpProp(a0)	; is it fully revved up?
-					blt.s	.noability					; if not, exit
-					bra.w	DropDash_Release
+		tst.b	obDoubleJumpFlag(a0)
+		beq.s	.ret
+		btst	#sta2ndBShield,obStatus2nd(a0)	; does Sonic have a Bubble Shield?
+		beq.s	.nobubble
+		bra.s	BubbleShield_Bounce
 
-				.noability:
-			endif
-		
-		endif						; Mode 2+
+		.nobubble:
+		if DropDashEnabled=1
+				move.b	obStatus2nd(a0),d0
+				andi.b	#mask2ndChkElement,d0		; Check for any elemental shields
+				bne.s	.noability					; if he has, we will exit
+				cmpi.b	#$14,obDoubleJumpProp(a0)	; is it fully revved up?
+				blt.s	.noability					; if not, exit
+				bra.w	DropDash_Release
+
+			.noability:
+		endif
 
 		clr.b	obDoubleJumpFlag(a0)
 		clr.b	obDoubleJumpProp(a0)
@@ -191,7 +188,7 @@ DropDash_Release:
 		move.w	d3,d4
 		
 .setspeed:	
-		move.w	d4,obInertia(a0)		; move dash speed into inertia	
+		move.w	d4,obInertia(a0)			; move dash speed into inertia	
 
 		move.b	#$10,(v_cameralag).w
 		bsr.w	Reset_Sonic_Position_Array

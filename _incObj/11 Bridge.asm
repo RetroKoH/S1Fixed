@@ -352,19 +352,11 @@ loc_19DD8:
 		btst	#staOnObj,obStatus(a1)
 		beq.s	loc_19E30
 		moveq	#0,d0
-	; RetroKoH obPlatform SST mod
-		move.w	obPlatformAddr(a1),d0
-		addi.l	#v_objspace,d0
-		movea.l	d0,a3	; a3=object
-	; obPlatform SST mod end
+		movea.w	obPlatformAddr(a1),a3		; a3 = object being stood upon -- RetroKoH obPlatform SST mod
 		bclr	#staSonicOnObj,obStatus(a3)
 
 loc_19E30:
-	; RetroKoH obPlatform SST mod
-		move.w	a0,d0
-		subi.w	#v_objspace,d0
-		move.w	d0,obPlatformAddr(a1)
-	; obPlatform SST mod end
+		move.w	a0,obPlatformAddr(a1)	; RetroKoH obPlatform SST mod
 		move.b	#0,obAngle(a1)
 		move.w	#0,obVelY(a1)
 		move.w	obVelX(a1),obInertia(a1)

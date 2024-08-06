@@ -58,7 +58,7 @@ CDCamera: = 0							; if set to 1, screen will pan forward, a la Sonic CD
 
 ; Incomplete Mods (Either missing features, or contains bugs)
 WarmPalettes: = 0						; if set to 1, palettes take on a warmer hue (Continuation of Mercury's mod)
-ShieldsMode: = 3						; 0 - Blue Shield only, 1 - Blue Shield + Instashield, 2 - Blue Shield + Elementals, 3 - Elemental only.
+ShieldsMode: = 1						; 0 - Blue Shield only, 1 - Blue Shield + Instashield, 2 - Blue Shield + Elementals, 3 - Elemental only.
 DropDashEnabled: = 1					; if set to 1, Drop dashing is enabled for Sonic.
 AfterImagesOn: = 1						; if set to 1, an after-image effect is applied to the Speed Shoes.
 SuperMod: = 1							; if set to 1, a 7th emerald is available and you can turn Super.

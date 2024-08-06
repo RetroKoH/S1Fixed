@@ -34,15 +34,7 @@ Sonic_Move:
 		btst	#staOnObj,obStatus(a0)	; is Sonic on an object?
 		beq.s	Sonic_Balance
 		moveq	#0,d0
-	; RetroKoH obPlatform SST mod
-		move.w	obPlatformAddr(a0),d0
-	; Current method
-		addi.l	#v_objspace,d0
-		movea.l	d0,a1	; a1=object
-	; Alt method
-;		lea		(v_objspace).w,a1
-;		lea		(a1,d0.w),a1
-	; obPlatform SST mod end
+		movea.w	obPlatformAddr(a0),a1	; a1 = object being stood upon -- RetroKoH obPlatform SST mod
 		tst.b	obStatus(a1)
 		bmi.s	Sonic_LookUp
 		moveq	#0,d1
