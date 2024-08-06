@@ -12,10 +12,10 @@ Sonic_ResetOnFloor:
 		btst	#staSpin,obStatus(a0)			; is Sonic spinning?
 		beq.s	.ret							; if not, branch
 	; If Sonic is spinning upon landing
-		bclr	#staSpin,obStatus(a0)
 		move.b	#$13,obHeight(a0)
 		move.b	#9,obWidth(a0)
 		move.b	#aniID_Walk,obAnim(a0)			; use running/walking animation
+		bclr	#staSpin,obStatus(a0)
 		subq.w	#5,obY(a0)						; move Sonic up 5 pixels so the increased height doesn't push him into the ground
 
 	if ShieldsMode<2
@@ -195,8 +195,8 @@ DropDash_Release:
 		move.b	#$E,obHeight(a0)
 		move.b	#7,obWidth(a0)
 		move.b	#aniID_Roll,obAnim(a0)
-		addq.w	#5,obY(a0)					; add the difference between Sonic's rolling and standing heights
 		bset	#staSpin,obStatus(a0)
+		addq.w	#5,obY(a0)					; add the difference between Sonic's rolling and standing heights
 		clr.b	obDoubleJumpFlag(a0)
 		clr.b	obDoubleJumpProp(a0)
 
@@ -215,10 +215,12 @@ DropDash_Release:
 		move.w	#priority1,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$10,obActWid(a1)
 		move.w	#ArtTile_Dust,obGfx(a1)
+		movea.l	a0,a1
 
 		move.w	#sfx_Teleport,d0
 		jmp		(PlaySound_Special).w		; play spindash release sfx
 
 .noDust:
+		movea.l	a0,a1
 		rts
 	endif
