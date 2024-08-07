@@ -121,7 +121,17 @@ LBlk_Action:	; Routine 2
 	; Make sure to place within Top-Solid tiles if placing in the ground as
 	; a trap. Consult Clownacy to see if the Top-Solid tiles were a One-28 error.
 		bsr.w	SpeedToPos
+		
+	if LimitLZBlockRisingSpeed=1	; Mercury Limit LZ Block Rising Speed
+		cmpi.w	#-$200,obVelY(a0)
+		beq.s	.attopspeed
 		subq.w	#8,obVelY(a0)	; make block rise
+		
+.attopspeed:
+	else
+		subq.w	#8,obVelY(a0)	; make block rise
+	endif	; Limit LZ Block Rising Speed End
+		
 		bsr.w	ObjHitCeiling
 		tst.w	d1				; has block hit the ceiling?
 		bpl.w	.noceiling04	; if not, branch

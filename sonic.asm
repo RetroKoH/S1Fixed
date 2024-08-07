@@ -63,6 +63,7 @@ BlocksInROM: = 1						; if set to 1, 16x16 Blocks are uncompressed in ROM, savin
 ChunksInROM: = 1						; if set to 1, 128x128 Chunks are uncompressed in ROM, saving RAM
 CDCamera: = 0							; if set to 1, screen will pan forward, a la Sonic CD
 HUDHasLeadingZeroes: = 1				; if set to 1, leading zeroes appear on HUD
+LimitLZBlockRisingSpeed: = 1			; if set to 1, LZ Rising platforms are speed-capped
 
 ; Incomplete Mods (Either missing features, or contains bugs)
 WarmPalettes: = 0						; if set to 1, palettes take on a warmer hue (Continuation of Mercury's mod)

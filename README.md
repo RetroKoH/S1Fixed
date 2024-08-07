@@ -191,6 +191,12 @@
  Function: Adds Leading 0's to HUD values (Score, Rings, Lives)
  Date: 2024-08-07
  Variable: HUDHasLeadingZeroes
+ 
+ Name: Limit LZ Block Rising Speed
+ Credit: Mercury
+ Function: Limits the rising speed of blocks in LZ so that Sonic can jump off them more comfortably.
+ Date: 2024-08-07
+ Variable: LimitLZBlockRisingSpeed
 
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format
