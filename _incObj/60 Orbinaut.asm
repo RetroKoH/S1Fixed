@@ -33,19 +33,23 @@ Orb_Main:	; Routine 0
 		lea		objoff_37(a0),a2
 		movea.l	a2,a3
 		addq.w	#1,a2
-		moveq	#3,d1					; create 4 spike objects
+		moveq	#3,d1						; create 4 spike objects
 
 	; RetroKoH Object Load Optimization -- Based on Spirituinsanum Guides
 	; Here we begin what's replacing FindNextFreeObj. It'll be quicker to loop through here.
-		lea		(v_lvlobjspace).w,a1
-		move.w	#v_lvlobjcount,d0
+		movea.l	a0,a1
+		move.w	#v_lvlobjend&$FFFF,d0
+		sub.w	a0,d0
+		lsr.w	#6,d0
+		subq.w	#1,d0
+		bcs.s	.fail
 
 .loop:
-		tst.b	obID(a1)				; is object RAM	slot empty?
-		beq.s	.makesatellites			; if so, create object piece
+		tst.b	obID(a1)					; is object RAM	slot empty?
+		beq.s	.makesatellites				; if so, create object piece
 		lea		object_size(a1),a1
-		dbf		d0,.loop				; loop through object RAM
-		bne.s	.fail					; We're moving this line here.
+		dbf		d0,.loop					; loop through object RAM
+		bne.s	.fail						; We're moving this line here.
 
 .makesatellites:
 		addq.b	#1,(a3)
@@ -54,8 +58,8 @@ Orb_Main:	; Routine 0
 		lsr.w	#object_size_bits,d5
 		andi.w	#$7F,d5
 		move.b	d5,(a2)+
-		_move.b	obID(a0),obID(a1)		; load spiked orb object
-		move.b	#6,obRoutine(a1)		; use Orb_MoveOrb routine
+		_move.b	obID(a0),obID(a1)			; load spiked orb object
+		move.b	#6,obRoutine(a1)			; use Orb_MoveOrb routine
 		move.l	obMap(a0),obMap(a1)
 		move.w	obGfx(a0),obGfx(a1)
 		ori.b	#4,obRender(a1)
