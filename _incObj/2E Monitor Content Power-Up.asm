@@ -161,6 +161,11 @@ Pow_Invinc:
 
 Pow_Rings:
 		addi.w	#10,(v_rings).w		; add 10 rings to the number of rings you have
+		cmpi.w	#999,(v_rings).w	; did the Sonic collect 999+ rings? < Added ring cap
+		bcs.s	.skipcap			; if not, branch
+		move.w	#999,(v_rings).w	; cap rings
+
+.skipcap:
 		ori.b	#1,(f_ringcount).w	; update the ring counter
 		cmpi.w	#100,(v_rings).w	; check if you have 100 rings
 		blo.s	Pow_RingSound
@@ -177,8 +182,14 @@ Pow_RingSound:
 ; ===========================================================================
 
 Pow_S:
-	if SuperMod=0
 		addi.w	#50,(v_rings).w
+		cmpi.w	#999,(v_rings).w	; did the Sonic collect 999+ rings? < Added ring cap
+		bcs.s	.skipcap			; if not, branch
+		move.w	#999,(v_rings).w	; cap rings
+
+.skipcap:
+
+	if SuperMod=0
 		bsr.w	Pow_Invinc
 		bsr.w	Pow_Shoes
 
@@ -192,7 +203,6 @@ Pow_S:
 		bset	#2,(v_lifecount).w
 		beq.w	ExtraLife
 	else
-		addi.w	#50,(v_rings).w
 		movem.l a0-a2,-(sp)								; Move a0, a1 and a2 onto stack
 		lea     (v_player).w,a0							; Load Sonic to a0
 		btst	#sta2ndSuper,obStatus2nd(a0)			; is Sonic already Super?

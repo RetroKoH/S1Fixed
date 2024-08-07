@@ -348,8 +348,10 @@ loc_1C8F4:
 		moveq	#1,d4					; Optimized from move.w
 
 loc_1C8FE:
+	if HUDHasLeadingZeroes=0	;Mercury HUD Has Leading Zeroes
 		tst.w	d4
 		beq.s	loc_1C92C
+	endif	; HUD Has Leading Zeroes End
 		lsl.w	#6,d2
 		move.l	d0,4(a6)
 		lea		(a1,d2.w),a3

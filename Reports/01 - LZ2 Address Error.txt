@@ -1,1 +1,0 @@
-An address error occurs in LZ2. Likely related to S2 BuildSprites

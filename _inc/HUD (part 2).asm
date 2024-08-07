@@ -179,8 +179,10 @@ loc_1CA98:
 		move.w	#1,d4
 
 loc_1CAA2:
+	if HUDHasLeadingZeroes=0	;Mercury HUD Has Leading Zeroes
 		tst.w	d4
 		beq.s	Hud_ClrLives
+	endif	; HUD Has Leading Zeroes End
 
 loc_1CAA6:
 		lsl.w	#5,d2

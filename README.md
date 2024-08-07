@@ -185,6 +185,12 @@
  Function: Applies a panning effect to the screen when moving quickly, a la Sonic CD
  Date: 2024-07-26
  Variable: CDCamera
+ 
+ Name: HUD w/ Leading Zeroes
+ Credit: Mercury
+ Function: Adds Leading 0's to HUD values (Score, Rings, Lives)
+ Date: 2024-08-07
+ Variable: HUDHasLeadingZeroes
 
 # Under-the-Hood Optimizations/Overhauls
  Name: 128x128 Chunk Format
