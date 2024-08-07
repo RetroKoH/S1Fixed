@@ -24,59 +24,58 @@ Pole_Main:	; Routine 0
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$E1,obColType(a0)
 		moveq	#0,d0
-		move.b	obSubtype(a0),d0	; get object type
-		mulu.w	#60,d0				; multiply by 60 (1 second)
-		move.w	d0,pole_time(a0)	; set breakage time
+		move.b	obSubtype(a0),d0			; get object type
+		mulu.w	#60,d0						; multiply by 60 (1 second)
+		move.w	d0,pole_time(a0)			; set breakage time
 
 Pole_Action:	; Routine 2
-		tst.b	pole_grabbed(a0) ; has pole already been grabbed?
-		beq.s	.grab		; if not, branch
+		lea		(v_player).w,a1				; to be used in the next block of code
+		tst.b	pole_grabbed(a0)			; has pole already been grabbed?
+		beq.s	.grab						; if not, branch
 		tst.w	pole_time(a0)
 		beq.s	.moveup
-		subq.w	#1,pole_time(a0) ; decrement time until break
+		subq.w	#1,pole_time(a0)			; decrement time until break
 		bne.s	.moveup
-		move.b	#1,obFrame(a0)	; break	the pole
+		move.b	#1,obFrame(a0)				; break	the pole
 		bra.s	.release
 ; ===========================================================================
 
 .moveup:
-		lea		(v_player).w,a1
 		move.w	obY(a0),d0
 		subi.w	#$18,d0
-		btst	#bitUp,(v_jpadhold1).w ; is "up" pressed?
-		beq.s	.movedown	; if not, branch
-		subq.w	#1,obY(a1)	; move Sonic up
+		btst	#bitUp,(v_jpadhold1).w	; is "up" pressed?
+		beq.s	.movedown				; if not, branch
+		subq.w	#1,obY(a1)				; move Sonic up
 		cmp.w	obY(a1),d0
 		blo.s	.movedown
 		move.w	d0,obY(a1)
 
 .movedown:
 		addi.w	#$24,d0
-		btst	#bitDn,(v_jpadhold1).w ; is "down" pressed?
-		beq.s	.letgo		; if not, branch
-		addq.w	#1,obY(a1)	; move Sonic down
+		btst	#bitDn,(v_jpadhold1).w	; is "down" pressed?
+		beq.s	.letgo					; if not, branch
+		addq.w	#1,obY(a1)				; move Sonic down
 		cmp.w	obY(a1),d0
 		bhs.s	.letgo
 		move.w	d0,obY(a1)
 
 .letgo:
 		move.b	(v_jpadpress2).w,d0
-		andi.w	#btnABC,d0		; is A/B/C pressed?
-		beq.w	RememberState	; if not, branch
+		andi.w	#btnABC,d0				; is A/B/C pressed?
+		beq.w	RememberState			; if not, branch
 
 .release:
 		clr.b	obColType(a0)
-		addq.b	#2,obRoutine(a0) ; goto RememberState next
-		clr.b	(f_playerctrl).w
+		addq.b	#2,obRoutine(a0)		; goto RememberState next
+		clr.b	obCtrlLock(a1)
 		clr.b	(f_wtunnelallow).w
 		clr.b	pole_grabbed(a0)
 		bra.w	RememberState
 ; ===========================================================================
 
 .grab:
-		tst.b	obColProp(a0)	; has Sonic touched the	pole?
-		beq.w	RememberState	; if not, branch
-		lea		(v_player).w,a1
+		tst.b	obColProp(a0)			; has Sonic touched the	pole?
+		beq.w	RememberState			; if not, branch
 		move.w	obX(a0),d0
 		addi.w	#$14,d0
 		cmp.w	obX(a1),d0
@@ -84,15 +83,15 @@ Pole_Action:	; Routine 2
 		clr.b	obColProp(a0)
 		cmpi.b	#4,obRoutine(a1)
 		bhs.w	RememberState
-		clr.w	obVelX(a1)	; stop Sonic moving
-		clr.w	obVelY(a1)	; stop Sonic moving
+		clr.w	obVelX(a1)				; stop Sonic moving
+		clr.w	obVelY(a1)				; stop Sonic moving
 		move.w	obX(a0),d0
 		addi.w	#$14,d0
 		move.w	d0,obX(a1)
 		bclr	#staFacing,obStatus(a1)
-		move.b	#aniID_Hang,obAnim(a1) ; set Sonic's animation to "hanging"
-		move.b	#1,(f_playerctrl).w ; lock controls
-		move.b	#1,(f_wtunnelallow).w ; disable wind tunnel
-		move.b	#1,pole_grabbed(a0) ; begin countdown to breakage
+		move.b	#aniID_Hang,obAnim(a1)	; set Sonic's animation to "hanging"
+		move.b	#1,obCtrlLock(a1)		; lock controls
+		move.b	#1,(f_wtunnelallow).w	; disable wind tunnel
+		move.b	#1,pole_grabbed(a0)		; begin countdown to breakage
 		bra.w	RememberState
 ; ===========================================================================

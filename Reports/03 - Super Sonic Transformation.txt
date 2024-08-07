@@ -1,1 +1,0 @@
-Sonic doesn't freeze in place properly to do the animation while transforming.

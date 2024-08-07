@@ -298,7 +298,7 @@ PalCycle_SuperSonic:
 		cmpi.w	#$30,(v_palette_frame).w	; has palette cycle reached the 6th frame?
 		blo.s	+							; if not, branch
 		move.b	#-1,(f_super_palette).w		; mark fade-in as done
-		clr.b	(v_player+obLRLock).w		; restore Sonic's movement
+		clr.b	(v_player+obCtrlLock).w		; restore Sonic's movement
 
 +
 		lea		(v_pal_dry+4).w,a1

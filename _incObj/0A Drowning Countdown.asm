@@ -173,19 +173,25 @@ Drown_WobbleData:
 ; ===========================================================================
 
 Drown_Countdown:; Routine $A
+		lea		(v_player).w,a2		; S2 Optimization (RetroKoH)
+
+	; If Sonic has drowned, and the object is waiting until the
+	; world should pause, then go deal with that.
 		tst.w	objoff_2C(a0)
 		bne.w	.loc_13F86
-		cmpi.b	#6,(v_player+obRoutine).w
-		bhs.s	.cantdrown
+		cmpi.b	#6,obRoutine(a2)				; is Sonic dead?
+		bhs.s	.cantdrown						; if yes, branch
+
 	if ShieldsMode>1	; RetroKoH S3K Elemental Shields
-		btst	#sta2ndBShield,(v_player+obStatus2nd).w	; does the player have the Bubble Shield?
+		btst	#sta2ndBShield,obStatus2nd(a2)	; does the player have the Bubble Shield?
 		bne.s   .cantdrown
 	endif
-		btst	#staWater,(v_player+obStatus).w			; is Sonic underwater?
-		beq.s	.cantdrown								; if not, branch
 
-		subq.w	#1,drown_time(a0)						; decrement timer
-		bpl.w	.nochange								; branch if time remains
+		btst	#staWater,obStatus(a2)			; is Sonic underwater?
+		beq.s	.cantdrown						; if not, branch
+
+		subq.w	#1,drown_time(a0)				; decrement timer
+		bpl.w	.nochange						; branch if time remains
 		move.w	#59,drown_time(a0)
 		move.w	#1,objoff_36(a0)
 		jsr		(RandomNumber).w
@@ -226,32 +232,32 @@ Drown_Countdown:; Routine $A
 
 		; Sonic drowns here
 		bsr.w	ResumeMusic
-		move.b	#$81,(f_playerctrl).w	; lock controls and disable object interaction
+		move.b	#$81,obCtrlLock(a2)		; lock controls and disable object interaction
 		move.b	#sfx_Drown,d0
 		jsr		(PlaySound_Special).w	; play drowning sound
 		move.b	#$A,objoff_34(a0)
 		move.w	#1,objoff_36(a0)
 		move.w	#$78,objoff_2C(a0)
 		move.l	a0,-(sp)
-		lea		(v_player).w,a0
+		movea.l	a2,a0					; instruction changed due to S2 optimization
 		bsr.w	Sonic_ResetOnFloor
 		move.b	#aniID_Drown,obAnim(a0)	; use Sonic's drowning animation
 		bset	#staAir,obStatus(a0)
-		bset	#7,obGfx(a0)
+		bset	#7,obGfx(a0)			; set high priority bit
 		clr.w	obVelY(a0)
 		clr.w	obVelX(a0)
 		clr.w	obInertia(a0)
 		move.b	#$A,obRoutine(a0)		; Force the character to drown -- RHS Drowning Fix
 		move.b	#1,(f_nobgscroll).w
 		clr.b	(f_timecount).w			; Stop the timer immediately -- RHS Drowning Fix
-		movea.l	(sp)+,a0
+		movea.l	(sp)+,a0				; restore a0 = obj0A
 		rts	
 ; ===========================================================================
 .loc_13F86:
 	; RHS Drowning Fix
 		subq.w	#1,objoff_2C(a0)
-		bne.s	.nochange		; Make it jump straight to this location
-		move.b	#6,(v_player+obRoutine).w
+		bne.s	.nochange				; Make it jump straight to this location
+		move.b	#6,obRoutine(a2)		; kill Sonic
 		rts
 	; Drowning Fix End
 ; ===========================================================================
@@ -273,22 +279,22 @@ Drown_Countdown:; Routine $A
 		jsr		(FindFreeObj).l
 		bne.w	.nocountdown
 		_move.b	#id_DrownCount,obID(a1)		; load object
-		move.w	(v_player+obX).w,obX(a1)	; match X position to Sonic
+		move.w	obX(a2),obX(a1)	; match X position to Sonic
 		moveq	#6,d0
-		btst	#staFacing,(v_player+obStatus).w
+		btst	#staFacing,obStatus(a2)
 		beq.s	.noflip
 		neg.w	d0
 		move.b	#$40,obAngle(a1)
 
 .noflip:
 		add.w	d0,obX(a1)
-		move.w	(v_player+obY).w,obY(a1)
+		move.w	obY(a2),obY(a1)
 		move.b	#6,obSubtype(a1)
 		tst.w	objoff_2C(a0)
 		beq.w	.loc_1403E
 		andi.w	#7,objoff_3A(a0)
 		addi.w	#0,objoff_3A(a0)
-		move.w	(v_player+obY).w,d0
+		move.w	obY(a2),d0
 		subi.w	#$C,d0
 		move.w	d0,obY(a1)
 		jsr		(RandomNumber).w

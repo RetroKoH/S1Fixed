@@ -74,28 +74,28 @@ Bub_ChkWater:	; Routine 4
 		move.b	(a1,d0.w),d0
 		ext.w	d0
 		add.w	bub_origX(a0),d0
-		move.w	d0,obX(a0)	; change bubble's x-axis position
+		move.w	d0,obX(a0)		; change bubble's x-axis position
 		tst.b	bub_inhalable(a0)
 		beq.s	.display
 		bsr.w	Bub_ChkSonic	; has Sonic touched the	bubble?
-		beq.s	.display	; if not, branch
+		beq.s	.display		; if not, branch
 		
 	if SpinDashEnabled=1	; Mercury Spin Dash
 		cmpi.b	#aniID_SpinDash,obAnim(a1)
 		beq.s	.display
 	endif	; Spin Dash End
 
-		bsr.w	ResumeMusic	; cancel countdown music
+		bsr.w	ResumeMusic					; cancel countdown music
 		move.w	#sfx_Bubble,d0
-		jsr		(PlaySound_Special).w	; play collecting bubble sound
+		jsr		(PlaySound_Special).w		; play collecting bubble sound
 		lea		(v_player).w,a1
 		clr.w	obVelX(a1)
 		clr.w	obVelY(a1)
-		clr.w	obInertia(a1)	; stop Sonic
-		move.b	#aniID_GetAir,obAnim(a1) ; use bubble-collecting animation
+		clr.w	obInertia(a1)				; stop Sonic
+		move.b	#aniID_GetAir,obAnim(a1)	; use bubble-collecting animation
 		move.b	#$23,obLRLock(a1)
 		clr.b	obJumping(a1)
-		andi.b	#~(maskRollJump+maskPush),obStatus(a1) ; Clear RollJump and Push flags ($CF)
+		andi.b	#~(maskRollJump+maskPush),obStatus(a1)	; Clear RollJump and Push flags ($CF)
 		btst	#staSpin,obStatus(a1)
 		beq.w	.burst
 		bclr	#staSpin,obStatus(a1)
@@ -108,22 +108,16 @@ Bub_ChkWater:	; Routine 4
 .display:
 		bsr.w	SpeedToPos
 		tst.b	obRender(a0)
-		bpl.s	.delete
+		bpl.w	DeleteObject
 		jmp		(DisplaySprite).l
-
-.delete:
-		bra.w	DeleteObject
 ; ===========================================================================
 
 Bub_Display:	; Routine 6
 		lea		Ani_Bub(pc),a1
 		jsr		(AnimateSprite).w
 		tst.b	obRender(a0)
-		bpl.s	.delete
+		bpl.w	DeleteObject
 		jmp		(DisplaySprite).l
-
-.delete:
-		bra.w	DeleteObject
 ; ===========================================================================
 
 Bub_Delete:	; Routine 8
@@ -155,11 +149,9 @@ Bub_BblMaker:	; Routine $A
 		adda.w	d1,a1
 		move.l	a1,objoff_3C(a0)
 		subq.b	#1,bub_time(a0)
-		bpl.s	.loc_12872
+		bpl.s	.loc_1287C
 		move.b	bub_freq(a0),bub_time(a0)
 		bset	#7,objoff_36(a0)
-
-.loc_12872:
 		bra.s	.loc_1287C
 ; ===========================================================================
 
@@ -229,9 +221,9 @@ Bub_BblTypes:	dc.b 0,	1, 0, 0, 0, 0, 1, 0, 0,	0, 0, 1, 0, 1, 0, 0, 1,	0
 ; ===========================================================================
 
 Bub_ChkSonic:
-		tst.b	(f_playerctrl).w
+		lea		(v_player).w,a1		; moved to the front to call obCtrlLock directly from a1
+		tst.b	obCtrlLock(a1)
 		bmi.s	.loc_12998
-		lea		(v_player).w,a1
 		move.w	obX(a1),d0
 		move.w	obX(a0),d1
 		subi.w	#$10,d1

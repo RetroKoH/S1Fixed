@@ -208,7 +208,7 @@ Debug_ChgItem:
 		move.b	#aniID_Walk,obAnim(a1)
 		clr.w	obX+2(a1)
 		clr.w	obY+2(a1)
-		clr.b	(f_playerctrl).w					; unlock player in case of drowning
+		clr.b	obCtrlLock(a1)						; unlock player in case of drowning
 		clr.w	obVelX(a1)
 		clr.w	obVelY(a1)
 		clr.w	obInertia(a1)

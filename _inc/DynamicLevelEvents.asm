@@ -253,7 +253,8 @@ DLE_SBZ3:
 		clr.b	(v_lastlamp).w
 		move.w	#1,(f_restart).w			; restart level
 		move.w	#(id_SBZ<<8)+2,(v_zone).w	; set level number to 0502 (FZ)
-		move.b	#1,(f_playerctrl).w			; lock controls
+		move.b	#1,(v_player+obCtrlLock).w	; lock controls
+		; Clear Super Sonic?
 
 locret_6F8C:
 		rts	

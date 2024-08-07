@@ -77,7 +77,7 @@ Jun_Action:	; Routine 2
 
 		move.b	d1,objoff_32(a0)
 		addq.b	#4,obRoutine(a0)		; goto Jun_Release next
-		move.b	#1,(f_playerctrl).w		; lock controls
+		move.b	#1,obCtrlLock(a1)		; lock controls
 		move.b	#aniID_Roll,obAnim(a1)	; make Sonic use "rolling" animation
 		move.w	#$800,obInertia(a1)
 		clr.w	obVelX(a1)
@@ -99,10 +99,10 @@ Jun_Display:	; Routine 4
 
 Jun_Release:	; Routine 6
 		move.b	obFrame(a0),d0
-		cmpi.b	#4,d0		; is gap pointing down?
-		beq.s	.release	; if yes, branch
-		cmpi.b	#7,d0		; is gap pointing right?
-		bne.s	.dontrelease	; if not, branch
+		cmpi.b	#4,d0				; is gap pointing down?
+		beq.s	.release			; if yes, branch
+		cmpi.b	#7,d0				; is gap pointing right?
+		bne.s	.dontrelease		; if not, branch
 
 .release:
 		cmp.b	objoff_32(a0),d0
@@ -116,7 +116,7 @@ Jun_Release:	; Routine 6
 		move.w	#$800,obVelY(a1)
 
 .isdown:
-		clr.b	(f_playerctrl).w	; unlock controls
+		clr.b	obCtrlLock(a1)		; unlock controls
 		subq.b	#4,obRoutine(a0)
 
 .dontrelease:

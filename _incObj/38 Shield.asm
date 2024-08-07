@@ -228,7 +228,7 @@ Shi_Flame:	; Routine 6
 		bsr.w	Shield_LoadGfx
 		jmp		(DisplaySprite).l
 
-.dissipate: ; SPECIAL EFFECT FOR UNDERWATER (To be added later)
+.dissipate: ; SPECIAL EFFECT FOR UNDERWATER
 		bsr.s	Flame_Dissipate
 
 .delete:

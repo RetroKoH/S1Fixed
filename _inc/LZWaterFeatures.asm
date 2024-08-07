@@ -397,9 +397,9 @@ LZWaterSlides:
 		moveq	#Slide_Chunks_End-Slide_Chunks-1,d1
 
 loc_3F62:
-		cmp.b	-(a2),d0	; MJ: does the chunk match?
-		dbeq	d1,loc_3F62	; MJ: if not, loop
-		beq.s	LZSlide_Move	; MJ: if so, branch
+		cmp.b	-(a2),d0			; MJ: does the chunk match?
+		dbeq	d1,loc_3F62			; MJ: if not, loop
+		beq.s	LZSlide_Move		; MJ: if so, branch
 
 loc_3F6A:
 		tst.b	(f_slidemode).w
@@ -448,7 +448,8 @@ Slide_Speeds:
 		dc.b -11
 		even
 
-Slide_Chunks:	dc.b $05,$06,$09,$0A				; MJ: Chunks to read (128x128 ID's)
+Slide_Chunks:
+		dc.b $05,$06,$09,$0A				; MJ: Chunks to read (128x128 ID's)
 		dc.b $FA,$FB,$FC,$FD
 		dc.b $0B,$0C,$0D,$0E
 		dc.b $15,$16,$F8,$F9

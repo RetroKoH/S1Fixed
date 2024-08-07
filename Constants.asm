@@ -178,7 +178,8 @@ obInertia:		equ $20			; potential speed (2 bytes) -- Exclusive to players
 obInvuln:		equ $30			; Invulnerable (blinking after getting hit) timer
 obInvinc:		equ $31			; Invincibility timer
 obShoes:		equ $32			; Speed Shoes timer
-							; $33-35 unused
+							; $33-34 unused
+obCtrlLock:		equ $35			; formerly f_playerctrl (0, 1, or $81)
 obFrontAngle:	equ $36			; angle on ground in front of sprite
 obRearAngle:	equ $37			; angle on ground behind sprite
 obOnWheel:		equ $38			; on convex wheel flag

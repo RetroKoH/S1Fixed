@@ -197,7 +197,7 @@ Pow_S:
 		lea     (v_player).w,a0							; Load Sonic to a0
 		btst	#sta2ndSuper,obStatus2nd(a0)			; is Sonic already Super?
 		bne.s	.skipSuper								; if yes, branch ahead
-		jsr		Sonic_TurnSuper							; turn Super
+		jsr		(Sonic_TurnSuper).l						; turn Super
 
 .skipSuper:
 		movem.l (sp)+,a0-a2								; Move a0, a1 and a2 from stack

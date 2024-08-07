@@ -32,32 +32,32 @@ Lamp_Main:	; Routine 0
 		bne.s	.red
 		move.b	(v_lastlamp).w,d1
 		andi.b	#$7F,d1
-		move.b	obSubtype(a0),d2 ; get lamppost number
+		move.b	obSubtype(a0),d2			; get lamppost number
 		andi.b	#$7F,d2
-		cmp.b	d2,d1		; is this a "new" lamppost?
-		blo.s	Lamp_Blue	; if yes, branch
+		cmp.b	d2,d1						; is this a "new" lamppost?
+		blo.s	Lamp_Blue					; if yes, branch
 
 .red:
-		bset	#0,(a2)				; ProjectFM
-		move.b	#4,obRoutine(a0)	; goto Lamp_Finish next
-		move.b	#3,obFrame(a0)		; use red lamppost frame
+		bset	#0,(a2)						; ProjectFM
+		move.b	#4,obRoutine(a0)			; goto Lamp_Finish next
+		move.b	#3,obFrame(a0)				; use red lamppost frame
 		jmp		(RememberState).l
 ; ===========================================================================
 
 Lamp_Blue:	; Routine 2
-		tst.w	(v_debuguse).w	; is debug mode	being used?
-		bne.w	.donothing	; if yes, branch
-		tst.b	(f_playerctrl).w
+		tst.w	(v_debuguse).w				; is debug mode	being used?
+		bne.w	.donothing					; if yes, branch
+		tst.b	(v_player+obCtrlLock).w
 		bmi.w	.donothing
 		move.b	(v_lastlamp).w,d1
 		andi.b	#$7F,d1
 		move.b	obSubtype(a0),d2
 		andi.b	#$7F,d2
-		cmp.b	d2,d1		; is this a "new" lamppost?
-		blo.s	.chkhit		; if yes, branch
-		move.w	obRespawnNo(a0),d0	; get address in respawn table -- ProjectFM
-		movea.w	d0,a2				; load address into a2 -- ProjectFM
-		bset	#0,(a2)				; ProjectFM
+		cmp.b	d2,d1						; is this a "new" lamppost?
+		blo.s	.chkhit						; if yes, branch
+		move.w	obRespawnNo(a0),d0			; get address in respawn table -- ProjectFM
+		movea.w	d0,a2						; load address into a2 -- ProjectFM
+		bset	#0,(a2)						; ProjectFM
 		move.b	#4,obRoutine(a0)
 		move.b	#3,obFrame(a0)
 		jmp		(RememberState).l

@@ -46,7 +46,7 @@ SStars_Display
 ; ===========================================================================
 
 loc_1E188:
-		tst.b	(v_player+obLRLock).w		; is control lock on? (ie when first turning Super)
+		tst.b	(v_player+obCtrlLock).w		; is control lock on? (ie when first turning Super)
 		bne.s	loc_1E1AA					; if yes, branch
 		move.w	(v_player+obInertia).w,d0	; get Sonic's speed
 		bpl.s	.notnegative

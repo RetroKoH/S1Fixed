@@ -3600,7 +3600,7 @@ End_MoveSon2:
 		move.b	d0,(f_lockctrl).w
 		move.w	d0,(v_jpadhold2).w ; stop Sonic moving
 		move.w	d0,(v_player+obInertia).w
-		move.b	#$81,(f_playerctrl).w ; lock controls and disable object interaction
+		move.b	#$81,(v_player+obCtrlLock).w ; lock controls and disable object interaction
 		move.b	#fr_SonWait2,(v_player+obFrame).w
 		move.w	#(aniID_Wait<<8)+aniID_Wait,(v_player+obAnim).w ; use "standing" animation
 		move.b	#3,(v_player+obTimeFrame).w
@@ -4764,10 +4764,12 @@ Platform3:
 		cmpi.w	#-$10,d0
 		blo.w	Plat_Exit
 
-		tst.b	(f_playerctrl).w
-		bmi.w	Plat_Exit
-		cmpi.b	#6,obRoutine(a1)
-		bhs.w	Plat_Exit
+		tst.b	obCtrlLock(a1)		; are collisions disabled for Sonic?
+		bmi.w	Plat_Exit			; if yes, branch
+		cmpi.b	#6,obRoutine(a1)	; is Sonic dead?
+		bhs.w	Plat_Exit			; If yes, branch
+		tst.w	(v_debuguse).w		; is debug mode being used?
+		bne.w	Plat_Exit			; if yes, branch
 		add.w	d0,d2
 		addq.w	#3,d2
 		move.w	d2,obY(a1)
@@ -4918,17 +4920,17 @@ MvSonicOnPtfm:
 
 
 MvSonicOnPtfm2:
-		lea	(v_player).w,a1
+		lea		(v_player).w,a1
 		move.w	obY(a0),d0
-		subi.w	#9,d0
+		subi.w	#9,d0				; Sonic 2 uses a value stored to d3 instead of #9 (likely to account for Tails)
 
 MvSonic2:
-		tst.b	(f_playerctrl).w
-		bmi.s	locret_7B62
-		cmpi.b	#6,(v_player+obRoutine).w
-		bhs.s	locret_7B62
-		tst.w	(v_debuguse).w
-		bne.s	locret_7B62
+		tst.b	obCtrlLock(a1)		; are collisions disabled for Sonic?
+		bmi.s	locret_7B62			; if yes, branch
+		cmpi.b	#6,obRoutine(a1)	; is Sonic dead?
+		bhs.s	locret_7B62			; if yes, branch
+		tst.w	(v_debuguse).w		; is debug mode being used?
+		bne.s	locret_7B62			; if yes, branch
 		moveq	#0,d1
 		move.b	obHeight(a1),d1
 		sub.w	d1,d0
@@ -5177,7 +5179,7 @@ Obj44_SolidWall2:
 .short:
 		subi.w	#5,d2
 		addi.w	#5,d3
-		
+
 .skip:
 	; Ducking Size Fix end
 
@@ -5188,12 +5190,12 @@ Obj44_SolidWall2:
 		add.w	d4,d4
 		cmp.w	d4,d3
 		bhs.s	loc_8B48
-		tst.b	(f_playerctrl).w
-		bmi.s	loc_8B48
-		cmpi.b	#6,(v_player+obRoutine).w
-		bhs.s	loc_8B48
-		tst.w	(v_debuguse).w
-		bne.s	loc_8B48
+		tst.b	obCtrlLock(a1)		; are collisions disabled for Sonic?
+		bmi.s	loc_8B48			; if yes, branch
+		cmpi.b	#6,obRoutine(a1)	; is Sonic dead?
+		bhs.s	loc_8B48			; if yes, branch
+		tst.w	(v_debuguse).w		; is debug mode being used?	
+		bne.s	loc_8B48			; if yes, branch
 		move.w	d0,d5
 		cmp.w	d0,d1
 		bhs.s	loc_8B30
@@ -5577,7 +5579,7 @@ loc_12C58:
 		move.w	(v_jpadhold1).w,(v_jpadhold2).w	; enable joypad control
 
 loc_12C64:
-		btst	#0,(f_playerctrl).w				; are controls locked?
+		btst	#0,obCtrlLock(a0)				; are controls locked somehow?
 		bne.s	loc_12C7E						; if yes, branch
 		moveq	#0,d0
 		move.b	obStatus(a0),d0
@@ -5587,8 +5589,8 @@ loc_12C64:
 
 loc_12C7E:
 	if SuperMod=1
-		bsr.s	Sonic_Super
 		bsr.w	Sonic_Display
+		bsr.s	Sonic_Super
 	else
 		bsr.s	Sonic_Display
 	endif
@@ -5604,7 +5606,7 @@ loc_12C7E:
 
 loc_12CA6:
 		bsr.w	Sonic_Animate
-		tst.b	(f_playerctrl).w
+		tst.b	obCtrlLock(a0)
 		bmi.s	loc_12CB6
 		jsr		(ReactToItem).l
 

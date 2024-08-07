@@ -147,22 +147,22 @@ loc_FAD0:
 		sub.w	obY(a0),d3
 		addq.w	#4,d3
 		add.w	d2,d3
-		bmi.w	Solid_Ignore				; if Sonic moves above, branch
+		bmi.w	Solid_Ignore		; if Sonic moves above, branch
 		move.w	d2,d4
 		add.w	d4,d4
-		cmp.w	d4,d3						; has Sonic moved below?
-		bhs.w	Solid_Ignore				; if yes, branch
+		cmp.w	d4,d3				; has Sonic moved below?
+		bhs.w	Solid_Ignore		; if yes, branch
 
 loc_FB0E:
-		tst.b	(f_playerctrl).w			; are object interactions disabled?
-		bmi.w	Solid_Ignore				; if yes, branch
-		cmpi.b	#6,(v_player+obRoutine).w	; is Sonic dying?
-		bcc.w	Solid_Debug					; if yes, branch
-		tst.w	(v_debuguse).w	; is debug mode being used?
-		bne.w	Solid_Debug	; if yes, branch
+		tst.b	obCtrlLock(a1)		; are object interactions disabled?
+		bmi.w	Solid_Ignore		; if yes, branch
+		cmpi.b	#6,obRoutine(a1)	; is Sonic dead?
+		bcc.w	Solid_Debug			; if yes, branch
+		tst.w	(v_debuguse).w		; is debug mode being used?
+		bne.w	Solid_Debug			; if yes, branch
 		move.w	d0,d5
-		cmp.w	d0,d1		; is Sonic right of centre of object?
-		bhs.s	.isright	; if yes, branch
+		cmp.w	d0,d1				; is Sonic right of centre of object?
+		bhs.s	.isright			; if yes, branch
 		add.w	d1,d1
 		sub.w	d1,d0
 		move.w	d0,d5
