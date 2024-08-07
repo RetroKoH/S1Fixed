@@ -29,13 +29,13 @@ Bub_Main:	; Routine 0
 		move.b	#$84,obRender(a0)
 		move.b	#$10,obActWid(a0)
 		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	obSubtype(a0),d0		; get bubble type
-		bpl.s	.bubble					; if type is $0-$7F, branch
+		move.b	obSubtype(a0),d0			; get bubble type
+		bpl.s	.bubble						; if type is $0-$7F, branch
 
-		addq.b	#8,obRoutine(a0)		; goto Bub_BblMaker next
-		andi.w	#$7F,d0					; read only last 7 bits	(deduct	$80)
+		addq.b	#8,obRoutine(a0)			; goto Bub_BblMaker next
+		andi.w	#$7F,d0						; read only last 7 bits	(deduct	$80)
 		move.b	d0,bub_time(a0)
-		move.b	d0,bub_freq(a0)			; set bubble frequency
+		move.b	d0,bub_freq(a0)				; set bubble frequency
 		move.b	#6,obAnim(a0)
 		bra.w	Bub_BblMaker
 ; ===========================================================================
@@ -43,26 +43,26 @@ Bub_Main:	; Routine 0
 .bubble:
 		move.b	d0,obAnim(a0)
 		move.w	obX(a0),bub_origX(a0)
-		move.w	#-$88,obVelY(a0) ; float bubble upwards
+		move.w	#-$88,obVelY(a0)			; float bubble upwards
 		jsr		(RandomNumber).w
 		move.b	d0,obAngle(a0)
 
 Bub_Animate:	; Routine 2
 		lea		Ani_Bub(pc),a1
 		jsr		(AnimateSprite).w
-		cmpi.b	#6,obFrame(a0)	; is bubble full-size?
-		bne.s	Bub_ChkWater	; if not, branch
+		cmpi.b	#6,obFrame(a0)				; is bubble full-size?
+		bne.s	Bub_ChkWater				; if not, branch
 
-		move.b	#1,bub_inhalable(a0) ; set "inhalable" flag
+		move.b	#1,bub_inhalable(a0)		; set "inhalable" flag
 
 Bub_ChkWater:	; Routine 4
 		move.w	(v_waterpos1).w,d0
-		cmp.w	obY(a0),d0	; is bubble underwater?
-		blo.s	.wobble		; if yes, branch
+		cmp.w	obY(a0),d0					; is bubble underwater?
+		blo.s	.wobble						; if yes, branch
 
 .burst:
-		move.b	#6,obRoutine(a0) ; goto Bub_Display next
-		addq.b	#3,obAnim(a0)	; run "bursting" animation
+		move.b	#6,obRoutine(a0)			; goto Bub_Display next
+		addq.b	#3,obAnim(a0)				; run "bursting" animation
 		bra.w	Bub_Display
 ; ===========================================================================
 
@@ -74,11 +74,11 @@ Bub_ChkWater:	; Routine 4
 		move.b	(a1,d0.w),d0
 		ext.w	d0
 		add.w	bub_origX(a0),d0
-		move.w	d0,obX(a0)		; change bubble's x-axis position
+		move.w	d0,obX(a0)					; change bubble's x-axis position
 		tst.b	bub_inhalable(a0)
 		beq.s	.display
-		bsr.w	Bub_ChkSonic	; has Sonic touched the	bubble?
-		beq.s	.display		; if not, branch
+		bsr.w	Bub_ChkSonic				; has Sonic touched the	bubble?
+		beq.s	.display					; if not, branch
 		
 	if SpinDashEnabled=1	; Mercury Spin Dash
 		cmpi.b	#aniID_SpinDash,obAnim(a1)
@@ -128,8 +128,8 @@ Bub_BblMaker:	; Routine $A
 		tst.w	objoff_36(a0)
 		bne.s	.loc_12874
 		move.w	(v_waterpos1).w,d0
-		cmp.w	obY(a0),d0	; is bubble maker underwater?
-		bhs.w	.chkdel		; if not, branch
+		cmp.w	obY(a0),d0			; is bubble maker underwater?
+		bhs.w	.chkdel				; if not, branch
 		tst.b	obRender(a0)
 		bpl.w	.chkdel
 		subq.w	#1,objoff_38(a0)
@@ -140,8 +140,8 @@ Bub_BblMaker:	; Routine $A
 		jsr		(RandomNumber).w
 		move.w	d0,d1
 		andi.w	#7,d0
-		cmpi.w	#6,d0		; random number over 6?
-		bhs.s	.tryagain	; if yes, branch
+		cmpi.w	#6,d0				; random number over 6?
+		bhs.s	.tryagain			; if yes, branch
 
 		move.b	d0,objoff_34(a0)
 		andi.w	#$C,d1
@@ -165,7 +165,7 @@ Bub_BblMaker:	; Routine $A
 		move.w	d0,objoff_38(a0)
 		bsr.w	FindFreeObj
 		bne.s	.fail
-		_move.b	#id_Bubble,obID(a1) ; load bubble object
+		_move.b	#id_Bubble,obID(a1)	; load bubble object
 		move.w	obX(a0),obX(a1)
 		jsr		(RandomNumber).w
 		andi.w	#$F,d0
@@ -206,7 +206,7 @@ Bub_BblMaker:	; Routine $A
 		jsr		(AnimateSprite).w
 
 .chkdel:
-		offscreen.w	DeleteObject		; PFM S3K OBJ
+		offscreen.w	DeleteObject	; PFM S3K OBJ
 		move.w	(v_waterpos1).w,d0
 		cmp.w	obY(a0),d0
 		blo.w	DisplaySprite

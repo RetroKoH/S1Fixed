@@ -42,9 +42,9 @@ BuildSprites:
 	; have been queued for display. They deliberately crash the console
 	; if they detect an invalid object.
 		tst.b	obID(a0)				; if null, branch
-		beq.w	.skipObject		; was .crash
-;		tst.l	obMap(a0)
-;		beq.w	.crash					; (to be removed) jump to crash if loading a null pointer
+		beq.w	.skipObject				; was .crash
+		tst.l	obMap(a0)
+		beq.w	.skipObject				; (to be removed) jump to crash if loading a null pointer
 
 		bclr	#7,obRender(a0)			; set as not visible
 		move.b	obRender(a0),d0
