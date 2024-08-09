@@ -1,10 +1,12 @@
 ;  =========================================================================
-; |           Sonic the Hedgehog Disassembly for Sega Mega Drive            |
+; |                            Sonic 1: Fixed                               |
+; |       Updated Sonic the Hedgehog Disassembly for Sega Mega Drive        |
 ;  =========================================================================
 ;
-; Disassembly created by Hivebrain
-; thanks to drx, Stealth and Esrael L.G. Neto
-
+; Updated disassembly for AS by Clownacy and MarkeyJester
+; Mods by RetroKoH, DeltaW, Hitaxas, and Mercury
+; Additional Credits listed in README.md
+;
 ; ===========================================================================
 
 	cpu 68000
@@ -17,58 +19,7 @@ ZoneCount	  = 6	; discrete zones are: GHZ, MZ, SYZ, LZ, SLZ, and SBZ
 
 zeroOffsetOptimization = 1	; if 1, makes a handful of zero-offset instructions smaller
 
-; S1Fixed Variables (Sorted by Context)
-DebugPathSwappers: = 1
-
-; Special Stage mods
-DynamicSpecialStageWalls: = 1			; if set to 1, Special Stage walls are dynamically loaded. (might make this permanent)
-SmoothSpecialStages: = 1				; if set to 1, Special Stage scrolls smoothly. Movement/Jump angles are also affected.
-SpecialStageAdvancementMod: = 1			; if set to 1, Special Stages will not advance when you fail the stage, allowing you to retry.
-HUDInSpecialStage: = DynamicSpecialStageWalls*1
-	SpecialStageHUDType: = 1		; 0=normal; 1=score not shown; 2=score & time not shown; 3=rings only
-	TimeLimitInSpecialStage: = 1	; if set, time counts down in the Special Stage
-; Mods listed below alter the layouts:
-S4SpecialStages: = 1					; if set to 1, Special Stages control like Sonic 4 Ep 1 (Left/Right rotate the stage.)
-SpecialStagesWithAllEmeralds: = 1		; if set to 1, Special Stages are still accessible even once all emeralds are collected.
-AlteredSpecialStages: = (S4SpecialStages+SpecialStagesWithAllEmeralds)
-
-; Ability mods
-SpinDashEnabled: = 1					; if set to 1, Spin dashing is enabled for Sonic.
-SkidDustEnabled: = 1					; if set to 1, Skid dust will occur when coming to a stop.
-SpinDashCancel: = SpinDashEnabled*1		; if set to 1, Spin Dash can be cancelled by not pressing ABC
-SpinDashNoRevDown: = SpinDashEnabled*1	; if set to 1, Spin Dash will not rev down so long as ABC is held down
-PeeloutEnabled: = 0						; if set to 1, Peelout is enabled for Sonic
-AirRollEnabled: = 0						; if set to 1, Air rolling is enabled for Sonic.
-DropDashEnabled: = 1					; if set to 1, Drop dashing is enabled for Sonic.
-; Incomplete Ability mods
-ShieldsMode: = 0						; 0 - Blue Shield only, 1 - Blue Shield + Instashield, 2 - Blue Shield + Elementals, 3 - Elemental only.
-SuperMod: = 1							; if set to 1, a 7th emerald is available and you can turn Super.
-
-; Misc Mods
-FadeInSEGA: = 1							; if set to 1, the SEGA screen smoothly fades in
-PaletteFadeSetting: = 6					; 0 - Blue (Original), 1 - Green, 2 - Red, 3 - Cyan (B+G), 4 - Pink (B+R), 5 - Yellow (G+R), 6 - Full
-GroundSpeedCapEnabled: = 0				; if set to 1, the ground speed cap is active (includes Roll Speed Cap fix by Devon)
-AirSpeedCapEnabled: = 0					; if set to 1, the air speed cap is active
-RollSpeedCapEnabled: = 0				; if set to 1, the rolling speed cap is active (fixed by Devon)
-RollJumpLockActive: = 0					; if set to 1, the original roll jump lock is maintained
-SpikeBugFix: = 1						; if set to 1, the spike "bug" is fixed
-GHZForeverPal: = 1						; if set to 1, GHZ is set to Sonic 1 Forever's palette
-EndLevelFadeMusic: = 0					; if set to 1, music will fade out as the level ends (Signpost or Prison Capsule)
-ObjectsFreeze: = 0						; if set to 1, objects freeze on death as normal
-SpeedUpScoreTally: = 2					; if set to 1, score tally can be sped up w/ ABC. If 2, it automatically tallies immediately.
-CDBalancing: = 1						; if set to 1, Sonic has 2 Balancing animations, taken from Sonic CD.
-HUDScrolling: = 1						; if set to 1, HUD Scrolls in and out of view during gameplay.
-ReboundMod: = 0							; if set to 1, rebounding from enemies/monitors after rolling off a cliff onto them functions the same as if they were jumped on - the rebound is cut short if the jump button is released.
-BlocksInROM: = 1						; if set to 1, 16x16 Blocks are uncompressed in ROM, saving RAM
-ChunksInROM: = 1						; if set to 1, 128x128 Chunks are uncompressed in ROM, saving RAM
-CDCamera: = 0							; if set to 1, screen will pan forward, a la Sonic CD
-HUDHasLeadingZeroes: = 1				; if set to 1, leading zeroes appear on HUD
-LimitLZBlockRisingSpeed: = 1			; if set to 1, LZ Rising platforms are speed-capped
-
-; Incomplete Mods (Either missing features, or contains bugs)
-WarmPalettes: = 0						; if set to 1, palettes take on a warmer hue (Continuation of Mercury's mod)
-AfterImagesOn: = 0						; if set to 1, an after-image effect is applied to the Speed Shoes.
-HUDCentiseconds: = 0					; if set to 1, HUD TIME uses Centiseconds, a la Sonic CD (CURRENTLY BREAKS RING COUNT in Labyrinth Zone)
+	include "Mods.asm"			; S1Fixed Mod Variables (Sorted by Context)
 
 	include "MacroSetup.asm"
 	include	"Constants.asm"
