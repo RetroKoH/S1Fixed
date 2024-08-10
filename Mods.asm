@@ -31,7 +31,7 @@ DropDashEnabled: = 1
 ; Name: Elemental Shields (Incomplete: Minor bugfixes)
 ; Credit: RetroKoH, DeltaW
 ; Function: Enables the usage of S3K Shields and abilities.
-ShieldsMode: = 0						; 0 - Blue Shield only, 1 - Blue + Instashield, 2 - Blue + Elementals, 3 - Elementals only.
+ShieldsMode: = 3						; 0 - Blue Shield only, 1 - Blue + Instashield, 2 - Blue + Elementals, 3 - Elementals only.
 
 ; Name: 7th Emerald and Super Sonic (Incomplete: Minor Bugfixes)
 ; Credit: RetroKoH (Palette Credit: Clownacy)
@@ -89,7 +89,7 @@ OrbinautAnimationTweak: = 1
 	OrbinautAnimationTweakRange: = $80	; horizontal range in pixels at which Sonic is noticed by the Orbinaut
 	OrbinautAnimationTweakSpeed: = $8	; animation speed of the Orbinaut's "getting angry" animation
 	
-; Name: SLZ Orbinaut Behaviour Mod
+; Name: SLZ Orbinaut Behaviour Mod (Incomplete: Remove grey frame from SLZ Orbinaut)
 ; Credit: Mercury
 ; Function: Makes the SLZ Orbinauts beatable by giving them behaviour similar to Sonic 4's.
 SLZOrbinautBehaviourMod: = 0
