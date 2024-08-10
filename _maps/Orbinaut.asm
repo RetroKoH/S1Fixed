@@ -12,7 +12,7 @@ Map_Orb:	mappingsTable
 .normal_End
 
 .medium:	spriteHeader
-	spritePiece	-$C, -$C, 3, 3, 9, 0, 0, 1, 0
+		spritePiece	-$C, -$C, 3, 3, 9, 0, 0, 1, 0
 .medium_End
 
 .angry:	spriteHeader

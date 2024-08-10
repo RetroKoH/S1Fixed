@@ -82,6 +82,18 @@ AfterImagesOn: = 1
 ; Function: Limits the rising speed of blocks in LZ so that Sonic can jump off them more comfortably.
 LimitLZBlockRisingSpeed: = 1			; if set to 1, LZ Rising platforms are speed-capped
 
+; Name: Orbinaut Animation Tweak
+; Credit: Mercury
+; Function: Makes Orbinaut "notice" Sonic at a closer range so that it's more likely to happen onscreen, and "get angry" quicker.
+OrbinautAnimationTweak: = 1
+	OrbinautAnimationTweakRange: = $80	; horizontal range in pixels at which Sonic is noticed by the Orbinaut
+	OrbinautAnimationTweakSpeed: = $8	; animation speed of the Orbinaut's "getting angry" animation
+	
+; Name: SLZ Orbinaut Behaviour Mod
+; Credit: Mercury
+; Function: Makes the SLZ Orbinauts beatable by giving them behaviour similar to Sonic 4's.
+SLZOrbinautBehaviourMod: = 0
+
 ; Name: Speed Up/Instant Score Tally
 ; Credit: Mercury/RetroKoH
 ; Function: Allows the player to hold a button to speed up the score tally, or just have it occur immediately

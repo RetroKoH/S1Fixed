@@ -7525,8 +7525,19 @@ Nem_Splats:	binclude	"artnem/Enemy Splats.nem"
 		even
 Nem_Bomb:	binclude	"artnem/Enemy Bomb.nem"
 		even
+
+	if SLZOrbinautBehaviourMod=1	;Mercury SLZ Orbinaut Behaviour Mod
+Nem_Orbinaut_SLZ:	binclude	"artnem/Enemy Orbinaut (SLZ).nem"
+		even
+
 Nem_Orbinaut:	binclude	"artnem/Enemy Orbinaut.nem"
 		even
+	else	; SLZ Orbinaut Behaviour Mod End
+Nem_Orbinaut_SLZ:
+Nem_Orbinaut:	binclude	"artnem/Enemy Orbinaut.nem"
+		even
+	endif
+
 Nem_Cater:	binclude	"artnem/Enemy Caterkiller.nem"
 		even
 ; ---------------------------------------------------------------------------

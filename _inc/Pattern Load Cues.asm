@@ -159,7 +159,7 @@ PLC_MZ2end:
 ; ---------------------------------------------------------------------------
 PLC_SLZ:	dc.w ((PLC_SLZ2-PLC_SLZ-2)/6)-1
 		plcm	Nem_Bomb,			ArtTile_Bomb					; bomb enemy
-		plcm	Nem_Orbinaut,		ArtTile_Orbinaut				; orbinaut enemy
+		plcm	Nem_Orbinaut_SLZ,	ArtTile_Orbinaut				; orbinaut enemy
 		plcm	Nem_Fireball,		ArtTile_Fireball				; fireballs
 		plcm	Nem_SlzBlock,		ArtTile_SLZ_Collapsing_Floor	; block
 		plcm	Nem_SlzWall,		ArtTile_SLZ_Smashable_Wall		; breakable wall
