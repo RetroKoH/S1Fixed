@@ -450,41 +450,7 @@ bgm_Slowdown:	equ ((ptr_flgE3-Sound_ExIndex)/4)+flg__First
 bgm_Stop:		equ ((ptr_flgE4-Sound_ExIndex)/4)+flg__First
 flg__Last:		equ ((ptr_flgend-Sound_ExIndex-4)/4)+flg__First
 
-; Sonic Animation IDs
-aniID_Null:			equ 0		; Null animation
-aniID_Walk:			equ 1		; Walking animation
-aniID_Run:			equ 2		; Running animation
-aniID_Dash:			equ 3		; Dashing animation (Peelout)
-aniID_Roll:			equ 4		; Rolling animation
-aniID_Roll2:		equ 5		; Faster rolling animation
-aniID_Push:			equ 6		; Pushing animation
-aniID_Wait:			equ 7		; Idle waiting animation
-aniID_Balance:		equ 8		; Primary Balancing animation
-aniID_Balance2:		equ 9		; Secondary Balancing animation
-aniID_Balance3:		equ $A		; Tertiary Balancing Animation
-aniID_LookUp:		equ $B		; Look Up animation
-aniID_Duck:			equ $C		; Duck animation
-aniID_SpinDash:		equ $D		; Spindash animation
-aniID_Stop:			equ $E		; Stopping animation
-aniID_Float1:		equ $F		; Floating animation #1
-aniID_Float2:		equ $10		; Floating animation #2
-aniID_Float3:		equ $11		; Floating animation #3
-aniID_Float4:		equ $12		; Floating animation #4
-aniID_Spring:		equ $13		; Spring animation
-aniID_Hang:			equ $14		; Hanging animation (LZ Vertical Pole)
-aniID_Fall:			equ $15		; Falling animation (Unused atm)
-aniID_GetAir:		equ $16		; Getting Air Bubble animation
-aniID_GetAirStand:	equ $17		; Getting Air Bubble while standing animation
-aniID_Death:		equ $18		; Death animation
-aniID_Drown:		equ $19		; Drown animation
-aniID_Shrink:		equ $1A		; Shrink animation
-aniID_Hurt:			equ $1B		; Hurt animation
-aniID_WaterSlide:	equ $1C		; Water Slide animation
-aniID_Peelout:		equ $1D		; Peelout
-aniID_DropDash:		equ $1E		; Drop Dash
-aniID_Transform:	equ $1F		; Transform
-
-; Frame IDs moved to mappings file
+		include "_maps/Sonic Sprite Constants.asm"
 
 ; Boss locations
 ; The main values are based on where the camera boundaries mainly lie
