@@ -69,16 +69,18 @@ vram_fg:				equ $C000	; foreground namespace
 vram_bg:				equ $E000	; background namespace
 vram_sprites:			equ $F800	; sprite table
 vram_hscroll:			equ $FC00	; horizontal scroll table
+tile_size:				equ 8*8/2
+plane_size_64x32:		equ 64*32*2
 
 ; Game modes
-id_Sega:	equ ptr_GM_Sega-GameModeArray	; $00
-id_Title:	equ ptr_GM_Title-GameModeArray	; $04
-id_Demo:	equ ptr_GM_Demo-GameModeArray	; $08
-id_Level:	equ ptr_GM_Level-GameModeArray	; $0C
-id_Special:	equ ptr_GM_Special-GameModeArray; $10
+id_Sega:		equ ptr_GM_Sega-GameModeArray	; $00
+id_Title:		equ ptr_GM_Title-GameModeArray	; $04
+id_Demo:		equ ptr_GM_Demo-GameModeArray	; $08
+id_Level:		equ ptr_GM_Level-GameModeArray	; $0C
+id_Special:		equ ptr_GM_Special-GameModeArray; $10
 id_Continue:	equ ptr_GM_Cont-GameModeArray	; $14
-id_Ending:	equ ptr_GM_Ending-GameModeArray	; $18
-id_Credits:	equ ptr_GM_Credits-GameModeArray; $1C
+id_Ending:		equ ptr_GM_Ending-GameModeArray	; $18
+id_Credits:		equ ptr_GM_Credits-GameModeArray; $1C
 
 ; Levels
 id_GHZ:		equ 0
@@ -91,26 +93,26 @@ id_EndZ:	equ 6
 id_SS:		equ 7
 
 ; Colours
-cBlack:		equ $000		; colour black
-cWhite:		equ $EEE		; colour white
-cBlue:		equ $E00		; colour blue
-cGreen:		equ $0E0		; colour green
-cRed:		equ $00E		; colour red
+cBlack:		equ $000			; colour black
+cWhite:		equ $EEE			; colour white
+cBlue:		equ $E00			; colour blue
+cGreen:		equ $0E0			; colour green
+cRed:		equ $00E			; colour red
 cYellow:	equ cGreen+cRed		; colour yellow
 cAqua:		equ cGreen+cBlue	; colour aqua
 cMagenta:	equ cBlue+cRed		; colour magenta
 
 ; Joypad input
 btnStart:	equ %10000000 ; Start button	($80)
-btnA:		equ %01000000 ; A		($40)
-btnC:		equ %00100000 ; C		($20)
-btnB:		equ %00010000 ; B		($10)
-btnR:		equ %00001000 ; Right		($08)
-btnL:		equ %00000100 ; Left		($04)
-btnDn:		equ %00000010 ; Down		($02)
-btnUp:		equ %00000001 ; Up		($01)
+btnA:		equ %01000000 ; A				($40)
+btnC:		equ %00100000 ; C				($20)
+btnB:		equ %00010000 ; B				($10)
+btnR:		equ %00001000 ; Right			($08)
+btnL:		equ %00000100 ; Left			($04)
+btnDn:		equ %00000010 ; Down			($02)
+btnUp:		equ %00000001 ; Up				($01)
 btnDir:		equ %00001111 ; Any direction	($0F)
-btnABC:		equ %01110000 ; A, B or C	($70)
+btnABC:		equ %01110000 ; A, B or C		($70)
 bitStart:	equ 7
 bitA:		equ 6
 bitC:		equ 5
@@ -628,7 +630,11 @@ ArtTile_Mini_Sonic:				equ ArtTile_Monitor		; ✓
 ArtTile_Signpost:				equ $680				; ✓
 ArtTile_Bonuses:				equ $6B0				; ✓ - Moved to overwrite some monitor art.
 
+; Sega Screen
+ArtTile_Sega_Tiles:				equ $000
+
 ; Title Screen - This is fine as is.
+ArtTile_Title_Japanese_Text:	equ $000
 ArtTile_Title_Foreground:		equ $200
 ArtTile_Title_Sonic:			equ $300
 ArtTile_Title_Trademark:		equ $510
@@ -636,6 +642,7 @@ ArtTile_Level_Select_Font:		equ $680
 
 ; Continue Screen
 ArtTile_Continue_Sonic:			equ $500
+ArtTile_Continue_Number:		equ $6FC				; Check this
 
 ; Ending
 ArtTile_Ending_Flowers:			equ $3A0				; ✓
@@ -660,17 +667,23 @@ ArtTile_SS_Background_Clouds:	equ $000
 ArtTile_SS_Background_Fish:		equ $051
 ArtTile_SS_Wall:				equ $142
 ArtTile_SS_HUD:					equ $1F9
+ArtTile_SS_Plane_1:				equ $200				; Check this
 ArtTile_SS_Lives:				equ $22F
 ArtTile_SS_Bumper:				equ $23B
 ArtTile_SS_Goal:				equ $251
 ArtTile_SS_Up_Down:				equ $263
 ArtTile_SS_R_Block:				equ $2F0
+ArtTile_SS_Plane_2:				equ $300				; Check this
 ArtTile_SS_Extra_Life:			equ $370
 ArtTile_SS_Emerald_Sparkle:		equ $3F0
+ArtTile_SS_Plane_3:				equ $400				; Check this
 ArtTile_SS_Red_White_Block:		equ $470
 ArtTile_SS_Ghost_Block:			equ $4F0
+ArtTile_SS_Plane_4:				equ $500				; Check this
 ArtTile_SS_W_Block:				equ $570
 ArtTile_SS_Glass:				equ $5F0
+ArtTile_SS_Plane_5:				equ $600				; Check this
+ArtTile_SS_Plane_6:				equ $700				; Check this
 ArtTile_SS_Emerald:				equ $770
 ArtTile_SS_Zone_1:				equ $790				; ✓
 ArtTile_SS_Ring:				equ $799				; ✓
@@ -681,7 +694,6 @@ ArtTile_SS_Results_Emeralds:	equ $541
 ; Font
 ArtTile_Sonic_Team_Font:		equ $0A6
 ArtTile_Credits_Font:			equ $58C				; ✓
-
 
 ; Special Stage Block IDs (Used in _incObj/09 Sonic in Special Stage.asm -- Obj09_ChkItems:)
 ; I could consolidate the ZONE blocks into one block ID and dynamically load art in.

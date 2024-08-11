@@ -11,7 +11,7 @@ HUD_Update:
 		beq.s	.chkrings					; if not, branch
 
 		clr.b	(f_scorecount).w
-		locVRAM	(ArtTile_HUD+$18)*$20,d0	; set VRAM address -- RetroKoH VRAM Overhaul
+		locVRAM	(ArtTile_HUD+$18)*tile_size,d0	; set VRAM address -- RetroKoH VRAM Overhaul
 		move.l	(v_score).w,d1				; load score
 		bsr.w	Hud_Score
 
@@ -23,7 +23,7 @@ HUD_Update:
 
 .notzero:
 		clr.b	(f_ringcount).w
-		locVRAM	(ArtTile_HUD+$2E)*$20,d0	; set VRAM address -- RetroKoH VRAM Overhaul
+		locVRAM	(ArtTile_HUD+$2E)*tile_size,d0	; set VRAM address -- RetroKoH VRAM Overhaul
 		moveq	#0,d1
 		move.w	(v_rings).w,d1				; load number of rings
 		bsr.w	Hud_Rings
@@ -77,11 +77,11 @@ HUD_Update:
 		move.b	#9,(a1)							; keep as 9
 
 .updatetime:
-		locVRAM	(ArtTile_HUD+$26)*$20,d0	; set VRAM address -- RetroKoH VRAM Overhaul
+		locVRAM	(ArtTile_HUD+$26)*tile_size,d0	; set VRAM address -- RetroKoH VRAM Overhaul
 		moveq	#0,d1
 		move.b	(v_timemin).w,d1 			; load minutes
 		bsr.w	Hud_Mins
-		locVRAM	(ArtTile_HUD+$2A)*$20,d0	; set VRAM address -- RetroKoH VRAM Overhaul
+		locVRAM	(ArtTile_HUD+$2A)*tile_size,d0	; set VRAM address -- RetroKoH VRAM Overhaul
 		moveq	#0,d1
 		move.b	(v_timesec).w,d1 			; load seconds
 		bsr.w	Hud_Secs
@@ -104,7 +104,7 @@ HUD_Update:
 		tst.b	(f_endactbonus).w			; do time/ring bonus counters need updating?
 		beq.s	.finish						; if not, branch
 		clr.b	(f_endactbonus).w
-		locVRAM	ArtTile_Bonuses*$20
+		locVRAM	ArtTile_Bonuses*tile_size
 		moveq	#0,d1
 		move.w	(v_timebonus).w,d1			; load time bonus
 		bsr.w	Hud_TimeRingBonus
@@ -134,13 +134,13 @@ HudDebug:
 
 .notzero:
 		clr.b	(f_ringcount).w
-		locVRAM	(ArtTile_HUD+$2E)*$20,d0	; set VRAM address -- RetroKoH VRAM Overhaul
+		locVRAM	(ArtTile_HUD+$2E)*tile_size,d0	; set VRAM address -- RetroKoH VRAM Overhaul
 		moveq	#0,d1
 		move.w	(v_rings).w,d1				; load number of rings
 		bsr.w	Hud_Rings
 
 .objcounter:
-		locVRAM	(ArtTile_HUD+$2A)*$20,d0	; set VRAM address -- RetroKoH VRAM Overhaul
+		locVRAM	(ArtTile_HUD+$2A)*tile_size,d0	; set VRAM address -- RetroKoH VRAM Overhaul
 		moveq	#0,d1
 		move.b	(v_spritecount).w,d1		; load "number of objects" counter
 		bsr.w	Hud_Secs
@@ -153,7 +153,7 @@ HudDebug:
 		tst.b	(f_endactbonus).w			; does the ring/time bonus counter need updating?
 		beq.s	.finish						; if not, branch
 		clr.b	(f_endactbonus).w
-		locVRAM	ArtTile_Bonuses*$20			; set VRAM address
+		locVRAM	ArtTile_Bonuses*tile_size			; set VRAM address
 		moveq	#0,d1
 		move.w	(v_timebonus).w,d1			; load time bonus
 		bsr.w	Hud_TimeRingBonus
@@ -173,7 +173,7 @@ HudDebug:
 
 
 Hud_LoadZero:
-		locVRAM	(ArtTile_HUD+$2E)*$20	; set VRAM address -- RetroKoH VRAM Overhaul
+		locVRAM	(ArtTile_HUD+$2E)*tile_size	; set VRAM address -- RetroKoH VRAM Overhaul
 		lea		Hud_TilesZero(pc),a2
 		moveq	#2,d2					; Optimized from move.w
 		bra.s	loc_1C83E
@@ -210,7 +210,7 @@ Hud_Base:
 		bsr.s	Hud_LoadMarks
 	endif	; HUD Centiseconds End
 
-		locVRAM	(ArtTile_HUD+$16)*$20	; set VRAM address -- RetroKoH VRAM Overhaul
+		locVRAM	(ArtTile_HUD+$16)*tile_size	; set VRAM address -- RetroKoH VRAM Overhaul
 		lea		Hud_TilesBase(pc),a2
 		moveq	#$E,d2					; Optimized from move.w
 
@@ -259,7 +259,7 @@ Hud_TilesZero:	dc.b $FF, $FF, 0, 0
 
 
 HudDb_XY:
-		locVRAM	(ArtTile_HUD+$16)*$20	; set VRAM address -- RetroKoH VRAM Overhaul
+		locVRAM	(ArtTile_HUD+$16)*tile_size	; set VRAM address -- RetroKoH VRAM Overhaul
 		move.w	(v_screenposx).w,d1 ; load camera x-position
 		swap	d1
 		move.w	(v_player+obX).w,d1 ; load Sonic's x-position

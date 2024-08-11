@@ -16,9 +16,9 @@ locVRAM:	macro loc,controlport
 ; input: source, length, destination
 ; ---------------------------------------------------------------------------
 
-writeVRAM:	macro source,length,destination
-		lea	(vdp_control_port).l,a5
-		move.l	#$94000000+(((length>>1)&$FF00)<<8)+$9300+((length>>1)&$FF),(a5)
+writeVRAM:	macro source,destination
+		lea		(vdp_control_port).l,a5
+		move.l	#$94000000+((((source_end-source)>>1)&$FF00)<<8)+$9300+(((source_end-source)>>1)&$FF),(a5)
 		move.l	#$96000000+(((source>>1)&$FF00)<<8)+$9500+((source>>1)&$FF),(a5)
 		move.w	#$9700+((((source>>1)&$FF0000)>>16)&$7F),(a5)
 		move.w	#$4000+((destination)&$3FFF),(a5)
@@ -31,9 +31,9 @@ writeVRAM:	macro source,length,destination
 ; input: source, length, destination
 ; ---------------------------------------------------------------------------
 
-writeCRAM:	macro source,length,destination
-		lea	(vdp_control_port).l,a5
-		move.l	#$94000000+(((length>>1)&$FF00)<<8)+$9300+((length>>1)&$FF),(a5)
+writeCRAM:	macro source,destination
+		lea		(vdp_control_port).l,a5
+		move.l	#$94000000+((((source_end-source)>>1)&$FF00)<<8)+$9300+(((source_end-source)>>1)&$FF),(a5)
 		move.l	#$96000000+(((source>>1)&$FF00)<<8)+$9500+((source>>1)&$FF),(a5)
 		move.w	#$9700+((((source>>1)&$FF0000)>>16)&$7F),(a5)
 		move.w	#$C000+(destination&$3FFF),(a5)
@@ -46,14 +46,15 @@ writeCRAM:	macro source,length,destination
 ; input: value, length, destination
 ; ---------------------------------------------------------------------------
 
-fillVRAM:	macro byte,length,loc
-		lea	(vdp_control_port).l,a5
+fillVRAM:	macro byte,start,end
+		lea		(vdp_control_port).l,a5
 		move.w	#$8F01,(a5) ; Set increment to 1, since DMA fill writes bytes
-		move.l	#$94000000+((((length)-1)&$FF00)<<8)+$9300+(((length)-1)&$FF),(a5)
+		move.l	#$94000000+((((end)-(start)-1)&$FF00)<<8)+$9300+(((end)-(start)-1)&$FF),(a5)
 		move.w	#$9780,(a5)
-		move.l	#$40000080+(((loc)&$3FFF)<<16)+(((loc)&$C000)>>14),(a5)
+		move.l	#$40000080+(((start)&$3FFF)<<16)+(((start)&$C000)>>14),(a5)
 		move.w	#(byte)|(byte)<<8,(vdp_data_port).l
-.wait:		move.w	(a5),d1
+.wait:
+		move.w	(a5),d1
 		btst	#1,d1
 		bne.s	.wait
 		move.w	#$8F02,(a5) ; Set increment back to 2, since the VDP usually operates on words
@@ -65,13 +66,13 @@ fillVRAM:	macro byte,length,loc
 ; ---------------------------------------------------------------------------
 
 clearRAM:	macro start,end
-		lea	(start).w,a1
+		lea		(start).w,a1
 		moveq	#0,d0
 		move.w	#((end)-(start))/4-1,d1
 
 .loop:
 		move.l	d0,(a1)+
-		dbf	d1,.loop
+		dbf		d1,.loop
 
 	if (end-start)&2
 		move.w	d0,(a1)+
@@ -88,10 +89,10 @@ clearRAM:	macro start,end
 ; ---------------------------------------------------------------------------
 
 copyTilemap:	macro source,destination,width,height
-		lea	(source).l,a1
+		lea		(source).l,a1
 		locVRAM	destination,d0
-		moveq	#width,d1
-		moveq	#height,d2
+		moveq	#(width)-1,d1
+		moveq	#(height)-1,d2
 		bsr.w	TilemapToVRAM
 		endm
 

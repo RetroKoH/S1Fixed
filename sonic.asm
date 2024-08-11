@@ -403,8 +403,8 @@ CheckSumError:
 		bra.s	.endlessloop
 ; ===========================================================================
 
-Art_Text:	binclude	"artunc/menutext.bin" ; text used in level select and debug mode
-		even
+Art_Text:		binclude	"artunc/menutext.bin" ; text used in level select and debug mode
+Art_Text_End:	even
 
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -482,11 +482,11 @@ VBla_00:
 		tst.b	(f_wtr_state).w	; is water above top of screen?
 		bne.s	.waterabove 	; if yes, branch
 
-		writeCRAM	v_pal_dry,$80,0
+		writeCRAM	v_pal_dry,0
 		bra.s	.waterbelow
 
 .waterabove:
-		writeCRAM	v_pal_water,$80,0
+		writeCRAM	v_pal_water,0
 
 .waterbelow:
 		move.w	(v_hbla_hreg).w,(a5)
@@ -538,17 +538,17 @@ VBla_08:
 		tst.b	(f_wtr_state).w
 		bne.s	.waterabove
 
-		writeCRAM	v_pal_dry,$80,0
+		writeCRAM	v_pal_dry,0
 		bra.s	.waterbelow
 
 .waterabove:
-		writeCRAM	v_pal_water,$80,0
+		writeCRAM	v_pal_water,0
 
 .waterbelow:
 		move.w	(v_hbla_hreg).w,(a5)
 
-		writeVRAM	v_hscrolltablebuffer,$380,vram_hscroll
-		writeVRAM	v_spritetablebuffer,$280,vram_sprites
+		writeVRAM	v_hscrolltablebuffer,vram_hscroll
+		writeVRAM	v_spritetablebuffer,vram_sprites
 
 		bsr.w		ProcessDMAQueue	; Mercury Use DMA Queue
 
@@ -589,9 +589,9 @@ VBla_0A:
 		; removed Z80 macro
 		; removed Z80 macro
 		bsr.w	ReadJoypads
-		writeCRAM	v_pal_dry,$80,0
-		writeVRAM	v_spritetablebuffer,$280,vram_sprites
-		writeVRAM	v_hscrolltablebuffer,$380,vram_hscroll
+		writeCRAM	v_pal_dry,0
+		writeVRAM	v_spritetablebuffer,vram_sprites
+		writeVRAM	v_hscrolltablebuffer,vram_hscroll
 		; removed Z80 macro
 		bsr.w	PalCycle_SS
 		
@@ -625,16 +625,16 @@ VBla_0C:
 		tst.b	(f_wtr_state).w
 		bne.s	.waterabove
 
-		writeCRAM	v_pal_dry,$80,0
+		writeCRAM	v_pal_dry,0
 		bra.s	.waterbelow
 
 .waterabove:
-		writeCRAM	v_pal_water,$80,0
+		writeCRAM	v_pal_water,0
 
 .waterbelow:
 		move.w	(v_hbla_hreg).w,(a5)
-		writeVRAM	v_hscrolltablebuffer,$380,vram_hscroll
-		writeVRAM	v_spritetablebuffer,$280,vram_sprites
+		writeVRAM	v_hscrolltablebuffer,vram_hscroll
+		writeVRAM	v_spritetablebuffer,vram_sprites
 		
 		bsr.w		ProcessDMAQueue	; Mercury Use DMA Queue
 
@@ -666,9 +666,9 @@ VBla_16:
 		; removed Z80 macro
 		; removed Z80 macro
 		bsr.w	ReadJoypads
-		writeCRAM	v_pal_dry,$80,0
-		writeVRAM	v_spritetablebuffer,$280,vram_sprites
-		writeVRAM	v_hscrolltablebuffer,$380,vram_hscroll
+		writeCRAM	v_pal_dry,0
+		writeVRAM	v_spritetablebuffer,vram_sprites
+		writeVRAM	v_hscrolltablebuffer,vram_hscroll
 		; removed Z80 macro
 		
 		bsr.w		ProcessDMAQueue	; Mercury Use DMA Queue
@@ -701,15 +701,15 @@ sub_106E:
 		bsr.w	ReadJoypads
 		tst.b	(f_wtr_state).w ; is water above top of screen?
 		bne.s	.waterabove	; if yes, branch
-		writeCRAM	v_pal_dry,$80,0
+		writeCRAM	v_pal_dry,0
 		bra.s	.waterbelow
 
 .waterabove:
-		writeCRAM	v_pal_water,$80,0
+		writeCRAM	v_pal_water,0
 
 .waterbelow:
-		writeVRAM	v_spritetablebuffer,$280,vram_sprites
-		writeVRAM	v_hscrolltablebuffer,$380,vram_hscroll
+		writeVRAM	v_spritetablebuffer,vram_sprites
+		writeVRAM	v_hscrolltablebuffer,vram_hscroll
 		; removed Z80 macro
 		rts	
 ; End of function sub_106E
@@ -859,7 +859,7 @@ VDPSetupGame:
 		clr.l	(v_scrposy_vdp).w
 		clr.l	(v_scrposx_vdp).w
 		move.l	d1,-(sp)
-		fillVRAM	0,$10000,0
+		fillVRAM	0,0,$10000	; clear the entirety of VRAM
 		move.l	(sp)+,d1
 		rts	
 ; End of function VDPSetupGame
@@ -894,8 +894,8 @@ VDPSetupArray:
 
 
 ClearScreen:
-		fillVRAM	0,$1000,vram_fg ; clear foreground namespace
-		fillVRAM	0,$1000,vram_bg ; clear background namespace
+		fillVRAM	0, vram_fg, vram_fg+plane_size_64x32 ; clear foreground namespace
+		fillVRAM	0, vram_bg, vram_bg+plane_size_64x32 ; clear background namespace
 
 		clr.l	(v_scrposy_vdp).w
 		clr.l	(v_scrposx_vdp).w
@@ -1551,39 +1551,39 @@ WaitForVBla:
 
 GM_Sega:
 		move.b	#bgm_Stop,d0
-		bsr.w	PlaySound_Special ; stop music
+		bsr.w	PlaySound_Special			; stop music
 		bsr.w	ClearPLC
 		bsr.w	PaletteFadeOut
-		lea	(vdp_control_port).l,a6
-		move.w	#$8004,(a6)	; use 8-colour mode
-		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
-		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
-		move.w	#$8700,(a6)	; set background colour (palette entry 0)
-		move.w	#$8B00,(a6)	; full-screen vertical scrolling
+		lea		(vdp_control_port).l,a6
+		move.w	#$8004,(a6)					; use 8-colour mode
+		move.w	#$8200+(vram_fg>>10),(a6)	; set foreground nametable address
+		move.w	#$8400+(vram_bg>>13),(a6)	; set background nametable address
+		move.w	#$8700,(a6)					; set background colour (palette entry 0)
+		move.w	#$8B00,(a6)					; full-screen vertical scrolling
 		clr.b	(f_wtr_state).w
 		disable_ints
 		move.w	(v_vdp_buffer1).w,d0
 		andi.b	#$BF,d0
 		move.w	d0,(vdp_control_port).l
 		bsr.w	ClearScreen
-		locVRAM	0
-		lea	(Nem_SegaLogo).l,a0 ; load Sega	logo patterns
+		locVRAM	ArtTile_Sega_Tiles*tile_size
+		lea		(Nem_SegaLogo).l,a0			; load Sega	logo patterns
 		bsr.w	NemDec
-		lea	(v_128x128&$FFFFFF).l,a1
-		lea	(Eni_SegaLogo).l,a0 ; load Sega	logo mappings
-		clr.w	d0
+		lea		(v_128x128&$FFFFFF).l,a1
+		lea		(Eni_SegaLogo).l,a0			; load Sega	logo mappings
+		move.w	#make_art_tile(ArtTile_Sega_Tiles,0,FALSE),d0
 		bsr.w	EniDec
 
-		copyTilemap	v_128x128&$FFFFFF,$E510,$17,7
-		copyTilemap	(v_128x128+$180)&$FFFFFF,$C000,$27,$1B
+		copyTilemap	v_128x128&$FFFFFF,vram_bg+$510,24,8
+		copyTilemap	(v_128x128+24*8*2)&$FFFFFF,vram_fg,40,28
 
-		tst.b   (v_megadrive).w	; is console Japanese?
+		tst.b   (v_megadrive).w									; is console Japanese?
 		bmi.s   .loadpal
-		copyTilemap	(v_128x128+$A40)&$FFFFFF,$C53A,2,1 ; hide "TM" with a white rectangle
+		copyTilemap	(v_128x128+$A40)&$FFFFFF,vram_fg+$53A,3,2	; hide "TM" with a white rectangle
 
 .loadpal:
 	; RetroKoH Fade In SEGA background
-	if FadeInSEGA = 1
+	if FadeInSEGA=1
 		lea		(v_pal_dry_dup).l,a3
 		moveq	#$3F,d7
 
@@ -1597,6 +1597,7 @@ GM_Sega:
 		bsr.w	PalLoad2						; load Sega logo palette
 	endif
 	; Fade In SEGA Background End
+
 		move.w	#-$A,(v_pcyc_num).w
 		clr.w	(v_pcyc_time).w
 		clr.w	(v_pal_buffer+$12).w
@@ -1661,51 +1662,52 @@ GM_Title:
 		clearRAM v_ringpos,v_ringend		; clear ring RAM -- RetroKoH S2 Rings Manager
 		clearRAM v_objspace,v_objend		; clear object RAM
 
-		locVRAM	0
-		lea	(Nem_JapNames).l,a0 ; load Japanese credits
+		locVRAM	ArtTile_Title_Japanese_Text*tile_size
+		lea		(Nem_JapNames).l,a0			; load Japanese credits
 		bsr.w	NemDec
-		locVRAM	ArtTile_Sonic_Team_Font*$20
-		lea	(Nem_CreditText).l,a0 ;	load alphabet
+		locVRAM	ArtTile_Sonic_Team_Font*tile_size
+		lea		(Nem_CreditText).l,a0		; load alphabet
 		bsr.w	NemDec
-		lea	(v_128x128&$FFFFFF).l,a1
-		lea	(Eni_JapNames).l,a0 ; load mappings for	Japanese credits
-		clr.w	d0
+		lea		(v_128x128&$FFFFFF).l,a1
+		lea		(Eni_JapNames).l,a0			; load mappings for Japanese credits
+		move.w	#make_art_tile(ArtTile_Title_Japanese_Text,0,FALSE),d0
 		bsr.w	EniDec
 
-		copyTilemap	v_128x128&$FFFFFF,$C000,$27,$1B
+		copyTilemap	v_128x128&$FFFFFF,vram_fg,40,28
 
 		clearRAM v_pal_dry_dup,v_pal_dry_dup+16*4*2
 
-		moveq	#palid_Sonic,d0	; load Sonic's palette
+		moveq	#palid_Sonic,d0					; load Sonic's palette
 		bsr.w	PalLoad1
-		move.b	#id_CreditsText,(v_sonicteam).w ; load "SONIC TEAM PRESENTS" object
+		move.b	#id_CreditsText,(v_sonicteam).w	; load "SONIC TEAM PRESENTS" object
 		jsr		(ExecuteObjects).l
 		jsr		(BuildSprites).l
 		bsr.w	PaletteFadeIn
 		disable_ints
-		locVRAM	ArtTile_Title_Foreground*$20
-		lea		(Nem_TitleFg).l,a0 ; load title	screen patterns
+		locVRAM	ArtTile_Title_Foreground*tile_size
+		lea		(Nem_TitleFg).l,a0				; load title screen patterns
 		bsr.w	NemDec
-		locVRAM	ArtTile_Title_Sonic*$20
-		lea		(Nem_TitleSonic).l,a0 ;	load Sonic title screen	patterns
+		locVRAM	ArtTile_Title_Sonic*tile_size
+		lea		(Nem_TitleSonic).l,a0			; load Sonic title screen patterns
 		bsr.w	NemDec
-		locVRAM	ArtTile_Title_Trademark*$20
-		lea		(Nem_TitleTM).l,a0 ; load "TM" patterns
+		locVRAM	ArtTile_Title_Trademark*tile_size
+		lea		(Nem_TitleTM).l,a0				; load "TM" patterns
 		bsr.w	NemDec
 		lea		(vdp_data_port).l,a6
-		locVRAM	ArtTile_Level_Select_Font*$20,4(a6)
-		lea		(Art_Text).l,a5	; load level select font
-		move.w	#$28F,d1
+		locVRAM	ArtTile_Level_Select_Font*tile_size,4(a6)
+		lea		(Art_Text).l,a5					; load level select font
+		move.w	#(Art_Text_End-Art_Text)/2-1,d1
 
 Tit_LoadText:
 		move.w	(a5)+,(a6)
-		dbf		d1,Tit_LoadText			; load level select font
-		clr.b	(f_nobgscroll).w		; Mercury Game Over When Drowning Fix
-		clr.b	(v_lastlamp).w			; clear lamppost counter
-		clr.w	(v_debuguse).w			; disable debug item placement mode
-		clr.w	(f_demo).w				; disable debug mode
-		move.w	#(id_GHZ<<8),(v_zone).w	; set level to GHZ (00)
-		clr.w	(v_pcyc_time).w			; disable palette cycling
+		dbf		d1,Tit_LoadText				; load level select font
+
+		clr.b	(f_nobgscroll).w			; Mercury Game Over When Drowning Fix
+		clr.b	(v_lastlamp).w				; clear lamppost counter
+		clr.w	(v_debuguse).w				; disable debug item placement mode
+		clr.w	(f_demo).w					; disable debug mode
+		move.w	#(id_GHZ<<8),(v_zone).w		; set level to GHZ (00)
+		clr.w	(v_pcyc_time).w				; disable palette cycling
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformLayers
 
@@ -1714,7 +1716,7 @@ Tit_LoadText:
 	else
 		lea		(v_16x16).w,a1				; address to load decompressed blocks to
 		lea		(Blk16_GHZ).l,a0			; load GHZ 16x16 mappings
-		clr.w	d0
+		move.w	#make_art_tile(ArtTile_Level,0,FALSE),d0
 		bsr.w	EniDec
 	endif
 
@@ -1733,22 +1735,22 @@ Tit_LoadText:
 		lea		(vdp_control_port).l,a5
 		lea		(vdp_data_port).l,a6
 		lea		(v_bgscreenposx).w,a3
-		lea		(v_lvllayout+$80).w,a4	; MJ: Load address of layout BG
+		lea		(v_lvllayout+$80).w,a4		; MJ: Load address of layout BG
 		move.w	#$6000,d2
 		bsr.w	DrawChunks
 
 	if ChunksInROM=1	;Mercury Chunks In ROM
-		copyTilemap	Eni_Title,$C208,$21,$15				; RetroKoH Title Screen Adjustment
+		copyTilemap	Eni_Title,vram_fg+$208,34,22			; RetroKoH Title Screen Adjustment
 	else
-		lea		(v_128x128&$FFFFFF).l,a1				; address to load decompressed chunks to
-		lea		(Eni_Title).l,a0						; load title screen mappings
+		lea		(v_128x128&$FFFFFF).l,a1					; address to load decompressed chunks to
+		lea		(Eni_Title).l,a0							; load title screen mappings
 		clr.w	d0
 		bsr.w	EniDec
 
-		copyTilemap	v_128x128&$FFFFFF,$C208,$21,$15		; RetroKoH Title Screen Adjustment
+		copyTilemap	v_128x128&$FFFFFF,vram_fg+$208,34,22	; RetroKoH Title Screen Adjustment
 	endif
 
-		locVRAM	ArtTile_Level*$20
+		locVRAM	ArtTile_Level*tile_size
 		lea		(Nem_Title).l,a0		; load Title Screen patterns -- Clownacy S2 Level Art Loading
 		bsr.w	NemDec
 		moveq	#palid_GHZ,d0			; load GHZ palette first -- RetroKoH Title Screen Adjustment
@@ -1870,13 +1872,13 @@ Tit_ChkLevSel:
 
 		move.l	d0,(v_scrposy_vdp).w
 		disable_ints
-		lea	(vdp_data_port).l,a6
-		locVRAM	$E000
-		move.w	#$3FF,d1
+		lea		(vdp_data_port).l,a6
+		locVRAM	vram_bg
+		move.w	#plane_size_64x32/4-1,d1
 
 Tit_ClrScroll2:
 		move.l	d0,(a6)
-		dbf	d1,Tit_ClrScroll2 ; clear scroll data (in VRAM)
+		dbf		d1,Tit_ClrScroll2 ; clear scroll data (in VRAM)
 
 		bsr.w	LevSelTextLoad
 
@@ -2154,7 +2156,7 @@ LevSel_DrawAll:
 		move.l	d4,4(a6)
 		bsr.w	LevSel_ChgLine	; draw line of text
 		addi.l	#$800000,d4	; jump to next line
-		dbf	d1,LevSel_DrawAll
+		dbf		d1,LevSel_DrawAll
 
 		moveq	#0,d0
 		move.w	(v_levselitem).w,d0
@@ -2163,13 +2165,13 @@ LevSel_DrawAll:
 		lsl.w	#7,d0
 		swap	d0
 		add.l	d0,d4
-		lea	(LevelMenuText).l,a1
+		lea		(LevelMenuText).l,a1
 		lsl.w	#3,d1
 		move.w	d1,d0
 		add.w	d1,d1
 		add.w	d0,d1
 		adda.w	d1,a1
-		move.w	#$C680,d3	; VRAM setting (3rd palette, $680th tile)
+		move.w	#$C680,d3		; VRAM setting (3rd palette, $680th tile)
 		move.l	d4,4(a6)
 		bsr.w	LevSel_ChgLine	; recolour selected line
 		move.w	#$E680,d3
@@ -2178,7 +2180,7 @@ LevSel_DrawAll:
 		move.w	#$C680,d3
 
 LevSel_DrawSnd:
-		locVRAM	$EC30		; sound test position on screen
+		locVRAM	vram_bg+$C30	; sound test position on screen
 		move.w	(v_levselsound).w,d0
 		addi.w	#$80,d0
 		move.b	d0,d2
@@ -2209,13 +2211,13 @@ LevSel_Numb:
 
 
 LevSel_ChgLine:
-		moveq	#$17,d2		; number of characters per line
+		moveq	#$17,d2			; number of characters per line
 
 LevSel_LineLoop:
 		moveq	#0,d0
-		move.b	(a1)+,d0	; get character
+		move.b	(a1)+,d0		; get character
 		bpl.s	LevSel_CharOk	; branch if valid
-		clr.w	(a6)		; use blank character
+		clr.w	(a6)			; use blank character
 		dbf	d2,LevSel_LineLoop
 		rts	
 
@@ -2265,11 +2267,11 @@ Level_NoMusicFade:
 		tst.w	(f_demo).w	; is an ending sequence demo running?
 		bmi.s	Level_ClrRam	; if yes, branch
 		disable_ints
-		locVRAM	ArtTile_Title_Card*$20
+		locVRAM	ArtTile_Title_Card*tile_size
 		
 	; AURORA☆FIELDS Title Card Optimization
-		lea		Art_TitleCard,a0								; load title card patterns
-		move.l	#((Art_TitleCard_End-Art_TitleCard)/$20)-1,d0	; # of tiles
+		lea		Art_TitleCard,a0									; load title card patterns
+		move.l	#((Art_TitleCard_End-Art_TitleCard)/tile_size)-1,d0	; # of tiles
 		jsr		(LoadUncArt).w
 	; Title Card Optimization End
 		
@@ -2767,7 +2769,7 @@ GM_Special:
 		
 		bsr.w	ClearScreen
 		enable_ints
-		fillVRAM	0,$7000,$5000
+		fillVRAM	0, ArtTile_SS_Plane_1*tile_size+plane_size_64x32, ArtTile_SS_Plane_5*tile_size
 		bsr.w	SS_BGLoad
 		moveq	#plcid_SpecialStage,d0
 		bsr.w	QuickPLC	; load special stage patterns
@@ -2919,11 +2921,11 @@ loc_47D4:
 		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
 		move.w	#$9001,(a6)		; 64-cell hscroll size
 		bsr.w	ClearScreen
-		locVRAM	ArtTile_Title_Card*$20
+		locVRAM	ArtTile_Title_Card*tile_size
 
 	; AURORA☆FIELDS Title Card Optimization
-		lea		Art_TitleCard,a0								; load title card patterns
-		move.l	#((Art_TitleCard_End-Art_TitleCard)/$20)-1,d0	; # of tiles
+		lea		Art_TitleCard,a0									; load title card patterns
+		move.l	#((Art_TitleCard_End-Art_TitleCard)/tile_size)-1,d0	; # of tiles
 		jsr		(LoadUncArt).w
 	; Title Card Optimization End
 		
@@ -2989,19 +2991,19 @@ SS_ToLevel:	; Check if branch to this is needed
 
 
 SS_BGLoad:
-		lea	(v_ssbuffer1&$FFFFFF).l,a1
-		lea	(Eni_SSBg1).l,a0 ; load	mappings for the birds and fish
-		move.w	#$4051,d0
+		lea		(v_ssbuffer1&$FFFFFF).l,a1
+		lea		(Eni_SSBg1).l,a0	; load mappings for the birds and fish
+		move.w	#make_art_tile(ArtTile_SS_Background_Fish,2,0),d0
 		bsr.w	EniDec
-		locVRAM	$5000,d3
-		lea	((v_ssbuffer1+$80)&$FFFFFF).l,a2
-		moveq	#7-1,d7
+		locVRAM	ArtTile_SS_Plane_1*tile_size+plane_size_64x32,d3
+		lea		((v_ssbuffer1+$80)&$FFFFFF).l,a2
+		moveq	#7-1,d7				; $5000, $6000, $7000, $8000, $9000, $A000, $B000
 
 loc_48BE:
 		move.l	d3,d0
 		moveq	#3,d6
 		moveq	#0,d4
-		cmpi.w	#3,d7
+		cmpi.w	#4-1,d7 ; $8000
 		bhs.s	loc_48CC
 		moveq	#1,d4
 
@@ -3014,7 +3016,8 @@ loc_48CE:
 		bne.s	loc_48E2
 		cmpi.w	#6,d7
 		bne.s	loc_48F2
-		lea	(v_ssbuffer1&$FFFFFF).l,a1
+
+		lea		(v_ssbuffer1&$FFFFFF).l,a1
 
 loc_48E2:
 		movem.l	d0-d4,-(sp)
@@ -3025,10 +3028,12 @@ loc_48E2:
 
 loc_48F2:
 		addi.l	#$100000,d0
-		dbf	d5,loc_48CE
+		dbf		d5,loc_48CE
+
 		addi.l	#$3800000,d0
 		eori.b	#1,d4
-		dbf	d6,loc_48CC
+		dbf		d6,loc_48CC
+
 		addi.l	#$10000000,d3
 		bpl.s	loc_491C
 		swap	d3
@@ -3037,13 +3042,14 @@ loc_48F2:
 
 loc_491C:
 		adda.w	#$80,a2
-		dbf	d7,loc_48BE
-		lea	(v_ssbuffer1&$FFFFFF).l,a1
-		lea	(Eni_SSBg2).l,a0 ; load	mappings for the clouds
-		move.w	#$4000,d0
+		dbf		d7,loc_48BE
+
+		lea		(v_ssbuffer1&$FFFFFF).l,a1
+		lea		(Eni_SSBg2).l,a0			; load mappings for the clouds
+		move.w	#make_art_tile(ArtTile_SS_Background_Clouds,2,0),d0
 		bsr.w	EniDec
-		copyTilemap	v_ssbuffer1&$FFFFFF,$C000,$3F,$1F
-		copyTilemap	v_ssbuffer1&$FFFFFF,$D000,$3F,$3F
+		copyTilemap	v_ssbuffer1&$FFFFFF,ArtTile_SS_Plane_5*tile_size,64,32
+		copyTilemap	v_ssbuffer1&$FFFFFF,ArtTile_SS_Plane_5*tile_size+plane_size_64x32,64,64
 		rts	
 ; End of function SS_BGLoad
 
@@ -3059,39 +3065,52 @@ PalCycle_SS:
 		bne.s	locret_49E6
 		subq.w	#1,(v_palss_time).w
 		bpl.s	locret_49E6
-		lea	(vdp_control_port).l,a6
+
+		lea		(vdp_control_port).l,a6
 		move.w	(v_palss_num).w,d0
 		addq.w	#1,(v_palss_num).w
 		andi.w	#$1F,d0
 		lsl.w	#2,d0
-		lea	(byte_4A3C).l,a0
+		lea		(byte_4A3C).l,a0
 		adda.w	d0,a0
+
+	; Time
 		move.b	(a0)+,d0
 		bpl.s	loc_4992
 		move.w	#$1FF,d0
 
 loc_4992:
 		move.w	d0,(v_palss_time).w
+
+	; Anim
 		moveq	#0,d0
 		move.b	(a0)+,d0
 		move.w	d0,(v_ssbganim).w
-		lea	(byte_4ABC).l,a1
-		lea	(a1,d0.w),a1
+		lea		(byte_4ABC).l,a1
+		lea		(a1,d0.w),a1
+
+	; FG VRAM
 		move.w	#$8200,d0
 		move.b	(a1)+,d0
 		move.w	d0,(a6)
+		
+	; Y coordinate
 		move.b	(a1),(v_scrposy_vdp).w
+
+	; BG VRAM
 		move.w	#$8400,d0
 		move.b	(a0)+,d0
 		move.w	d0,(a6)
 		move.l	#$40000010,(vdp_control_port).l
 		move.l	(v_scrposy_vdp).w,(vdp_data_port).l
+
+	; Palette cycle index
 		moveq	#0,d0
 		move.b	(a0)+,d0
 		bmi.s	loc_49E8
-		lea	(Pal_SSCyc1).l,a1
+		lea		(Pal_SSCyc1).l,a1
 		adda.w	d0,a1
-		lea	(v_pal_dry+$4E).w,a2
+		lea		(v_pal_dry+$4E).w,a2
 		move.l	(a1)+,(a2)+
 		move.l	(a1)+,(a2)+
 		move.l	(a1)+,(a2)+
@@ -3108,23 +3127,24 @@ loc_49E8:
 
 loc_49F4:
 		mulu.w	#$2A,d1
-		lea	(Pal_SSCyc2).l,a1
+		lea		(Pal_SSCyc2).l,a1
 		adda.w	d1,a1
 		andi.w	#$7F,d0
+
 		bclr	#0,d0
 		beq.s	loc_4A18
-		lea	(v_pal_dry+$6E).w,a2
+		lea		(v_pal_dry+$6E).w,a2
 		move.l	(a1),(a2)+
 		move.l	4(a1),(a2)+
 		move.l	8(a1),(a2)+
 
 loc_4A18:
 		adda.w	#$C,a1
-		lea	(v_pal_dry+$5A).w,a2
+		lea		(v_pal_dry+$5A).w,a2
 		cmpi.w	#$A,d0
 		blo.s	loc_4A2E
 		subi.w	#$A,d0
-		lea	(v_pal_dry+$7A).w,a2
+		lea		(v_pal_dry+$7A).w,a2
 
 loc_4A2E:
 		move.w	d0,d1
@@ -3137,18 +3157,73 @@ loc_4A2E:
 ; End of function PalCycle_SS
 
 ; ===========================================================================
-byte_4A3C:	dc.b 3,	0, 7, $92, 3, 0, 7, $90, 3, 0, 7, $8E, 3, 0, 7,	$8C
 
-		dc.b 3,	0, 7, $8B, 3, 0, 7, $80, 3, 0, 7, $82, 3, 0, 7,	$84
-		dc.b 3,	0, 7, $86, 3, 0, 7, $88, 7, 8, 7, 0, 7,	$A, 7, $C
-		dc.b $FF, $C, 7, $18, $FF, $C, 7, $18, 7, $A, 7, $C, 7,	8, 7, 0
-		dc.b 3,	0, 6, $88, 3, 0, 6, $86, 3, 0, 6, $84, 3, 0, 6,	$82
-		dc.b 3,	0, 6, $81, 3, 0, 6, $8A, 3, 0, 6, $8C, 3, 0, 6,	$8E
-		dc.b 3,	0, 6, $90, 3, 0, 6, $92, 7, 2, 6, $24, 7, 4, 6,	$30
-		dc.b $FF, 6, 6,	$3C, $FF, 6, 6,	$3C, 7,	4, 6, $30, 7, 2, 6, $24
+SSBGData:	macro time,anim,vram,index,flag1,flag2
+		dc.b	(time), (anim), ((vram)*tile_size)>>13
+	if flag1
+		dc.b	(index)|$80|(flag2)
+	else
+		dc.b	(index)*12
+	endif
+		endm
+
+byte_4A3C:
+		; Time, anim, BG VRAM, palette cycle index & flags
+		SSBGData  3,  0, ArtTile_SS_Plane_6, 18, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_6, 16, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_6, 14, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_6, 12, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_6, 10, TRUE , TRUE
+
+		SSBGData  3,  0, ArtTile_SS_Plane_6,  0, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_6,  2, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_6,  4, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_6,  6, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_6,  8, TRUE , FALSE
+
+
+		SSBGData  7,  8, ArtTile_SS_Plane_6,  0, FALSE, FALSE
+		SSBGData  7, 10, ArtTile_SS_Plane_6,  1, FALSE, FALSE
+		SSBGData -1, 12, ArtTile_SS_Plane_6,  2, FALSE, FALSE
+		SSBGData -1, 12, ArtTile_SS_Plane_6,  2, FALSE, FALSE
+		SSBGData  7, 10, ArtTile_SS_Plane_6,  1, FALSE, FALSE
+		SSBGData  7,  8, ArtTile_SS_Plane_6,  0, FALSE, FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_5,  8, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_5,  6, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_5,  4, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_5,  2, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_5,  0, TRUE , TRUE
+
+		SSBGData  3,  0, ArtTile_SS_Plane_5, 10, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_5, 12, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_5, 14, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_5, 16, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_5, 18, TRUE , FALSE
+
+		SSBGData  7,  2, ArtTile_SS_Plane_5,  3, FALSE, FALSE
+		SSBGData  7,  4, ArtTile_SS_Plane_5,  4, FALSE, FALSE
+		SSBGData -1,  6, ArtTile_SS_Plane_5,  5, FALSE, FALSE
+		SSBGData -1,  6, ArtTile_SS_Plane_5,  5, FALSE, FALSE
+		SSBGData  7,  4, ArtTile_SS_Plane_5,  4, FALSE, FALSE
+		SSBGData  7,  2, ArtTile_SS_Plane_5,  3, FALSE, FALSE
 		even
-byte_4ABC:	dc.b $10, 1, $18, 0, $18, 1, $20, 0, $20, 1, $28, 0, $28, 1
+
+SSFGData:	macro vram,y
+		dc.b ((vram)*tile_size)>>10, (y)>>8
+		endm
+
+byte_4ABC:
+		; FG VRAM, Y coordinate
+		SSFGData ArtTile_SS_Plane_1, $100
+		SSFGData ArtTile_SS_Plane_2,    0
+		SSFGData ArtTile_SS_Plane_2, $100
+		SSFGData ArtTile_SS_Plane_3,    0
+		SSFGData ArtTile_SS_Plane_3, $100
+		SSFGData ArtTile_SS_Plane_4,    0
+		SSFGData ArtTile_SS_Plane_4, $100
 		even
+
+; ===========================================================================
 
 Pal_SSCyc1:	binclude	"palette/Cycle - Special Stage 1.bin"
 		even
@@ -3278,18 +3353,18 @@ GM_Continue:
 
 		clearRAM v_objspace,v_objend
 
-		locVRAM	ArtTile_Title_Card*$20
+		locVRAM	ArtTile_Title_Card*tile_size
 
 	; AURORA☆FIELDS Title Card Optimization
-		lea		Art_TitleCard,a0								; load title card patterns
-		move.l	#((Art_TitleCard_End-Art_TitleCard)/$20)-1,d0	; # of tiles
+		lea		Art_TitleCard,a0									; load title card patterns
+		move.l	#((Art_TitleCard_End-Art_TitleCard)/tile_size)-1,d0	; # of tiles
 		jsr		(LoadUncArt).w
 	; Title Card Optimization End
 
-		locVRAM	ArtTile_Continue_Sonic*$20
+		locVRAM	ArtTile_Continue_Sonic*tile_size
 		lea		(Nem_ContSonic).l,a0	; load Sonic patterns
 		bsr.w	NemDec
-		locVRAM	ArtTile_Mini_Sonic*$20
+		locVRAM	ArtTile_Mini_Sonic*tile_size
 		lea		(Nem_MiniSonic).l,a0	; load continue() and Mini Sonic patterns
 		bsr.w	NemDec
 		moveq	#10,d1
@@ -3601,7 +3676,7 @@ GM_Credits:
 
 		clearRAM v_objspace,v_objend
 
-		locVRAM	ArtTile_Credits_Font*$20
+		locVRAM	ArtTile_Credits_Font*tile_size
 		lea		(Nem_CreditText).l,a0 ;	load credits alphabet patterns
 		bsr.w	NemDec
 
@@ -7014,7 +7089,7 @@ SS_LoadData:
 		; Load layout data
 		movea.l	SS_LayoutIndex(pc,d0.w),a0
 		lea		(v_ssbuffer2&$FFFFFF).l,a1
-		clr.w	d0
+		move.w	#make_art_tile(ArtTile_SS_Background_Clouds,0,FALSE),d0
 		jsr		(EniDec).l
 
 		; Clear everything from v_ssbuffer1 to v_ssbuffer2
@@ -7161,12 +7236,12 @@ AddPoints:
 
 
 ContScrCounter:
-		locVRAM	$DF80
-		lea	(vdp_data_port).l,a6
-		lea	(Hud_10).l,a2
-		moveq	#1,d6
+		locVRAM	ArtTile_Continue_Number*tile_size
+		lea		(vdp_data_port).l,a6
+		lea		(Hud_10).l,a2
+		moveq	#2-1,d6
 		moveq	#0,d4
-		lea	Art_Hud(pc),a1 ; load numbers patterns
+		lea		Art_Hud(pc),a1		; load numbers patterns
 
 ContScr_Loop:
 		moveq	#0,d2
@@ -7182,7 +7257,7 @@ loc_1C95A:
 loc_1C962:
 		add.l	d3,d1
 		lsl.w	#6,d2
-		lea	(a1,d2.w),a3
+		lea		(a1,d2.w),a3
 		move.l	(a3)+,(a6)
 		move.l	(a3)+,(a6)
 		move.l	(a3)+,(a6)
@@ -7199,7 +7274,7 @@ loc_1C962:
 		move.l	(a3)+,(a6)
 		move.l	(a3)+,(a6)
 		move.l	(a3)+,(a6)
-		dbf	d6,ContScr_Loop	; repeat 1 more	time
+		dbf		d6,ContScr_Loop	; repeat 1 more	time
 
 		rts	
 ; End of function ContScrCounter

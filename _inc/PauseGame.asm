@@ -16,7 +16,7 @@ PauseGame:
 
 Pause_StopGame:
 		st.b	(f_pause).w							; freeze time
-		move.b	#1,(v_snddriver_ram+f_pausemusic).w	; pause music
+		move.b	#1,(v_snddriver_ram.f_pausemusic).w	; pause music
 
 Pause_Loop:
 		move.b	#$10,(v_vbla_routine).w
@@ -41,7 +41,7 @@ Pause_ChkStart:
 		beq.s	Pause_Loop					; if not, branch
 
 Pause_EndMusic:
-		move.b	#$80,(v_snddriver_ram+f_pausemusic).w	; unpause the music
+		move.b	#$80,(v_snddriver_ram.f_pausemusic).w	; unpause the music
 
 Unpause:
 		clr.b	(f_pause).w								; unpause the game
@@ -52,6 +52,6 @@ Pause_DoNothing:
 
 Pause_SlowMo:
 		st.b	(f_pause).w
-		move.b	#$80,(v_snddriver_ram+f_pausemusic).w	; Unpause the music
+		move.b	#$80,(v_snddriver_ram.f_pausemusic).w	; Unpause the music
 		rts	
 ; End of function PauseGame
