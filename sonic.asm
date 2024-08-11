@@ -2277,16 +2277,16 @@ Level_NoMusicFade:
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
 		lsl.w	#4,d0
-		lea	(LevelHeaders).l,a2
-		lea	(a2,d0.w),a2
+		lea		(LevelHeaders).l,a2	; a2 = LevelHeaders address
+		lea		(a2,d0.w),a2		; a2 = LevelHeaders + zone offset
 		moveq	#0,d0
 		move.b	(a2),d0
 		beq.s	loc_37FC
-		bsr.w	AddPLC		; load level patterns
+		bsr.w	AddPLC				; load level patterns
 
 loc_37FC:
 		moveq	#plcid_Main2,d0
-		bsr.w	AddPLC		; load standard	patterns
+		bsr.w	AddPLC				; load standard	patterns
 
 Level_ClrRam:
 		clearRAM v_ringpos,v_ringend					; clear ring RAM -- RetroKoH S2 Rings Manager
@@ -3608,25 +3608,25 @@ GM_Credits:
 		clearRAM v_pal_dry_dup,v_pal_dry_dup+16*4*2
 
 		moveq	#palid_Sonic,d0
-		bsr.w	PalLoad1	; load Sonic's palette
-		move.b	#id_CreditsText,(v_credits).w ; load credits object
+		bsr.w	PalLoad1						; load Sonic's palette
+		move.b	#id_CreditsText,(v_credits).w	; load credits object
 		jsr		(ExecuteObjects).l
 		jsr		(BuildSprites).l
 		bsr.w	EndingDemoLoad
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
 		lsl.w	#4,d0
-		lea		(LevelHeaders).l,a2
-		lea		(a2,d0.w),a2
+		lea		(LevelHeaders).l,a2		; a2 = LevelHeaders address
+		lea		(a2,d0.w),a2			; a2 = LevelHeaders + zone offset
 		moveq	#0,d0
 		move.b	(a2),d0
 		beq.s	Cred_SkipObjGfx
-		bsr.w	AddPLC		; load object graphics
+		bsr.w	AddPLC					; load object graphics
 
 Cred_SkipObjGfx:
 		moveq	#plcid_Main2,d0
-		bsr.w	AddPLC		; load standard	level graphics
-		move.w	#120,(v_demolength).w ; display a credit for 2 seconds
+		bsr.w	AddPLC					; load standard	level graphics
+		move.w	#120,(v_demolength).w	; display a credit for 2 seconds
 		bsr.w	PaletteFadeIn
 
 Cred_WaitLoop:
@@ -4569,11 +4569,11 @@ LoadZoneTiles:
 
 	; Move a word of a1 to d3, note that a1 doesn't exactly contain the address of v_128x128/StartOfRAM anymore, after KosDec, a1 now contains v_128x128/StartOfRAM + the size of the file decompressed to it, d3 now contains the length of the file that was decompressed
 		move.w	a1,d3
-		move.w	d3,d7			; Move d3 to d7, for use in seperate calculations
-		andi.w	#$FFF,d3		; Remove the high nibble of the high byte of the length of decompressed file, this nibble is how many $1000 bytes the decompressed art is
-		lsr.w	#1,d3			; Half the value of 'length of decompressed file', d3 becomes the 'DMA transfer length'
-		rol.w	#4,d7			; Rotate (left) length of decompressed file by one nibble
-		andi.w	#$F,d7			; Only keep the low nibble of low byte (the same one filtered out of d3 above), this nibble is how many $1000 bytes the decompressed art is
+		move.w	d3,d7				; Move d3 to d7, for use in seperate calculations
+		andi.w	#$FFF,d3			; Remove the high nibble of the high byte of the length of decompressed file, this nibble is how many $1000 bytes the decompressed art is
+		lsr.w	#1,d3				; Half the value of 'length of decompressed file', d3 becomes the 'DMA transfer length'
+		rol.w	#4,d7				; Rotate (left) length of decompressed file by one nibble
+		andi.w	#$F,d7				; Only keep the low nibble of low byte (the same one filtered out of d3 above), this nibble is how many $1000 bytes the decompressed art is
  
 .loop:
 		move.w	d7,d2					; Move d7 to d2, note that the ahead dbf removes 1 byte from d7 each time it loops, meaning that the following calculations will have different results each time
@@ -4604,26 +4604,26 @@ LevelDataLoad:
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
 		lsl.w	#4,d0
-		lea		(LevelHeaders).l,a2
-		lea		(a2,d0.w),a2
+		lea		(LevelHeaders).l,a2			; a2 = LevelHeaders address
+		lea		(a2,d0.w),a2				; a2 = LevelHeaders + zone offset
 		move.l	a2,-(sp)
 		addq.l	#4,a2
 
 	if BlocksInROM=1	;Mercury Blocks In ROM
-		move.l	(a2)+,(v_16x16).l	; store the ROM address for the block mappings
+		move.l	(a2)+,(v_16x16).l			; store the ROM address for the block mappings
 		andi.l	#$FFFFFF,(v_16x16).l
 	else
 		movea.l	(a2)+,a0
-		lea		(v_16x16).w,a1	; RAM address for 16x16 mappings
+		lea		(v_16x16).w,a1				; RAM address for 16x16 mappings
 		clr.w	d0
 		bsr.w	EniDec
 	endif
 
 	if ChunksInROM=1	;Mercury Chunks In ROM
-		move.l	(a2)+,(v_128x128).l	; store the ROM address for the chunk mappings
+		move.l	(a2)+,(v_128x128).l			; store the ROM address for the chunk mappings
 	else
 		movea.l	(a2)+,a0
-		lea		(v_128x128&$FFFFFF).l,a1 ; RAM address for 128x128 mappings
+		lea		(v_128x128&$FFFFFF).l,a1	; RAM address for 128x128 mappings
 		bsr.w	KosDec
 	endif
 
@@ -7665,19 +7665,21 @@ Blk128_SBZ:	binclude	"map128/SBZ.kos"
 ; ---------------------------------------------------------------------------
 ; Compressed level graphics
 ; ---------------------------------------------------------------------------
-Nem_Title:	binclude	"artnem/8x8 - Title.nem"	; Title Screen GHZ patterns -- Clownacy S2 Level Art Loading
+Nem_Title:		binclude	"artnem/8x8 - Title.nem"	; Title Screen GHZ patterns -- Clownacy S2 Level Art Loading
 		even
-ArtKos_GHZ:	binclude	"artkos/8x8 - GHZ.kos"		; GHZ patterns -- Clownacy S2 Level Art Loading
+ArtKos_GHZ:		binclude	"artkos/8x8 - GHZ.kos"		; GHZ patterns -- Clownacy S2 Level Art Loading
 		even
-ArtKos_LZ:	binclude	"artkos/8x8 - LZ.kos"		; LZ primary patterns -- Clownacy S2 Level Art Loading
+ArtKos_LZ:		binclude	"artkos/8x8 - LZ.kos"		; LZ primary patterns -- Clownacy S2 Level Art Loading
 		even
-ArtKos_MZ:	binclude	"artkos/8x8 - MZ.kos"		; MZ primary patterns -- Clownacy S2 Level Art Loading
+ArtKos_MZ:		binclude	"artkos/8x8 - MZ.kos"		; MZ primary patterns -- Clownacy S2 Level Art Loading
 		even
-ArtKos_SLZ:	binclude	"artkos/8x8 - SLZ.kos"		; SLZ primary patterns -- Clownacy S2 Level Art Loading
+ArtKos_SLZ:		binclude	"artkos/8x8 - SLZ.kos"		; SLZ primary patterns -- Clownacy S2 Level Art Loading
 		even
-ArtKos_SYZ:	binclude	"artkos/8x8 - SYZ.kos"		; SYZ primary patterns -- Clownacy S2 Level Art Loading
+ArtKos_SYZ:		binclude	"artkos/8x8 - SYZ.kos"		; SYZ primary patterns -- Clownacy S2 Level Art Loading
 		even
-ArtKos_SBZ:	binclude	"artkos/8x8 - SBZ.kos"		; SBZ primary patterns -- Clownacy S2 Level Art Loading
+ArtKos_SBZ:		binclude	"artkos/8x8 - SBZ.kos"		; SBZ primary patterns -- Clownacy S2 Level Art Loading
+		even
+ArtKos_SBZ3:	binclude	"artkos/8x8 - SBZ3.kos"		; SBZ3 primary patterns -- Clownacy S2 Level Art Loading
 		even
 
 ; ---------------------------------------------------------------------------
