@@ -53,6 +53,12 @@ Sonic_ResetOnFloor:
 				bra.w	DropDash_Release
 
 			.noability:
+				; This should fix a bug w/ unusual looking Flame Shield Animating (RetroKoH)
+				btst	#sta2ndFShield,obStatus2nd(a0)	; does Sonic have a Flame Shield?
+				beq.s	.noflame
+				move.b	#aniID_FlameShield,(v_shieldobj+obAnim).w	; reset animation upon landing
+
+			.noflame:
 		endif
 
 		clr.b	obDoubleJumpFlag(a0)
