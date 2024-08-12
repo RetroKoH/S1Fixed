@@ -31,6 +31,7 @@ v_collision1:			ds.b	$300
 v_collision2:			ds.b	$300
 
 ; RetroKoH/Shobiz S3K Rings Manager RAM Variables
+v_ringspace:
 v_ringpos:				ds.b	Rings_Space		; $9600 (Ring_status_table) one word per ring = $400 bytes
 v_ringposend:
 v_ringstart_addr_ROM:	ds.l	1				; $9A00 (Ring_start_addr_ROM) address in the ring layout of the first ring whose X position is >= camera X position - 8
@@ -41,7 +42,7 @@ v_ringconsumedata:								; $9A0A (Ring_consumption_table) ; stores the addresse
 v_ringconsumecount:		ds.w	1				; the number of rings being consumed currently
 v_ringconsumelist:		ds.w	$3F				; the remaining part of the ring consumption table
 v_ringsroutine:			ds.b	1				; $9A8A (Rings_manager_routine)
-v_ringend:
+v_ringspace_end:								; using this to clearRAM seemingly doesn't work correctly.
 ; S3K Rings Manager End
 
 					ds.b	1	; unused
@@ -135,11 +136,11 @@ v_watersurface2	= v_objspace+object_size*31	; ($D7C0) object variable space for 
 
 v_lvlobjspace	= v_objspace+object_size*32	; level object variable space ($60 objects, $1800 bytes)
 v_lvlobjend		= v_lvlobjspace+object_size*96
-v_objend		= v_lvlobjend
+v_objspace_end	= v_lvlobjend
 
 v_rsvobjcount	= (v_lvlobjspace-v_objspace)/object_size-1
 v_lvlobjcount	= (v_lvlobjend-v_lvlobjspace)/object_size-1	; $5F
-v_allobjcount	= (v_objend-v_objspace)/object_size-1
+v_allobjcount	= (v_objspace_end-v_objspace)/object_size-1
 
 ; Special Stage objects
 v_ssrescard		= v_objspace+object_size*23	; object variable space for the Special Stage results card ($140 bytes)
@@ -370,6 +371,7 @@ v_palette_water_end:
 v_palette:				ds.b	$80						; main palette
 v_palette_end:
 v_palette_fading:		ds.b	$80						; duplicate palette, used for transitions
+v_palette_fading_end:
 
 			ds.b	$140		; stack
 v_systemstack:

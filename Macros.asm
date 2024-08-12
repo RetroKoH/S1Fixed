@@ -65,20 +65,25 @@ fillVRAM:	macro byte,start,end
 ; input: start, end
 ; ---------------------------------------------------------------------------
 
-clearRAM:	macro start,end
-		lea		(start).w,a1
+clearRAM:	macro startAddress,endAddress
+	if "endAddress"<>""
+.length := (endAddress)-(startAddress)
+	else
+.length := startAddress_end-startAddress
+	endif
+		lea	(startAddress).w,a1
 		moveq	#0,d0
-		move.w	#((end)-(start))/4-1,d1
+		move.w	#.length/4-1,d1
 
 .loop:
 		move.l	d0,(a1)+
 		dbf		d1,.loop
 
-	if (end-start)&2
+	if (endAddress-startAddress)&2
 		move.w	d0,(a1)+
 	endif
 
-	if (end-start)&1
+	if (endAddress-startAddress)&1
 		move.b	d0,(a1)+
 	endif
 		endm

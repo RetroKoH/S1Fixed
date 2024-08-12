@@ -901,7 +901,7 @@ ClearScreen:
 		clr.l	(v_scrposx_vdp).w
 
 		; Fixed
-		clearRAM v_spritetablebuffer,v_spritetablebuffer_end
+		clearRAM v_spritetablebuffer
 		clearRAM v_hscrolltablebuffer,v_hscrolltablebuffer_end_padded
 
 		rts	
@@ -1652,15 +1652,15 @@ GM_Title:
 		move.w	#$8720,(a6)					; set background colour (palette line 2, entry 0)
 		clr.b	(f_wtr_state).w
 		bsr.w	ClearScreen
-		
+
 	if HUDScrolling=1
 		clr.w	(f_levelstarted).w			; clear flag AND HUD scrolling byte -- RetroKoH S2 Rings Manager
 	else
 		clr.b	(f_levelstarted).w			; clear flag -- RetroKoH S2 Rings Manager
 	endif
 
-		clearRAM v_ringpos,v_ringend		; clear ring RAM -- RetroKoH S2 Rings Manager
-		clearRAM v_objspace,v_objend		; clear object RAM
+		clearRAM v_ringpos,v_ringspace_end	; clear ring RAM -- RetroKoH S3K Rings Manager
+		clearRAM v_objspace					; clear object RAM
 
 		locVRAM	ArtTile_Title_Japanese_Text*tile_size
 		lea		(Nem_JapNames).l,a0			; load Japanese credits
@@ -1675,7 +1675,7 @@ GM_Title:
 
 		copyTilemap	v_128x128&$FFFFFF,vram_fg,40,28
 
-		clearRAM v_palette_fading,v_palette_fading+16*4*2
+		clearRAM v_palette_fading
 
 		moveq	#palid_Sonic,d0					; load Sonic's palette
 		bsr.w	PalLoad_Fade
@@ -1868,7 +1868,7 @@ Tit_ChkLevSel:
 		moveq	#palid_LevelSel,d0
 		bsr.w	PalLoad	; load level select palette
 
-		clearRAM v_hscrolltablebuffer,v_hscrolltablebuffer_end
+		clearRAM v_hscrolltablebuffer
 
 		move.l	d0,(v_scrposy_vdp).w
 		disable_ints
@@ -2291,11 +2291,11 @@ loc_37FC:
 		bsr.w	AddPLC				; load standard	patterns
 
 Level_ClrRam:
-		clearRAM v_ringpos,v_ringend					; clear ring RAM -- RetroKoH S2 Rings Manager
-		clearRAM v_objspace,v_objend					; clear object RAM
-		clearRAM v_misc_variables,v_misc_variables_end
-		clearRAM v_levelvariables,v_levelvariables_end	; f_levelstarted should clear here
-		clearRAM v_timingandscreenvariables,v_timingandscreenvariables_end
+		clearRAM v_ringpos,v_ringspace_end				; clear ring RAM -- RetroKoH S2 Rings Manager
+		clearRAM v_objspace								; clear object RAM
+		clearRAM v_misc_variables
+		clearRAM v_levelvariables						; f_levelstarted should clear here
+		clearRAM v_timingandscreenvariables
 
 		disable_ints
 		bsr.w	ClearScreen
@@ -2774,10 +2774,10 @@ GM_Special:
 		moveq	#plcid_SpecialStage,d0
 		bsr.w	QuickPLC	; load special stage patterns
 
-		clearRAM v_objspace,v_objend
-		clearRAM v_levelvariables,v_levelvariables_end
-		clearRAM v_timingvariables,v_timingvariables_end
-		clearRAM v_ngfx_buffer,v_ngfx_buffer_end
+		clearRAM v_objspace
+		clearRAM v_levelvariables
+		clearRAM v_timingvariables
+		clearRAM v_ngfx_buffer
 
 		clr.b	(f_wtr_state).w
 		clr.w	(f_restart).w
@@ -2950,7 +2950,7 @@ loc_47D4:
 		move.w	#bgm_GotThrough,d0
 		jsr		(PlaySound_Special).w	 ; play end-of-level music
 
-		clearRAM v_objspace,v_objend
+		clearRAM v_objspace
 
 		move.b	#id_SSResult,(v_ssrescard).w	; load results screen object
 
@@ -3351,7 +3351,7 @@ GM_Continue:
 		bsr.w	ClearScreen
 		clr.b	(f_levelstarted).w		; RetroKoH S2 Rings Manager
 
-		clearRAM v_objspace,v_objend
+		clearRAM v_objspace
 
 		locVRAM	ArtTile_Title_Card*tile_size
 
@@ -3449,10 +3449,10 @@ GM_Ending:
 		bsr.w	PlaySound_Special ; stop music
 		bsr.w	PaletteFadeOut
 
-		clearRAM v_objspace,v_objend
-		clearRAM v_misc_variables,v_misc_variables_end
-		clearRAM v_levelvariables,v_levelvariables_end
-		clearRAM v_timingandscreenvariables,v_timingandscreenvariables_end
+		clearRAM v_objspace
+		clearRAM v_misc_variables
+		clearRAM v_levelvariables
+		clearRAM v_timingandscreenvariables
 
 		disable_ints
 		move.w	(v_vdp_buffer1).w,d0
@@ -3674,13 +3674,13 @@ GM_Credits:
 		bsr.w	ClearScreen
 		clr.b	(f_levelstarted).w	; RetroKoH S2 Rings Manager
 
-		clearRAM v_objspace,v_objend
+		clearRAM v_objspace
 
 		locVRAM	ArtTile_Credits_Font*tile_size
 		lea		(Nem_CreditText).l,a0 ;	load credits alphabet patterns
 		bsr.w	NemDec
 
-		clearRAM v_palette_fading,v_palette_fading+16*4*2
+		clearRAM v_palette_fading
 
 		moveq	#palid_Sonic,d0
 		bsr.w	PalLoad_Fade						; load Sonic's palette
@@ -3792,12 +3792,12 @@ TryAgainEnd:
 		clr.b	(f_wtr_state).w
 		bsr.w	ClearScreen
 
-		clearRAM v_objspace,v_objend
+		clearRAM v_objspace
 
 		moveq	#plcid_TryAgain,d0
 		bsr.w	QuickPLC	; load "TRY AGAIN" or "END" patterns
 
-		clearRAM v_palette_fading,v_palette_fading+16*4*2
+		clearRAM v_palette_fading
 
 		moveq	#palid_Ending,d0
 		bsr.w	PalLoad_Fade	; load ending palette
