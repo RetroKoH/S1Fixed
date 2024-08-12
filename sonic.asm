@@ -1363,8 +1363,8 @@ Pal_Sega2:	binclude	"palette/Sega2.bin"
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
-
-PalLoad1:
+; PalLoad1:
+PalLoad_Fade:
 		lea		(PalPointers).l,a1
 		lsl.w	#3,d0
 		adda.w	d0,a1
@@ -1377,13 +1377,13 @@ PalLoad1:
 		move.l	(a2)+,(a3)+	; move data to RAM
 		dbf		d7,.loop
 		rts	
-; End of function PalLoad1
+; End of function PalLoad_Fade
 
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
-
-PalLoad2:
+; PalLoad2:
+PalLoad:
 		lea		(PalPointers).l,a1
 		lsl.w	#3,d0
 		adda.w	d0,a1
@@ -1393,9 +1393,9 @@ PalLoad2:
 
 .loop:
 		move.l	(a2)+,(a3)+	; move data to RAM
-		dbf	d7,.loop
+		dbf		d7,.loop
 		rts	
-; End of function PalLoad2
+; End of function PalLoad
 
 	if SuperMod=1
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -1419,9 +1419,9 @@ PalLoad_EndFlowers:
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
-
-PalLoad3_Water:
-		lea	(PalPointers).l,a1
+; PalLoad3_Water:
+PalLoad_Fade_Water:
+		lea		(PalPointers).l,a1
 		lsl.w	#3,d0
 		adda.w	d0,a1
 		movea.l	(a1)+,a2	; get palette data address
@@ -1431,16 +1431,16 @@ PalLoad3_Water:
 
 .loop:
 		move.l	(a2)+,(a3)+	; move data to RAM
-		dbf	d7,.loop
+		dbf		d7,.loop
 		rts	
-; End of function PalLoad3_Water
+; End of function PalLoad_Fade_Water
 
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
-
-PalLoad4_Water:
-		lea	(PalPointers).l,a1
+; PalLoad4_Water:
+PalLoad_Water:
+		lea		(PalPointers).l,a1
 		lsl.w	#3,d0
 		adda.w	d0,a1
 		movea.l	(a1)+,a2	; get palette data address
@@ -1450,9 +1450,9 @@ PalLoad4_Water:
 
 .loop:
 		move.l	(a2)+,(a3)+	; move data to RAM
-		dbf	d7,.loop
+		dbf		d7,.loop
 		rts	
-; End of function PalLoad4_Water
+; End of function PalLoad_Water
 
 ; ===========================================================================
 
@@ -1594,7 +1594,7 @@ GM_Sega:
 		bsr.w	PaletteFadeIn
 	else
 		moveq	#palid_SegaBG,d0
-		bsr.w	PalLoad2						; load Sega logo palette
+		bsr.w	PalLoad						; load Sega logo palette
 	endif
 	; Fade In SEGA Background End
 
@@ -1678,7 +1678,7 @@ GM_Title:
 		clearRAM v_pal_dry_dup,v_pal_dry_dup+16*4*2
 
 		moveq	#palid_Sonic,d0					; load Sonic's palette
-		bsr.w	PalLoad1
+		bsr.w	PalLoad_Fade
 		move.b	#id_CreditsText,(v_sonicteam).w	; load "SONIC TEAM PRESENTS" object
 		jsr		(ExecuteObjects).l
 		jsr		(BuildSprites).l
@@ -1754,9 +1754,9 @@ Tit_LoadText:
 		lea		(Nem_Title).l,a0		; load Title Screen patterns -- Clownacy S2 Level Art Loading
 		bsr.w	NemDec
 		moveq	#palid_GHZ,d0			; load GHZ palette first -- RetroKoH Title Screen Adjustment
-		bsr.w	PalLoad1
+		bsr.w	PalLoad_Fade
 		moveq	#palid_Title,d0			; overwrite first 2 lines w/ title screen palette
-		bsr.w	PalLoad1
+		bsr.w	PalLoad_Fade
 		move.b	#bgm_Title,d0
 		bsr.w	PlaySound_Special		; play title screen music
 		clr.b	(f_debugmode).w			; disable debug mode
@@ -1866,7 +1866,7 @@ Tit_ChkLevSel:
 		beq.w	PlayLevel	; if not, play level
 
 		moveq	#palid_LevelSel,d0
-		bsr.w	PalLoad2	; load level select palette
+		bsr.w	PalLoad	; load level select palette
 
 		clearRAM v_hscrolltablebuffer,v_hscrolltablebuffer_end
 
@@ -2332,7 +2332,7 @@ Level_LoadPal:
 		move.b	#30,(v_air).w
 		enable_ints
 		moveq	#palid_Sonic,d0
-		bsr.w	PalLoad2	; load Sonic's palette
+		bsr.w	PalLoad	; load Sonic's palette
 		cmpi.b	#id_LZ,(v_zone).w ; is level LZ?
 		bne.s	Level_GetBgm	; if not, branch
 
@@ -2342,7 +2342,7 @@ Level_LoadPal:
 		moveq	#palid_SBZ3SonWat,d0 ; palette number $10 (SBZ3)
 
 Level_WaterPal:
-		bsr.w	PalLoad3_Water	; load underwater palette
+		bsr.w	PalLoad_Fade_Water	; load underwater palette
 		tst.b	(v_lastlamp).w
 		beq.s	Level_GetBgm
 		move.b	(v_lamp_wtrstat).w,(f_wtr_state).w
@@ -2382,7 +2382,7 @@ Level_TtlCardLoop:
 
 Level_SkipTtlCard:
 		moveq	#palid_Sonic,d0
-		bsr.w	PalLoad1	; load Sonic's palette
+		bsr.w	PalLoad_Fade	; load Sonic's palette
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformLayers
 		bset	#2,(v_fg_scroll_flags).w
@@ -2479,7 +2479,7 @@ Level_ChkWaterPal:
 		moveq	#palid_SBZ3Water,d0 ; palette $D (SBZ3 underwater)
 
 Level_WtrNotSbz:
-		bsr.w	PalLoad4_Water
+		bsr.w	PalLoad_Water
 
 Level_Delay:
 		move.w	#3,d1
@@ -2782,7 +2782,7 @@ GM_Special:
 		clr.b	(f_wtr_state).w
 		clr.w	(f_restart).w
 		moveq	#palid_Special,d0
-		bsr.w	PalLoad1						; load special stage palette
+		bsr.w	PalLoad_Fade						; load special stage palette
 		jsr		(SS_Load).l						; load SS layout data
 		clr.l	(v_screenposx).w
 		clr.l	(v_screenposy).w
@@ -2937,7 +2937,7 @@ loc_47D4:
 
 		enable_ints
 		moveq	#palid_SSResult,d0
-		bsr.w	PalLoad2	; load results screen palette
+		bsr.w	PalLoad	; load results screen palette
 		moveq	#plcid_Main,d0
 		bsr.w	NewPLC
 		moveq	#plcid_SSResult,d0
@@ -3370,7 +3370,7 @@ GM_Continue:
 		moveq	#10,d1
 		jsr		(ContScrCounter).l		; run countdown	(start from 10)
 		moveq	#palid_Continue,d0
-		bsr.w	PalLoad1				; load continue	screen palette
+		bsr.w	PalLoad_Fade				; load continue	screen palette
 		move.b	#bgm_Continue,d0
 		bsr.w	PlaySound				; play continue	music
 		move.w	#659,(v_demolength).w	; set time delay to 11 seconds
@@ -3495,7 +3495,7 @@ End_LoadData:
 		lea		((v_128x128+$1000)&$FFFFFF).l,a1 ; RAM address to buffer the patterns
 		bsr.w	KosDec
 		moveq	#palid_Sonic,d0
-		bsr.w	PalLoad1	; load Sonic's palette
+		bsr.w	PalLoad_Fade	; load Sonic's palette
 		move.w	#bgm_Ending,d0
 		bsr.w	PlaySound	; play ending sequence music
 		btst	#bitA,(v_jpadhold1).w ; is button A pressed?
@@ -3591,7 +3591,7 @@ End_SlowFade:
 		move.w	#$4000,d2
 		bsr.w	DrawChunks
 		moveq	#palid_Ending,d0
-		bsr.w	PalLoad1						; load ending palette
+		bsr.w	PalLoad_Fade						; load ending palette
 	if SuperMod=1
 		bsr.w	PalLoad_EndFlowers
 	endif
@@ -3683,7 +3683,7 @@ GM_Credits:
 		clearRAM v_pal_dry_dup,v_pal_dry_dup+16*4*2
 
 		moveq	#palid_Sonic,d0
-		bsr.w	PalLoad1						; load Sonic's palette
+		bsr.w	PalLoad_Fade						; load Sonic's palette
 		move.b	#id_CreditsText,(v_credits).w	; load credits object
 		jsr		(ExecuteObjects).l
 		jsr		(BuildSprites).l
@@ -3800,7 +3800,7 @@ TryAgainEnd:
 		clearRAM v_pal_dry_dup,v_pal_dry_dup+16*4*2
 
 		moveq	#palid_Ending,d0
-		bsr.w	PalLoad1	; load ending palette
+		bsr.w	PalLoad_Fade	; load ending palette
 		clr.w	(v_pal_dry_dup+$40).w
 		move.b	#id_EndEggman,(v_endeggman).w ; load Eggman object
 		jsr	(ExecuteObjects).l
@@ -4720,7 +4720,7 @@ LevelDataLoad:
 		moveq	#palid_SBZ2,d0	; use SBZ2/FZ palette
 
 .normalpal:
-		bsr.w	PalLoad1	; load palette (based on d0)
+		bsr.w	PalLoad_Fade	; load palette (based on d0)
 		movea.l	(sp)+,a2
 		addq.w	#4,a2		; read number for 2nd PLC
 		moveq	#0,d0
