@@ -11,7 +11,7 @@ PaletteFadeIn:
 
 PalFadeIn_Alt:				; start position and size are already set
 		moveq	#0,d0
-		lea		(v_pal_dry).w,a0
+		lea		(v_palette).w,a0
 		move.b	(v_pfade_start).w,d0
 		adda.w	d0,a0
 		moveq	#cBlack,d1
@@ -39,8 +39,8 @@ PalFadeIn_Alt:				; start position and size are already set
 FadeIn_FromBlack:
 	; Fade process for standard palette
 		moveq	#0,d0
-		lea		(v_pal_dry).w,a0		; a0 = current palette
-		lea		(v_pal_dry_dup).w,a1	; a1 = target palette to transition to
+		lea		(v_palette).w,a0		; a0 = current palette
+		lea		(v_palette_fading).w,a1	; a1 = target palette to transition to
 		move.b	(v_pfade_start).w,d0
 		adda.w	d0,a0					; a0 = current palette + start position
 		adda.w	d0,a1					; a1 = target palette + start position
@@ -55,8 +55,8 @@ FadeIn_FromBlack:
 
 	; Identical process for water palette
 		moveq	#0,d0
-		lea		(v_pal_water).w,a0
-		lea		(v_pal_water_dup).w,a1
+		lea		(v_palette_water).w,a0
+		lea		(v_palette_water_fading).w,a1
 		move.b	(v_pfade_start).w,d0
 		adda.w	d0,a0
 		adda.w	d0,a1

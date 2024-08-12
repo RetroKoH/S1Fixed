@@ -405,8 +405,8 @@ Shi_Lightning:	; Routine $A
 Lightning_FlashWater:
 		move.b	#$10,obRoutine(a0)		; set to Lightning_Destroy routine
 		andi.b	#mask2ndRmvShield,(v_player+obStatus2nd).w
-		lea		(v_pal_water).w,a1
-		lea		(v_pal_water_dup).w,a2
+		lea		(v_palette_water).w,a1
+		lea		(v_palette_water_fading).w,a2
 		move.w	#$1F,d0
 
 .loop:
@@ -491,8 +491,8 @@ Shi_LightningDestroy: ; Routine $10
 ;		jsr		(DeleteObject).l
 
 .cont:
-		lea		(v_pal_water_dup).w,a1
-		lea		(v_pal_water).w,a2
+		lea		(v_palette_water_fading).w,a1
+		lea		(v_palette_water).w,a2
 		move.w	#$1F,d0
 
 .loop:

@@ -107,17 +107,17 @@ loc_19202:
 		tst.b	obColType(a0)
 		bne.s	locret_19256
 		tst.b	objoff_3E(a0)
-		bne.s	loc_1923A
+		bne.s	BossSpringYard_ShipFlash
 		move.b	#$20,objoff_3E(a0)
 		move.w	#sfx_HitBoss,d0
 		jsr		(PlaySound_Special).w	; play boss damage sound
 
-loc_1923A:
-		lea		(v_pal_dry+$22).w,a1
-		moveq	#0,d0
+BossSpringYard_ShipFlash:
+		lea		(v_palette+$22).w,a1 ; load 2nd palette, 2nd entry
+		moveq	#0,d0		; move 0 (black) to d0
 		tst.w	(a1)
 		bne.s	loc_19248
-		move.w	#cWhite,d0
+		move.w	#cWhite,d0	; move 0EEE (white) to d0
 
 loc_19248:
 		move.w	d0,(a1)

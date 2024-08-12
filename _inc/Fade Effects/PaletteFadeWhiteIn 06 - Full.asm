@@ -9,7 +9,7 @@
 PaletteWhiteIn:
 		move.w	#$3F,(v_pfade_start).w	; start position = 0; size = $40
 		moveq	#0,d0
-		lea		(v_pal_dry).w,a0
+		lea		(v_palette).w,a0
 		move.b	(v_pfade_start).w,d0
 		adda.w	d0,a0
 		move.w	#cWhite,d1
@@ -41,8 +41,8 @@ PaletteWhiteIn:
 
 WhiteIn_FromWhite:
 		moveq	#0,d0
-		lea		(v_pal_dry).w,a0
-		lea		(v_pal_dry_dup).w,a1
+		lea		(v_palette).w,a0
+		lea		(v_palette_fading).w,a1
 		move.b	(v_pfade_start).w,d0
 		adda.w	d0,a0
 		adda.w	d0,a1
@@ -55,8 +55,8 @@ WhiteIn_FromWhite:
 		cmpi.b	#id_LZ,(v_zone).w		; is level Labyrinth?
 		bne.s	.exit					; if not, branch
 		moveq	#0,d0
-		lea		(v_pal_water).w,a0
-		lea		(v_pal_water_dup).w,a1
+		lea		(v_palette_water).w,a0
+		lea		(v_palette_water_fading).w,a1
 		move.b	(v_pfade_start).w,d0
 		adda.w	d0,a0
 		adda.w	d0,a1
