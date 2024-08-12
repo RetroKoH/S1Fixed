@@ -139,7 +139,7 @@ HUDScrolling: = 1
 ; Name: HUD w/ Leading Zeroes
 ; Credit: Mercury
 ; Function: Adds Leading 0's to HUD values (Score, Rings, Lives)
-HUDHasLeadingZeroes: = 1				; if set to 1, leading zeroes appear on HUD
+HUDHasLeadingZeroes: = 0				; if set to 1, leading zeroes appear on HUD
 
 ; Name: HUD Centiseconds (CURRENTLY BREAKS RING COUNT in Labyrinth Zone)
 ; Credit: Mercury

@@ -417,6 +417,7 @@ sfx_BShield:	equ ((ptr_sndD8-SoundIndex)/4)+sfx__First
 sfx_BShieldAtk:	equ ((ptr_sndD9-SoundIndex)/4)+sfx__First
 sfx_LShield:	equ ((ptr_sndDA-SoundIndex)/4)+sfx__First
 sfx_LShieldAtk:	equ ((ptr_sndDB-SoundIndex)/4)+sfx__First
+sfx_DropDash:	equ ((ptr_sndDC-SoundIndex)/4)+sfx__First
 spec__Last:		equ ((ptr_specend-SpecSoundIndex-4)/4)+spec__First
 
 flg__First:		equ $E0

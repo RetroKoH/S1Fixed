@@ -18,7 +18,7 @@ Sonic_ChkDropDash:
 		blt.s	.ret						; if not yet, exit
 		bgt.s	.skipsound					; if yes, and sound has played, skip ahead
 		move.b	#aniID_DropDash,obAnim(a0)	; Set new animation
-		move.w	#sfx_SpinDash,d0
+		move.w	#sfx_DropDash,d0
 		jsr		(PlaySound_Special).w		; play charge sound
 
 .skipsound:
@@ -28,6 +28,7 @@ Sonic_ChkDropDash:
 .reset:
 		move.b	#3,obDoubleJumpFlag(a0)		; disable attempting the Drop Dash
 		clr.b	obDoubleJumpProp(a0)
+		move.b	#aniID_Roll,obAnim(a0)		; reset to rolling animation
 
 .ret:
 		rts
