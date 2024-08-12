@@ -5,40 +5,47 @@
 Size_of_SegaPCM:			equ $6978
 Size_of_DAC_driver_guess:	equ $1760
 
-; VDP addressses
-vdp_data_port:			equ $C00000
-vdp_control_port:		equ $C00004
-vdp_counter:			equ $C00008
+; Clocks
+Master_Clock:    			equ 53693175
+M68000_Clock:    			equ Master_Clock/7
+Z80_Clock:       			equ Master_Clock/15
+FM_Sample_Rate:  			equ M68000_Clock/(6*6*4)
+PSG_Sample_Rate: 			equ Z80_Clock/16
 
-psg_input:				equ $C00011
+; VDP addressses
+vdp_data_port:				equ $C00000
+vdp_control_port:			equ $C00004
+vdp_counter:				equ $C00008
+
+psg_input:					equ $C00011
 
 ; Z80 addresses
-z80_ram:				equ $A00000	; start of Z80 RAM
+z80_ram:					equ $A00000	; start of Z80 RAM
 ; Removed z80 DAC addresses
-z80_ram_end:			equ $A02000	; end of non-reserved Z80 RAM
-z80_version:			equ $A10001
-z80_port_1_data:		equ $A10002
-z80_port_1_control:		equ $A10008
-z80_port_2_control:		equ $A1000A
-z80_expansion_control:	equ $A1000C
-z80_bus_request:		equ $A11100
-z80_reset:				equ $A11200
-ym2612_a0:				equ $A04000
-ym2612_d0:				equ $A04001
-ym2612_a1:				equ $A04002
-ym2612_d1:				equ $A04003
+z80_ram_end:				equ $A02000	; end of non-reserved Z80 RAM
+z80_version:				equ $A10001
+z80_port_1_data:			equ $A10002
+z80_port_1_control:			equ $A10008
+z80_port_2_control:			equ $A1000A
+z80_expansion_control:		equ $A1000C
+z80_bus_request:			equ $A11100
+z80_reset:					equ $A11200
+ym2612_a0:					equ $A04000
+ym2612_d0:					equ $A04001
+ym2612_a1:					equ $A04002
+ym2612_d1:					equ $A04003
 
-sram_port:				equ $A130F1
+sram_port:					equ $A130F1
 
-security_addr:			equ $A14000
+security_addr:				equ $A14000
 
 ; VRAM data
-vram_fg:				equ $C000	; foreground namespace
-vram_bg:				equ $E000	; background namespace
-vram_sprites:			equ $F800	; sprite table
-vram_hscroll:			equ $FC00	; horizontal scroll table
-tile_size:				equ 8*8/2
-plane_size_64x32:		equ 64*32*2
+vram_fg:					equ $C000	; foreground namespace
+vram_bg:					equ $E000	; background namespace
+vram_sprites:				equ $F800	; sprite table
+vram_hscroll:				equ $FC00	; horizontal scroll table
+tile_size:					equ 8*8/2
+plane_size_64x32:			equ 64*32*2
 
 ; Game modes
 id_Sega:		equ ptr_GM_Sega-GameModeArray	; $00
