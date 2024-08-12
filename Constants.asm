@@ -32,38 +32,6 @@ sram_port:				equ $A130F1
 
 security_addr:			equ $A14000
 
-; Sound driver constants
-TrackPlaybackControl:	equ 0		; All tracks
-TrackVoiceControl:		equ 1		; All tracks
-TrackTempoDivider:		equ 2		; All tracks
-TrackDataPointer:		equ 4		; All tracks (4 bytes)
-TrackTranspose:			equ 8		; FM/PSG only (sometimes written to as a word, to include TrackVolume)
-TrackVolume:			equ 9		; FM/PSG only
-TrackAMSFMSPan:			equ $A		; FM/DAC only
-TrackVoiceIndex:		equ $B		; FM/PSG only
-TrackVolEnvIndex:		equ $C		; PSG only
-TrackStackPointer:		equ $D		; All tracks
-TrackDurationTimeout:	equ $E		; All tracks
-TrackSavedDuration:		equ $F		; All tracks
-TrackSavedDAC:			equ $10		; DAC only
-TrackFreq:				equ $10		; FM/PSG only (2 bytes)
-TrackNoteTimeout:		equ $12		; FM/PSG only
-TrackNoteTimeoutMaster:	equ $13		; FM/PSG only
-TrackModulationPtr:		equ $14		; FM/PSG only (4 bytes)
-TrackModulationWait:	equ $18		; FM/PSG only
-TrackModulationSpeed:	equ $19		; FM/PSG only
-TrackModulationDelta:	equ $1A		; FM/PSG only
-TrackModulationSteps:	equ $1B		; FM/PSG only
-TrackModulationVal:		equ $1C		; FM/PSG only (2 bytes)
-TrackDetune:			equ $1E		; FM/PSG only
-TrackPSGNoise:			equ $1F		; PSG only
-TrackFeedbackAlgo:		equ $1F		; FM only
-TrackVoicePtr:			equ $20		; FM SFX only (4 bytes)
-TrackLoopCounters:		equ $24		; All tracks (multiple bytes)
-TrackGoSubStack:		equ TrackSz	; All tracks (multiple bytes. This constant won't get to be used because of an optimisation that just uses TrackSz)
-
-TrackSz:				equ $30
-
 ; VRAM data
 vram_fg:				equ $C000	; foreground namespace
 vram_bg:				equ $E000	; background namespace
