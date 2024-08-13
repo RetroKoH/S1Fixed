@@ -39,26 +39,31 @@ Sonic_ResetOnFloor:
 
 		tst.b	obDoubleJumpFlag(a0)
 		beq.s	.ret
-		btst	#sta2ndBShield,obStatus2nd(a0)	; does Sonic have a Bubble Shield?
+		move.b	obStatus2nd(a0),d0
+		btst	#sta2ndInvinc,d0		; is Sonic invincible OR Super?
+		bne.s	.nobubble				; if yes, don't bubble bounce
+		btst	#sta2ndBShield,d0		; does Sonic have a Bubble Shield?
 		beq.s	.nobubble
 		bra.s	BubbleShield_Bounce
 
 		.nobubble:
 		if DropDashEnabled=1
-				move.b	obStatus2nd(a0),d0
-				andi.b	#mask2ndChkElement,d0		; Check for any elemental shields
-				bne.s	.noability					; if he has, we will exit
-				cmpi.b	#$14,obDoubleJumpProp(a0)	; is it fully revved up?
-				blt.s	.noability					; if not, exit
-				bra.w	DropDash_Release
+			btst	#sta2ndInvinc,d0			; is Sonic invincible OR Super?
+			bne.s	.skipshieldcheck			; if yes, enable Drop Dash
+			andi.b	#mask2ndChkElement,d0		; Check for any elemental shields
+			bne.s	.noability					; if he has, we will exit
+		.skipshieldcheck:
+			cmpi.b	#$14,obDoubleJumpProp(a0)	; is it fully revved up?
+			blt.s	.noability					; if not, exit
+			bra.w	DropDash_Release
 
-			.noability:
-				; This should fix a bug w/ unusual looking Flame Shield Animating (RetroKoH)
-				btst	#sta2ndFShield,obStatus2nd(a0)	; does Sonic have a Flame Shield?
-				beq.s	.noflame
-				move.b	#aniID_FlameShield,(v_shieldobj+obAnim).w	; reset animation upon landing
+		.noability:
+			; This should fix a bug w/ unusual looking Flame Shield Animating (RetroKoH)
+			btst	#sta2ndFShield,obStatus2nd(a0)	; does Sonic have a Flame Shield?
+			beq.s	.noflame
+			move.b	#aniID_FlameShield,(v_shieldobj+obAnim).w	; reset animation upon landing
 
-			.noflame:
+		.noflame:
 		endif
 
 		clr.b	obDoubleJumpFlag(a0)
