@@ -46,13 +46,24 @@ AfterImages_Main:
 		lea		(v_followobject).w,a1			; followerobj2: Pulls from v_followobject
 
 .skip:
+		tst.b	(v_debuguse).w
+		bne.s	.norender						; don't display in Debug Mode
+	if SuperMod=1
+		btst	#sta2ndSuper,(v_player+obStatus2nd).w
+		bne.s	.render							; always render if Super
+	endif
 		tst.b	(v_player+obShoes).w			; check	time remaining
-		beq.s	.exit
+		beq.s	.delete							; don't render if not Super or no shoes
+
+.render:
 		move.l	obMap(a1),obMap(a0)				; Use player's current obMap - added by hitaxas	   
 		move.b	obFrame(a1),obFrame(a0)			; Use player's current obFrame
 		move.b	obRender(a1),obRender(a0)		; Use player's current obRender
 		move.w	obPriority(a1),obPriority(a0)	; Use player's current obPriority
 		jmp		(DisplaySprite).l
+
+.norender:
+		rts
 	
-.exit:
+.delete:
 		jmp		(DeleteObject).l				; Destroy if no speed shoes

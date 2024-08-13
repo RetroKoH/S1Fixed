@@ -199,6 +199,7 @@ Debug_ChgItem:
 		btst	#bitB,(v_jpadpress1).w				; is button B pressed?
 		beq.s	.stayindebug						; if not, branch
 		clr.w	(v_debuguse).w						; deactivate debug mode
+		jsr		(Reset_Sonic_Position_Array).l
 		lea		(v_player).w,a1
 		cmpi.b	#id_Special,(v_gamemode).w			; are you in the special stage?
 		beq.s	.special							; if yes, branch
