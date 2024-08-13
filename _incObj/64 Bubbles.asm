@@ -222,6 +222,12 @@ Bub_BblTypes:	dc.b 0,	1, 0, 0, 0, 0, 1, 0, 0,	0, 0, 1, 0, 1, 0, 0, 1,	0
 
 Bub_ChkSonic:
 		lea		(v_player).w,a1		; moved to the front to call obCtrlLock directly from a1
+
+	if ShieldsMode>1
+		btst	#sta2ndBShield,obStatus2nd(a1)
+		bne.s	.loc_12998
+	endif
+
 		tst.b	obCtrlLock(a1)
 		bmi.s	.loc_12998
 		move.w	obX(a1),d0
