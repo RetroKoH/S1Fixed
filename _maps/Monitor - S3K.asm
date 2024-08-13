@@ -65,17 +65,17 @@ Map_Monitor:	mappingsTable
 
 .fshield:	spriteHeader
 	spritePiece	-8, -$B, 2, 2, $2C, 0, 0, 0, 0	; flame shield monitor
-	spritePiece	-$10, -$11, 4, 4, 0, 0, 0, 1, 0
+	spritePiece	-$10, -$11, 4, 4, 0, 0, 0, 0, 0
 .fshield_End
 
 .bshield:	spriteHeader
 	spritePiece	-8, -$B, 2, 2, $30, 0, 0, 0, 0	; bubble shield monitor
-	spritePiece	-$10, -$11, 4, 4, 0, 0, 0, 1, 0
+	spritePiece	-$10, -$11, 4, 4, 0, 0, 0, 0, 0
 .bshield_End
 
 .lshield:	spriteHeader
 	spritePiece	-8, -$B, 2, 2, $34, 0, 0, 0, 0	; lightning shield monitor
-	spritePiece	-$10, -$11, 4, 4, 0, 0, 0, 1, 0
+	spritePiece	-$10, -$11, 4, 4, 0, 0, 0, 0, 0
 .lshield_End
 
 .s:	spriteHeader
