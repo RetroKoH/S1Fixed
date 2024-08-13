@@ -2227,15 +2227,15 @@ LevSel_LineLoop:
 		moveq	#0,d0
 		move.b	(a1)+,d0		; get character
 		bpl.s	LevSel_CharOk	; branch if valid
-		clr.w	(a6)			; use blank character
-		dbf	d2,LevSel_LineLoop
+		move.w	#0,(a6)			; use blank character
+		dbf		d2,LevSel_LineLoop
 		rts	
 
 
 LevSel_CharOk:
 		add.w	d3,d0		; combine char with VRAM setting
 		move.w	d0,(a6)		; send to VRAM
-		dbf	d2,LevSel_LineLoop
+		dbf		d2,LevSel_LineLoop
 		rts	
 ; End of function LevSel_ChgLine
 

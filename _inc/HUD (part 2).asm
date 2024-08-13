@@ -138,7 +138,7 @@ Hud_ClrBonus:
 		moveq	#$F,d5
 
 Hud_ClrBonusLoop:
-		clr.l	(a6)
+		move.l	#0,(a6)
 		dbf		d5,Hud_ClrBonusLoop
 
 		bra.s	loc_1CA5A
@@ -155,6 +155,7 @@ Hud_Lives:
 		locVRAM	(ArtTile_Lives_Counter+9)*tile_size,d0	; set VRAM address
 		moveq	#0,d1
 		move.b	(v_lives).w,d1							; load number of lives
+
 		lea		Hud_10(pc),a2							; Optimized from (Hud_10).l
 		moveq	#1,d6
 		moveq	#0,d4
@@ -209,7 +210,7 @@ Hud_ClrLives:
 		moveq	#7,d5
 
 Hud_ClrLivesLoop:
-		clr.l	(a6)
+		move.l	#0,(a6)
 		dbf		d5,Hud_ClrLivesLoop
 		bra.s	loc_1CABC
 ; End of function Hud_Lives

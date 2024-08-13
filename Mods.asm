@@ -144,7 +144,7 @@ HUDHasLeadingZeroes: = 0				; if set to 1, leading zeroes appear on HUD
 ; Name: HUD Centiseconds (CURRENTLY BREAKS RING COUNT in Labyrinth Zone)
 ; Credit: Mercury
 ; Function: Adds Sonic CD-style centiseconds to the HUD
-HUDCentiseconds: = 0
+HUDCentiseconds: = 1
 
 ; ----- SPECIAL STAGES -----------------------------------------------------------
 
