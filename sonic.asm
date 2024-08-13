@@ -3389,7 +3389,6 @@ GM_Continue:
 		move.b	#id_ContSonic,(v_player).w					; load Sonic object
 		move.b	#id_ContScrItem,(v_continuetext).w			; load continue screen objects
 		move.b	#id_ContScrItem,(v_continuelight).w
-		move.w	#priority3,(v_continuelight+obPriority).w	; RetroKoH S3K+ Priority Manager
 		move.b	#4,(v_continuelight+obFrame).w
 		move.b	#id_ContScrItem,(v_continueicon).w
 		move.b	#4,(v_continueicon+obRoutine).w
