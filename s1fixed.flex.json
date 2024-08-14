@@ -1,7 +1,7 @@
 {
     "Flex": 2,
     "name": "S1 Fixed",
-    "node": "7cbb059e-af54-4b01-ab3c-8470067f8968",
+    "node": "120b0485-8dd5-4777-8388-3c696959c3be",
     "objects": [
         {
             "name": "Common",
@@ -2998,6 +2998,38 @@
             "isDirectory": true,
             "expanded": false,
             "uuid": "6c6337c4-6aa9-448b-b085-fe2f6400cd25"
+        },
+        {
+            "name": "Misc",
+            "children": [
+                {
+                    "format": "Sonic 2.js",
+                    "name": "PSB",
+                    "palettes": [
+                        {
+                            "path": "palette\\Title Screen.bin",
+                            "length": 2
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Title Screen Foreground.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\Press Start and TM.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "120b0485-8dd5-4777-8388-3c696959c3be"
+                }
+            ],
+            "isDirectory": true,
+            "expanded": false
         }
     ]
 }

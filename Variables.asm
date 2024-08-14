@@ -413,7 +413,7 @@ v_timemin = v_time+1				; time - minutes
 v_timesec = v_time+2				; time - seconds
 v_timecent = v_time+3				; time - centiseconds
 v_score:			ds.l	1		; score
-			ds.b	5		; unused
+				ds.b	5		; unused
 v_centstep:			ds.b	1		; value used to increment centiseconds
 v_lastlamp:			ds.b	2		; number of the last lamppost you hit
 v_lamp_xpos:		ds.w	1		; x-axis for Sonic to respawn at lamppost
@@ -421,7 +421,7 @@ v_lamp_ypos:		ds.w	1		; y-axis for Sonic to respawn at lamppost
 v_lamp_rings:		ds.w	1		; rings stored at lamppost
 v_lamp_time:		ds.l	1		; time stored at lamppost
 v_lamp_dle:			ds.b	1		; dynamic level event routine counter at lamppost
-			ds.b	1		; unused
+				ds.b	1		; unused
 v_lamp_limitbtm:	ds.w	1		; level bottom boundary at lamppost
 v_lamp_scrx:		ds.w	1		; x-axis screen at lamppost
 v_lamp_scry:		ds.w	1		; y-axis screen at lamppost
@@ -435,9 +435,10 @@ v_lamp_wtrpos:		ds.w	1		; water position at lamppost
 v_lamp_wtrrout:		ds.b	1		; water routine at lamppost
 v_lamp_wtrstat:		ds.b	1		; water state at lamppost
 v_lamp_lives:		ds.b	1		; lives counter at lamppost
+				ds.b	1		; unused (Placed here to set v_emeralds at an even address
 v_emeralds:			ds.b	1		; number of chaos emeralds
 v_emldlist:			ds.b	1		; emerald bitfield
-				ds.b	7		; unused
+				ds.b	6		; unused
 v_oscillate:		ds.w	1		; oscillation bitfield
 v_timingandscreenvariables:
 v_timingvariables:	ds.b	$40		; values which oscillate - for swinging platforms, et al
@@ -499,12 +500,8 @@ f_debugcheat:		ds.b	1		; debug mode cheat flag
 f_creditscheat:		ds.b	1		; hidden credits & press start cheat flag
 v_title_dcount:		ds.w	1		; number of times the d-pad is pressed on title screen
 v_title_ccount:		ds.w	1		; number of times C is pressed on title screen
-			ds.b	2		; unused
-v_unused2:		ds.w	1		; unused
-v_unused3:		ds.b	1		; unused
-v_unused4:		ds.b	1		; unused
-v_unused5:		ds.b	1		; unused
-v_unused6:		ds.b	1		; unused
+f_levsel_active:	ds.b	1	
+			ds.b	7		; unused
 f_demo:			ds.w	1		; demo mode flag (0 = no; 1 = yes; $8001 = ending)
 v_demonum:		ds.w	1		; demo level number (not the same as the level number)
 v_creditsnum:		ds.w	1		; credits index number

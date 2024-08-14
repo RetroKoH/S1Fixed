@@ -40,6 +40,15 @@ SuperMod: = 1
 
 ; ----- GAMEPLAY TWEAKS ----------------------------------------------------------
 
+; Name: Save Game Functionality
+; Credit: RetroKoH, s1Disasm Team
+; Function: Allows the player to continue from the previous save point (level start, checkpoint)
+EnableSRAM:	  = 1	; change to 1 to enable SRAM
+BackupSRAM:	  = 1
+AddressSRAM:  = 3	; 0 = odd+even; 2 = even only; 3 = odd only
+; Below is the variable for the actual mod. SRAM must be enabled to use this mod.
+SaveProgressMod: = EnableSRAM*1
+
 ; Name: Disable Speed Caps
 ; Credit: Mercury (Ground/Air), RetroKoH (Applied to Devon's Rolling Speed Cap Fix)
 ; Function: Toggles the speed caps (The original game has all 3 caps active by default)

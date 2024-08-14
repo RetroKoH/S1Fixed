@@ -39,6 +39,17 @@ sram_port:					equ $A130F1
 
 security_addr:				equ $A14000
 
+; SRAM data (SaveProgressMod)
+sram_init					equ 0
+sram_zone					equ 2
+sram_act					equ 4
+sram_lives					equ 6
+sram_score					equ 8
+sram_scorelife				equ $10
+sram_lastspecial			equ $18
+sram_emeralds				equ $1A
+sram_continues				equ $1E
+
 ; VRAM data
 vram_fg:					equ $C000	; foreground namespace
 vram_bg:					equ $E000	; background namespace

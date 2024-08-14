@@ -11,12 +11,7 @@
 
 	cpu 68000
 
-EnableSRAM	  = 0	; change to 1 to enable SRAM
-BackupSRAM	  = 1
-AddressSRAM	  = 3	; 0 = odd+even; 2 = even only; 3 = odd only
-
 ZoneCount	  = 6	; discrete zones are: GHZ, MZ, SYZ, LZ, SLZ, and SBZ
-
 zeroOffsetOptimization = 1	; if 1, makes a handful of zero-offset instructions smaller
 
 	include "Mods.asm"			; S1Fixed Mod Variables (Sorted by Context)
@@ -112,11 +107,13 @@ RomEndLoc:
 		dc.l $FFFFFF		; End address of RAM
 		if EnableSRAM=1
 		dc.b $52, $41, $A0+(BackupSRAM<<6)+(AddressSRAM<<3), $20 ; SRAM support
+		dc.l $00200000		; SRAM start ($200001)
+		dc.l $00200200		; SRAM end ($20xxxx)
 		else
 		dc.l $20202020
-		endif
 		dc.l $20202020		; SRAM start ($200001)
 		dc.l $20202020		; SRAM end ($20xxxx)
+		endif
 		dc.b "                                                    " ; Notes (unused, anything can be put in this space, but it has to be 52 bytes.)
 		dc.b "JUE             " ; Region (Country code)
 EndOfHeader:
@@ -366,6 +363,22 @@ GameInit:
 			illegal
 		endif
 .SampleTableOk:
+
+	if SaveProgressMod=1
+InitSRAM:
+		move.b  #1,(sram_port).l	; Enable SRAM writing
+		lea 	($200001).l,a0		; Load SRAM memory into a0 (Change the last digit to 0 if you're using even SRAM)
+		movep.l 0(a0),d0			; Get the existing string at the start of SRAM
+		move.l  #"SRAM",d1			; Write the string "SRAM" to d1
+		cmp.l   d0,d1				; Was it already in SRAM?
+		beq.s   .skip				; If so, skip
+		movep.l d1,0(a0)			; Write string "SRAM"
+		; Here is where you initialize values like lives or level. If you're using 8 bit values, you can only use every other byte.
+		; Example - 8(a0) => $A(a0)
+
+	.skip:
+        clr.b    (sram_port).l		; Disable SRAM writing
+	endif
 
 MainGameLoop:
 		move.b	(v_gamemode).w,d0			; load Game Mode
@@ -1668,6 +1681,10 @@ GM_Title:
 	else
 		clr.b	(f_levelstarted).w			; clear flag -- RetroKoH S2 Rings Manager
 	endif
+	
+	if SaveProgressMod=1
+		move.b	#1,(f_levsel_active).w
+	endif
 
 		clearRAM v_ringpos,v_ringspace_end	; clear ring RAM -- RetroKoH S3K Rings Manager
 		clearRAM v_objspace					; clear object RAM
@@ -1761,27 +1778,27 @@ Tit_LoadText:
 	endif
 
 		locVRAM	ArtTile_Level*tile_size
-		lea		(Nem_Title).l,a0		; load Title Screen patterns -- Clownacy S2 Level Art Loading
+		lea		(Nem_Title).l,a0						; load Title Screen patterns -- Clownacy S2 Level Art Loading
 		bsr.w	NemDec
-		moveq	#palid_GHZ,d0			; load GHZ palette first -- RetroKoH Title Screen Adjustment
+		moveq	#palid_GHZ,d0							; load GHZ palette first -- RetroKoH Title Screen Adjustment
 		bsr.w	PalLoad_Fade
-		moveq	#palid_Title,d0			; overwrite first 2 lines w/ title screen palette
+		moveq	#palid_Title,d0							; overwrite first 2 lines w/ title screen palette
 		bsr.w	PalLoad_Fade
 		move.b	#bgm_Title,d0
-		bsr.w	PlaySound_Special		; play title screen music
-		clr.b	(f_debugmode).w			; disable debug mode
-		move.w	#$178,(v_demolength).w	; run title screen for $178 frames
+		bsr.w	PlaySound_Special						; play title screen music
+		clr.b	(f_debugmode).w							; disable debug mode
+		move.w	#$178,(v_demolength).w					; run title screen for $178 frames
 
 		clearRAM v_sonicteam,v_sonicteam+object_size	; PRESS START BUTTON Fix (Quickman)
 		move.b	#id_TitleSonic,(v_titlesonic).w			; load big Sonic object
 		move.b	#id_PSBTM,(v_pressstart).w				; load "PRESS START BUTTON" object
 
-		tst.b   (v_megadrive).w					; is console Japanese?
-		bpl.s   .isjap							; if yes, branch
-		move.b	#id_PSBTM,(v_titletm).w			; load "TM" object
+		tst.b   (v_megadrive).w							; is console Japanese?
+		bpl.s   .isjap									; if yes, branch
+		move.b	#id_PSBTM,(v_titletm).w					; load "TM" object
 		move.b	#3,(v_titletm+obFrame).w
 .isjap:
-		move.b	#id_PSBTM,(v_ttlsonichide).w	; load object which hides part of Sonic
+		move.b	#id_PSBTM,(v_ttlsonichide).w			; load object which hides part of Sonic
 		move.b	#2,(v_ttlsonichide+obFrame).w
 		jsr		(ExecuteObjects).l
 		bsr.w	DeformLayers
@@ -1795,106 +1812,15 @@ Tit_LoadText:
 		move.w	d0,(vdp_control_port).l
 		bsr.w	PaletteFadeIn
 
-Tit_MainLoop:
-		move.b	#4,(v_vbla_routine).w
-		bsr.w	WaitForVBla
-		jsr		(ExecuteObjects).l
-		bsr.w	DeformLayers
-		jsr		(BuildSprites).l
-		bsr.w	PalCycle_Title
-		bsr.w	RunPLC
-		move.w	(v_player+obX).w,d0
-		addq.w	#2,d0
-		move.w	d0,(v_player+obX).w ; move Sonic to the right
-		cmpi.w	#$1C00,d0	; has Sonic object passed $1C00 on x-axis?
-		blo.s	Tit_ChkRegion	; if not, branch
-
-		move.b	#id_Sega,(v_gamemode).w ; go to Sega screen
-		rts	
-; ===========================================================================
-
-Tit_ChkRegion:
-		tst.b	(v_megadrive).w	; check	if the machine is US or	Japanese
-		bpl.s	Tit_RegionJap	; if Japanese, branch
-
-		lea	(LevSelCode_US).l,a0 ; load US code
-		bra.s	Tit_EnterCheat
-
-Tit_RegionJap:
-		lea	(LevSelCode_J).l,a0 ; load J code
-
-Tit_EnterCheat:
-		move.w	(v_title_dcount).w,d0
-		adda.w	d0,a0
-		move.b	(v_jpadpress1).w,d0 ; get button press
-		andi.b	#btnDir,d0	; read only UDLR buttons
-		cmp.b	(a0),d0		; does button press match the cheat code?
-		bne.s	Tit_ResetCheat	; if not, branch
-		addq.w	#1,(v_title_dcount).w ; next button press
-		tst.b	d0
-		bne.s	Tit_CountC
-		lea	(f_levselcheat).w,a0
-		move.w	(v_title_ccount).w,d1
-		lsr.w	#1,d1
-		andi.w	#3,d1
-		beq.s	Tit_PlayRing
-		tst.b	(v_megadrive).w
-		bpl.s	Tit_PlayRing
-		moveq	#1,d1
-		move.b	d1,1(a0,d1.w)	; cheat depends on how many times C is pressed
-
-Tit_PlayRing:
-		move.b	#1,(a0,d1.w)	; activate cheat
-		move.b	#sfx_Ring,d0
-		bsr.w	PlaySound_Special	; play ring sound when code is entered
-		bra.s	Tit_CountC
-; ===========================================================================
-
-Tit_ResetCheat:
-		tst.b	d0
-		beq.s	Tit_CountC
-		cmpi.w	#9,(v_title_dcount).w
-		beq.s	Tit_CountC
-		clr.w	(v_title_dcount).w ; reset UDLR counter
-
-Tit_CountC:
-		move.b	(v_jpadpress1).w,d0
-		andi.b	#btnC,d0	; is C button pressed?
-		beq.s	loc_3230	; if not, branch
-		addq.w	#1,(v_title_ccount).w ; increment C counter
-
-loc_3230:
-		tst.w	(v_demolength).w
-		beq.w	GotoDemo
-		andi.b	#btnStart,(v_jpadpress1).w ; check if Start is pressed
-		beq.w	Tit_MainLoop	; if not, branch
-
-Tit_ChkLevSel:
-		tst.b	(f_levselcheat).w ; check if level select code is on
-		beq.w	PlayLevel	; if not, play level
-		btst	#bitA,(v_jpadhold1).w ; check if A is pressed
-		beq.w	PlayLevel	; if not, play level
-
-		moveq	#palid_LevelSel,d0
-		bsr.w	PalLoad	; load level select palette
-
-		clearRAM v_hscrolltablebuffer
-
-		move.l	d0,(v_scrposy_vdp).w
-		disable_ints
-		lea		(vdp_data_port).l,a6
-		locVRAM	vram_bg
-		move.w	#plane_size_64x32/4-1,d1
-
-Tit_ClrScroll2:
-		move.l	d0,(a6)
-		dbf		d1,Tit_ClrScroll2 ; clear scroll data (in VRAM)
-
-		bsr.w	LevSelTextLoad
+		include	"_inc/Title Screen Loop.asm"
 
 ; ---------------------------------------------------------------------------
 ; Level	Select
 ; ---------------------------------------------------------------------------
+
+	if SaveProgressMod=1
+		move.b	#1,(f_levsel_active).w
+	endif
 
 LevelSelect:
 		move.b	#4,(v_vbla_routine).w
@@ -1923,7 +1849,7 @@ LevSel_NoCheat:
 		cmpi.w	#bgm__Last+1,d0	; is sound $80-$93 being played?
 		blo.s	LevSel_PlaySnd	; if yes, branch
 		cmpi.w	#sfx__First,d0	; is sound $94-$9F being played?
-		blo.s	LevelSelect	; if yes, branch
+		blo.s	LevelSelect		; if yes, branch
 
 LevSel_PlaySnd:
 		bsr.w	PlaySound_Special
@@ -1931,8 +1857,8 @@ LevSel_PlaySnd:
 ; ===========================================================================
 
 LevSel_Ending:
-		move.b	#id_Ending,(v_gamemode).w ; set screen mode to $18 (Ending)
-		move.w	#(id_EndZ<<8),(v_zone).w ; set level to 0600 (Ending)
+		move.b	#id_Ending,(v_gamemode).w	; set screen mode to $18 (Ending)
+		move.w	#(id_EndZ<<8),(v_zone).w	; set level to 0600 (Ending)
 		rts	
 ; ===========================================================================
 
@@ -1942,42 +1868,6 @@ LevSel_Credits:
 		bsr.w	PlaySound_Special ; play credits music
 		clr.w	(v_creditsnum).w
 		rts	
-; ===========================================================================
-
-LevSel_Level:
-		add.w	d0,d0
-		move.w	LevSel_Ptrs(pc,d0.w),d0		; load level number
-		bmi.w	LevelSelect
-		cmpi.w	#id_SS*$100,d0				; check	if level is 0700 (Special Stage)
-		bne.s	LevSel_NotSpecial			; if not, branch
-		move.b	#id_Special,(v_gamemode).w	; set screen mode to $10 (Special Stage)
-		bsr.s	ResetLevel					; Reset level variables
-		clr.w	(v_zone).w					; also clear current zone (start at GHZ 1 after the Special Stage)
-		rts	
-; ===========================================================================
-
-LevSel_NotSpecial:
-		andi.w	#$3FFF,d0
-		move.w	d0,(v_zone).w	; set level number
-
-PlayLevel:
-		move.b	#id_Level,(v_gamemode).w	; set screen mode to $0C (level)
-		bsr.s	ResetLevel					; Reset level variables
-		move.b	#bgm_Fade,d0
-		bra.w	PlaySound_Special			; fade out music	
-; ===========================================================================
-
-ResetLevel:
-		move.b	#3,(v_lives).w				; set lives to 3
-		clr.w	(v_rings).w					; clear rings
-		clr.l	(v_time).w					; clear time
-		clr.l	(v_score).w					; clear score
-		clr.b	(v_lastspecial).w			; clear special stage number
-		clr.b	(v_emeralds).w				; clear emerald count
-		clr.b	(v_emldlist).w				; clear emerald array
-		clr.b	(v_continues).w				; clear continues
-		move.l	#5000,(v_scorelife).w		; extra life is awarded at 50000 points
-		rts
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Level	select - level pointers
@@ -2004,15 +1894,108 @@ LevSel_Ptrs:
 		dc.b id_LZ, 3
 		dc.b id_SBZ, 2
 		dc.b id_SS, 0		; Special Stage
-		dc.w $8000		; Sound Test
-		even
-; ---------------------------------------------------------------------------
-; Level	select code
-; ---------------------------------------------------------------------------
-LevSelCode_J:
-LevSelCode_US:	dc.b btnUp,btnDn,btnL,btnR,0,$FF
+		dc.w $8000			; Sound Test
 		even
 ; ===========================================================================
+
+LevSel_Level:
+		add.w	d0,d0
+		move.w	LevSel_Ptrs(pc,d0.w),d0		; load level number
+		bmi.w	LevelSelect
+		cmpi.w	#id_SS*$100,d0				; check	if level is 0700 (Special Stage)
+		bne.s	LevSel_NotSpecial			; if not, branch
+		move.b	#id_Special,(v_gamemode).w	; set screen mode to $10 (Special Stage)
+		bsr.s	ResetLevel					; Reset level variables
+		clr.w	(v_zone).w					; also clear current zone (start at GHZ 1 after the Special Stage)
+		rts	
+; ===========================================================================
+
+LevSel_NotSpecial:
+		andi.w	#$3FFF,d0
+		move.w	d0,(v_zone).w				; set level number
+
+PlayLevel:
+		move.b	#id_Level,(v_gamemode).w	; set screen mode to $0C (level)
+		bsr.s	ResetLevel					; Reset level variables
+
+	if SaveProgressMod=1
+		tst.b	(f_levsel_active).w
+		bne.s	.nosaving
+
+		move.b	#1,(sram_port).l			; enable SRAM (required)
+		lea		($200009).l,a1				; base of SRAM + 9 (01-07 for init SRAM)
+
+		moveq	#0,d0
+	; reset stored values (cannot do directly)
+		move.b	d0,sram_init(a1) 		; init new game
+		movep.w	d0,sram_zone(a1)		; clear saved zone and act
+		move.b	(v_lives).w,d0
+		move.b	d0,sram_lives(a1)		; reset saved lives count
+		movep.l	d0,sram_score(a1)		; clear saved score
+		move.l	(v_scorelife).w,d0
+		movep.l	d0,sram_scorelife(a1)	; reset saved extra life target score
+		move.b	d0,sram_lastspecial(a1)	; clear saved special stage number
+		movep.w	d0,sram_emeralds(a1)	; clear saved emerald count and bitfield
+		move.b	d0,sram_continues(a1)	; clear saved continues
+	
+		clr.b	(sram_port).l			; disable SRAM (required)
+
+	.nosaving:
+	endif
+
+		move.b	#bgm_Fade,d0
+		bra.w	PlaySound_Special		; fade out music	
+; ===========================================================================
+
+ResetLevel:
+		move.b	#3,(v_lives).w			; set lives to 3
+		clr.w	(v_rings).w				; clear rings
+		clr.l	(v_time).w				; clear time
+		clr.l	(v_score).w				; clear score
+		clr.b	(v_lastspecial).w		; clear special stage number
+		clr.b	(v_emeralds).w			; clear emerald count
+		clr.b	(v_emldlist).w			; clear emerald array
+		clr.b	(v_continues).w			; clear continues
+		move.l	#5000,(v_scorelife).w	; extra life is awarded at 50000 points
+		rts
+; ===========================================================================
+
+	if SaveProgressMod=1
+PlayLevel_Load:
+		move.b	#1,(sram_port).l			; enable SRAM (required)
+		lea		($200009).l,a1				; base of SRAM + 9 (01-07 for init SRAM)
+		move.b	sram_init(a1),d0	
+		clr.b	(sram_port).l				; disable SRAM (required)
+		
+		cmpi.b	#$FF,d0
+		beq.w	PlayLevel					; if no save game exists, start a new one
+		
+		move.b	#1,(sram_port).l			; enable SRAM (required)
+		movep.w	sram_zone(a1),d0
+		move.w	d0,(v_zone).w				; load saved zone and act
+		move.b	sram_lives(a1),d0
+		move.b	d0,(v_lives).w				; load saved lives count
+		movep.l	sram_score(a1),d0
+		move.l	d0,(v_score).w				; load score
+		movep.l	sram_scorelife(a1),d0
+		move.l	d0,(v_scorelife).w			; load extra life target score
+		move.b	sram_lastspecial(a1),d0
+		move.b	d0,(v_lastspecial).w		; load special stage number
+		movep.w	sram_emeralds(a1),d0
+		move.w	d0,(v_emeralds).w			; load emerald count and bitfield
+		move.b	sram_continues(a1),d0
+		move.b	d0,(v_continues).w			; load continues
+		
+		clr.b	(sram_port).l				; disable SRAM (required)
+
+	; everything else can be reset like normal
+		clr.w	(v_rings).w					; clear rings
+		clr.l	(v_time).w					; clear time
+		
+		move.b	#id_Level,(v_gamemode).w	; set screen mode to $0C (level)
+		move.b	#bgm_Fade,d0
+		bra.w	PlaySound_Special			; fade out music
+	endif
 
 ; ---------------------------------------------------------------------------
 ; Demo mode
@@ -2265,17 +2248,44 @@ MusicList:
 ; ---------------------------------------------------------------------------
 
 GM_Level:
-		bset	#7,(v_gamemode).w ; add $80 to screen mode (for pre level sequence)
+		bset	#7,(v_gamemode).w			; add $80 to screen mode (for pre level sequence)
 		tst.w	(f_demo).w
 		bmi.s	Level_NoMusicFade
 		move.b	#bgm_Fade,d0
-		bsr.w	PlaySound_Special ; fade out music
+		bsr.w	PlaySound_Special			; fade out music
 
 Level_NoMusicFade:
+	if SaveProgressMod=1
+		cmpi.b	#$8C,(v_gamemode).w			; is game mode = $0C (standard level)?
+		bne.s	.noSRAM						; if not, branch
+		tst.b	(f_levsel_active).w
+		bne.s	.noSRAM
+		move.b	#1,(sram_port).l			; enable SRAM (required)
+		lea		($200009).l,a1				; base of usable SRAM + 1
+		move.w	(v_zone).w,d0				; move zone and act number to d0 (we can't do it directly)
+		movep.w	d0,sram_zone(a1)			; save zone and act to SRAM	
+		move.b	(v_lives).w,d0
+		move.b	d0,sram_lives(a1)
+		move.l	(v_score).w,d0
+		movep.l	d0,sram_score(a1)
+		move.l	(v_scorelife).w,d0
+		movep.l	d0,sram_scorelife(a1)
+		move.b	(v_lastspecial).w,d0
+		move.b	d0,sram_lastspecial(a1)
+		move.w	(v_emeralds).w,d0
+		movep.w	d0,sram_emeralds(a1)
+		move.b	(v_continues).w,d0
+		move.b	d0,sram_continues(a1)
+
+		clr.b	(sram_port).l				; disable SRAM (required)
+
+	.noSRAM:
+	endif
+
 		bsr.w	ClearPLC
 		bsr.w	PaletteFadeOut
-		tst.w	(f_demo).w	; is an ending sequence demo running?
-		bmi.s	Level_ClrRam	; if yes, branch
+		tst.w	(f_demo).w					; is an ending sequence demo running?
+		bmi.s	Level_ClrRam				; if yes, branch
 		disable_ints
 		locVRAM	ArtTile_Title_Card*tile_size
 		
@@ -7330,8 +7340,13 @@ Eni_Title:	binclude	"tilemaps\Title Screen.bin" ; title screen foreground (mappi
 	endif	;Chunks In ROM
 
 
-Nem_TitleFg:	binclude	"artnem/Title Screen Foreground.nem"
+	if SaveProgressMod=1
+Nem_TitleFg:	binclude	"artnem/Title Screen Foreground (Menu).nem"
 		even
+	else
+Nem_TitleFg:	binclude	"artnem/Title Screen Foreground.nem"
+	endif
+
 Nem_TitleSonic:	binclude	"artnem/Title Screen Sonic.nem"
 		even
 Nem_TitleTM:	binclude	"artnem/Title Screen TM.nem"
@@ -7946,7 +7961,12 @@ Map_RingBIN:
 		include	"_maps/Monitor.asm"
 	endif
 
+	if SaveProgressMod=1
+		include	"_maps/Press Start and TM (Menu).asm"
+	else
 		include	"_maps/Press Start and TM.asm"
+	endif
+
 		include	"_maps/Title Screen Sonic.asm"
 		include	"_maps/Chopper.asm"
 		include	"_maps/Jaws.asm"
