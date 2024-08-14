@@ -7335,7 +7335,7 @@ Eni_SegaLogo:	binclude	"tilemaps/Sega Logo.eni" ; large Sega logo (mappings)
 Eni_Title:	binclude	"tilemaps_u\Title Screen.bin" ; title screen foreground (mappings)
 		even
 	else
-Eni_Title:	binclude	"tilemaps\Title Screen.bin" ; title screen foreground (mappings)
+Eni_Title:	binclude	"tilemaps\Title Screen.eni" ; title screen foreground (mappings)
 		even
 	endif	;Chunks In ROM
 
