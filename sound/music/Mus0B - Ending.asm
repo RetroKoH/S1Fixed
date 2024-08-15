@@ -1,24 +1,24 @@
-Mus8B_Ending_Header:
+Mus0B_Ending_Header:
 	smpsHeaderStartSong 1
-	smpsHeaderVoice     Mus8B_Ending_Voices
+	smpsHeaderVoice     Mus0B_Ending_Voices
 	smpsHeaderChan      $06, $03
 	smpsHeaderTempo     $01, $05
 
-	smpsHeaderDAC       Mus8B_Ending_DAC
-	smpsHeaderFM        Mus8B_Ending_FM1,	$F4, $0E
-	smpsHeaderFM        Mus8B_Ending_FM2,	$F4, $09
-	smpsHeaderFM        Mus8B_Ending_FM3,	$F4, $0D
-	smpsHeaderFM        Mus8B_Ending_FM4,	$F4, $0D
-	smpsHeaderFM        Mus8B_Ending_FM5,	$F4, $17
-	smpsHeaderPSG       Mus8B_Ending_PSG1,	$D0, $05, $00, fTone_05
-	smpsHeaderPSG       Mus8B_Ending_PSG2,	$DC, $05, $00, fTone_05
-	smpsHeaderPSG       Mus8B_Ending_PSG3,	$00, $03, $00, fTone_04
+	smpsHeaderDAC       Mus0B_Ending_DAC
+	smpsHeaderFM        Mus0B_Ending_FM1,	$F4, $0E
+	smpsHeaderFM        Mus0B_Ending_FM2,	$F4, $09
+	smpsHeaderFM        Mus0B_Ending_FM3,	$F4, $0D
+	smpsHeaderFM        Mus0B_Ending_FM4,	$F4, $0D
+	smpsHeaderFM        Mus0B_Ending_FM5,	$F4, $17
+	smpsHeaderPSG       Mus0B_Ending_PSG1,	$D0, $05, $00, fTone_05
+	smpsHeaderPSG       Mus0B_Ending_PSG2,	$DC, $05, $00, fTone_05
+	smpsHeaderPSG       Mus0B_Ending_PSG3,	$00, $03, $00, fTone_04
 
 ; FM1 Data
-Mus8B_Ending_FM1:
+Mus0B_Ending_FM1:
 	smpsSetvoice        $03
 	dc.b	nRst, $60
-	smpsCall            Mus8B_Ending_Call00
+	smpsCall            Mus0B_Ending_Call00
 	dc.b	nRst, $60
 	smpsAlterVol        $FB
 	dc.b	nRst, $0C, nE6, $06, nRst, nB6, nE6, $06, nRst, $0C, nE6, $06
@@ -30,24 +30,24 @@ Mus8B_Ending_FM1:
 	dc.b	nA2, $6C
 	smpsStop
 
-Mus8B_Ending_Call00:
+Mus0B_Ending_Call00:
 	dc.b	nRst, $0C, nCs6, $15, nRst, $03, nCs6, $06, nRst, nD6, $0F, nRst
 	dc.b	$03, nB5, $18, nRst, $06, nCs6, nRst, nCs6, nRst, nCs6, nRst, nA5
 	dc.b	nRst, nG5, $0F, nRst, $03, nB5, $18, nRst, $06
-	smpsLoop            $00, $02, Mus8B_Ending_Call00
+	smpsLoop            $00, $02, Mus0B_Ending_Call00
 	smpsReturn
 
 ; FM2 Data
-Mus8B_Ending_FM2:
+Mus0B_Ending_FM2:
 	smpsSetvoice        $01
 	smpsNop             $01
 	dc.b	nRst, $60
 
-Mus8B_Ending_Loop03:
+Mus0B_Ending_Loop03:
 	dc.b	nA3, $06, nRst, nA3, nRst, nE3, nRst, nE3, nRst, nG3, $12, nFs3
 	dc.b	$0C, nG3, $06, nFs3, $0C, nA3, $06, nRst, nA3, nRst, nE3, nRst
 	dc.b	nE3, nRst, nD4, $12, nCs4, $0C, nD4, $06, nCs4, $0C
-	smpsLoop            $00, $02, Mus8B_Ending_Loop03
+	smpsLoop            $00, $02, Mus0B_Ending_Loop03
 	dc.b	nG3, $06, nRst, nE3, nRst, nF3, nRst, nFs3, nRst, nG3, nG3, nE3
 	dc.b	nRst, nF3, nRst, nG3, nRst, nE3, nRst, nE3, nRst, nAb3, nRst, nAb3
 	dc.b	nRst, nB3, nRst, nB3, nRst, nD4, nRst, nD4, nRst, nRst, $0C, nA2
@@ -58,15 +58,15 @@ Mus8B_Ending_Loop03:
 	smpsStop
 
 ; FM3 Data
-Mus8B_Ending_FM3:
+Mus0B_Ending_FM3:
 	smpsSetvoice        $02
 	dc.b	nRst, $60
 
-Mus8B_Ending_Loop02:
+Mus0B_Ending_Loop02:
 	dc.b	nE6, $06, nRst, nE6, nRst, nCs6, nRst, nCs6, nRst, nD6, $12, nD6
 	dc.b	$1E, nE6, $06, nRst, nE6, nRst, nCs6, nRst, nCs6, nRst, nG6, $12
 	dc.b	nG6, $1E
-	smpsLoop            $00, $02, Mus8B_Ending_Loop02
+	smpsLoop            $00, $02, Mus0B_Ending_Loop02
 	dc.b	nRst, $0C, nD6, $12, nRst, $06, nD6, nRst, nCs6, $12, nD6, nCs6
 	dc.b	$0C, nAb5, $18, nB5, nD6, nAb6, nRst, $0C, nE6, nRst, nE6, $12
 	dc.b	nEb6, nE6, $06, nRst
@@ -77,25 +77,25 @@ Mus8B_Ending_Loop02:
 	smpsStop
 
 ; FM4 Data
-Mus8B_Ending_FM4:
+Mus0B_Ending_FM4:
 	smpsSetvoice        $02
 	dc.b	nRst, $60
 
-Mus8B_Ending_Loop01:
+Mus0B_Ending_Loop01:
 	dc.b	nCs6, $06, nRst, nCs6, nRst, nA5, nRst, nA5, nRst, nB5, $12, nB5
 	dc.b	$1E, nCs6, $06, nRst, nCs6, nRst, nA5, nRst, nA5, nRst, nD6, $12
 	dc.b	nD6, $1E
-	smpsLoop            $00, $02, Mus8B_Ending_Loop01
+	smpsLoop            $00, $02, Mus0B_Ending_Loop01
 	smpsAlterNote       $03
 	smpsAlterVol        $08
-	smpsCall            Mus8B_Ending_Call01
+	smpsCall            Mus0B_Ending_Call01
 	smpsAlterVol        $F0
 	smpsSetvoice        $01
 	smpsModSet          $00, $01, $06, $04
 	dc.b	nA2, $6C
 	smpsStop
 
-Mus8B_Ending_Call01:
+Mus0B_Ending_Call01:
 	smpsSetvoice        $00
 	dc.b	nRst, $0C, nG6, nB6, nD7, nFs7, $0C, nRst, $06, nFs7, $0C, nG7
 	dc.b	$06, nFs7, $0C, nAb7, $60, nA7, $0C, nRst, nA7, nRst, nRst, $06
@@ -103,36 +103,36 @@ Mus8B_Ending_Call01:
 	smpsReturn
 
 ; FM5 Data
-Mus8B_Ending_FM5:
+Mus0B_Ending_FM5:
 	smpsSetvoice        $03
 	smpsAlterNote       $03
 	smpsAlterVol        $F7
 	dc.b	nRst, $60
-	smpsCall            Mus8B_Ending_Call00
+	smpsCall            Mus0B_Ending_Call00
 	smpsAlterVol        $09
 	smpsModSet          $00, $01, $06, $04
-	smpsCall            Mus8B_Ending_Call01
+	smpsCall            Mus0B_Ending_Call01
 	smpsStop
 
 ; PSG1 Data
-Mus8B_Ending_PSG1:
+Mus0B_Ending_PSG1:
 	dc.b	nRst, $60, nRst, nRst, nRst, nRst, nRst, $0C, nB5, $12, nRst, $06
 	dc.b	nB5, nRst, nA5, $12, nB5, nA5, $0C, nE5, $18, nAb5, nB5, nD6
 	dc.b	nRst, $0C, nCs6, nRst, nCs6, $12, nC6, nCs6, $06
 	smpsStop
 
 ; PSG2 Data
-Mus8B_Ending_PSG2:
+Mus0B_Ending_PSG2:
 	smpsAlterNote       $01
 	dc.b	nRst, $60, nRst, nRst, nRst, nRst, nRst, nRst, $0C, nE6, $06, nRst
 	dc.b	nB6, nE6, nRst, $0C, nE6, $06, nRst, nB6, nE6, nRst, $18
 	smpsStop
 
 ; PSG3 Data
-Mus8B_Ending_PSG3:
+Mus0B_Ending_PSG3:
 	smpsPSGform         $E7
 
-Mus8B_Ending_Loop04:
+Mus0B_Ending_Loop04:
 	smpsNoteFill        $03
 	dc.b	nMaxPSG, $0C
 	smpsNoteFill        $0C
@@ -141,7 +141,7 @@ Mus8B_Ending_Loop04:
 	dc.b	$0C
 	smpsNoteFill        $0C
 	dc.b	$0C
-	smpsLoop            $00, $0F, Mus8B_Ending_Loop04
+	smpsLoop            $00, $0F, Mus0B_Ending_Loop04
 	smpsNoteFill        $03
 	dc.b	nMaxPSG, $06
 	smpsNoteFill        $0E
@@ -153,19 +153,19 @@ Mus8B_Ending_Loop04:
 	smpsStop
 
 ; DAC Data
-Mus8B_Ending_DAC:
+Mus0B_Ending_DAC:
 	dc.b	dKick, $0C, dSnare, dKick, dSnare, dKick, $0C, dSnare, dKick, $06, nRst, $02
 	dc.b	dSnare, dSnare, dSnare, $09, dSnare, $03
 
-Mus8B_Ending_Loop00:
+Mus0B_Ending_Loop00:
 	dc.b	dKick, $0C, dSnare, dKick, dSnare, dKick, $0C, dSnare, dKick, dSnare, dKick, $0C
 	dc.b	dSnare, dKick, dSnare, dKick, $0C, dSnare, dKick, $06, nRst, $02, dSnare, dSnare
 	dc.b	dSnare, $09, dSnare, $03
-	smpsLoop            $00, $03, Mus8B_Ending_Loop00
+	smpsLoop            $00, $03, Mus0B_Ending_Loop00
 	dc.b	dKick, $0C, dSnare, dKick, dSnare, dKick, $06, dSnare, $12, dSnare, $0C, dKick
 	smpsStop
 
-Mus8B_Ending_Voices:
+Mus0B_Ending_Voices:
 ;	Voice $00
 ;	$3D
 ;	$01, $02, $02, $02, 	$14, $0E, $8C, $0E, 	$08, $05, $02, $05

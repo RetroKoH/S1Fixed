@@ -1835,23 +1835,15 @@ LevelSelect:
 		move.w	(v_levselitem).w,d0
 		cmpi.w	#$14,d0								; have you selected item $14 (sound test)?
 		bne.s	LevSel_Level						; if not, go to	Level/SS subroutine
-		move.w	(v_levselsound).w,d0
-		addi.w	#$80,d0
+		move.w	(v_levselsound).w,d0				; Alex Field Sound Index Expansion
 		tst.b	(f_creditscheat).w					; is Japanese Credits cheat on?
-		beq.s	LevSel_NoCheat						; if not, branch
+		beq.s	LevSel_PlaySnd						; if not, branch
 		cmpi.w	#$9F,d0								; is sound $9F being played?
 		beq.s	LevSel_Ending						; if yes, branch
 		cmpi.w	#$9E,d0								; is sound $9E being played?
 		beq.s	LevSel_Credits						; if yes, branch
 
-LevSel_NoCheat:
-		; This is a workaround for a bug; see PlaySoundID for more.
-		; Once you've fixed the bugs there, comment these four instructions out.
-		cmpi.w	#bgm__Last+1,d0	; is sound $80-$93 being played?
-		blo.s	LevSel_PlaySnd	; if yes, branch
-		cmpi.w	#sfx__First,d0	; is sound $94-$9F being played?
-		blo.s	LevelSelect		; if yes, branch
-
+; Error check removed following bugfix
 LevSel_PlaySnd:
 		bsr.w	PlaySound_Special
 		bra.s	LevelSelect
@@ -2100,29 +2092,26 @@ LevSel_Refresh:
 ; ===========================================================================
 
 LevSel_SndTest:
-		cmpi.w	#$14,(v_levselitem).w ; is item $14 selected?
-		bne.s	LevSel_NoMove	; if not, branch
+		cmpi.w	#$14,(v_levselitem).w	; is item $14 selected?
+		bne.s	LevSel_NoMove			; if not, branch
 		move.b	(v_jpadpress1).w,d1
-		andi.b	#btnR+btnL,d1	; is left/right	pressed?
-		beq.s	LevSel_NoMove	; if not, branch
+		andi.b	#btnR+btnL,d1			; is left/right	pressed?
+		beq.s	LevSel_NoMove			; if not, branch
 		move.w	(v_levselsound).w,d0
-		btst	#bitL,d1	; is left pressed?
-		beq.s	LevSel_Right	; if not, branch
-		subq.w	#1,d0		; subtract 1 from sound	test
-		bhs.s	LevSel_Right
-		moveq	#$4F,d0		; if sound test	moves below 0, set to $4F
+		btst	#bitL,d1				; is left pressed?
+		beq.s	LevSel_Right			; if not, branch
+		subq.w	#1,d0					; subtract 1 from sound	test
+		; Lower Cap removed -- Alex Field Sound Index Expansion
 
 LevSel_Right:
-		btst	#bitR,d1	; is right pressed?
-		beq.s	LevSel_Refresh2	; if not, branch
-		addq.w	#1,d0		; add 1	to sound test
-		cmpi.w	#$50,d0
-		blo.s	LevSel_Refresh2
-		moveq	#0,d0		; if sound test	moves above $4F, set to	0
+		btst	#bitR,d1				; is right pressed?
+		beq.s	LevSel_Refresh2			; if not, branch
+		addq.w	#1,d0					; add 1	to sound test
+		; Upper Cap removed -- Alex Field Sound Index Expansion
 
 LevSel_Refresh2:
-		move.w	d0,(v_levselsound).w ; set sound test number
-		bra.s	LevSelTextLoad	; refresh text
+		move.w	d0,(v_levselsound).w	; set sound test number
+		bra.s	LevSelTextLoad			; refresh text
 
 LevSel_NoMove:
 		rts	
@@ -2174,14 +2163,13 @@ LevSel_DrawAll:
 		move.w	#$C680,d3
 
 LevSel_DrawSnd:
-		locVRAM	vram_bg+$C30	; sound test position on screen
-		move.w	(v_levselsound).w,d0
-		addi.w	#$80,d0
+		locVRAM	vram_bg+$C30			; sound test position on screen
+		move.w	(v_levselsound).w,d0	; Alex Field Sound Index Expansion
 		move.b	d0,d2
 		lsr.b	#4,d0
-		bsr.w	LevSel_ChgSnd	; draw 1st digit
+		bsr.w	LevSel_ChgSnd			; draw 1st digit
 		move.b	d2,d0
-		bra.w	LevSel_ChgSnd	; draw 2nd digit
+		bra.w	LevSel_ChgSnd			; draw 2nd digit
 ; End of function LevSelTextLoad
 
 

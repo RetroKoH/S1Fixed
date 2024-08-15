@@ -1,35 +1,35 @@
-Mus90_Continue_Screen_Header:
+Mus10_Continue_Screen_Header:
 	smpsHeaderStartSong 1
-	smpsHeaderVoice     Mus90_Continue_Screen_Voices
+	smpsHeaderVoice     Mus10_Continue_Screen_Voices
 	smpsHeaderChan      $06, $03
 	smpsHeaderTempo     $01, $07
 
-	smpsHeaderDAC       Mus90_Continue_Screen_DAC
-	smpsHeaderFM        Mus90_Continue_Screen_FM1,	$E5, $08
-	smpsHeaderFM        Mus90_Continue_Screen_FM2,	$E8, $08
-	smpsHeaderFM        Mus90_Continue_Screen_FM3,	$F4, $0F
-	smpsHeaderFM        Mus90_Continue_Screen_FM4,	$F4, $0F
-	smpsHeaderFM        Mus90_Continue_Screen_FM5,	$F4, $0A
-	smpsHeaderPSG       Mus90_Continue_Screen_PSG1,	$D0, $03, $00, fTone_05
-	smpsHeaderPSG       Mus90_Continue_Screen_PSG2,	$DC, $06, $00, fTone_05
-	smpsHeaderPSG       Mus90_Continue_Screen_PSG3,	$DC, $00, $00, fTone_04
+	smpsHeaderDAC       Mus10_Continue_Screen_DAC
+	smpsHeaderFM        Mus10_Continue_Screen_FM1,	$E5, $08
+	smpsHeaderFM        Mus10_Continue_Screen_FM2,	$E8, $08
+	smpsHeaderFM        Mus10_Continue_Screen_FM3,	$F4, $0F
+	smpsHeaderFM        Mus10_Continue_Screen_FM4,	$F4, $0F
+	smpsHeaderFM        Mus10_Continue_Screen_FM5,	$F4, $0A
+	smpsHeaderPSG       Mus10_Continue_Screen_PSG1,	$D0, $03, $00, fTone_05
+	smpsHeaderPSG       Mus10_Continue_Screen_PSG2,	$DC, $06, $00, fTone_05
+	smpsHeaderPSG       Mus10_Continue_Screen_PSG3,	$DC, $00, $00, fTone_04
 
 ; FM1 Data
-Mus90_Continue_Screen_FM1:
+Mus10_Continue_Screen_FM1:
 	smpsSetvoice        $00
 	dc.b	nRst, $30
 
-Mus90_Continue_Screen_Loop04:
+Mus10_Continue_Screen_Loop04:
 	smpsAlterPitch      $01
 	dc.b	nRst, $0C, nEb6, $12, nRst, $06, nEb6, nRst, nE6, $0C, nRst, $06
 	dc.b	nCs6, $18, nRst, $06
-	smpsLoop            $00, $03, Mus90_Continue_Screen_Loop04
+	smpsLoop            $00, $03, Mus10_Continue_Screen_Loop04
 	dc.b	nF6, $06, nRst, nF6, nRst, nF6, nRst, nC6, nRst, nBb5, $0C, nRst
 	dc.b	$06, nD6, $4E
 	smpsStop
 
 ; FM2 Data
-Mus90_Continue_Screen_FM2:
+Mus10_Continue_Screen_FM2:
 	smpsSetvoice        $01
 	smpsAlterVol        $02
 	smpsAlterPitch      $F4
@@ -39,11 +39,11 @@ Mus90_Continue_Screen_FM2:
 	smpsAlterPitch      $0C
 	smpsSetvoice        $02
 
-Mus90_Continue_Screen_Loop03:
+Mus10_Continue_Screen_Loop03:
 	dc.b	nA4, $06, nRst, nA4, nRst, nE4, nRst, nE4, nRst, nG4, $12, nFs4
 	dc.b	$0C, nG4, $06, nFs4, $0C
 	smpsAlterPitch      $01
-	smpsLoop            $00, $03, Mus90_Continue_Screen_Loop03
+	smpsLoop            $00, $03, Mus10_Continue_Screen_Loop03
 	smpsAlterPitch      $FD
 	dc.b	nB4, $06, nRst, nB4, nRst, nFs4, nRst, nFs4, nRst, nE5, $0C, nRst
 	dc.b	$06, nEb5, $4E
@@ -51,51 +51,51 @@ Mus90_Continue_Screen_Loop03:
 	smpsStop
 
 ; FM3 Data
-Mus90_Continue_Screen_FM3:
+Mus10_Continue_Screen_FM3:
 	smpsSetvoice        $03
 	dc.b	nRst, $30
 
-Mus90_Continue_Screen_Loop02:
+Mus10_Continue_Screen_Loop02:
 	dc.b	nE6, $06, nRst, nE6, nRst, nCs6, nRst, nCs6, nRst, nD6, $12, nD6
 	dc.b	$1E
-	smpsLoop            $00, $03, Mus90_Continue_Screen_Loop02
+	smpsLoop            $00, $03, Mus10_Continue_Screen_Loop02
 	dc.b	nE6, $06, nRst, nE6, nRst, nCs6, nRst, nCs6, nRst, nG6, $0C, nRst
 	dc.b	$06, nG6, $1E, smpsNoAttack, $30
 	smpsStop
 
 ; FM4 Data
-Mus90_Continue_Screen_FM4:
+Mus10_Continue_Screen_FM4:
 	smpsSetvoice        $03
 	dc.b	nRst, $30
 
-Mus90_Continue_Screen_Loop01:
+Mus10_Continue_Screen_Loop01:
 	dc.b	nCs6, $06, nRst, nCs6, nRst, nA5, nRst, nA5, nRst, nB5, $12, nB5
 	dc.b	$1E
-	smpsLoop            $00, $03, Mus90_Continue_Screen_Loop01
+	smpsLoop            $00, $03, Mus10_Continue_Screen_Loop01
 	dc.b	nCs6, $06, nRst, nCs6, nRst, nA5, nRst, nA5, nRst, nD6, $0C, nRst
 	dc.b	$06, nD6, $4E
 
 ; FM5 Data
-Mus90_Continue_Screen_FM5:
+Mus10_Continue_Screen_FM5:
 ; PSG1 Data
-Mus90_Continue_Screen_PSG1:
+Mus10_Continue_Screen_PSG1:
 ; PSG2 Data
-Mus90_Continue_Screen_PSG2:
+Mus10_Continue_Screen_PSG2:
 ; PSG3 Data
-Mus90_Continue_Screen_PSG3:
+Mus10_Continue_Screen_PSG3:
 	smpsStop
 
 ; DAC Data
-Mus90_Continue_Screen_DAC:
+Mus10_Continue_Screen_DAC:
 	dc.b	nRst, $30
 
-Mus90_Continue_Screen_Loop00:
+Mus10_Continue_Screen_Loop00:
 	dc.b	dKick, $0C, dSnare
-	smpsLoop            $00, $0E, Mus90_Continue_Screen_Loop00
+	smpsLoop            $00, $0E, Mus10_Continue_Screen_Loop00
 	dc.b	dKick, $0C, dSnare, $06, dKick, $0C
 	smpsStop
 
-Mus90_Continue_Screen_Voices:
+Mus10_Continue_Screen_Voices:
 ;	Voice $00
 ;	$3A
 ;	$51, $08, $51, $02, 	$1E, $1E, $1E, $10, 	$1F, $1F, $1F, $0F

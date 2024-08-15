@@ -297,6 +297,11 @@
  Function: Uses Sonic 2 format mappings (Display/Delete bug occurs w/ buzz bomber missile)
  Date: 2024-08-02
  
+ Name: Extended Sound Index
+ Credit: Alex Field
+ Function: Sounds can be played from 00-FF (Users will need to add them, of course)
+ Date: 2024-08-16
+ 
 # Visual Changes
  Name: Title Screen Tweaks
  Credit: RetroKoH

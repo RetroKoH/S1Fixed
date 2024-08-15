@@ -1,21 +1,21 @@
-Mus8F_Game_Over_Header:
+Mus0F_Game_Over_Header:
 	smpsHeaderStartSong 1
-	smpsHeaderVoice     Mus8F_Game_Over_Voices
+	smpsHeaderVoice     Mus0F_Game_Over_Voices
 	smpsHeaderChan      $06, $03
 	smpsHeaderTempo     $02, $13
 
-	smpsHeaderDAC       Mus8F_Game_Over_DAC
-	smpsHeaderFM        Mus8F_Game_Over_FM1,	$E8, $0A
-	smpsHeaderFM        Mus8F_Game_Over_FM2,	$F4, $0F
-	smpsHeaderFM        Mus8F_Game_Over_FM3,	$F4, $0F
-	smpsHeaderFM        Mus8F_Game_Over_FM4,	$F4, $0D
-	smpsHeaderFM        Mus8F_Game_Over_FM5,	$DC, $16
-	smpsHeaderPSG       Mus8F_Game_Over_PSG1,	$D0, $03, $00, fTone_05
-	smpsHeaderPSG       Mus8F_Game_Over_PSG2,	$DC, $06, $00, fTone_05
-	smpsHeaderPSG       Mus8F_Game_Over_PSG3,	$DC, $00, $00, fTone_04
+	smpsHeaderDAC       Mus0F_Game_Over_DAC
+	smpsHeaderFM        Mus0F_Game_Over_FM1,	$E8, $0A
+	smpsHeaderFM        Mus0F_Game_Over_FM2,	$F4, $0F
+	smpsHeaderFM        Mus0F_Game_Over_FM3,	$F4, $0F
+	smpsHeaderFM        Mus0F_Game_Over_FM4,	$F4, $0D
+	smpsHeaderFM        Mus0F_Game_Over_FM5,	$DC, $16
+	smpsHeaderPSG       Mus0F_Game_Over_PSG1,	$D0, $03, $00, fTone_05
+	smpsHeaderPSG       Mus0F_Game_Over_PSG2,	$DC, $06, $00, fTone_05
+	smpsHeaderPSG       Mus0F_Game_Over_PSG3,	$DC, $00, $00, fTone_04
 
 ; FM1 Data
-Mus8F_Game_Over_FM1:
+Mus0F_Game_Over_FM1:
 	smpsSetvoice        $00
 	smpsModSet          $20, $01, $04, $05
 	dc.b	nRst, $0C, nCs6, $12, nRst, $06, nCs6, nRst, nD6, $12, nB5, $1E
@@ -27,7 +27,7 @@ Mus8F_Game_Over_FM1:
 	smpsStop
 
 ; FM2 Data
-Mus8F_Game_Over_FM2:
+Mus0F_Game_Over_FM2:
 	smpsSetvoice        $01
 	dc.b	nRst, $01, nE7, $06, nRst, nE7, nRst, nCs7, nRst, nCs7, nRst, nD7
 	dc.b	$15, nD7, $1B, nE7, $06, nRst, nE7, nRst, nCs7, nRst, nCs7, nRst
@@ -35,14 +35,14 @@ Mus8F_Game_Over_FM2:
 	smpsStop
 
 ; FM3 Data
-Mus8F_Game_Over_FM3:
+Mus0F_Game_Over_FM3:
 	smpsSetvoice        $01
 	dc.b	nCs7, $0C, nCs7, nA6, nA6, nB6, $15, nB6, $1B, nCs7, $0C, nCs7
 	dc.b	nA6, nA6, nD7, $15, nD7, $1B
 	smpsStop
 
 ; FM4 Data
-Mus8F_Game_Over_FM4:
+Mus0F_Game_Over_FM4:
 	smpsSetvoice        $02
 	smpsNop             $01
 	dc.b	nA3, $06, nRst, nA3, nRst, nE3, nRst, nE3, nRst, nG3, $15, nFs3
@@ -53,26 +53,26 @@ Mus8F_Game_Over_FM4:
 	smpsStop
 
 ; FM5 Data
-Mus8F_Game_Over_FM5:
+Mus0F_Game_Over_FM5:
 	smpsSetvoice        $03
 	dc.b	nRst, $30, nD7, $12, nRst, $03, nD7, $1B, nRst, $30, nG7, $12
 	dc.b	nRst, $03, nG7, $1B
 
 ; PSG1 Data
-Mus8F_Game_Over_PSG1:
+Mus0F_Game_Over_PSG1:
 ; PSG2 Data
-Mus8F_Game_Over_PSG2:
+Mus0F_Game_Over_PSG2:
 ; PSG3 Data
-Mus8F_Game_Over_PSG3:
+Mus0F_Game_Over_PSG3:
 	smpsStop
 
 ; DAC Data
-Mus8F_Game_Over_DAC:
+Mus0F_Game_Over_DAC:
 	dc.b	nRst, $18, dKick
-	smpsLoop            $00, $04, Mus8F_Game_Over_DAC
+	smpsLoop            $00, $04, Mus0F_Game_Over_DAC
 	smpsStop
 
-Mus8F_Game_Over_Voices:
+Mus0F_Game_Over_Voices:
 ;	Voice $00
 ;	$3A
 ;	$51, $08, $51, $02, 	$1E, $1E, $1E, $10, 	$1F, $1F, $1F, $0F

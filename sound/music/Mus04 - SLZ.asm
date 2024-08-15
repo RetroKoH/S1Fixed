@@ -1,88 +1,88 @@
-Mus84_SLZ_Header:
+Mus04_SLZ_Header:
 	smpsHeaderStartSong 1
-	smpsHeaderVoice     Mus84_SLZ_Voices
+	smpsHeaderVoice     Mus04_SLZ_Voices
 	smpsHeaderChan      $06, $03
 	smpsHeaderTempo     $02, $06
 
-	smpsHeaderDAC       Mus84_SLZ_DAC
-	smpsHeaderFM        Mus84_SLZ_FM1,	$E8, $00
-	smpsHeaderFM        Mus84_SLZ_FM2,	$E8, $06
-	smpsHeaderFM        Mus84_SLZ_FM3,	$DC, $1A
-	smpsHeaderFM        Mus84_SLZ_FM4,	$DC, $1A
-	smpsHeaderFM        Mus84_SLZ_FM5,	$F4, $20
-	smpsHeaderPSG       Mus84_SLZ_PSG1,	$C4, $06, $00, fTone_05
-	smpsHeaderPSG       Mus84_SLZ_PSG2,	$C4, $06, $00, fTone_05
-	smpsHeaderPSG       Mus84_SLZ_PSG3,	$00, $04, $00, fTone_04
+	smpsHeaderDAC       Mus04_SLZ_DAC
+	smpsHeaderFM        Mus04_SLZ_FM1,	$E8, $00
+	smpsHeaderFM        Mus04_SLZ_FM2,	$E8, $06
+	smpsHeaderFM        Mus04_SLZ_FM3,	$DC, $1A
+	smpsHeaderFM        Mus04_SLZ_FM4,	$DC, $1A
+	smpsHeaderFM        Mus04_SLZ_FM5,	$F4, $20
+	smpsHeaderPSG       Mus04_SLZ_PSG1,	$C4, $06, $00, fTone_05
+	smpsHeaderPSG       Mus04_SLZ_PSG2,	$C4, $06, $00, fTone_05
+	smpsHeaderPSG       Mus04_SLZ_PSG3,	$00, $04, $00, fTone_04
 
 ; FM1 Data
-Mus84_SLZ_FM1:
+Mus04_SLZ_FM1:
 	smpsSetvoice        $00
 	dc.b	nRst, $0C, nG5, nA5, nG6
 
-Mus84_SLZ_Jump05:
-	smpsCall            Mus84_SLZ_Call00
+Mus04_SLZ_Jump05:
+	smpsCall            Mus04_SLZ_Call00
 	dc.b	nE6, $1E
 
-Mus84_SLZ_Loop00:
+Mus04_SLZ_Loop00:
 	dc.b	nE7, $06, nC7, $3C, nRst, $1E
-	smpsLoop            $00, $03, Mus84_SLZ_Loop00
+	smpsLoop            $00, $03, Mus04_SLZ_Loop00
 	dc.b	nE7, $06, nC7, $18, nG5, $0C, nA5, nG6
-	smpsJump            Mus84_SLZ_Jump05
+	smpsJump            Mus04_SLZ_Jump05
 
-Mus84_SLZ_Call00:
-	smpsCall            Mus84_SLZ_Call0A
+Mus04_SLZ_Call00:
+	smpsCall            Mus04_SLZ_Call0A
 	dc.b	nE6, $1E, nF6, $06, nE6, nD6, $12, nG5, $0C, nA5, nG6
-	smpsCall            Mus84_SLZ_Call0A
+	smpsCall            Mus04_SLZ_Call0A
 	smpsReturn
 
-Mus84_SLZ_Call0A:
+Mus04_SLZ_Call0A:
 	dc.b	nE6, $2A, nE6, $03, nF6, nG6, $09, nA6, nBb6, $06, nA6, $0C
 	dc.b	nG6, nF6, $1E, nF6, $06, nE6, nF6, $1E, nD6, $0C, nE6, nF6
 	dc.b	$2A, nD6, $03, nE6, nF6, $09, nG6, nAb6, $06, nG6, $0C, nF6
 	smpsReturn
 
 ; FM2 Data
-Mus84_SLZ_FM2:
+Mus04_SLZ_FM2:
 	smpsSetvoice        $01
 	smpsNop             $01
 	dc.b	nRst, $30
 
-Mus84_SLZ_Jump04:
-	smpsCall            Mus84_SLZ_Call07
+Mus04_SLZ_Jump04:
+	smpsCall            Mus04_SLZ_Call07
 	dc.b	nRst, $06, nB3, $02, nRst, $01, nB3, $02, nRst, $01, nC4, $06
 	dc.b	nRst, $03, nC4, nRst, $06, nC4, $12, nRst, $06, nC4, $02, nRst
 	dc.b	$01, nC4, $02, nRst, $01, nD4, $06, nRst, $03, nD4, nRst, $06
 	dc.b	nG3, $12, nD4, $06, nG3
-	smpsCall            Mus84_SLZ_Call07
+	smpsCall            Mus04_SLZ_Call07
 	dc.b	nRst, $06, nD4, $02, nRst, $01, nB3, $02, nRst, $01
-	smpsCall            Mus84_SLZ_Call08
+	smpsCall            Mus04_SLZ_Call08
 	dc.b	nB3, $02, nRst, $01, nE4, $02, nRst, $01, nF4, $06, nRst, $03
 	dc.b	nF4, nRst, $06, nF4, $12, nRst, $06, nG4, $02, nRst, $01, nF4
 	dc.b	$02, nRst, $01
-	smpsCall            Mus84_SLZ_Call08
+	smpsCall            Mus04_SLZ_Call08
 	dc.b	nE4, $02, nRst, $01, nF4, $02, nRst, $01, nG4, $06, nRst, nG3
 	dc.b	$24
 	smpsNop             $01
-	smpsJump            Mus84_SLZ_Jump04
+	smpsJump            Mus04_SLZ_Jump04
 
-Mus84_SLZ_Call07:
+Mus04_SLZ_Call07:
 	dc.b	nC4, $06, nRst, $03, nC4, nRst, $06, nC4, $12, nRst, $06, nC4
 	dc.b	$02, nRst, $01, nC4, $02, nRst, $01, nBb3, $06, nRst, $03, nBb3
 	dc.b	$03, nRst, $06, nA3, $12, nRst, $06, nA3, $02, nRst, $01, nA3
 	dc.b	$02, nRst, $01
 
-Mus84_SLZ_Loop01:
+Mus04_SLZ_Loop01:
 	dc.b	nD4, $06, nRst, $03, nD4, $06, nRst, $03, nD4, $02, nRst, $01
 	dc.b	nD4, $02, nRst, $01
 	smpsAlterPitch      $FF
-	smpsLoop            $00, $04, Mus84_SLZ_Loop01
+	smpsLoop            $00, $04, Mus04_SLZ_Loop01
 	smpsAlterPitch      $04
 	dc.b	nG3, $06, nRst, $03, nG3, nRst, $06, nG3, $12, nRst, $06, nG3
 	dc.b	$02, nRst, $01, nG3, $02, nRst, $01, nB3, $06, nRst, $03, nB3
 	dc.b	nRst, $06, nB3, $12
 	smpsReturn
 
-Mus84_SLZ_Call08:
+Mus04_SLZ_Call08:
 	dc.b	nC4, $06, nRst, $03, nC4, nRst, $06, nC4, $12, nRst, $06, nG3
 	dc.b	$02, nRst, $01, nC4, $02, nRst, $01, nD4, $06, nRst, $03, nD4
 	dc.b	nRst, $06, nD4, $12, nRst, $06, nA3, $02, nRst, $01, nD4, $02
@@ -91,29 +91,29 @@ Mus84_SLZ_Call08:
 	smpsReturn
 
 ; FM3 Data
-Mus84_SLZ_FM3:
+Mus04_SLZ_FM3:
 	smpsSetvoice        $02
 	smpsPan             panLeft, $00
 
 ; PSG1 Data
-Mus84_SLZ_PSG1:
+Mus04_SLZ_PSG1:
 	dc.b	nRst, $30
 
-Mus84_SLZ_Jump03:
-	smpsCall            Mus84_SLZ_Call05
+Mus04_SLZ_Jump03:
+	smpsCall            Mus04_SLZ_Call05
 	dc.b	nG6, $06, nRst, $03, nG6, nRst, $06, nG6, $12, nRst, $06, nB6
 	dc.b	$09, nRst, $03, nB6, nRst, nA6, $09, nRst, $03, nG6, nRst, nF6
 	dc.b	$0C, nRst, $06
-	smpsCall            Mus84_SLZ_Call05
-	smpsCall            Mus84_SLZ_Call06
+	smpsCall            Mus04_SLZ_Call05
+	smpsCall            Mus04_SLZ_Call06
 	smpsNoteFill        $08
 	dc.b	nRst, $06, nE7, $09, $09, $09, nD7, $09, nC7, $06
-	smpsCall            Mus84_SLZ_Call06
+	smpsCall            Mus04_SLZ_Call06
 	smpsNoteFill        $00
 	dc.b	nRst, $0C, nA6, $24
-	smpsJump            Mus84_SLZ_Jump03
+	smpsJump            Mus04_SLZ_Jump03
 
-Mus84_SLZ_Call05:
+Mus04_SLZ_Call05:
 	dc.b	nG6, $06, nRst, $03, nG6, nRst, $06, nG6, $18, nRst, $06, nF6
 	dc.b	nRst, $03, nF6, nRst, $06, nE6, $18, nRst, $06, nA6, nRst, $03
 	dc.b	nG6, $06, nRst, $03, nF6, nRst, nA6, $06, nRst, $03, nG6, $06
@@ -122,7 +122,7 @@ Mus84_SLZ_Call05:
 	dc.b	nRst, $06, nAb6, nRst, $03, nAb6, nRst, $06, nAb6, $18, nRst, $06
 	smpsReturn
 
-Mus84_SLZ_Call06:
+Mus04_SLZ_Call06:
 	smpsNoteFill        $08
 	dc.b	nRst, $06, nB6, $09, $09, $09, $09
 	smpsNoteFill        $05
@@ -138,30 +138,30 @@ Mus84_SLZ_Call06:
 	smpsReturn
 
 ; FM4 Data
-Mus84_SLZ_FM4:
+Mus04_SLZ_FM4:
 	smpsSetvoice        $02
 	smpsPan             panRight, $00
 
 ; PSG2 Data
-Mus84_SLZ_PSG2:
+Mus04_SLZ_PSG2:
 	dc.b	nRst, $30
 
-Mus84_SLZ_Jump02:
-	smpsCall            Mus84_SLZ_Call03
+Mus04_SLZ_Jump02:
+	smpsCall            Mus04_SLZ_Call03
 	dc.b	nE6, $06, nRst, $03, nE6, nRst, $06, nE6, $12, nRst, $06, nG6
 	dc.b	$09, nRst, $03, nG6, nRst, nF6, $09, nRst, $03, nE6, nRst, nD6
 	dc.b	$0C, nRst, $06
-	smpsCall            Mus84_SLZ_Call03
-	smpsCall            Mus84_SLZ_Call04
+	smpsCall            Mus04_SLZ_Call03
+	smpsCall            Mus04_SLZ_Call04
 	smpsNoteFill        $08
 	dc.b	nRst, $06, nC7, $09, $09, $09, nB6, $09, nA6, $06
 	smpsNoteFill        $08
-	smpsCall            Mus84_SLZ_Call04
+	smpsCall            Mus04_SLZ_Call04
 	smpsNoteFill        $00
 	dc.b	nRst, $0C, nF6, $24
-	smpsJump            Mus84_SLZ_Jump02
+	smpsJump            Mus04_SLZ_Jump02
 
-Mus84_SLZ_Call03:
+Mus04_SLZ_Call03:
 	dc.b	nE6, $06, nRst, $03, nE6, nRst, $06, nE6, $18, nRst, $06, nD6
 	dc.b	nRst, $03, nD6, nRst, $06, nCs6, $18, nRst, $06, nF6, nRst, $03
 	dc.b	nE6, $06, nRst, $03, nD6, nRst, nF6, $06, nRst, $03, nE6, $06
@@ -170,7 +170,7 @@ Mus84_SLZ_Call03:
 	dc.b	nRst, $06, nF6, nRst, $03, nF6, nRst, $06, nF6, $18, nRst, $06
 	smpsReturn
 
-Mus84_SLZ_Call04:
+Mus04_SLZ_Call04:
 	smpsNoteFill        $08
 	dc.b	nRst, $06, nG6, $09, $09, $09, $09
 	smpsNoteFill        $05
@@ -186,22 +186,22 @@ Mus84_SLZ_Call04:
 	smpsReturn
 
 ; FM5 Data
-Mus84_SLZ_FM5:
+Mus04_SLZ_FM5:
 	smpsSetvoice        $04
 	dc.b	nRst, $0C, nG5, nA5, nG6
 
-Mus84_SLZ_Jump01:
+Mus04_SLZ_Jump01:
 	smpsSetvoice        $04
-	smpsCall            Mus84_SLZ_Call00
+	smpsCall            Mus04_SLZ_Call00
 	dc.b	nE6, $06
 	smpsSetvoice        $03
 	smpsAlterVol        $EC
-	smpsCall            Mus84_SLZ_Call01
+	smpsCall            Mus04_SLZ_Call01
 	smpsAlterNote       $14
 	dc.b	nA5, $01, smpsNoAttack
 	smpsAlterNote       $00
 	dc.b	nA5, $05
-	smpsCall            Mus84_SLZ_Call02
+	smpsCall            Mus04_SLZ_Call02
 	dc.b	nEb4
 	smpsAlterVol        $07
 	dc.b	nEb4
@@ -213,11 +213,11 @@ Mus84_SLZ_Jump01:
 	dc.b	nE6, $01, smpsNoAttack
 	smpsAlterNote       $00
 	dc.b	nE6, $05, nF6, $06, nE6, nF6, nG6, nRst, nC6, nRst, $06
-	smpsCall            Mus84_SLZ_Call01
+	smpsCall            Mus04_SLZ_Call01
 	smpsNoteFill        $05
 	dc.b	nA5, $03, $03
 	smpsNoteFill        $00
-	smpsCall            Mus84_SLZ_Call02
+	smpsCall            Mus04_SLZ_Call02
 	smpsSetvoice        $03
 	smpsAlterVol        $EF
 	smpsAlterPitch      $CD
@@ -229,10 +229,10 @@ Mus84_SLZ_Jump01:
 	dc.b	nC7, $23
 	smpsModOff
 	smpsAlterVol        $14
-	smpsJump            Mus84_SLZ_Jump01
+	smpsJump            Mus04_SLZ_Jump01
 
-Mus84_SLZ_Call01:
-	smpsCall            Mus84_SLZ_Call09
+Mus04_SLZ_Call01:
+	smpsCall            Mus04_SLZ_Call09
 	dc.b	nEb4
 	smpsAlterVol        $07
 	dc.b	nEb4
@@ -250,10 +250,10 @@ Mus84_SLZ_Call01:
 	dc.b	$05, nRst, $06
 	smpsReturn
 
-Mus84_SLZ_Call02:
+Mus04_SLZ_Call02:
 	dc.b	nC6, $06, nA5, nRst, $06
 
-Mus84_SLZ_Call09:
+Mus04_SLZ_Call09:
 	smpsAlterNote       $14
 	dc.b	nG5, $01, smpsNoAttack
 	smpsAlterNote       $00
@@ -274,19 +274,19 @@ Mus84_SLZ_Call09:
 	smpsReturn
 
 ; Unused dead data
-Mus84_SLZ_Jump07:
-	smpsJump            Mus84_SLZ_Jump07
+Mus04_SLZ_Jump07:
+	smpsJump            Mus04_SLZ_Jump07
 
-Mus84_SLZ_Jump08:
-	smpsJump            Mus84_SLZ_Jump08
+Mus04_SLZ_Jump08:
+	smpsJump            Mus04_SLZ_Jump08
 
 ; PSG3 Data
-Mus84_SLZ_PSG3:
+Mus04_SLZ_PSG3:
 	smpsPSGform         $E7
 	smpsNoteFill        $02
 	dc.b	nRst, $24
 
-Mus84_SLZ_Jump06:
+Mus04_SLZ_Jump06:
 	dc.b	nMaxPSG, $03, $03
 	smpsPSGAlterVol     $02
 	smpsPSGvoice        fTone_08
@@ -295,17 +295,17 @@ Mus84_SLZ_Jump06:
 	smpsPSGvoice        fTone_04
 	smpsNoteFill        $03
 	smpsPSGAlterVol     $FE
-	smpsJump            Mus84_SLZ_Jump06
+	smpsJump            Mus04_SLZ_Jump06
 
 ; DAC Data
-Mus84_SLZ_DAC:
+Mus04_SLZ_DAC:
 	dc.b	nRst, $30
 
-Mus84_SLZ_Jump00:
+Mus04_SLZ_Jump00:
 	dc.b	dKick, $0C
-	smpsJump            Mus84_SLZ_Jump00
+	smpsJump            Mus04_SLZ_Jump00
 
-Mus84_SLZ_Voices:
+Mus04_SLZ_Voices:
 ;	Voice $00
 ;	$34
 ;	$33, $41, $7E, $74, 	$5B, $9F, $5F, $1F, 	$04, $07, $07, $08

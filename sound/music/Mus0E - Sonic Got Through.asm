@@ -1,25 +1,25 @@
-Mus8E_Sonic_Got_Through_Header:
+Mus0E_Sonic_Got_Through_Header:
 	smpsHeaderStartSong 1
-	smpsHeaderVoice     Mus8E_Sonic_Got_Through_Voices
+	smpsHeaderVoice     Mus0E_Sonic_Got_Through_Voices
 	smpsHeaderChan      $06, $03
 	smpsHeaderTempo     $02, $03
 
-	smpsHeaderDAC       Mus8E_Sonic_Got_Through_DAC
-	smpsHeaderFM        Mus8E_Sonic_Got_Through_FM1,	$F4, $0A
-	smpsHeaderFM        Mus8E_Sonic_Got_Through_FM2,	$DC, $0A
-	smpsHeaderFM        Mus8E_Sonic_Got_Through_FM3,	$F4, $15
-	smpsHeaderFM        Mus8E_Sonic_Got_Through_FM4,	$F4, $15
-	smpsHeaderFM        Mus8E_Sonic_Got_Through_FM5,	$F4, $14
-	smpsHeaderPSG       Mus8E_Sonic_Got_Through_PSG1,	$D0, $05, $00, fTone_05
-	smpsHeaderPSG       Mus8E_Sonic_Got_Through_PSG2,	$DC, $07, $00, fTone_05
-	smpsHeaderPSG       Mus8E_Sonic_Got_Through_PSG3,	$DC, $00, $00, fTone_04
+	smpsHeaderDAC       Mus0E_Sonic_Got_Through_DAC
+	smpsHeaderFM        Mus0E_Sonic_Got_Through_FM1,	$F4, $0A
+	smpsHeaderFM        Mus0E_Sonic_Got_Through_FM2,	$DC, $0A
+	smpsHeaderFM        Mus0E_Sonic_Got_Through_FM3,	$F4, $15
+	smpsHeaderFM        Mus0E_Sonic_Got_Through_FM4,	$F4, $15
+	smpsHeaderFM        Mus0E_Sonic_Got_Through_FM5,	$F4, $14
+	smpsHeaderPSG       Mus0E_Sonic_Got_Through_PSG1,	$D0, $05, $00, fTone_05
+	smpsHeaderPSG       Mus0E_Sonic_Got_Through_PSG2,	$DC, $07, $00, fTone_05
+	smpsHeaderPSG       Mus0E_Sonic_Got_Through_PSG3,	$DC, $00, $00, fTone_04
 
 ; FM1 Data
-Mus8E_Sonic_Got_Through_FM1:
+Mus0E_Sonic_Got_Through_FM1:
 	smpsSetvoice        $00
 
 ; PSG1 Data
-Mus8E_Sonic_Got_Through_PSG1:
+Mus0E_Sonic_Got_Through_PSG1:
 	dc.b	nRst, $06, nG4, nA4, nB4, nC5, nD5, nE5, nF5, nG5, $0C, nB6
 	dc.b	$02, smpsNoAttack, nC7, $01, nB6, $03, nG6
 	smpsModSet          $0C, $01, $08, $04
@@ -27,7 +27,7 @@ Mus8E_Sonic_Got_Through_PSG1:
 	smpsStop
 
 ; FM2 Data
-Mus8E_Sonic_Got_Through_FM2:
+Mus0E_Sonic_Got_Through_FM2:
 	smpsSetvoice        $01
 	smpsNoteFill        $0B
 	smpsNop             $01
@@ -39,7 +39,7 @@ Mus8E_Sonic_Got_Through_FM2:
 	smpsStop
 
 ; FM3 Data
-Mus8E_Sonic_Got_Through_FM3:
+Mus0E_Sonic_Got_Through_FM3:
 	smpsPan             panLeft, $00
 	smpsSetvoice        $02
 	smpsNoteFill        $06
@@ -50,7 +50,7 @@ Mus8E_Sonic_Got_Through_FM3:
 	smpsStop
 
 ; FM4 Data
-Mus8E_Sonic_Got_Through_FM4:
+Mus0E_Sonic_Got_Through_FM4:
 	smpsPan             panRight, $00
 	smpsSetvoice        $02
 	smpsNoteFill        $06
@@ -61,27 +61,27 @@ Mus8E_Sonic_Got_Through_FM4:
 	smpsStop
 
 ; FM5 Data
-Mus8E_Sonic_Got_Through_FM5:
+Mus0E_Sonic_Got_Through_FM5:
 	smpsSetvoice        $03
 	smpsModSet          $0D, $01, $02, $05
 
 ; PSG2 Data
-Mus8E_Sonic_Got_Through_PSG2:
+Mus0E_Sonic_Got_Through_PSG2:
 	dc.b	nG5, $06, nC6, nB5, nG5, nC6, nB5, nG5, nC6, nB5, $0C, nC6
 	dc.b	$09, nB5, $33
 
 ; PSG3 Data
-Mus8E_Sonic_Got_Through_PSG3:
+Mus0E_Sonic_Got_Through_PSG3:
 	smpsStop
 
 ; DAC Data
-Mus8E_Sonic_Got_Through_DAC:
+Mus0E_Sonic_Got_Through_DAC:
 	dc.b	dSnare, $03, dSnare, dKick, $06, dKick, dSnare, $03, dSnare, dKick, $06, dKick
 	dc.b	dSnare, $03, dSnare, dHiTimpani, dHiTimpani, dVLowTimpani, dVLowTimpani, $03, dVLowTimpani, dVLowTimpani, dSnare, $09
 	dc.b	$33
 	smpsStop
 
-Mus8E_Sonic_Got_Through_Voices:
+Mus0E_Sonic_Got_Through_Voices:
 ;	Voice $00
 ;	$3D
 ;	$01, $02, $00, $01, 	$1F, $0E, $0E, $0E, 	$07, $1F, $1F, $1F

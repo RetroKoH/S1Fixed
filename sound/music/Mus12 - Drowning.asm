@@ -1,64 +1,64 @@
-Mus92_Drowning_Header:
+Mus12_Drowning_Header:
 	smpsHeaderStartSong 1
-	smpsHeaderVoice     Mus92_Drowning_Voices
+	smpsHeaderVoice     Mus12_Drowning_Voices
 	smpsHeaderChan      $06, $00
 	smpsHeaderTempo     $01, $02
 
-	smpsHeaderDAC       Mus92_Drowning_DAC
-	smpsHeaderFM        Mus92_Drowning_FM1,	$0C, $08
-	smpsHeaderFM        Mus92_Drowning_FM2,	$E8, $0E
-	smpsHeaderFM        Mus92_Drowning_FM3,	$F4, $40
-	smpsHeaderFM        Mus92_Drowning_FM4,	$06, $11
-	smpsHeaderFM        Mus92_Drowning_FM5,	$0C, $19
+	smpsHeaderDAC       Mus12_Drowning_DAC
+	smpsHeaderFM        Mus12_Drowning_FM1,	$0C, $08
+	smpsHeaderFM        Mus12_Drowning_FM2,	$E8, $0E
+	smpsHeaderFM        Mus12_Drowning_FM3,	$F4, $40
+	smpsHeaderFM        Mus12_Drowning_FM4,	$06, $11
+	smpsHeaderFM        Mus12_Drowning_FM5,	$0C, $19
 
 ; FM1 Data
-Mus92_Drowning_FM1:
+Mus12_Drowning_FM1:
 	smpsSetvoice        $00
 	smpsNop             $01
 	smpsNoteFill        $05
-	smpsCall            Mus92_Drowning_Call01
+	smpsCall            Mus12_Drowning_Call01
 	smpsSetTempoMod     $03
-	smpsCall            Mus92_Drowning_Call01
+	smpsCall            Mus12_Drowning_Call01
 	smpsSetTempoMod     $04
-	smpsCall            Mus92_Drowning_Call01
+	smpsCall            Mus12_Drowning_Call01
 	smpsSetTempoMod     $06
-	smpsCall            Mus92_Drowning_Call01
+	smpsCall            Mus12_Drowning_Call01
 	smpsSetTempoMod     $0A
-	smpsCall            Mus92_Drowning_Call01
+	smpsCall            Mus12_Drowning_Call01
 	dc.b	nC5, $06
 	smpsNop             $01
 	smpsStop
 
 ; FM2 Data
-Mus92_Drowning_FM2:
+Mus12_Drowning_FM2:
 	smpsSetvoice        $01
 
-Mus92_Drowning_Loop03:
+Mus12_Drowning_Loop03:
 	smpsAlterVol        $FF
-	smpsCall            Mus92_Drowning_Call00
-	smpsLoop            $00, $0A, Mus92_Drowning_Loop03
+	smpsCall            Mus12_Drowning_Call00
+	smpsLoop            $00, $0A, Mus12_Drowning_Loop03
 	dc.b	nC5, $06
 	smpsStop
 
 ; FM3 Data
-Mus92_Drowning_FM3:
+Mus12_Drowning_FM3:
 	smpsSetvoice        $02
 
-Mus92_Drowning_Loop02:
+Mus12_Drowning_Loop02:
 	smpsAlterVol        $FE
 	dc.b	smpsNoAttack, nC6, $02, smpsNoAttack, nCs6, smpsNoAttack, nC6, smpsNoAttack, nCs6, smpsNoAttack, nC6, smpsNoAttack
 	dc.b	nCs6, smpsNoAttack, nC6, smpsNoAttack, nCs6
-	smpsLoop            $00, $1E, Mus92_Drowning_Loop02
+	smpsLoop            $00, $1E, Mus12_Drowning_Loop02
 	dc.b	nC6, $06
 	smpsStop
 
 ; FM4 Data
-Mus92_Drowning_FM4:
+Mus12_Drowning_FM4:
 	smpsSetvoice        $03
 	smpsNoteFill        $05
 	dc.b	nRst, $03
 
-Mus92_Drowning_Loop01:
+Mus12_Drowning_Loop01:
 	smpsPan             panRight, $00
 	dc.b	nC4, $06, nC5
 	smpsPan             panCenter, $00
@@ -67,16 +67,16 @@ Mus92_Drowning_Loop01:
 	dc.b	nCs4, nCs5
 	smpsPan             panCenter, $00
 	dc.b	nCs4, nCs5
-	smpsLoop            $00, $0A, Mus92_Drowning_Loop01
+	smpsLoop            $00, $0A, Mus12_Drowning_Loop01
 	smpsStop
 
 ; FM5 Data
-Mus92_Drowning_FM5:
+Mus12_Drowning_FM5:
 	smpsSetvoice        $00
 	smpsNoteFill        $05
 	dc.b	nRst, $04
 
-Mus92_Drowning_Loop00:
+Mus12_Drowning_Loop00:
 	smpsPan             panLeft, $00
 	dc.b	nC4, $06, nC5
 	smpsPan             panLeft, $00
@@ -85,24 +85,24 @@ Mus92_Drowning_Loop00:
 	dc.b	nCs4, nCs5
 	smpsPan             panRight, $00
 	dc.b	nCs4, nCs5
-	smpsLoop            $00, $0A, Mus92_Drowning_Loop00
+	smpsLoop            $00, $0A, Mus12_Drowning_Loop00
 	smpsStop
 
 ; DAC Data
-Mus92_Drowning_DAC:
+Mus12_Drowning_DAC:
 	dc.b	dSnare, $0C, dSnare, dSnare, dSnare
-	smpsLoop            $00, $0A, Mus92_Drowning_DAC
+	smpsLoop            $00, $0A, Mus12_Drowning_DAC
 	dc.b	dSnare, $06
 	smpsStop
 
-Mus92_Drowning_Call01:
+Mus12_Drowning_Call01:
 	dc.b	nC4, $06, nC5, nC4, nC5, nCs4, nCs5, nCs4, nCs5
 
-Mus92_Drowning_Call00:
+Mus12_Drowning_Call00:
 	dc.b	nC4, $06, nC5, nC4, nC5, nCs4, nCs5, nCs4, nCs5
 	smpsReturn
 
-Mus92_Drowning_Voices:
+Mus12_Drowning_Voices:
 ;	Voice $00
 ;	$3C
 ;	$31, $52, $50, $30, 	$52, $53, $52, $53, 	$08, $00, $08, $00

@@ -1,133 +1,133 @@
-Mus8C_Boss_Header:
+Mus0C_Boss_Header:
 	smpsHeaderStartSong 1
-	smpsHeaderVoice     Mus8C_Boss_Voices
+	smpsHeaderVoice     Mus0C_Boss_Voices
 	smpsHeaderChan      $06, $03
 	smpsHeaderTempo     $02, $04
 
-	smpsHeaderDAC       Mus8C_Boss_DAC
-	smpsHeaderFM        Mus8C_Boss_FM1,	$F4, $12
-	smpsHeaderFM        Mus8C_Boss_FM2,	$E8, $08
-	smpsHeaderFM        Mus8C_Boss_FM3,	$F4, $0F
-	smpsHeaderFM        Mus8C_Boss_FM4,	$F4, $12
-	smpsHeaderFM        Mus8C_Boss_FM5,	$E8, $0F
-	smpsHeaderPSG       Mus8C_Boss_PSG1,	$D0, $03, $00, fTone_05
-	smpsHeaderPSG       Mus8C_Boss_PSG2,	$D0, $03, $00, fTone_05
-	smpsHeaderPSG       Mus8C_Boss_PSG3,	$DC, $01, $00, fTone_08
+	smpsHeaderDAC       Mus0C_Boss_DAC
+	smpsHeaderFM        Mus0C_Boss_FM1,	$F4, $12
+	smpsHeaderFM        Mus0C_Boss_FM2,	$E8, $08
+	smpsHeaderFM        Mus0C_Boss_FM3,	$F4, $0F
+	smpsHeaderFM        Mus0C_Boss_FM4,	$F4, $12
+	smpsHeaderFM        Mus0C_Boss_FM5,	$E8, $0F
+	smpsHeaderPSG       Mus0C_Boss_PSG1,	$D0, $03, $00, fTone_05
+	smpsHeaderPSG       Mus0C_Boss_PSG2,	$D0, $03, $00, fTone_05
+	smpsHeaderPSG       Mus0C_Boss_PSG3,	$DC, $01, $00, fTone_08
 
 ; FM5 Data
-Mus8C_Boss_FM5:
+Mus0C_Boss_FM5:
 	smpsSetvoice        $05
 
-Mus8C_Boss_Jump03:
+Mus0C_Boss_Jump03:
 	dc.b	nFs7, $0C, nFs7, nFs7, nFs7
 	smpsAlterVol        $02
-	smpsCall            Mus8C_Boss_Call03
+	smpsCall            Mus0C_Boss_Call03
 	dc.b	nA6, nFs6, nG6, nFs6, nE6, nFs6, nA6, nFs6, nG6, nFs6, nCs7, nFs6
 	dc.b	nE6, nFs6
-	smpsCall            Mus8C_Boss_Call03
+	smpsCall            Mus0C_Boss_Call03
 	dc.b	nB6, nFs6, nA6, nFs6, nG6, nFs6, nA6, nFs6, nB6, nFs6, nCs7, nB6
 	dc.b	nF7, nCs7
 	smpsAlterVol        $FE
 
-Mus8C_Boss_Loop01:
+Mus0C_Boss_Loop01:
 	dc.b	nFs7, $03, nD7, $03, nFs7, $03, nD7, $03
-	smpsLoop            $00, $04, Mus8C_Boss_Loop01
-	smpsJump            Mus8C_Boss_Jump03
+	smpsLoop            $00, $04, Mus0C_Boss_Loop01
+	smpsJump            Mus0C_Boss_Jump03
 
-Mus8C_Boss_Call03:
+Mus0C_Boss_Call03:
 	dc.b	nB6, $06, nFs6, nD7, nFs6, nB6, nFs6, nE6, nFs6, nB6, nFs6, nD7
 	dc.b	nFs6, nB6, nFs6, nA6, nFs6, nG6, nFs6
 	smpsReturn
 
 ; FM2 Data
-Mus8C_Boss_FM2:
+Mus0C_Boss_FM2:
 	smpsSetvoice        $00
 
-Mus8C_Boss_Jump02:
+Mus0C_Boss_Jump02:
 	smpsNop             $01
 	dc.b	nFs4, $06, nFs5, nFs4, nFs5, nFs4, nFs5, nFs4, nFs5
-	smpsCall            Mus8C_Boss_Call02
+	smpsCall            Mus0C_Boss_Call02
 	dc.b	nB3, $06, nE4, nE4, $0C, nB3, $06
-	smpsCall            Mus8C_Boss_Call02
+	smpsCall            Mus0C_Boss_Call02
 	dc.b	nE4, $06, nD4, nD4, $0C, nD4, $06, nCs4, $30
 	smpsNop             $01
-	smpsJump            Mus8C_Boss_Jump02
+	smpsJump            Mus0C_Boss_Jump02
 
-Mus8C_Boss_Call02:
+Mus0C_Boss_Call02:
 	dc.b	nB3, $06, nB3, nD4, nD4, nCs4, nCs4, nC4, nC4, nB3, $12, nFs4
 	dc.b	$06, nB4, $0C, nA4, nG4, $06, nG4, $0C, nD4, $06, nG4, nG4
 	dc.b	$0C, nFs4, $06, nE4, nE4, $0C
 	smpsReturn
 
 ; PSG2 Data
-Mus8C_Boss_PSG2:
+Mus0C_Boss_PSG2:
 	smpsAlterNote       $02
-	smpsJump            Mus8C_Boss_Jump01
+	smpsJump            Mus0C_Boss_Jump01
 
 ; FM3 Data
-Mus8C_Boss_FM3:
+Mus0C_Boss_FM3:
 	smpsSetvoice        $01
 	smpsPan             panLeft, $00
 
-Mus8C_Boss_Jump01:
+Mus0C_Boss_Jump01:
 	dc.b	nRst, $30
-	smpsCall            Mus8C_Boss_Call01
+	smpsCall            Mus0C_Boss_Call01
 	dc.b	nE5, $12, nRst, nD6, $03, nRst, nCs6, nRst, nA5, $12
-	smpsCall            Mus8C_Boss_Call01
+	smpsCall            Mus0C_Boss_Call01
 	dc.b	nE5, $0C, nB5, $03, nRst, nE6, nRst, nE6, $0C, nE6, $03, nRst
 	dc.b	nF6, nRst, nF6, $0C, nF6, $03, nRst, nFs6, $30
-	smpsJump            Mus8C_Boss_Jump01
+	smpsJump            Mus0C_Boss_Jump01
 
-Mus8C_Boss_Call01:
+Mus0C_Boss_Call01:
 	dc.b	nRst, $1E, nFs5, $03, nRst, nB5, nRst, nCs6, nRst, nD6, $30, nRst
 	dc.b	$12, nB5, $03, nRst, nG5, nRst
 	smpsReturn
 
 ; FM1 Data
-Mus8C_Boss_FM1:
+Mus0C_Boss_FM1:
 	smpsAlterNote       $03
-	smpsJump            Mus8C_Boss_Jump00
+	smpsJump            Mus0C_Boss_Jump00
 
 ; FM4 Data
-Mus8C_Boss_FM4:
+Mus0C_Boss_FM4:
 	smpsPan             panRight, $00
 
-Mus8C_Boss_Jump00:
+Mus0C_Boss_Jump00:
 	smpsSetvoice        $02
 	smpsModSet          $0C, $01, $04, $06
 
 ; PSG1 Data
-Mus8C_Boss_PSG1:
+Mus0C_Boss_PSG1:
 	dc.b	nRst, $30
-	smpsCall            Mus8C_Boss_Call00
+	smpsCall            Mus0C_Boss_Call00
 	dc.b	nE7
-	smpsCall            Mus8C_Boss_Call00
+	smpsCall            Mus0C_Boss_Call00
 	dc.b	nE7, $18, nF7, nFs7, $30
-	smpsJump            Mus8C_Boss_PSG1
+	smpsJump            Mus0C_Boss_PSG1
 
-Mus8C_Boss_Call00:
+Mus0C_Boss_Call00:
 	dc.b	nB6, $04, nA6, nC7, nB6, $24, nRst, $0C, nFs6, nB6, nCs7, nD7
 	dc.b	$30
 	smpsReturn
 
 ; PSG3 Data
-Mus8C_Boss_PSG3:
+Mus0C_Boss_PSG3:
 	smpsStop
 
 ; DAC Data
-Mus8C_Boss_DAC:
+Mus0C_Boss_DAC:
 	dc.b	dHiTimpani, $06, dLowTimpani, dHiTimpani, dLowTimpani, dHiTimpani, dLowTimpani, dHiTimpani, dLowTimpani
 
-Mus8C_Boss_Loop00:
+Mus0C_Boss_Loop00:
 	dc.b	dSnare, $0C, dSnare, $04, dSnare, dSnare, dSnare, $06, dSnare, $0C, dSnare, $06
 	dc.b	dSnare, $12, dSnare, $06, dSnare, $0C, dSnare, $0C
-	smpsLoop            $00, $03, Mus8C_Boss_Loop00
+	smpsLoop            $00, $03, Mus0C_Boss_Loop00
 	dc.b	dSnare, $0C, dSnare, $04, dSnare, dSnare, dSnare, $06, dSnare, $0C, dSnare, $06
 	dc.b	dSnare, $06, dSnare, $0C, dSnare, $06, dSnare, $06, dSnare, $0C, dSnare, $06
 	dc.b	dSnare, $01, dHiTimpani, $05, dLowTimpani, $06, dHiTimpani, dLowTimpani, dHiTimpani, dLowTimpani, dHiTimpani, dLowTimpani
-	smpsJump            Mus8C_Boss_DAC
+	smpsJump            Mus0C_Boss_DAC
 
-Mus8C_Boss_Voices:
+Mus0C_Boss_Voices:
 ;	Voice $00
 ;	$08
 ;	$0A, $70, $30, $00, 	$1F, $1F, $5F, $5F, 	$12, $0E, $0A, $0A
