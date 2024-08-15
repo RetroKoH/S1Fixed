@@ -2289,13 +2289,13 @@ Level_NoMusicFade:
 		bmi.s	Level_ClrRam				; if yes, branch
 		disable_ints
 		locVRAM	ArtTile_Title_Card*tile_size
-		
+
 	; AURORA☆FIELDS Title Card Optimization
 		lea		Art_TitleCard,a0									; load title card patterns
 		move.l	#((Art_TitleCard_End-Art_TitleCard)/tile_size)-1,d0	; # of tiles
 		jsr		(LoadUncArt).w
 	; Title Card Optimization End
-		
+
 		enable_ints
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
@@ -7382,6 +7382,11 @@ Art_Shield_L2:	binclude	"artunc\Shield - Lightning Sparks.bin"
 		even
 	endif
 
+	if SuperMod=1
+Art_SuperStars:	binclude	"artunc/Super Sonic Stars.bin"
+Art_SuperStars_End:	even
+	endif
+
 Art_Signpost:	binclude	"artunc/Signpost.bin"				; End-of-level Signpost -- RetroKoH VRAM Overhaul
 		even
 Art_BigRing:	binclude	"artunc/Giant Ring.bin"				; Giant Ring -- RetroKoH VRAM Overhaul
@@ -7651,9 +7656,6 @@ Nem_Hud:	binclude	"artnem/HUD.nem"	; HUD (rings, time, score)
 Nem_Lives:	binclude	"artnem/HUD - Life Counter Icon.nem"
 		even
 Nem_Ring:	binclude	"artnem/Rings.nem"
-		even
-
-Nem_SuperStars:	binclude	"artnem/Super Sonic Stars.nem"
 		even
 
 	if ShieldsMode>1

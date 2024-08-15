@@ -1,5 +1,6 @@
 ; ---------------------------------------------------------------------------
 ; Object 8D - Super Sonic's stars (Ported from S2 - Obj7E)
+; Art loading backported from S3K
 ; ---------------------------------------------------------------------------
 
 SuperStars:
@@ -9,6 +10,15 @@ SuperStars:
 	; Object Routine Optimization End
 
 SStars_Main:	; Routine 0
+		disable_ints
+		move.l	a0,-(sp)
+		locVRAM	ArtTile_Shield*$20
+		lea		(Art_SuperStars).l,a0									; load super star art
+		move.l  #((Art_SuperStars_End-Art_SuperStars)/tile_size)-1,d0	; the title card art length, in tiles
+		jsr		(LoadUncArt).w
+		move.l	(sp)+,a0
+		enable_ints
+
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_SStars,obMap(a0)
 		move.b	#4,obRender(a0)
