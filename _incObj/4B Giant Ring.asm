@@ -79,7 +79,7 @@ GRing_Flash:	; Routine 6
 		andi.b	#~(mask2ndShield+mask2ndInvinc),(v_player+obStatus2nd).w	; Should clear Shield and Invincibility ($FC)
 
 .skip:
-		bsr.w	GRing_LoadGfx			; RetroKoH VRAM Overhaul
+		bsr.s	GRing_LoadGfx			; RetroKoH VRAM Overhaul
 		offscreen.w	DeleteObject		; ProjectFM S3K Objects Manager
 		bra.w	DisplaySprite
 ; ===========================================================================

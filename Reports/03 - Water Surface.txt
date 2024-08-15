@@ -1,3 +1,0 @@
-Water Surface doesn't fully render at the surface like it did after Luigi's fix. I suspect it's the object manager.
-
-A recent bug has started occurring in LZ Act 3

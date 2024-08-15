@@ -608,7 +608,7 @@ VBla_0A:
 		; removed Z80 macro
 		bsr.w	PalCycle_SS
 		
-		bsr.w		ProcessDMAQueue	; Mercury Use DMA Queue
+		bsr.w	ProcessDMAQueue	; Mercury Use DMA Queue
 
 	if DynamicSpecialStageWalls=1 ; Mercury Dynamic Special Stage Walls
 		cmpi.b	#96,(v_hbla_line).w
@@ -649,7 +649,7 @@ VBla_0C:
 		writeVRAM	v_hscrolltablebuffer,vram_hscroll
 		writeVRAM	v_spritetablebuffer,vram_sprites
 		
-		bsr.w		ProcessDMAQueue	; Mercury Use DMA Queue
+		bsr.w	ProcessDMAQueue	; Mercury Use DMA Queue
 
 		; removed Z80 macro
 		movem.l	(v_screenposx).w,d0-d7
@@ -683,8 +683,8 @@ VBla_16:
 		writeVRAM	v_spritetablebuffer,vram_sprites
 		writeVRAM	v_hscrolltablebuffer,vram_hscroll
 		; removed Z80 macro
-		
-		bsr.w		ProcessDMAQueue	; Mercury Use DMA Queue
+
+		bsr.w	ProcessDMAQueue	; Mercury Use DMA Queue
 
 	if DynamicSpecialStageWalls=1 ; Mercury Dynamic Special Stage Walls
 		cmpi.b	#96,(v_hbla_line).w
@@ -724,6 +724,9 @@ sub_106E:
 		writeVRAM	v_spritetablebuffer,vram_sprites
 		writeVRAM	v_hscrolltablebuffer,vram_hscroll
 		; removed Z80 macro
+		
+		bra.w		ProcessDMAQueue	; Mercury Use DMA Queue
+		
 		rts	
 ; End of function sub_106E
 
@@ -1714,9 +1717,7 @@ GM_Title:
 		locVRAM	ArtTile_Title_Foreground*tile_size
 		lea		(Nem_TitleFg).l,a0				; load title screen patterns
 		bsr.w	NemDec
-		locVRAM	ArtTile_Title_Sonic*tile_size
-		lea		(Nem_TitleSonic).l,a0			; load Sonic title screen patterns
-		bsr.w	NemDec
+		; Removed Title Sonic Decompression (now loads via DPLCs
 		locVRAM	ArtTile_Title_Trademark*tile_size
 		lea		(Nem_TitleTM).l,a0				; load "TM" patterns
 		bsr.w	NemDec
@@ -5308,6 +5309,7 @@ loc_8B48:
 		include	"_incObj/26 Monitor (SolidSides subroutine).asm"
 		include	"_anim/Monitor.asm"
 
+		include	"_maps/Title Screen Sonic - DPLCs.asm"
 		include	"_incObj/0E Title Screen Sonic.asm"
 		include	"_incObj/0F Press Start and TM.asm"
 
@@ -7347,8 +7349,7 @@ Nem_TitleFg:	binclude	"artnem/Title Screen Foreground (Menu).nem"
 Nem_TitleFg:	binclude	"artnem/Title Screen Foreground.nem"
 	endif
 
-Nem_TitleSonic:	binclude	"artnem/Title Screen Sonic.nem"
-		even
+
 Nem_TitleTM:	binclude	"artnem/Title Screen TM.nem"
 		even
 Eni_JapNames:	binclude	"tilemaps/Hidden Japanese Credits.eni" ; Japanese credits (mappings)
@@ -7391,6 +7392,9 @@ Art_Effects:	binclude	"artunc/Dust Effects.bin"			; Spindash/Skid Dust
 		even
 				include "_maps/Effects.asm"
 	endif
+
+Art_TitleSonic:	binclude	"artunc/Title Screen Sonic.bin"		; Title Sonic -- RetroKoH VRAM Overhaul
+		even
 
 ; AURORA☆FIELDS Title Card Optimization
 Art_TitleCard:	binclude	"artunc/Title Cards.bin"			; Title Card patterns

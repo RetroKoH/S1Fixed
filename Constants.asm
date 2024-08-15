@@ -623,8 +623,8 @@ ArtTile_Sega_Tiles:				equ $000
 ; Title Screen - This is fine as is.
 ArtTile_Title_Japanese_Text:	equ $000
 ArtTile_Title_Foreground:		equ $200
-ArtTile_Title_Sonic:			equ $300
-ArtTile_Title_Trademark:		equ $510
+ArtTile_Title_Trademark:		equ $30E
+ArtTile_Title_Sonic:			equ $310
 ArtTile_Level_Select_Font:		equ $680
 
 ; Continue Screen
