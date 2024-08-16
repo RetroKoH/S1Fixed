@@ -259,7 +259,10 @@ Drown_Countdown:; Routine $A
 	; RHS Drowning Fix
 		subq.w	#1,objoff_2C(a0)
 		bne.s	.nochange				; Make it jump straight to this location
+		cmpi.b	#$A,obRoutine(a2)		; is Sonic drowning (won't be if Debug was used)
+		bne.s	.noDeath
 		move.b	#6,obRoutine(a2)		; kill Sonic
+.noDeath:
 		rts
 	; Drowning Fix End
 ; ===========================================================================

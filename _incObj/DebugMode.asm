@@ -10,6 +10,7 @@ DebugMode:
 
 Debug_Main:	; Routine 0
 		addq.b	#2,(v_debuguse).w
+		clr.b	(v_sonicbubbles+objoff_2C).w
 		jsr		(ResumeMusic).l						; cancel countdown music
 		move.w	(v_limittop2).w,(v_limittopdb).w	; buffer level x-boundary
 		move.w	(v_limitbtm1).w,(v_limitbtmdb).w	; buffer level y-boundary
