@@ -221,6 +221,8 @@ Bub_BblTypes:	dc.b 0,	1, 0, 0, 0, 0, 1, 0, 0,	0, 0, 1, 0, 1, 0, 0, 1,	0
 ; ===========================================================================
 
 Bub_ChkSonic:
+		tst.b	(v_debuguse).w		; don't interact w/ Bubbles in Debug mode
+		bne.s	.loc_12998
 		lea		(v_player).w,a1		; moved to the front to call obCtrlLock directly from a1
 
 	if ShieldsMode>1
