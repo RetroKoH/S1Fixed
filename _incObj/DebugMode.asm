@@ -33,8 +33,8 @@ Debug_Main:	; Routine 0
 		adda.l	#v_ram_start,a2				; a2 = object
 		clr.w	obPlatformAddr(a0)			; clear object's SST address
 	; obPlatform SST mod end
-		bclr	#staSonicOnObj,obStatus(a2)	; clear object's standing flag
-		clr.b	obSolid(a2)
+		bclr	#staSonicOnObj,obStatus(a2)	; clear object's standing flag -- Removed obSolid
+
 .setpos:
 	; Debug Improvements end
 

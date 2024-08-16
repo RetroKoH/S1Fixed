@@ -339,8 +339,8 @@ loc_19DD8:
 		bhi.w	return_19E8E
 		cmpi.w	#-$10,d0
 		blo.w	return_19E8E
-		;tst.b	$2A(a1)				; Sonic OST obj_control
-		;bmi.w	return_19E8E
+		tst.b	obCtrlLock(a1)		; Sonic 2 OST obj_control
+		bmi.w	return_19E8E
 		cmpi.b	#6,obRoutine(a1)	; Sonic death check
 		bhs.w	return_19E8E
 		add.w	d0,d2
@@ -353,10 +353,9 @@ loc_19DD8:
 		beq.s	loc_19E30
 	; RetroKoH obPlatform SST mod
 		movea.w	obPlatformAddr(a1),a3
-		adda.l	#v_ram_start,a3		; a3 = object being stood upon 
+		adda.l	#v_ram_start,a3				; a3 = object being stood upon 
 	; obPlatform SST mod end
-		bclr	#staSonicOnObj,obStatus(a3)
-		clr.b	obSolid(a3)
+		bclr	#staSonicOnObj,obStatus(a3)	; removed obSolid
 
 loc_19E30:
 	; RetroKoH obPlatform SST mod

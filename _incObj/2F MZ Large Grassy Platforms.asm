@@ -44,15 +44,15 @@ LGrass_Main:	; Routine 0
 
 LGrass_Action:	; Routine 2
 		bsr.w	LGrass_Types
-		tst.b	obSolid(a0)
+		btst	#staSonicOnObj,obStatus(a0)	; removed obSolid
 		beq.s	LGrass_Solid
 		moveq	#0,d1
 		move.b	obActWid(a0),d1
 		addi.w	#$B,d1
 		bsr.w	ExitPlatform
-		btst	#staOnObj,obStatus(a1)	; is Sonic on the object?
-		bne.w	LGrass_Slope			; if yes, branch
-		clr.b	obSolid(a0)
+		btst	#staOnObj,obStatus(a1)		; is Sonic on the object?
+		bne.w	LGrass_Slope				; if yes, branch
+		bclr	#staSonicOnObj,obStatus(a0)	; removed obSolid
 		bra.s	LGrass_Display
 ; ===========================================================================
 
@@ -145,7 +145,7 @@ loc_AFF2:
 
 LGrass_Type05:
 		move.b	objoff_34(a0),d0
-		tst.b	obSolid(a0)
+		btst	#staSonicOnObj,obStatus(a0)	; removed obSolid
 		bne.s	loc_B010
 		subq.b	#2,d0
 		bcc.s	loc_B01C

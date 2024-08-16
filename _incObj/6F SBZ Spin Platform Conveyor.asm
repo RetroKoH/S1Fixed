@@ -157,8 +157,7 @@ loc_16404:
 		beq.s	loc_16420
 		lea		(v_player).w,a1
 		bclr	#staOnObj,obStatus(a1)
-		bclr	#staSonicOnObj,obStatus(a0)
-		clr.b	obSolid(a0)
+		bclr	#staSonicOnObj,obStatus(a0)	; removed obSolid
 
 loc_16420:
 		bra.w	loc_16424

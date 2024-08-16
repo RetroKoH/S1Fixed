@@ -40,41 +40,40 @@ Smab_Solid:	; Routine 2
 ; ===========================================================================
 
 .smash:
-		cmpi.b	#aniID_Roll,sonicAniFrame(a0) ; is Sonic rolling/jumping?
-		bne.w	RememberState	; if not, branch
+		cmpi.b	#aniID_Roll,sonicAniFrame(a0)	; is Sonic rolling/jumping?
+		bne.w	RememberState					; if not, branch
 		move.w	hitcount(a0),(v_itembonus).w
 		bset	#staSpin,obStatus(a1)
 		move.b	#$E,obHeight(a1)
 		move.b	#7,obWidth(a1)
-		move.b	#aniID_Roll,obAnim(a1) ; make Sonic roll
-		move.w	#-$300,obVelY(a1) ; rebound Sonic
+		move.b	#aniID_Roll,obAnim(a1)			; make Sonic roll
+		move.w	#-$300,obVelY(a1)				; rebound Sonic
 		bset	#staAir,obStatus(a1)
 		bclr	#staOnObj,obStatus(a1)
 		move.b	#2,obRoutine(a1)
-		bclr	#staSonicOnObj,obStatus(a0)
-		clr.b	obSolid(a0)
+		bclr	#staSonicOnObj,obStatus(a0)		; removed obSolid
 		move.b	#1,obFrame(a0)
-		lea		(Smab_Speeds).l,a4 ; load broken fragment speed data
-		moveq	#3,d1		; set number of	fragments to 4
+		lea		(Smab_Speeds).l,a4				; load broken fragment speed data
+		moveq	#3,d1							; set number of	fragments to 4
 		move.w	#$38,d2
 		bsr.w	SmashObject
 		bsr.w	FindFreeObj
 		bne.s	Smab_Points
-		_move.b	#id_Points,obID(a1) ; load points object
+		_move.b	#id_Points,obID(a1)				; load points object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.w	(v_itembonus).w,d2
-		addq.w	#2,(v_itembonus).w ; increment bonus counter
-		cmpi.w	#6,d2		; have fewer than 3 blocks broken?
-		blo.s	.bonus		; if yes, branch
-		moveq	#6,d2		; set cap for points
+		addq.w	#2,(v_itembonus).w				; increment bonus counter
+		cmpi.w	#6,d2							; have fewer than 3 blocks broken?
+		blo.s	.bonus							; if yes, branch
+		moveq	#6,d2							; set cap for points
 
 .bonus:
 		moveq	#0,d0
 		move.w	Smab_Scores(pc,d2.w),d0
-		cmpi.w	#$20,(v_itembonus).w ; have 16 blocks been smashed?
-		blo.s	.givepoints	; if not, branch
-		move.w	#1000,d0	; give higher points for 16th block
+		cmpi.w	#$20,(v_itembonus).w			; have 16 blocks been smashed?
+		blo.s	.givepoints						; if not, branch
+		move.w	#1000,d0						; give higher points for 16th block
 		moveq	#10,d2
 
 .givepoints:

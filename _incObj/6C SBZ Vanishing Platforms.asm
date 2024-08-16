@@ -98,9 +98,8 @@ VanP_Appear:	; Routine 4
 		beq.s	.display
 		lea		(v_player).w,a1
 		bclr	#staOnObj,obStatus(a1)
-		bclr	#staSonicOnObj,obStatus(a0)
+		bclr	#staSonicOnObj,obStatus(a0)	; Removed obSolid
 		move.b	#2,obRoutine(a0)
-		clr.b	obSolid(a0)
 
 .display:
 		jmp		(RememberState).l

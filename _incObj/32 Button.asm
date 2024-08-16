@@ -48,7 +48,7 @@ loc_BDB2:
 		bne.s	loc_BDC8
 
 loc_BDBE:
-		tst.b	obSolid(a0)
+		btst	#staSonicOnObj,obStatus(a0)	; removed obSolid
 		bne.s	loc_BDC8
 		bclr	d3,(a3)
 		bra.s	loc_BDDE

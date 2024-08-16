@@ -70,8 +70,8 @@ Spring_Up:	; Routine 2
 		move.w	#$10,d3
 		move.w	obX(a0),d4
 		bsr.w	SolidObject
-		tst.b	obSolid(a0)	; is Sonic on top of the spring?
-		bne.s	Spring_BounceUp	; if yes, branch
+		btst	#staSonicOnObj,obStatus(a0)	; removed obSolid
+		bne.s	Spring_BounceUp				; if Sonic is on top of the spring, branch
 		rts	
 ; ===========================================================================
 
@@ -90,8 +90,7 @@ Spring_BounceUp:
 
 		move.b	#aniID_Spring,obAnim(a1)	; use "bouncing" animation
 		move.b	#2,obRoutine(a1)
-		bclr	#staSonicOnObj,obStatus(a0)
-		clr.b	obSolid(a0)
+		bclr	#staSonicOnObj,obStatus(a0)	; removed obSolid
 		move.w	#sfx_Spring,d0
 		jsr		(PlaySound_Special).w		; play spring sound
 
@@ -172,7 +171,7 @@ Spring_Dwn:	; Routine $E
 		move.b	#$E,obRoutine(a0)
 
 loc_DCA4:
-		tst.b	obSolid(a0)
+		btst	#staSonicOnObj,obStatus(a0)	; removed obSolid
 		bne.s	locret_DCAE
 		tst.w	d4
 		bmi.s	Spring_BounceDwn
@@ -185,14 +184,13 @@ Spring_BounceDwn:
 		addq.b	#2,obRoutine(a0)
 		subq.w	#8,obY(a1)
 		move.w	spring_pow(a0),obVelY(a1)
-		neg.w	obVelY(a1)				; move Sonic downwards
+		neg.w	obVelY(a1)					; move Sonic downwards
 		bset	#staAir,obStatus(a1)
 		bclr	#staOnObj,obStatus(a1)
 		move.b	#2,obRoutine(a1)
-		bclr	#staSonicOnObj,obStatus(a0)
-		clr.b	obSolid(a0)
+		bclr	#staSonicOnObj,obStatus(a0)	; removed obSolid
 		move.w	#sfx_Spring,d0
-		jsr		(PlaySound_Special).w	; play spring sound
+		jsr		(PlaySound_Special).w		; play spring sound
 
 Spring_AniDwn:	; Routine $10
 		lea		Ani_Spring(pc),a1

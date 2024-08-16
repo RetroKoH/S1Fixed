@@ -20,13 +20,14 @@ PushB_Var:
 
 PushB_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
-		move.b	#$F,obHeight(a0)
-		move.b	#$F,obWidth(a0)
+		moveq	#$F,d0												; quick move to save cycles
+		move.b	d0,obHeight(a0)
+		move.b	d0,obWidth(a0)
 		move.l	#Map_Push,obMap(a0)
-		move.w	#make_art_tile(ArtTile_MZ_Block,2,0),obGfx(a0) ; MZ specific code
+		move.w	#make_art_tile(ArtTile_MZ_Block,2,0),obGfx(a0)		; MZ specific code
 		cmpi.b	#id_LZ,(v_zone).w
 		bne.s	.notLZ
-		move.w	#make_art_tile(ArtTile_LZ_Push_Block,2,0),obGfx(a0) ; LZ specific code
+		move.w	#make_art_tile(ArtTile_LZ_Push_Block,2,0),obGfx(a0)	; LZ specific code
 
 .notLZ:
 		move.b	#4,obRender(a0)
@@ -120,8 +121,8 @@ locret_C044:
 
 loc_C046:
 		move.w	obX(a0),-(sp)
-		cmpi.b	#4,obSolid(a0)
-		bhs.s	loc_C056
+		cmpi.b	#4,ob2ndRout(a0)	; is block falling after being pushed?
+		bhs.s	loc_C056			; if yes, branch
 		bsr.w	SpeedToPos
 
 loc_C056:
@@ -155,8 +156,8 @@ loc_C0A0:
 		moveq	#0,d3
 		move.b	obActWid(a0),d3
 		jsr		(ObjHitWallRight).l
-		tst.w	d1		; has block touched a wall?
-		bmi.s	PushB_StopPush	; if yes, branch
+		tst.w	d1					; has block touched a wall?
+		bmi.s	PushB_StopPush		; if yes, branch
 		bra.s	loc_C0E6
 ; ===========================================================================
 
@@ -165,13 +166,13 @@ loc_C0BC:
 		move.b	obActWid(a0),d3
 		not.w	d3
 		jsr		(ObjHitWallLeft).l
-		tst.w	d1		; has block touched a wall?
-		bmi.s	PushB_StopPush	; if yes, branch
+		tst.w	d1					; has block touched a wall?
+		bmi.s	PushB_StopPush		; if yes, branch
 		bra.s	loc_C0E6
 ; ===========================================================================
 
 PushB_StopPush:
-		clr.w	obVelX(a0)		; stop block moving
+		clr.w	obVelX(a0)			; stop block moving
 		bra.s	loc_C0E6
 ; ===========================================================================
 
@@ -241,14 +242,14 @@ locret_C184:
 ; ===========================================================================
 
 loc_C186:
-		move.b	obSolid(a0),d0
+		move.b	ob2ndRout(a0),d0
 		beq.w	loc_C218
 		subq.b	#2,d0
 		bne.s	loc_C1AA
 		bsr.w	ExitPlatform
 		btst	#staOnObj,obStatus(a1)
 		bne.s	loc_C1A4
-		clr.b	obSolid(a0)
+		clr.b	ob2ndRout(a0)
 		rts	
 ; ===========================================================================
 
@@ -262,12 +263,12 @@ loc_C1AA:
 		bne.s	loc_C1F2
 		bsr.w	SpeedToPos
 		addi.w	#$18,obVelY(a0)
-		jsr	(ObjFloorDist).l
+		jsr		(ObjFloorDist).l
 		tst.w	d1
 		bpl.w	locret_C1F0
 		add.w	d1,obY(a0)
 		clr.w	obVelY(a0)
-		clr.b	obSolid(a0)
+		clr.b	ob2ndRout(a0)
 		move.w	(a1),d0
 		andi.w	#$3FF,d0
 		cmpi.w	#$16A,d0
@@ -290,37 +291,45 @@ loc_C1F2:
 		andi.w	#-$10,obX(a0)
 		move.w	obVelX(a0),objoff_30(a0)
 		clr.w	obVelX(a0)
-		subq.b	#2,obSolid(a0)
+		subq.b	#2,ob2ndRout(a0)
 		rts	
 ; ===========================================================================
 
 loc_C218:
 		bsr.w	Solid_ChkEnter
 		tst.w	d4
-		beq.w	locret_C2E4
-		bmi.w	locret_C2E4
+		beq.s	.locret
+		bmi.s	.chkStand
 		tst.b	objoff_32(a0)
 		beq.s	loc_C230
-		bra.w	locret_C2E4
+	.locret:
+		rts
+	.chkStand:
+		btst	#staSonicOnObj,obStatus(a0)
+		beq.s	.locret
+		move.b	#2,ob2ndRout(a0)
+		rts
 ; ===========================================================================
 
 loc_C230:
 		tst.w	d0
-		beq.w	locret_C2E4
+		beq.w	.locret
 		bmi.s	loc_C268
 		btst	#staFacing,obStatus(a1)
-		bne.w	locret_C2E4
+		bne.w	.locret
 		move.w	d0,-(sp)
 		moveq	#0,d3
 		move.b	obActWid(a0),d3
 		jsr		(ObjHitWallRight).l
 		move.w	(sp)+,d0
 		tst.w	d1
-		bmi.w	locret_C2E4
+		bmi.w	.locret
 		addi.l	#$10000,obX(a0)
 		moveq	#1,d0
 		move.w	#$40,d1
 		bra.s	loc_C294
+	.locret:
+		rts
 ; ===========================================================================
 
 loc_C268:
@@ -360,8 +369,8 @@ loc_C294:
 		neg.w	obVelX(a0)
 
 loc_C2D8:
-		move.b	#6,obSolid(a0)
-		bra.s	locret_C2E4
+		move.b	#6,ob2ndRout(a0)		; move block forward to fall down
+		rts
 ; ===========================================================================
 
 loc_C2E0:

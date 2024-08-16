@@ -12,36 +12,36 @@
 
 
 SolidObject:
-		tst.b	obSolid(a0)		; is Sonic standing on the object?
-		beq.w	Solid_ChkEnter	; if not, branch
+		btst	#staSonicOnObj,obStatus(a0)	; is Sonic standing on the object? -- Removed obSolid
+		beq.w	Solid_ChkEnter				; if not, branch
 		move.w	d1,d2
 		add.w	d2,d2
 		lea		(v_player).w,a1
-		btst	#staAir,obStatus(a1)	; is Sonic in the air?
-		bne.s	.leave					; if yes, branch
+		btst	#staAir,obStatus(a1)		; is Sonic in the air?
+		bne.s	.leave						; if yes, branch
 		move.w	obX(a1),d0
 		sub.w	obX(a0),d0
 		add.w	d1,d0
-		bmi.s	.leave			; if Sonic moves off the left, branch
-		cmp.w	d2,d0			; has Sonic moved off the right?
-		blo.s	.stand			; if not, branch
+		bmi.s	.leave						; if Sonic moves off the left, branch
+		cmp.w	d2,d0						; has Sonic moved off the right?
+		blo.s	.stand						; if not, branch
 
 .leave:
 		bclr	#staOnObj,obStatus(a1)		; clear Sonic's standing flag
-		bclr	#staSonicOnObj,obStatus(a0)	; clear object's standing flag
-		clr.b	obSolid(a0)
+		; Sonic 2 sets Sonic's in-air flag here
+		bclr	#staSonicOnObj,obStatus(a0)	; clear object's standing flag -- Removed obSolid
 		moveq	#0,d4
 		rts	
 
 .stand:
 		move.w	d4,d2
-		jsr		MvSonicOnPtfm	; was bsr.w
+		jsr		(MvSonicOnPtfm).l
 		moveq	#0,d4
 		rts	
 ; ===========================================================================
 
 SolidObject71:
-		tst.b	obSolid(a0)
+		btst	#staSonicOnObj,obStatus(a0)	; is Sonic standing on the object? -- Removed obSolid
 		beq.w	loc_FAD0
 		move.w	d1,d2
 		add.w	d2,d2
@@ -57,8 +57,8 @@ SolidObject71:
 
 .leave:
 		bclr	#staOnObj,obStatus(a1)		; clear Sonic's standing flag
-		bclr	#staSonicOnObj,obStatus(a0)	; clear object's standing flag
-		clr.b	obSolid(a0)
+		; Sonic 2 sets Sonic's in-air flag here
+		bclr	#staSonicOnObj,obStatus(a0)	; clear object's standing flag -- Removed obSolid
 		moveq	#0,d4
 		rts	
 
@@ -270,17 +270,16 @@ Solid_Landed:
 		add.w	d2,d2
 		add.w	obX(a1),d1
 		sub.w	obX(a0),d1
-		bmi.s	Solid_Miss	; if Sonic is right of object, branch
-		cmp.w	d2,d1		; is Sonic left of object?
-		bhs.s	Solid_Miss	; if yes, branch
-		tst.w	obVelY(a1)	; is Sonic moving upwards?
-		bmi.s	Solid_Miss	; if yes, branch
-		sub.w	d3,obY(a1)	; correct Sonic's position
+		bmi.s	Solid_Miss					; if Sonic is right of object, branch
+		cmp.w	d2,d1						; is Sonic left of object?
+		bhs.s	Solid_Miss					; if yes, branch
+		tst.w	obVelY(a1)					; is Sonic moving upwards?
+		bmi.s	Solid_Miss					; if yes, branch
+		sub.w	d3,obY(a1)					; correct Sonic's position
 		subq.w	#1,obY(a1)
 		bsr.s	Solid_ResetFloor
-		move.b	#2,obSolid(a0)	; set standing flags
-		bset	#staSonicOnObj,obStatus(a0)
-		moveq	#-1,d4			; return top/bottom collision
+		bset	#staSonicOnObj,obStatus(a0)	; Removed #2,obSolid(a0)
+		moveq	#-1,d4						; return top/bottom collision
 		rts	
 ; ===========================================================================
 
@@ -302,8 +301,7 @@ Solid_ResetFloor:
 		movea.w	obPlatformAddr(a1),a2		; get object being stood on
 		adda.l	#v_ram_start,a2				; a2 = object being stood upon
 	; obPlatform SST mod end
-		bclr	#staSonicOnObj,obStatus(a2)	; clear object's standing flags
-		clr.b	obSolid(a2)
+		bclr	#staSonicOnObj,obStatus(a2)	; clear object's standing flags -- Removed obSolid
 
 .notonobj:
 		move.w	a0,obPlatformAddr(a1)		; RetroKoH obPlatform SST mod

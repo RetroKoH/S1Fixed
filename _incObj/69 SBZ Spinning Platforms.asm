@@ -82,10 +82,7 @@ Spin_Trapdoor:	; Routine 2
 		beq.w	RememberState				; if not, branch
 		lea		(v_player).w,a1
 		bclr	#staOnObj,obStatus(a1)
-		bclr	#staSonicOnObj,obStatus(a0)
-		clr.b	obSolid(a0)
-
-.display:
+		bclr	#staSonicOnObj,obStatus(a0)	; removed obSolid
 		bra.w	RememberState
 ; ===========================================================================
 
@@ -123,8 +120,5 @@ Spin_Spinner:	; Routine 4
 		beq.w	RememberState
 		lea		(v_player).w,a1
 		bclr	#staOnObj,obStatus(a1)
-		bclr	#staSonicOnObj,obStatus(a0)
-		clr.b	obSolid(a0)
-
-.display:
+		bclr	#staSonicOnObj,obStatus(a0)	; removed obSolid
 		bra.w	RememberState
