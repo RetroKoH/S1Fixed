@@ -252,7 +252,6 @@ Drown_Countdown:; Routine $A
 		clr.w	obInertia(a0)
 		move.b	#$A,obRoutine(a0)		; Force the character to drown -- RHS Drowning Fix
 		move.b	#1,(f_nobgscroll).w
-		clr.b	(f_timecount).w			; Stop the timer immediately -- RHS Drowning Fix
 		movea.l	(sp)+,a0				; restore a0 = obj0A
 		rts	
 ; ===========================================================================

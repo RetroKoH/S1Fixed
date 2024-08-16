@@ -207,7 +207,7 @@ Debug_ChgItem:
 		beq.w	.special							; if yes, branch
 
 		move.l	#Map_Sonic,obMap(a1)
-		move.w	#ArtTile_Sonic,obGfx(a1)
+		move.w	#ArtTile_Sonic,obGfx(a1)			; Also resets high priority bit in case of drowning
 		move.b	#aniID_Walk,obAnim(a1)
 		clr.w	obX+2(a1)
 		clr.w	obY+2(a1)

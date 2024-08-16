@@ -119,9 +119,13 @@ HUD_Update:
 TimeOver:
 		clr.b	(f_timecount).w
 		lea		(v_player).w,a0
+		cmpi.b	#6,obRoutine(a0)
+		bhs.s	.noTimeOver					; don't trigger if already dying/drowning
 		movea.l	a0,a2
 		bsr.w	KillSonic
 		move.b	#1,(f_timeover).w
+
+.noTimeOver:
 		rts	
 ; ===========================================================================
 
