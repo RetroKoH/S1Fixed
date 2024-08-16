@@ -132,8 +132,8 @@ Drown_AirLeft_Delete:
 Drown_ShowNumber:
 		tst.w	drown_time(a0)
 		beq.s	.nonumber
-		subq.w	#1,drown_time(a0)	; decrement timer
-		bne.s	.nonumber	; if time remains, branch
+		subq.w	#1,drown_time(a0)				; decrement timer
+		bne.s	.nonumber						; if time remains, branch
 		cmpi.b	#7,obAnim(a0)
 		bhs.s	.nonumber
 
@@ -148,7 +148,7 @@ Drown_ShowNumber:
 		sub.w	(v_screenposy).w,d0
 		addi.w	#$80,d0
 		move.w	d0,obScreenY(a0)
-		move.b	#id_Drown_AirLeft,obRoutine(a0) ; goto Drown_AirLeft next
+		move.b	#id_Drown_AirLeft,obRoutine(a0)	; goto Drown_AirLeft next
 
 .nonumber:
 		rts	
@@ -173,12 +173,14 @@ Drown_WobbleData:
 ; ===========================================================================
 
 Drown_Countdown:; Routine $A
-		lea		(v_player).w,a2		; S2 Optimization (RetroKoH)
+		lea		(v_player).w,a2					; S2 Optimization (RetroKoH)
 
 	; If Sonic has drowned, and the object is waiting until the
 	; world should pause, then go deal with that.
 		tst.w	objoff_2C(a0)
 		bne.w	.loc_13F86
+		tst.b	(v_debuguse).w					; is debug mode active?
+		bne.s	.cantdrown						; if yes, branch
 		cmpi.b	#6,obRoutine(a2)				; is Sonic dead?
 		bhs.s	.cantdrown						; if yes, branch
 
@@ -197,19 +199,20 @@ Drown_Countdown:; Routine $A
 		jsr		(RandomNumber).w
 		andi.w	#1,d0
 		move.b	d0,objoff_34(a0)
-		move.b	(v_air).w,d0	; check air remaining
+		move.b	(v_air).w,d0					; check air remaining
 		cmpi.b	#25,d0
-		beq.s	.warnsound		; play sound if	air is 25
+		beq.s	.warnsound						; play sound if	air is 25
 		cmpi.b	#20,d0
 		beq.s	.warnsound
 		cmpi.b	#15,d0
 		beq.s	.warnsound
 		cmpi.b	#12,d0
-		bhi.s	.reduceair		; if air is above 12, branch
+		bhi.s	.reduceair						; if air is above 12, branch
 
-		bne.s	.skipmusic		; if air is less than 12, branch
+		bne.s	.skipmusic						; if air is less than 12, branch
 		move.b	#bgm_Drowning,d0
-		jsr		(PlaySound).w	; play countdown music
+		jsr		(PlaySound).w					; play countdown music
+		clr.b	(v_lastbgmplayed).w				; clear last played music
 
 .skipmusic:
 		subq.b	#1,objoff_32(a0)

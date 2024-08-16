@@ -10,6 +10,7 @@ DebugMode:
 
 Debug_Main:	; Routine 0
 		addq.b	#2,(v_debuguse).w
+		jsr		(ResumeMusic).l						; cancel countdown music
 		move.w	(v_limittop2).w,(v_limittopdb).w	; buffer level x-boundary
 		move.w	(v_limitbtm1).w,(v_limitbtmdb).w	; buffer level y-boundary
 		clr.w	(v_limittop2).w
@@ -178,6 +179,7 @@ Debug_ChgItem:
 		jsr		(FindFreeObj).l
 		bne.s	.backtonormal
 		clr.b	(v_objstate+2).w			; Mercury Debug Improvements -- Allows us to place more rings/boxes, etc.
+		; The above line causes an issue with certain in-level objects. Check S3K code to fix this.
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		_move.b	obMap(a0),obID(a1)			; create object
@@ -202,7 +204,7 @@ Debug_ChgItem:
 		jsr		(Reset_Sonic_Position_Array).l
 		lea		(v_player).w,a1
 		cmpi.b	#id_Special,(v_gamemode).w			; are you in the special stage?
-		beq.s	.special							; if yes, branch
+		beq.w	.special							; if yes, branch
 
 		move.l	#Map_Sonic,obMap(a1)
 		move.w	#ArtTile_Sonic,obGfx(a1)
@@ -217,10 +219,21 @@ Debug_ChgItem:
 		move.b	#2,obRoutine(a1)
 		move.b	#$13,obHeight(a1)
 		move.b	#9,obWidth(a1)
+
+	if SuperMod=1
+		btst	#sta2ndSuper,obStatus2nd(a1)		; is player in Super Form?
+		beq.s	.notSuper							; if not, branch
+		bset	#sta2ndInvinc,obStatus2nd(a1)		; set invincibility again (in case we spawn after death)
+.notSuper:
+	endif
+		bsr.w	Debug_RestartMusic					; fix music bug w/ invincibility
+
 		lea     (v_sonspeedmax).w,a2				; Load Sonic_top_speed into a2
 		jsr		(ApplySpeedSettings).l				; Fetch Speed settings
 		move.w	(v_limittopdb).w,(v_limittop2).w	; restore level boundaries
 		move.w	(v_limitbtmdb).w,(v_limitbtm1).w
+
+; HUD resets
 		jsr		(Hud_Base).l						; reload basic HUD gfx	-- RetroKoH Debug Mode Improvement
 		move.b	#1,(f_ringcount).w					; update ring counter
 		move.b	#1,(f_scorecount).w					; update score counter
@@ -261,3 +274,45 @@ Debug_ShowItem:
 		move.b	5(a2,d0.w),obFrame(a0)	; load frame number for item
 		rts	
 ; End of function Debug_ShowItem
+
+
+; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+
+
+Debug_RestartMusic:
+		moveq	#0,d0
+		move.b	(v_zone).w,d0
+		cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; check if level is SBZ3
+		bne.s	.music
+		moveq	#bgm_SBZ,d0					; play SBZ music
+
+.music:
+		lea		(MusicList2).l,a1
+		move.b	(a1,d0.w),d0
+
+; checks
+	if SuperMod=1
+		btst	#sta2ndSuper,(v_player+obStatus2nd).w	; is player in Super Form?
+		bne.s	.playinvinc								; if yes, branch
+	endif
+
+		btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; is Sonic invincible?
+		beq.s	.notinvinc								; if not, branch
+
+.playinvinc:
+		move.w	#bgm_Invincible,d0
+
+.notinvinc:
+		tst.b	(f_lockscreen).w			; is Sonic at a boss?
+		beq.s	.playselected				; if not, branch
+		move.w	#bgm_Boss,d0
+
+.playselected:
+		cmp.b	(v_lastbgmplayed).w,d0		; was this music already playing?
+		beq.s	.dontrestart
+		move.b	d0,(v_lastbgmplayed).w		; store last played music
+		jmp		(PlaySound).w				; restart last played music
+
+.dontrestart:
+		rts
+; End of function Debug_RestartMusic

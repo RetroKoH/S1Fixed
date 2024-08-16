@@ -414,7 +414,8 @@ loc_194DA:
 loc_194E0:
 		clr.w	obVelY(a0)
 		move.w	#bgm_SYZ,d0
-		jsr		(PlaySound).w		; play SYZ music
+		jsr		(PlaySound).w			; play SYZ music
+		move.b	d0,(v_lastbgmplayed).w	; store last played music
 		bra.w	loc_191F2
 ; ===========================================================================
 

@@ -1717,7 +1717,7 @@ GM_Title:
 		locVRAM	ArtTile_Title_Foreground*tile_size
 		lea		(Nem_TitleFg).l,a0				; load title screen patterns
 		bsr.w	NemDec
-		; Removed Title Sonic Decompression (now loads via DPLCs
+		; Removed Title Sonic Decompression (now loads via DPLCs)
 		locVRAM	ArtTile_Title_Trademark*tile_size
 		lea		(Nem_TitleTM).l,a0				; load "TM" patterns
 		bsr.w	NemDec
@@ -1729,6 +1729,9 @@ GM_Title:
 Tit_LoadText:
 		move.w	(a5)+,(a6)
 		dbf		d1,Tit_LoadText				; load level select font
+		
+		; Due to removing part of the pattern loading process, we should
+		; add a timer to wait out the SONIC TEAM PRESENTS TEXT
 
 		clr.b	(f_nobgscroll).w			; Mercury Game Over When Drowning Fix
 		clr.b	(v_lastlamp).w				; clear lamppost counter
@@ -2341,17 +2344,17 @@ Level_LoadPal:
 		move.b	#30,(v_air).w
 		enable_ints
 		moveq	#palid_Sonic,d0
-		bsr.w	PalLoad	; load Sonic's palette
-		cmpi.b	#id_LZ,(v_zone).w ; is level LZ?
-		bne.s	Level_GetBgm	; if not, branch
+		bsr.w	PalLoad							; load Sonic's palette
+		cmpi.b	#id_LZ,(v_zone).w				; is level LZ?
+		bne.s	Level_GetBgm					; if not, branch
 
-		moveq	#palid_LZSonWater,d0 ; palette number $F (LZ)
-		cmpi.b	#3,(v_act).w	; is act number 3?
-		bne.s	Level_WaterPal	; if not, branch
-		moveq	#palid_SBZ3SonWat,d0 ; palette number $10 (SBZ3)
+		moveq	#palid_LZSonWater,d0			; palette number $F (LZ)
+		cmpi.b	#3,(v_act).w					; is act number 3?
+		bne.s	Level_WaterPal					; if not, branch
+		moveq	#palid_SBZ3SonWat,d0			; palette number $10 (SBZ3)
 
 Level_WaterPal:
-		bsr.w	PalLoad_Fade_Water	; load underwater palette
+		bsr.w	PalLoad_Fade_Water				; load underwater palette
 		tst.b	(v_lastlamp).w
 		beq.s	Level_GetBgm
 		move.b	(v_lamp_wtrstat).w,(f_wtr_state).w
@@ -2361,20 +2364,21 @@ Level_GetBgm:
 		bmi.s	Level_SkipTtlCard
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
-		cmpi.w	#(id_LZ<<8)+3,(v_zone).w ; is level SBZ3?
-		bne.s	Level_BgmNotLZ4	; if not, branch
-		moveq	#5,d0		; use 5th music (SBZ)
+		cmpi.w	#(id_LZ<<8)+3,(v_zone).w		; is level SBZ3?
+		bne.s	Level_BgmNotLZ4					; if not, branch
+		moveq	#5,d0							; use 5th music (SBZ)
 
 Level_BgmNotLZ4:
-		cmpi.w	#(id_SBZ<<8)+2,(v_zone).w ; is level FZ?
-		bne.s	Level_PlayBgm	; if not, branch
-		moveq	#6,d0		; use 6th music (FZ)
+		cmpi.w	#(id_SBZ<<8)+2,(v_zone).w		; is level FZ?
+		bne.s	Level_PlayBgm					; if not, branch
+		moveq	#6,d0							; use 6th music (FZ)
 
 Level_PlayBgm:
-		lea		(MusicList).l,a1 ; load	music playlist
+		lea		(MusicList).l,a1				; load music playlist
 		move.b	(a1,d0.w),d0
-		bsr.w	PlaySound	; play music
-		move.b	#id_TitleCard,(v_titlecard).w ; load title card object
+		bsr.w	PlaySound						; play music
+		move.b	d0,(v_lastbgmplayed).w			; store last played music
+		move.b	#id_TitleCard,(v_titlecard).w	; load title card object
 
 Level_TtlCardLoop:
 		move.b	#$C,(v_vbla_routine).w
@@ -2391,12 +2395,12 @@ Level_TtlCardLoop:
 
 Level_SkipTtlCard:
 		moveq	#palid_Sonic,d0
-		bsr.w	PalLoad_Fade	; load Sonic's palette
+		bsr.w	PalLoad_Fade					; load Sonic's palette
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformLayers
 		bset	#2,(v_fg_scroll_flags).w
-		bsr.w	LoadZoneTiles	; load level art -- Clownacy Level Art Loading
-		bsr.w	LevelDataLoad	; load block mappings and palettes
+		bsr.w	LoadZoneTiles					; load level art -- Clownacy Level Art Loading
+		bsr.w	LevelDataLoad					; load block mappings and palettes
 		bsr.w	LoadTilesFromStart
 		jsr		(ConvertCollisionArray).l
 		bsr.w	ColIndexLoad
@@ -3371,18 +3375,18 @@ GM_Continue:
 	; Title Card Optimization End
 
 		locVRAM	ArtTile_Continue_Sonic*tile_size
-		lea		(Nem_ContSonic).l,a0	; load Sonic patterns
+		lea		(Nem_ContSonic).l,a0						; load Sonic patterns
 		bsr.w	NemDec
 		locVRAM	ArtTile_Mini_Sonic*tile_size
-		lea		(Nem_MiniSonic).l,a0	; load continue() and Mini Sonic patterns
+		lea		(Nem_MiniSonic).l,a0						; load continue() and Mini Sonic patterns
 		bsr.w	NemDec
 		moveq	#10,d1
-		jsr		(ContScrCounter).l		; run countdown	(start from 10)
+		jsr		(ContScrCounter).l							; run countdown	(start from 10)
 		moveq	#palid_Continue,d0
-		bsr.w	PalLoad_Fade				; load continue	screen palette
+		bsr.w	PalLoad_Fade								; load continue	screen palette
 		move.b	#bgm_Continue,d0
-		bsr.w	PlaySound				; play continue	music
-		move.w	#659,(v_demolength).w	; set time delay to 11 seconds
+		bsr.w	PlaySound									; play continue	music
+		move.w	#659,(v_demolength).w						; set time delay to 11 seconds
 		clr.l	(v_screenposx).w
 		move.l	#$1000000,(v_screenposy).w
 		move.b	#id_ContSonic,(v_player).w					; load Sonic object
@@ -3485,30 +3489,31 @@ GM_Ending:
 
 End_LoadData:
 		moveq	#plcid_Ending,d0
-		bsr.w	QuickPLC			; load ending sequence patterns
+		bsr.w	QuickPLC							; load ending sequence patterns
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformLayers
 		bset	#2,(v_fg_scroll_flags).w
-		bsr.w	LoadZoneTiles	; load level art -- Clownacy Level Art Loading
+		bsr.w	LoadZoneTiles						; load level art -- Clownacy Level Art Loading
 		bsr.w	LevelDataLoad
 		bsr.w	LoadTilesFromStart
-		lea		(Col_GHZ_1).l,a0 ; MJ: Set first collision for ending
+		lea		(Col_GHZ_1).l,a0					; MJ: Set first collision for ending
 		lea		(v_collision1).w,a1
 		bsr.w	KosDec
-		lea		(Col_GHZ_2).l,a0 ; MJ: Set second collision for ending
+		lea		(Col_GHZ_2).l,a0					; MJ: Set second collision for ending
 		lea		(v_collision2).w,a1
 		bsr.w	KosDec
 		enable_ints
-		lea		(Kos_EndFlowers).l,a0 ;	load extra flower patterns
-		lea		((v_128x128+$1000)&$FFFFFF).l,a1 ; RAM address to buffer the patterns
+		lea		(Kos_EndFlowers).l,a0				; load extra flower patterns
+		lea		((v_128x128+$1000)&$FFFFFF).l,a1	; RAM address to buffer the patterns
 		bsr.w	KosDec
 		moveq	#palid_Sonic,d0
-		bsr.w	PalLoad_Fade	; load Sonic's palette
+		bsr.w	PalLoad_Fade						; load Sonic's palette
 		move.w	#bgm_Ending,d0
-		bsr.w	PlaySound	; play ending sequence music
-		btst	#bitA,(v_jpadhold1).w ; is button A pressed?
-		beq.s	End_LoadSonic	; if not, branch
-		move.b	#1,(f_debugmode).w ; enable debug mode
+		bsr.w	PlaySound							; play ending sequence music
+		move.b	d0,(v_lastbgmplayed).w				; store last played music
+		btst	#bitA,(v_jpadhold1).w				; is button A pressed?
+		beq.s	End_LoadSonic						; if not, branch
+		move.b	#1,(f_debugmode).w					; enable debug mode
 
 End_LoadSonic:
 		move.b	#id_SonicPlayer,(v_player).w		; load Sonic object
@@ -5829,7 +5834,8 @@ ResumeMusic:
 		move.w	#bgm_Boss,d0
 
 .playselected:
-		jsr		(PlaySound).w
+		jsr		(PlaySound).w				; restore music
+		move.b	d0,(v_lastbgmplayed).w		; store last played music
 
 .over12:
 		move.b	#30,(v_air).w				; reset air to 30 seconds
@@ -7198,32 +7204,32 @@ SS_MapIndex_End:
 
 
 AddPoints:
-		move.b	#1,(f_scorecount).w ; set score counter to update
+		move.b	#1,(f_scorecount).w		; set score counter to update
 		lea     (v_score).w,a3
 		add.l   d0,(a3)
 		move.l  #999999,d1
-		cmp.l   (a3),d1 ; is score below 999999?
-		bhi.s   .belowmax ; if yes, branch
-		move.l  d1,(a3) ; reset score to 999999
+		cmp.l   (a3),d1					; is score below 999999?
+		bhi.s   .belowmax				; if yes, branch
+		move.l  d1,(a3)					; reset score to 999999
 .belowmax:
 		move.l  (a3),d0
-		cmp.l   (v_scorelife).w,d0 ; has Sonic got 50000+ points?
-		blo.s   .noextralife ; if not, branch
+		cmp.l   (v_scorelife).w,d0		; has Sonic got 50000+ points?
+		blo.s   .noextralife			; if not, branch
 
-		addi.l  #5000,(v_scorelife).w ; increase requirement by 50000
+		addi.l  #5000,(v_scorelife).w	; increase requirement by 50000
 		tst.b   (v_megadrive).w
-		bmi.s   .noextralife ; branch if Mega Drive is Japanese
+		bmi.s   .noextralife			; branch if Mega Drive is Japanese
 		
 	; Mercury Lives Over/Underflow Fix
-		cmpi.b	#99,(v_lives).w		; are lives at max?
+		cmpi.b	#99,(v_lives).w			; are lives at max?
 		beq.s	.playbgm
-		addq.b	#1,(v_lives).w		; add 1 to number of lives
-		addq.b	#1,(f_lifecount).w	; update the lives counter
+		addq.b	#1,(v_lives).w			; add 1 to number of lives
+		addq.b	#1,(f_lifecount).w		; update the lives counter
 .playbgm:
 	; Lives Over/Underflow Fix end
 		
 		move.w	#bgm_ExtraLife,d0
-		jmp		(PlaySound).w
+		jmp		(PlaySound).w			; play extra life bgm
 
 
 .locret_1C6B6:

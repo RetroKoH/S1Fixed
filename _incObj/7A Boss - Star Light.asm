@@ -284,12 +284,12 @@ loc_18B80:
 		beq.s	loc_18B90
 		bpl.s	loc_18B96
 		addi.w	#$18,obVelY(a0)
-		bra.s	loc_18BC2
+		bra.w	loc_189EE
 ; ===========================================================================
 
 loc_18B90:
 		clr.w	obVelY(a0)
-		bra.s	loc_18BC2
+		bra.w	loc_189EE
 ; ===========================================================================
 
 loc_18B96:
@@ -297,22 +297,21 @@ loc_18B96:
 		blo.s	loc_18BAE
 		beq.s	loc_18BB4
 		cmpi.b	#$2A,objoff_3C(a0)
-		blo.s	loc_18BC2
+		blo.w	loc_189EE
 		addq.b	#2,ob2ndRout(a0)
-		bra.s	loc_18BC2
+		bra.w	loc_189EE
 ; ===========================================================================
 
 loc_18BAE:
 		subq.w	#8,obVelY(a0)
-		bra.s	loc_18BC2
+		bra.w	loc_189EE
 ; ===========================================================================
 
 loc_18BB4:
 		clr.w	obVelY(a0)
 		move.w	#bgm_SLZ,d0
-		jsr		(PlaySound).w	; play SLZ music
-
-loc_18BC2:
+		jsr		(PlaySound).w			; play SLZ music
+		move.b	d0,(v_lastbgmplayed).w	; store last played music
 		bra.w	loc_189EE
 ; ===========================================================================
 

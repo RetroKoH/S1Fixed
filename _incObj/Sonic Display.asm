@@ -44,12 +44,13 @@ Sonic_Display:
 		move.b	(v_zone).w,d0
 		cmpi.w	#(id_LZ<<8)+3,(v_zone).w		; check if level is SBZ3
 		bne.s	.music
-		moveq	#5,d0							; play SBZ music
+		moveq	#bgm_SBZ,d0						; play SBZ music
 
 .music:
 		lea		(MusicList2).l,a1
 		move.b	(a1,d0.w),d0
 		jsr		(PlaySound).w					; play normal music
+		move.b	d0,(v_lastbgmplayed).w			; store last played music
 
 .removeinvincible:
 		bclr	#sta2ndInvinc,obStatus2nd(a0)	; cancel invincibility

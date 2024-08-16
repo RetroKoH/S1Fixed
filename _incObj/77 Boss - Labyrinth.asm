@@ -267,7 +267,8 @@ loc_180F6:
 
 loc_18112:
 		move.w	#bgm_LZ,d0
-		jsr		(PlaySound).w		; play LZ music
+		jsr		(PlaySound).w			; play LZ music
+		move.b	d0,(v_lastbgmplayed).w	; store last played music
 		clr.b	(f_lockscreen).w
 		bset	#staFlipX,obStatus(a0)
 		addq.b	#2,ob2ndRout(a0)

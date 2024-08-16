@@ -10,7 +10,7 @@
 
 PlaySound:
 		move.b	d0,(v_snddriver_ram.v_soundqueue0).w
-		rts	
+		rts
 ; End of function PlaySound
 
 ; ---------------------------------------------------------------------------

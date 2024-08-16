@@ -152,6 +152,7 @@ Pow_Invinc:
 		cmpi.b	#$C,(v_air).w
 		bls.s	.nomusic
 		move.w	#bgm_Invincible,d0
+		move.b	d0,(v_lastbgmplayed).w					; store last played music
 		jmp		(PlaySound).w							; play invincibility music
 ; ===========================================================================
 
@@ -195,13 +196,17 @@ Pow_S:
 
 		ori.b	#1,(f_ringcount).w						; update the ring counter
 		cmpi.w	#100,(v_rings).w						; check if you have 100 rings
-		blo.s	Pow_RingSound
+		blo.s	.sRingSound
 		bset	#1,(v_lifecount).w
 		beq.w	ExtraLife
 		cmpi.w	#200,(v_rings).w						; check if you have 200 rings
-		blo.s	Pow_RingSound
+		blo.s	.sRingSound
 		bset	#2,(v_lifecount).w
 		beq.w	ExtraLife
+		
+.sRingSound:
+		move.w	#sfx_GiantRing,d0
+		jmp		(PlaySound_Special).w					; play giant ring sound
 	else
 		if AfterImagesOn=1	; Hitaxas S3K afterimage
 			move.b	#id_AfterImages,(v_trails).w
@@ -223,13 +228,16 @@ Pow_S:
 
 		ori.b	#1,(f_ringcount).w						; update the ring counter
 		cmpi.w	#100,(v_rings).w						; check if you have 100 rings
-		blo.s	Pow_RingSound
+		blo.s	.locret
 		bset	#1,(v_lifecount).w
 		beq.w	ExtraLife
 		cmpi.w	#200,(v_rings).w						; check if you have 200 rings
-		blo.s	Pow_RingSound
+		blo.s	.locret
 		bset	#2,(v_lifecount).w
 		beq.w	ExtraLife
+
+.locret:
+		rts
 	endif
 ; ===========================================================================
 

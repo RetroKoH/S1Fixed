@@ -312,7 +312,8 @@ loc_18566:
 loc_1856C:
 		clr.w	obVelY(a0)
 		move.w	#bgm_MZ,d0
-		jsr		(PlaySound).w		; play MZ music
+		jsr		(PlaySound).w			; play MZ music
+		move.b	d0,(v_lastbgmplayed).w	; store last played music
 
 loc_1857A:
 		bsr.w	BossMove
