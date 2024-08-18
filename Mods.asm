@@ -24,7 +24,7 @@ PeeloutEnabled: = 1
 AirRollEnabled: = 0						; double-jumps are not enabled when air rolling (toggleable perhaps?)
 
 ; Name: Drop Dash (Incomplete: Need to reset animation if Drop Dash is cancelled)
-; Credit: DeltaW, Gio.vanni, Hitaxas, RetroKoH
+; Credit: DeltaW, giovanni.gen, Hitaxas, RetroKoH
 ; Function: Enables the Drop Dash from Sonic Mania & Origins
 DropDashEnabled: = 1
 
@@ -77,7 +77,7 @@ ReboundMod: = 0
 CDBalancing: = 1
 
 ; Name: CD Camera Panning
-; Credit: DeltaW's Wooloo Engine
+; Credit: Naoto
 ; Function: Applies a panning effect to the screen when moving quickly, a la Sonic CD
 CDCamera: = 0							; if set to 1, screen will pan forward, a la Sonic CD
 
