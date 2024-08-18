@@ -108,7 +108,7 @@ RomEndLoc:
 		if EnableSRAM=1
 		dc.b $52, $41, $A0+(BackupSRAM<<6)+(AddressSRAM<<3), $20 ; SRAM support
 		dc.l $00200000		; SRAM start ($200001)
-		dc.l $00200200		; SRAM end ($20xxxx)
+		dc.l $002001FF		; SRAM end ($20xxxx)
 		else
 		dc.l $20202020
 		dc.l $20202020		; SRAM start ($200001)
@@ -350,20 +350,6 @@ GameInit:
 		bsr.w	JoypadInit
 		move.b	#id_Sega,(v_gamemode).w ; set Game Mode to Sega Screen
 
-	; Load up the new MegaPCM 2 driver
-		jsr		MegaPCM_LoadDriver
-		lea		SampleTable, a0
-		jsr		MegaPCM_LoadSampleTable
-		tst.w	d0						; was sample table loaded successfully?
-		beq.s	.SampleTableOk			; if yes, branch
-		ifdef __DEBUG__
-			; for MD Debugger v.2.5 or above
-			RaiseError "MegaPCM_LoadSampleTable returned %<.b d0>", MPCM_Debugger_LoadSampleTableException
-		else
-			illegal
-		endif
-.SampleTableOk:
-
 	if SaveProgressMod=1
 InitSRAM:
 		move.b  #1,(sram_port).l	; Enable SRAM writing
@@ -377,8 +363,22 @@ InitSRAM:
 		; Example - 8(a0) => $A(a0)
 
 	.skip:
-        clr.b    (sram_port).l		; Disable SRAM writing
+        move.b	#0,(sram_port).l		; Disable SRAM writing
 	endif
+
+	; Load up the new MegaPCM 2 driver
+		jsr		MegaPCM_LoadDriver
+		lea		SampleTable, a0
+		jsr		MegaPCM_LoadSampleTable
+		tst.w	d0						; was sample table loaded successfully?
+		beq.s	.SampleTableOk			; if yes, branch
+		ifdef __DEBUG__
+			; for MD Debugger v.2.5 or above
+			RaiseError "MegaPCM_LoadSampleTable returned %<.b d0>", MPCM_Debugger_LoadSampleTableException
+		else
+			illegal
+		endif
+.SampleTableOk:
 
 MainGameLoop:
 		move.b	(v_gamemode).w,d0			; load Game Mode
@@ -1686,7 +1686,7 @@ GM_Title:
 	endif
 	
 	if SaveProgressMod=1
-		move.b	#1,(f_levsel_active).w
+		move.b	#0,(f_levsel_active).w
 	endif
 
 		clearRAM v_ringpos,v_ringspace_end	; clear ring RAM -- RetroKoH S3K Rings Manager
@@ -1923,18 +1923,19 @@ PlayLevel:
 
 		moveq	#0,d0
 	; reset stored values (cannot do directly)
-		move.b	d0,sram_init(a1) 		; init new game
+		move.b	#1,sram_init(a1) 		; init new game
 		movep.w	d0,sram_zone(a1)		; clear saved zone and act
-		move.b	(v_lives).w,d0
-		move.b	d0,sram_lives(a1)		; reset saved lives count
 		movep.l	d0,sram_score(a1)		; clear saved score
-		move.l	(v_scorelife).w,d0
-		movep.l	d0,sram_scorelife(a1)	; reset saved extra life target score
 		move.b	d0,sram_lastspecial(a1)	; clear saved special stage number
 		movep.w	d0,sram_emeralds(a1)	; clear saved emerald count and bitfield
 		move.b	d0,sram_continues(a1)	; clear saved continues
+
+		move.b	(v_lives).w,d0
+		move.b	d0,sram_lives(a1)		; reset saved lives count
+		move.l	(v_scorelife).w,d0
+		movep.l	d0,sram_scorelife(a1)	; reset saved extra life target score
 	
-		clr.b	(sram_port).l			; disable SRAM (required)
+		move.b	#0,(sram_port).l		; disable SRAM (required)
 
 	.nosaving:
 	endif
@@ -1961,10 +1962,10 @@ PlayLevel_Load:
 		move.b	#1,(sram_port).l			; enable SRAM (required)
 		lea		($200009).l,a1				; base of SRAM + 9 (01-07 for init SRAM)
 		move.b	sram_init(a1),d0	
-		clr.b	(sram_port).l				; disable SRAM (required)
+		move.b	#0,(sram_port).l			; disable SRAM (required)
 		
-		cmpi.b	#$FF,d0
-		beq.w	PlayLevel					; if no save game exists, start a new one
+		cmpi.b	#1,d0
+		bne.w	PlayLevel					; if no save game exists, start a new one
 		
 		move.b	#1,(sram_port).l			; enable SRAM (required)
 		movep.w	sram_zone(a1),d0
@@ -1982,7 +1983,7 @@ PlayLevel_Load:
 		move.b	sram_continues(a1),d0
 		move.b	d0,(v_continues).w			; load continues
 		
-		clr.b	(sram_port).l				; disable SRAM (required)
+		move.b	#0,(sram_port).l			; disable SRAM (required)
 
 	; everything else can be reset like normal
 		clr.w	(v_rings).w					; clear rings
@@ -2269,7 +2270,7 @@ Level_NoMusicFade:
 		move.b	(v_continues).w,d0
 		move.b	d0,sram_continues(a1)
 
-		clr.b	(sram_port).l				; disable SRAM (required)
+		move.b	#0,(sram_port).l			; disable SRAM (required)
 
 	.noSRAM:
 	endif
