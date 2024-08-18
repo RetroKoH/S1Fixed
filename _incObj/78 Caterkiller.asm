@@ -67,8 +67,12 @@ Cat_Main:	; Routine 0
 
 	; RetroKoH Object Load Optimization -- Based on Spirituinsanum Guides
 	; Here we begin what's replacing FindNextFreeObj. It'll be quicker to loop through here.
-		lea		(v_lvlobjspace).w,a1
-		move.w	#v_lvlobjcount,d0
+		movea.l	a0,a1
+		move.w	#v_lvlobjend&$FFFF,d0
+		sub.w	a0,d0
+		lsr.w	#6,d0
+		subq.w	#1,d0
+		bcs.w	Cat_ChkGone
 
 .loop:
 		tst.b	obID(a1)				; is object RAM	slot empty?
@@ -358,7 +362,6 @@ loc_16CAA:
 		move.w	d0,obVelX(a0)
 		move.w	#-$400,obVelY(a0)
 		move.b	#$C,obRoutine(a0)
-		move.b	#$98,obColType(a0)	; Mercury Caterkiller Fix
 		andi.b	#$F8,obFrame(a0)
 
 loc_16CC0:	; Routine $C
