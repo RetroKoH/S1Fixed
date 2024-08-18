@@ -74,9 +74,9 @@ Pri_BodyMain:	; Routine 2
 ; ===========================================================================
 
 .chkopened:
-		tst.b	ob2ndRout(a0)		; has the prison been opened?
-		beq.s	.open				; if yes, branch
-		clr.b	ob2ndRout(a0)
+		btst	#staSonicOnObj,obStatus(a0)	; has the prison been opened?
+		beq.s	.open						; if yes, branch
+		bclr	#staSonicOnObj,obStatus(a0)
 		bclr	#staOnObj,(v_player+obStatus).w
 		bset	#staAir,(v_player+obStatus).w
 
@@ -99,7 +99,7 @@ Pri_Switched:	; Routine 4
 		lea		Ani_Pri(pc),a1
 		jsr		(AnimateSprite).w
 		move.w	pri_origY(a0),obY(a0)
-		tst.b	ob2ndRout(a0)					; has prison already been opened?
+		btst	#staSonicOnObj,obStatus(a0)		; has prison already been opened?
 		beq.s	.open2							; if yes, branch
 
 		addq.w	#8,obY(a0)
@@ -109,7 +109,7 @@ Pri_Switched:	; Routine 4
 		clr.b	(f_lockscreen).w				; lock screen position
 		move.b	#1,(f_lockctrl).w				; lock controls
 		move.w	#(btnR<<8),(v_jpadhold2).w		; make Sonic run to the right
-		clr.b	ob2ndRout(a0)
+		bclr	#staSonicOnObj,obStatus(a0)
 		bclr	#staOnObj,(v_player+obStatus).w
 		bset	#staAir,(v_player+obStatus).w
 
