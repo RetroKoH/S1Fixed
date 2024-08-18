@@ -97,7 +97,7 @@ BuildSprites:
 		move.w	obY(a0),d2
 		sub.w	4(a1),d2		; subtract screen y-pos
 		addi.w	#128,d2
-		andi.w	#$7FF,d2		; S2 BuildSprites addition
+	; took out S2 hard-coded y-wrap check
 		cmpi.w	#-32+128,d2		; assume height to be 32 pixels
 		blo.s	.skipObject
 		cmpi.w	#32+128+224,d2
@@ -197,7 +197,7 @@ BuildSprites_MultiDraw:
 		move.w	obY(a0),d2
 		sub.w	4(a4),d2						; subtract screen y-pos
 		addi.w	#128,d2
-		andi.w	#$7FF,d2
+	; took out S2 hard-coded y-wrap check
 		cmpi.w	#-32+128,d2
 		blo.s	.skipObject
 		cmpi.w	#32+128+224,d2
@@ -233,7 +233,7 @@ BuildSprites_MultiDraw:
 		move.w	(a6)+,d2						; get Y pos
 		sub.w	4(a4),d2						; subtract the screen's y position
 		addi.w	#128,d2
-		andi.w	#$7FF,d2
+	; took out S2 hard-coded y-wrap check
 		addq.w	#1,a6
 		moveq	#0,d1
 		move.b	(a6)+,d1						; get mapping frame
