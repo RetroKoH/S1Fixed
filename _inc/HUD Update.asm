@@ -5,12 +5,13 @@
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 HUD_Update:
+		moveq	#0,d7						; reserve a data register for clearing
 		tst.w	(v_debuguse).w				; is debug mode	on?
 		bne.w	HudDebug					; if yes, branch
 		tst.b	(f_scorecount).w			; does the score need updating?
 		beq.s	.chkrings					; if not, branch
 
-		clr.b	(f_scorecount).w
+		move.b	d7,(f_scorecount).w
 		locVRAM	(ArtTile_HUD+$18)*tile_size,d0	; set VRAM address -- RetroKoH VRAM Overhaul
 		move.l	(v_score).w,d1				; load score
 		bsr.w	Hud_Score
@@ -22,7 +23,7 @@ HUD_Update:
 		bsr.w	Hud_LoadZero				; reset rings to 0 if Sonic is hit
 
 .notzero:
-		clr.b	(f_ringcount).w
+		move.b	d7,(f_ringcount).w
 		locVRAM	(ArtTile_HUD+$2E)*tile_size,d0	; set VRAM address -- RetroKoH VRAM Overhaul
 		moveq	#0,d1
 		move.w	(v_rings).w,d1				; load number of rings
@@ -66,11 +67,11 @@ HUD_Update:
 		blo.s	.chklives
 	endif	; HUD Centiseconds End
 
-		clr.b	(a1)							; clear 1/60s counter
+		move.b	d7,(a1)							; clear 1/60s counter
 		addq.b	#1,-(a1)						; increment second counter
 		cmpi.b	#60,(a1)						; check if passed 60
 		blo.s	.updatetime
-		clr.b	(a1)							; clear seconds counter
+		move.b	d7,(a1)							; clear seconds counter
 		addq.b	#1,-(a1)						; increment minute counter
 		cmpi.b	#9,(a1)							; check if passed 9
 		blo.s	.updatetime
@@ -97,13 +98,13 @@ HUD_Update:
 .chklives:
 		tst.b	(f_lifecount).w				; does the lives counter need updating?
 		beq.s	.chkbonus					; if not, branch
-		clr.b	(f_lifecount).w
+		move.b	d7,(f_lifecount).w
 		bsr.w	Hud_Lives
 
 .chkbonus:
 		tst.b	(f_endactbonus).w			; do time/ring bonus counters need updating?
 		beq.s	.finish						; if not, branch
-		clr.b	(f_endactbonus).w
+		move.b	d7,(f_endactbonus).w
 		locVRAM	ArtTile_Bonuses*tile_size
 		moveq	#0,d1
 		move.w	(v_timebonus).w,d1			; load time bonus
@@ -117,7 +118,7 @@ HUD_Update:
 ; ===========================================================================
 
 TimeOver:
-		clr.b	(f_timecount).w
+		move.b	d7,(f_timecount).w
 		lea		(v_player).w,a0
 		cmpi.b	#6,obRoutine(a0)
 		bhs.s	.noTimeOver					; don't trigger if already dying/drowning
@@ -137,7 +138,7 @@ HudDebug:
 		bsr.w	Hud_LoadZero				; reset rings to 0 if Sonic is hit
 
 .notzero:
-		clr.b	(f_ringcount).w
+		move.b	d7,(f_ringcount).w
 		locVRAM	(ArtTile_HUD+$2E)*tile_size,d0	; set VRAM address -- RetroKoH VRAM Overhaul
 		moveq	#0,d1
 		move.w	(v_rings).w,d1				; load number of rings
@@ -150,14 +151,14 @@ HudDebug:
 		bsr.w	Hud_Secs
 		tst.b	(f_lifecount).w				; does the lives counter need updating?
 		beq.s	.chkbonus					; if not, branch
-		clr.b	(f_lifecount).w
+		move.b	d7,(f_lifecount).w
 		bsr.w	Hud_Lives
 
 .chkbonus:
 		tst.b	(f_endactbonus).w			; does the ring/time bonus counter need updating?
 		beq.s	.finish						; if not, branch
-		clr.b	(f_endactbonus).w
-		locVRAM	ArtTile_Bonuses*tile_size			; set VRAM address
+		move.b	d7,(f_endactbonus).w
+		locVRAM	ArtTile_Bonuses*tile_size	; set VRAM address
 		moveq	#0,d1
 		move.w	(v_timebonus).w,d1			; load time bonus
 		bsr.w	Hud_TimeRingBonus

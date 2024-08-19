@@ -440,7 +440,7 @@ VBlank:
 
 .notPAL:
 		move.b	(v_vbla_routine).w,d0
-		clr.b	(v_vbla_routine).w
+		move.b	#0,(v_vbla_routine).w
 		move.w	#1,(f_hbla_pal).w
 		andi.w	#$3E,d0
 		move.w	VBla_Index(pc,d0.w),d0
@@ -739,46 +739,19 @@ sub_106E:
 
 HBlank:
 		disable_ints
-		tst.w	(f_hbla_pal).w	; is palette set to change?
-		beq.s	.nochg		; if not, branch
-		clr.w	(f_hbla_pal).w
+		tst.w	(f_hbla_pal).w			; is palette set to change?
+		beq.s	.nochg					; if not, branch
+		move.w	#0,(f_hbla_pal).w
 		movem.l	a0-a1,-(sp)
 		lea		(vdp_data_port).l,a1
-		lea		(v_palette_water).w,a0 ; get palette from RAM
-		move.l	#$C0000000,4(a1) ; set VDP to CRAM write
-		move.l	(a0)+,(a1)	; move palette to CRAM
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.w	#$8A00+223,4(a1) ; reset HBlank register
+		lea		(v_palette_water).w,a0	; get palette from RAM
+		move.l	#$C0000000,4(a1)		; set VDP to CRAM write
+
+		rept 32
+			move.l	(a0)+,(a1)			; move palette to CRAM
+		endm
+
+		move.w	#$8A00+223,4(a1)		; reset HBlank register
 		movem.l	(sp)+,a0-a1
 		tst.b	(f_doupdatesinhblank).w
 		bne.s	loc_119E
@@ -788,7 +761,7 @@ HBlank:
 ; ===========================================================================
 
 loc_119E:
-		clr.b	(f_doupdatesinhblank).w
+		move.b	#0,(f_doupdatesinhblank).w
 		movem.l	d0-a6,-(sp)
 		bsr.w	Demo_Time
 		jsr		(UpdateMusic).l
@@ -821,30 +794,30 @@ JoypadInit:
 
 
 ReadJoypads:
-		lea	(v_jpadhold1).w,a0 ; address where joypad states are written
-		lea	(z80_port_1_data+1).l,a1	; first	joypad port
-		bsr.s	.read		; do the first joypad
-		addq.w	#2,a1		; do the second	joypad
+		lea		(v_jpadhold1).w,a0			; address where joypad states are written
+		lea		(z80_port_1_data+1).l,a1	; first	joypad port
+		bsr.s	.read						; do the first joypad
+		addq.w	#2,a1						; do the second	joypad
 
 .read:
-		clr.b	(a1)
+		move.b	#0,(a1)						; poll joypad data port
 		nop	
 		nop	
-		move.b	(a1),d0
+		move.b	(a1),d0						; get joypad port data (start/A)
 		lsl.b	#2,d0
 		andi.b	#$C0,d0
-		move.b	#$40,(a1)
+		move.b	#$40,(a1)					; poll joypad data port again
 		nop	
 		nop	
-		move.b	(a1),d1
+		move.b	(a1),d1						; get joypad port data (B/C/Dpad)
 		andi.b	#$3F,d1
-		or.b	d1,d0
+		or.b	d1,d0						; fuse together into one joypad bit array
 		not.b	d0
-		move.b	(a0),d1
-		eor.b	d0,d1
-		move.b	d0,(a0)+
+		move.b	(a0),d1						; get press button data
+		eor.b	d0,d1						; toggle off buttons that are being held
+		move.b	d0,(a0)+					; put raw joypad input (for held buttons) in F604/F606
 		and.b	d0,d1
-		move.b	d1,(a0)+
+		move.b	d1,(a0)+					; put pressed controller input in F605/F607
 		rts	
 ; End of function ReadJoypads
 
@@ -860,22 +833,22 @@ VDPSetupGame:
 
 .setreg:
 		move.w	(a2)+,(a0)
-		dbf		d7,.setreg	; set the VDP registers
+		dbf		d7,.setreg								; set the VDP registers
 
 		move.w	VDPSetupArray+2(pc),(v_vdp_buffer1).w	; Saves 8 cycles
 		move.w	#$8A00+223,(v_hbla_hreg).w				; H-INT every 224th scanline
 		moveq	#0,d0
 		move.l	#$C0000000,(vdp_control_port).l			; set VDP to CRAM write
-		moveq	#$3F,d7
+		moveq	#$1F,d7
 
 .clrCRAM:
-		move.w	d0,(a1)
-		dbf		d7,.clrCRAM	; clear	the CRAM
+		move.l	d0,(a1)									; clear longwords instead of words (384 cycles vs. 512)
+		dbf		d7,.clrCRAM								; clear	the CRAM
 
 		clr.l	(v_scrposy_vdp).w
 		clr.l	(v_scrposx_vdp).w
 		move.l	d1,-(sp)
-		fillVRAM	0,0,$10000	; clear the entirety of VRAM
+		fillVRAM	0,0,$10000							; clear the entirety of VRAM
 		move.l	(sp)+,d1
 		rts	
 ; End of function VDPSetupGame
@@ -1042,19 +1015,19 @@ AddPLC:
 ; LoadPLC2:
 NewPLC:
 		movem.l	a1-a2,-(sp)
-		lea	(ArtLoadCues).l,a1
+		lea		(ArtLoadCues).l,a1
 		add.w	d0,d0
 		move.w	(a1,d0.w),d0
-		lea	(a1,d0.w),a1	; jump to relevant PLC
-		bsr.s	ClearPLC	; erase any data in PLC buffer space
-		lea	(v_plc_buffer).w,a2
-		move.w	(a1)+,d0	; get length of PLC
-		bmi.s	.skip		; if it's negative, skip the next loop
+		lea		(a1,d0.w),a1	; jump to relevant PLC
+		bsr.s	ClearPLC		; erase any data in PLC buffer space
+		lea		(v_plc_buffer).w,a2
+		move.w	(a1)+,d0		; get length of PLC
+		bmi.s	.skip			; if it's negative, skip the next loop
 
 .loop:
 		move.l	(a1)+,(a2)+
-		move.w	(a1)+,(a2)+	; copy PLC to RAM
-		dbf	d0,.loop		; repeat for length of PLC
+		move.w	(a1)+,(a2)+		; copy PLC to RAM
+		dbf		d0,.loop		; repeat for length of PLC
 
 .skip:
 		movem.l	(sp)+,a1-a2
@@ -1068,15 +1041,19 @@ NewPLC:
 ; ---------------------------------------------------------------------------
 
 ; Clear the pattern load queue ($FFF680 - $FFF700)
-
+; RetroKoH/Devon Optimization: Clears in blocks w/ d0 instead of .clr
 
 ClearPLC:
-		lea		(v_plc_buffer).w,a2 ; PLC buffer space in RAM
-		moveq	#(v_plc_buffer_end-v_plc_buffer)/4-1,d0
+		lea		(v_plc_buffer).w,a2	; PLC buffer space in RAM
+		moveq	#0,d0
+		moveq	#(v_plc_buffer_end-v_plc_buffer)/$10-1,d1
 
 .loop:
-		clr.l	(a2)+
-		dbf		d0,.loop
+		move.l	d0,(a2)+
+		move.l	d0,(a2)+
+		move.l	d0,(a2)+
+		move.l	d0,(a2)+
+		dbf		d1,.loop
 		rts	
 ; End of function ClearPLC
 
@@ -1625,9 +1602,10 @@ GM_Sega:
 	; Fade In SEGA Background End
 
 		move.w	#-$A,(v_pcyc_num).w
-		clr.w	(v_pcyc_time).w
-		clr.w	(v_pal_buffer+$12).w
-		clr.w	(v_pal_buffer+$10).w
+		moveq	#0,d0
+		move.w	d0,(v_pcyc_time).w
+		move.w	d0,(v_pal_buffer+$12).w
+		move.w	d0,(v_pal_buffer+$10).w
 		move.w	(v_vdp_buffer1).w,d0
 		ori.b	#$40,d0
 		move.w	d0,(vdp_control_port).l
@@ -1680,9 +1658,9 @@ GM_Title:
 		bsr.w	ClearScreen
 
 	if HUDScrolling=1
-		clr.w	(f_levelstarted).w			; clear flag AND HUD scrolling byte -- RetroKoH S2 Rings Manager
+		move.w	#0,(f_levelstarted).w		; clear flag AND HUD scrolling byte -- RetroKoH S2 Rings Manager
 	else
-		clr.b	(f_levelstarted).w			; clear flag -- RetroKoH S2 Rings Manager
+		move.b	#0,(f_levelstarted).w		; clear flag -- RetroKoH S2 Rings Manager
 	endif
 	
 	if SaveProgressMod=1
@@ -1733,12 +1711,13 @@ Tit_LoadText:
 		; Due to removing part of the pattern loading process, we should
 		; add a timer to wait out the SONIC TEAM PRESENTS TEXT
 
-		clr.b	(f_nobgscroll).w			; Mercury Game Over When Drowning Fix
-		clr.b	(v_lastlamp).w				; clear lamppost counter
-		clr.w	(v_debuguse).w				; disable debug item placement mode
-		clr.w	(f_demo).w					; disable debug mode
-		move.w	#(id_GHZ<<8),(v_zone).w		; set level to GHZ (00)
-		clr.w	(v_pcyc_time).w				; disable palette cycling
+		moveq	#0,d0
+		move.b	d0,(f_nobgscroll).w			; Mercury Game Over When Drowning Fix
+		move.b	d0,(v_lastlamp).w			; clear lamppost counter
+		move.w	d0,(v_debuguse).w			; disable debug item placement mode
+		move.w	d0,(f_demo).w				; disable debug mode
+		move.w	d0,(v_zone).w				; set zone/act to GHZ (00)
+		move.w	d0,(v_pcyc_time).w			; disable palette cycling
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformLayers
 
@@ -1902,7 +1881,7 @@ LevSel_Level:
 		bne.s	LevSel_NotSpecial			; if not, branch
 		move.b	#id_Special,(v_gamemode).w	; set screen mode to $10 (Special Stage)
 		bsr.s	ResetLevel					; Reset level variables
-		clr.w	(v_zone).w					; also clear current zone (start at GHZ 1 after the Special Stage)
+		move.w	d0,(v_zone).w				; also clear current zone (start at GHZ 1 after the Special Stage)
 		rts	
 ; ===========================================================================
 
@@ -1921,8 +1900,7 @@ PlayLevel:
 		move.b	#1,(sram_port).l			; enable SRAM (required)
 		lea		($200009).l,a1				; base of SRAM + 9 (01-07 for init SRAM)
 
-		moveq	#0,d0
-	; reset stored values (cannot do directly)
+	; reset stored values (cannot do directly) -- d0 was zeroed out in ResetLevel
 		move.b	#1,sram_init(a1) 		; init new game
 		movep.w	d0,sram_zone(a1)		; clear saved zone and act
 		movep.l	d0,sram_score(a1)		; clear saved score
@@ -1935,7 +1913,7 @@ PlayLevel:
 		move.l	(v_scorelife).w,d0
 		movep.l	d0,sram_scorelife(a1)	; reset saved extra life target score
 	
-		move.b	#0,(sram_port).l		; disable SRAM (required)
+		move.b	d0,(sram_port).l		; disable SRAM (required)
 
 	.nosaving:
 	endif
@@ -1945,14 +1923,15 @@ PlayLevel:
 ; ===========================================================================
 
 ResetLevel:
+		moveq	#0,d0
 		move.b	#3,(v_lives).w			; set lives to 3
-		clr.w	(v_rings).w				; clear rings
-		clr.l	(v_time).w				; clear time
-		clr.l	(v_score).w				; clear score
-		clr.b	(v_lastspecial).w		; clear special stage number
-		clr.b	(v_emeralds).w			; clear emerald count
-		clr.b	(v_emldlist).w			; clear emerald array
-		clr.b	(v_continues).w			; clear continues
+		move.w	d0,(v_rings).w			; clear rings
+		move.l	d0,(v_time).w			; clear time
+		move.l	d0,(v_score).w			; clear score
+		move.b	d0,(v_lastspecial).w	; clear special stage number
+		move.b	d0,(v_emeralds).w		; clear emerald count
+		move.b	d0,(v_emldlist).w		; clear emerald array
+		move.b	d0,(v_continues).w		; clear continues
 		move.l	#5000,(v_scorelife).w	; extra life is awarded at 50000 points
 		rts
 ; ===========================================================================
@@ -1983,11 +1962,12 @@ PlayLevel_Load:
 		move.b	sram_continues(a1),d0
 		move.b	d0,(v_continues).w			; load continues
 		
-		move.b	#0,(sram_port).l			; disable SRAM (required)
+		moveq	#0,d0
+		move.b	d0,(sram_port).l			; disable SRAM (required)
 
 	; everything else can be reset like normal
-		clr.w	(v_rings).w					; clear rings
-		clr.l	(v_time).w					; clear time
+		move.w	d0,(v_rings).w				; clear rings
+		move.l	d0,(v_time).w				; clear time
 		
 		move.b	#id_Level,(v_gamemode).w	; set screen mode to $0C (level)
 		move.b	#bgm_Fade,d0
@@ -2028,10 +2008,11 @@ loc_33E4:
 		add.w	d0,d0
 		move.w	Demo_Levels(pc,d0.w),d0		; load level number for	demo
 		move.w	d0,(v_zone).w
+		moveq	#0,d1						; use d1 for optimal clearing
 		addq.w	#1,(v_demonum).w			; add 1 to demo number
 		cmpi.w	#4,(v_demonum).w			; is demo number less than 4?
 		blo.s	loc_3422					; if yes, branch
-		clr.w	(v_demonum).w				; reset demo number to 0
+		move.w	d1,(v_demonum).w			; reset demo number to 0
 
 loc_3422:
 		move.w	#1,(f_demo).w				; turn demo mode on
@@ -2039,14 +2020,14 @@ loc_3422:
 		cmpi.w	#$600,d0					; is level number 0600 (special	stage)?
 		bne.s	Demo_Level					; if not, branch
 		move.b	#id_Special,(v_gamemode).w	; set screen mode to $10 (Special Stage)
-		clr.w	(v_zone).w					; clear	level number
-		clr.b	(v_lastspecial).w			; clear special stage number
+		move.w	d1,(v_zone).w				; clear	level number
+		move.b	d1,(v_lastspecial).w		; clear special stage number
 
 Demo_Level:
 		move.b	#3,(v_lives).w				; set lives to 3
-		clr.w	(v_rings).w					; clear rings
-		clr.l	(v_time).w					; clear time
-		clr.l	(v_score).w					; clear score
+		move.w	d1,(v_rings).w				; clear rings
+		move.l	d1,(v_time).w				; clear time
+		move.l	d1,(v_score).w				; clear score
 		move.l	#5000,(v_scorelife).w		; extra life is awarded at 50000 points
 		rts	
 ; ===========================================================================
@@ -2325,37 +2306,38 @@ Level_ClrRam:
 
 		ResetDMAQueue	; Mercury Use DMA Queue
 
-		cmpi.b	#id_LZ,(v_zone).w ; is level LZ?
-		bne.s	Level_LoadPal	; if not, branch
+		cmpi.b	#id_LZ,(v_zone).w		; is level LZ?
+		bne.s	Level_LoadPal			; if not, branch
 
-		move.w	#$8014,(a6)	; enable H-interrupts
+		move.w	#$8014,(a6)				; enable H-interrupts
 		moveq	#0,d0
 		move.b	(v_act).w,d0
 		add.w	d0,d0
-		lea		(WaterHeight).l,a1 ; load water	height array
+		lea		(WaterHeight).l,a1		; load water height array
 		move.w	(a1,d0.w),d0
-		move.w	d0,(v_waterpos1).w ; set water heights
+		move.w	d0,(v_waterpos1).w		; set water heights
 		move.w	d0,(v_waterpos2).w
 		move.w	d0,(v_waterpos3).w
-		clr.b	(v_wtr_routine).w ; clear water routine counter
-		clr.b	(f_wtr_state).w	; clear	water state
-		move.b	#1,(f_water).w	; enable water
+		moveq	#0,d0
+		move.b	d0,(v_wtr_routine).w	; clear water routine counter
+		move.b	d0,(f_wtr_state).w		; clear	water state
+		move.b	#1,(f_water).w			; enable water
 
 Level_LoadPal:
 		move.b	#30,(v_air).w
 		enable_ints
 		moveq	#palid_Sonic,d0
-		bsr.w	PalLoad							; load Sonic's palette
-		cmpi.b	#id_LZ,(v_zone).w				; is level LZ?
-		bne.s	Level_GetBgm					; if not, branch
+		bsr.w	PalLoad					; load Sonic's palette
+		cmpi.b	#id_LZ,(v_zone).w		; is level LZ?
+		bne.s	Level_GetBgm			; if not, branch
 
-		moveq	#palid_LZSonWater,d0			; palette number $F (LZ)
-		cmpi.b	#3,(v_act).w					; is act number 3?
-		bne.s	Level_WaterPal					; if not, branch
-		moveq	#palid_SBZ3SonWat,d0			; palette number $10 (SBZ3)
+		moveq	#palid_LZSonWater,d0	; palette number $F (LZ)
+		cmpi.b	#3,(v_act).w			; is act number 3?
+		bne.s	Level_WaterPal			; if not, branch
+		moveq	#palid_SBZ3SonWat,d0	; palette number $10 (SBZ3)
 
 Level_WaterPal:
-		bsr.w	PalLoad_Fade_Water				; load underwater palette
+		bsr.w	PalLoad_Fade_Water		; load underwater palette
 		tst.b	(v_lastlamp).w
 		beq.s	Level_GetBgm
 		move.b	(v_lamp_wtrstat).w,(f_wtr_state).w
@@ -2420,9 +2402,10 @@ Level_ChkDebug:
 		move.b	#1,(f_debugmode).w		; enable debug mode
 
 Level_ChkWater:
-		clr.w	(v_jpadhold2).w
-		clr.w	(v_jpadhold1).w
-		clr.b	(f_levelstarted).w						; RetroKoH S2 Rings Manager
+		moveq	#0,d0
+		move.w	d0,(v_jpadhold2).w
+		move.w	d0,(v_jpadhold1).w
+		move.b	d0,(f_levelstarted).w					; RetroKoH S2 Rings Manager
 		cmpi.b	#id_LZ,(v_zone).w						; is level LZ?
 		bne.s	Level_LoadObj							; if not, branch
 		move.b	#id_WaterSurface,(v_watersurface1).w	; load water surface object
@@ -2435,28 +2418,30 @@ Level_LoadObj:
 		jsr		(RingsManager).l		; RetroKoH S2 Rings Manager
 		jsr		(ExecuteObjects).l
 		jsr		(BuildSprites).l
+		moveq	#0,d0
 		tst.b	(v_lastlamp).w			; are you starting from	a lamppost?
 		bne.s	Level_SkipClr			; if yes, branch
-		clr.w	(v_rings).w				; clear rings
-		clr.l	(v_time).w				; clear time
+		move.w	d0,(v_rings).w			; clear rings
+		move.l	d0,(v_time).w			; clear time
 
 	if HUDCentiseconds=1	; Mercury HUD Centiseconds
-		clr.b	(v_centstep).w
+		move.b	d0,(v_centstep).w
 	endif	; HUD Centiseconds end
 
-		clr.b	(v_lifecount).w			; clear lives counter
+		move.b	d0,(v_lifecount).w		; clear lives counter
 
 Level_SkipClr:
-		clr.b	(f_timeover).w
-		clr.w	(v_debuguse).w
-		clr.w	(f_restart).w
-		clr.w	(v_framecount).w
+		move.b	d0,(f_timeover).w
+		move.w	d0,(v_debuguse).w
+		move.w	d0,(f_restart).w
+		move.w	d0,(v_framecount).w
 		bsr.w	OscillateNumInit
-		move.b	#1,(f_scorecount).w		; update score counter
-		move.b	#1,(f_ringcount).w		; update rings counter
+		moveq	#1,d0
+		move.b	d0,(f_scorecount).w		; update score counter
+		move.b	d0,(f_ringcount).w		; update rings counter
 
 	if HUDCentiseconds=0	; Mercury HUD Centiseconds
-		move.b	#1,(f_timecount).w		; update time counter
+		move.b	d0,(f_timecount).w		; update time counter
 	endif	; HUD Centiseconds end
 
 		clr.w	(v_btnpushtime1).w
@@ -2610,9 +2595,9 @@ Level_FDLoop:
 		move.b	#8,(v_vbla_routine).w
 		bsr.w	WaitForVBla
 		bsr.w	MoveSonicInDemo
-		jsr	(ExecuteObjects).l
-		jsr	(BuildSprites).l
-		jsr	(ObjPosLoad).l
+		jsr		(ExecuteObjects).l
+		jsr		(BuildSprites).l
+		jsr		(ObjPosLoad).l
 		subq.w	#1,(v_palchgspeed).w
 		bpl.s	loc_3BC8
 		move.w	#2,(v_palchgspeed).w
@@ -2796,7 +2781,7 @@ GM_Special:
 		clr.b	(f_wtr_state).w
 		clr.w	(f_restart).w
 		moveq	#palid_Special,d0
-		bsr.w	PalLoad_Fade						; load special stage palette
+		bsr.w	PalLoad_Fade					; load special stage palette
 		jsr		(SS_Load).l						; load SS layout data
 		clr.l	(v_screenposx).w
 		clr.l	(v_screenposy).w
@@ -3435,15 +3420,16 @@ loc_4DF2:
 Cont_GotoLevel:
 		move.b	#id_Level,(v_gamemode).w	; set screen mode to $0C (level)
 		move.b	#3,(v_lives).w				; set lives to 3
-		clr.w	(v_rings).w					; clear rings
-		clr.l	(v_time).w					; clear time
+		moveq	#0,d0
+		move.w	d0,(v_rings).w				; clear rings
+		move.l	d0,(v_time).w				; clear time
 
 	if HUDCentiseconds=1	; Mercury HUD Centiseconds
-		clr.b	(v_centstep).w
+		move.b	d0,(v_centstep).w
 	endif	; HUD Centiseconds End
 
-		clr.l	(v_score).w					; clear score
-		clr.b	(v_lastlamp).w				; clear lamppost count
+		move.l	d0,(v_score).w				; clear score
+		move.b	d0,(v_lastlamp).w			; clear lamppost count
 		subq.b	#1,(v_continues).w			; subtract 1 from continues
 		rts	
 ; ===========================================================================
@@ -3525,12 +3511,13 @@ End_LoadSonic:
 		jsr		(ObjPosLoad).l
 		jsr		(ExecuteObjects).l
 		jsr		(BuildSprites).l
-		clr.w	(v_rings).w
-		clr.l	(v_time).w
-		clr.b	(v_lifecount).w
-		clr.w	(v_debuguse).w
-		clr.w	(f_restart).w
-		clr.w	(v_framecount).w
+		moveq	#0,d0
+		move.w	d0,(v_rings).w
+		move.l	d0,(v_time).w
+		move.b	d0,(v_lifecount).w
+		move.w	d0,(v_debuguse).w
+		move.w	d0,(f_restart).w
+		move.w	d0,(v_framecount).w
 		bsr.w	OscillateNumInit
 		move.w	#1800,(v_demolength).w
 		move.b	#$18,(v_vbla_routine).w
@@ -3749,15 +3736,16 @@ EndingDemoLoad:
 		move.w	#$8001,(f_demo).w			; set demo+ending mode
 		move.b	#id_Demo,(v_gamemode).w		; set game mode to 8 (demo)
 		move.b	#3,(v_lives).w				; set lives to 3
-		clr.w	(v_rings).w					; clear rings
-		clr.l	(v_time).w					; clear time
-		clr.l	(v_score).w					; clear score
-		clr.b	(v_lastlamp).w				; clear lamppost counter
+		moveq	#0,d0
+		move.w	d0,(v_rings).w				; clear rings
+		move.l	d0,(v_time).w				; clear time
+		move.l	d0,(v_score).w				; clear score
+		move.b	d0,(v_lastlamp).w			; clear lamppost counter
 		cmpi.w	#4,(v_creditsnum).w			; is SLZ demo running?
 		bne.s	EndDemo_Exit				; if not, branch
 		lea		(EndDemo_LampVar).l,a1		; load lamppost variables
 		lea		(v_lastlamp).w,a2
-		move.w	#8,d0
+		moveq	#8,d0
 
 EndDemo_LampLoad:
 		move.l	(a1)+,(a2)+
