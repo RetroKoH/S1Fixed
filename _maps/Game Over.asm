@@ -2,29 +2,29 @@
 ; Sprite mappings - "GAME OVER"	and "TIME OVER"
 ; ---------------------------------------------------------------------------
 Map_Over:	mappingsTable
-	mappingsTableEntry.w	byte_CBAC
-	mappingsTableEntry.w	byte_CBB7
-	mappingsTableEntry.w	byte_CBC2
-	mappingsTableEntry.w	byte_CBCD
+	mappingsTableEntry.w	MGO_GAME
+	mappingsTableEntry.w	MGO_OVER
+	mappingsTableEntry.w	MTO_TIME
+	mappingsTableEntry.w	MTO_OVER
 
-byte_CBAC:	spriteHeader
+MGO_GAME:	spriteHeader
 	spritePiece	-$48, -8, 4, 2, 0, 0, 0, 0, 0	; GAME
 	spritePiece	-$28, -8, 4, 2, 8, 0, 0, 0, 0
-byte_CBAC_End
+MGO_GAME_End
 
-byte_CBB7:	spriteHeader
+MGO_OVER:	spriteHeader
 	spritePiece	8, -8, 4, 2, $14, 0, 0, 0, 0	; OVER
 	spritePiece	$28, -8, 4, 2, $C, 0, 0, 0, 0
-byte_CBB7_End
+MGO_OVER_End
 
-byte_CBC2:	spriteHeader
-	spritePiece	-$3C, -8, 3, 2, $1C, 0, 0, 0, 0	; TIME
+MTO_TIME:	spriteHeader
+	spritePiece	-$3C, -8, 3, 2, 2, 0, 0, 0, 0	; TIME (Modified; RetroKoH VRAM Overhaul)
 	spritePiece	-$24, -8, 4, 2, 8, 0, 0, 0, 0
-byte_CBC2_End
+MTO_TIME_End
 
-byte_CBCD:	spriteHeader
+MTO_OVER:	spriteHeader
 	spritePiece	$C, -8, 4, 2, $14, 0, 0, 0, 0	; OVER
 	spritePiece	$2C, -8, 4, 2, $C, 0, 0, 0, 0
-byte_CBCD_End
+MTO_OVER_End
 
 	even

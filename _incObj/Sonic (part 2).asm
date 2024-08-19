@@ -88,46 +88,47 @@ GameOver:
 		move.w	(v_screenposy).w,d0	; MarkeyJester Game/Time Over Timing Fix
 		addi.w	#$100,d0
 		cmp.w	obY(a0),d0
-		bge.w	locret_13900		; MarkeyJester Game/Time Over Timing Fix
+		bge.w	.end				; MarkeyJester Game/Time Over Timing Fix
 		move.w	#-$38,obVelY(a0)
 		addq.b	#2,obRoutine(a0)
 		clr.b	(f_timecount).w		; stop time counter
 
 	; Mercury Lives Over/Underflow Fix
-		tst.b	(v_lives).w			; are lives at 0?
+		tst.b	(v_lives).w			; are lives already at 0?
 		beq.s	.skip
 		addq.b	#1,(f_lifecount).w	; update lives counter
 		subq.b	#1,(v_lives).w		; subtract 1 from number of lives
-		bne.s	loc_138D4
+		bne.s	.chkTimeOver
 .skip:
 	; Lives Over/Underflow Fix End
 
 		clr.b	obRestartTimer(a0)
-		move.b	#id_GameOverCard,(v_gameovertext1).w ; load GAME object
-		move.b	#id_GameOverCard,(v_gameovertext2).w ; load OVER object
-		move.b	#1,(v_gameovertext2+obFrame).w ; set OVER object to correct frame
+		move.b	#id_GameOverCard,(v_gameovertext1).w	; load GAME object
+		move.b	#id_GameOverCard,(v_gameovertext2).w	; load OVER object
+		move.b	#1,(v_gameovertext2+obFrame).w			; set OVER object to correct frame
 		clr.b	(f_timeover).w
-
-loc_138C2:
-		move.w	#bgm_GameOver,d0
-		jsr		(PlaySound).w	; play game over music
-		moveq	#3,d0
-		jmp		(AddPLC).w		; load game over patterns
+		bra.s	.playmusic
 ; ===========================================================================
 
-loc_138D4:
+.chkTimeOver:
 		move.b	#60,obRestartTimer(a0)					; set time delay to 1 second
 		tst.b	(f_timeover).w							; is TIME OVER tag set?
-		beq.s	locret_13900							; if not, branch
+		beq.s	.end									; if not, branch
+
 		clr.b	obRestartTimer(a0)
 		move.b	#id_GameOverCard,(v_gameovertext1).w	; load TIME object
 		move.b	#id_GameOverCard,(v_gameovertext2).w	; load OVER object
-		move.b	#2,(v_gameovertext1+obFrame).w
-		move.b	#3,(v_gameovertext2+obFrame).w
-		bra.s	loc_138C2
+		move.b	#2,(v_gameovertext1+obFrame).w			; set TIME object to correct frame
+		move.b	#3,(v_gameovertext2+obFrame).w			; set OVER object to correct frame
+
+.playmusic:
+		moveq	#plcid_GameOver,d0
+		jsr		(AddPLC).w			; load game over patterns
+		move.w	#bgm_GameOver,d0
+		jmp		(PlaySound).w		; play game over music
 ; ===========================================================================
 
-locret_13900:
+.end:
 		rts	
 ; End of function GameOver
 

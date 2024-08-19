@@ -41,6 +41,9 @@ AfterImages_Main:
     ; if obMap for player changes, so do the obMap for the after images
 	; More compact code section by RetroKoH
 		lea		(v_player).w,a1					; followerobj1: Pulls from v_player
+		cmpi.b	#8,obRoutine(a1)				; first check if player is already dead (and level is set to reset)
+		beq.s	.delete							; if so, delete
+		
 		cmpi.b	#2,obSubtype(a0)
 		beq.s	.skip
 		lea		(v_followobject).w,a1			; followerobj2: Pulls from v_followobject

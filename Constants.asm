@@ -588,7 +588,7 @@ ArtTile_Points:					equ $522				; ✓
 ArtTile_Dust:					equ $52B				; ✓
 ArtTile_Shield:					equ $53B				; ✓ A760
 ArtTile_LShield_Sparks:			equ ArtTile_Shield+$15	;
-ArtTile_Game_Over:				equ $550				; ?
+ArtTile_Game_Over:				equ ArtTile_Sonic		; ✓
 ArtTile_Spikes:					equ $560				; ✓
 ArtTile_Title_Card:				equ $568				; ✓ - Make letters uncompressed?
 ArtTile_Animal_1:				equ $568				; ✓

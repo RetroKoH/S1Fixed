@@ -34,6 +34,19 @@ Over_1stWord:
 		clr.b	obRender(a0)
 		move.w	#priority0,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 
+; Load TI - RetroKoH VRAM Overhaul
+		cmpi.b	#2,obFrame(a0)	; is the object	"TIME"?
+		bne.s	Over_Move		; if not, branch
+
+		disable_ints
+		move.l	a0,-(sp)
+		locVRAM	(ArtTile_Game_Over+2)*$20
+		lea		(Art_TimeOver).l,a0									; load TI art
+		move.l  #((Art_TimeOver_End-Art_TimeOver)/tile_size)-1,d0	; TI art length, in tiles
+		jsr		(LoadUncArt).w
+		move.l	(sp)+,a0
+		enable_ints
+
 Over_Move:	; Routine 2
 		moveq	#$10,d1		; set horizontal speed
 		cmpi.w	#$120,obX(a0)	; has item reached its target position?

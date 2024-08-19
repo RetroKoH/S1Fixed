@@ -3049,7 +3049,7 @@
                 }
             ],
             "isDirectory": true,
-            "expanded": true,
+            "expanded": false,
             "uuid": "f55ff5d9-a798-4791-b8ad-16c3137528bb"
         }
     ]
