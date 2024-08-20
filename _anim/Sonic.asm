@@ -47,7 +47,7 @@ SonAni_Roll:	dc.b $FE, fr_SonRoll1, fr_SonRoll2, fr_SonRoll3, fr_SonRoll4, fr_So
 		even
 SonAni_Roll2:	dc.b $FE, fr_SonRoll1, fr_SonRoll2, fr_SonRoll5, fr_SonRoll3, fr_SonRoll4, fr_SonRoll5, afEnd
 		even
-SonAni_Push:	dc.b $FD, fr_SonPush1, fr_SonPush2, fr_SonPush3, fr_SonPush4, afEnd, afEnd, afEnd
+SonAni_Push:	dc.b $FD, fr_SonPush1, fr_SonPush2, fr_SonPush3, fr_SonPush4, afEnd, afEnd, afEnd, afEnd, afEnd
 		even
 SonAni_Wait:
 		dc.b	$17, fr_SonStand, fr_SonStand, fr_SonStand, fr_SonStand, fr_SonStand, fr_SonStand, fr_SonStand, fr_SonStand, fr_SonStand
