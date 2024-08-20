@@ -7,6 +7,7 @@
 
 Sonic_ResetOnFloor:
 		andi.b	#~(maskAir+maskRollJump+maskPush),obStatus(a0)	; Should clear Air, RollJump and Push bits ($CD)
+		move.b	#aniID_Walk,obAnim(a0)			; use running/walking animation -- Hame Animation Reset Fix
 		clr.b	obJumping(a0)
 		clr.w	(v_itembonus).w
 		btst	#staSpin,obStatus(a0)			; is Sonic spinning?
@@ -14,7 +15,6 @@ Sonic_ResetOnFloor:
 	; If Sonic is spinning upon landing
 		move.b	#$13,obHeight(a0)
 		move.b	#9,obWidth(a0)
-		move.b	#aniID_Walk,obAnim(a0)			; use running/walking animation
 		bclr	#staSpin,obStatus(a0)
 		subq.w	#5,obY(a0)						; move Sonic up 5 pixels so the increased height doesn't push him into the ground
 
