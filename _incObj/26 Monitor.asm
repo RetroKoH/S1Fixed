@@ -143,18 +143,28 @@ loc_A236:
 
 loc_A246:
 		btst	#staAir,obStatus(a1)
-		bne.s	loc_A26A
+		bne.s	Mon_Solid_ClearPush
 		bset	#staPush,obStatus(a1)
 		bset	#staSonicPush,obStatus(a0)
 		bra.s	Mon_Animate
 ; ===========================================================================
 
 loc_A25C:
+	if SpinDashEnabled=1		; Sonic Jam: Fix not being able to break monitor after spindashing next to it
+		move.w	obInertia(a1),d0
+		bpl.s	.CheckSpeed
+		neg.w	d0				; Get absolute inertia
+		
+	.CheckSpeed:
+		cmpi.w	#$700,d0
+		bcc.s	Mon_Solid_ClearPush
+	endif
+
 		btst	#staSonicPush,obStatus(a0)
 		beq.s	Mon_Animate
 		; Removed line -- Mercury Walking In Air Fix
 
-loc_A26A:
+Mon_Solid_ClearPush:
 		bclr	#staSonicPush,obStatus(a0)
 		bclr	#staPush,obStatus(a1)
 
