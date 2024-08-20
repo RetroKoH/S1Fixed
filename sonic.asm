@@ -4941,7 +4941,7 @@ locret_75F2:
 
 
 MvSonicOnPtfm:
-		lea	(v_player).w,a1
+		lea		(v_player).w,a1
 		move.w	obY(a0),d0
 		sub.w	d3,d0
 		bra.s	MvSonic2
@@ -4972,6 +4972,50 @@ MvSonic2:
 		move.w	d0,obY(a1)
 		sub.w	obX(a0),d2
 		sub.w	d2,obX(a1)
+		move.w	obX(a1),d2			; copy for below
+
+	; Move Shields with Sonic
+		lea		(v_shieldobj).w,a2
+		tst.b	obID(a2)
+		beq.s	.noShield
+	; First, check to adjust for balancing
+		move.w	d2,d3				; copy x-pos to d3 for later
+		move.w	#$A,d1
+		move.b	obStatus(a2),d4		; copy shield's status bit
+	if CDBalancing=1
+		cmpi.b	#aniID_Balance2,obAnim(a1)
+		beq.s	.shift
+		cmpi.b	#aniID_Balance3,obAnim(a1)
+		bne.s	.noshift
+		bchg	#staFacing,d4
+		move.w	#4,d1
+	else	
+		cmpi.b	#aniID_Balance,obAnim(a1)
+		bne.s	.noshift
+	endif
+	.shift:
+		sub.w	d1,d2
+		btst	#staFlipX,d4	; X-Flip sprite bit
+		beq.s	.noshift
+		add.w	d1,d1
+		add.w	d1,d2
+	.noshift:
+
+	; Finally, apply position
+		move.w	d2,obX(a2)
+		move.w	d0,obY(a2)
+		move.w	d3,d2		; return original x-pos to d2
+	
+.noShield:
+	if (SpinDashEnabled|SkidDustEnabled)=1
+	; Move Spindash dust with Sonic
+		lea		(v_playerdust).w,a2
+		cmpi.b	#1,obAnim(a2)
+		bne.s	locret_7B62
+		move.w	d2,obX(a2)
+		move.w	d0,obY(a2)
+	endif
+
 
 locret_7B62:
 		rts	

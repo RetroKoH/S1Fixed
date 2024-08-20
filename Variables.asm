@@ -90,7 +90,7 @@ v_ttlsonichide	= v_objspace+object_size*4	; object variable space for hiding par
 
 ; Level objects
 v_player		= v_objspace+object_size*0	; ($D000) object variable space for Sonic ($40 bytes)
-v_playerdust	= v_objspace+object_size*1	; ($D040) object variable space for the HUD ($40 bytes)
+v_playerdust	= v_objspace+object_size*1	; ($D040) object variable space for effect dust (Replaced the HUD) ($40 bytes)
 
 v_titlecard		= v_objspace+object_size*2	; ($D080) object variable space for the title card ($100 bytes)
 v_ttlcardname	= v_titlecard+object_size*0		; ($D080) object variable space for the title card zone name text ($40 bytes)
