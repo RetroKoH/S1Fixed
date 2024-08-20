@@ -336,30 +336,29 @@ afReset:		equ $FB	; reset animation and 2nd object routine counter
 af2ndRoutine:	equ $FA	; increment 2nd routine counter
 
 ; Background music
-bgm__First:		equ $01		; Alex Field Sound Index Expansion
-bgm_GHZ:		equ ((ptr_mus01-MusicIndex)/4)+bgm__First
-bgm_LZ:			equ ((ptr_mus02-MusicIndex)/4)+bgm__First
-bgm_MZ:			equ ((ptr_mus03-MusicIndex)/4)+bgm__First
-bgm_SLZ:		equ ((ptr_mus04-MusicIndex)/4)+bgm__First
-bgm_SYZ:		equ ((ptr_mus05-MusicIndex)/4)+bgm__First
-bgm_SBZ:		equ ((ptr_mus06-MusicIndex)/4)+bgm__First
-bgm_Invincible:	equ ((ptr_mus07-MusicIndex)/4)+bgm__First
-bgm_ExtraLife:	equ ((ptr_mus08-MusicIndex)/4)+bgm__First
-bgm_SS:			equ ((ptr_mus09-MusicIndex)/4)+bgm__First
-bgm_Title:		equ ((ptr_mus0A-MusicIndex)/4)+bgm__First
-bgm_Ending:		equ ((ptr_mus0B-MusicIndex)/4)+bgm__First
-bgm_Boss:		equ ((ptr_mus0C-MusicIndex)/4)+bgm__First
-bgm_FZ:			equ ((ptr_mus0D-MusicIndex)/4)+bgm__First
-bgm_GotThrough:	equ ((ptr_mus0E-MusicIndex)/4)+bgm__First
-bgm_GameOver:	equ ((ptr_mus0F-MusicIndex)/4)+bgm__First
-bgm_Continue:	equ ((ptr_mus10-MusicIndex)/4)+bgm__First
-bgm_Credits:	equ ((ptr_mus11-MusicIndex)/4)+bgm__First
-bgm_Drowning:	equ ((ptr_mus12-MusicIndex)/4)+bgm__First
-bgm_Emerald:	equ ((ptr_mus13-MusicIndex)/4)+bgm__First
+bgm__First:		equ $81
+bgm_GHZ:		equ ((ptr_mus81-MusicIndex)/4)+bgm__First
+bgm_LZ:			equ ((ptr_mus82-MusicIndex)/4)+bgm__First
+bgm_MZ:			equ ((ptr_mus83-MusicIndex)/4)+bgm__First
+bgm_SLZ:		equ ((ptr_mus84-MusicIndex)/4)+bgm__First
+bgm_SYZ:		equ ((ptr_mus85-MusicIndex)/4)+bgm__First
+bgm_SBZ:		equ ((ptr_mus86-MusicIndex)/4)+bgm__First
+bgm_Invincible:	equ ((ptr_mus87-MusicIndex)/4)+bgm__First
+bgm_ExtraLife:	equ ((ptr_mus88-MusicIndex)/4)+bgm__First
+bgm_SS:			equ ((ptr_mus89-MusicIndex)/4)+bgm__First
+bgm_Title:		equ ((ptr_mus8A-MusicIndex)/4)+bgm__First
+bgm_Ending:		equ ((ptr_mus8B-MusicIndex)/4)+bgm__First
+bgm_Boss:		equ ((ptr_mus8C-MusicIndex)/4)+bgm__First
+bgm_FZ:			equ ((ptr_mus8D-MusicIndex)/4)+bgm__First
+bgm_GotThrough:	equ ((ptr_mus8E-MusicIndex)/4)+bgm__First
+bgm_GameOver:	equ ((ptr_mus8F-MusicIndex)/4)+bgm__First
+bgm_Continue:	equ ((ptr_mus90-MusicIndex)/4)+bgm__First
+bgm_Credits:	equ ((ptr_mus91-MusicIndex)/4)+bgm__First
+bgm_Drowning:	equ ((ptr_mus92-MusicIndex)/4)+bgm__First
+bgm_Emerald:	equ ((ptr_mus93-MusicIndex)/4)+bgm__First
 bgm__Last:		equ ((ptr_musend-MusicIndex-4)/4)+bgm__First
 
-; $14-1F Unused
-; $20-9F are empty slots. SFX could be shifted back, or BGM can be added
+; $94-9F Unused
 
 ; Sound effects
 sfx__First:		equ $A0
@@ -432,12 +431,12 @@ sfx_LShieldAtk:	equ ((ptr_sndDB-SoundIndex)/4)+sfx__First
 sfx_DropDash:	equ ((ptr_sndDC-SoundIndex)/4)+sfx__First
 spec__Last:		equ ((ptr_specend-SpecSoundIndex-4)/4)+spec__First
 
-flg__First:		equ $FB		; Alex Field Sound Index Expansion
-bgm_Fade:		equ ((ptr_flgFB-Sound_ExIndex)/4)+flg__First
-sfx_Sega:		equ ((ptr_flgFC-Sound_ExIndex)/4)+flg__First
-bgm_Speedup:	equ ((ptr_flgFD-Sound_ExIndex)/4)+flg__First
-bgm_Slowdown:	equ ((ptr_flgFE-Sound_ExIndex)/4)+flg__First
-bgm_Stop:		equ ((ptr_flgFF-Sound_ExIndex)/4)+flg__First
+flg__First:		equ $E0
+bgm_Fade:		equ ((ptr_flgE0-Sound_ExIndex)/4)+flg__First
+sfx_Sega:		equ ((ptr_flgE1-Sound_ExIndex)/4)+flg__First
+bgm_Speedup:	equ ((ptr_flgE2-Sound_ExIndex)/4)+flg__First
+bgm_Slowdown:	equ ((ptr_flgE3-Sound_ExIndex)/4)+flg__First
+bgm_Stop:		equ ((ptr_flgE4-Sound_ExIndex)/4)+flg__First
 flg__Last:		equ ((ptr_flgend-Sound_ExIndex-4)/4)+flg__First
 
 		include "_maps/Sonic Sprite Constants.asm"

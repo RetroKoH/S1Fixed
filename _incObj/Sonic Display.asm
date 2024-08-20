@@ -44,7 +44,7 @@ Sonic_Display:
 		move.b	(v_zone).w,d0
 		cmpi.w	#(id_LZ<<8)+3,(v_zone).w		; check if level is SBZ3
 		bne.s	.music
-		moveq	#bgm_SBZ,d0						; play SBZ music
+		move.w	#bgm_SBZ,d0						; play SBZ music
 
 .music:
 		lea		(MusicList2).l,a1

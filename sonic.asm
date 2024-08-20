@@ -1817,7 +1817,8 @@ LevelSelect:
 		move.w	(v_levselitem).w,d0
 		cmpi.w	#$14,d0								; have you selected item $14 (sound test)?
 		bne.s	LevSel_Level						; if not, go to	Level/SS subroutine
-		move.w	(v_levselsound).w,d0				; Alex Field Sound Index Expansion
+		move.w	(v_levselsound).w,d0
+		addi.w	#$80,d0
 		tst.b	(f_creditscheat).w					; is Japanese Credits cheat on?
 		beq.s	LevSel_PlaySnd						; if not, branch
 		cmpi.w	#$9F,d0								; is sound $9F being played?
@@ -2086,13 +2087,16 @@ LevSel_SndTest:
 		btst	#bitL,d1				; is left pressed?
 		beq.s	LevSel_Right			; if not, branch
 		subq.w	#1,d0					; subtract 1 from sound	test
-		; Lower Cap removed -- Alex Field Sound Index Expansion
+		bhs.s	LevSel_Right
+		moveq	#$4F,d0					; if sound test	moves below 0, set to $4F
 
 LevSel_Right:
 		btst	#bitR,d1				; is right pressed?
 		beq.s	LevSel_Refresh2			; if not, branch
 		addq.w	#1,d0					; add 1	to sound test
-		; Upper Cap removed -- Alex Field Sound Index Expansion
+		cmpi.w	#$50,d0
+		blo.s	LevSel_Refresh2
+		moveq	#0,d0					; if sound test	moves above $4F, set to	0
 
 LevSel_Refresh2:
 		move.w	d0,(v_levselsound).w	; set sound test number
@@ -2149,7 +2153,8 @@ LevSel_DrawAll:
 
 LevSel_DrawSnd:
 		locVRAM	vram_bg+$C30			; sound test position on screen
-		move.w	(v_levselsound).w,d0	; Alex Field Sound Index Expansion
+		move.w	(v_levselsound).w,d0
+		addi.w	#$80,d0
 		move.b	d0,d2
 		lsr.b	#4,d0
 		bsr.w	LevSel_ChgSnd			; draw 1st digit

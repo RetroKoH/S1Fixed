@@ -79,25 +79,25 @@ SpeedUpIndex:
 ; Music	Pointers
 ; ---------------------------------------------------------------------------
 MusicIndex:
-ptr_mus01:	dc.l Music01
-ptr_mus02:	dc.l Music02
-ptr_mus03:	dc.l Music03
-ptr_mus04:	dc.l Music04
-ptr_mus05:	dc.l Music05
-ptr_mus06:	dc.l Music06
-ptr_mus07:	dc.l Music07
-ptr_mus08:	dc.l Music08
-ptr_mus09:	dc.l Music09
-ptr_mus0A:	dc.l Music0A
-ptr_mus0B:	dc.l Music0B
-ptr_mus0C:	dc.l Music0C
-ptr_mus0D:	dc.l Music0D
-ptr_mus0E:	dc.l Music0E
-ptr_mus0F:	dc.l Music0F
-ptr_mus10:	dc.l Music10
-ptr_mus11:	dc.l Music11
-ptr_mus12:	dc.l Music12
-ptr_mus13:	dc.l Music13
+ptr_mus81:	dc.l Music81
+ptr_mus82:	dc.l Music82
+ptr_mus83:	dc.l Music83
+ptr_mus84:	dc.l Music84
+ptr_mus85:	dc.l Music85
+ptr_mus86:	dc.l Music86
+ptr_mus87:	dc.l Music87
+ptr_mus88:	dc.l Music88
+ptr_mus89:	dc.l Music89
+ptr_mus8A:	dc.l Music8A
+ptr_mus8B:	dc.l Music8B
+ptr_mus8C:	dc.l Music8C
+ptr_mus8D:	dc.l Music8D
+ptr_mus8E:	dc.l Music8E
+ptr_mus8F:	dc.l Music8F
+ptr_mus90:	dc.l Music90
+ptr_mus91:	dc.l Music91
+ptr_mus92:	dc.l Music92
+ptr_mus93:	dc.l Music93
 ptr_musend
 ; ---------------------------------------------------------------------------
 ; Priority of sound. New music or SFX must have a priority higher than or equal
@@ -108,24 +108,14 @@ ptr_musend
 ; will only override special SFX and music will only override music.
 ; ---------------------------------------------------------------------------
 ; SoundTypes:
-; Extended sound priority to play all sounds without reading garbage data
 SoundPriorities:
-		dc.b     $90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90	; $01
-		dc.b $90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90	; $10
-		dc.b $90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90	; $20
-		dc.b $90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90	; $30
-		dc.b $90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90	; $40
-		dc.b $90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90	; $50
-		dc.b $90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90	; $60
-		dc.b $90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90	; $70
-		dc.b $90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90	; $80
+		dc.b     $90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90	; $81
 		dc.b $90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90	; $90
 		dc.b $80,$70,$70,$70,$70,$70,$70,$70,$70,$70,$68,$70,$70,$70,$60,$70	; $A0
 		dc.b $70,$60,$70,$60,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$7F	; $B0
 		dc.b $60,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70	; $C0
 		dc.b $80,$80,$80,$80,$80,$80,$80,$80,$80,$80,$80,$80,$80,$80,$80,$80	; $D0
-		dc.b $90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90	; $E0
-		dc.b $90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90,$90		; $F0
+		dc.b $90,$90,$90,$90,$90                                            	; $E0
 		even
 
 ; ---------------------------------------------------------------------------
@@ -165,7 +155,12 @@ UpdateMusic:
 		beq.s	.nosndinput		; if not, branch
 		jsr	CycleSoundQueue(pc)
 ; loc_71BBC:
-.nosndinput:	; .nonewsound removed -- Alex Field Sound Index Expansion
+.nosndinput:
+		cmpi.b	#$80,SMPS_RAM.v_sound_id(a6)	; is song queue set for silence (empty)?
+		beq.s	.nonewsound		; If yes, branch
+		jsr	PlaySoundID(pc)
+; loc_71BC8:
+.nonewsound:
 	; Spin Dash SFX
 		tst.b	(v_spindashsfx2).w
 		beq.s	.cont
@@ -625,12 +620,18 @@ CycleSoundQueue:
 		moveq	#SMPS_RAM.v_soundqueue_end-SMPS_RAM.v_soundqueue_start-1,d4
 ; loc_71F12:
 .inputloop:
-		move.b	(a1),d0						; move track number to d0
+		move.b	(a1),d0							; move track number to d0
 		move.b	d0,d1
-		clr.b	(a1)+						; Clear entry
-		subi.b	#bgm__First,d0				; Make it into 0-based index
-		bcs.s	.nextinput					; If negative (i.e., it was $80 or lower), branch
-	; .havesound: and prior checks removed -- Alex Field Sound Index Expansion		
+		clr.b	(a1)+							; Clear entry
+		subi.b	#bgm__First,d0					; Make it into 0-based index
+		bcs.s	.nextinput						; If negative (i.e., it was $80 or lower), branch
+		cmpi.b	#$80,SMPS_RAM.v_sound_id(a6)	; Is SMPS_RAM.v_sound_id a $80 (silence/empty)?
+		beq.s	.havesound						; If yes, branch
+		move.b	d1,SMPS_RAM.v_soundqueue0(a6)	; Put sound into SMPS_RAM.v_soundqueue0
+		bra.s	.nextinput
+; ===========================================================================
+; loc_71F2C:
+.havesound:		
 		andi.w	#$7F,d0						; Clear high byte and sign bit
 		move.b	(a0,d0.w),d2				; Get sound type
 		cmp.b	d3,d2						; Is it a lower priority sound?
@@ -642,9 +643,12 @@ CycleSoundQueue:
 		dbf	d4,.inputloop
 
 		tst.b	d3							; We don't want to change sound priority if it is negative
-		bmi.s	PlaySoundID					; Branch ahead instead of returning -- Alex Field Sound Index Expansion
+		bmi.s	.locret
 		_move.b	d3,SMPS_RAM.v_sndprio(a6)	; Set new sound priority
-		; fallthrough
+
+; locret_71F4A:
+.locret:
+		rts
 ; End of function CycleSoundQueue
 
 
@@ -654,17 +658,18 @@ CycleSoundQueue:
 PlaySoundID:
 		moveq	#0,d7
 		move.b	SMPS_RAM.v_sound_id(a6),d7
-		; delete conditional branches -- Alex Field Sound Index Expansion	
+		beq.w	StopAllSound					; if 0, stop all sounds
+		bpl.s	.locret							; If >= 0 and < $80, return (not a valid sound, bgm or command)	
 		move.b	#$80,SMPS_RAM.v_sound_id(a6)	; reset	music flag
 
 	; Music
-		cmpi.b	#bgm__Last,d7		; Is this music ($01-$13)? -- Sound driver bugfixes: Playing sounds $14-$1F will cause a crash!
+		cmpi.b	#bgm__Last,d7		; Is this music ($81-$93)? -- Sound driver bugfixes: Playing sounds $94-$9F will cause a crash!
 		bls.w	Sound_PlayBGM		; Branch and play if yes
-		cmpi.b	#sfx__First,d7		; Is this after music but before sfx? ($14-$1F)
-		blo.w	.locret				; Return if yes. Playing sounds $14-$1F will cause a crash!
+		cmpi.b	#sfx__First,d7		; Is this after music but before sfx? ($94-$9F)
+		blo.w	.locret				; Return if yes. Playing sounds $94-$9F will cause a crash!
 
 	; SFX
-		cmpi.b	#sfx__Last,d7		; Is this sfx?
+		cmpi.b	#sfx__Last,d7		; Is this sfx? ($A0-$CF)?
 		bls.w	Sound_PlaySFX		; Branch and play if yes
 		cmpi.b	#spec__First,d7		; Is this after sfx but before special sfx?
 		blo.w	.locret				; Return if yes
@@ -692,11 +697,11 @@ Sound_Commands:
 ; ===========================================================================
 
 Sound_ExIndex:
-ptr_flgFB:	bra.w	FadeOutMusic
-ptr_flgFC:	bra.w	PlaySegaSound
-ptr_flgFD:	bra.w	SpeedUpMusic
-ptr_flgFE:	bra.w	SlowDownMusic
-ptr_flgFF:	bra.w	StopAllSound
+ptr_flgE0:	bra.w	FadeOutMusic
+ptr_flgE1:	bra.w	PlaySegaSound
+ptr_flgE2:	bra.w	SpeedUpMusic
+ptr_flgE3:	bra.w	SlowDownMusic
+ptr_flgE4:	bra.w	StopAllSound
 ptr_flgend
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -2584,43 +2589,43 @@ SonicDriverVer = 1 ; Tell SMPS2ASM that we're using Sonic 1's driver.
 ; ---------------------------------------------------------------------------
 ; Music data
 ; ---------------------------------------------------------------------------
-Music01:	include	"sound/music/Mus01 - GHZ.asm"
+Music81:	include	"sound/music/Mus01 - GHZ.asm"
 		even
-Music02:	include	"sound/music/Mus02 - LZ.asm"
+Music82:	include	"sound/music/Mus02 - LZ.asm"
 		even
-Music03:	include	"sound/music/Mus03 - MZ.asm"
+Music83:	include	"sound/music/Mus03 - MZ.asm"
 		even
-Music04:	include	"sound/music/Mus04 - SLZ.asm"
+Music84:	include	"sound/music/Mus04 - SLZ.asm"
 		even
-Music05:	include	"sound/music/Mus05 - SYZ.asm"
+Music85:	include	"sound/music/Mus05 - SYZ.asm"
 		even
-Music06:	include	"sound/music/Mus06 - SBZ.asm"
+Music86:	include	"sound/music/Mus06 - SBZ.asm"
 		even
-Music07:	include	"sound/music/Mus07 - Invincibility.asm"
+Music87:	include	"sound/music/Mus07 - Invincibility.asm"
 		even
-Music08:	include	"sound/music/Mus08 - Extra Life.asm"
+Music88:	include	"sound/music/Mus08 - Extra Life.asm"
 		even
-Music09:	include	"sound/music/Mus09 - Special Stage.asm"
+Music89:	include	"sound/music/Mus09 - Special Stage.asm"
 		even
-Music0A:	include	"sound/music/Mus0A - Title Screen.asm"
+Music8A:	include	"sound/music/Mus0A - Title Screen.asm"
 		even
-Music0B:	include	"sound/music/Mus0B - Ending.asm"
+Music8B:	include	"sound/music/Mus0B - Ending.asm"
 		even
-Music0C:	include	"sound/music/Mus0C - Boss.asm"
+Music8C:	include	"sound/music/Mus0C - Boss.asm"
 		even
-Music0D:	include	"sound/music/Mus0D - FZ.asm"
+Music8D:	include	"sound/music/Mus0D - FZ.asm"
 		even
-Music0E:	include	"sound/music/Mus0E - Sonic Got Through.asm"
+Music8E:	include	"sound/music/Mus0E - Sonic Got Through.asm"
 		even
-Music0F:	include	"sound/music/Mus0F - Game Over.asm"
+Music8F:	include	"sound/music/Mus0F - Game Over.asm"
 		even
-Music10:	include	"sound/music/Mus10 - Continue Screen.asm"
+Music90:	include	"sound/music/Mus10 - Continue Screen.asm"
 		even
-Music11:	include	"sound/music/Mus11 - Credits.asm"
+Music91:	include	"sound/music/Mus11 - Credits.asm"
 		even
-Music12:	include	"sound/music/Mus12 - Drowning.asm"
+Music92:	include	"sound/music/Mus12 - Drowning.asm"
 		even
-Music13:	include	"sound/music/Mus13 - Get Emerald.asm"
+Music93:	include	"sound/music/Mus13 - Get Emerald.asm"
 		even
 
 ; ---------------------------------------------------------------------------
