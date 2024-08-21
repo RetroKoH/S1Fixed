@@ -133,7 +133,15 @@ Spring_BounceLR:
 Spring_Flipped:
 		move.b	#$F,obLRLock(a1)
 		move.w	obVelX(a1),obInertia(a1)
-		bchg	#staFacing,obStatus(a1)		; Causes a minor bug w/ Sonic
+		; RetroKoH spring direction fix
+		tst.w	obVelX(a1)
+		bmi.s	Face_Left					; if Sonic is running left, branch
+		bclr	#staFacing,obStatus(a1)
+		bra.s	Face_Cont
+		;bchg	#staFacing,status(a1)		; Removed this
+	Face_Left:
+		bset	#staFacing,obStatus(a1)
+	Face_Cont:	; spring direction fix end
 		btst	#staSpin,obStatus(a1)
 		bne.s	loc_DC56
 		move.b	#aniID_Walk,obAnim(a1)		; use walking animation
