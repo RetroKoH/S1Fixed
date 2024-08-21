@@ -609,7 +609,7 @@ ArtTile_Eggman_Trap_Floor:		equ $518				; SBZ2 Cutscene. Leave alone for now.
 
 ; End of Level
 ArtTile_Giant_Ring:				equ $430				; ✓
-ArtTile_Giant_Ring_Flash:		equ $462				; Remove this later and have flash be part of Giant Ring anim.
+ArtTile_Giant_Ring_Flash:		equ $462				; ✓
 ArtTile_Prison_Capsule:			equ $49D				; ✓
 ArtTile_Hidden_Points:			equ $4B6				; ✓
 ArtTile_Warp:					equ $541				; Currently unused. Can overwrite Shield art if used.

@@ -49,6 +49,7 @@ GRing_Animate:	; Routine 2
 
 GRing_Collect:	; Routine 4
 		addq.b	#2,obRoutine(a0)		; Routine -> GRing_Flash
+		move.w	#make_art_tile(ArtTile_Giant_Ring_Flash,1,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
 		move.w	#priority0,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$20,obActWid(a0)
@@ -103,6 +104,7 @@ GRing_Delete:	; Routine 8
 GRing_LoadGfx:
 		moveq	#0,d0
 		move.b	obFrame(a0),d0			; load frame number
+		move.b	d0,d1					; copy to d1
 		cmp.b	objoff_3F(a0),d0		; has frame changed?
 		beq.s	.nochange				; if not, branch and exit
 
@@ -115,12 +117,15 @@ GRing_LoadGfx:
 		subq.w	#1,d5
 		bmi.s	.nochange				; if zero, branch
 		move.w	#(ArtTile_Giant_Ring*$20),d4
+		cmpi.b	#8,d1					; are we drawing a ring flash?
+		blo.s	.readentry				; if not, skip ahead
+		move.w	#(ArtTile_Giant_Ring_Flash*$20),d4
 
 .readentry:
 		moveq	#0,d1
-		move.w	(a2)+,d1	; S3K .b to .w
-		move.w	d1,d3		; S3K
-		lsr.w	#8,d3		; S3K
+		move.w	(a2)+,d1				; S3K .b to .w
+		move.w	d1,d3					; S3K
+		lsr.w	#8,d3					; S3K
 		andi.w	#$F0,d3
 		addi.w	#$10,d3
 		andi.w	#$FFF,d1
@@ -130,7 +135,7 @@ GRing_LoadGfx:
 		add.w	d3,d4
 		add.w	d3,d4
 		jsr		(QueueDMATransfer).w
-		dbf		d5,.readentry	; repeat for number of entries
+		dbf		d5,.readentry			; repeat for number of entries
 
 .nochange:
 		rts
