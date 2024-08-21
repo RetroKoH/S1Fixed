@@ -195,9 +195,10 @@ DLE_LZ:
 		move.b	(v_act).w,d0
 		add.w	d0,d0
 		move.w	DLE_LZx(pc,d0.w),d0
-		jmp	DLE_LZx(pc,d0.w)
+		jmp		DLE_LZx(pc,d0.w)
 ; ===========================================================================
-DLE_LZx:	dc.w DLE_LZ12-DLE_LZx
+DLE_LZx:
+		dc.w DLE_LZ12-DLE_LZx
 		dc.w DLE_LZ12-DLE_LZx
 		dc.w DLE_LZ3-DLE_LZx
 		dc.w DLE_SBZ3-DLE_LZx
@@ -208,16 +209,28 @@ DLE_LZ12:
 ; ===========================================================================
 
 DLE_LZ3:
-		tst.b	(f_switch+$F).w	; has switch $F	been pressed?
-		beq.s	loc_6F28	; if not, branch
-		lea	(v_lvllayout+$50C).w,a1
+		tst.b	(f_switch+$F).w				; has switch $F	been pressed? (At the start, next to the endless slide)
+		beq.s	loc_6F28					; if not, branch
+		lea		(v_lvllayout+$50C).w,a1
 		cmpi.w	#$1718,(a1)
 		beq.s	loc_6F28
-		move.w	#$1718,(a1)		; modify level layout
+		move.w	#$1718,(a1)					; modify level layout to open a path out of the endless slide
 		move.w	#sfx_Rumbling,d0
-		bsr.w	PlaySound_Special ; play rumbling sound
+		bsr.w	PlaySound_Special			; play rumbling sound
 
 loc_6F28:
+	; New DLE by RetroKoH to seal off the boss area near the fight
+		tst.b	(f_switch+8).w				; has switch 8 been triggered? (At the start, next to the endless slide)
+		bne.s	DLE_LZ3_BossChk				; if yes, branch
+		cmpi.w	#$1BE8,(v_screenposx).w
+		blo.s	locret_6F62
+		cmpi.w	#$598,(v_screenposy).w
+		bhs.s	locret_6F62
+		move.b	#1,(f_switch+8).w			; trigger the door
+		move.w	#sfx_Rumbling,d0
+		bsr.w	PlaySound_Special			; play rumbling sound
+
+DLE_LZ3_BossChk:
 		tst.b	(v_dle_routine).w
 		bne.s	locret_6F64
 		cmpi.w	#boss_lz_x-$140,(v_screenposx).w
@@ -226,16 +239,16 @@ loc_6F28:
 		bhs.s	locret_6F62
 		bsr.w	FindFreeObj
 		bne.s	loc_6F4A
-		_move.b	#id_BossLabyrinth,obID(a1) ; load LZ boss object
+		_move.b	#id_BossLabyrinth,obID(a1)	; load LZ boss object
 
 loc_6F4A:
 		move.w	#bgm_Boss,d0
-		bsr.w	PlaySound				; play boss music
-		move.b	d0,(v_lastbgmplayed).w	; store last played music
-		move.b	#1,(f_lockscreen).w		; lock screen
+		bsr.w	PlaySound					; play boss music
+		move.b	d0,(v_lastbgmplayed).w		; store last played music
+		move.b	#1,(f_lockscreen).w			; lock screen
 		addq.b	#2,(v_dle_routine).w
 		moveq	#plcid_Boss,d0
-		bra.w	AddPLC					; load boss patterns
+		bra.w	AddPLC						; load boss patterns
 ; ===========================================================================
 
 locret_6F62:

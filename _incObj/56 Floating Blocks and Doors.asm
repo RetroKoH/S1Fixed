@@ -9,14 +9,14 @@ fb_type = objoff_3C			; subtype (2nd digit only)
 
 ; ===========================================================================
 FBlock_Var:	; width/2, height/2
-		dc.b  $10, $10	; subtype 0x/8x
-		dc.b  $20, $20	; subtype 1x/9x
-		dc.b  $10, $20	; subtype 2x/Ax
-		dc.b  $20, $1A	; subtype 3x/Bx
-		dc.b  $10, $27	; subtype 4x/Cx
-		dc.b  $10, $10	; subtype 5x/Dx
-		dc.b	8, $20	; subtype 6x/Ex
-		dc.b  $40, $10	; subtype 7x/Fx
+		dc.b  $10, $10	; subtype 0x/8x ($0)
+		dc.b  $20, $20	; subtype 1x/9x ($2)
+		dc.b  $10, $20	; subtype 2x/Ax ($4)
+		dc.b  $20, $1A	; subtype 3x/Bx ($6)
+		dc.b  $10, $27	; subtype 4x/Cx ($8)
+		dc.b  $10, $10	; subtype 5x/Dx ($A)
+		dc.b	8, $20	; subtype 6x/Ex ($C)
+		dc.b  $40, $10	; subtype 7x/Fx ($E)
 		
 	; Giant stairs seem to be formed by subtypes $58, 59, 5A, and 5B placed together
 ; ===========================================================================
@@ -41,56 +41,57 @@ FBlock_Main:	; Routine 0
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0			; get subtype
 		lsr.w	#3,d0
-		andi.w	#$E,d0						; read only the 1st digit
+		andi.w	#$E,d0						; Example: Subtype $F8 >> 3 = $1F. $1F & $E = $E.
 		lea		FBlock_Var(pc,d0.w),a2		; get size data
 		move.b	(a2)+,obActWid(a0)
 		move.b	(a2),obHeight(a0)
 		lsr.w	#1,d0
 		move.b	d0,obFrame(a0)
-		move.w	obX(a0),fb_origX(a0)
+		move.w	obX(a0),fb_origX(a0)		; store starting positions
 		move.w	obY(a0),fb_origY(a0)
 		moveq	#0,d0
 		move.b	(a2),d0
 		add.w	d0,d0
-		move.w	d0,fb_height(a0)
+		move.w	d0,fb_height(a0)			; store full height (from top to bottom)
 		cmpi.b	#$37,obSubtype(a0)
-		bne.s	.dontdelete
+		bne.s	.dontdelete					; Branch if subtype /= $37
+	; Only applies to subtype $37
 		cmpi.w	#$1BB8,obX(a0)
-		bne.s	.notatpos
+		bne.s	.notatpos					; if not in position, branch
 		tst.b	(f_obj56).w
-		beq.s	.dontdelete
+		beq.s	.dontdelete					; if delete flag isn't set, branch
 		jmp		(DeleteObject).l
 
 .notatpos:
-		clr.b	obSubtype(a0)
+		clr.b	obSubtype(a0)				; clear subtype for obj $5637
 		tst.b	(f_obj56).w
 		bne.s	.dontdelete
 		jmp		(DeleteObject).l
 
 .dontdelete:
 		moveq	#0,d0
-		cmpi.b	#id_LZ,(v_zone).w ; check if level is LZ
-		beq.s	.stillnotLZ
-		move.b	obSubtype(a0),d0 ; SYZ/SLZ specific code
+		cmpi.b	#id_LZ,(v_zone).w			; check if level is LZ
+		beq.s	.isLZ
+		move.b	obSubtype(a0),d0			; SYZ/SLZ specific code
 		andi.w	#$F,d0
 		subq.w	#8,d0
-		bcs.s	.stillnotLZ
+		bcs.s	.isLZ
 		lsl.w	#2,d0
 		lea		(v_oscillate+$2C).w,a2
 		lea		(a2,d0.w),a2
 		tst.w	(a2)
-		bpl.s	.stillnotLZ
+		bpl.s	.isLZ
 		bchg	#staFlipX,obStatus(a0)
 
-.stillnotLZ:
+.isLZ:
 		move.b	obSubtype(a0),d0
 		bpl.s	FBlock_Action
 		andi.b	#$F,d0
-		move.b	d0,fb_type(a0)
-		move.b	#5,obSubtype(a0)
+		move.b	d0,fb_type(a0)				; set switch index
+		move.b	#5,obSubtype(a0)			; subtype is now $05
 		cmpi.b	#7,obFrame(a0)
 		bne.s	.chkstate
-		move.b	#$C,obSubtype(a0)
+		move.b	#$C,obSubtype(a0)			; long horizontal doors have subtype of $0C instead
 		move.w	#$80,fb_height(a0)
 
 .chkstate:
@@ -102,17 +103,17 @@ FBlock_Main:	; Routine 0
 		btst	#0,(a2)
 	; End
 		beq.s	FBlock_Action
-		addq.b	#1,obSubtype(a0)
+		addq.b	#1,obSubtype(a0)	; increment to $06 (or $0D for long horizontal doors)
 		clr.w	fb_height(a0)
 
 FBlock_Action:	; Routine 2
 		move.w	obX(a0),-(sp)
 		moveq	#0,d0
-		move.b	obSubtype(a0),d0 ; get object subtype
-		andi.w	#$F,d0		; read only the	2nd digit
+		move.b	obSubtype(a0),d0	; get object subtype
+		andi.w	#$F,d0				; read only the	2nd digit
 		add.w	d0,d0
 		move.w	.index(pc,d0.w),d1
-		jsr		.index(pc,d1.w)	; move block subroutines
+		jsr		.index(pc,d1.w)		; move block subroutines
 		move.w	(sp)+,d4
 		tst.b	obRender(a0)
 		bpl.s	.chkdel
@@ -374,7 +375,7 @@ FBlock_Action:	; Routine 2
 .type0D:
 		tst.b	objoff_38(a0)
 		bne.s	.loc_105F8
-		lea	(f_switch).w,a2
+		lea		(f_switch).w,a2
 		moveq	#0,d0
 		move.b	fb_type(a0),d0
 		tst.b	(a2,d0.w)

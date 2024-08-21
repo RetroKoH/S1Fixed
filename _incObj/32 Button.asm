@@ -34,8 +34,8 @@ But_Pressed:	; Routine 2
 		bclr	#0,obFrame(a0)	; use "unpressed" frame
 		move.b	obSubtype(a0),d0
 		andi.w	#$F,d0
-		lea	(f_switch).w,a3
-		lea	(a3,d0.w),a3
+		lea		(f_switch).w,a3
+		lea		(a3,d0.w),a3
 		moveq	#0,d3
 		btst	#6,obSubtype(a0)
 		beq.s	loc_BDB2
@@ -49,20 +49,20 @@ loc_BDB2:
 
 loc_BDBE:
 		btst	#staSonicOnObj,obStatus(a0)	; removed obSolid
-		bne.s	loc_BDC8
-		bclr	d3,(a3)
+		bne.s	loc_BDC8					; if Sonic is on the switch, branch
+		bclr	d3,(a3)						; clear switch byte
 		bra.s	loc_BDDE
 ; ===========================================================================
 
 loc_BDC8:
-		tst.b	(a3)
-		bne.s	loc_BDD6
+		tst.b	(a3)						; is this switch on?
+		bne.s	loc_BDD6					; if yes, branch
 		move.w	#sfx_Switch,d0
-		jsr	(PlaySound_Special).w	; play switch sound
+		jsr		(PlaySound_Special).w		; play switch sound
 
 loc_BDD6:
-		bset	d3,(a3)
-		bset	#0,obFrame(a0)	; use "pressed"	frame
+		bset	d3,(a3)						; set switch byte
+		bset	#0,obFrame(a0)				; use "pressed"	frame
 
 loc_BDDE:
 		btst	#5,obSubtype(a0)
@@ -73,8 +73,8 @@ loc_BDDE:
 		bchg	#1,obFrame(a0)
 
 But_Display:
-		offscreen.w	DeleteObject	; ProjectFM S3K Objects Manager
-		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix
+		offscreen.w	DeleteObject			; ProjectFM S3K Objects Manager
+		bra.w	DisplaySprite				; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 
@@ -89,18 +89,18 @@ But_MZBlock:
 		subq.w	#8,d3
 		move.w	#$20,d4
 		move.w	#$10,d5
-		lea		(v_lvlobjspace).w,a1 ; begin checking object RAM
+		lea		(v_lvlobjspace).w,a1	; begin checking object RAM
 		move.w	#v_lvlobjcount,d6
 
 But_MZLoop:
 		tst.b	obRender(a1)
 		bpl.s	loc_BE4E
-		cmpi.b	#id_PushBlock,obID(a1) ; is the object a green MZ block?
-		beq.s	loc_BE5E	; if yes, branch
+		cmpi.b	#id_PushBlock,obID(a1)	; is the object a green MZ block?
+		beq.s	loc_BE5E				; if yes, branch
 
 loc_BE4E:
-		lea		object_size(a1),a1	; check	next object
-		dbf		d6,But_MZLoop	; repeat $5F times
+		lea		object_size(a1),a1		; check	next object
+		dbf		d6,But_MZLoop			; repeat $5F times
 
 		move.w	(sp)+,d3
 		moveq	#0,d0

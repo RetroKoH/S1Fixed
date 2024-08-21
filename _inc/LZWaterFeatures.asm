@@ -241,7 +241,7 @@ DynWater_LZ3:
 		move.b	#4,(v_wtr_routine).w
 		move.w	#$608,(v_waterpos3).w
 		move.w	#$7C0,(v_waterpos2).w
-		move.b	#1,(f_switch+8).w
+		; Removed (This is now called in LZ3's DLE)
 		rts	
 ; ===========================================================================
 
