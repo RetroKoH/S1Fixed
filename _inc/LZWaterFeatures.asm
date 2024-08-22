@@ -279,85 +279,86 @@ DynWater_SBZ3:
 
 LZWindTunnels:
 		tst.w	(v_debuguse).w	; is debug mode	being used?
-		bne.w	.quit	; if yes, branch
-		lea	(LZWind_Data+8).l,a2
+		bne.w	.quit			; if yes, branch
+		lea		(LZWind_Data+8).l,a2
 		moveq	#0,d0
 		move.b	(v_act).w,d0	; get act number
-		lsl.w	#3,d0		; multiply by 8
-		adda.w	d0,a2		; add to address for data
+		lsl.w	#3,d0			; multiply by 8
+		adda.w	d0,a2			; add to address for data
 		moveq	#0,d1
-		tst.b	(v_act).w	; is act number 1?
-		bne.s	.notact1	; if not, branch
+		tst.b	(v_act).w		; is act number 1?
+		bne.s	.notact1		; if not, branch
 		moveq	#1,d1
-		subq.w	#8,a2		; use different data for act 1
+		subq.w	#8,a2			; use different data for act 1
 
 .notact1:
-		lea	(v_player).w,a1
+		lea		(v_player).w,a1
 
 .chksonic:
 		move.w	obX(a1),d0
 		cmp.w	(a2),d0
-		blo.w	.chknext
+		blo.w	.chknext			; branch, if Sonic is too far left
 		cmp.w	4(a2),d0
-		bhs.w	.chknext
+		bhs.w	.chknext			; branch, if Sonic is too far right
 		move.w	obY(a1),d2
 		cmp.w	2(a2),d2
-		blo.w	.chknext
+		blo.w	.chknext			; branch, if Sonic is too far up
 		cmp.w	6(a2),d2
-		bhs.s	.chknext			; branch if Sonic is outside a range
+		bhs.s	.chknext			; branch if Sonic is too far down
 		move.w	d0,d1				; FixBugs
 		move.b	(v_vbla_byte).w,d0
 		andi.b	#$3F,d0				; does VInt counter fall on 0, $40, $80 or $C0?
 		bne.s	.skipsound			; if not, branch
 		move.w	#sfx_Waterfall,d0
-		jsr	(PlaySound_Special).w	; play rushing water sound (only every $40 frames)
+		jsr		(PlaySound_Special).w	; play rushing water sound (only every $40 frames)
 
 .skipsound:
-		tst.b	(f_wtunnelallow).w	; are wind tunnels disabled?
-		bne.w	.quit				; if yes, branch
-		cmpi.b	#4,obRoutine(a1)	; is Sonic hurt/dying?
-		bhs.s	.clrquit			; if yes, branch
-		move.b	#1,(f_wtunnelmode).w
-		move.w	d1,d0				; FixBugs
+		tst.b	(f_wtunnelallow).w		; are wind tunnels disabled?
+		bne.w	.quit					; if yes, branch
+		cmpi.b	#4,obRoutine(a1)		; is Sonic hurt/dying?
+		bhs.s	.clrquit				; if yes, branch
+		move.b	#1,(f_wtunnelmode).w	; affects character animation and bubble movement
+		move.w	d1,d0					; FixBugs
 		subi.w	#$80,d0
 		cmp.w	(a2),d0
 		bhs.s	.movesonic
 		moveq	#2,d0
-		cmpi.b	#1,(v_act).w		; is act number 2?
-		bne.s	.notact2			; if not, branch
+		cmpi.b	#1,(v_act).w			; is act number 2?
+		bne.s	.notact2				; if not, branch
 		neg.w	d0
 
 .notact2:
-		add.w	d0,obY(a1)	; adjust Sonic's y-axis for curve of tunnel
+		add.w	d0,obY(a1)				; adjust Sonic's y-axis for curve of tunnel
 
 .movesonic:
 		addq.w	#4,obX(a1)
-		move.w	#$400,obVelX(a1) ; move Sonic horizontally
+		move.w	#$400,obVelX(a1)			; move Sonic to the right
 		clr.w	obVelY(a1)
 		move.b	#aniID_Float2,obAnim(a1)	; use floating animation
 		bset	#staAir,obStatus(a1)
-		btst	#0,(v_jpadhold2).w ; is up pressed?
-		beq.s	.down		; if not, branch
-		subq.w	#1,obY(a1)	; move Sonic up on pole
+		btst	#bitUp,(v_jpadhold2).w		; is up pressed?
+		beq.s	.down						; if not, branch
+		subq.w	#1,obY(a1)					; move Sonic up on pole
 
 .down:
-		btst	#1,(v_jpadhold2).w ; is down being pressed?
-		beq.s	.end		; if not, branch
-		addq.w	#1,obY(a1)	; move Sonic down on pole
+		btst	#bitDn,(v_jpadhold2).w		; is down being pressed?
+		beq.s	.end						; if not, branch
+		addq.w	#1,obY(a1)					; move Sonic down on pole
 
 .end:
 		rts	
 ; ===========================================================================
 
 .chknext:
-		addq.w	#8,a2		; use second set of values (act 1 only)
-		dbf		d1,.chksonic	; on act 1, repeat for a second tunnel
-		tst.b	(f_wtunnelmode).w ; is Sonic still in a tunnel?
-		beq.s	.quit		; if yes, branch
+		addq.w	#8,a2					; use second set of values (act 1 only)
+		dbf		d1,.chksonic			; on act 1, repeat for a second tunnel
+	; when all wind tunnels have been checked
+		tst.b	(f_wtunnelmode).w		; is Sonic still in a tunnel?
+		beq.s	.quit					; if yes, branch
 		move.b	#aniID_Walk,obAnim(a1)	; use walking animation
 
 .clrquit:
-		clr.b	(f_wtunnelmode).w ; finish tunnel
+		clr.b	(f_wtunnelmode).w		; finish tunnel
 
 .quit:
 		rts	

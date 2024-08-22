@@ -5680,7 +5680,7 @@ loc_12C7E:
 		move.b	(v_anglebuffer2).w,obRearAngle(a0)
 		tst.b	(f_wtunnelmode).w
 		beq.s	loc_12CA6
-		tst.b	obAnim(a0)
+		cmpi.b	#aniID_Walk,obAnim(a0)			; changed instruction because Walk is no longer #0
 		bne.s	loc_12CA6
 		move.b	obPrevAni(a0),obAnim(a0)
 
