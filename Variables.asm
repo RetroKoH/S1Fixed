@@ -507,7 +507,7 @@ v_demonum:			ds.w	1		; demo level number (not the same as the level number)
 v_creditsnum:		ds.w	1		; credits index number
 			ds.b	2		; unused
 v_megadrive:		ds.b	1		; Megadrive machine type
-v_ttlcarddelay		ds.b	1		; title card loop delay (to allow art to fully load)
+			ds.b	1		; unused
 f_debugmode:		ds.w	1		; debug mode flag
 v_init:				ds.l	1		; 'init' text string
 v_ram_end:

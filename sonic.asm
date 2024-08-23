@@ -2368,7 +2368,7 @@ Level_PlayBgm:
 		move.b	d0,(v_lastbgmplayed).w			; store last played music
 		move.b	#id_TitleCard,(v_titlecard).w	; load title card object
 
-		move.b  #3,(v_ttlcarddelay).w			; set the delay timer -- Fixes bug w/ HUD elements not appearing
+		move.b  #3,(v_framecount).w			; set the delay timer -- Fixes bug w/ HUD elements not appearing
 
 Level_TtlCardLoop:
 		move.b	#$C,(v_vbla_routine).w
@@ -2381,11 +2381,19 @@ Level_TtlCardLoop:
 		bne.s	Level_TtlCardLoop				; if not, branch
 		tst.l	(v_plc_buffer).w				; are there any items in the pattern load cue?
 		bne.s	Level_TtlCardLoop				; if yes, branch
-		subq.b  #1,(v_ttlcarddelay).w			; substract 1 from timer
+		subq.b  #1,(v_framecount).w				; substract 1 from timer
         bne.s   Level_TtlCardLoop				; if timer is not 0, branch
 		jsr		(Hud_Base).l					; load basic HUD gfx
+	
 
 Level_SkipTtlCard:
+	if RandomMonitors
+		locVRAM	(ArtTile_Monitor+$14)*tile_size
+		lea		Art_Mon_Rand,a0		; load title card patterns
+		move.l	#3,d0				; # of tiles
+		jsr		(LoadUncArt).w
+	endif
+
 		moveq	#palid_Sonic,d0
 		bsr.w	PalLoad_Fade					; load Sonic's palette
 		bsr.w	LevelSizeLoad
@@ -7434,6 +7442,11 @@ Art_Effects:	binclude	"artunc/Dust Effects.bin"			; Spindash/Skid Dust
 				include "_maps/Effects.asm"
 	endif
 
+	if RandomMonitors
+Art_Mon_Rand:	binclude	"artunc/Monitors - Random.bin"		; Monitor Art Mod
+		even
+	endif
+
 Art_TitleSonic:	binclude	"artunc/Title Screen Sonic.bin"		; Title Sonic -- RetroKoH VRAM Overhaul
 		even
 
@@ -7702,11 +7715,6 @@ Nem_Monitors:	binclude	"artnem/Monitors - S3K.nem"
 		even
 	else
 Nem_Monitors:	binclude	"artnem/Monitors.nem"
-		even
-	endif
-
-	if RandomMonitors
-Nem_Mon_Rand:	binclude	"artnem/Monitors - Random.nem"
 		even
 	endif
 
