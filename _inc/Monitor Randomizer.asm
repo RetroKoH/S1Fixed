@@ -35,3 +35,4 @@ MonitorRandomizer:
 .skipcheck:
 	endif
 		move.b	d0,obAnim(a0)		; get subtype
+		rts
