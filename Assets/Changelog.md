@@ -181,6 +181,21 @@
  Function: Limits the rising speed of blocks in LZ so that Sonic can jump off them more comfortably.
  Date: 2024-08-07
 
+## Orbinaut Animation Tweak
+ Credit: Mercury
+ Function: Makes Orbinaut "notice" Sonic at a closer range so that it's more likely to happen onscreen, and "get angry" quicker.
+ Date: 2024-08-10
+
+## SLZ Orbinaut Behaviour Mod
+ Credit: Mercury
+ Function: Makes the SLZ Orbinauts beatable by giving them behaviour similar to Sonic 4's.
+ Date: 2024-08-10
+
+## SRAM Support and Progress Saving
+ Credit: Kilo/RetroKoH
+ Function: Save Game Support, and new menu built off the PRESS START BUTTON object.
+ Date: 2024-08-15
+
 ## Randomized Monitors
  Credit: RetroKoH/Devon
  Function: Randomizes monitors (akin to S2's 2 PLAYER mode). Randomization thanks to Devon.
@@ -702,3 +717,30 @@
  Function: Fixes Eggman's mappings so that his moustache isn't cut off.
  Date: 2024-07-16
  Modifies: _maps\Eggman.asm
+
+## Fixed Shields and SpinDash Dust Misalignment
+ Credit: RetroKoH
+ Function: Shields and Spindash dust now stay aligned w/ Sonic on moving platforms.
+ Date: 2024-08-20
+
+## Fixed Animation Resetting
+ Credit: Hame
+ Function: Fixes a minor issue where animations don't always reset upon landing on the floor.
+ Date: 2024-08-20
+
+## LZ3 Zip Fix
+ Credit: Hame
+ Function: Prevents a potential zip due to faulty collision at the start of LZ3.
+ (Only possible due to added abilities, but is a result of Sonic 1's collision)
+ Date: 2024-08-21
+
+## Spring Direction Fix
+ Credit: RetroKoH
+ Function: Fixes a minor bug w/ horizontal springs sometimes making Sonic face incorrectly.
+ Date: 2024-08-21
+
+## Monitor Solidity Fix
+ (Incomplete)
+ Credit: RetroKoH
+ Function: Fixes the monitor's wonky solidity.
+ Date: 2024-08-22
