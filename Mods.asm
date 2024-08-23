@@ -89,7 +89,7 @@ AfterImagesOn: = 1
 ; Name: Random Monitors
 ; Credit: RetroKoH
 ; Function: All monitors are randomized a la Sonic 2 (2P)
-RandomMonitors: = 1
+RandomMonitors: = 0
 
 ; Name: Limit LZ Block Rising Speed
 ; Credit: Mercury
@@ -106,7 +106,7 @@ OrbinautAnimationTweak: = 1
 ; Name: SLZ Orbinaut Behaviour Mod (Incomplete: Remove grey frame from SLZ Orbinaut)
 ; Credit: Mercury
 ; Function: Makes the SLZ Orbinauts beatable by giving them behaviour similar to Sonic 4's.
-SLZOrbinautBehaviourMod: = 0
+SLZOrbinautBehaviourMod: = 1
 
 ; Name: Speed Up/Instant Score Tally
 ; Credit: Mercury/RetroKoH
@@ -130,7 +130,7 @@ PaletteFadeSetting: = 6					; 0 - Blue (Original), 1 - Green, 2 - Red, 3 - Cyan 
 ; Function: Toggles GHZ palette between original and Sonic 1 Forever's altered bg water.
 GHZForeverPal: = 1						; if set to 1, GHZ is set to Sonic 1 Forever's palette
 
-; Name: Warm Palette Mod (Incomplete)
+; Name: Chaotix Palette Mod (Incomplete)
 ; Credit: Mercury/RetroKoH
 ; Function: Gives the game a warmer, Chaotix-like feel. (Continuation of Mercury's mod)
 WarmPalettes: = 0
@@ -183,7 +183,7 @@ SpecialStageAdvancementMod: = 1
 ; Depends On: Dynamic Special Stage Walls
 HUDInSpecialStage: = DynamicSpecialStageWalls*1
 	SpecialStageHUDType: = 1			; 0=normal; 1=score not shown; 2=score & time not shown; 3=rings only
-	TimeLimitInSpecialStage: = 1		; if set, time counts down in the Special Stage from a specified time limit
+	TimeLimitInSpecialStage: = 0		; if set, time counts down in the Special Stage from a specified time limit
 		SSTimeLimitPinch: = $00001E00	; "pinch" threshold that time must reach in order to trigger "TIME" to flash. Format: $000MSSCC
 		SSTimeLimitStart: = $00010000	; time on the clock to start with when Special Stage is entered. Format: $000MSSCC
 		; NOTE: SSTimeLimitStart must always end in 00
@@ -192,7 +192,7 @@ HUDInSpecialStage: = DynamicSpecialStageWalls*1
 ; Name: Sonic 4 Controls in Special Stage
 ; Credit: RetroKoH
 ; Function: If active, Special Stages control like Sonic 4 Ep 1 (Left/Right rotate the stage).
-S4SpecialStages: = 1	; (Removes UP/DOWN, and R Blocks)
+S4SpecialStages: = 0	; (Removes UP/DOWN, and R Blocks)
 
 ; Name: Special Stages Still Appear With All Emeralds
 ; Credit: Mercury
