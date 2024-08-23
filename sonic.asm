@@ -7267,8 +7267,6 @@ AddPoints:
 		blo.s   .noextralife			; if not, branch
 
 		addi.l  #5000,(v_scorelife).w	; increase requirement by 50000
-		tst.b   (v_megadrive).w
-		bmi.s   .noextralife			; branch if Mega Drive is Japanese
 		
 	; Mercury Lives Over/Underflow Fix
 		cmpi.b	#99,(v_lives).w			; are lives at max?
@@ -7281,8 +7279,6 @@ AddPoints:
 		move.w	#bgm_ExtraLife,d0
 		jmp		(PlaySound).w			; play extra life bgm
 
-
-.locret_1C6B6:
 .noextralife:
 		rts	
 ; End of function AddPoints
