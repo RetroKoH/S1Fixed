@@ -2368,6 +2368,8 @@ Level_PlayBgm:
 		move.b	d0,(v_lastbgmplayed).w			; store last played music
 		move.b	#id_TitleCard,(v_titlecard).w	; load title card object
 
+		move.b  #3,(v_ttlcarddelay).w			; set the delay timer -- Fixes bug w/ HUD elements not appearing
+
 Level_TtlCardLoop:
 		move.b	#$C,(v_vbla_routine).w
 		bsr.w	WaitForVBla
@@ -2379,6 +2381,8 @@ Level_TtlCardLoop:
 		bne.s	Level_TtlCardLoop				; if not, branch
 		tst.l	(v_plc_buffer).w				; are there any items in the pattern load cue?
 		bne.s	Level_TtlCardLoop				; if yes, branch
+		subq.b  #1,(v_ttlcarddelay).w			; substract 1 from timer
+        bne.s   Level_TtlCardLoop				; if timer is not 0, branch
 		jsr		(Hud_Base).l					; load basic HUD gfx
 
 Level_SkipTtlCard:
@@ -4750,10 +4754,10 @@ LevelLayoutLoad:
 		move.w	(v_zone).w,d0
 		lsl.b	#6,d0
 		lsr.w	#5,d0
-		lea	(Level_Index).l,a0
+		lea		(Level_Index).l,a0
 		move.w	(a0,d0.w),d0
-		lea	(a0,d0.w),a0
-		lea	(v_lvllayout).w,a1
+		lea		(a0,d0.w),a0
+		lea		(v_lvllayout).w,a1
 		bra.w	KosDec			; MJ: decompress layout
 ; End of function LevelLayoutLoad
 

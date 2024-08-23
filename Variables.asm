@@ -463,7 +463,7 @@ v_ani2_time:		ds.b	1		; synchronised sprite animation 2 - time until next frame
 v_ani2_frame:		ds.b	1		; synchronised sprite animation 2 - current frame
 v_ani3_time:		ds.b	1		; synchronised sprite animation 3 - time until next frame
 v_ani3_frame:		ds.b	1		; synchronised sprite animation 3 - current frame
-v_ani3_buf:		ds.w	1		; synchronised sprite animation 3 - info buffer
+v_ani3_buf:			ds.w	1		; synchronised sprite animation 3 - info buffer
 			ds.b	$26		; unused
 v_limittopdb:		ds.w	1		; level upper boundary, buffered for debug mode
 v_limitbtmdb:		ds.w	1		; level bottom boundary, buffered for debug mode
@@ -502,14 +502,14 @@ v_title_dcount:		ds.w	1		; number of times the d-pad is pressed on title screen
 v_title_ccount:		ds.w	1		; number of times C is pressed on title screen
 f_levsel_active:	ds.b	1	
 			ds.b	7		; unused
-f_demo:			ds.w	1		; demo mode flag (0 = no; 1 = yes; $8001 = ending)
-v_demonum:		ds.w	1		; demo level number (not the same as the level number)
+f_demo:				ds.w	1		; demo mode flag (0 = no; 1 = yes; $8001 = ending)
+v_demonum:			ds.w	1		; demo level number (not the same as the level number)
 v_creditsnum:		ds.w	1		; credits index number
 			ds.b	2		; unused
 v_megadrive:		ds.b	1		; Megadrive machine type
-			ds.b	1		; unused
+v_ttlcarddelay		ds.b	1		; title card loop delay (to allow art to fully load)
 f_debugmode:		ds.w	1		; debug mode flag
-v_init:			ds.l	1		; 'init' text string
+v_init:				ds.l	1		; 'init' text string
 v_ram_end:
     if * > 0	; Don't declare more space than the RAM can contain!
 	fatal "The RAM variable declarations are too large by $\{*} bytes."
