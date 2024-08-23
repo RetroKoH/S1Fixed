@@ -66,6 +66,9 @@ PLC_Main2:	dc.w ((PLC_Main2end-PLC_Main2-2)/6)-1
 		plcm	Nem_Ring,			ArtTile_Ring					; rings	-- Moved here to load over the title card
 		plcm	Nem_Monitors,		ArtTile_Monitor					; monitors
 		plcm	Nem_Points,			ArtTile_Points					; points from enemy
+	if RandomMonitors
+		plcm	Nem_Mon_Rand,		ArtTile_Monitor+$14				; random monitor
+	endif
 PLC_Main2end:
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - explosion

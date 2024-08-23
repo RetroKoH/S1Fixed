@@ -3,9 +3,9 @@
 ; ---------------------------------------------------------------------------
 
 	if ShieldsMode>1
-monLastID: = $C
+monLastID: = $C+RandomMonitors
 	else
-monLastID: = 9
+monLastID: = 9+RandomMonitors
 	endif
 
 Monitor:
@@ -42,13 +42,16 @@ Mon_Main:	; Routine 0
 
 		beq.s	.notbroken					; if not, branch
 		move.b	#8,obRoutine(a0)			; run "Mon_Display" routine
-		move.b	#monLastID+2,obFrame(a0)	; use broken monitor frame
+		move.b	#monLastID+2-RandomMonitors,obFrame(a0)	; use broken monitor frame
 		rts	
 ; ===========================================================================
 
 .notbroken:
 		move.b	#$46,obColType(a0)
 		move.b	obSubtype(a0),obAnim(a0)
+	if RandomMonitors
+		move.b	#monLastID-1,obAnim(a0)		; use '?' icon
+	endif
 
 Mon_Solid:	; Routine 2
 	if ShieldsMode=2

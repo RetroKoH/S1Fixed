@@ -29,7 +29,7 @@ Map_Monitor:	mappingsTable
 .static1_End
 
 .static2:	spriteHeader
-	spritePiece	-8, -$B, 2, 2, $14, 0, 0, 0, 0	; static monitor
+	spritePiece	-8, -$B, 2, 2, $14, 0, 0, 0, 0	; static monitor (Replaced by ? when RandomMonitors is active)
 	spritePiece	-$10, -$11, 4, 4, 0, 0, 0, 0, 0
 .static2_End
 

@@ -7701,6 +7701,11 @@ Nem_Monitors:	binclude	"artnem/Monitors.nem"
 		even
 	endif
 
+	if RandomMonitors
+Nem_Mon_Rand:	binclude	"artnem/Monitors - Random.nem"
+		even
+	endif
+
 Nem_Explode:	binclude	"artnem/Explosion.nem"
 		even
 Nem_Points:		binclude	"artnem/Points.nem"	; points from destroyed enemy or object

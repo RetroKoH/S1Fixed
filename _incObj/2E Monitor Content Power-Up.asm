@@ -1,3 +1,7 @@
+	if RandomMonitors
+		include		"_inc/Monitor Randomizer.asm"
+	endif
+
 ; ---------------------------------------------------------------------------
 ; Object 2E - contents of monitors
 ; ---------------------------------------------------------------------------
@@ -23,7 +27,12 @@ Pow_Main:	; Routine 0
 		move.b	#8,obActWid(a0)
 		move.w	#-$300,obVelY(a0)
 		moveq	#0,d0
-		move.b	obAnim(a0),d0	; get subtype
+		move.b	obAnim(a0),d0		; get subtype
+
+	if RandomMonitors
+		bsr.w	MonitorRandomizer	; give 'random' item
+	endif
+
 		addq.b	#2,d0
 		move.b	d0,obFrame(a0)	; use correct frame
 		movea.l	#Map_Monitor,a1

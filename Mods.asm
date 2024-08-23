@@ -86,6 +86,11 @@ CDCamera: = 0							; if set to 1, screen will pan forward, a la Sonic CD
 ; Function: Applies After-Image effects to the Speed Shoes
 AfterImagesOn: = 1
 
+; Name: Random Monitors
+; Credit: RetroKoH
+; Function: All monitors are randomized a la Sonic 2 (2P)
+RandomMonitors: = 1
+
 ; Name: Limit LZ Block Rising Speed
 ; Credit: Mercury
 ; Function: Limits the rising speed of blocks in LZ so that Sonic can jump off them more comfortably.
