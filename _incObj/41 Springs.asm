@@ -125,23 +125,17 @@ Spring_BounceLR:
 		addq.b	#2,obRoutine(a0)
 		move.w	spring_pow(a0),obVelX(a1)	; move Sonic to the left
 		addq.w	#8,obX(a1)
+		bset	#staFacing,obStatus(a1)		; set Sonic facing to the left: RetroKoH Spring Direction Fix
 		btst	#staFlipX,obStatus(a0)		; is object flipped?
 		bne.s	Spring_Flipped				; if yes, branch
+		bclr	#staFacing,obStatus(a1)		; set Sonic facing to the right: RetroKoH Spring Direction Fix
 		subi.w	#$10,obX(a1)
 		neg.w	obVelX(a1)					; move Sonic to	the right
 
 Spring_Flipped:
 		move.b	#$F,obLRLock(a1)
 		move.w	obVelX(a1),obInertia(a1)
-		; RetroKoH spring direction fix
-		tst.w	obVelX(a1)
-		bmi.s	Face_Left					; if Sonic is running left, branch
-		bclr	#staFacing,obStatus(a1)
-		bra.s	Face_Cont
-		;bchg	#staFacing,status(a1)		; Removed this
-	Face_Left:
-		bset	#staFacing,obStatus(a1)
-	Face_Cont:	; spring direction fix end
+		;bchg	#staFacing,obStatus(a1)		; Removed: RetroKoH Spring Direction Fix
 		btst	#staSpin,obStatus(a1)
 		bne.s	loc_DC56
 		move.b	#aniID_Walk,obAnim(a1)		; use walking animation
