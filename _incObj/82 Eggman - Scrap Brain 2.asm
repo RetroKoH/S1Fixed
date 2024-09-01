@@ -22,7 +22,6 @@ SEgg_Main:	; Routine 0
 		bclr	#staFlipX,obStatus(a0)
 		clr.b	ob2ndRout(a0)
 		move.b	#2,obRoutine(a0)
-		clr.b	obAnim(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.l	#Map_SEgg,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
@@ -37,7 +36,6 @@ SEgg_Main:	; Routine 0
 		move.w	#boss_sbz2_y+$AC,obY(a1)
 		clr.b	ob2ndRout(a1)
 		move.b	#4,obRoutine(a1)
-		clr.b	obAnim(a1)
 		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.l	#Map_But,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman_Button,0,0),obGfx(a1)

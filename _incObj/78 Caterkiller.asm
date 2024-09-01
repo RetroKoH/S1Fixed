@@ -26,7 +26,7 @@ Cat_Index:	offsetTable
 
 
 cat_intertia = obVelY		; formerly obInertia. Needed to change after shifting SSTs for the Priority Manager.
-							; Caterkiller uses obXVel but doesn't use obYVel, and this causes no glitches.
+							; Caterkiller uses obXVel but doesn't use obYVel (unless broken), and this causes no glitches.
 cat_parent = objoff_3C		; address of parent object
 ; ===========================================================================
 

@@ -86,7 +86,7 @@ Sonic_KeepRolling:
 
 loc_131CC:
 	; Mercury Screen Scroll While Rolling Fix
-		cmp.w	#$60,(v_lookshift).w
+		cmpi.w	#$60,(v_lookshift).w
 		beq.s	.cont2
 		bcc.s	.cont1
 		addq.w	#4,(v_lookshift).w

@@ -6,7 +6,7 @@
 
 
 DisplaySprite:
-		movea.w	obPriority(a0),a1	; get sprite priority -- RetroKoH/Devon S3K+ Priority Manager
+		movea.w	obPriority(a0),a1	; get sprite queue pointer -- RetroKoH/Devon S3K+ Priority Manager
 		cmpi.w	#$7E,(a1)			; is this part of the queue full?
 		bcc.s	DSpr_Full			; if yes, branch
 		addq.w	#2,(a1)				; increment sprite count

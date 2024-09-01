@@ -251,10 +251,10 @@ RLoss_Bounce:	; Routine 2
 		addq.w	#2,(a1)					; Count this new entry
 		adda.w	(a1),a1					; Offset into right area of list
 		move.w	a0,(a1)					; Store RAM address in list
-
-		btst	#0,obDelayAni(a0)		; Test the first bit of the timer, so rings flash every other frame.
+		move.b	obDelayAni(a0),d0		; load timer to d0 (accessing d0 later saves cycles)
+		btst	#0,d0					; Test the first bit of the timer, so rings flash every other frame.
 		beq.w	DisplaySprite			; If the bit is 0, the ring will appear.
-		cmpi.b	#80,obDelayAni(a0)		; Rings will flash during last 80 steps of their life.
+		cmpi.b	#80,d0					; Rings will flash during last 80 steps of their life.
 		bhi.w	DisplaySprite			; If the timer is higher than 80, obviously the rings will STAY visible.
 		rts								; Skip Displaying if there is no room in the collision table.
 .full:

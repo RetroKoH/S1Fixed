@@ -2422,7 +2422,6 @@ Level_ChkWater:
 		moveq	#0,d0
 		move.w	d0,(v_jpadhold2).w
 		move.w	d0,(v_jpadhold1).w
-		move.b	d0,(f_levelstarted).w					; RetroKoH S2 Rings Manager
 		cmpi.b	#id_LZ,(v_zone).w						; is level LZ?
 		bne.s	Level_LoadObj							; if not, branch
 		move.b	#id_WaterSurface,(v_watersurface1).w	; load water surface object
