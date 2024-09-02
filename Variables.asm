@@ -376,8 +376,8 @@ v_palette_fading_end:
 			ds.b	$140		; stack
 v_systemstack:
 v_crossresetram:				; RAM beyond this point is only cleared on a cold-boot
-				ds.b	2		; unused
-f_restart:			ds.w	1		; restart level flag
+				ds.b	3		; unused
+f_restart:			ds.b	1		; restart level flag (now 1 byte)
 v_framecount:		ds.w	1		; frame counter (adds 1 every frame)
 v_framebyte = v_framecount+1		; low byte for frame counter
 
@@ -388,7 +388,7 @@ v_debuguse:			ds.w	1		; debug mode use & routine counter (when Sonic is a ring/i
 v_debugxspeed:		ds.b	1		; debug mode - horizontal speed
 v_debugyspeed:		ds.b	1		; debug mode - vertical speed
 v_vbla_count:		ds.l	1		; vertical interrupt counter (adds 1 every VBlank)
-v_vbla_word = v_vbla_count+2 			; low word for vertical interrupt counter (2 bytes)
+v_vbla_word = v_vbla_count+2 		; low word for vertical interrupt counter (2 bytes)
 v_vbla_byte = v_vbla_word+1			; low byte for vertical interrupt counter
 v_zone:				ds.b	1		; current zone number
 v_act:				ds.b	1		; current act number

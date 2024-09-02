@@ -2446,7 +2446,7 @@ Level_LoadObj:
 Level_SkipClr:
 		move.b	d0,(f_timeover).w
 		move.w	d0,(v_debuguse).w
-		move.w	d0,(f_restart).w
+		move.b	d0,(f_restart).w
 		move.w	d0,(v_framecount).w
 		bsr.w	OscillateNumInit
 		moveq	#1,d0
@@ -2546,7 +2546,7 @@ Level_MainLoop:
 		bsr.w	MoveSonicInDemo
 		bsr.w	LZWaterFeatures
 		jsr		(ExecuteObjects).l
-		tst.w	(f_restart).w
+		tst.b	(f_restart).w
 		bne.w	GM_Level
 		jsr		(RingsManager).l			; RetroKoH S2 Rings Manager
 		tst.w	(v_debuguse).w				; is debug mode being used?
@@ -2581,7 +2581,7 @@ Level_SkipHUDScroll:
 ; ===========================================================================
 
 Level_ChkDemo:
-		tst.w	(f_restart).w	; is level set to restart?
+		tst.b	(f_restart).w	; is level set to restart?
 		bne.s	Level_EndDemo	; if yes, branch
 		tst.w	(v_demolength).w ; is there time left on the demo?
 		beq.s	Level_EndDemo	; if not, branch
@@ -2792,7 +2792,7 @@ GM_Special:
 		clearRAM v_ngfx_buffer
 
 		clr.b	(f_wtr_state).w
-		clr.w	(f_restart).w
+		clr.b	(f_restart).w
 		moveq	#palid_Special,d0
 		bsr.w	PalLoad_Fade					; load special stage palette
 		jsr		(SS_Load).l						; load SS layout data
@@ -2977,7 +2977,7 @@ SS_NormalExit:
 		jsr		(ExecuteObjects).l
 		jsr		(BuildSprites).l
 		bsr.w	RunPLC
-		tst.w	(f_restart).w
+		tst.b	(f_restart).w
 		beq.s	SS_NormalExit
 		tst.l	(v_plc_buffer).w
 		bne.s	SS_NormalExit
@@ -3529,7 +3529,7 @@ End_LoadSonic:
 		move.l	d0,(v_time).w
 		move.b	d0,(v_lifecount).w
 		move.w	d0,(v_debuguse).w
-		move.w	d0,(f_restart).w
+		move.b	d0,(f_restart).w
 		move.w	d0,(v_framecount).w
 		bsr.w	OscillateNumInit
 		move.w	#1800,(v_demolength).w
@@ -3568,10 +3568,10 @@ End_MainLoop:
 ; ===========================================================================
 
 End_ChkEmerald:
-		tst.w	(f_restart).w				; has Sonic released the emeralds?
+		tst.b	(f_restart).w				; has Sonic released the emeralds?
 		beq.w	End_MainLoop				; if not, branch
 
-		clr.w	(f_restart).w
+		clr.b	(f_restart).w
 		move.w	#$3F,(v_pfade_start).w
 		clr.w	(v_palchgspeed).w
 
@@ -3593,9 +3593,9 @@ End_AllEmlds:
 		bsr.w	WhiteOut_ToWhite
 
 End_SlowFade:
-		tst.w	(f_restart).w
+		tst.b	(f_restart).w
 		beq.w	End_AllEmlds
-		clr.w	(f_restart).w
+		clr.b	(f_restart).w
 		move.l	#$AAABAE9A,(v_lvllayout+$200).w	; MJ: modify level layout
 		move.l	#$ACADAFB0,(v_lvllayout+$300).w
 		lea		(vdp_control_port).l,a5

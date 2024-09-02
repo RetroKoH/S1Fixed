@@ -170,7 +170,7 @@ locret_C8EA:
 ; ===========================================================================
 
 SSR_Exit:	; Routine $A, $12
-		move.w	#1,(f_restart).w ; restart level
+		move.b	#1,(f_restart).w ; restart level
 		bra.w	DisplaySprite
 ; ===========================================================================
 

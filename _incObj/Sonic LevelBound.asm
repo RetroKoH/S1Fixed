@@ -46,7 +46,7 @@ Sonic_LevelBound:
 		cmpi.w	#$2000,(v_player+obX).w
 		bcs.s	.killsonic				; MJ: Fix out-of-range branch
 		clr.b	(v_lastlamp).w	; clear	lamppost counter
-		move.w	#1,(f_restart).w ; restart the level
+		move.b	#1,(f_restart).w ; restart the level
 		move.w	#(id_LZ<<8)+3,(v_zone).w ; set level to SBZ3 (LZ4)
 		rts	
 ; ===========================================================================

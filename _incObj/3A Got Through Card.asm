@@ -218,7 +218,7 @@ Got_ChkSS:
 ; ===========================================================================
 
 loc_C6EA:
-		move.w	#1,(f_restart).w ; restart level
+		move.b	#1,(f_restart).w ; restart level
 
 Got_Display2:
 		bra.w	DisplaySprite

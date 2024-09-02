@@ -89,5 +89,5 @@ Over_ChgMode:
 
 Over_ResetLvl:
 		clr.l	(v_lamp_time).w		; reset lamp time
-		move.w	#1,(f_restart).w	; restart level
+		move.b	#1,(f_restart).w	; restart level
 		bra.w	DisplaySprite
