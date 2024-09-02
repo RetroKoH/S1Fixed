@@ -1397,11 +1397,8 @@ PalLoad:
 PalLoad_EndFlowers:
 		lea		Pal_EndFlowers,a2		; get palette data address
 		lea		v_palette_fading+$2C,a3	; get target RAM address
-		move.w	#3,d7					; get length of palette
-
-.loop:
 		move.l	(a2)+,(a3)+				; move data to RAM
-		dbf		d7,.loop
+		move.l	(a2)+,(a3)+				; don't need to loop for two moves
 		rts	
 ; End of function PalLoad_EndFlowers
 	endif
@@ -3608,7 +3605,7 @@ End_SlowFade:
 		move.w	#$4000,d2
 		bsr.w	DrawChunks
 		moveq	#palid_Ending,d0
-		bsr.w	PalLoad_Fade						; load ending palette
+		bsr.w	PalLoad_Fade					; load ending palette
 	if SuperMod=1
 		bsr.w	PalLoad_EndFlowers
 	endif

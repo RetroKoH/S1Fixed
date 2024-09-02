@@ -94,8 +94,6 @@ ESon_Wait3:
 		jmp		(DisplaySprite).l	
 ; ===========================================================================
 
-
-
 Obj87_Leap:	; Routine $10
 		subq.w	#1,eson_time(a0)
 		bne.s	ESon_Wait4

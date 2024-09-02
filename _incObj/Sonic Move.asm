@@ -362,7 +362,7 @@ loc_13104:
 		sub.w	d5,d0
 		cmp.w	d6,d0
 		bge.s	loc_1310C
-	endif	;end Disable Speed Cap
+	endif	;end Disable Ground Speed Cap
 
 		move.w	d6,d0
 
