@@ -160,6 +160,11 @@ HUDHasLeadingZeroes: = 0				; if set to 1, leading zeroes appear on HUD
 ; Function: Adds Sonic CD-style centiseconds to the HUD
 HUDCentiseconds: = 1
 
+; Name: Blinking HUD
+; Credit: Mercury
+; Function: Makes "TIME" and "RINGS" will blink on and off instead of flashing red. Useful when changing palettes.
+HUDBlinking: = 1
+
 ; ----- SPECIAL STAGES -----------------------------------------------------------
 
 ; Name: Dynamic Special Stage Walls

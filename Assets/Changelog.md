@@ -201,6 +201,11 @@
  Function: Randomizes monitors (akin to S2's 2 PLAYER mode). Randomization thanks to Devon.
  Date: 2024-08-23
 
+## Blinking HUD
+ Credit: Mercury
+ Function: Makes "TIME" and "RINGS" will blink on and off instead of flashing red. Useful when changing palettes.
+ Date: 2024-09-03
+
 # Under-the-Hood Optimizations/Overhauls
  These are larger-scale changes to one or more aspects of the engine that cannot be toggled on/off.
 
