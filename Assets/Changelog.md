@@ -58,12 +58,6 @@
  Function: Toggles whether music will fade out after the level ends.
  Date: 2024-06-20
  
-## Chaotix Palette Mod (Incomplete)
- (Incomplete: Missing Palettes)
- Credit: Mercury/RetroKoH
- Function: Gives the game a warmer, Chaotix-like feel.
- Date: 2024-06-21
- 
 ## Objects Don't Freeze
  (Incomplete: GHZ Clouds shouldn't freeze if this is enabled)
  Credit: RetroKoH
@@ -206,6 +200,11 @@
  Function: Makes "TIME" and "RINGS" will blink on and off instead of flashing red. Useful when changing palettes.
  Date: 2024-09-03
 
+## Proto Sonic Palette
+ Credit: Ikey Ilex
+ Function: Gives Sonic a more saturated color palette. From the Tom Payne archives. Also seen in Crackers and Sonic CD.
+ Date: 2024-09-04
+
 # Under-the-Hood Optimizations/Overhauls
  These are larger-scale changes to one or more aspects of the engine that cannot be toggled on/off.
 
@@ -328,12 +327,18 @@
  Credit: RetroKoH
  Function: Uses Sonic 2 format mappings (Display/Delete bug occurs w/ buzz bomber missile)
  Date: 2024-08-02
+
+## ASCII Level Select
+ Credit: Soulless Sentinel
+ Function: Makes editing level select text easier for newer users.
+ https://forums.sonicretro.org/index.php?threads/how-to-convert-sonic-1-level-select-to-ascii.31729/
+ Date: 2024-09-04
  
 ## Extended Sound Index
  (Temporarily Removed)
  Credit: Alex Field
  Function: Sounds can be played from 00-FF (Users will need to add them, of course)
- Date: 2024-08-16
+ Date: ???
  
 # Design Changes
  These are relatively minor changes that merely provide a little bit of added flair, or clean things up.

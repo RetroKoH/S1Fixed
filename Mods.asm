@@ -40,14 +40,9 @@ SuperMod: = 1
 
 ; ----- GAMEPLAY TWEAKS ----------------------------------------------------------
 
-; Name: Save Game Functionality
-; Credit: RetroKoH, s1Disasm Team
-; Function: Allows the player to continue from the previous save point (level start, checkpoint)
-EnableSRAM:	  = 1	; change to 1 to enable SRAM
-BackupSRAM:	  = 1
-AddressSRAM:  = 3	; 0 = odd+even; 2 = even only; 3 = odd only
-; Below is the variable for the actual mod. SRAM must be enabled to use this mod.
-SaveProgressMod: = EnableSRAM*1
+; Name: Beta Level Order (Coming Soon)
+; Credit: RetroKoH
+; Function: Toggles level order between Beta and Final
 
 ; Name: Disable Speed Caps
 ; Credit: Mercury (Ground/Air), RetroKoH (Applied to Devon's Rolling Speed Cap Fix)
@@ -212,6 +207,15 @@ AlteredSpecialStages: = (S4SpecialStages+SpecialStagesWithAllEmeralds)
 ; Credit: Clownacy/MarkeyJester
 ; Function: Sound alert when running through the path swapper while Debug Mode is enabled
 DebugPathSwappers: = 1
+
+; Name: Save Game Functionality
+; Credit: RetroKoH, s1Disasm Team
+; Function: Allows the player to continue from the previous save point (level start, checkpoint)
+EnableSRAM:	  = 1	; change to 1 to enable SRAM
+BackupSRAM:	  = 1
+AddressSRAM:  = 3	; 0 = odd+even; 2 = even only; 3 = odd only
+; Below is the variable for the actual mod. SRAM must be enabled to use this mod.
+SaveProgressMod: = EnableSRAM*1
 
 ; Name: Chunks In ROM
 ; Credit: Mercury/FraGag

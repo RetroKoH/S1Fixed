@@ -416,7 +416,8 @@ CheckSumError:
 		bra.s	.endlessloop
 ; ===========================================================================
 
-Art_Text:		binclude	"artunc/menutext.bin" ; text used in level select and debug mode
+; Soulless Sentinel Level Select ASCII Mod
+Art_Text:		binclude	"artunc/Menu Text.bin" ; text used in level select and debug mode
 Art_Text_End:	even
 
 ; ===========================================================================
@@ -2090,8 +2091,8 @@ LevSelTextLoad:
 textpos:	= ($40000000+(($E210&$3FFF)<<16)+(($E210&$C000)>>14))
 					; $E210 is a VRAM address
 
-		lea	(LevelMenuText).l,a1
-		lea	(vdp_data_port).l,a6
+		lea		(LevelMenuText).l,a1
+		lea		(vdp_data_port).l,a6
 		move.l	#textpos,d4	; text position on screen
 		move.w	#$E680,d3	; VRAM setting (4th palette, $680th tile)
 		moveq	#$14,d1		; number of lines of text
@@ -2142,7 +2143,7 @@ LevSel_ChgSnd:
 		andi.w	#$F,d0
 		cmpi.b	#$A,d0		; is digit $A-$F?
 		blo.s	LevSel_Numb	; if not, branch
-		addq.b	#7,d0		; use alpha characters
+		addq.b	#4,d0		; use alpha characters (was 7) -- Soulless Sentinel Level Select ASCII Mod
 
 LevSel_Numb:
 		add.w	d3,d0
@@ -2165,19 +2166,45 @@ LevSel_LineLoop:
 		dbf		d2,LevSel_LineLoop
 		rts	
 
-
+; Soulless Sentinel Level Select ASCII Mod
 LevSel_CharOk:
+		cmpi.w	#$40,d0		; Check for $40 (End of ASCII number area)
+		blt.s	.notText	; If this is not an ASCII text character, branch
+		subq.w	#3,d0		; Subtract an extra 3 (Compensate for missing characters in the font)
+.notText:
+		subi.w	#$30,d0		; Subtract #$33 (Convert to S2 font from ASCII)
 		add.w	d3,d0		; combine char with VRAM setting
 		move.w	d0,(a6)		; send to VRAM
 		dbf		d2,LevSel_LineLoop
-		rts	
+		rts
 ; End of function LevSel_ChgLine
 
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
-; Level	select menu text
+; Level	select menu text -- Soulless Sentinel Level Select ASCII Mod
 ; ---------------------------------------------------------------------------
-LevelMenuText:	binclude	"misc/Level Select Text.bin"
+LevelMenuText:
+		dc.b    "GREEN HILL ZONE  STAGE 1"
+		dc.b    "                 STAGE 2"
+		dc.b    "                 STAGE 3"
+		dc.b    "MARBLE ZONE      STAGE 1"
+		dc.b    "                 STAGE 2"
+		dc.b    "                 STAGE 3"
+		dc.b    "SPRING YARD ZONE STAGE 1"
+		dc.b    "                 STAGE 2"
+		dc.b    "                 STAGE 3"
+		dc.b    "LABYRINTH ZONE   STAGE 1"
+		dc.b    "                 STAGE 2"
+		dc.b    "                 STAGE 3"
+		dc.b    "STAR LIGHT ZONE  STAGE 1"
+		dc.b    "                 STAGE 2"
+		dc.b    "                 STAGE 3"
+		dc.b    "SCRAP BRAIN ZONE STAGE 1"
+		dc.b    "                 STAGE 2"
+		dc.b    "                 STAGE 3"
+		dc.b    "FINAL ZONE              "
+		dc.b    "SPECIAL STAGE           "
+		dc.b    "SOUND SELECT            "
 		even
 ; ---------------------------------------------------------------------------
 ; Music	playlist
