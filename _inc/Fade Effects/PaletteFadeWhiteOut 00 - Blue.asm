@@ -6,50 +6,6 @@
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-PaletteWhiteOut:
-		move.w	#$3F,(v_pfade_start).w		; start position = 0; size = $40
-		move.w	#$15,d4
-
-.mainloop:
-		move.b	#$12,(v_vbla_routine).w
-		bsr.w	WaitForVBla
-		bsr.s	WhiteOut_ToWhite
-		bsr.w	RunPLC
-		dbf		d4,.mainloop
-		rts	
-; End of function PaletteWhiteOut
-
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
-WhiteOut_ToWhite:
-		moveq	#0,d0
-		lea		(v_palette).w,a0
-		move.b	(v_pfade_start).w,d0
-		adda.w	d0,a0
-		move.b	(v_pfade_size).w,d0
-
-.addcolour:
-		bsr.s	WhiteOut_AddColour			; add to colour
-		dbf		d0,.addcolour				; repeat for size of palette
-
-		moveq	#0,d0
-		lea		(v_palette_water).w,a0
-		move.b	(v_pfade_start).w,d0
-		adda.w	d0,a0
-		move.b	(v_pfade_size).w,d0
-
-.addcolour2:
-		bsr.s	WhiteOut_AddColour
-		dbf		d0,.addcolour2
-		rts	
-; End of function WhiteOut_ToWhite
-
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-; 04 46 > 04 48 > 04 4A > 04 4C > 04 4E
-
 WhiteOut_AddColour:
 		cmpi.w	#cWhite,(a0)	; Does this colour entry need to be faded out?
 		beq.s	.next			; if not, branch and jump to the next palette entry
@@ -60,7 +16,8 @@ WhiteOut_AddColour:
 		cmpi.b	#$E,d1
 		beq.s	.addgreen	; if red is already whited out, check green
 		addq.b	#2,1(a0)	; increase red value
-		bra.s	.next		; branch and exit
+		addq.w	#2,a0		; next colour
+		rts	
 ; ===========================================================================
 
 .addgreen:
@@ -69,12 +26,12 @@ WhiteOut_AddColour:
 		cmpi.b	#$E0,d1
 		beq.s	.addblue	; if green is already whited out, that means only blue remains
 		addi.b	#$20,1(a0)	; increase green value
-		bra.s	.next		; branch and exit	
+		addq.w	#2,a0		; next colour
+		rts		
 ; ===========================================================================
 
 .addblue:
 		addq.b	#2,(a0)		; increase blue	value	
-; ===========================================================================
 
 .next:
 		addq.w	#2,a0		; next colour

@@ -17,20 +17,20 @@ Fade Out to White
 	Red Add > Green Add > Blue Add
 
 ; ---------------------------------------------------------------------------
-  01 Green (Consider Swapping Blue and Red order)
+  01 Green
 ; ---------------------------------------------------------------------------
 
 Fade In from Black
-	Green Add > Blue Add > Red Add
+	Green Add > Red Add > Blue Add
 
 Fade Out to Black
-	Red Dec > Blue Dec > Green Dec
+	Blue Dec > Red Dec > Green Dec
 
 Fade In from White
-	Green Dec > Blue Dec > Red Dec
+	Green Dec > Red Dec > Blue Dec
 
 Fade Out to White
-	Red Add > Blue Add > Green Add
+	Blue Add > Red Add > Green Add
 
 ; ---------------------------------------------------------------------------
   02 Red

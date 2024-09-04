@@ -123,7 +123,7 @@ FadeInSEGA: = 1							; if set to 1, the SEGA screen smoothly fades in
 ; Name: Screen Fading Options
 ; Credit: RetroKoH/MarkeyJester
 ; Function: Screens now fade in/out in one of 7 different ways: (Blue, Green, Red, Cyan, Magenta, Yellow, and Full)
-PaletteFadeSetting: = 6					; 0 - Blue (Original), 1 - Green, 2 - Red, 3 - Cyan (B+G), 4 - Pink (B+R), 5 - Yellow (G+R), 6 - Full
+PaletteFadeSetting: = 1					; 0 - Blue (Original), 1 - Green, 2 - Red, 3 - Cyan (B+G), 4 - Pink (B+R), 5 - Yellow (G+R), 6 - Full
 
 ; Name: GHZ Water Palette Mod
 ; Credit: Sonic 1 Forever Team
