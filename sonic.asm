@@ -1822,7 +1822,30 @@ LevSel_Credits:
 ; Level	select - level pointers
 ; ---------------------------------------------------------------------------
 LevSel_Ptrs:
-		; correct level order
+	if BetaLevelOrder=1
+		dc.b id_GHZ, 0
+		dc.b id_GHZ, 1
+		dc.b id_GHZ, 2
+		dc.b id_LZ, 0
+		dc.b id_LZ, 1
+		dc.b id_LZ, 2
+		dc.b id_MZ, 0
+		dc.b id_MZ, 1
+		dc.b id_MZ, 2
+		dc.b id_SLZ, 0
+		dc.b id_SLZ, 1
+		dc.b id_SLZ, 2
+		dc.b id_SYZ, 0
+		dc.b id_SYZ, 1
+		dc.b id_SYZ, 2
+		dc.b id_SBZ, 0
+		dc.b id_SBZ, 1
+		dc.b id_LZ, 3
+		dc.b id_SBZ, 2
+		dc.b id_SS, 0		; Special Stage
+		dc.w $8000			; Sound Test
+		even
+	else
 		dc.b id_GHZ, 0
 		dc.b id_GHZ, 1
 		dc.b id_GHZ, 2
@@ -1845,6 +1868,7 @@ LevSel_Ptrs:
 		dc.b id_SS, 0		; Special Stage
 		dc.w $8000			; Sound Test
 		even
+	endif
 ; ===========================================================================
 
 LevSel_Level:
@@ -2184,6 +2208,30 @@ LevSel_CharOk:
 ; Level	select menu text -- Soulless Sentinel Level Select ASCII Mod
 ; ---------------------------------------------------------------------------
 LevelMenuText:
+	if BetaLevelOrder=1
+		dc.b    "GREEN HILL ZONE  STAGE 1"
+		dc.b    "                 STAGE 2"
+		dc.b    "                 STAGE 3"
+		dc.b    "LABYRINTH ZONE   STAGE 1"
+		dc.b    "                 STAGE 2"
+		dc.b    "                 STAGE 3"
+		dc.b    "MARBLE ZONE      STAGE 1"
+		dc.b    "                 STAGE 2"
+		dc.b    "                 STAGE 3"
+		dc.b    "STAR LIGHT ZONE  STAGE 1"
+		dc.b    "                 STAGE 2"
+		dc.b    "                 STAGE 3"
+		dc.b    "SPRING YARD ZONE STAGE 1"
+		dc.b    "                 STAGE 2"
+		dc.b    "                 STAGE 3"
+		dc.b    "SCRAP BRAIN ZONE STAGE 1"
+		dc.b    "                 STAGE 2"
+		dc.b    "                 STAGE 3"
+		dc.b    "FINAL ZONE              "
+		dc.b    "SPECIAL STAGE           "
+		dc.b    "SOUND SELECT            "
+		even
+	else
 		dc.b    "GREEN HILL ZONE  STAGE 1"
 		dc.b    "                 STAGE 2"
 		dc.b    "                 STAGE 3"
@@ -2206,6 +2254,7 @@ LevelMenuText:
 		dc.b    "SPECIAL STAGE           "
 		dc.b    "SOUND SELECT            "
 		even
+	endif
 ; ---------------------------------------------------------------------------
 ; Music	playlist
 ; ---------------------------------------------------------------------------
@@ -2653,7 +2702,8 @@ ColIndexLoad:
 ; ---------------------------------------------------------------------------
 ; Collision index pointers
 ; ---------------------------------------------------------------------------
-ColPointers:	dc.l Col_GHZ_1	; MJ: each zone now has two entries
+ColPointers:
+		dc.l Col_GHZ_1	; MJ: each zone now has two entries
 		dc.l Col_GHZ_2
 		dc.l Col_LZ_1
 		dc.l Col_LZ_2
@@ -3743,7 +3793,7 @@ EndingDemoLoad:
 		move.w	(v_creditsnum).w,d0
 		andi.w	#$F,d0
 		add.w	d0,d0
-		move.w	EndDemo_Levels(pc,d0.w),d0	; load level  array
+		move.w	EndDemo_Levels(pc,d0.w),d0	; load level array
 		move.w	d0,(v_zone).w				; set level from level array
 		addq.w	#1,(v_creditsnum).w
 		cmpi.w	#9,(v_creditsnum).w			; have credits finished?

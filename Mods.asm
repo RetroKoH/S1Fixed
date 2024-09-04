@@ -40,9 +40,10 @@ SuperMod: = 1
 
 ; ----- GAMEPLAY TWEAKS ----------------------------------------------------------
 
-; Name: Beta Level Order (Coming Soon)
+; Name: Beta Level Order
 ; Credit: RetroKoH
 ; Function: Toggles level order between Beta and Final
+BetaLevelOrder: = 1						; if set to 1, Level Order is that seen in the beta level select
 
 ; Name: Disable Speed Caps
 ; Credit: Mercury (Ground/Air), RetroKoH (Applied to Devon's Rolling Speed Cap Fix)

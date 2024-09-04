@@ -204,6 +204,11 @@
  Credit: Ikey Ilex
  Function: Gives Sonic a more saturated color palette. From the Tom Payne archives. Also seen in Crackers and Sonic CD.
  Date: 2024-09-04
+ 
+## Beta Level Order
+ Credit: RetroKoH
+ Function: If toggled on, lets you play the game in the original intended order
+ Date: 2024-09-04
 
 # Under-the-Hood Optimizations/Overhauls
  These are larger-scale changes to one or more aspects of the engine that cannot be toggled on/off.
