@@ -398,7 +398,11 @@ PalCycle_SuperSonic:
 ;Palette for transformation to Super Sonic
 ;----------------------------------------------------------------------------
 CyclingPal_SSTransformation:
+	if ProtoSonicPalette=1
+	binclude	"palette/Cycle - Super Sonic - Proto.bin"
+	else
 	binclude	"palette/Cycle - Super Sonic.bin"
+	endif
 ;----------------------------------------------------------------------------
 ;Palette for transformation to Super Sonic while underwater in LZ
 ;----------------------------------------------------------------------------
