@@ -130,10 +130,10 @@ PaletteFadeSetting: = 6					; 0 - Blue (Original), 1 - Green, 2 - Red, 3 - Cyan 
 ; Function: Toggles GHZ palette between original and Sonic 1 Forever's altered bg water.
 GHZForeverPal: = 1						; if set to 1, GHZ is set to Sonic 1 Forever's palette
 
-; Name: Chaotix Palette Mod (Incomplete)
-; Credit: Mercury/RetroKoH
-; Function: Gives the game a warmer, Chaotix-like feel. (Continuation of Mercury's mod)
-WarmPalettes: = 0
+; Name: Proto Sonic Palette Mod
+; Credit: Ikey Ilex
+; Function: Gives Sonic his prototype palette found in the Tom Payne archives. Also seen in Crackers and Sonic CD.
+ProtoSonicPalette: = 1
 
 ; Name: Objects Don't Freeze
 ; Credit: RetroKoH

@@ -1463,35 +1463,12 @@ Pal_SegaBG:		bincludePalette	"palette/Sega Background.bin"
 Pal_Title:		bincludePalette	"palette/Title Screen.bin"
 Pal_LevelSel:	bincludePalette	"palette/Level Select.bin"
 
-	if WarmPalettes=1
-
 ; ---------------------------------------------------------------------------
-Pal_Sonic:		bincludePalette	"palette/Sonic - Warm.bin"
-
-	if GHZForeverPal=1
-Pal_GHZ:		bincludePalette	"palette/Green Hill Zone - Forever - Warm.bin"
+	if ProtoSonicPalette=1
+Pal_Sonic:		bincludePalette	"palette/Sonic - Proto.bin"
 	else
-Pal_GHZ:		bincludePalette	"palette/Green Hill Zone - Original - Warm.bin"
-	endif
-
-Pal_LZ:			bincludePalette	"palette/Labyrinth Zone - Warm.bin"
-Pal_LZWater:	bincludePalette	"palette/Labyrinth Zone Underwater - Warm.bin"
-Pal_MZ:			bincludePalette	"palette/Marble Zone - Warm.bin"
-Pal_SLZ:		bincludePalette	"palette/Star Light Zone - Warm.bin"
-Pal_SYZ:		bincludePalette	"palette/Spring Yard Zone - Warm.bin"
-Pal_SBZ1:		bincludePalette	"palette/SBZ Act 1 - Warm.bin"
-Pal_SBZ2:		bincludePalette	"palette/SBZ Act 2 - Warm.bin"
-Pal_Special:	bincludePalette	"palette/Special Stage.bin"
-Pal_SBZ3:		bincludePalette	"palette/SBZ Act 3 - Warm.bin"
-Pal_SBZ3Water:	bincludePalette	"palette/SBZ Act 3 Underwater - Warm.bin"
-Pal_LZSonWater:	bincludePalette	"palette/Sonic - LZ Underwater.bin"
-Pal_SBZ3SonWat:	bincludePalette	"palette/Sonic - SBZ3 Underwater.bin"
-; ---------------------------------------------------------------------------
-
-	else
-
-; ---------------------------------------------------------------------------
 Pal_Sonic:		bincludePalette	"palette/Sonic.bin"
+	endif
 
 	if GHZForeverPal=1
 Pal_GHZ:		bincludePalette	"palette/Green Hill Zone - Forever.bin"
@@ -1512,8 +1489,6 @@ Pal_SBZ3Water:	bincludePalette	"palette/SBZ Act 3 Underwater.bin"
 Pal_LZSonWater:	bincludePalette	"palette/Sonic - LZ Underwater.bin"
 Pal_SBZ3SonWat:	bincludePalette	"palette/Sonic - SBZ3 Underwater.bin"
 ; ---------------------------------------------------------------------------
-
-	endif
 
 Pal_SSResult:	bincludePalette	"palette/Special Stage Results.bin"
 Pal_Continue:	bincludePalette	"palette/Special Stage Continue Bonus.bin"
