@@ -20,10 +20,7 @@ Elev_Index:		offsetTable
 		offsetTableEntry.w Elev_Action
 		offsetTableEntry.w Elev_MakeMulti
 
-Elev_Var1:
-		dc.b $28, 0		; width, frame number
-
-Elev_Var2:
+Elev_Vars:
 		dc.b $10, 1		; distance to move, action type
 		dc.b $20, 1
 		dc.b $34, 1
@@ -57,16 +54,13 @@ Elev_Main:	; Routine 0
 ; ===========================================================================
 
 .normal:
-		lsr.w	#3,d0
-		andi.w	#$1E,d0
-		lea		Elev_Var1(pc,d0.w),a2
-		move.b	(a2)+,obActWid(a0)		; set width
-		move.b	(a2)+,obFrame(a0)		; set frame
+		move.b	#$28,obActWid(a0)	; set width
+		clr.b	obFrame(a0)			; set frame
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
 		add.w	d0,d0
 		andi.w	#$1E,d0
-		lea		Elev_Var2(pc,d0.w),a2
+		lea		Elev_Vars(pc,d0.w),a2
 		move.b	(a2)+,d0
 		lsl.w	#2,d0
 		move.w	d0,elev_dist(a0)		; set distance to move
