@@ -512,6 +512,7 @@ ArtTile_MZ_Spike_Stomper:		equ $351				; ✓
 ArtTile_Basaran:				equ $3D6				; ✓
 ArtTile_MZ_Glass_Pillar:		equ $492				; ✓
 ArtTile_MZ_Block:				equ $4AC				; ✓
+ArtTile_MZ_UFO:					equ $4F2				; Uncompressed: 8
 
 ; Spring Yard Zone
 ArtTile_SYZ_Big_Spikeball:		equ $372				; ✓ (Actually also used in SBZ)
