@@ -4770,8 +4770,7 @@ LevelDataLoad:
 	endif
 
 		bsr.w	LevelLayoutLoad
-		move.w	(a2)+,d0
-		move.w	(a2),d0
+		move.b	(a2),d0
 		andi.w	#$FF,d0
 		cmpi.w	#(id_LZ<<8)+3,(v_zone).w ; is level SBZ3 (LZ4) ?
 		bne.s	.notSBZ3	; if not, branch
