@@ -2507,14 +2507,14 @@ Level_SkipClr:
 	endif	; HUD Centiseconds end
 
 		clr.w	(v_btnpushtime1).w
-		lea		(DemoDataPtr).l,a1		; load demo data
+		lea		DemoDataPtr(pc),a1		; load demo data
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
 		lsl.w	#2,d0
 		movea.l	(a1,d0.w),a1
 		tst.w	(f_demo).w				; is demo mode on?
 		bpl.s	Level_Demo				; if yes, branch
-		lea		(DemoEndDataPtr).l,a1	; load ending demo data
+		lea		DemoEndDataPtr(pc),a1	; load ending demo data
 		move.w	(v_creditsnum).w,d0
 		subq.w	#1,d0
 		lsl.w	#2,d0
@@ -2877,7 +2877,7 @@ GM_Special:
 		move.w	#bgm_SS,d0
 		bsr.w	PlaySound						; play special stage BG	music
 		clr.w	(v_btnpushtime1).w
-		lea		(DemoDataPtr).l,a1
+		lea		DemoDataPtr(pc),a1
 		moveq	#6,d0
 		lsl.w	#2,d0
 		movea.l	(a1,d0.w),a1
