@@ -805,13 +805,11 @@ ReadJoypads:
 		nop	
 		nop	
 		move.b	(a1),d0						; get joypad port data (start/A)
-		lsl.b	#2,d0
-		andi.b	#$C0,d0
+		asl.b	#2,d0
 		move.b	#$40,(a1)					; poll joypad data port again
-		nop	
-		nop	
+		andi.w	#$C0,d0
 		move.b	(a1),d1						; get joypad port data (B/C/Dpad)
-		andi.b	#$3F,d1
+		andi.w	#$3F,d1
 		or.b	d1,d0						; fuse together into one joypad bit array
 		not.b	d0
 		move.b	(a0),d1						; get press button data
