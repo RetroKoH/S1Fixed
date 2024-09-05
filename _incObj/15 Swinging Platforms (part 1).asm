@@ -14,7 +14,6 @@ Swing_Index:	offsetTable
 		offsetTableEntry.w	Swing_SetSolid
 		offsetTableEntry.w	Swing_Action2
 		offsetTableEntry.w	Swing_Delete
-		offsetTableEntry.w	Swing_Delete
 		offsetTableEntry.w	Swing_Display
 		offsetTableEntry.w	Swing_Action
 
@@ -99,7 +98,7 @@ Swing_Main:	; Routine 0
 		lsr.w	#object_size_bits,d5
 		andi.w	#$7F,d5
 		move.b	d5,(a2)+				; store obj slot of child object in parent's SST at (a2)
-		move.b	#$A,obRoutine(a1)		; goto Swing_Display next
+		move.b	#8,obRoutine(a1)		; goto Swing_Display next
 		_move.b	d4,obID(a1)				; load swinging	object
 		move.l	obMap(a0),obMap(a1)
 		move.w	obGfx(a0),obGfx(a1)
