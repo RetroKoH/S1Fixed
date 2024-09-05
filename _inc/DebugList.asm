@@ -67,6 +67,7 @@ standards:	macro
 	dbug	Map_Newt,		id_Newtron,			1,		1,		make_art_tile(ArtTile_Newtron,1,0)				; Green Newtron badnik
 	dbug	Map_Newt,		id_Newtron,			0,		1,		make_art_tile(ArtTile_Newtron,0,0)				; Blue Newtron badnik
 	; Level Objects
+	dbug	Map_GBall,		id_GiantBall,		0,		1,		make_art_tile(ArtTile_GHZ_Giant_Ball,2,0)		; Giant Ball
 	dbug	Map_PRock,		id_PurpleRock,		0,		0,		make_art_tile(ArtTile_GHZ_Purple_Rock,3,0)		; Purple Rock
 	dbug	Map_Bri,		id_Bridge,			8,		0,		make_art_tile(ArtTile_GHZ_Bridge,2,0)			; Bridge (Add subtypes and Debug Mappings)
 	dbug	Map_Swing_GHZ,	id_SwingingPlatform, 5,		0,		make_art_tile(ArtTile_GHZ_MZ_Swing,2,0)			; Swing (Add subtypes and Debug Mappings)

@@ -31,7 +31,7 @@ ptr_SwingingPlatform:	dc.l SwingingPlatform
 ptr_Harpoon:			dc.l Harpoon
 ptr_Helix:				dc.l Helix
 ptr_BasicPlatform:		dc.l BasicPlatform	; $18
-ptr_Obj19:				dc.l Obj19
+ptr_GiantBall:			dc.l GiantBall
 ptr_CollapseLedge:		dc.l CollapseLedge
 ptr_WaterSurface:		dc.l WaterSurface
 ptr_Scenery:			dc.l Scenery
@@ -182,7 +182,7 @@ id_SwingingPlatform:	equ ((ptr_SwingingPlatform-Obj_Index)/4)+1
 id_Harpoon:				equ ((ptr_Harpoon-Obj_Index)/4)+1
 id_Helix:				equ ((ptr_Helix-Obj_Index)/4)+1
 id_BasicPlatform:		equ ((ptr_BasicPlatform-Obj_Index)/4)+1		; $18
-id_Obj19:				equ ((ptr_Obj19-Obj_Index)/4)+1
+id_GiantBall:			equ ((ptr_GiantBall-Obj_Index)/4)+1
 id_CollapseLedge:		equ ((ptr_CollapseLedge-Obj_Index)/4)+1
 id_WaterSurface:		equ ((ptr_WaterSurface-Obj_Index)/4)+1
 id_Scenery:				equ ((ptr_Scenery-Obj_Index)/4)+1

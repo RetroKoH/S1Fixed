@@ -5087,7 +5087,7 @@ locret_7B62:
 
 		include	"_incObj/18 Platforms.asm"
 
-		include	"_incObj/19.asm"
+		include	"_incObj/19 Giant Ball.asm"
 
 		include	"_incObj/1A Collapsing Ledge (part 1).asm"
 		include	"_incObj/53 Collapsing Floors.asm"
