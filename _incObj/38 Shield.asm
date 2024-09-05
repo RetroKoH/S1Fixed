@@ -31,7 +31,6 @@ Shi_Index:		offsetTable
 
 Shi_Main:	; Routine 0
 		move.b	#4,obRender(a0)
-		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$10,obActWid(a0)
 		move.w	#make_art_tile(ArtTile_Shield,0,0),obGfx(a0)
 	if ShieldsMode=0
@@ -117,7 +116,8 @@ Shi_Shield:	; Routine 2
 		lea		Ani_Shield(pc),a1
 		jsr		(AnimateSprite).w
 		bsr.w	Shield_LoadGfx		; RetroKoH VRAM Overhaul
-		jmp		(DisplaySprite).l
+		move.w	#priority1,d0		; RetroKoH/Devon S3K+ Priority Manager
+		jmp		(DisplaySprite2).l
 
 .remove:
 		rts	
@@ -167,7 +167,8 @@ Shi_Insta:	; Routine 4
 .loaddplc:
 		bsr.w	Shield_LoadGfx
 .display:
-		jmp		(DisplaySprite).l
+		move.w	#priority1,d0		; RetroKoH/Devon S3K+ Priority Manager
+		jmp		(DisplaySprite2).l
 .remove:
 		rts
 ; ===========================================================================
@@ -219,14 +220,15 @@ Shi_Flame:	; Routine 6
 
 		lea		Ani_Shield(pc),a1
 		jsr		(AnimateSprite).w
-		move.w	#priority1,obPriority(a0)
+		bsr.w	Shield_LoadGfx
+
+		move.w	#priority1,d0		; RetroKoH/Devon S3K+ Priority Manager
 		cmpi.b	#$F,obFrame(a0)
 		bcs.s	.display
-		move.w	#priority4,obPriority(a0)
+		move.w	#priority4,d0		; RetroKoH/Devon S3K+ Priority Manager
 
 .display:
-		bsr.w	Shield_LoadGfx
-		jmp		(DisplaySprite).l
+		jmp		(DisplaySprite2).l
 
 .dissipate: ; SPECIAL EFFECT FOR UNDERWATER
 		bsr.s	Flame_Dissipate
@@ -254,7 +256,6 @@ Flame_Dissipate:
 		move.l	#Map_ExplodeItem,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Explosion,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.w	#priority5,obPriority(a1)
 		move.b	#$C,obActWid(a1)
 		move.b	#3,obTimeFrame(a1)
 		move.b	#1,obFrame(a1)
@@ -303,14 +304,15 @@ Shi_Bubble:	; Routine 8
 
 		lea		Ani_Shield(pc),a1
 		jsr		(AnimateSprite).w
-		move.w	#priority1,obPriority(a0)
+		bsr.w	Shield_LoadGfx
+
+		move.w	#priority1,d0		; RetroKoH/Devon S3K+ Priority Manager
 		cmpi.b	#$F,obFrame(a0)
 		bcs.s	.display
-		move.w	#priority4,obPriority(a0)
+		move.w	#priority4,d0		; RetroKoH/Devon S3K+ Priority Manager
 
 .display:
-		bsr.w	Shield_LoadGfx
-		jmp		(DisplaySprite).l
+		jmp		(DisplaySprite2).l
 
 .delete:
 		andi.b	#mask2ndRmvShield,(v_player+obStatus2nd).w
@@ -375,14 +377,15 @@ Shi_Lightning:	; Routine $A
 .animate:
 		lea		Ani_Shield(pc),a1
 		jsr		(AnimateSprite).w
-		move.w	#priority1,obPriority(a0)
+		bsr.w	Shield_LoadGfx
+
+		move.w	#priority1,d0		; RetroKoH/Devon S3K+ Priority Manager
 		cmpi.b	#$F,obFrame(a0)
 		bcs.s	.display
-		move.w	#priority4,obPriority(a0)
+		move.w	#priority4,d0		; RetroKoH/Devon S3K+ Priority Manager
 
 .display:
-		bsr.w	Shield_LoadGfx
-		jmp		(DisplaySprite).l
+		jmp		(DisplaySprite2).l
 
 .checkflash: ; SPECIAL EFFECT FOR UNDERWATER (To be added later)
 		;tst.w	(v_pcyc_time).w
@@ -429,7 +432,6 @@ Lightning_CreateSpark:
 		move.l	obMap(a0),obMap(a1)
 		move.w	obGfx(a0),obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.w	#priority1,obPriority(a1)
 		move.b	#8,obActWid(a1)
 		move.b	#aniID_LightningSpark,obAnim(a1)
 		move.w	(a2)+,obVelX(a1)
@@ -459,7 +461,8 @@ Shi_FlameDissipate: ; Routine $C
 		beq.s	.delete
 
 .display:
-		jmp		(DisplaySprite).l
+		move.w	#priority5,d0		; RetroKoH/Devon S3K+ Priority Manager
+		jmp		(DisplaySprite2).l
 
 .delete:
 		jmp		(DeleteObject).l
@@ -472,7 +475,8 @@ Shi_LightningSpark: ; Routine $E
 		jsr		(AnimateSprite).w
 		cmpi.b	#$E,obRoutine(a0)
 		bne.s	.delete
-		jmp		(DisplaySprite).l
+		move.w	#priority1,d0		; RetroKoH/Devon S3K+ Priority Manager
+		jmp		(DisplaySprite2).l
 
 .delete:
 		jmp		(DeleteObject).l

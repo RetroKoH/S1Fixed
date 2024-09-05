@@ -16,7 +16,6 @@ StarsItem:
 Stars_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.b	#4,obRender(a0)
-		move.w	#priority1,obPriority(a0)				; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$10,obActWid(a0)
 		move.w	#make_art_tile(ArtTile_Shield,0,0),obGfx(a0)
 		move.l	#Map_Shield,obMap(a0)
@@ -86,5 +85,6 @@ Stars_Next:	; Routine 2
 		lea		Ani_Shield(pc),a1
 		jsr		(AnimateSprite).w
 		bsr.w	Stars_LoadGfx		; RetroKoH VRAM Overhaul
-		jmp		(DisplaySprite).l
+		move.w	#priority1,d0		; RetroKoH/Devon S3K+ Priority Manager
+		jmp		(DisplaySprite2).l
 ; ===========================================================================
