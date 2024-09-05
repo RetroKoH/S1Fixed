@@ -231,7 +231,7 @@ Drown_Countdown:; Routine $A
 
 .reduceair:
 		subq.b	#1,(v_air).w			; subtract 1 from air remaining
-		bcc.w	.gotomakenum			; if air is above 0, branch
+		bcc.w	.makenum				; if air is above 0, branch
 
 		; Sonic drowns here
 		bsr.w	ResumeMusic
@@ -265,10 +265,6 @@ Drown_Countdown:; Routine $A
 .noDeath:
 		rts
 	; Drowning Fix End
-; ===========================================================================
-
-.gotomakenum:
-		bra.s	.makenum
 ; ===========================================================================
 
 .nochange:

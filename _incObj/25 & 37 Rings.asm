@@ -105,16 +105,16 @@ RingLoss:
 RLoss_Index:		offsetTable
 		offsetTableEntry.w RLoss_Count
 		offsetTableEntry.w RLoss_Bounce
-		offsetTableEntry.w RLoss_Collect
-		offsetTableEntry.w RLoss_Sparkle
-		offsetTableEntry.w RLoss_Delete
+		offsetTableEntry.w Ring_Collect
+		offsetTableEntry.w Ring_Sparkle
+		offsetTableEntry.w Ring_Delete
 
 	if ShieldsMode>1	; Attracted Rings (By the lightning shield)
 		offsetTableEntry.w RAttract_Init
 		offsetTableEntry.w RAttract_Main
-		offsetTableEntry.w RLoss_Collect
-		offsetTableEntry.w RLoss_Sparkle
-		offsetTableEntry.w RLoss_Delete
+		offsetTableEntry.w Ring_Collect
+		offsetTableEntry.w Ring_Sparkle
+		offsetTableEntry.w Ring_Delete
 	endif
 ; ===========================================================================
 
@@ -262,22 +262,6 @@ RLoss_Bounce:	; Routine 2
 		; Ring Flashing Effect End
 ; ===========================================================================
 
-RLoss_Collect:	; Routine 4
-		addq.b	#2,obRoutine(a0)
-		clr.b	obColType(a0)
-		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		bsr.w	CollectRing
-
-RLoss_Sparkle:	; Routine 6
-		lea		Ani_Ring(pc),a1
-		bsr.w	AnimateSprite
-		bra.w	DisplaySprite
-; ===========================================================================
-
-RLoss_Delete:	; Routine 8
-		bra.w	DeleteObject
-
-; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Ring Spawn Array -- RHS Ring Loss Speedup
 ; ---------------------------------------------------------------------------
@@ -342,7 +326,7 @@ RAttract_Main:
 		move.w	(v_limitbtm2).w,d0
 		addi.w	#$E0,d0
 		cmp.w	obY(a0),d0		; has object moved below level boundary?
-		bcs.w	RLoss_Delete	; if yes, branch
+		bcs.w	DeleteObject	; if yes, branch
 
 .display:	
 		jmp		(DisplayAndCollision).l	; S3K TouchResponse
