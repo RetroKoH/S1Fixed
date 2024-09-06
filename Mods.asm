@@ -140,7 +140,7 @@ ObjectsFreeze: = 0						; if set to 1, objects freeze on death as normal
 ; Name: End-of-Level Music Fade
 ; Credit: RetroKoH
 ; Function: Toggles whether music will fade out after the level ends.
-EndLevelFadeMusic: = 0
+EndLevelFadeMusic: = 1
 
 ; Name: HUD Scrolls Into View
 ; Credit: RetroKoH

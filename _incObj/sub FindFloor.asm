@@ -17,7 +17,7 @@
 
 
 FindFloor:
-		bsr.s	FindNearestTile
+		bsr.w	FindNearestTile
 		move.w	(a1),d0		; get value for solidness, orientation and 16x16 tile number
 		move.w	d0,d4
 		andi.w	#$3FF,d0	; MJ: ($800/2)-1
@@ -38,7 +38,7 @@ FindFloor:
 		move.b	(a2,d0.w),d0		; MJ: load correct Collision ID based on the Block ID
 		andi.w	#$FF,d0			; MJ: clear the left byte
 		beq.s	.isblank		; MJ: if collision ID is 00, branch
-		lea	(AngleMap).l,a2		; MJ: load angle map data to a2
+		lea		(AngleMap).l,a2		; MJ: load angle map data to a2
 		move.b	(a2,d0.w),(a4)		; MJ: collect correct angle based on the collision ID
 		lsl.w	#4,d0			; MJ: multiply collision ID by 10
 		move.w	d3,d1			; MJ: load X position
@@ -57,7 +57,7 @@ FindFloor:
 .noflip2:
 		andi.w	#$F,d1			; MJ: get only within 10 (d1 is pixel based on the collision block)
 		add.w	d0,d1			; MJ: add collision ID (x10) (d0 is the collision block being read)
-		lea	(CollArray1).l,a2	; MJ: load collision array
+		lea		(CollArray1).l,a2	; MJ: load collision array
 		move.b	(a2,d1.w),d0		; MJ: load solid value
 		ext.w	d0			; MJ: clear left byte
 		eor.w	d6,d4			; MJ: set ceiling/wall bits
@@ -119,7 +119,7 @@ FindFloor2:
 		move.b	(a2,d0.w),d0
 		andi.w	#$FF,d0
 		beq.s	.isblank2
-		lea	(AngleMap).l,a2
+		lea		(AngleMap).l,a2
 		move.b	(a2,d0.w),(a4)
 		lsl.w	#4,d0
 		move.w	d3,d1
@@ -138,7 +138,7 @@ FindFloor2:
 .noflip2:
 		andi.w	#$F,d1
 		add.w	d0,d1
-		lea	(CollArray1).l,a2
+		lea		(CollArray1).l,a2
 		move.b	(a2,d1.w),d0
 		ext.w	d0
 		eor.w	d6,d4
