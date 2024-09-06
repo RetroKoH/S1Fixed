@@ -21,17 +21,18 @@ PeeloutEnabled: = 1
 ; Name: Air Roll
 ; Credit: RetroKoH (Inspired by a guide by Inferno Gear)
 ; Function: Enables the Air Roll from Sonic Triple Trouble
-AirRollEnabled: = 0						; double-jumps are not enabled when air rolling (toggleable perhaps?)
+AirRollEnabled: = 1						; double-jumps are not enabled when air rolling (toggleable perhaps?)
 
 ; Name: Drop Dash (Incomplete: Need to reset animation if Drop Dash is cancelled)
 ; Credit: DeltaW, giovanni.gen, Hitaxas, RetroKoH
 ; Function: Enables the Drop Dash from Sonic Mania & Origins
 DropDashEnabled: = 1
+	AirRollIntoDropDash: = AirRollEnabled*DropDashEnabled*1	; if set to 1, you can transition from Air Roll into Drop Dash by holding the jump button.
 
 ; Name: Elemental Shields (Incomplete: Minor bugfixes)
 ; Credit: RetroKoH, DeltaW
 ; Function: Enables the usage of S3K Shields and abilities.
-ShieldsMode: = 3						; 0 - Blue Shield only, 1 - Blue + Instashield, 2 - Blue + Elementals, 3 - Elementals only.
+ShieldsMode: = 0						; 0 - Blue Shield only, 1 - Blue + Instashield, 2 - Blue + Elementals, 3 - Elementals only.
 
 ; Name: 7th Emerald and Super Sonic (Incomplete: Minor Bugfixes)
 ; Credit: RetroKoH (Palette Credit: Clownacy)

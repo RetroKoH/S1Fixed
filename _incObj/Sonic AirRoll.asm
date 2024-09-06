@@ -16,9 +16,15 @@ Sonic_ChkAirRoll:
 ; Air Roll
 		move.b	#aniID_Roll,obAnim(a0)	; enter rolling animation
 		bset	#staSpin,obStatus(a0)	; set spin status
-	if ShieldsMode>0
-		move.b	#2,obDoubleJumpFlag(a0)	; disable shield abilities
+
+	if (ShieldsMode>0) | (AirRollIntoDropDash=1)
+		move.b	#2,obDoubleJumpFlag(a0)	; disable shield abilities and/or enable Drop Dash transition
 	endif
+
+	if AirRollIntoDropDash=1
+		move.b	#1,obJumping(a0)		; enable this for potential drop dash transition
+	endif
+
 		move.w	#sfx_Roll,d0
 		jsr		(PlaySound_Special).w	; play rolling sound
 
