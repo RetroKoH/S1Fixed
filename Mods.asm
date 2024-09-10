@@ -32,7 +32,7 @@ DropDashEnabled: = 1
 ; Name: Elemental Shields (Incomplete: Minor bugfixes)
 ; Credit: RetroKoH, DeltaW
 ; Function: Enables the usage of S3K Shields and abilities.
-ShieldsMode: = 0						; 0 - Blue Shield only, 1 - Blue + Instashield, 2 - Blue + Elementals, 3 - Elementals only.
+ShieldsMode: = 3						; 0 - Blue Shield only, 1 - Blue + Instashield, 2 - Blue + Elementals, 3 - Elementals only.
 
 ; Name: 7th Emerald and Super Sonic (Incomplete: Minor Bugfixes)
 ; Credit: RetroKoH (Palette Credit: Clownacy)
@@ -76,7 +76,7 @@ CDBalancing: = 1
 ; Name: CD Camera Panning
 ; Credit: Naoto
 ; Function: Applies a panning effect to the screen when moving quickly, a la Sonic CD
-CDCamera: = 0							; if set to 1, screen will pan forward, a la Sonic CD
+CDCamera: = 1							; if set to 1, screen will pan forward, a la Sonic CD
 
 ; Name: S3K AfterImages (Incomplete: Add for Super Sonic)
 ; Credit: Hitaxas (Wooloo Engine)
@@ -184,7 +184,7 @@ SpecialStageAdvancementMod: = 1
 ; Function: Adds HUD to Special Stage. I also fixed one bug w/ Mercury's implementation.
 ; Depends On: Dynamic Special Stage Walls
 HUDInSpecialStage: = DynamicSpecialStageWalls*1
-	SpecialStageHUDType: = 1			; 0=normal; 1=score not shown; 2=score & time not shown; 3=rings only
+	SpecialStageHUDType: = 3			; 0=normal; 1=score not shown; 2=score & time not shown; 3=rings only
 	TimeLimitInSpecialStage: = 0		; if set, time counts down in the Special Stage from a specified time limit
 		SSTimeLimitPinch: = $00001E00	; "pinch" threshold that time must reach in order to trigger "TIME" to flash. Format: $000MSSCC
 		SSTimeLimitStart: = $00010000	; time on the clock to start with when Special Stage is entered. Format: $000MSSCC
@@ -194,7 +194,7 @@ HUDInSpecialStage: = DynamicSpecialStageWalls*1
 ; Name: Sonic 4 Controls in Special Stage
 ; Credit: RetroKoH
 ; Function: If active, Special Stages control like Sonic 4 Ep 1 (Left/Right rotate the stage).
-S4SpecialStages: = 0	; (Removes UP/DOWN, and R Blocks)
+S4SpecialStages: = 1	; (Removes UP/DOWN, and R Blocks)
 
 ; Name: Special Stages Still Appear With All Emeralds
 ; Credit: Mercury
