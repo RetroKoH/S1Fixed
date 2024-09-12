@@ -56,7 +56,7 @@ Swing_Main:	; Routine 0
 		move.b	#$18,obActWid(a0)
 		move.b	#$18,obHeight(a0)
 		move.b	#$86,obColType(a0)
-		move.b	#$C,obRoutine(a0)		; goto Swing_Action next
+		move.b	#$A,obRoutine(a0)		; goto Swing_Action next
 
 .length:
 		_move.b	obID(a0),d4			; d4 = object index
@@ -146,7 +146,7 @@ Swing_SetSolid:	; Routine 2
 		move.b	obHeight(a0),d3
 		bsr.w	Swing_Solid
 
-Swing_Action:	; Routine $C
+Swing_Action:	; Routine $A
 		bsr.w	Swing_Move
 		bra.w	Swing_ChkDel		; Clownacy DisplaySprite Fix
 ; ===========================================================================
