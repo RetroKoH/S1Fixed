@@ -32,8 +32,16 @@ FindNearestTile:
 
 		lea		(v_lvllayout).w,a1	; MJ: load address of Layout to a1
 		move.b	(a1,d0.w),d1		; MJ: collect correct chunk ID based on the X and Y position
+
+; Credit to IsoKilo
+	if ChunksInROM=1	; Mercury Chunks in ROM
 		add.w	d1,d1
 		move.w	word_1E5D0(pc,d1.w),d1
+	else
+		andi.w	#$FF,d1				; MJ: keep within FF
+		lsl.w	#7,d1				; MJ: multiply by 80
+	endif
+
 		move.w	d2,d0				; MJ: load Y position
 		andi.w	#$70,d0				; MJ: keep Y within 80 pixels
 		add.w	d0,d1				; MJ: add to ror'd chunk ID
