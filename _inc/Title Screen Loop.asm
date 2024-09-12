@@ -181,6 +181,11 @@ Tit_MenuChoice:
 
 ; Activate Level Select
 Tit_LevSel:
+; (MarkeyJester) https://info.sonicretro.org/SCHG_How-to:Fix_the_Level_Select_graphics_bug
+		move.b	#4,(v_vbla_routine).w		; This should fix the Level Select strip glitch
+		bsr.w	WaitForVBla
+; I go with this, instead of the "proper" fix, because I plan to add an option to change the backgrounds on the title screen
+
 		moveq	#palid_LevelSel,d0
 		bsr.w	PalLoad						; load level select palette
 
