@@ -19,9 +19,9 @@ Map_SStom:	mappingsTable
 .block_End
 
 .spikes:	spriteHeader
-	spritePiece	-$10, -$18, 4, 1, $21B, 0, 1, 0, 0 ; three spikes
-	spritePiece	-$10, -4, 4, 1, $21B, 0, 1, 0, 0
-	spritePiece	-$10, $10, 4, 1, $21B, 0, 1, 0, 0
+	spritePiece	-$10, -$18, 4, 1, $20F, 0, 1, 0, 0 ; three spikes
+	spritePiece	-$10, -4, 4, 1, $20F, 0, 1, 0, 0
+	spritePiece	-$10, $10, 4, 1, $20F, 0, 1, 0, 0
 .spikes_End
 
 .wallbracket:	spriteHeader

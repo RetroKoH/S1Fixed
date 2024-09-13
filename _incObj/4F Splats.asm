@@ -1,6 +1,6 @@
 ; ---------------------------------------------------------------------------
 ; Object 4F - Splats enemy (Unused)
-; Ported up from prototype
+; Ported up from prototype (Need to add second subtype)
 ; ---------------------------------------------------------------------------
 
 Splats:

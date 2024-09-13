@@ -68,7 +68,6 @@ SStom_Main:	; Routine 0
 		move.b	(a2)+,obFrame(a1)
 		move.l	a0,objoff_3C(a1)
 		dbf		d1,.loop					; repeat 3 times
-
 		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 
 .fail:
@@ -104,7 +103,11 @@ loc_BA8E:	; Routine 4
 SStom_Display:	; Routine 6
 SStom_ChkDel:
 		offscreen.w	DeleteObject,objoff_3A(a0)	; ProjectFM S3K Objects Manager
-		bsr.w	DisplaySprite					; Clownacy DisplaySprite Fix
+		cmpi.b	#1,obFrame(a0)
+		bne.s	.notSpikes
+		bra.w	DisplayAndCollision
+	.notSpikes:
+		bra.w	DisplaySprite					; Clownacy DisplaySprite Fix
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 

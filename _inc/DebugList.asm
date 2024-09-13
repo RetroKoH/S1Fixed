@@ -152,7 +152,7 @@ standards:	macro
 	dbug	Map_Geyser,		id_GeyserMaker,		1,		0,		make_art_tile(ArtTile_MZ_Lava,3,0)				; Lava Fall Spawner
 	dbug	Map_CFlo,		id_CollapseFloor,	1,		0,		make_art_tile(ArtTile_MZ_Block,2,0)				; Collapsing Floor
 ; Lava Geyser Spawner
-;	dbug	Map_CStom,		id_SideStomp, 		0,		1,		make_art_tile(ArtTile_MZ_Spike_Stomper,0,0)		; Sideways Stomper
+	dbug	Map_CStom,		id_SideStomp, 		0,		1,		make_art_tile(ArtTile_MZ_Spike_Stomper,0,0)		; Sideways Stomper
 ;	dbug	Map_UFO,	id_UFO,		$F1,	2,	ArtNem_UFO		; UFO Spawner* - Setting this will create a spawner, that will load Unc. art into the background. Setting it again will remove the UFOs.
 .MZend:
 
