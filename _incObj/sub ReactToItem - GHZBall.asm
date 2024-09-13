@@ -19,22 +19,22 @@ GHZBall_ReactToItem:
 		add.w	d5,d5
 
 .chkobjecttype:
-		lea		(v_col_response_list).w,a4
-		move.w	(a4)+,d6				; Get number of objects queued
-		beq.s	.end					; If there are none, return
+		lea		(v_lvlobjspace).w,a1	; set object RAM start address
+		move.w	#(v_lvlobjend-v_lvlobjspace)/$40-1,d6
 
 .loop:
-		movea.w	(a4)+,a1				; Get address of first object's RAM
+		cmpi.b	#id_GiantBall,obID(a1)	; is this a ball?
+		beq.s	.next					; if yes, branch
+		tst.b	obRender(a1)
+		bpl.s	.next
 		move.b	obColType(a1),d0		; Get its collision_flags
-
 		bne.s	.proximity				; If it actually has collision, branch
 
 .next:
-		subq.w	#2,d6					; Count the object as done
-		bne.s	.loop					; If there are still objects left, loop
+		lea		object_size(a1),a1		; next object RAM
+		dbf		d6,.loop				; repeat $5F more times
 
 		moveq	#0,d0
-.end
 		rts	
 ; ===========================================================================
 

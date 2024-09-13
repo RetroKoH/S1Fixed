@@ -85,7 +85,7 @@ GHZBall_Rolling:	; Routine 4
 		add.w	d1,obInertia(a0)			; apply push force to current momentum
 	
 	.notpushing:
-		jsr		(Sonic_AnglePos).l			; move along the ground (and test if in mid-air)
+		jsr		(GHZBall_AnglePos).l		; move along the ground (and test if in mid-air)
 
 	; scrapped the rudimentary left boundary check
 		btst	#staAir,obStatus(a0)		; is the ball in the air?
@@ -99,6 +99,7 @@ GHZBall_Rolling:	; Routine 4
 		subq.b	#2,obRoutine(a0)			; set to idle routine
 
 	.ismoving:
+	;	bsr.w	MvSonicOnPtfm2
 		bsr.s	GHZBall_SetFrame
 		bsr.w	RememberState
 		bra.w	GHZBall_ChkDelete
@@ -114,22 +115,27 @@ GHZBall_InAir:		; Routine 6
 		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject					; make the ball solid
 		jsr		(ObjFloorDist).l
-		btst	#staAir,obStatus(a0)		; is the ball STILL in the air?
-		bne.s	.inair						; if yes, branch
+		tst.w	d1							; is the ball STILL in the air?
+		bpl.s	.inair						; if yes, branch
+		add.w	d1,obY(a0)					; latch to the floor
+		move.b	d3,obAngle(a0)				; set angle
+		bclr	#staAir,obStatus(a0)		; no longer in air
 		subq.b	#2,obRoutine(a0)			; enter roll routine
+
 	.inair:
 		move.w	obVelY(a0),d0
 		addi.w	#$28,d0
 		move.w	d0,obVelY(a0)				; apply gravity (slightly less than ObjectFall)
+	;	bsr.w	MvSonicOnPtfm2
 		bsr.s	GHZBall_SetFrame
 		bsr.w	RememberState
 		bra.w	GHZBall_ChkDelete
 ; ===========================================================================
 
 GHZBall_SetFrame:
-		tst.b	obFrame(a0)		; Is the ball displaying frame 0? (shiny solid color frame)
-		beq.s	.isframe0		; if yes, branch
-		clr.b	obFrame(a0)		; if not, set to shiny solid color frame
+		tst.b	obFrame(a0)			; Is the ball displaying frame 0? (shiny solid color frame)
+		beq.s	.isframe0			; if yes, branch
+		clr.b	obFrame(a0)			; if not, set to shiny solid color frame
 		rts
 ; ===========================================================================
 
@@ -142,7 +148,7 @@ GHZBall_SetFrame:
 		subq.b	#1,obTimeFrame(a0)	; decrement frame timer
 		bpl.s	.setframe			; if time remains, branch
 		neg.b	d0					; make stored inertia negative
-		addq.b	#8,d0				; d0 = -(inertia) + 8
+		addq.b	#6,d0				; d0 = -(inertia) + 6
 		bcs.s	.ispositive			; if positive, branch (I need to check this)
 		moveq	#0,d0
 
@@ -163,14 +169,14 @@ GHZBall_SetFrame:
 ; ===========================================================================
 
 .movingleft:
-		subq.b	#1,obTimeFrame(a0)
-		bpl.s	.setframe
-		addq.b	#8,d0
-		bcs.s	.ispositive2
+		subq.b	#1,obTimeFrame(a0)	; decrement frame timer
+		bpl.s	.setframe			; if time remains, branch
+		addq.b	#6,d0				; d0 = -(inertia) + 6
+		bcs.s	.ispositive2		; if positive, branch (I need to check this)
 		moveq	#0,d0
 
 .ispositive2:
-		move.b	d0,obTimeFrame(a0)
+		move.b	d0,obTimeFrame(a0)	; set frame timer
 		move.b	obDelayAni(a0),d0
 		subq.b	#1,d0
 		bne.s	.setframe2
@@ -205,5 +211,6 @@ GHZBall_SetRollSpeeds:
 		asr.l	#8,d0
 		move.w	d0,obVelY(a0)
 		rts
+; ===========================================================================
 
 	include "_incObj/sub ReactToItem - GHZBall.asm"
