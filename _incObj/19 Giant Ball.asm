@@ -7,14 +7,14 @@ GiantBall:
 		move.b	obRoutine(a0),d0
 		move.w	GHZBall_Index(pc,d0.w),d1
 		jmp		GHZBall_Index(pc,d1.w)
-; ---------------------------------------------------------------------------
+; ===========================================================================
 GHZBall_Index:	offsetTable
 		offsetTableEntry.w	GHZBall_Main
-		offsetTableEntry.w	GHZBall_Rout1
-		offsetTableEntry.w	GHZBall_Rout2
-		offsetTableEntry.w	GHZBall_Rout3
-		offsetTableEntry.w	GHZBall_Rout4
-; ---------------------------------------------------------------------------
+		offsetTableEntry.w	GHZBall_Idle
+		offsetTableEntry.w	GHZBall_Rolling
+		offsetTableEntry.w	GHZBall_InAir
+		offsetTableEntry.w	GHZBall_Delete
+; ===========================================================================
 
 GHZBall_Main:
 		move.b	#$18,obHeight(a0)
@@ -23,7 +23,7 @@ GHZBall_Main:
 		jsr		(ObjFloorDist).l
 		tst.w	d1
 		bpl.s	locret_5CEC
-		add.w	d1,obY(a0)
+		add.w	d1,obY(a0)					; latch to the floor upon init
 		clr.w	obVelY(a0)
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_GBall,obMap(a0)
@@ -32,62 +32,80 @@ GHZBall_Main:
 		move.w	#priority3,obPriority(a0)
 		move.b	#$18,obActWid(a0)
 		move.b	#1,obDelayAni(a0)
-		bra.w	GHZBall_SetFrame
+		bsr.w	GHZBall_SetFrame
+		bra.w	RememberState
 
 locret_5CEC:
 		rts
-; ---------------------------------------------------------------------------
+; ===========================================================================
 
-GHZBall_Rout1:
+GHZBall_Idle:		; Routine 2
 		move.w	#$23,d1						; width
 		move.w	#$18,d2						; height (jumping)
 		move.w	#$18,d3						; height (walking)
 		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject					; make the ball solid
 		btst	#staSonicPush,obStatus(a0)	; is Sonic pushing the ball?
-		bne.s	loc_5D14					; if yes, branch
+		beq.s	.animate					; if not, branch
+
+	; is pushing
+		addq.b	#2,obRoutine(a0)			; the ball is now moving
+		move.w	#$C0,obInertia(a0)			; nudge the ball to the right
 		move.w	(v_player+obX).w,d0
-		sub.w	obX(a0),d0
-		bcs.s	loc_5D20
+		sub.w	obX(a0),d0					; is Sonic pushing the ball to the left?
+		bcs.s	.animate					; if not, branch
+		neg.w	obInertia(a0)				; nudge the ball to the left
 
-loc_5D14:
-		addq.b	#2,obRoutine(a0)
-		;move.w	#$80,obInertia(a0)
-
-loc_5D20:
+	.animate:
 		bsr.w	GHZBall_SetFrame
-		bsr.w	DisplaySprite
+		bsr.w	RememberState
 		bra.w	GHZBall_ChkDelete
-; ---------------------------------------------------------------------------
+; ===========================================================================
 
-GHZBall_Rout2:
-		btst	#staFlipY,obStatus(a0)
-		bne.w	GHZBall_Rout3
-		bsr.w	GHZBall_SetFrame
-		bsr.w	GHZBall_SetSpeeds
+GHZBall_Rolling:	; Routine 4
+		bsr.w	GHZBall_ReactToItem			; check to destroy objects while rolling
+		bsr.w	GHZBall_SetRollSpeeds		; apply momentum to rolling
 		bsr.w	SpeedToPos
 		move.w	#$23,d1						; width
 		move.w	#$18,d2						; height (jumping)
 		move.w	#$18,d3						; height (walking)
 		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject					; make the ball solid
-		jsr		(Sonic_AnglePos).l
-		cmpi.w	#$20,obX(a0)
-		bcc.s	loc_5D70
-		move.w	#$20,obX(a0)
-		move.w	#$400,obInertia(a0)
+		btst	#staSonicPush,obStatus(a0)	; is Sonic pushing the ball?
+		beq.s	.notpushing					; if not, branch
 
-loc_5D70:
-		btst	#staFlipY,obStatus(a0)
-		beq.s	loc_5D7E
-		move.w	#$FC00,obVelY(a0)
+	.ispushing:
+		move.w	#$80,d1						; nudge the ball to the right
+		move.w	(v_player+obX).w,d0
+		sub.w	obX(a0),d0					; is Sonic pushing the ball to the left?
+		bcs.s	.applymovement				; if not, branch
+		neg.w	d1							; nudge the ball to the left
 
-loc_5D7E:
-		bsr.w	DisplaySprite
+	.applymovement:
+		add.w	d1,obInertia(a0)			; apply push force to current momentum
+	
+	.notpushing:
+		jsr		(Sonic_AnglePos).l			; move along the ground (and test if in mid-air)
+
+	; scrapped the rudimentary left boundary check
+		btst	#staAir,obStatus(a0)		; is the ball in the air?
+		beq.s	.onground					; if not, branch
+		addq.b	#2,obRoutine(a0)			; enter air routine
+		move.w	#$FC00,obVelY(a0)			; bounce the ball into the air
+
+	.onground:
+		tst.w	obInertia(a0)				; is the ball rolling?
+		bne.s	.ismoving					; if yes, branch ahead
+		subq.b	#2,obRoutine(a0)			; set to idle routine
+
+	.ismoving:
+		bsr.s	GHZBall_SetFrame
+		bsr.w	RememberState
 		bra.w	GHZBall_ChkDelete
-; ---------------------------------------------------------------------------
+; ===========================================================================
 
-GHZBall_Rout3:
+GHZBall_InAir:		; Routine 6
+		bsr.w	GHZBall_ReactToItem
 		bsr.w	GHZBall_SetFrame
 		bsr.w	SpeedToPos
 		move.w	#$23,d1						; width
@@ -95,29 +113,25 @@ GHZBall_Rout3:
 		move.w	#$18,d3						; height (walking)
 		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject					; make the ball solid
-		jsr		(Sonic_Floor).l
-		btst	#staFlipY,obStatus(a0)
-		beq.s	loc_5DBE
+		jsr		(ObjFloorDist).l
+		btst	#staAir,obStatus(a0)		; is the ball STILL in the air?
+		bne.s	.inair						; if yes, branch
+		subq.b	#2,obRoutine(a0)			; enter roll routine
+	.inair:
 		move.w	obVelY(a0),d0
 		addi.w	#$28,d0
-		move.w	d0,obVelY(a0)
-		bra.s	loc_5DC0
-; ---------------------------------------------------------------------------
-
-loc_5DBE:
-		nop
-
-loc_5DC0:
-		bsr.w	DisplaySprite
+		move.w	d0,obVelY(a0)				; apply gravity (slightly less than ObjectFall)
+		bsr.s	GHZBall_SetFrame
+		bsr.w	RememberState
 		bra.w	GHZBall_ChkDelete
-; ---------------------------------------------------------------------------
+; ===========================================================================
 
 GHZBall_SetFrame:
 		tst.b	obFrame(a0)		; Is the ball displaying frame 0? (shiny solid color frame)
 		beq.s	.isframe0		; if yes, branch
 		clr.b	obFrame(a0)		; if not, set to shiny solid color frame
 		rts
-; ---------------------------------------------------------------------------
+; ===========================================================================
 
 .isframe0:
 		move.b	obInertia(a0),d0	; d0 = floor(inertia)
@@ -146,7 +160,7 @@ GHZBall_SetFrame:
 .setframe:
 		move.b	obDelayAni(a0),obFrame(a0)
 		rts
-; ---------------------------------------------------------------------------
+; ===========================================================================
 
 .movingleft:
 		subq.b	#1,obTimeFrame(a0)
@@ -166,18 +180,18 @@ GHZBall_SetFrame:
 		move.b	d0,obDelayAni(a0)
 		move.b	obDelayAni(a0),obFrame(a0)
 		rts
-; ---------------------------------------------------------------------------
+; ===========================================================================
 
 GHZBall_ChkDelete:
 		offscreen.w	DeleteObject
 		rts
-; ---------------------------------------------------------------------------
+; ===========================================================================
 
-GHZBall_Rout4:
+GHZBall_Delete:
 		bra.w	DeleteObject
-; ---------------------------------------------------------------------------
+; ===========================================================================
 
-GHZBall_SetSpeeds:
+GHZBall_SetRollSpeeds:
 		move.b	obAngle(a0),d0
 		bsr.w	CalcSine
 		move.w	d0,d2
@@ -191,3 +205,5 @@ GHZBall_SetSpeeds:
 		asr.l	#8,d0
 		move.w	d0,obVelY(a0)
 		rts
+
+	include "_incObj/sub ReactToItem - GHZBall.asm"
