@@ -71,7 +71,7 @@ BossFire_Drop:
 		clr.b	obSubtype(a0)
 		addi.w	#$18,obVelY(a0)
 		bclr	#staFlipY,obStatus(a0)
-		bsr.w	ObjFloorDist
+		jsr		(ObjFloorDist).l
 		tst.w	d1
 		bpl.s	locret_18780
 		addq.b	#2,ob2ndRout(a0)
@@ -126,7 +126,7 @@ locret_187EE:
 ; ===========================================================================
 
 BossFire_Duplicate:
-		bsr.w	ObjFloorDist
+		jsr		(ObjFloorDist).l
 		tst.w	d1
 		bpl.s	loc_18826
 		move.w	obX(a0),d0

@@ -39,7 +39,7 @@ ptr_MagicSwitch:		dc.l MagicSwitch
 ptr_BallHog:			dc.l BallHog
 ptr_Crabmeat:			dc.l Crabmeat
 ptr_Cannonball:			dc.l Cannonball		; $20
-ptr_AfterImages:		dc.l AfterImages
+ptr_StarsItem:			dc.l StarsItem
 ptr_BuzzBomber:			dc.l BuzzBomber
 ptr_Missile:			dc.l Missile
 ptr_MissileDissolve:	dc.l MissileDissolve
@@ -85,7 +85,7 @@ ptr_GiantRing:			dc.l GiantRing
 ptr_GeyserMaker:		dc.l GeyserMaker
 ptr_LavaGeyser:			dc.l LavaGeyser
 ptr_LavaWall:			dc.l LavaWall
-ptr_StarsItem:			dc.l StarsItem
+ptr_Splats:				dc.l Splats
 ptr_Yadrin:				dc.l Yadrin			; $50
 ptr_SmashBlock:			dc.l SmashBlock
 ptr_MovingBlock:		dc.l MovingBlock
@@ -148,6 +148,7 @@ ptr_CreditsText:		dc.l CreditsText
 ptr_EndEggman:			dc.l EndEggman
 ptr_TryChaos:			dc.l TryChaos
 ptr_SuperStars:			dc.l SuperStars
+ptr_AfterImages:		dc.l AfterImages
 
 NullObject:
 		jmp	(DeleteObject).l	; Any invalid objects will delete themselves immediately.
@@ -190,7 +191,7 @@ id_MagicSwitch:			equ ((ptr_MagicSwitch-Obj_Index)/4)+1
 id_BallHog:				equ ((ptr_BallHog-Obj_Index)/4)+1
 id_Crabmeat:			equ ((ptr_Crabmeat-Obj_Index)/4)+1
 id_Cannonball:			equ ((ptr_Cannonball-Obj_Index)/4)+1		; $20
-id_AfterImages:			equ ((ptr_AfterImages-Obj_Index)/4)+1
+id_StarsItem:			equ ((ptr_StarsItem-Obj_Index)/4)+1
 id_BuzzBomber:			equ ((ptr_BuzzBomber-Obj_Index)/4)+1
 id_Missile:				equ ((ptr_Missile-Obj_Index)/4)+1
 id_MissileDissolve:		equ ((ptr_MissileDissolve-Obj_Index)/4)+1
@@ -236,7 +237,7 @@ id_GiantRing:			equ ((ptr_GiantRing-Obj_Index)/4)+1
 id_GeyserMaker:			equ ((ptr_GeyserMaker-Obj_Index)/4)+1
 id_LavaGeyser:			equ ((ptr_LavaGeyser-Obj_Index)/4)+1
 id_LavaWall:			equ ((ptr_LavaWall-Obj_Index)/4)+1
-id_StarsItem:			equ ((ptr_StarsItem-Obj_Index)/4)+1
+id_Splats:				equ ((ptr_Splats-Obj_Index)/4)+1
 id_Yadrin:				equ ((ptr_Yadrin-Obj_Index)/4)+1			; $50
 id_SmashBlock:			equ ((ptr_SmashBlock-Obj_Index)/4)+1
 id_MovingBlock:			equ ((ptr_MovingBlock-Obj_Index)/4)+1
@@ -299,3 +300,4 @@ id_CreditsText:			equ ((ptr_CreditsText-Obj_Index)/4)+1
 id_EndEggman:			equ ((ptr_EndEggman-Obj_Index)/4)+1
 id_TryChaos:			equ ((ptr_TryChaos-Obj_Index)/4)+1
 id_SuperStars:			equ ((ptr_SuperStars-Obj_Index)/4)+1
+id_AfterImages:			equ ((ptr_AfterImages-Obj_Index)/4)+1

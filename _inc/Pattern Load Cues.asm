@@ -185,6 +185,7 @@ PLC_SYZ:	dc.w ((PLC_SYZ2-PLC_SYZ-2)/6)-1
 		plcm	Nem_SyzSpike1,		ArtTile_SYZ_Big_Spikeball		; large spikeball	-- Moved to Queue 1; RetroKoH VRAM Reshuffle
 		plcm	Nem_SyzSpike2,		ArtTile_SYZ_Spikeball_Chain		; small spikeball	-- Moved to Queue 1; RetroKoH VRAM Reshuffle
 		plcm	Nem_Roller,			ArtTile_Roller					; roller enemy
+		plcm	Nem_Splats,			ArtTile_Splats					; splats enemy
 
 PLC_SYZ2:	dc.w ((PLC_SYZ2end-PLC_SYZ2-2)/6)-1
 		plcm	Nem_Bumper,			ArtTile_SYZ_Bumper				; bumper

@@ -5577,6 +5577,8 @@ Obj_Index:
 		include	"_anim/Lava Geyser.asm"
 		include	"_anim/Wall of Lava.asm"
 
+		include "_incObj/4F Splats.asm"
+
 		include	"_incObj/40 Moto Bug.asm" ; includes "_incObj/sub RememberState.asm"
 		include	"_anim/Moto Bug.asm"
 
@@ -5941,7 +5943,7 @@ ResumeMusic:
 ; ===========================================================================
 
 				include	"_incObj/38 Shield.asm"
-				include	"_incObj/4F Invincibility.asm"						; Split from Shields (RetroKoH)
+				include	"_incObj/21 Invincibility.asm"						; Split from Shields (RetroKoH)
 				include	"_incObj/4A Special Stage Entry (Unused).asm"
 				include	"_incObj/03 Collision Switcher.asm"
 				include	"_incObj/08 Water Splash.asm"
@@ -7289,7 +7291,7 @@ SS_MapIndex_End:
 
 		include	"_inc/AnimateLevelGfx.asm"
 
-		include	"_incObj/21 AfterImages.asm"
+		include	"_incObj/8E AfterImages.asm"
 
 ; ---------------------------------------------------------------------------
 ; Add points subroutine
@@ -8102,6 +8104,7 @@ Map_RingBIN:
 		include	"_maps/Lava Tag.asm"
 		include	"_maps/Lava Geyser.asm"
 		include	"_maps/Wall of Lava.asm"
+		include "_maps/Splats.asm"
 		include	"_maps/Moto Bug.asm"
 		include	"_maps/Yadrin.asm"
 		include	"_maps/Smashable Green Block.asm"

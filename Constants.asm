@@ -517,6 +517,7 @@ ArtTile_MZ_UFO:					equ $4F2				; Uncompressed: 8
 ; Spring Yard Zone
 ArtTile_SYZ_Big_Spikeball:		equ $372				; ✓ (Actually also used in SBZ)
 ArtTile_SYZ_Bumper:				equ $38A				; ✓
+ArtTile_Splats:					equ $3A0				; ✓
 ArtTile_SYZ_Spikeball_Chain:	equ $492				; ✓
 ArtTile_Roller:					equ $496				; ✓
 

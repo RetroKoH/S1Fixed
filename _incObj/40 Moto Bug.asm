@@ -31,7 +31,7 @@ Moto_Main:	; Routine 0
 		move.b	#8,obWidth(a0)
 		move.b	#$C,obColType(a0)
 		bsr.w	ObjectFall
-		jsr		(ObjFloorDist).l
+		bsr.w	ObjFloorDist
 		tst.w	d1
 		bpl.s	.notonfloor
 		add.w	d1,obY(a0)					; match	object's position with the floor

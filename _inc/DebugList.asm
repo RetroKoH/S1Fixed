@@ -197,6 +197,7 @@ standards:	macro
 	dbug	Map_Yad,		id_Yadrin,			0,		0,		make_art_tile(ArtTile_Yadrin,1,0)					; Yadrin badnik
 	dbug	Map_Cat,		id_Caterkiller,		0,		0,		make_art_tile(ArtTile_Caterkiller,1,0)				; Caterkiller badnik
 	dbug	Map_Roll,		id_Roller,			0,		0,		make_art_tile(ArtTile_Roller,0,0)					; Roller badnik
+	dbug	Map_Splats,		id_Splats,			0,		0,		make_art_tile(ArtTile_Splats,0,0)					; Splats badnik
 	; Level Objects
 	dbug	Map_FBlock,		id_FloatingBlock,	0,		0,		make_art_tile(ArtTile_Level,2,0)
 	dbug	Map_Bump,		id_Bumper,			0,		0,		make_art_tile(ArtTile_SYZ_Bumper,0,0)				; Bumper
