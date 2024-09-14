@@ -171,7 +171,7 @@ loc_1884A:
 		bclr	#7,obGfx(a0)
 
 loc_18856:
-		bsr.w	ObjFloorDist
+		jsr		(ObjFloorDist).l
 		tst.w	d1
 		bpl.s	locret_1887E
 		subq.b	#1,objoff_29(a0)

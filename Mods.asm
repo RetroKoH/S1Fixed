@@ -110,6 +110,11 @@ SLZOrbinautBehaviourMod: = 1
 ; Function: Allows the player to hold a button to speed up the score tally, or just have it occur immediately
 SpeedUpScoreTally: = 2					; if set to 1, score tally can be sped up w/ ABC. If 2, it automatically tallies immediately.
 
+; Name: Mania Signposts
+; Credit: RetroKoH
+; Function: The Signpost flies into the air when you run past it.
+ManiaSignpost: = 1
+
 ; ----- FLAIR MODS ---------------------------------------------------------------
 
 ; Name: Fade-In SEGA Screen

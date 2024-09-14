@@ -50,14 +50,38 @@ Sign_Main:	; Routine 0
 		move.b	#$FF,objoff_3F(a0)					; Added for DPLC frame check
 
 Sign_Touch:	; Routine 2
-		move.w	(v_player+obX).w,d0
+		lea		(v_player).w,a1
+		move.w	obX(a1),d0
 		sub.w	obX(a0),d0
 		bcs.s	.notouch
 		cmpi.w	#$20,d0								; is Sonic within $20 pixels of	the signpost?
 		bhs.s	.notouch							; if not, branch
 		move.b	#sfx_Signpost,d0
 		jsr		(PlaySound).w						; play signpost sound
-		clr.b	(v_player+obShoes).w				; Mercury Remove Speed Shoes At Signpost Fix (Moved from the Got_Through Card and improved) -- RetroKoH Sonic SST Compaction
+
+; RetroKoH Sonic Mania Floating Signpost Mechanic
+	if ManiaSignpost=1
+		moveq	#0,d0
+		move.b	obInertia(a1),d0					; ground speed if on the ground
+		btst	#staAir,obStatus(a1)				; is Sonic in the air?
+		beq.s	.notinair							; if not, branch
+		move.b	obVelX(a1),d0						; horizontal air speed
+
+.notinair:
+		tst.b	d0									; is speed already negative (we somehow triggered from the left)
+		bpl.s	.notnegative						; if not, branch
+		neg.b	d0									; we don't want a negative value just yet
+
+.notnegative:
+		lsr.b	#1,d0								; vel / 2
+		neg.b	d0									; make value negative
+		move.b	d0,obVelY(a0)						; set y speed of signpost
+		move.b	#$1F,obHeight(a0)					; set height to use in the next routine
+		move.w	#60,spintime(a0)					; set spin cycle time to 1 second
+		addq.b	#1,obAnim(a0)						; set to first spin cycle early
+	endif
+
+		clr.b	obShoes(a1)							; Mercury Remove Speed Shoes At Signpost Fix (Moved from the Got_Through Card and improved) -- RetroKoH Sonic SST Compaction
 		clr.b	(f_timecount).w						; stop time counter
 		move.w	(v_limitright2).w,(v_limitleft2).w	; lock screen position
 		addq.b	#2,obRoutine(a0)
@@ -67,31 +91,63 @@ Sign_Touch:	; Routine 2
 ; ===========================================================================
 
 Sign_Spin:	; Routine 4
-		subq.w	#1,spintime(a0)			; subtract 1 from spin time
-		bpl.s	.chksparkle				; if time remains, branch
-		move.w	#60,spintime(a0)		; set spin cycle time to 1 second
-		addq.b	#1,obAnim(a0)			; next spin cycle
-		cmpi.b	#3,obAnim(a0)			; have 3 spin cycles completed?
-		bne.s	.chksparkle				; if not, branch
+
+; RetroKoH Sonic Mania Floating Signpost Mechanic
+	if ManiaSignpost=1
+		tst.b	ob2ndRout(a0)
+		bne.s	.onground
+		bsr.w	SpeedToPos
+		bsr.w	ObjFloorDist
+		tst.w	d1
+		bpl.s	.inair
+		add.w	d1,obY(a0)						; latch to the floor
+		clr.w	obVelY(a0)
+		move.b	#1,ob2ndRout(a0)
+		bra.s	.onground
+
+.inair:
+		addi.w	#$28,obVelY(a0)
+		cmpi.b	#$E,sparkletime(a0)
+		bne.s	.skipreset
+		clr.b	sparkletime(a0)
+
+.skipreset:
+		subq.w	#1,spintime(a0)					; subtract 1 from spin time
+		bpl.s	.chksparkle						; if time remains, branch
+		move.w	#60,spintime(a0)				; set spin cycle time to 1 second
+		cmpi.b	#3,obAnim(a0)					; have 3 spin cycles completed?
+		beq.s	.chksparkle						; if yes, branch
+		addq.b	#1,obAnim(a0)					; next spin cycle
+		bra.s	.chksparkle
+
+.onground:
+	endif
+
+		subq.w	#1,spintime(a0)					; subtract 1 from spin time
+		bpl.s	.chksparkle						; if time remains, branch
+		move.w	#60,spintime(a0)				; set spin cycle time to 1 second
+		addq.b	#1,obAnim(a0)					; next spin cycle
+		cmpi.b	#3,obAnim(a0)					; have 3 spin cycles completed?
+		bne.s	.chksparkle						; if not, branch
 	if EndLevelFadeMusic=1
 		move.b	#bgm_Fade,d0
-		jsr		(PlaySound_Special).w	; fade out music (RetroKoH)
+		jsr		(PlaySound_Special).w			; fade out music (RetroKoH)
 	endif
 		addq.b	#2,obRoutine(a0)
 
 .chksparkle:
-		subq.w	#1,sparkletime(a0)		; subtract 1 from time delay
-		bpl.s	.fail					; if time remains, branch
-		move.w	#$B,sparkletime(a0)		; set time between sparkles to $B frames
+		subq.w	#1,sparkletime(a0)				; subtract 1 from time delay
+		bpl.s	.fail							; if time remains, branch
+		move.w	#$B,sparkletime(a0)				; set time between sparkles to $B frames
 		moveq	#0,d0
-		move.b	sparkle_id(a0),d0 ; get sparkle id
-		addq.b	#2,sparkle_id(a0) ; increment sparkle counter
+		move.b	sparkle_id(a0),d0				; get sparkle id
+		addq.b	#2,sparkle_id(a0)				; increment sparkle counter
 		andi.b	#$E,sparkle_id(a0)
-		lea		Sign_SparkPos(pc,d0.w),a2 ; load sparkle position data
+		lea		Sign_SparkPos(pc,d0.w),a2		; load sparkle position data
 		bsr.w	FindFreeObj
 		bne.s	.fail
-		_move.b	#id_Rings,obID(a1)	; load rings object
-		move.b	#id_Ring_Sparkle,obRoutine(a1) ; jump to ring sparkle subroutine
+		_move.b	#id_Rings,obID(a1)				; load rings object
+		move.b	#id_Ring_Sparkle,obRoutine(a1)	; jump to ring sparkle subroutine
 		move.b	(a2)+,d0
 		ext.w	d0
 		add.w	obX(a0),d0
