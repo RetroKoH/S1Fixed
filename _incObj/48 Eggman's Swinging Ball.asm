@@ -56,11 +56,12 @@ loc_17B60:
 
 GBall_MakeBall:
 		move.b	#8,obRoutine(a1)
-		move.l	#Map_GBall,obMap(a1) ; load different mappings for final link
+		move.l	#Map_GBall,obMap(a1)		; load different mappings for final link
 		move.w	#make_art_tile(ArtTile_GHZ_Giant_Ball,2,0),obGfx(a1) ; use different graphics
 		move.b	#1,obFrame(a1)
 		move.w	#priority5,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$81,obColType(a1) ; make object hurt Sonic
+		move.b	#$81,obColType(a1)			; make object hurt Sonic
+		move.w	a0,objoff_30(a1)			; store address of head chain object to transfer angle to the ball
 		rts	
 ; ===========================================================================
 
@@ -119,7 +120,7 @@ sub_17C2A:
 		movea.l	objoff_34(a0),a1
 		addi.b	#$20,obAniFrame(a0)
 		bcc.s	loc_17C3C
-		bchg	#0,obFrame(a0)
+		bchg	#0,obFrame(a0)				; alternate blinking light
 
 loc_17C3C:
 		move.w	obX(a1),objoff_3A(a0)
@@ -149,11 +150,28 @@ GBall_Display3:
 		jmp		(DisplayAndCollision).l		; S3K TouchResponse
 ; ===========================================================================
 
-GBall_ChkVanish:; Routine 8
+GBall_ChkVanish:	; Routine 8
 		moveq	#0,d0
-		tst.b	obFrame(a0)
-		bne.s	GBall_Vanish
-		addq.b	#1,d0
+		tst.b	obFrame(a0)				; is ball showing checkered?
+		bne.s	GBall_Vanish			; if yes, branch to alt frame (frame 0)
+	; RetroKoH angled ball mod
+		movea.w	objoff_30(a0),a2		; store chain head address in a2
+		move.b	obAngle(a2),d0			; fetch chain's current angle; store it in d0
+		subq.b	#1,d0					; subtract 1, because it ranges from 1-$81
+		lsr.b	#1,d0					; cut range down to 0-$40
+		move.b	GBall_Angles(pc,d0.w),d0
+	; angled ball mod end
+;		subi.b	#$40,d0
+;		bcc.s	.notnegative			; if ball is on the left side, branch
+;		neg.b	d0						; negate angle
+;		lsr.b	#1,d0
+;		move.b	GBall_Angles2(pc,d0.w),d0
+;		bra.s	GBall_Vanish
+
+;.notnegative:
+;		lsr.b	#1,d0
+;		move.b	GBall_Angles(pc,d0.w),d0
+	; angled ball mod end
 
 GBall_Vanish:
 		move.b	d0,obFrame(a0)
@@ -169,3 +187,11 @@ GBall_Vanish:
 
 GBall_Display4:
 		jmp		(DisplayAndCollision).l		; S3K TouchResponse
+; ===========================================================================
+
+GBall_Angles:
+		dc.b	1,1,1,1,1,2,2,2,2,2,2,2,2,3,3,3		; 0 - $F
+		dc.b	3,3,3,3,3,3,3,3,1,1,1,1,1,1,1,1		; $10 - $1F
+		dc.b	1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2		; $20 - $2F
+		dc.b	2,2,2,2,3,3,3,3,3,3,3,3,1,1,1,1,1	; $30 - $40
+		even

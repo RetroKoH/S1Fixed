@@ -376,9 +376,14 @@
 ## Modified LZ3 Dynamic Level Event
  Credit: RetroKoH
  Function: The horizontal door that blocked off the tunnel just before the LZ3 boss has been moved up to the start of the chase area.
- It now triggers when you reach the top, and even features a sound effecct. This was moved due to complications with the S3K Object Manager
+ It now triggers when you reach the top, and even features a sound effect. This was moved due to complications with the S3K Object Manager
  and level wrapping. Without it, you could completely backtrack, which would break water in the level.
  Date: 2024-08-21
+
+## Rotating Wrecking Ball in GHZ Boss
+ Credit: RetroKoH
+ Function: Adds a rotation effect to Eggman's wrecking ball, akin to Taxman's Sonic 1.
+ Date: 2024-09-14
 
 # Fixes
  These changes fix notable bugs in the original game. Some bugs were game-breaking, while others were miniscule in nature.
@@ -491,7 +496,7 @@
  Date: 2024-06-03
  Modifies: sonic.asm (RunPLC:)
  
-## Title Screen PSB Fix ***(Investigate bg shift bug reported by Iso Kilo)***
+## Title Screen PSB Fix
  Credit: Quickman
  Function: Some adjustments to the Title Screen to make it look more correct. Under-the-hood tweaks as well. (PSB fix, GHZ palette, Title Screen centered)
  Date: 2024-06-03
