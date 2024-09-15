@@ -4,7 +4,7 @@
 ;  =========================================================================
 ;
 ; Updated disassembly for AS by Clownacy and MarkeyJester
-; Mods by RetroKoH, DeltaW, Hitaxas, and Mercury
+; Mods by RetroKoH, DeltaW, Hitaxas, Redhotsonic, and Mercury
 ; Additional Credits listed in README.md
 ;
 ; ===========================================================================
@@ -6594,11 +6594,11 @@ locret_178A2:
 
 BossMove:
 	; DeltaW Optimized Object Movement
-		movem.w	obVelX(a0),d0/d2
-		lsl.l	#8,d0
-		add.l	d0,objoff_30(a0)
-		lsl.l	#8,d2
-		add.l	d2,objoff_38(a0)
+		movem.w	obVelX(a0),d0/d2	; load horizontal speed (d0) and vertical speed (d2)
+		lsl.l	#8,d0				; multiply by $100 (combine ext and asl to become lsl)
+		add.l	d0,objoff_30(a0)	; apply to stored x-axis position
+		lsl.l	#8,d2				; multiply by $100 (combine ext and asl to become lsl)
+		add.l	d2,objoff_38(a0)	; apply to stored y-axis position
 		rts
 ; End of function BossMove
 
