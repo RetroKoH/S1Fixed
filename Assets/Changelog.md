@@ -100,7 +100,7 @@
  Date: 2024-07-04
  
 ## S3K AfterImages
- Credit: Hitaxas (Wooloo Engine)
+ Credit: Hitaxas (WoolooEngine)
  Function: Applies After-Image effects to the Speed Shoes
  Date: 2024-07-07
  
@@ -156,12 +156,12 @@
  Date: 2024-07-23
  
 ## CD Camera Panning
- Credit: DeltaW's Wooloo Engine
+ Credit: Naoto
  Function: Applies a panning effect to the screen when moving quickly, a la Sonic CD
  Date: 2024-07-26
  
 ## Drop Dash
- Credit: DeltaW, Gio.vanni, Hitaxas, RetroKoH
+ Credit: DeltaW, giovanni.gen, Hitaxas, RetroKoH
  Function: Enables the Drop Dash from Sonic Mania & Origins
  Date: 2024-08-06
  
@@ -251,8 +251,8 @@
  Date: 2024-06-07
  
 ## Optimized Object Movement
- Credit: Redhotsonic (and DeltaW w/ BossMove)
- Function: SpeedToPos and ObjectFall are optimized, working akin to their S3K iterations.
+ Credit: Redhotsonic/DeltaW
+ Function: SpeedToPos (and one in the teleporter object that uses a1), ObjectFall, BossMove and  are optimized... way more than S3K's
  Date: 2024-06-07
  
 ## Optimized In-Air Collision Detection

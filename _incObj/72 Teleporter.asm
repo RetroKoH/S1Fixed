@@ -135,15 +135,13 @@ Tele_MoveSonic:	; Routine 6
 ; Literally a carbon copy of SpeedToPos (except player is a1 instead of a0)
 ; We can optimize it in an identical manner to how RHS optimized SpeedToPos.
 .speedtopos:
-		move.w	obVelX(a1),d0				; load horizontal speed
-		ext.l	d0
-		asl.l	#8,d0						; multiply by $100
-		add.l	d0,obX(a1)					; add to x-axis	position
-		move.w	obVelY(a1),d0				; load vertical speed
-		ext.l	d0
-		asl.l	#8,d0						; multiply by $100
-		add.l	d0,obY(a1)					; add to y-axis	position
-		rts	
+	; RHS/DeltaW Optimized Object Movement
+		movem.w	obVelX(a1),d0/d2
+		lsl.l	#8,d0
+		add.l	d0,obX(a1)
+		lsl.l	#8,d2
+		add.l	d2,obY(a1)
+		rts
 ; ===========================================================================
 
 .finishmoving:

@@ -6594,15 +6594,12 @@ locret_178A2:
 
 BossMove:
 	; DeltaW Optimized Object Movement
-		move.w	obVelX(a0),d0		; load horizontal speed
-		ext.l	d0
-		asl.l	#8,d0				; multiply by $100
-		add.l	d0,objoff_30(a0)	; add to stored x-axis position
-		move.w	obVelY(a0),d0		; load vertical speed
-		ext.l	d0
-		asl.l	#8,d0				; multiply by $100
-		add.l	d0,objoff_38(a0)	; add to stored y-axis position
-		rts	
+		movem.w	obVelX(a0),d0/d2
+		lsl.l	#8,d0
+		add.l	d0,objoff_30(a0)
+		lsl.l	#8,d2
+		add.l	d2,objoff_38(a0)
+		rts
 ; End of function BossMove
 
 ; ===========================================================================
