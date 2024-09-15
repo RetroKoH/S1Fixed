@@ -24,7 +24,7 @@ swing_angle = $10		; precise rotation angle (2 bytes)
 	; ^^^ We need this so that obShieldProp isn't overwritten, otherwise
 	; Insta-Shield negates its collision property. Upper byte written to obAngle.
 	; Unlike other similar objects, I set this to $10 because the GHZ boss chain
-	; uses up much of its scratch RAM, and that object use's this object's movement
+	; uses up much of its scratch RAM, and that object uses this object's movement
 	; routines.
 ; ===========================================================================
 

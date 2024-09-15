@@ -99,13 +99,36 @@ Swing_DelLoop:
 		rts	
 ; ===========================================================================
 
-Swing_Delete:	; Routine 6, 8
+Swing_Delete:	; Routine 6
 		bra.w	DeleteObject
 ; ===========================================================================
 
 Swing_Display:	; Routine $A
 		tst.b	obColType(a0)
 		beq.w	DisplaySprite
+
+		cmpi.b	#$81,obColType(a0)		; is object type $1X?
+		bne.s	.notwreckingball
+; The following only applies to the wrecking ball
+		moveq	#0,d0
+		tst.b	obFrame(a0)				; is ball showing checkered?
+		bne.s	.vanish					; if yes, branch to alt frame (frame 0)
+
+	; RetroKoH angled ball mod (Incomplete)
+		move.b	(v_oscillate+$1A).w,d0	; fetch chain's current angle; store it in d0
+		; no subtraction, as this value already ranges from 0-$80
+		lsr.b	#1,d0					; cut range down to 0-$40
+		
+		lea		(GBall_Angles).l,a2		; a2 = GBall_Angles address
+		lea		(a2,d0.w),a2			; a2 = GBall_Angles + angle offset
+		move.b	(a2),d0
+	; angled ball mod end
+
+.vanish:
+		move.b	d0,obFrame(a0)
+
+; The following is used by all swinging hazards
+.notwreckingball:
 		lea		(v_col_response_list).w,a1
 		cmpi.w	#$7E,(a1)		; Is list full?
 		bhs.w	DisplaySprite	; If so, return

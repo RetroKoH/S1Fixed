@@ -14,6 +14,11 @@ GBall_Index:	offsetTable
 		offsetTableEntry.w GBall_Display2
 		offsetTableEntry.w loc_17C68
 		offsetTableEntry.w GBall_ChkVanish
+
+;swing_angle = $10		; precise rotation angle (2 bytes)
+	; ^^^ We need this so that obShieldProp isn't overwritten, otherwise
+	; Insta-Shield negates its collision property. Upper byte written to obAngle.
+	; See Obj15 for more details.
 ; ===========================================================================
 
 GBall_Main:	; Routine 0
