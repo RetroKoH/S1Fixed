@@ -72,7 +72,7 @@ Bom_ActIndex:	offsetTable
 		bsr.w	.chksonic
 		subq.w	#1,bom_time(a0)	; subtract 1 from time delay
 		bmi.s	.stopwalking	; if time expires, branch
-		bra.w	SpeedToPos
+		bra.w	SpeedToPos_XOnly
 ; ===========================================================================
 
 .stopwalking:
@@ -149,7 +149,7 @@ Bom_Display:	; Routine 4
 loc_11B70:
 		subq.w	#1,bom_time(a0)
 		bmi.s	loc_11B7C
-		bra.w	SpeedToPos
+		bra.w	SpeedToPos_YOnly
 ; ===========================================================================
 
 loc_11B7C:

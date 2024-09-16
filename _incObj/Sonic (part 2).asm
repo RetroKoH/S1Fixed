@@ -75,7 +75,7 @@ Sonic_Death_Normal:
 		clr.b	(v_cameralag).w			; Spin Dash Enabled
 	endif
 		bsr.w	GameOver
-		jsr		(ObjectFall).l
+		bsr.w	ObjectFall_YOnly
 		bsr.w	Sonic_RecordPosition
 		bsr.w	Sonic_Animate
 		bsr.w	Sonic_LoadGfx
@@ -167,7 +167,7 @@ Sonic_Drowned:
 
 Sonic_Drowned_Normal:
 	; Debug Mode Addition End
-		bsr.w	SpeedToPos				; Make Sonic able to move
+		bsr.w	SpeedToPos_YOnly		; Make Sonic able to move
 		addi.w	#$10,obVelY(a0)			; Apply gravity
 		bsr.w	Sonic_RecordPosition	; Record position
 		bsr.s	Sonic_Animate			; Animate Sonic

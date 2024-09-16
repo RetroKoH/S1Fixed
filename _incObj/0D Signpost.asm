@@ -96,7 +96,7 @@ Sign_Spin:	; Routine 4
 	if ManiaSignpost=1
 		tst.b	ob2ndRout(a0)
 		bne.s	.onground
-		bsr.w	SpeedToPos
+		bsr.w	SpeedToPos_YOnly
 		bsr.w	ObjFloorDist
 		tst.w	d1
 		bpl.s	.inair

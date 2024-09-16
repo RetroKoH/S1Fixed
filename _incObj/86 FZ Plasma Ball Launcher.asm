@@ -152,7 +152,7 @@ BossPlasma_2ndRout0: ;loc_1A9A6:
 BossPlasma_2ndRout2: ;loc_1A9C0:
 		tst.w	obVelX(a0)
 		beq.s	loc_1A9E6
-		jsr		(SpeedToPos).l
+		jsr		(SpeedToPos_XOnly).l
 		move.w	obX(a0),d0
 		sub.w	objoff_30(a0),d0
 		bcc.s	loc_1A9E6

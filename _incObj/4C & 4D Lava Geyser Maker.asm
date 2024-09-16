@@ -207,7 +207,7 @@ Geyser_Type00:
 		move.b	#3,obAnim(a1)
 
 loc_EFDA:
-		bsr.w	SpeedToPos
+		bsr.w	SpeedToPos_YOnly
 		lea		Ani_Geyser(pc),a1
 		jsr		(AnimateSprite).w
 		offscreen.w	DeleteObject			; ProjectFM S3k OBject Manager
@@ -224,7 +224,7 @@ Geyser_Type01:
 		move.b	#1,obAnim(a1)
 
 loc_EFFA:
-		bsr.w	SpeedToPos
+		bsr.w	SpeedToPos_YOnly
 		lea		Ani_Geyser(pc),a1
 		jsr		(AnimateSprite).w
 		offscreen.w	DeleteObject			; ProjectFM S3k OBject Manager

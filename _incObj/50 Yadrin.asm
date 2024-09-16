@@ -19,7 +19,7 @@ Yad_Main:	; Routine 0
 		move.b	#$11,obHeight(a0)
 		move.b	#8,obWidth(a0)
 		move.b	#$CC,obColType(a0)
-		bsr.w	ObjectFall
+		bsr.w	ObjectFall_YOnly
 		bsr.w	ObjFloorDist
 		tst.w	d1
 		bpl.s	locret_F89E
@@ -55,7 +55,7 @@ Yad_Animate:
 ; ===========================================================================
 
 Yad_FixToFloor:
-		bsr.w	SpeedToPos
+		bsr.w	SpeedToPos_XOnly
 		bsr.w	ObjFloorDist
 		cmpi.w	#-8,d1
 		blt.s	Yad_Pause

@@ -20,7 +20,7 @@ Poi_Main:	; Routine 0
 Poi_Slower:	; Routine 2
 		tst.w	obVelY(a0)			; is object moving?
 		bpl.w	DeleteObject		; if not, delete
-		bsr.w	SpeedToPos
+		bsr.w	SpeedToPos_YOnly
 		addi.w	#$18,obVelY(a0)		; reduce object	speed
 		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix
 ; ===========================================================================

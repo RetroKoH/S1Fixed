@@ -37,7 +37,7 @@ locret_16950:
 Cat_Main:	; Routine 0
 		move.b	#7,obHeight(a0)
 		move.b	#8,obWidth(a0)
-		jsr		(ObjectFall).l
+		jsr		(ObjectFall_YOnly).l
 		jsr		(ObjFloorDist).l
 		tst.w	d1
 		bpl.s	locret_16950

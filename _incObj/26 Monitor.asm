@@ -92,7 +92,7 @@ Mon_Solid:	; Routine 2
 ; ===========================================================================
 
 .fall:		; 2nd Routine 4
-		bsr.w	ObjectFall
+		bsr.w	ObjectFall_YOnly
 		jsr		(ObjFloorDist).l
 		tst.w	d1
 		bpl.w	Mon_Animate

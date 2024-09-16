@@ -56,7 +56,7 @@ loc_18D68:
 		addq.b	#2,obRoutine(a0)
 
 BossSpikeball_Fall:	; Routine 2
-		jsr		(ObjectFall).l
+		jsr		(ObjectFall_YOnly).l
 		movea.l	objoff_3C(a0),a1
 		lea		word_19018(pc),a2
 		moveq	#0,d0

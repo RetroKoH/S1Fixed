@@ -83,9 +83,9 @@ Newt_Action:	; Routine 2
 		move.b	#$C,obColType(a0)
 
 .loc_DE42:
-		bsr.w	ObjectFall
+		bsr.w	ObjectFall_YOnly
 		jsr		(ObjFloorDist).l
-		tst.w	d1		; has newtron hit the floor?
+		tst.w	d1				; has newtron hit the floor?
 		bpl.s	.keepfalling	; if not, branch
 
 		add.w	d1,obY(a0)
@@ -108,7 +108,7 @@ Newt_Action:	; Routine 2
 ; ===========================================================================
 
 .matchfloor:
-		bsr.w	SpeedToPos
+		bsr.w	SpeedToPos_XOnly
 		jsr		(ObjFloorDist).l
 		cmpi.w	#-8,d1
 		blt.s	.nextroutine
@@ -124,7 +124,7 @@ Newt_Action:	; Routine 2
 ; ===========================================================================
 
 .speed:
-		bra.w	SpeedToPos
+		bra.w	SpeedToPos_XOnly
 ; ===========================================================================
 
 .type01:

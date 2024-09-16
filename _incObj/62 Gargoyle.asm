@@ -79,7 +79,7 @@ Gar_AniFire:	; Routine 6
 		bchg	#0,obFrame(a0)	; change every 8 frames
 
 .nochg:
-		bsr.w	SpeedToPos
+		bsr.w	SpeedToPos_XOnly
 		btst	#staFlipX,obStatus(a0) ; is fireball moving left?
 		bne.s	.isright	; if not, branch
 		moveq	#-8,d3

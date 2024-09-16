@@ -44,7 +44,7 @@ Pow_Main:	; Routine 0
 Pow_Move:	; Routine 2
 		tst.w	obVelY(a0)		; is object moving?
 		bpl.w	Pow_Checks		; if not, branch
-		bsr.w	SpeedToPos
+		bsr.w	SpeedToPos_YOnly
 		addi.w	#$18,obVelY(a0)	; reduce object	speed
 		bra.w	DisplaySprite	; Clownacy DisplaySprite Fix (Alt method by RetroKoH based on S2)
 ; ===========================================================================

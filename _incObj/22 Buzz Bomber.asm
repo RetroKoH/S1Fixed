@@ -88,7 +88,7 @@ Buzz_Action:	; Routine 2
 .chknearsonic:
 		subq.w	#1,buzz_timedelay(a0) ; subtract 1 from time delay
 		bmi.s	.chgdirection
-		bsr.w	SpeedToPos
+		bsr.w	SpeedToPos_XOnly
 		tst.b	buzz_buzzstatus(a0)
 		bne.s	.keepgoing
 		move.w	(v_player+obX).w,d0

@@ -110,8 +110,8 @@ Saw_Action:	; Routine 2
 ; ===========================================================================
 
 .type03:
-		tst.b	saw_here(a0)	; has the saw appeared already?
-		bne.s	.here03		; if yes, branch
+		tst.b	saw_here(a0)				; has the saw appeared already?
+		bne.s	.here03						; if yes, branch
 
 		move.w	(v_player+obX).w,d0
 		subi.w	#$C0,d0
@@ -126,7 +126,7 @@ Saw_Action:	; Routine 2
 		cmp.w	obY(a0),d0
 		blo.s	.nosaw03y
 		move.b	#1,saw_here(a0)
-		move.w	#$600,obVelX(a0) ; move object to the right
+		move.w	#$600,obVelX(a0) 			; move object to the right
 		move.b	#$A2,obColType(a0)
 		move.b	#2,obFrame(a0)
 		move.w	#sfx_Saw,d0
@@ -140,7 +140,7 @@ Saw_Action:	; Routine 2
 ; ===========================================================================
 
 .here03:
-		jsr		(SpeedToPos).l
+		jsr		(SpeedToPos_XOnly).l
 		move.w	obX(a0),saw_origX(a0)
 		subq.b	#1,obTimeFrame(a0)
 		bpl.s	.sameframe03
@@ -166,7 +166,7 @@ Saw_Action:	; Routine 2
 		cmp.w	obY(a0),d0
 		blo.s	.nosaw04y
 		move.b	#1,saw_here(a0)
-		move.w	#-$600,obVelX(a0) ; move object to the left
+		move.w	#-$600,obVelX(a0) 		; move object to the left
 		move.b	#$A2,obColType(a0)
 		move.b	#2,obFrame(a0)
 		move.w	#sfx_Saw,d0
@@ -180,7 +180,7 @@ Saw_Action:	; Routine 2
 ; ===========================================================================
 
 .here04:
-		jsr	(SpeedToPos).l
+		jsr		(SpeedToPos_XOnly).l
 		move.w	obX(a0),saw_origX(a0)
 		subq.b	#1,obTimeFrame(a0)
 		bpl.s	.sameframe04

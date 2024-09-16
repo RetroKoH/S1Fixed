@@ -59,7 +59,7 @@ Bas_Action:	; Routine 2
 ; ===========================================================================
 
 .dropfly:
-		bsr.w	SpeedToPos
+		bsr.w	SpeedToPos_YOnly
 		addi.w	#$18,obVelY(a0)	; make basaran fall
 		move.w	#$80,d2
 		bsr.w	.chkdistance
@@ -89,10 +89,10 @@ Bas_Action:	; Routine 2
 		andi.b	#$F,d0
 		bne.s	.nosound
 		move.w	#sfx_Basaran,d0
-		jsr	(PlaySound_Special).w	; play flapping sound every 16th frame
+		jsr		(PlaySound_Special).w	; play flapping sound every 16th frame
 
 .nosound:
-		bsr.w	SpeedToPos
+		bsr.w	SpeedToPos_XOnly
 		move.w	(v_player+obX).w,d0
 		sub.w	obX(a0),d0
 		bcc.s	.isright	; if Sonic is right of basaran, branch

@@ -24,13 +24,13 @@ Chop_Main:	; Routine 0
 Chop_ChgSpeed:	; Routine 2
 		lea		Ani_Chop(pc),a1
 		bsr.w	AnimateSprite
-		bsr.w	SpeedToPos
-		addi.w	#$18,obVelY(a0)	; reduce speed
+		bsr.w	SpeedToPos_YOnly
+		addi.w	#$18,obVelY(a0)		; reduce speed
 		move.w	chop_origY(a0),d0
-		cmp.w	obY(a0),d0	; has Chopper returned to its original position?
-		bhs.s	.chganimation	; if not, branch
+		cmp.w	obY(a0),d0			; has Chopper returned to its original position?
+		bhs.s	.chganimation		; if not, branch
 		move.w	d0,obY(a0)
-		move.w	#-$700,obVelY(a0) ; set vertical speed
+		move.w	#-$700,obVelY(a0)	; set vertical speed
 
 .chganimation:
 		move.b	#1,obAnim(a0)	; use fast animation

@@ -34,7 +34,7 @@ Crab_Main:	; Routine 0
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#6,obColType(a0)
 		move.b	#$15,obActWid(a0)
-		bsr.w	ObjectFall
+		bsr.w	ObjectFall_YOnly
 		jsr		(ObjFloorDist).l	; find floor
 		tst.w	d1
 		bpl.s	.floornotfound
@@ -110,7 +110,7 @@ Crab_Action:	; Routine 2
 .walkonfloor:
 		subq.w	#1,crab_timedelay(a0)
 		bmi.s	loc_966E
-		bsr.w	SpeedToPos
+		bsr.w	SpeedToPos_XOnly
 		bchg	#0,crab_mode(a0)
 		bne.s	loc_9654
 		move.w	obX(a0),d3

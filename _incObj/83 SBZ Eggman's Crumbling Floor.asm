@@ -110,7 +110,7 @@ loc_19C72:	; Routine 8
 loc_19C80:	; Routine $A
 		tst.b	obRender(a0)
 		bpl.s	FFloor_Delete
-		jsr		(ObjectFall).l
+		jsr		(ObjectFall_YOnly).l
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 

@@ -41,5 +41,5 @@ Jaws_Turn:	; Routine 2
 .animate:
 		lea		Ani_Jaws(pc),a1
 		bsr.w	AnimateSprite
-		bsr.w	SpeedToPos
+		bsr.w	SpeedToPos_XOnly
 		bra.w	RememberState

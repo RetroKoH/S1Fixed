@@ -88,7 +88,7 @@ Drown_ChkWater:	; Routine 4
 		add.w	drown_origX(a0),d0
 		move.w	d0,obX(a0)
 		bsr.s	Drown_ShowNumber
-		jsr		(SpeedToPos).l
+		jsr		(SpeedToPos_YOnly).l	; Horizontal movement is NOT applied by VelX
 		tst.b	obRender(a0)
 		bpl.s	.delete
 		jmp		(DisplaySprite).l

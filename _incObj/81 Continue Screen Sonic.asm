@@ -37,7 +37,7 @@ CSon_ChkLand:	; Routine 2
 		bra.s	CSon_Animate
 
 CSon_ShowFall:
-		jsr		(SpeedToPos).l
+		jsr		(SpeedToPos_YOnly).l
 		jsr		(Sonic_Animate).l
 		jsr		(Sonic_LoadGfx).l
 		jmp		(DisplaySprite).l
@@ -70,7 +70,7 @@ CSon_AddInertia:
 		addi.w	#$20,obInertia(a0) ; increase inertia
 
 CSon_ShowRun:
-		jsr		(SpeedToPos).l
+		jsr		(SpeedToPos_XOnly).l
 		jsr		(Sonic_Animate).l
 		jsr		(Sonic_LoadGfx).l
 		jmp		(DisplaySprite).l

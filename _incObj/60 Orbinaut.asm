@@ -146,7 +146,7 @@ Orb_ChkSonic:	; Routine 2
 ; ===========================================================================
 
 Orb_Display:	; Routine 4
-		bsr.w	SpeedToPos
+		bsr.w	SpeedToPos_XOnly
 
 Orb_ChkDel:
 		out_of_range.w	.chkgone

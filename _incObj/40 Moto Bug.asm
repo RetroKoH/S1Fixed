@@ -30,7 +30,7 @@ Moto_Main:	; Routine 0
 		move.b	#$E,obHeight(a0)
 		move.b	#8,obWidth(a0)
 		move.b	#$C,obColType(a0)
-		bsr.w	ObjectFall
+		bsr.w	ObjectFall_YOnly
 		bsr.w	ObjFloorDist
 		tst.w	d1
 		bpl.s	.notonfloor
@@ -79,7 +79,7 @@ Moto_Action:	; Routine 2
 ; ===========================================================================
 
 .findfloor:
-		bsr.w	SpeedToPos
+		bsr.w	SpeedToPos_XOnly
 		jsr		(ObjFloorDist).l
 		cmpi.w	#-8,d1
 		blt.s	.pause

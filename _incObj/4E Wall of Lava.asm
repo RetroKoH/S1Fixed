@@ -99,7 +99,7 @@ LWall_Solid:	; Routine 2
 		jsr		(AnimateSprite).w
 		cmpi.b	#4,(v_player+obRoutine).w
 		bhs.s	.rangechk
-		bsr.w	SpeedToPos
+		bsr.w	SpeedToPos_XOnly
 
 .rangechk:
 		tst.b	lwall_flag(a0)		; is wall already moving?

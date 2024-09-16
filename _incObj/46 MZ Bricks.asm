@@ -78,7 +78,7 @@ Brick_Type00:
 ; ===========================================================================
 
 Brick_Type03:
-		bsr.w	SpeedToPos
+		bsr.w	SpeedToPos_YOnly
 		addi.w	#$18,obVelY(a0)	; increase falling speed
 		jsr		(ObjFloorDist).l
 		tst.w	d1		; has the block	hit the	floor?

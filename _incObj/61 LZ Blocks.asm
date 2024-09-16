@@ -101,7 +101,7 @@ LBlk_Action:	; Routine 2
 
 .type02:
 .type06:
-		bsr.w	SpeedToPos
+		bsr.w	SpeedToPos_YOnly
 		addq.w	#8,obVelY(a0)	; make block fall
 		bsr.w	ObjFloorDist
 		tst.w	d1				; has block hit the floor?
@@ -120,7 +120,7 @@ LBlk_Action:	; Routine 2
 	; object. See SBZ3 Lower right section after the water tunnel.
 	; Make sure to place within Top-Solid tiles if placing in the ground as
 	; a trap. Consult Clownacy to see if the Top-Solid tiles were a One-28 error.
-		bsr.w	SpeedToPos
+		bsr.w	SpeedToPos_YOnly
 		
 	if LimitLZBlockRisingSpeed=1	; Mercury Limit LZ Block Rising Speed
 		cmpi.w	#-$200,obVelY(a0)

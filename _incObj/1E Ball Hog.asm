@@ -19,7 +19,7 @@ Hog_Main:	; Routine 0
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#5,obColType(a0)
 		move.b	#$C,obActWid(a0)
-		bsr.w	ObjectFall
+		bsr.w	ObjectFall_YOnly
 		jsr		(ObjFloorDist).l			; find floor
 		tst.w	d1
 		bpl.s	.floornotfound

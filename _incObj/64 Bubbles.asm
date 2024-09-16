@@ -106,7 +106,7 @@ Bub_ChkWater:	; Routine 4
 ; ===========================================================================
 
 .display:
-		bsr.w	SpeedToPos
+		bsr.w	SpeedToPos_YOnly	; Horizontal movement is NOT applied by VelX
 		tst.b	obRender(a0)
 		bpl.w	DeleteObject
 		jmp		(DisplaySprite).l

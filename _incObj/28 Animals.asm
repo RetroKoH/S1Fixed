@@ -161,7 +161,7 @@ loc_911C:
 Anml_Freed: ;loc_912A:	; Routine 2
 		tst.b	obRender(a0)
 		bpl.w	DeleteObject
-		bsr.w	ObjectFall
+		bsr.w	ObjectFall_YOnly
 		tst.w	obVelY(a0)
 		bmi.w	DisplaySprite
 		jsr		(ObjFloorDist).l

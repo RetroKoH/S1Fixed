@@ -11,7 +11,7 @@ Roller:
 Roll_Main:	; Routine 0
 		move.b	#$E,obHeight(a0)
 		move.b	#8,obWidth(a0)
-		bsr.w	ObjectFall
+		bsr.w	ObjectFall_YOnly
 		jsr		(ObjFloorDist).l
 		tst.w	d1
 		bpl.s	locret_E052

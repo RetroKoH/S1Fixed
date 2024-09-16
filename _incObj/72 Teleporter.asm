@@ -133,7 +133,7 @@ Tele_MoveSonic:	; Routine 6
 ; ===========================================================================
 
 ; Literally a carbon copy of SpeedToPos (except player is a1 instead of a0)
-; We can optimize it in an identical manner to how RHS optimized SpeedToPos.
+; We can optimize it in an identical manner to how RHS/DeltaW optimized SpeedToPos.
 .speedtopos:
 	; RHS/DeltaW Optimized Object Movement
 		movem.w	obVelX(a1),d0/d2	; load horizontal speed (d0) and vertical speed (d2)

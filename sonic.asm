@@ -5526,7 +5526,6 @@ loc_D37C:
 Obj_Index:
 		include	"_inc/Object Pointers.asm"
 
-		include	"_incObj/sub ObjectFall.asm"
 		include	"_incObj/sub SpeedToPos.asm"
 		include	"_incObj/sub DisplaySprite.asm"
 		include	"_incObj/sub DeleteObject.asm"

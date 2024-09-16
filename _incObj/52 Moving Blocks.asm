@@ -89,7 +89,8 @@ MBlock_Move:
 		move.w	MBlock_TypeIndex(pc,d0.w),d1
 		jmp		MBlock_TypeIndex(pc,d1.w)
 ; ===========================================================================
-MBlock_TypeIndex:dc.w MBlock_Type00-MBlock_TypeIndex, MBlock_Type01-MBlock_TypeIndex
+MBlock_TypeIndex:
+		dc.w MBlock_Type00-MBlock_TypeIndex, MBlock_Type01-MBlock_TypeIndex
 		dc.w MBlock_Type02-MBlock_TypeIndex, MBlock_Type03-MBlock_TypeIndex
 		dc.w MBlock_Type02-MBlock_TypeIndex, MBlock_Type05-MBlock_TypeIndex
 		dc.w MBlock_Type06-MBlock_TypeIndex, MBlock_Type07-MBlock_TypeIndex
@@ -155,7 +156,7 @@ MBlock_05_End:
 ; ===========================================================================
 
 MBlock_Type06:
-		bsr.w	SpeedToPos
+		bsr.w	SpeedToPos_YOnly
 		addi.w	#$18,obVelY(a0)	; make the platform fall
 		bsr.w	ObjFloorDist
 		tst.w	d1		; has platform hit the floor?
