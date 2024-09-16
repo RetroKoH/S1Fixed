@@ -89,7 +89,7 @@ loc_1636C:
 		clr.b	obAnim(a0)
 
 loc_16378:
-		bsr.w	LCon_ChangeDir
+		bsr.w	LCon_SetInMotion
 		bra.w	loc_163D8
 ; ===========================================================================
 
@@ -154,13 +154,10 @@ SpinC_Rout2:
 
 loc_16404:
 		btst	#staSonicOnObj,obStatus(a0)
-		beq.s	loc_16420
+		beq.s	loc_16424
 		lea		(v_player).w,a1
 		bclr	#staOnObj,obStatus(a1)
 		bclr	#staSonicOnObj,obStatus(a0)	; removed obSolid
-
-loc_16420:
-		bra.w	loc_16424
 
 loc_16424:
 		move.w	obX(a0),d0
@@ -196,7 +193,7 @@ loc_16474:
 		clr.b	obAnim(a0)
 
 loc_16480:
-		bsr.w	LCon_ChangeDir
+		bsr.w	LCon_SetInMotion
 
 loc_16484:
 		jmp		(SpeedToPos).l

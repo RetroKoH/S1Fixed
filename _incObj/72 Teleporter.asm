@@ -32,11 +32,11 @@ tele_coordaddr = objoff_3C		; address where teleporter's coordinate pairs are lo
 Tele_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.b	obSubtype(a0),d0			; get teleporter number (numbered similarly to how switches are numbered)
-		add.w	d0,d0
+		add.w	d0,d0						; multiply teleporter ID by 2
 		andi.w	#$1E,d0						; capped at $10 teleporters (0-$F), though only 0-7 are used in Sonic 1
 		lea		Tele_Data(pc),a2
 		adda.w	(a2,d0.w),a2				; a2 = data for this specific teleporter
-		move.w	(a2)+,tele_passedcoords(a0)	; number of bytes in this data set (2 bytes)
+		move.w	(a2)+,tele_passedcoords(a0)	; number of bytes in this data set (2 bytes) -- byte count stored in $39(a0). $38(a0) is cleared.
 		move.l	a2,tele_coordaddr(a0)		; address of this data set (4 bytes)
 		move.w	(a2)+,tele_targetx(a0)		; load next x-coordinate
 		move.w	(a2)+,tele_targety(a0)		; load next y-coordinate
