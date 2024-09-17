@@ -76,13 +76,15 @@ Sign_Touch:	; Routine 2
 .notnegative:
 		cmpi.b	#4,d0
 		ble.s	.tooslow							; if under 4, don't let the sign fly
-		cmpi.b	#$A,d0								; set max cap of $A
+		cmpi.b	#$A,d0
 		ble.s	.dontcap
-		move.b	#$A,d0
-.dontcap
+		move.b	#$A,d0								; set max cap of $A
+
+.dontcap:
 		lsr.b	#1,d0								; vel / 2
 		neg.b	d0									; make value negative
 		move.b	d0,obVelY(a0)						; set y speed of signpost
+
 .tooslow:
 		move.w	obY(a0),sign_origy(a0)				; store starting y-position so we know when to land
 		move.w	#60,spintime(a0)					; set spin cycle time to 1 second
