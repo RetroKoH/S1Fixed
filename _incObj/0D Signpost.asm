@@ -5,6 +5,7 @@
 spintime = objoff_30		; time for signpost to spin
 sparkletime = objoff_32		; time between sparkles
 sparkle_id = objoff_34		; counter to keep track of sparkles
+sign_origy = objoff_36		; original y-position (For Floating Signpost mod)
 
 Signpost:
 		moveq	#0,d0
@@ -76,7 +77,7 @@ Sign_Touch:	; Routine 2
 		lsr.b	#1,d0								; vel / 2
 		neg.b	d0									; make value negative
 		move.b	d0,obVelY(a0)						; set y speed of signpost
-		move.b	#$1F,obHeight(a0)					; set height to use in the next routine
+		move.w	obY(a0),sign_origy(a0)				; store starting y-position so we know when to land
 		move.w	#60,spintime(a0)					; set spin cycle time to 1 second
 		addq.b	#1,obAnim(a0)						; set to first spin cycle early
 	endif
@@ -97,8 +98,8 @@ Sign_Spin:	; Routine 4
 		tst.b	ob2ndRout(a0)
 		bne.s	.onground
 		bsr.w	SpeedToPos_YOnly
-		bsr.w	ObjFloorDist
-		tst.w	d1
+		move.w	sign_origy(a0),d1
+		sub.w	obY(a0),d1
 		bpl.s	.inair
 		add.w	d1,obY(a0)						; latch to the floor
 		clr.w	obVelY(a0)
