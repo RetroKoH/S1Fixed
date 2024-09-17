@@ -5,7 +5,7 @@
 
 # Credits
  RetroKoH - S1Fixed  
- DeltaW - Backporting Assistance
+ DeltaW - Backporting Assistance  
  Mercury - Original ReadySonic  
  Clownacy - Updated S1 One Two-Eight Base  
  MarkeyJester - Original S1 One Two-Eight Base  
