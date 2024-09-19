@@ -78,7 +78,7 @@ ChkPartiallyVisible:
  
  
 ChkSizedObjVisible:
-	; Ralakimus Checking For Solids Fix
+	; Devon Checking For Solids Fix
 		moveq	#0,d1				; Get object's width
 		move.b	obActWid(a0),d1
 		move.w	obX(a0),d0			; Get object's X position

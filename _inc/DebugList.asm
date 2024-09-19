@@ -19,6 +19,7 @@ dbug:	macro map,object,subtype,frame,vram
 	endm
 
 standards:	macro
+;			mappings		object				subtype	frame	VRAM setting
 	dbug 	Map_Ring,		id_Rings,			0,		0,		make_art_tile(ArtTile_Ring,1,0)
 	dbug	Map_Monitor,	id_Monitor,			6,		8,		make_art_tile(ArtTile_Monitor,0,0)				; Super Ring Monitor
 	dbug	Map_Monitor,	id_Monitor,			4,		6,		make_art_tile(ArtTile_Monitor,0,0)				; Shield Monitor
@@ -31,8 +32,10 @@ standards:	macro
 	dbug	Map_Monitor,	id_Monitor,			8,		$A,		make_art_tile(ArtTile_Monitor,0,0)				; Bubble Shield Monitor
 	dbug	Map_Monitor,	id_Monitor,			9,		$B,		make_art_tile(ArtTile_Monitor,0,0)				; Lightning Shield Monitor
 	dbug	Map_Monitor,	id_Monitor,			$A,		$C,		make_art_tile(ArtTile_Monitor,0,0)				; Test the NEW "S" Monitor
+	dbug	Map_Monitor,	id_Monitor,			$B,		$D,		make_art_tile(ArtTile_Monitor,0,0)				; Test the NEW Goggles Monitor
 	else
 	dbug	Map_Monitor,	id_Monitor,			7,		9,		make_art_tile(ArtTile_Monitor,0,0)				; Test the NEW "S" Monitor
+	dbug	Map_Monitor,	id_Monitor,			8,		$A,		make_art_tile(ArtTile_Monitor,0,0)				; Test the NEW Goggles Monitor
 	endif
 	dbug	Map_Spring,		id_Springs,			2,		0,		make_art_tile(ArtTile_Spring_Horizontal,1,0)	; Yellow Horizontal Spring
 	dbug	Map_Spring,		id_Springs,			$12,	3,		make_art_tile(ArtTile_Spring_Vertical,1,0)		; Yellow Vertical Spring

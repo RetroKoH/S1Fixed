@@ -228,6 +228,7 @@ maskSonicPush:	equ 1<<staSonicPush		; $20
 sta2ndShield:		equ	0
 sta2ndInvinc:		equ	1
 sta2ndShoes:		equ	2
+sta2ndGoggles:		equ 3	; Debug item
 
 sta2ndFShield:		equ 4
 sta2ndBShield:		equ 5
@@ -599,6 +600,7 @@ ArtTile_Ring:					equ $5EC				; ✓
 ArtTile_Monitor:				equ $680				; ✓ - Optimized by removing life icon (Use HUD life icon)
 ArtTile_HUD:					equ $6CA				; ✓ - Optimized by removing 1 R
 ArtTile_Sonic:					equ $780				; ✓ - Player 1
+ArtTile_Goggles:				equ $7BC				; Testing
 ArtTile_Lives_Counter:			equ $7D4				; ✓
 
 ; Eggman

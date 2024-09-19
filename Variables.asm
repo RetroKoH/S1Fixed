@@ -120,7 +120,8 @@ v_trails2		= v_objspace+object_size*19
 
 v_sstarsobj		= v_objspace+object_size*20 ; object variable space for super stars
 
-; - 2 Slots Unused
+; - 1 Slot Unused
+v_gogglesobj	= v_objspace+object_size*22 ; object variable space for goggles
 
 v_endcard		= v_objspace+object_size*23	; ($D5C0) object variable space for the level results card ($1C0 bytes)
 v_endcardsonic	= v_endcard+object_size*0	; ($D5C0) object variable space for the level results card "SONIC HAS" text ($40 bytes)

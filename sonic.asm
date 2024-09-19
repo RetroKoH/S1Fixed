@@ -5941,29 +5941,29 @@ ResumeMusic:
 
 ; ===========================================================================
 
-				include	"_incObj/38 Shield.asm"
-				include	"_incObj/21 Invincibility.asm"						; Split from Shields (RetroKoH)
-				include	"_incObj/4A Special Stage Entry (Unused).asm"
-				include	"_incObj/03 Collision Switcher.asm"
-				include	"_incObj/08 Water Splash.asm"
-				include	"_anim/Water Splash.asm"
+		include	"_incObj/38 Shield.asm"
+		include	"_incObj/21 Invincibility.asm"						; Split from Shields (RetroKoH)
+		include	"_incObj/03 Collision Switcher.asm"
+		include	"_incObj/08 Water Splash.asm"
+		include	"_anim/Water Splash.asm"
 
-				include	"_anim/Shield and Invincibility.asm"
-				include "_maps/Shield and Invincibility - DPLCs.asm"		; RetroKoH VRAM Overhaul
+		include	"_anim/Shield and Invincibility.asm"
+		include "_maps/Shield and Invincibility - DPLCs.asm"		; RetroKoH VRAM Overhaul
 
 	if ShieldsMode>0
-				include "_maps\Shield - Insta.asm"
-				include "_maps\Shield - Insta - DPLCs.asm"
+			include "_maps/Shield - Insta.asm"
+			include "_maps/Shield - Insta - DPLCs.asm"
 	endif
 	if ShieldsMode>1
-				include "_maps\Shield - Flame.asm"
-				include "_maps\Shield - Flame - DPLCs.asm"
-				include "_maps\Shield - Bubble.asm"
-				include "_maps\Shield - Bubble - DPLCs.asm"
-				include "_maps\Shield - Lightning.asm"
-				include "_maps\Shield - Lightning - DPLCs.asm"
+			include "_maps/Shield - Flame.asm"
+			include "_maps/Shield - Flame - DPLCs.asm"
+			include "_maps/Shield - Bubble.asm"
+			include "_maps/Shield - Bubble - DPLCs.asm"
+			include "_maps/Shield - Lightning.asm"
+			include "_maps/Shield - Lightning - DPLCs.asm"
 	endif
 
+		include	"_incObj/4A Special Stage Entry (Unused).asm"
 		include	"_anim/Special Stage Entry (Unused).asm"
 
 		include	"_incObj/Sonic AnglePos.asm"
@@ -5971,6 +5971,9 @@ ResumeMusic:
 		include	"_incObj/sub FindNearestTile.asm"
 		include	"_incObj/sub FindFloor.asm"
 		include	"_incObj/sub FindWall.asm"
+		
+		include "_incObj/8F Goggles.asm"
+		include "_maps/Goggles - DPLCs.asm"
 
 ; ---------------------------------------------------------------------------
 ; This subroutine takes 'raw' bitmap-like collision block data as input and
@@ -7449,6 +7452,8 @@ Art_Shield:		binclude	"artunc/Shield - Blue.bin"			; Blue Shield -- RetroKoH VRA
 		even
 Art_Stars:		binclude	"artunc/Invincibility Stars.bin"	; Invincibility Stars -- RetroKoH VRAM Overhaul
 		even
+Art_Goggles:	binclude	"artunc/Goggles.bin"				; Goggles
+		even
 
 	if ShieldsMode>0
 Art_Insta:		binclude	"artunc\Shield - Insta.bin"
@@ -8132,36 +8137,38 @@ Map_RingBIN:
 		include	"_maps/Waterfalls.asm"
 		include	"_maps/Super Stars.asm"
 
-				include	"_maps/Drowning Countdown.asm"
-				include	"_maps/Shield and Invincibility.asm"
-			include	"_maps/Special Stage Entry (Unused).asm"
-		 include "_maps/Collision Switcher.asm"
-			include	"_maps/Water Splash.asm"
-			include	"_maps/Rotating Junction.asm"
-			include	"_maps/Running Disc.asm"
-			include	"_maps/Trapdoor.asm"
-			include	"_maps/SBZ Spinning Platforms.asm"
-			include	"_maps/Saws and Pizza Cutters.asm"
-			include	"_maps/SBZ Stomper and Door.asm"
-			include	"_maps/SBZ Vanishing Platforms.asm"
-			include	"_maps/Electrocuter.asm"
-			include	"_maps/Girder Block.asm"
-			include	"_maps/Caterkiller.asm"
-			include	"_maps/Lamppost.asm"
-			include	"_maps/Hidden Bonuses.asm"
-			include	"_maps/Credits.asm"
-			include	"_maps/Eggman.asm"
-			include	"_maps/Boss Items.asm"
-			include	"_maps/SLZ Boss Spikeball.asm"
-			include	"_maps/SYZ Boss Blocks.asm"
-			include	"_maps/Eggman - Scrap Brain 2.asm"
-			include	"_maps/SBZ Eggman's Crumbling Floor.asm"
-			include	"_maps/FZ Damaged Eggmobile.asm"
-			include	"_maps/FZ Eggmobile Legs.asm"
-			include	"_maps/FZ Eggman's Cylinders.asm"
-			include	"_maps/Plasma Ball Launcher.asm"
-			include	"_maps/Plasma Balls.asm"
-			include	"_maps/Prison Capsule.asm"
+		include	"_maps/Drowning Countdown.asm"
+		include	"_maps/Shield and Invincibility.asm"
+		include	"_maps/Special Stage Entry (Unused).asm"
+		include "_maps/Collision Switcher.asm"
+		include	"_maps/Water Splash.asm"
+		include "_maps/Goggles.asm"
+		include	"_maps/Rotating Junction.asm"
+		include	"_maps/Running Disc.asm"
+		include	"_maps/Trapdoor.asm"
+		include	"_maps/SBZ Spinning Platforms.asm"
+		include	"_maps/Saws and Pizza Cutters.asm"
+		include	"_maps/SBZ Stomper and Door.asm"
+		include	"_maps/SBZ Vanishing Platforms.asm"
+		include	"_maps/Electrocuter.asm"
+		include	"_maps/Girder Block.asm"
+		include	"_maps/Caterkiller.asm"
+		include	"_maps/Lamppost.asm"
+		include	"_maps/Hidden Bonuses.asm"
+		include	"_maps/Credits.asm"
+		include	"_maps/Eggman.asm"
+		include	"_maps/Boss Items.asm"
+		include	"_maps/SLZ Boss Spikeball.asm"
+		include	"_maps/SYZ Boss Blocks.asm"
+		include	"_maps/Eggman - Scrap Brain 2.asm"
+		include	"_maps/SBZ Eggman's Crumbling Floor.asm"
+		include	"_maps/FZ Damaged Eggmobile.asm"
+		include	"_maps/FZ Eggmobile Legs.asm"
+		include	"_maps/FZ Eggman's Cylinders.asm"
+		include	"_maps/Plasma Ball Launcher.asm"
+		include	"_maps/Plasma Balls.asm"
+		include	"_maps/Prison Capsule.asm"
+
 	if HUDCentiseconds=1	;Mercury HUD Centiseconds
 
 		include	"_maps/HUD (centiseconds).asm"

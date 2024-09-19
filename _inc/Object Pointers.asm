@@ -149,6 +149,7 @@ ptr_EndEggman:			dc.l EndEggman
 ptr_TryChaos:			dc.l TryChaos
 ptr_SuperStars:			dc.l SuperStars
 ptr_AfterImages:		dc.l AfterImages
+ptr_GogglesItem:		dc.l GogglesItem
 
 NullObject:
 		jmp	(DeleteObject).l	; Any invalid objects will delete themselves immediately.
@@ -301,3 +302,4 @@ id_EndEggman:			equ ((ptr_EndEggman-Obj_Index)/4)+1
 id_TryChaos:			equ ((ptr_TryChaos-Obj_Index)/4)+1
 id_SuperStars:			equ ((ptr_SuperStars-Obj_Index)/4)+1
 id_AfterImages:			equ ((ptr_AfterImages-Obj_Index)/4)+1
+id_GogglesItem:			equ ((ptr_GogglesItem-Obj_Index)/4)+1

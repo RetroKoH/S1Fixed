@@ -252,7 +252,10 @@ Pow_S:
 ; ===========================================================================
 
 Pow_Goggles:
-		rts			; Goggles monitors do nothing
+		bset	#sta2ndGoggles,(v_player+obStatus2nd).w		; give Sonic goggles
+		move.b	#id_GogglesItem,(v_gogglesobj).w			; load goggles object ($8F)
+		move.w	#sfx_A2,d0
+		jmp		(PlaySound).w								; play sound
 ; ===========================================================================
 
 	if ShieldsMode>1
