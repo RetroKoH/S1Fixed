@@ -67,7 +67,10 @@ id_Special:		equ ptr_GM_Special-GameModeArray	; $10
 id_Continue:	equ ptr_GM_Cont-GameModeArray		; $14
 id_Ending:		equ ptr_GM_Ending-GameModeArray		; $18
 id_Credits:		equ ptr_GM_Credits-GameModeArray	; $1C
+	
+	if NewLevelSelect
 id_MenuScreen:	equ ptr_GM_MenuScreen-GameModeArray	; $20
+	endif
 
 ; Levels
 id_GHZ:		equ 0

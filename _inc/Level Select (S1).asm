@@ -130,7 +130,7 @@ LevSel_Level:
 		cmpi.w	#id_SS*$100,d0				; check	if level is 0700 (Special Stage)
 		bne.s	LevSel_NotSpecial			; if not, branch
 		move.b	#id_Special,(v_gamemode).w	; set screen mode to $10 (Special Stage)
-		bsr.s	ResetLevel					; Reset level variables
+		bsr.w	ResetLevel					; Reset level variables
 		move.w	d0,(v_zone).w				; also clear current zone (start at GHZ 1 after the Special Stage)
 		rts	
 ; ===========================================================================

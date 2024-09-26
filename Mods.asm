@@ -227,7 +227,7 @@ SaveProgressMod: = EnableSRAM*1
 ; Name: S2 Level Select
 ; Credit: RetroKoH
 ; Function: Replaces the Sonic 1 Level Select with a Sonic 2-inspired Level Select
-NewLevelSelect:	= 1
+NewLevelSelect:	= 0
 
 ; Name: Chunks In ROM
 ; Credit: Mercury/FraGag
