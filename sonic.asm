@@ -7205,15 +7205,17 @@ Art_Mon_Rand:	binclude	"artunc/Monitors - Random.bin"		; Monitor Art Mod
 		even
 	endif
 
-Art_TitleSonic:	binclude	"artunc/Title Screen Sonic.bin"		; Title Sonic -- RetroKoH VRAM Overhaul
-		even
-
 ; AURORA☆FIELDS Title Card Optimization
 Art_TitleCard:	binclude	"artunc/Title Cards.bin"			; Title Card patterns
 Art_TitleCard_End:	even
 
 Art_TimeOver:	binclude	"artunc/Time Over.bin"				; time over (TI) -- RetroKoH VRAM Overhaul
 Art_TimeOver_End:	even
+
+	align $20000
+
+Art_TitleSonic:	binclude	"artunc/Title Screen Sonic.bin"		; Title Sonic -- RetroKoH VRAM Overhaul
+		even
 
 				include	"_maps/SS Walls.asm"	; Now includes dynamic mappings -- Mercury Dynamic Special Stage Walls
 

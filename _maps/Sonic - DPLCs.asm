@@ -1,5 +1,5 @@
 ; Uncomment this only if you need to ensure art is within a 128kB bank
-;dplcTiles := Art_Sonic
+dplcTiles := Art_Sonic
 
 SonicDynPLC: mappingsTable
 		mappingsTableEntry.w	SonDPLC_Null
@@ -810,4 +810,4 @@ SonDPLC_Transform5_End
 	even
 
 ; Uncomment this only if you need to ensure art is within a 128kB bank
-;dplcTiles := 0
+dplcTiles := 0
