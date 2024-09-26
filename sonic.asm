@@ -381,6 +381,7 @@ InitSRAM:
 .SampleTableOk:
 
 MainGameLoop:
+		moveq	#0,d0						; clear d0 before using it w/ the new Game Mode system to avoid bugs
 		move.b	(v_gamemode).w,d0			; load Game Mode
 	if NewLevelSelect
 		cmpi.b	#$20,d0						; limit Game Mode value to $20 max

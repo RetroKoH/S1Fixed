@@ -101,27 +101,24 @@ LevelSelect_PressStart:
 		move.w	(v_levselzone).w,d0
 		add.w	d0,d0
 		move.w	LevSel_Ptrs(pc,d0.w),d0
-		bmi.w	LevelSelect_Return	; sound test
-		cmpi.w	#$4000,d0
+		bmi.w	LevelSelect_Return			; sound test
+		cmpi.w	#(id_EndZ<<8),d0
+		beq.s	LevelSelect_Ending
+		cmpi.w	#(id_SS<<8),d0
 		bne.w	LevelSelect_StartZone
-		move.b	#id_Special,(v_gamemode).w ; => SpecialStage
-		moveq	#0,d0
-		move.w	d0,(v_zone).w
-		move.b	#3,(v_lives).w			; set lives to 3
-		move.w	d0,(v_rings).w			; clear rings
-		move.l	d0,(v_time).w			; clear time
-		move.l	d0,(v_score).w			; clear score
-		move.b	d0,(v_lastspecial).w	; clear special stage number
-		move.b	d0,(v_emeralds).w		; clear emerald count
-		move.b	d0,(v_emldlist).w		; clear emerald array
-		move.b	d0,(v_continues).w		; clear continues
-		move.l	#5000,(v_scorelife).w ; extra life is awarded at 50000 points
+		move.b	#id_Special,(v_gamemode).w	; set screen mode to $10 (Special Stage)
+		bsr.w	ResetLevel					; Reset level variables
+		move.w	d0,(v_zone).w				; also clear current zone (start at GHZ 1 after the Special Stage)
 		rts
 ; ===========================================================================
 LevelSelect_Return:
 		move.b	#id_Sega,(v_gamemode).w ; => SegaScreen
 		rts
 ; ===========================================================================
+LevelSelect_Ending:
+		move.b	#id_Ending,(v_gamemode).w
+		move.w	d0,(v_zone).w	; set level to 0600 (Ending)
+		rts
 ; ---------------------------------------------------------------------------
 ; Level	select - level pointers
 ; ---------------------------------------------------------------------------
@@ -147,6 +144,7 @@ LevSel_Ptrs:
 		dc.b id_LZ, 3
 		dc.b id_SBZ, 2
 		dc.b id_SS, 0		; Special Stage
+		dc.b id_EndZ, 0		; Ending
 		dc.w $8000			; Sound Test
 		even
 	else
@@ -170,6 +168,7 @@ LevSel_Ptrs:
 		dc.b id_LZ, 3
 		dc.b id_SBZ, 2
 		dc.b id_SS, 0		; Special Stage
+		dc.b id_EndZ, 0		; Ending
 		dc.w $8000			; Sound Test
 		even
 	endif
@@ -177,19 +176,7 @@ LevSel_Ptrs:
 LevelSelect_StartZone:
 		andi.w	#$3FFF,d0
 		move.w	d0,(v_zone).w
-		move.b	#id_Level,(v_gamemode).w ; set screen mode to $0C (level)
-		move.b	#3,(v_lives).w		; set lives to 3
-		moveq	#0,d0
-		move.w	d0,(v_rings).w			; clear rings
-		move.l	d0,(v_time).w			; clear time
-		move.l	d0,(v_score).w			; clear score
-		move.b	d0,(v_lastspecial).w	; clear special stage number
-		move.b	d0,(v_emeralds).w		; clear emerald count
-		move.b	d0,(v_emldlist).w		; clear emerald array
-		move.b	d0,(v_continues).w		; clear continues
-		move.l	#5000,(v_scorelife).w	; extra life is awarded at 50000 points
-		move.b	#$E0,d0
-		bra.w	PlaySound_Special		; fade out music
+		bra.w	PlayLevel				; added branch because I consolidated all level select code/data to this file
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Change what you're selecting in the level select
