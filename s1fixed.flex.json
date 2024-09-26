@@ -4,36 +4,6 @@
     "node": "fab54975-391a-4552-8fa0-fc5e729aa671",
     "objects": [
         {
-            "format": "Sonic 2.js",
-            "name": "Goggles",
-            "palettes": [
-                {
-                    "path": "palette/Sonic.bin",
-                    "length": 1
-                },
-                {
-                    "path": "palette/Labyrinth Zone.bin",
-                    "length": 3
-                }
-            ],
-            "art": {
-                "path": "artunc/Goggles.bin",
-                "compression": "Uncompressed",
-                "offset": 0
-            },
-            "mappings": {
-                "path": "_maps/Goggles.asm",
-                "label": "Map_Goggles"
-            },
-            "dplcs": {
-                "enabled": true,
-                "path": "_maps/Goggles - DPLCs.asm",
-                "label": "GogglesDynPLC"
-            },
-            "isAbsolute": true,
-            "uuid": "fab54975-391a-4552-8fa0-fc5e729aa671"
-        },
-        {
             "name": "Common",
             "children": [
                 {
@@ -361,6 +331,36 @@
                     },
                     "uuid": "3fd70d6d-9cd8-465f-b147-929999eaa239",
                     "expanded": true
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "Goggles",
+                    "palettes": [
+                        {
+                            "path": "palette/Sonic.bin",
+                            "length": 1
+                        },
+                        {
+                            "path": "palette/Labyrinth Zone.bin",
+                            "length": 3
+                        }
+                    ],
+                    "art": {
+                        "path": "artunc/Goggles.bin",
+                        "compression": "Uncompressed",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps/Goggles.asm",
+                        "label": "Map_Goggles"
+                    },
+                    "dplcs": {
+                        "enabled": true,
+                        "path": "_maps/Goggles - DPLCs.asm",
+                        "label": "GogglesDynPLC"
+                    },
+                    "isAbsolute": true,
+                    "uuid": "fab54975-391a-4552-8fa0-fc5e729aa671"
                 }
             ],
             "isDirectory": true,

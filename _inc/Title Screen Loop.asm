@@ -80,8 +80,14 @@ Tit_ChkLevSel:
 		beq.w	PlayLevel					; if not, play level
 		btst	#bitA,(v_jpadhold1).w		; check if A is pressed
 		beq.w	PlayLevel					; if not, play level
-
+	if NewLevelSelect=1
+		move.b	#id_MenuScreen,(v_gamemode).w
+		jmp		MainGameLoop
 	else
+	;fallthrough to Tit_LevSel
+	endif
+
+	else	; if SaveProgressMod=1
 
 Tit_MainLoop:
 		move.b	#4,(v_vbla_routine).w
@@ -164,7 +170,16 @@ Tit_ChkLevSel:
 		cmpi.b	#4,(v_pressstart+obRoutine).w	; is menu triggered?
 		beq.s	Tit_MenuChoice					; if yes, Level Select can't be activated
 		tst.b	(f_levselcheat).w				; otherwise, check if level select code is on
+
+	if NewLevelSelect=0
 		bne.w	Tit_LevSel						; if yes, activate level select
+	else
+		beq.s	Tit_NoLevSel
+		move.b	#id_MenuScreen,(v_gamemode).w
+		jmp		MainGameLoop					; transition to new level select
+Tit_NoLevSel:
+	endif
+
 		move.b	#4,(v_pressstart+obRoutine).w	; activate NEW/CONTINUE menu
 		move.b	#4,(v_pressstart+obFrame).w
 		move.b	#sfx_Lamppost,d0
@@ -178,27 +193,3 @@ Tit_MenuChoice:
 		bra.w	PlayLevel						; start new game
 
 	endif
-
-; Activate Level Select
-Tit_LevSel:
-; (MarkeyJester) https://info.sonicretro.org/SCHG_How-to:Fix_the_Level_Select_graphics_bug
-		move.b	#4,(v_vbla_routine).w		; This should fix the Level Select strip glitch
-		bsr.w	WaitForVBla
-; I go with this, instead of the "proper" fix, because I plan to add an option to change the backgrounds on the title screen
-
-		moveq	#palid_LevelSel,d0
-		bsr.w	PalLoad						; load level select palette
-
-		clearRAM v_hscrolltablebuffer
-
-		move.l	d0,(v_scrposy_vdp).w
-		disable_ints
-		lea		(vdp_data_port).l,a6
-		locVRAM	vram_bg
-		move.w	#plane_size_64x32/4-1,d1
-
-Tit_ClrScroll2:
-		move.l	d0,(a6)
-		dbf		d1,Tit_ClrScroll2			; clear scroll data (in VRAM)
-
-		bsr.w	LevSelTextLoad

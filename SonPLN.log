@@ -1,0 +1,23 @@
+Operating system: Microsoft Windows NT 6.2.9200.0
+Opening INI file "C:\Users\cgtea\Documents\Sonic\S1Fixed\SonPLN.ini"...
+Game type is S1.
+Loading S2 Level Select Icons...
+Loading plane mappings from file "tilemaps/S2 Level Select Icons.eni", using compression Enigma...
+Loading palette file "art/palettes/Menu.bin"...
+Source: 0 Destination: 0 Length: 64
+Loading 8x8 tiles from file "artnem/S2 Level Select Icons.nem", using compression Nemesis...
+System.AggregateException: One or more errors occurred. ---> System.IO.FileNotFoundException: Palette file could not be loaded! Have you set up your disassembly properly?
+   at SonicRetro.SonLVL.SonPLN.MainForm.LoadLevelPalette() in C:\Programs\SonLVL\SonPLN\MainForm.cs:line 442
+   at System.Threading.Tasks.Task.InnerInvoke()
+   at System.Threading.Tasks.Task.Execute()
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task.FastWaitAll(Task[] tasks)
+   at System.Threading.Tasks.Parallel.Invoke(ParallelOptions parallelOptions, Action[] actions)
+   at System.Threading.Tasks.Parallel.Invoke(Action[] actions)
+   at SonicRetro.SonLVL.SonPLN.MainForm.backgroundLevelLoader_DoWork(Object sender, DoWorkEventArgs e) in C:\Programs\SonLVL\SonPLN\MainForm.cs:line 323
+---> (Inner Exception #0) System.IO.FileNotFoundException: Palette file could not be loaded! Have you set up your disassembly properly?
+File name: 'art/palettes/Menu.bin'
+   at SonicRetro.SonLVL.SonPLN.MainForm.LoadLevelPalette() in C:\Programs\SonLVL\SonPLN\MainForm.cs:line 442
+   at System.Threading.Tasks.Task.InnerInvoke()
+   at System.Threading.Tasks.Task.Execute()<---
+

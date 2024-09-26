@@ -44,7 +44,7 @@ SuperMod: = 1
 ; Name: Beta Level Order
 ; Credit: RetroKoH
 ; Function: Toggles level order between Beta and Final
-BetaLevelOrder: = 1						; if set to 1, Level Order is that seen in the beta level select
+BetaLevelOrder: = 0						; if set to 1, Level Order is that seen in the beta level select
 
 ; Name: Disable Speed Caps
 ; Credit: Mercury (Ground/Air), RetroKoH (Applied to Devon's Rolling Speed Cap Fix)
@@ -223,6 +223,11 @@ BackupSRAM:	  = 1
 AddressSRAM:  = 3	; 0 = odd+even; 2 = even only; 3 = odd only
 ; Below is the variable for the actual mod. SRAM must be enabled to use this mod.
 SaveProgressMod: = EnableSRAM*1
+
+; Name: S2 Level Select
+; Credit: RetroKoH
+; Function: Replaces the Sonic 1 Level Select with a Sonic 2-inspired Level Select
+NewLevelSelect:	= 1
 
 ; Name: Chunks In ROM
 ; Credit: Mercury/FraGag

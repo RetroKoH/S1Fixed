@@ -59,14 +59,15 @@ tile_size:					equ 8*8/2
 plane_size_64x32:			equ 64*32*2
 
 ; Game modes
-id_Sega:		equ ptr_GM_Sega-GameModeArray	; $00
-id_Title:		equ ptr_GM_Title-GameModeArray	; $04
-id_Demo:		equ ptr_GM_Demo-GameModeArray	; $08
-id_Level:		equ ptr_GM_Level-GameModeArray	; $0C
-id_Special:		equ ptr_GM_Special-GameModeArray; $10
-id_Continue:	equ ptr_GM_Cont-GameModeArray	; $14
-id_Ending:		equ ptr_GM_Ending-GameModeArray	; $18
-id_Credits:		equ ptr_GM_Credits-GameModeArray; $1C
+id_Sega:		equ ptr_GM_Sega-GameModeArray		; $00
+id_Title:		equ ptr_GM_Title-GameModeArray		; $04
+id_Demo:		equ ptr_GM_Demo-GameModeArray		; $08
+id_Level:		equ ptr_GM_Level-GameModeArray		; $0C
+id_Special:		equ ptr_GM_Special-GameModeArray	; $10
+id_Continue:	equ ptr_GM_Cont-GameModeArray		; $14
+id_Ending:		equ ptr_GM_Ending-GameModeArray		; $18
+id_Credits:		equ ptr_GM_Credits-GameModeArray	; $1C
+id_MenuScreen:	equ ptr_GM_MenuScreen-GameModeArray	; $20
 
 ; Levels
 id_GHZ:		equ 0
@@ -98,6 +99,7 @@ btnL:		equ %00000100 ; Left			($04)
 btnDn:		equ %00000010 ; Down			($02)
 btnUp:		equ %00000001 ; Up				($01)
 btnDir:		equ %00001111 ; Any direction	($0F)
+btnBC:		equ %00110000 ; B or C			($30)
 btnABC:		equ %01110000 ; A, B or C		($70)
 bitStart:	equ 7
 bitA:		equ 6
