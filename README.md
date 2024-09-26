@@ -15,7 +15,6 @@
  S3KBuildSprites (DeltaW)  
  Super Sonic Sprites (RetroKoH) -- Make use of new walking mid-frame by Trickster  
  Toggleable: SBZ3 Level Art (Trickster)  
- Toggleable: S2-Style Level Select (RetroKoH: S1Complete 2015)  
  Badniks auto-destroy at End-of-level; no points. (RetroKoH)  
  Sonic doesn't take damage once he is sent to the right at EoL (RetroKoH)  
  Add yellow stripes to Eggman on the Signpost (Mercury)  
