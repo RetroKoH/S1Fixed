@@ -148,15 +148,8 @@ Pow_Invinc:
 
 		bset	#sta2ndInvinc,(v_player+obStatus2nd).w	; make Sonic invincible
 		move.b	#$96,(v_player+obInvinc).w				; time limit for the power-up -- RetroKoH Sonic SST Compaction
-		moveq	#id_StarsItem,d1
-		move.b	d1,(v_starsobj1).w						; load stars object
+		move.b	#id_StarsItem,(v_starsobj1).w			; load stars object
 		move.b	#1,(v_starsobj1+obAnim).w
-		move.b	d1,(v_starsobj2).w						; load stars object
-		move.b	#2,(v_starsobj2+obAnim).w
-		move.b	d1,(v_starsobj3).w						; load stars object
-		move.b	#3,(v_starsobj3+obAnim).w
-		move.b	d1,(v_starsobj4).w						; load stars object
-		move.b	#4,(v_starsobj4+obAnim).w
 		tst.b	(f_lockscreen).w						; is boss mode on?
 		bne.s	.nomusic								; if yes, branch
 		cmpi.b	#$C,(v_air).w

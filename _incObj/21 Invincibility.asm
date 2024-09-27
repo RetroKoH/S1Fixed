@@ -7,7 +7,13 @@ Stars_Delete:
 		jmp		(DeleteObject).l
 ; ===========================================================================
 
+Stars_SubSprs:
+		move.w	#priority1,d0		; Display sprites
+		jmp		(DisplaySprite2).l
+
 StarsItem:
+		btst	#6,obRender(a0)		; Is this object set to render sub sprites?
+		bne.s	Stars_SubSprs		; If so, branch
 	; LavaGaming Object Routine Optimization
 		tst.b	obRoutine(a0)
 		bne.s	Stars_Next
