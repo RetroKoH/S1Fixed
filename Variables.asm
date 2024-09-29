@@ -347,14 +347,16 @@ v_obj6B:				ds.b	1		; object 6B (SBZ stomper) variable
 f_lockctrl:				ds.b	1		; flag set to lock controls during ending sequence
 f_bigring:				ds.b	1		; flag set when Sonic collects the giant ring
 f_obj56:				ds.b	1		; object 56 flag
+
 					ds.b	1		; unused
 v_itembonus:			ds.w	1		; item bonus from broken enemies, blocks etc.
 v_timebonus:			ds.w	1		; time bonus at the end of an act
 v_ringbonus:			ds.w	1		; ring bonus at the end of an act
+v_coolbonus:			ds.w	1		; cool bonus at the end of an act (Only used if Cool Bonus toggle is enabled)
 f_endactbonus:			ds.b	1		; time/ring bonus update flag at the end of an act
 v_sonicend:				ds.b	1		; routine counter for Sonic in the ending sequence
 v_lz_deform:			ds.w	1		; LZ deformation offset, in units of $80
-					ds.b	6		; unused
+					ds.b	4		; unused
 f_switch:				ds.b	$10		; flags set when Sonic stands on a switch
 v_scroll_block_1_size:	ds.w	1
 v_scroll_block_2_size:	ds.w	1		; unused
@@ -377,7 +379,8 @@ v_palette_fading_end:
 			ds.b	$140		; stack
 v_systemstack:
 v_crossresetram:				; RAM beyond this point is only cleared on a cold-boot
-				ds.b	3		; unused
+				ds.b	2		; unused
+v_hitscount:		ds.b	1		; number of cool bonus hits (Decrements with each hit of damage). (Only used if Cool Bonus toggle is enabled)
 f_restart:			ds.b	1		; restart level flag (now 1 byte)
 v_framecount:		ds.w	1		; frame counter (adds 1 every frame)
 v_framebyte = v_framecount+1		; low byte for frame counter

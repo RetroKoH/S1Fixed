@@ -1840,6 +1840,11 @@ ResetLevel:
 		move.b	d0,(v_emldlist).w		; clear emerald array
 		move.b	d0,(v_continues).w		; clear continues
 		move.l	#5000,(v_scorelife).w	; extra life is awarded at 50000 points
+
+	if CoolBonusEnabled
+		move.b	#10,(v_hitscount).w			; set hits count for cool bonus
+	endif
+
 		rts
 ; ===========================================================================
 
@@ -1877,6 +1882,11 @@ PlayLevel_Load:
 		move.l	d0,(v_time).w				; clear time
 		
 		move.b	#id_Level,(v_gamemode).w	; set screen mode to $0C (level)
+	
+	if CoolBonusEnabled
+		move.b	#10,(v_hitscount).w			; set hits count for cool bonus
+	endif
+
 		move.b	#bgm_Fade,d0
 		bra.w	PlaySound_Special			; fade out music
 	endif
@@ -2126,7 +2136,7 @@ Level_TtlCardLoop:
 Level_SkipTtlCard:
 	if RandomMonitors
 		locVRAM	(ArtTile_Monitor+$14)*tile_size
-		lea		Art_Mon_Rand,a0		; load title card patterns
+		lea		Art_Mon_Rand,a0		; load random monitor patterns
 		move.l	#3,d0				; # of tiles
 		jsr		(LoadUncArt).w
 	endif
@@ -7206,7 +7216,11 @@ Art_Mon_Rand:	binclude	"artunc/Monitors - Random.bin"		; Monitor Art Mod
 	endif
 
 ; AURORA☆FIELDS Title Card Optimization
+	if CoolBonusEnabled
+Art_TitleCard:	binclude	"artunc/Title Cards - COOL.bin"		; Title Card patterns
+	else
 Art_TitleCard:	binclude	"artunc/Title Cards.bin"			; Title Card patterns
+	endif
 Art_TitleCard_End:	even
 
 Art_TimeOver:	binclude	"artunc/Time Over.bin"				; time over (TI) -- RetroKoH VRAM Overhaul

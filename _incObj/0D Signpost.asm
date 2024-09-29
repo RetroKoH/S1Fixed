@@ -224,7 +224,7 @@ loc_EC86:
 
 GotThroughAct:
 		tst.b	(v_endcard).w
-		bne.s	locret_ECEE
+		bne.w	locret_ECEE
 		move.w	(v_limitright2).w,(v_limitleft2).w
 		bclr	#sta2ndInvinc,(v_player+obStatus2nd).w	; disable invincibility
 		clr.b	(f_timecount).w							; stop time counter
@@ -258,6 +258,14 @@ GotThroughAct:
 		move.w	(v_rings).w,d0							; load number of rings
 		mulu.w	#10,d0									; multiply by 10
 		move.w	d0,(v_ringbonus).w						; set ring bonus
+
+	if CoolBonusEnabled
+		moveq	#0,d0
+		move.b	(v_hitscount).w,d0						; get hits count (starts at 10, counts down toward 0 w/ each hit)
+		mulu.w	#100,d0									; multiply by 100
+		move.w	d0,(v_coolbonus).w						; set cool bonus
+	endif
+
 		move.b	#bgm_GotThrough,d0
 		jmp		(PlaySound_Special).w					; play "Sonic got through" music
 

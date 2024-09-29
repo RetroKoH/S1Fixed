@@ -209,6 +209,11 @@
  Credit: RetroKoH
  Function: If toggled on, lets you play the game in the original intended order
  Date: 2024-09-04
+ 
+## Cool Bonus
+ Credit: RetroKoH
+ Function: Adds a COOL BONUS to the End of Level tally, from Sonic Mania
+ Date: 2024-09-29
 
 # Under-the-Hood Optimizations/Overhauls
  These are larger-scale changes to one or more aspects of the engine that cannot be toggled on/off.

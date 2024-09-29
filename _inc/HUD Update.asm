@@ -111,6 +111,11 @@ HUD_Update:
 		bsr.w	Hud_TimeRingBonus
 		moveq	#0,d1
 		move.w	(v_ringbonus).w,d1			; load ring bonus
+	if CoolBonusEnabled
+		bsr.w	Hud_TimeRingBonus
+		moveq	#0,d1
+		move.w	(v_coolbonus).w,d1			; load cool bonus
+	endif
 		bra.w	Hud_TimeRingBonus
 
 .finish:

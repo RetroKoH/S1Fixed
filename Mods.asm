@@ -115,6 +115,11 @@ SpeedUpScoreTally: = 2					; if set to 1, score tally can be sped up w/ ABC. If 
 ; Function: The Signpost flies into the air when you run past it fast enough.
 FloatingSignposts: = 1
 
+; Name: Cool Bonuses
+; Credit: RetroKoH
+; Function: Sonic gets an additional 10000 points if he doesn't get hit (decrements by 100 for each hit)
+CoolBonusEnabled: = 1
+
 ; ----- FLAIR MODS ---------------------------------------------------------------
 
 ; Name: Fade-In SEGA Screen

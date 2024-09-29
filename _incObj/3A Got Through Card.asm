@@ -2,6 +2,12 @@
 ; Object 3A - "SONIC GOT THROUGH" title	card
 ; ---------------------------------------------------------------------------
 
+	if CoolBonusEnabled
+got_pieces = 7
+	else
+got_pieces = 6	
+	endif
+
 GotThroughCard:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
@@ -32,7 +38,7 @@ Got_ChkPLC:	; Routine 0
 Got_Main:
 		movea.l	a0,a1
 		lea		(Got_Config).l,a2
-		moveq	#6,d1
+		moveq	#got_pieces,d1
 
 Got_Loop:
 		_move.b	#id_GotThroughCard,obID(a1)
@@ -42,7 +48,7 @@ Got_Loop:
 		move.w	(a2)+,obScreenY(a1) ; load y-position
 		move.b	(a2)+,obRoutine(a1)
 		move.b	(a2)+,d0
-		cmpi.b	#6,d0
+		cmpi.b	#got_pieces,d0
 		bne.s	loc_C5CA
 		add.b	(v_act).w,d0	; add act number to frame number
 
@@ -152,8 +158,8 @@ Got_RingBonus:
 	endif	;end Speed Up Score Tally
 
 Got_ChkBonus:
-		tst.w	d0					; is there any bonus?
-		bne.s	Got_AddBonus		; if yes, branch
+		tst.w	d0						; is there any bonus?
+		bne.s	Got_AddBonus			; if yes, branch
 
 	else	; RetroKoH Instant Score Tally
 
@@ -165,6 +171,10 @@ Got_TimeBonus:	; Routine 6
 		clr.w	(v_timebonus).w			; clear time bonus
 		add.w	(v_ringbonus).w,d0		; load ring bonus to d0
 		clr.w	(v_ringbonus).w			; clear ring bonus
+	if CoolBonusEnabled
+		add.w	(v_coolbonus).w,d0		; load cool bonus to d0
+		clr.w	(v_coolbonus).w			; clear cool bonus
+	endif
 		jsr		(AddPoints).l			; add to score
 
 	endif	;end Instant Score Tally
@@ -174,10 +184,10 @@ Got_TimeBonus:	; Routine 6
 		addq.b	#2,obRoutine(a0)
 		cmpi.w	#(id_SBZ<<8)+1,(v_zone).w
 		bne.s	Got_SetDelay
-		addq.b	#4,obRoutine(a0)
+		addq.b	#4,obRoutine(a0)		; SBZ2 specific routine
 
 Got_SetDelay:
-		move.w	#180,obTimeFrame(a0) ; set time delay to 3 seconds
+		move.w	#180,obTimeFrame(a0)	; set time delay to 3 seconds
 
 locret_C692:
 		rts	
@@ -201,15 +211,19 @@ Got_NextLevel:	; Routine $A
 		andi.w	#3,d1
 		add.w	d1,d1
 		add.w	d1,d0
-		move.w	LevelOrder(pc,d0.w),d0 ; load level from level order array
-		move.w	d0,(v_zone).w	; set level number
+		move.w	LevelOrder(pc,d0.w),d0		; load level from level order array
+		move.w	d0,(v_zone).w				; set level number
 		tst.w	d0
 		bne.s	Got_ChkSS
-		move.b	#id_Sega,(v_gamemode).w
-		bra.s	Got_Display2
+		move.b	#id_Sega,(v_gamemode).w		; if no next level is set, return to the SEGA screen
+		bra.s	Got_Display2				; display sprite for one more frame before returning to SEGA
 ; ===========================================================================
 
 Got_ChkSS:
+	if CoolBonusEnabled
+		move.b	#10,(v_hitscount).w			; set hits count for next cool bonus
+	endif
+
 		clr.b	(v_lastlamp).w				; clear	lamppost counter
 		tst.b	(f_bigring).w				; has Sonic jumped into	a giant	ring?
 		beq.s	loc_C6EA					; if not, branch
@@ -218,7 +232,7 @@ Got_ChkSS:
 ; ===========================================================================
 
 loc_C6EA:
-		move.b	#1,(f_restart).w ; restart level
+		move.b	#1,(f_restart).w			; restart level
 
 Got_Display2:
 		bra.w	DisplaySprite
@@ -353,8 +367,8 @@ Got_Config:
 		dc.w -$120,	$120,	$D0			; "PASSED"
 		dc.b 				2,	1
 
-		dc.w $40C,	$14C,	$D6			; "ACT" 1/2/3
-		dc.b 				2,	6
+		dc.w $40C,	$14C,	$D6			; "ACT" 1/2/3 -- Modified to accomodate Cool Bonus toggle
+		dc.b 				2,	got_pieces
 
 		dc.w $520,	$120,	$EC			; score
 		dc.b 				2,	2
@@ -365,5 +379,10 @@ Got_Config:
 		dc.w $560,	$120,	$10C		; ring bonus
 		dc.b 				2,	4
 
-		dc.w $20C,	$14C,	$CC			; oval
+	if CoolBonusEnabled
+		dc.w $580,	$120,	$11C		; cool bonus
 		dc.b 				2,	5
+	endif
+
+		dc.w $20C,	$14C,	$CC			; oval -- Modified to accomodate Cool Bonus toggle
+		dc.b 				2,	(got_pieces-1)

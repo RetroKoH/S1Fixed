@@ -409,6 +409,16 @@ React_ChkHurt:
 
 
 HurtSonic:
+	if CoolBonusEnabled
+		move.b	(v_hitscount).w,d0
+		tst.b	d0
+		beq.s	.notcool
+		subq.b	#1,d0							; set hits count for next cool bonus
+		move.b	d0,(v_hitscount).w
+
+.notcool:
+	endif
+
 		btst	#sta2ndShield,obStatus2nd(a0)	; does Sonic have a shield?
 		bne.s	.hasshield						; if yes, branch
 		tst.w	(v_rings).w						; does Sonic have any rings?
@@ -464,8 +474,9 @@ HurtSonic:
 ; ===========================================================================
 
 .norings:
-		tst.w	(f_debugmode).w	; is debug mode	cheat on?
-		bne.w	.hasshield	; if yes, branch
+		tst.w	(f_debugmode).w			; is debug mode	cheat on?
+		bne.w	.hasshield				; if yes, branch
+	; otherwise, fall through to kill Sonic
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	kill Sonic
@@ -496,6 +507,10 @@ KillSonic:
 
 	.normal:
 	endif	; Time Limit In Special Stage End
+
+	if CoolBonusEnabled
+		clr.b	(v_hitscount).w					; clear cool bonus hit counter
+	endif
 
 		bclr	#sta2ndInvinc,obStatus2nd(a0)	; remove invincibility
 		move.b	#6,obRoutine(a0)
