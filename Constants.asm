@@ -144,14 +144,13 @@ obTimeFrame:	equ $1E			; time to next frame
 obDelayAni:		equ $1F			; time to delay animation
 obStatus:		equ $22			; orientation or mode
 obRoutine:		equ $24			; routine number
-ob2ndRout:		equ $25			; secondary routine number
 obAngle:		equ $26			; angle
 ; ---------------------------------------------------------------------------
 ; conventions followed by many objects but NOT Sonic
 obRespawnNo:	equ $14			; respawn list address (2 bytes)
 obColType:		equ $20			; collision response type
 obColProp:		equ $21			; collision extra property
-obSolid:		equ $25			; solid status flag for objects
+ob2ndRout:		equ $25			; secondary routine number
 obShieldProp:	equ $27			; How object responds to shields {Reflect-Lightning-Bubble-Flame 0-0-0-0}
 obSubtype:		equ $28			; object subtype
 obBossX:		equ $30
