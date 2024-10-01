@@ -6,7 +6,7 @@
 
 
 ReactToItem:
-		jsr		(Touch_Rings).l					; RetroKoH S2 Rings Manager
+		jsr		(Touch_Rings).l					; RetroKoH S3K Rings Manager
 
 	if ShieldsMode>0
 		move.b	obStatus2nd(a0),d0				; does the player have a Shield or Invincibility?

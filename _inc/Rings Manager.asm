@@ -340,8 +340,11 @@ loc_31343C:					  ; Clear positions table
 		lsl.b	#6,d0
 		lsr.w	#4,d0
 		lea		(RingPos_Index).l,a1
-		move.w	(a1,d0.w),d0
-		lea		(a1,d0.w),a1
+		movea.l	(a1,d0.w),a1			; Table read optimization - RetroKoH
+; If RingPos_Index table entries need to be word-length instead of long-length,
+; replace the above line with this code... it's actually faster than the original code:
+;		move.w	(a1,d0.w),d0
+;		adda.w	d0,a1					; Table read optimization - Vladikcomper
 		move.l	a1,(v_ringstart_addr_ROM).w
 		addq.w	#4,a1
 		moveq	#0,d5

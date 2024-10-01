@@ -1648,13 +1648,13 @@ GM_Title:
 		bsr.w	ClearScreen
 
 	if HUDScrolling=1
-		move.w	#0,(f_levelstarted).w		; clear flag AND HUD scrolling byte -- RetroKoH S2 Rings Manager
+		clr.w	(f_levelstarted).w		; clear flag AND HUD scrolling byte -- RetroKoH S3K Rings Manager
 	else
-		move.b	#0,(f_levelstarted).w		; clear flag -- RetroKoH S2 Rings Manager
+		clr.b	(f_levelstarted).w		; clear flag -- RetroKoH S3K Rings Manager
 	endif
-	
+
 	if SaveProgressMod=1
-		move.b	#0,(f_levsel_active).w
+		clr.b	(f_levsel_active).w
 	endif
 
 		clearRAM v_ringpos,v_ringspace_end	; clear ring RAM -- RetroKoH S3K Rings Manager
@@ -2037,7 +2037,7 @@ loc_37FC:
 		bsr.w	AddPLC				; load standard	patterns
 
 Level_ClrRam:
-		clearRAM v_ringpos,v_ringspace_end				; clear ring RAM -- RetroKoH S2 Rings Manager
+		clearRAM v_ringpos,v_ringspace_end				; clear ring RAM -- RetroKoH S3K Rings Manager
 		clearRAM v_objspace								; clear object RAM
 		clearRAM v_misc_variables
 		clearRAM v_levelvariables						; f_levelstarted should clear here
@@ -2178,7 +2178,7 @@ Level_ChkWater:
 
 Level_LoadObj:
 		jsr		(ObjPosLoad).l
-		jsr		(RingsManager).l		; RetroKoH S2 Rings Manager
+		jsr		(RingsManager).l		; RetroKoH S3K Rings Manager
 		jsr		(ExecuteObjects).l
 		jsr		(BuildSprites).l
 		moveq	#0,d0
@@ -2275,7 +2275,7 @@ Level_StartGame:
 		; This also removes rings from the end demos. Need to fix this another way.
 		tst.w	(f_demo).w
 		bmi.s	.demo					; Branch if End Credits Demo
-		move.b	#1,(f_levelstarted).w	; RetroKoH S2 Rings Manager
+		move.b	#1,(f_levelstarted).w	; RetroKoH S3K Rings Manager
 .demo:
 
 	if HUDCentiseconds=1	;Mercury HUD Centiseconds
@@ -2298,7 +2298,7 @@ Level_MainLoop:
 		jsr		(ExecuteObjects).l
 		tst.b	(f_restart).w
 		bne.w	GM_Level
-		jsr		(RingsManager).l			; RetroKoH S2 Rings Manager
+		jsr		(RingsManager).l			; RetroKoH S3K Rings Manager
 		tst.w	(v_debuguse).w				; is debug mode being used?
 		bne.s	Level_DoScroll				; if yes, branch
 		cmpi.b	#6,(v_player+obRoutine).w	; has Sonic just died?
@@ -3112,7 +3112,7 @@ GM_Continue:
 		move.w	#$8004,(a6)				; 8 colour mode
 		move.w	#$8700,(a6)				; background colour
 		bsr.w	ClearScreen
-		clr.b	(f_levelstarted).w		; RetroKoH S2 Rings Manager
+		clr.b	(f_levelstarted).w		; RetroKoH S3K Rings Manager
 
 		clearRAM v_objspace
 
@@ -3437,7 +3437,7 @@ GM_Credits:
 		move.w	#$8720,(a6)		; set background colour (line 3; colour 0)
 		clr.b	(f_wtr_state).w
 		bsr.w	ClearScreen
-		clr.b	(f_levelstarted).w	; RetroKoH S2 Rings Manager
+		clr.b	(f_levelstarted).w	; RetroKoH S3K Rings Manager
 
 		clearRAM v_objspace
 
@@ -8177,44 +8177,47 @@ ObjPos_Null:	dc.b $FF, $FF, 0, 0, 0, 0
 		endm
 
 ; --------------------------------------------------------------------------------------
-; Offset index of ring locations - RetroKoH S2 Rings Manager
+; Offset index of ring locations - RetroKoH S3K Rings Manager
+; Offsets are now long-length to allow for more efficient loading - RetroKoH
+; If you add a TON of entries and NEED word-length offsets, use the alternate
+; loading method commented out in RingsManager.asm (Credit: Vladikcomper)
 ; --------------------------------------------------------------------------------------
 RingPos_Index:
 		; GHZ
-		dc.w RingPos_GHZ1-RingPos_Index, RingPos_Null-RingPos_Index
-		dc.w RingPos_GHZ2-RingPos_Index, RingPos_Null-RingPos_Index
-		dc.w RingPos_GHZ3-RingPos_Index, RingPos_Null-RingPos_Index
-		dc.w RingPos_GHZ1-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.l RingPos_GHZ1
+		dc.l RingPos_GHZ2
+		dc.l RingPos_GHZ3
+		dc.l RingPos_Null
 		; LZ
-		dc.w RingPos_LZ1-RingPos_Index, RingPos_Null-RingPos_Index
-		dc.w RingPos_LZ2-RingPos_Index, RingPos_Null-RingPos_Index
-		dc.w RingPos_LZ3-RingPos_Index, RingPos_Null-RingPos_Index
-		dc.w RingPos_SBZ3-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.l RingPos_LZ1
+		dc.l RingPos_LZ2
+		dc.l RingPos_LZ3
+		dc.l RingPos_SBZ3
 		; MZ
-		dc.w RingPos_MZ1-RingPos_Index, RingPos_Null-RingPos_Index
-		dc.w RingPos_MZ2-RingPos_Index, RingPos_Null-RingPos_Index
-		dc.w RingPos_MZ3-RingPos_Index, RingPos_Null-RingPos_Index
-		dc.w RingPos_MZ1-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.l RingPos_MZ1
+		dc.l RingPos_MZ2
+		dc.l RingPos_MZ3
+		dc.l RingPos_Null
 		; SLZ
-		dc.w RingPos_SLZ1-RingPos_Index, RingPos_Null-RingPos_Index
-		dc.w RingPos_SLZ2-RingPos_Index, RingPos_Null-RingPos_Index
-		dc.w RingPos_SLZ3-RingPos_Index, RingPos_Null-RingPos_Index
-		dc.w RingPos_SLZ1-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.l RingPos_SLZ1
+		dc.l RingPos_SLZ2
+		dc.l RingPos_SLZ3
+		dc.l RingPos_Null
 		; SYZ
-		dc.w RingPos_SYZ1-RingPos_Index, RingPos_Null-RingPos_Index
-		dc.w RingPos_SYZ2-RingPos_Index, RingPos_Null-RingPos_Index
-		dc.w RingPos_SYZ3-RingPos_Index, RingPos_Null-RingPos_Index
-		dc.w RingPos_SYZ1-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.l RingPos_SYZ1
+		dc.l RingPos_SYZ2
+		dc.l RingPos_SYZ3
+		dc.l RingPos_Null
 		; SBZ
-		dc.w RingPos_SBZ1-RingPos_Index, RingPos_Null-RingPos_Index
-		dc.w RingPos_SBZ2-RingPos_Index, RingPos_Null-RingPos_Index
-		dc.w RingPos_Null-RingPos_Index, RingPos_Null-RingPos_Index
-		dc.w RingPos_SBZ1-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.l RingPos_SBZ1
+		dc.l RingPos_SBZ2
+		dc.l RingPos_Null
+		dc.l RingPos_Null
 		; Ending
-		dc.w RingPos_Null-RingPos_Index, RingPos_Null-RingPos_Index
-		dc.w RingPos_Null-RingPos_Index, RingPos_Null-RingPos_Index
-		dc.w RingPos_Null-RingPos_Index, RingPos_Null-RingPos_Index
-		dc.w RingPos_Null-RingPos_Index, RingPos_Null-RingPos_Index
+		dc.l RingPos_Null
+		dc.l RingPos_Null
+		dc.l RingPos_Null
+		dc.l RingPos_Null
 		; --- Put extra ring data here. ---
 		dc.b $FF, $FF, 0, 0, 0,	0
 RingPos_GHZ1:	binclude	"ringpos/ghz1.bin"

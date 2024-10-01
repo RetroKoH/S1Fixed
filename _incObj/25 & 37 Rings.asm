@@ -21,9 +21,9 @@ id_Ring_Collect = ptr_Ring_Collect-Ring_Index	; 4
 id_Ring_Sparkle = ptr_Ring_Sparkle-Ring_Index	; 6
 id_Ring_Delete = ptr_Ring_Delete-Ring_Index	; 8
 ; ===========================================================================
-; Placement table removed -- RetroKoH S2 Rings Manager
+; Placement table removed -- RetroKoH S3K Rings Manager
 
-Ring_Main:	; Routine 0 -- Stripped down init routine -- RetroKoH S2 Rings Manager
+Ring_Main:	; Routine 0 -- Stripped down init routine -- RetroKoH S3K Rings Manager
 		addq.b	#2,obRoutine(a0)
 		move.w	obX(a0),objoff_32(a0)
 		move.l	#Map_Ring,obMap(a0)

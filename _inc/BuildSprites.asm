@@ -8,7 +8,7 @@
 BuildSprites:
 		lea		(v_spritetablebuffer).w,a2	; set address for sprite table
 		moveq	#0,d5
-		moveq	#0,d4						; RetroKoH S2 Rings Manager
+		moveq	#0,d4						; RetroKoH S3K Rings Manager
 	; RetroKoH S2 HUD Manager
 		tst.b	(f_levelstarted).w
 		beq.s	.noHUD
@@ -20,7 +20,7 @@ BuildSprites:
 		moveq	#7,d7
 
 	.priorityLoop:
-	; RetroKoH S2 Rings Manager
+	; RetroKoH S3K Rings Manager
 		cmpi.b	#$07-$02,d7				; Only draw rings at a specific priority.
 		bne.s	.cont
 		tst.b	(f_levelstarted).w		; Skip drawing rings if flag is not set.
@@ -30,7 +30,7 @@ BuildSprites:
 		movem.l	(sp)+,d7/a4
 
 	.cont:
-	; S2 Rings Manager End
+	; S3K Rings Manager End
 		tst.w	(a4)					; are there objects left to draw?
 		beq.w	.nextPriority			; if not, branch
 		moveq	#2,d6
