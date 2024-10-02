@@ -244,3 +244,9 @@ NewLevelSelect:	= 1
 ; Loads Chunks (256x256)/Blocks (16x16) directly from ROM, freeing a huge amount of RAM.
 BlocksInROM: = 1						; if set to 1, frees RAM ($0000-$A3FF)
 ChunksInROM: = 1						; if set to 1, frees RAM ($B000-$C7FF)
+
+; Name: Dynamic Level Palettes
+; Credit: RetroKoH (Based on my S1C Difficulty Mod)
+; Loads a different palette for every act (Scrap Brain is unaffected, as it has dynamic palettes by default)
+; (By default, they are identical to the original. It'll be up to you to edit them if you use this mod)
+DynamicPalettes: = 0					; if set to 1, there will be a separate palette for each act

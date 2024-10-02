@@ -1457,7 +1457,11 @@ PalLoad_Water:
 
 ; ===========================================================================
 
+	if DynamicPalettes
+		include	"_inc/Palette Pointers - Dynamic Palettes.asm"
+	else
 		include	"_inc/Palette Pointers.asm"
+	endif
 
 ; ---------------------------------------------------------------------------
 ; Palette data
@@ -2099,10 +2103,13 @@ Level_LoadPal:
 		cmpi.b	#id_LZ,(v_zone).w		; is level LZ?
 		bne.s	Level_GetBgm			; if not, branch
 
-		moveq	#palid_LZSonWater,d0	; palette number $F (LZ)
+		moveq	#palid_LZSonWater,d0	; LZ Water Sonic
+	if DynamicPalettes
+		add.b	(v_act).w,d0			; Adjust for act
+	endif
 		cmpi.b	#3,(v_act).w			; is act number 3?
 		bne.s	Level_WaterPal			; if not, branch
-		moveq	#palid_SBZ3SonWat,d0	; palette number $10 (SBZ3)
+		moveq	#palid_SBZ3SonWat,d0	; SBZ3 Water Sonic
 
 Level_WaterPal:
 		bsr.w	PalLoad_Fade_Water		; load underwater palette
@@ -2249,12 +2256,15 @@ Level_Demo:
 		move.w	#510,(v_demolength).w
 
 Level_ChkWaterPal:
-		cmpi.b	#id_LZ,(v_zone).w ; is level LZ/SBZ3?
-		bne.s	Level_Delay	; if not, branch
-		moveq	#palid_LZWater,d0 ; palette $B (LZ underwater)
-		cmpi.b	#3,(v_act).w	; is level SBZ3?
-		bne.s	Level_WtrNotSbz	; if not, branch
-		moveq	#palid_SBZ3Water,d0 ; palette $D (SBZ3 underwater)
+		cmpi.b	#id_LZ,(v_zone).w	; is level LZ/SBZ3?
+		bne.s	Level_Delay			; if not, branch
+		moveq	#palid_LZWater,d0	; palette: LZ underwater
+	if DynamicPalettes
+		add.b	(v_act).w,d0		; Adjust for act
+	endif
+		cmpi.b	#3,(v_act).w		; is level SBZ3?
+		bne.s	Level_WtrNotSbz		; if not, branch
+		moveq	#palid_SBZ3Water,d0	; palette: SBZ3 underwater
 
 Level_WtrNotSbz:
 		bsr.w	PalLoad_Water
@@ -4503,8 +4513,9 @@ LevelDataLoad:
 	endif
 
 		bsr.w	LevelLayoutLoad
-		move.b	(a2),d0
-		andi.w	#$FF,d0
+
+	; Load Level Palette
+		move.b	(a2),d0				; load palette ID byte
 	
 ; We won't use the NewSBZ3LevelArt toggle here, because the LZ Palette
 ; is always overwritten in Scrap Brain 3
@@ -4513,22 +4524,35 @@ LevelDataLoad:
 		moveq	#palid_SBZ3,d0				; use SBZ3 palette
 
 .notSBZ3Pal:
-		cmpi.w	#(id_SBZ<<8)+1,(v_zone).w ; is level SBZ2?
-		beq.s	.isSBZorFZ	; if yes, branch
-		cmpi.w	#(id_SBZ<<8)+2,(v_zone).w ; is level FZ?
-		bne.s	.normalpal	; if not, branch
+		cmpi.b	#id_SBZ,(v_zone).w			; is this Scrap Brain?
+		bne.s	.normalpal					; if not, branch
+		cmpi.w	#(id_SBZ<<8)+1,(v_zone).w	; is level SBZ2?
+		beq.s	.isSBZorFZ					; if yes, branch
+		cmpi.w	#(id_SBZ<<8)+2,(v_zone).w	; is level FZ?
+		bne.s	.normalpal					; if not, branch
 
 .isSBZorFZ:
-		moveq	#palid_SBZ2,d0	; use SBZ2/FZ palette
+
+	if DynamicPalettes
+		moveq	#palid_SBZ2,d0				; use SBZ2/FZ palette
+		bra.s	.nodynamic
 
 .normalpal:
+		add.b	(v_act).w,d0				; set palette based on act
+
+.nodynamic:
+	else
+		moveq	#palid_SBZ2,d0				; use SBZ2/FZ palette
+.normalpal:
+	endif
+
 		bsr.w	PalLoad_Fade	; load palette (based on d0)
 		movea.l	(sp)+,a2
-		addq.w	#4,a2		; read number for 2nd PLC
+		addq.w	#4,a2			; read number for 2nd PLC
 		moveq	#0,d0
 		move.b	(a2),d0
-		beq.s	.skipPLC	; if 2nd PLC is 0 (i.e. the ending sequence), branch
-		bra.w	AddPLC		; load pattern load cues
+		beq.s	.skipPLC		; if 2nd PLC is 0 (i.e. the ending sequence), branch
+		bra.w	AddPLC			; load pattern load cues
 
 .skipPLC:
 		rts	
