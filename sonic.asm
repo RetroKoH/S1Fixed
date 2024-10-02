@@ -4535,7 +4535,7 @@ LevelDataLoad:
 ; End of function LevelDataLoad
 
 ; ---------------------------------------------------------------------------
-; Level	layout loading subroutine
+; Level	layout loading subroutine -- Modified to use longword pointers
 ; ---------------------------------------------------------------------------
 
 
@@ -4544,12 +4544,12 @@ LevelDataLoad:
 LevelLayoutLoad:
 		move.w	(v_zone).w,d0
 		lsl.b	#6,d0
-		lsr.w	#5,d0
+		lsr.w	#4,d0
 		lea		(Level_Index).l,a0
-		move.w	(a0,d0.w),d0
-		lea		(a0,d0.w),a0
+		movea.l	(a0,d0.w),a0		; for longword pointers - RetroKoH
+		;adda.w	(a0,d0.w),a0		; for wordlength pointers
 		lea		(v_lvllayout).w,a1
-		bra.w	KosDec			; MJ: decompress layout
+		bra.w	KosDec				; MJ: decompress layout
 ; End of function LevelLayoutLoad
 
 		include	"_inc/DynamicLevelEvents.asm"
@@ -7990,46 +7990,48 @@ Map_RingBIN:
 		include	"_maps/SS Chaos Emeralds.asm"
 
 ; ---------------------------------------------------------------------------
-; Level	layout index
-; MJ: unused data and BG data have been stripped out
+; Level	layout index -- MJ: unused data and BG data have been stripped out
+; Offsets are now long-length to allow for more efficient loading - RetroKoH
+; If you add a TON of entries and NEED word-length offsets, use the alternate
+; loading method commented out in LevelLayoutLoad (Credit: Vladikcomper)
 ; ---------------------------------------------------------------------------
 Level_Index:
 		; GHZ
-		dc.w Level_GHZ1-Level_Index
-		dc.w Level_GHZ2-Level_Index
-		dc.w Level_GHZ3-Level_Index
-		dc.w Level_Null-Level_Index
+		dc.l Level_GHZ1
+		dc.l Level_GHZ2
+		dc.l Level_GHZ3
+		dc.l Level_Null
 		; LZ
-		dc.w Level_LZ1-Level_Index
-		dc.w Level_LZ2-Level_Index
-		dc.w Level_LZ3-Level_Index
-		dc.w Level_SBZ3-Level_Index
+		dc.l Level_LZ1
+		dc.l Level_LZ2
+		dc.l Level_LZ3
+		dc.l Level_SBZ3
 		; MZ
-		dc.w Level_MZ1-Level_Index
-		dc.w Level_MZ2-Level_Index
-		dc.w Level_MZ3-Level_Index
-		dc.w Level_Null-Level_Index
+		dc.l Level_MZ1
+		dc.l Level_MZ2
+		dc.l Level_MZ3
+		dc.l Level_Null
 		; SLZ
-		dc.w Level_SLZ1-Level_Index
-		dc.w Level_SLZ2-Level_Index
-		dc.w Level_SLZ3-Level_Index
-		dc.w Level_Null-Level_Index
+		dc.l Level_SLZ1
+		dc.l Level_SLZ2
+		dc.l Level_SLZ3
+		dc.l Level_Null
 		; SYZ
-		dc.w Level_SYZ1-Level_Index
-		dc.w Level_SYZ2-Level_Index
-		dc.w Level_SYZ3-Level_Index
-		dc.w Level_Null-Level_Index
+		dc.l Level_SYZ1
+		dc.l Level_SYZ2
+		dc.l Level_SYZ3
+		dc.l Level_Null
 		; SBZ
-		dc.w Level_SBZ1-Level_Index
-		dc.w Level_SBZ2-Level_Index
-		dc.w Level_SBZ2-Level_Index
-		dc.w Level_Null-Level_Index
-		zonewarning Level_Index,8
+		dc.l Level_SBZ1
+		dc.l Level_SBZ2
+		dc.l Level_SBZ2
+		dc.l Level_Null
+		zonewarning Level_Index,16
 		; Ending
-		dc.w Level_End-Level_Index
-		dc.w Level_End-Level_Index
-		dc.w Level_Null-Level_Index
-		dc.w Level_Null-Level_Index
+		dc.l Level_End
+		dc.l Level_End
+		dc.l Level_Null
+		dc.l Level_Null
 
 Level_Null:
 
