@@ -43,7 +43,8 @@ OPL_ClrList:
 		lsl.b	#6,d0
 		lsr.w	#4,d0
 		lea		(ObjPos_Index).l,a0		; load the first pointer in the object layout list pointer index,
-		adda.w	(a0,d0.w),a0			; load the pointer to the current object layout
+		movea.l (a0,d0.w),a0			; Changed from adda.w to movea.l for new object layout pointers - RetroKoH
+		;adda.w	(a0,d0.w),a0			; load the pointer to the current object layout
 
 	; initialize each object load address with the first object in the layout
 		move.l	a0,(v_opl_data).w		; obj_load_addr_right

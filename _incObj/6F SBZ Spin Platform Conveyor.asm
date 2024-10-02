@@ -103,12 +103,16 @@ loc_16380:
 ; ===========================================================================
 
 loc_1639A:
-		add.w	d0,d0
-		andi.w	#$1E,d0
-		addi.w	#ObjPosSBZPlatform_Index-ObjPos_Index,d0
-		lea		(ObjPos_Index).l,a2
-		adda.w	(a2,d0.w),a2
-		move.w	(a2)+,d1
+		add.w	d0,d0							; multiply platform group ID by 2 (use for word AND longword pointers)
+		add.w	d0,d0							; multiply platform group ID by 4 (use only for longword pointers)
+		andi.w	#$1E,d0							; capped at $10 groups of platforms (0-$F)
+
+	; RetroKoH Object Loading Optimization
+		lea		(ObjPosSBZPlatform_Index).l,a2	; Next, we load the first pointer in the object layout list pointer index,
+		movea.l (a2,d0.w),a2					; Changed from adda.w to movea.l for longword object layout pointers
+;		adda.w	(a2,d0.w),a2					; a2 = positioning data for this platform group (use only for word-length pointers)
+
+		move.w	(a2)+,d1						; d1 = number of platforms minus 1
 		movea.l	a0,a1
 		bra.s	SpinC_LoadPform
 ; ===========================================================================

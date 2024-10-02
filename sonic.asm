@@ -8016,55 +8016,59 @@ Level_End:	binclude	"levels/ending.kos"
 
 ; ---------------------------------------------------------------------------
 ; Sprite locations index
+; Offsets are now long-length to allow for more efficient loading - RetroKoH
+; If you add a TON of entries and NEED word-length offsets, use the alternate
+; loading method commented out in Object Manager.asm (Credit: Vladikcomper)
 ; ---------------------------------------------------------------------------
 ObjPos_Index:
 		; GHZ
-		dc.w ObjPos_GHZ1-ObjPos_Index, ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_GHZ2-ObjPos_Index, ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_GHZ3-ObjPos_Index, ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_GHZ1-ObjPos_Index, ObjPos_Null-ObjPos_Index
+		dc.l ObjPos_GHZ1
+		dc.l ObjPos_GHZ2
+		dc.l ObjPos_GHZ3
+		dc.l ObjPos_Null
 		; LZ
-		dc.w ObjPos_LZ1-ObjPos_Index, ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_LZ2-ObjPos_Index, ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_LZ3-ObjPos_Index, ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_SBZ3-ObjPos_Index, ObjPos_Null-ObjPos_Index
+		dc.l ObjPos_LZ1
+		dc.l ObjPos_LZ2
+		dc.l ObjPos_LZ3
+		dc.l ObjPos_SBZ3
 		; MZ
-		dc.w ObjPos_MZ1-ObjPos_Index, ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_MZ2-ObjPos_Index, ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_MZ3-ObjPos_Index, ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_MZ1-ObjPos_Index, ObjPos_Null-ObjPos_Index
+		dc.l ObjPos_MZ1
+		dc.l ObjPos_MZ2
+		dc.l ObjPos_MZ3
+		dc.l ObjPos_Null
 		; SLZ
-		dc.w ObjPos_SLZ1-ObjPos_Index, ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_SLZ2-ObjPos_Index, ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_SLZ3-ObjPos_Index, ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_SLZ1-ObjPos_Index, ObjPos_Null-ObjPos_Index
+		dc.l ObjPos_SLZ1
+		dc.l ObjPos_SLZ2
+		dc.l ObjPos_SLZ3
+		dc.l ObjPos_Null
 		; SYZ
-		dc.w ObjPos_SYZ1-ObjPos_Index, ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_SYZ2-ObjPos_Index, ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_SYZ3-ObjPos_Index, ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_SYZ1-ObjPos_Index, ObjPos_Null-ObjPos_Index
+		dc.l ObjPos_SYZ1
+		dc.l ObjPos_SYZ2
+		dc.l ObjPos_SYZ3
+		dc.l ObjPos_Null
 		; SBZ
-		dc.w ObjPos_SBZ1-ObjPos_Index, ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_SBZ2-ObjPos_Index, ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_FZ-ObjPos_Index, ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_SBZ1-ObjPos_Index, ObjPos_Null-ObjPos_Index
+		dc.l ObjPos_SBZ1
+		dc.l ObjPos_SBZ2
+		dc.l ObjPos_FZ
+		dc.l ObjPos_Null
 		zonewarning ObjPos_Index,$10
 		; Ending
-		dc.w ObjPos_End-ObjPos_Index, ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_End-ObjPos_Index, ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_End-ObjPos_Index, ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_End-ObjPos_Index, ObjPos_Null-ObjPos_Index
+		dc.l ObjPos_End
+		dc.l ObjPos_End
+		dc.l ObjPos_End
+		dc.l ObjPos_End
 		; --- Put extra object data here. ---
 ObjPosLZPlatform_Index:
-		dc.w ObjPos_LZ1pf1-ObjPos_Index, ObjPos_LZ1pf2-ObjPos_Index
-		dc.w ObjPos_LZ2pf1-ObjPos_Index, ObjPos_LZ2pf2-ObjPos_Index
-		dc.w ObjPos_LZ3pf1-ObjPos_Index, ObjPos_LZ3pf2-ObjPos_Index
-		dc.w ObjPos_LZ1pf1-ObjPos_Index, ObjPos_LZ1pf2-ObjPos_Index
+		dc.l ObjPos_LZ1pf1, ObjPos_LZ1pf2
+		dc.l ObjPos_LZ2pf1, ObjPos_LZ2pf2
+		dc.l ObjPos_LZ3pf1, ObjPos_LZ3pf2
+		dc.l ObjPos_LZ1pf1, ObjPos_LZ1pf2
 ObjPosSBZPlatform_Index:
-		dc.w ObjPos_SBZ1pf1-ObjPos_Index, ObjPos_SBZ1pf2-ObjPos_Index
-		dc.w ObjPos_SBZ1pf3-ObjPos_Index, ObjPos_SBZ1pf4-ObjPos_Index
-		dc.w ObjPos_SBZ1pf5-ObjPos_Index, ObjPos_SBZ1pf6-ObjPos_Index
-		dc.w ObjPos_SBZ1pf1-ObjPos_Index, ObjPos_SBZ1pf2-ObjPos_Index
+		dc.l ObjPos_SBZ1pf1, ObjPos_SBZ1pf2
+		dc.l ObjPos_SBZ1pf3, ObjPos_SBZ1pf4
+		dc.l ObjPos_SBZ1pf5, ObjPos_SBZ1pf6
+		dc.l ObjPos_SBZ1pf1, ObjPos_SBZ1pf2
+
 		dc.b $FF, $FF, 0, 0, 0,	0
 
 	if ShieldsMode>1
@@ -8218,8 +8222,10 @@ RingPos_Index:
 		dc.l RingPos_Null
 		dc.l RingPos_Null
 		dc.l RingPos_Null
+
 		; --- Put extra ring data here. ---
 		dc.b $FF, $FF, 0, 0, 0,	0
+
 RingPos_GHZ1:	binclude	"ringpos/ghz1.bin"
 		even
 RingPos_GHZ2:	binclude	"ringpos/ghz2.bin"
