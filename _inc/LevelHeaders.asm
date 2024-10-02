@@ -11,6 +11,8 @@ lhead:	macro plc1,lvlgfx,plc2,sixteen,chunks,pal
 	dc.b pal, 0, 0, 0
 	endm
 
+SBZ3_Art:		equ 7
+
 ; Clownacy Level Art Loading
 ; 1st PLC, level gfx, 2nd PLC, 16x16 data, 128x128 data, palette
 
@@ -25,6 +27,9 @@ lhead:	macro plc1,lvlgfx,plc2,sixteen,chunks,pal
 	lhead	plcid_SBZ,	ArtKos_SBZ,	plcid_SBZ2,	Blk16_SBZ,	Blk128_SBZ,	palid_SBZ1		; Scrap Brain
 	zonewarning LevelHeaders,$10
 	lhead	0,			ArtKos_GHZ,	0,			Blk16_GHZ,	Blk128_GHZ,	palid_Ending	; Ending
-	even
 
-;	* music is set elsewhere, so these values are useless
+	if NewSBZ3LevelArt
+	lhead	plcid_LZ,	ArtKos_SBZ3,plcid_LZ2,	Blk16_SBZ3,	Blk128_SBZ3,palid_SBZ3		; New Scrap Brain 3
+	endif
+
+	even

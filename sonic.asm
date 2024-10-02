@@ -1482,13 +1482,13 @@ Pal_LevelSel:	bincludePalette	"palette/Level Select.bin"
 	endif
 
 ; ---------------------------------------------------------------------------
-	if ProtoSonicPalette=1
+	if ProtoSonicPalette
 Pal_Sonic:		bincludePalette	"palette/Sonic - Proto.bin"
 	else
 Pal_Sonic:		bincludePalette	"palette/Sonic.bin"
 	endif
 
-	if GHZForeverPal=1
+	if GHZForeverPal
 Pal_GHZ:		bincludePalette	"palette/Green Hill Zone - Forever.bin"
 	else
 Pal_GHZ:		bincludePalette	"palette/Green Hill Zone - Original.bin"
@@ -1502,8 +1502,15 @@ Pal_SYZ:		bincludePalette	"palette/Spring Yard Zone.bin"
 Pal_SBZ1:		bincludePalette	"palette/SBZ Act 1.bin"
 Pal_SBZ2:		bincludePalette	"palette/SBZ Act 2.bin"
 Pal_Special:	bincludePalette	"palette/Special Stage.bin"
+
+	if NewSBZ3LevelArt
+Pal_SBZ3:		bincludePalette	"palette/SBZ Act 3 - New.bin"
+Pal_SBZ3Water:	bincludePalette	"palette/SBZ Act 3 Underwater - New.bin"
+	else
 Pal_SBZ3:		bincludePalette	"palette/SBZ Act 3.bin"
 Pal_SBZ3Water:	bincludePalette	"palette/SBZ Act 3 Underwater.bin"
+	endif
+
 Pal_LZSonWater:	bincludePalette	"palette/Sonic - LZ Underwater.bin"
 Pal_SBZ3SonWat:	bincludePalette	"palette/Sonic - SBZ3 Underwater.bin"
 ; ---------------------------------------------------------------------------
@@ -2024,6 +2031,15 @@ Level_NoMusicFade:
 		enable_ints
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
+
+	if NewSBZ3LevelArt
+		cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; is level SBZ3 (LZ4) ?
+		bne.s	.notSBZ3					; if not, branch
+		moveq	#SBZ3_Art,d0				; use SBZ3 art
+
+.notSBZ3:
+	endif
+
 		lsl.w	#4,d0
 		lea		(LevelHeaders).l,a2	; a2 = LevelHeaders address
 		lea		(a2,d0.w),a2		; a2 = LevelHeaders + zone offset
@@ -4398,6 +4414,15 @@ locj_72EE:
 LoadZoneTiles:
 		moveq	#0,d0				; Clear d0
 		move.b	(v_zone).w,d0		; d0 = zone ID
+
+	if NewSBZ3LevelArt
+		cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; is level SBZ3 (LZ4) ?
+		bne.s	.notSBZ3					; if not, branch
+		moveq	#SBZ3_Art,d0				; use SBZ3 art
+
+.notSBZ3:
+	endif
+
 		lsl.w	#4,d0				; Multiply by $10, converting the zone ID into an offset
 		lea		(LevelHeaders).l,a2	; a2 = LevelHeaders address
 		lea		(a2,d0.w),a2		; a2 = LevelHeaders + zone offset
@@ -4444,6 +4469,15 @@ LoadZoneTiles:
 LevelDataLoad:
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
+
+	if NewSBZ3LevelArt
+		cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; is level SBZ3 (LZ4) ?
+		bne.s	.notSBZ3					; if not, branch
+		moveq	#SBZ3_Art,d0				; use SBZ3 art
+
+.notSBZ3:
+	endif
+
 		lsl.w	#4,d0
 		lea		(LevelHeaders).l,a2			; a2 = LevelHeaders address
 		lea		(a2,d0.w),a2				; a2 = LevelHeaders + zone offset
@@ -4471,11 +4505,14 @@ LevelDataLoad:
 		bsr.w	LevelLayoutLoad
 		move.b	(a2),d0
 		andi.w	#$FF,d0
-		cmpi.w	#(id_LZ<<8)+3,(v_zone).w ; is level SBZ3 (LZ4) ?
-		bne.s	.notSBZ3	; if not, branch
-		moveq	#palid_SBZ3,d0	; use SB3 palette
+	
+; We won't use the NewSBZ3LevelArt toggle here, because the LZ Palette
+; is always overwritten in Scrap Brain 3
+		cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; is level SBZ3 (LZ4) ?
+		bne.s	.notSBZ3Pal					; if not, branch
+		moveq	#palid_SBZ3,d0				; use SBZ3 palette
 
-.notSBZ3:
+.notSBZ3Pal:
 		cmpi.w	#(id_SBZ<<8)+1,(v_zone).w ; is level SBZ2?
 		beq.s	.isSBZorFZ	; if yes, branch
 		cmpi.w	#(id_SBZ<<8)+2,(v_zone).w ; is level FZ?
@@ -7547,7 +7584,14 @@ Blk16_SYZ:	binclude	"map16_u/SYZ.bin"
 		even
 Blk16_SBZ:	binclude	"map16_u/SBZ.bin"
 		even
+
+	if NewSBZ3LevelArt
+Blk16_SBZ3:	binclude	"map16_u/SBZ3.bin"
+		even
+	endif
+
 	else
+
 Blk16_GHZ:	binclude	"map16/GHZ.eni"
 		even
 Blk16_LZ:	binclude	"map16/LZ.eni"
@@ -7560,6 +7604,12 @@ Blk16_SYZ:	binclude	"map16/SYZ.eni"
 		even
 Blk16_SBZ:	binclude	"map16/SBZ.eni"
 		even
+
+	if NewSBZ3LevelArt
+Blk16_SBZ3:	binclude	"map16_u/SBZ3.eni"
+		even
+	endif
+
 	endif	;end Blocks In ROM
 
 ; ---------------------------------------------------------------------------
@@ -7578,7 +7628,14 @@ Blk128_SYZ:	binclude	"map128_u/SYZ.bin"
 		even
 Blk128_SBZ:	binclude	"map128_u/SBZ.bin"
 		even
+
+	if NewSBZ3LevelArt
+Blk128_SBZ3:	binclude	"map128_u/SBZ3.bin"
+		even
+	endif
+
 	else
+
 Blk128_GHZ:	binclude	"map128/GHZ.kos"
 		even
 Blk128_LZ:	binclude	"map128/LZ.kos"
@@ -7591,6 +7648,12 @@ Blk128_SYZ:	binclude	"map128/SYZ.kos"
 		even
 Blk128_SBZ:	binclude	"map128/SBZ.kos"
 		even
+
+	if NewSBZ3LevelArt
+Blk128_SBZ3:	binclude	"map128/SBZ3.kos"
+		even
+	endif
+
 	endif	;end Chunks In ROM
 
 ; ---------------------------------------------------------------------------
@@ -7610,8 +7673,11 @@ ArtKos_SYZ:		binclude	"artkos/8x8 - SYZ.kos"		; SYZ primary patterns -- Clownacy
 		even
 ArtKos_SBZ:		binclude	"artkos/8x8 - SBZ.kos"		; SBZ primary patterns -- Clownacy S2 Level Art Loading
 		even
+
+	if NewSBZ3LevelArt
 ArtKos_SBZ3:	binclude	"artkos/8x8 - SBZ3.kos"		; SBZ3 primary patterns -- Clownacy S2 Level Art Loading
 		even
+	endif
 
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - bosses and ending sequence

@@ -172,6 +172,11 @@ HUDCentiseconds: = 1
 ; Function: Makes "TIME" and "RINGS" will blink on and off instead of flashing red. Useful when changing palettes.
 HUDBlinking: = 1
 
+; Name: SBZ3 New Art Mod
+; Credit: Trickster/Rohan, RetroKoH
+; Function: Provides new art for SBZ Act 3
+NewSBZ3LevelArt: = 1
+
 ; ----- SPECIAL STAGES -----------------------------------------------------------
 
 ; Name: Dynamic Special Stage Walls
