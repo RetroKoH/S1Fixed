@@ -8,7 +8,6 @@ Map_Burro:	mappingsTable
 	mappingsTableEntry.w	.digging1
 	mappingsTableEntry.w	.digging2
 	mappingsTableEntry.w	.fall
-	mappingsTableEntry.w	.facedown
 	mappingsTableEntry.w	.walk3
 
 .walk1:	spriteHeader
@@ -35,11 +34,6 @@ Map_Burro:	mappingsTable
 	spritePiece	-$10, -$18, 3, 3, $F, 0, 0, 0, 0 ; falling after jumping up
 	spritePiece	-$C, 0, 3, 3, $42, 0, 0, 0, 0
 .fall_End
-
-.facedown:	spriteHeader
-	spritePiece	-$18, -$C, 2, 3, $4B, 0, 0, 0, 0 ; facing down (unused)
-	spritePiece	-8, -$C, 3, 3, $51, 0, 0, 0, 0
-.facedown_End
 
 .walk3:	spriteHeader
 	spritePiece	-$10, -$14, 3, 3, $F, 0, 0, 0, 0

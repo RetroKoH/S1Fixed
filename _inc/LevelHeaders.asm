@@ -29,7 +29,7 @@ SBZ3_Art:		equ 7
 	lhead	0,			ArtKos_GHZ,	0,			Blk16_GHZ,	Blk128_GHZ,	palid_Ending	; Ending
 
 	if NewSBZ3LevelArt
-	lhead	plcid_LZ,	ArtKos_SBZ3,plcid_LZ2,	Blk16_SBZ3,	Blk128_SBZ3,palid_SBZ3		; New Scrap Brain 3
+	lhead	plcid_SBZ3,	ArtKos_SBZ3,plcid_SBZ3_2,Blk16_SBZ3,Blk128_SBZ3,palid_SBZ3		; New Scrap Brain 3
 	endif
 
 	even

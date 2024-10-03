@@ -23,6 +23,11 @@ ptr_PLC_SBZ:			dc.w PLC_SBZ-ArtLoadCues
 ptr_PLC_SBZ2:			dc.w PLC_SBZ2-ArtLoadCues
 			zonewarning PLC_Levels,4
 
+	if NewSBZ3LevelArt
+ptr_PLC_SBZ3:			dc.w PLC_SBZ3-ArtLoadCues
+ptr_PLC_SBZ3_2:			dc.w PLC_SBZ3_2-ArtLoadCues
+	endif
+
 ptr_PLC_Boss:			dc.w PLC_Boss-ArtLoadCues
 ptr_PLC_Boss_GHZ:		dc.w PLC_Boss_GHZ-ArtLoadCues
 ptr_PLC_Boss_MZ:		dc.w PLC_Boss_MZ-ArtLoadCues
@@ -225,6 +230,41 @@ PLC_SBZ2:	dc.w ((PLC_SBZ2end-PLC_SBZ2-2)/6)-1
 		plcm	Nem_HSpring,		ArtTile_Spring_Horizontal		; horizontal spring
 		plcm	Nem_VSpring,		ArtTile_Spring_Vertical			; vertical spring
 PLC_SBZ2end:
+
+	if NewSBZ3LevelArt
+; ---------------------------------------------------------------------------
+; Pattern load cues - Scrap Brain Act 3 (New)
+; ---------------------------------------------------------------------------
+PLC_SBZ3:	dc.w ((PLC_SBZ3_2-PLC_SBZ3-2)/6)-1
+		plcm	Nem_LzBlock1,		ArtTile_LZ_Block_1				; block
+		plcm	Nem_LzBlock2,		ArtTile_LZ_Block_2				; blocks
+		plcm	Nem_Waterfall,		ArtTile_LZ_Waterfall			; waterfalls
+		plcm	Nem_Splash,			ArtTile_Splash					; water splash -- Temporary location
+		plcm	Nem_Water,			ArtTile_LZ_Water_Surface		; water surface
+		plcm	Nem_LzSpikeBall,	ArtTile_LZ_Spikeball_Chain		; spiked ball
+		plcm	Nem_FlapDoor,		ArtTile_LZ_Flapping_Door		; flapping door
+		plcm	Nem_Bubbles,		ArtTile_LZ_Bubbles				; bubbles, numbers and bubbler
+		plcm	Nem_LzBlock3,		ArtTile_LZ_Moving_Block			; 32x16 block
+		plcm	Nem_LzDoor1,		ArtTile_LZ_Door					; vertical door
+		plcm	Nem_LzSwitch,		ArtTile_Button					; switch
+		plcm	Nem_Burrobot_SBZ3,	ArtTile_Burrobot				; burrobot enemy
+
+PLC_SBZ3_2:	dc.w ((PLC_SBZ3_2end-PLC_SBZ3_2-2)/6)-1
+		plcm	Nem_LzPole,			ArtTile_LZ_Pole					; pole that breaks
+		plcm	Nem_LzDoor2,		ArtTile_LZ_Blocks				; large horizontal door
+		plcm	Nem_LzWheel,		ArtTile_LZ_Conveyor_Belt		; wheel
+		plcm	Nem_Gargoyle,		ArtTile_LZ_Gargoyle				; gargoyle head
+		plcm	Nem_LzPlatfm,		ArtTile_LZ_Rising_Platform		; rising platform
+		plcm	Nem_Orbinaut_SBZ3,	ArtTile_Orbinaut				; orbinaut enemy
+		plcm	Nem_Jaws_SBZ3,		ArtTile_Jaws					; jaws enemy
+		plcm	Nem_Harpoon,		ArtTile_LZ_Harpoon				; harpoon
+		plcm	Nem_Cork,			ArtTile_LZ_Cork					; cork block
+		plcm	Nem_Spikes,			ArtTile_Spikes					; spikes
+		plcm	Nem_HSpring,		ArtTile_Spring_Horizontal		; horizontal spring
+		plcm	Nem_VSpring,		ArtTile_Spring_Vertical			; vertical spring
+PLC_SBZ3_2end:
+	endif
+
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - LZ act 3 boss -- RetroKoH VRAM Overhaul
 ; ---------------------------------------------------------------------------
@@ -415,6 +455,12 @@ plcid_SYZ:			equ (ptr_PLC_SYZ-ArtLoadCues)/2				; $C
 plcid_SYZ2:			equ (ptr_PLC_SYZ2-ArtLoadCues)/2			; $D
 plcid_SBZ:			equ (ptr_PLC_SBZ-ArtLoadCues)/2				; $E
 plcid_SBZ2:			equ (ptr_PLC_SBZ2-ArtLoadCues)/2			; $F
+
+	if NewSBZ3LevelArt
+plcid_SBZ3:			equ (ptr_PLC_SBZ3-ArtLoadCues)/2
+plcid_SBZ3_2:		equ (ptr_PLC_SBZ3_2-ArtLoadCues)/2
+	endif
+
 plcid_Boss:			equ (ptr_PLC_Boss-ArtLoadCues)/2			; $11
 plcid_Boss_GHZ:		equ (ptr_PLC_Boss_GHZ-ArtLoadCues)/2		; NEW
 plcid_Boss_MZ:		equ (ptr_PLC_Boss_MZ-ArtLoadCues)/2			; NEW

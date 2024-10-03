@@ -1,7 +1,7 @@
 {
     "Flex": 2,
     "name": "S1 Fixed",
-    "node": "fab54975-391a-4552-8fa0-fc5e729aa671",
+    "node": "425f715b-7a97-4a79-b0c6-4a69ffcdbf73",
     "objects": [
         {
             "name": "Common",
@@ -2434,7 +2434,8 @@
                         "path": "",
                         "label": ""
                     },
-                    "uuid": "539e896a-365c-4177-a86c-6337c46aa914"
+                    "uuid": "539e896a-365c-4177-a86c-6337c46aa914",
+                    "expanded": true
                 },
                 {
                     "name": "Collapsing Floor",
@@ -2463,7 +2464,8 @@
                         "path": "",
                         "label": ""
                     },
-                    "uuid": "9e896a36-5cd1-4768-ac63-37c46aa9148b"
+                    "uuid": "9e896a36-5cd1-4768-ac63-37c46aa9148b",
+                    "expanded": true
                 },
                 {
                     "name": "Elevator",
@@ -2492,7 +2494,8 @@
                         "path": "",
                         "label": ""
                     },
-                    "uuid": "896a365c-d177-486c-a337-c46aa9148b30"
+                    "uuid": "896a365c-d177-486c-a337-c46aa9148b30",
+                    "expanded": true
                 },
                 {
                     "name": "Rotating Platform",
@@ -2521,7 +2524,8 @@
                         "path": "",
                         "label": ""
                     },
-                    "uuid": "6a365cd1-7768-4c63-b7c4-6aa9148b3085"
+                    "uuid": "6a365cd1-7768-4c63-b7c4-6aa9148b3085",
+                    "expanded": true
                 },
                 {
                     "name": "Stairs",
@@ -2550,7 +2554,8 @@
                         "path": "",
                         "label": ""
                     },
-                    "uuid": "365cd177-686c-4337-846a-a9148b3085fe"
+                    "uuid": "365cd177-686c-4337-846a-a9148b3085fe",
+                    "expanded": true
                 },
                 {
                     "name": "Fan",
@@ -2579,7 +2584,8 @@
                         "path": "",
                         "label": ""
                     },
-                    "uuid": "5cd17768-6c63-47c4-aaa9-148b3085fe2f"
+                    "uuid": "5cd17768-6c63-47c4-aaa9-148b3085fe2f",
+                    "expanded": true
                 },
                 {
                     "name": "Seesaw",
@@ -2608,7 +2614,8 @@
                         "path": "",
                         "label": ""
                     },
-                    "uuid": "d177686c-6337-446a-a914-8b3085fe2f64"
+                    "uuid": "d177686c-6337-446a-a914-8b3085fe2f64",
+                    "expanded": true
                 },
                 {
                     "name": "Bomb",
@@ -2637,7 +2644,8 @@
                         "path": "",
                         "label": ""
                     },
-                    "uuid": "77686c63-37c4-4aa9-948b-3085fe2f6400"
+                    "uuid": "77686c63-37c4-4aa9-948b-3085fe2f6400",
+                    "expanded": true
                 },
                 {
                     "name": "Orbinaut",
@@ -2666,7 +2674,8 @@
                         "path": "",
                         "label": ""
                     },
-                    "uuid": "686c6337-c46a-4914-8b30-85fe2f6400cd"
+                    "uuid": "686c6337-c46a-4914-8b30-85fe2f6400cd",
+                    "expanded": true
                 }
             ],
             "isDirectory": true,
@@ -2703,7 +2712,8 @@
                         "path": "",
                         "label": ""
                     },
-                    "uuid": "6337c46a-a914-4b30-85fe-2f6400cd250e"
+                    "uuid": "6337c46a-a914-4b30-85fe-2f6400cd250e",
+                    "expanded": true
                 },
                 {
                     "name": "Platform",
@@ -2732,7 +2742,8 @@
                         "path": "",
                         "label": ""
                     },
-                    "uuid": "37c46aa9-148b-4085-be2f-6400cd250e81"
+                    "uuid": "37c46aa9-148b-4085-be2f-6400cd250e81",
+                    "expanded": true
                 },
                 {
                     "name": "Crabmeat",
@@ -2761,7 +2772,8 @@
                         "path": "",
                         "label": ""
                     },
-                    "uuid": "c46aa914-8b30-45fe-af64-00cd250e813f"
+                    "uuid": "c46aa914-8b30-45fe-af64-00cd250e813f",
+                    "expanded": true
                 },
                 {
                     "name": "Buzz Bomber",
@@ -2790,7 +2802,8 @@
                         "path": "",
                         "label": ""
                     },
-                    "uuid": "6aa9148b-3085-4e2f-a400-cd250e813fb4"
+                    "uuid": "6aa9148b-3085-4e2f-a400-cd250e813fb4",
+                    "expanded": true
                 },
                 {
                     "name": "Switch",
@@ -2819,7 +2832,8 @@
                         "path": "",
                         "label": ""
                     },
-                    "uuid": "a9148b30-85fe-4f64-80cd-250e813fb40e"
+                    "uuid": "a9148b30-85fe-4f64-80cd-250e813fb40e",
+                    "expanded": true
                 },
                 {
                     "name": "Roller",
@@ -2848,7 +2862,8 @@
                         "path": "",
                         "label": ""
                     },
-                    "uuid": "148b3085-fe2f-4400-8d25-0e813fb40ef0"
+                    "uuid": "148b3085-fe2f-4400-8d25-0e813fb40ef0",
+                    "expanded": true
                 },
                 {
                     "name": "Bumper",
@@ -2877,7 +2892,8 @@
                         "path": "",
                         "label": ""
                     },
-                    "uuid": "8b3085fe-2f64-40cd-a50e-813fb40ef06c"
+                    "uuid": "8b3085fe-2f64-40cd-a50e-813fb40ef06c",
+                    "expanded": true
                 },
                 {
                     "name": "Yadrin",
@@ -2906,7 +2922,8 @@
                         "path": "",
                         "label": ""
                     },
-                    "uuid": "3085fe2f-6400-4d25-8e81-3fb40ef06ce8"
+                    "uuid": "3085fe2f-6400-4d25-8e81-3fb40ef06ce8",
+                    "expanded": true
                 },
                 {
                     "name": "Platform",
@@ -2935,7 +2952,8 @@
                         "path": "",
                         "label": ""
                     },
-                    "uuid": "85fe2f64-00cd-450e-813f-b40ef06ce8c1"
+                    "uuid": "85fe2f64-00cd-450e-813f-b40ef06ce8c1",
+                    "expanded": true
                 },
                 {
                     "name": "Spikeball Chain",
@@ -2964,7 +2982,8 @@
                         "path": "",
                         "label": ""
                     },
-                    "uuid": "fe2f6400-cd25-4e81-bfb4-0ef06ce8c1cf"
+                    "uuid": "fe2f6400-cd25-4e81-bfb4-0ef06ce8c1cf",
+                    "expanded": true
                 },
                 {
                     "name": "Big Spiked Ball",
@@ -2993,7 +3012,8 @@
                         "path": "",
                         "label": ""
                     },
-                    "uuid": "2f6400cd-250e-413f-b40e-f06ce8c1cfd2"
+                    "uuid": "2f6400cd-250e-413f-b40e-f06ce8c1cfd2",
+                    "expanded": true
                 },
                 {
                     "name": "Caterkiller",
@@ -3022,7 +3042,8 @@
                         "path": "",
                         "label": ""
                     },
-                    "uuid": "6400cd25-0e81-4fb4-8ef0-6ce8c1cfd238"
+                    "uuid": "6400cd25-0e81-4fb4-8ef0-6ce8c1cfd238",
+                    "expanded": true
                 }
             ],
             "isDirectory": true,
@@ -3037,17 +3058,17 @@
                     "name": "PSB",
                     "palettes": [
                         {
-                            "path": "palette\\Title Screen.bin",
+                            "path": "palette/Title Screen.bin",
                             "length": 2
                         }
                     ],
                     "art": {
-                        "path": "artnem\\Title Screen Foreground.nem",
+                        "path": "artnem/Title Screen Foreground.nem",
                         "compression": "Nemesis",
                         "offset": 0
                     },
                     "mappings": {
-                        "path": "_maps\\Press Start and TM.asm",
+                        "path": "_maps/Press Start and TM.asm",
                         "label": ""
                     },
                     "dplcs": {
@@ -3062,12 +3083,12 @@
                     "name": "PSB Menu",
                     "palettes": [],
                     "art": {
-                        "path": "artnem\\Title Screen Foreground (Menu).nem",
+                        "path": "artnem/Title Screen Foreground (Menu).nem",
                         "compression": "Nemesis",
                         "offset": 0
                     },
                     "mappings": {
-                        "path": "_maps\\Press Start and TM (Menu).asm",
+                        "path": "_maps/Press Start and TM (Menu).asm",
                         "label": "Map_PSB"
                     },
                     "dplcs": {
@@ -3081,6 +3102,43 @@
             "isDirectory": true,
             "expanded": false,
             "uuid": "f55ff5d9-a798-4791-b8ad-16c3137528bb"
+        },
+        {
+            "name": "SBZ3",
+            "children": [
+                {
+                    "name": "SBZ3 Burrobot",
+                    "format": "Sonic 2.js",
+                    "palettes": [
+                        {
+                            "path": "palette/Sonic.bin",
+                            "length": 1
+                        },
+                        {
+                            "path": "palette/Labyrinth Zone.bin",
+                            "length": 3
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem/Enemy SBZ3 Burrobot.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps/Burrobot.asm",
+                        "label": "Map_Goggles"
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "425f715b-7a97-4a79-b0c6-4a69ffcdbf73"
+                }
+            ],
+            "isDirectory": true,
+            "expanded": true,
+            "uuid": "5f715b7a-974a-49b0-864a-69ffcdbf739d"
         }
     ]
 }
