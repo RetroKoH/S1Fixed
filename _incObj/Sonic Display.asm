@@ -49,6 +49,8 @@ Sonic_Display:
 .music:
 		lea		(MusicList2).l,a1
 		move.b	(a1,d0.w),d0
+		cmp.b	(v_lastbgmplayed).w,d0
+		beq.s	.removeinvincible
 		jsr		(PlaySound).w					; play normal music
 		move.b	d0,(v_lastbgmplayed).w			; store last played music
 

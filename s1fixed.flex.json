@@ -971,7 +971,7 @@
                             "length": 1
                         },
                         {
-                            "path": "palette/SBZ Act 3.bin",
+                            "path": "palette/Labyrinth Zone.bin",
                             "length": 3
                         }
                     ],
@@ -1000,7 +1000,7 @@
                             "length": 1
                         },
                         {
-                            "path": "palette/SBZ Act 3.bin",
+                            "path": "palette/Labyrinth Zone.bin",
                             "length": 3
                         }
                     ],
@@ -1029,7 +1029,7 @@
                             "length": 1
                         },
                         {
-                            "path": "palette/SBZ Act 3.bin",
+                            "path": "palette/Labyrinth Zone.bin",
                             "length": 3
                         }
                     ],
@@ -1058,7 +1058,7 @@
                             "length": 1
                         },
                         {
-                            "path": "palette/SBZ Act 3.bin",
+                            "path": "palette/Labyrinth Zone.bin",
                             "length": 3
                         }
                     ],
@@ -1086,7 +1086,7 @@
                             "length": 1
                         },
                         {
-                            "path": "palette/SBZ Act 3.bin",
+                            "path": "palette/Labyrinth Zone.bin",
                             "length": 3
                         }
                     ],
@@ -1116,7 +1116,7 @@
                             "length": 1
                         },
                         {
-                            "path": "palette/SBZ Act 3.bin",
+                            "path": "palette/Labyrinth Zone.bin",
                             "length": 3
                         }
                     ],
@@ -1145,7 +1145,7 @@
                             "length": 1
                         },
                         {
-                            "path": "palette/SBZ Act 3.bin",
+                            "path": "palette/Labyrinth Zone.bin",
                             "length": 3
                         }
                     ],
@@ -1174,7 +1174,7 @@
                             "length": 1
                         },
                         {
-                            "path": "palette/SBZ Act 3.bin",
+                            "path": "palette/Labyrinth Zone.bin",
                             "length": 3
                         }
                     ],
@@ -1203,7 +1203,7 @@
                             "length": 1
                         },
                         {
-                            "path": "palette/SBZ Act 3.bin",
+                            "path": "palette/Labyrinth Zone.bin",
                             "length": 3
                         }
                     ],
@@ -1232,7 +1232,7 @@
                             "length": 1
                         },
                         {
-                            "path": "palette/SBZ Act 3.bin",
+                            "path": "palette/Labyrinth Zone.bin",
                             "length": 3
                         }
                     ],
@@ -1260,7 +1260,7 @@
                             "length": 1
                         },
                         {
-                            "path": "palette/SBZ Act 3.bin",
+                            "path": "palette/Labyrinth Zone.bin",
                             "length": 3
                         }
                     ],
@@ -1290,7 +1290,7 @@
                             "length": 1
                         },
                         {
-                            "path": "palette/SBZ Act 3.bin",
+                            "path": "palette/Labyrinth Zone.bin",
                             "length": 3
                         }
                     ],
@@ -1319,7 +1319,7 @@
                             "length": 1
                         },
                         {
-                            "path": "palette/SBZ Act 3.bin",
+                            "path": "palette/Labyrinth Zone.bin",
                             "length": 3
                         }
                     ],
@@ -1348,7 +1348,7 @@
                             "length": 1
                         },
                         {
-                            "path": "palette/SBZ Act 3.bin",
+                            "path": "palette/Labyrinth Zone.bin",
                             "length": 3
                         }
                     ],
@@ -1377,7 +1377,7 @@
                             "length": 1
                         },
                         {
-                            "path": "palette/SBZ Act 3.bin",
+                            "path": "palette/Labyrinth Zone.bin",
                             "length": 3
                         }
                     ],
@@ -1399,7 +1399,7 @@
                 }
             ],
             "isDirectory": true,
-            "expanded": false,
+            "expanded": true,
             "uuid": "c3047fd4-d422-443f-9ed1-3c29d58b5f0d"
         },
         {
@@ -3115,7 +3115,7 @@
                             "length": 1
                         },
                         {
-                            "path": "palette/Labyrinth Zone.bin",
+                            "path": "palette/SBZ Act 3 - New.bin",
                             "length": 3
                         }
                     ],
@@ -3126,7 +3126,7 @@
                     },
                     "mappings": {
                         "path": "_maps/Burrobot.asm",
-                        "label": "Map_Goggles"
+                        "label": ""
                     },
                     "dplcs": {
                         "enabled": false,
@@ -3134,40 +3134,69 @@
                         "label": ""
                     },
                     "uuid": "73db8195-35f0-4a7a-9abc-322d2b6983e5"
+                },
+                {
+                    "name": "SBZ3 Orbinaut",
+                    "format": "Sonic 2.js",
+                    "palettes": [
+                        {
+                            "path": "palette/Sonic.bin",
+                            "length": 1
+                        },
+                        {
+                            "path": "palette/SBZ Act 3 - New.bin",
+                            "length": 3
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem/Enemy SBZ3 Orbinaut.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps/Orbinaut.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "db819535-f06a-4a1a-bc32-2d2b6983e5d3"
+                },
+                {
+                    "name": "SBZ3 Jaws",
+                    "format": "Sonic 2.js",
+                    "palettes": [
+                        {
+                            "path": "palette/Sonic.bin",
+                            "length": 1
+                        },
+                        {
+                            "path": "palette/SBZ Act 3 - New.bin",
+                            "length": 3
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem/Enemy SBZ3 Jaws.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps/Jaws.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "425f715b-7a97-4a79-b0c6-4a69ffcdbf73"
                 }
             ],
             "isDirectory": true,
             "expanded": true,
             "uuid": "5f715b7a-974a-49b0-864a-69ffcdbf739d"
-        },
-        {
-            "name": "SBZ3 Orbinaut",
-            "format": "Sonic 2.js",
-            "palettes": [
-                {
-                    "path": "palette/Sonic.bin",
-                    "length": 1
-                },
-                {
-                    "path": "palette/SBZ Act 3 - New.bin",
-                    "length": 3
-                }
-            ],
-            "art": {
-                "path": "artnem/Enemy SBZ3 Orbinaut.nem",
-                "compression": "Nemesis",
-                "offset": 0
-            },
-            "mappings": {
-                "path": "_maps/Orbinaut.asm",
-                "label": "Map_Goggles"
-            },
-            "dplcs": {
-                "enabled": false,
-                "path": "",
-                "label": ""
-            },
-            "uuid": "425f715b-7a97-4a79-b0c6-4a69ffcdbf73"
         }
     ]
 }
