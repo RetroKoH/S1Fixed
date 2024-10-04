@@ -242,7 +242,7 @@ PLC_SBZ3:	dc.w ((PLC_SBZ3_2-PLC_SBZ3-2)/6)-1
 		plcm	Nem_Splash,			ArtTile_Splash					; water splash -- Temporary location
 		plcm	Nem_Water,			ArtTile_LZ_Water_Surface		; water surface
 		plcm	Nem_LzSpikeBall,	ArtTile_LZ_Spikeball_Chain		; spiked ball
-		plcm	Nem_FlapDoor,		ArtTile_LZ_Flapping_Door		; flapping door
+		plcm	Nem_FlapDoor_SBZ3,	ArtTile_LZ_Flapping_Door		; flapping door
 		plcm	Nem_Bubbles,		ArtTile_LZ_Bubbles				; bubbles, numbers and bubbler
 		plcm	Nem_LzBlock3,		ArtTile_LZ_Moving_Block			; 32x16 block
 		plcm	Nem_LzDoor1,		ArtTile_LZ_Door					; vertical door

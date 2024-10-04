@@ -1,7 +1,7 @@
 {
     "Flex": 2,
     "name": "S1 Fixed",
-    "node": "5f0d2c6b-dae6-42ef-85be-41a2ca5284d1",
+    "node": "7fd4d422-f43f-4ed1-bc29-d58b5f0d2c6b",
     "objects": [
         {
             "name": "Common",
@@ -1018,7 +1018,7 @@
                         "path": "",
                         "label": ""
                     },
-                    "uuid": "7fd4d422-f43f-4ed1-bc29-d58b5f0d2c6b"
+                    "uuid": "cafd5ef6-7f2b-4a2f-b591-61986dbd17b5"
                 },
                 {
                     "name": "Harpoon",
@@ -1399,7 +1399,7 @@
                 }
             ],
             "isDirectory": true,
-            "expanded": true,
+            "expanded": false,
             "uuid": "c3047fd4-d422-443f-9ed1-3c29d58b5f0d"
         },
         {
@@ -3192,6 +3192,35 @@
                         "label": ""
                     },
                     "uuid": "5ed13c29-d58b-4f0d-ac6b-dae612ef85be"
+                },
+                {
+                    "name": "SBZ3 Flapping Door",
+                    "format": "Sonic 2.js",
+                    "palettes": [
+                        {
+                            "path": "palette/Sonic.bin",
+                            "length": 1
+                        },
+                        {
+                            "path": "palette/SBZ Act 3 - New.bin",
+                            "length": 3
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem/SBZ3 Flapping Door.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps/Flapping Door.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "7fd4d422-f43f-4ed1-bc29-d58b5f0d2c6b"
                 },
                 {
                     "name": "SBZ3 Jaws",

@@ -7536,15 +7536,6 @@ Nem_Orbinaut:	binclude	"artnem/Enemy Orbinaut.nem"
 Nem_Cater:	binclude	"artnem/Enemy Caterkiller.nem"
 		even
 
-	if NewSBZ3LevelArt
-Nem_Burrobot_SBZ3:	binclude	"artnem/Enemy SBZ3 Burrobot.nem"
-		even
-Nem_Orbinaut_SBZ3:	binclude	"artnem/Enemy SBZ3 Orbinaut.nem"
-		even
-Nem_Jaws_SBZ3:		binclude	"artnem/Enemy SBZ3 Jaws.nem"
-		even
-	endif
-
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - various
 ; ---------------------------------------------------------------------------
@@ -7601,6 +7592,21 @@ Nem_Flicky:	binclude	"artnem/Animal Flicky.nem"
 		even
 Nem_Squirrel:	binclude	"artnem/Animal Squirrel.nem"
 		even
+
+	if NewSBZ3LevelArt
+; ---------------------------------------------------------------------------
+; Compressed graphics - SBZ3 Exclusive (RetroKoH)
+; ---------------------------------------------------------------------------
+
+Nem_Burrobot_SBZ3:	binclude	"artnem/Enemy SBZ3 Burrobot.nem"
+		even
+Nem_Orbinaut_SBZ3:	binclude	"artnem/Enemy SBZ3 Orbinaut.nem"
+		even
+Nem_Jaws_SBZ3:		binclude	"artnem/Enemy SBZ3 Jaws.nem"
+		even
+Nem_FlapDoor_SBZ3:	binclude	"artnem/SBZ3 Flapping Door.nem"
+		even
+	endif
 
 ; ---------------------------------------------------------------------------
 ; Block mappings
