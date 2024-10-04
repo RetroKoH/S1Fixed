@@ -7640,7 +7640,7 @@ Blk16_SBZ:	binclude	"map16/SBZ.eni"
 		even
 
 	if NewSBZ3LevelArt
-Blk16_SBZ3:	binclude	"map16_u/SBZ3.eni"
+Blk16_SBZ3:	binclude	"map16/SBZ3.eni"
 		even
 	endif
 
