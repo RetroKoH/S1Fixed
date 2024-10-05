@@ -10,6 +10,8 @@
  MarkeyJester - Original S1 One Two-Eight Base  
  Mods/Fixes, etc. are credited to the respective authors noted below
 
+***
+
 # Mods
  These can be enabled or disabled using the corresponding variables in Mods.asm
 
@@ -209,11 +211,40 @@
  Credit: RetroKoH
  Function: If toggled on, lets you play the game in the original intended order
  Date: 2024-09-04
+
+## Floating Signposts
+ (Incomplete: Fix rising speed)
+ Credit: RetroKoH
+ Function: Makes Signposts float into the air, ala the 8-bit games, and Sonic Mania
+ Date: 2024-09-15
+
+## S2 Level Select
+ Credit: RetroKoH
+ Function: Replaces the original Level Select w/ one based on the one in Sonic 2, complete w/ icons
+ Date: 2024-09-26
  
 ## Cool Bonus
  Credit: RetroKoH
  Function: Adds a COOL BONUS to the End of Level tally, from Sonic Mania
  Date: 2024-09-29
+ 
+## Dynamic Zone Palettes
+ (Incomplete: Remove SBZ branches and work that zone into this system)
+ Credit: RetroKoH
+ Function: Allows for each act to have a separate palette
+ Date: 2024-10-03
+
+## Optimal Title Cards
+ Credit: RetroKoH
+ Function: An under-the-hood mod that has the game only load required art for title cards.
+ Date: 2024-10-06
+
+## Scrap Brain 3 Art Mod (WIP)
+ Credit: Rohan (Level Art) RetroKoH (Code, Object Art)
+ Function: A complete visual redesign of Scrap Brain 3. All gameplay elements remain intact to the original.
+ Date: ???
+
+***
 
 # Under-the-Hood Optimizations/Overhauls
  These are larger-scale changes to one or more aspects of the engine that cannot be toggled on/off.
@@ -349,6 +380,8 @@
  Credit: Alex Field
  Function: Sounds can be played from 00-FF (Users will need to add them, of course)
  Date: ???
+
+***
  
 # Design Changes
  These are relatively minor changes that merely provide a little bit of added flair, or clean things up.
@@ -385,10 +418,12 @@
  and level wrapping. Without it, you could completely backtrack, which would break water in the level.
  Date: 2024-08-21
 
-## Rotating Wrecking Ball in GHZ Boss
+## Rotating GHZ Wrecking Balls
  Credit: RetroKoH
- Function: Adds a rotation effect to Eggman's wrecking ball, akin to Taxman's Sonic 1.
+ Function: Adds a rotation effect to the swinging checkered balls (including the GHZ Boss), akin to Taxman's Sonic 1.
  Date: 2024-09-14
+
+***
 
 # Fixes
  These changes fix notable bugs in the original game. Some bugs were game-breaking, while others were miniscule in nature.
@@ -769,3 +804,9 @@
  Credit: RetroKoH
  Function: Fixes the monitor's wonky solidity.
  Date: 2024-08-22
+
+## Music Restart Fix
+ (Still need to fix Debug Reset in SBZ2 Cutscene)
+ Credit: RetroKoH
+ Function: Fixes a minor bug where music doesn't correctly restart in some instances (Usually exiting Debug Mode)
+ Date: 2024-10-03
