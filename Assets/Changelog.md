@@ -1,16 +1,7 @@
-# S1Fixed
- A successor to ReadySonic (Bugfixes, Optimizations, Changes)  
- Base: Updated Sonic One Two-Eight disassembly for AS by Clownacy  
- Version: REV01. Revision options removed. All FixBugs changes applied.
-
-# Credits
- RetroKoH - S1Fixed  
- Mercury - Original ReadySonic  
- Clownacy - Updated S1 One Two-Eight Base  
- MarkeyJester - Original S1 One Two-Eight Base  
- Mods/Fixes, etc. are credited to the respective authors noted below
-
-***
+# S1Fixed Changelog
+ A compendium of all major changes and fixes applied to this disassembly.
+ Credit to original authors noted in each documented change.
+ Sorted in chronological order by category.
 
 # Mods
  These can be enabled or disabled using the corresponding variables in Mods.asm
