@@ -250,3 +250,9 @@ ChunksInROM: = 1						; if set to 1, frees RAM ($B000-$C7FF)
 ; Loads a different palette for every act (Scrap Brain is unaffected, as it has dynamic palettes by default)
 ; (By default, they are identical to the original. It'll be up to you to edit them if you use this mod)
 DynamicPalettes: = 0					; if set to 1, there will be a separate palette for each act
+
+; Name: Optimal Title Card Art
+; Credit: RetroKoH
+; Loads only necessary tiles for various cards. The benefit is less VRAM taken up by cards.
+; The drawback is that they may be harder to edit for new users, and ROM size is slightly larger.
+OptimalTitleCardArt: = 1				; if set to 1, new art and mappings are used, reducing VRAM footprint and sprite piece count

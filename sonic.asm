@@ -2022,15 +2022,51 @@ Level_NoMusicFade:
 		bsr.w	ClearPLC
 		bsr.w	PaletteFadeOut
 		tst.w	(f_demo).w					; is an ending sequence demo running?
-		bmi.s	Level_ClrRam				; if yes, branch
+		bmi.w	Level_ClrRam				; if yes, branch
 		disable_ints
 		locVRAM	ArtTile_Title_Card*tile_size
 
+	if OptimalTitleCardArt
+	; RetroKoH Optimal Title Cards for VRAM/SpritePiece Reduction
+		moveq	#0,d0
+		move.b	(v_zone).w,d0
+
+		cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; check if level is SBZ3
+		bne.s	.chkFinal
+		moveq	#$28,d0						; load title card art for SBZ
+		bra.s	.cont
+
+.chkFinal:
+		cmpi.w	#(id_SBZ<<8)+2,(v_zone).w	; check if level is FZ
+		bne.s	.normalLoad
+		lea		Art_TitCardFZ,a0									; load title card patterns
+		move.l	#((Art_TitCardFZ_End-Art_TitCardFZ)/tile_size)-1,d0	; # of tiles
+		bra.s	.load
+
+.normalLoad:
+		lsl.w	#3,d0						; zone * 8
+.cont:
+		lea		(Art_TitleCardZones).l,a2	; a2 = Art_TitleCardZones address
+		lea		(a2,d0.w),a2				; a2 = Art_TitleCardZones + zone offset
+		movea.l	(a2)+,a0					; a0 = zone's art file movea.l?
+		move.l	(a2),d0						; # of tiles
+.load:
+		jsr		(LoadUncArt).w
+		locVRAM	(ArtTile_Title_Card+$22)*tile_size							; if we don't call this, locVRAM will pick up where left off.
+		lea		Art_TitCardZone,a0											; load title card patterns
+		move.l	#((Art_TitCardZone_End-Art_TitCardZone)/tile_size)-1,d0		; # of tiles
+		jsr		(LoadUncArt).w
+		lea		Art_TitCardItems,a0											; load title card patterns
+		move.l	#((Art_TitCardItems_End-Art_TitCardItems)/tile_size)-1,d0	; # of tiles
+		jsr		(LoadUncArt).w
+	; Optimal Title Cards End
+	else
 	; AURORA☆FIELDS Title Card Optimization
 		lea		Art_TitleCard,a0									; load title card patterns
 		move.l	#((Art_TitleCard_End-Art_TitleCard)/tile_size)-1,d0	; # of tiles
 		jsr		(LoadUncArt).w
 	; Title Card Optimization End
+	endif
 
 		enable_ints
 		moveq	#0,d0
@@ -2712,11 +2748,39 @@ loc_47D4:
 		bsr.w	ClearScreen
 		locVRAM	ArtTile_Title_Card*tile_size
 
+	if OptimalTitleCardArt
+	; RetroKoH Optimal Title Cards for VRAM/SpritePiece Reduction
+		lea		Art_TitCardSpecStage,a0												; load title card patterns
+		move.l	#((Art_TitCardSpecStage_End-Art_TitCardSpecStage)/tile_size)-1,d0	; # of tiles
+		move.b	(v_emeralds).w,d1	; do you have ANY chaos emeralds?
+		beq.s	.load				; if not, branch
+		lea		Art_TitCardChaosEmlds,a0											; load title card patterns
+		move.l	#((Art_TitCardChaosEmlds_End-Art_TitCardChaosEmlds)/tile_size)-1,d0	; # of tiles
+		cmpi.b	#emldCount,d1		; do you have all chaos	emeralds?
+		bne.s	.load				; if not, branch
+		lea		Art_TitCardSonic,a0													; load title card patterns
+		move.l	#((Art_TitCardSonic_End-Art_TitCardSonic)/tile_size)-1,d0			; # of tiles
+		jsr		(LoadUncArt).w
+		lea		Art_TitCardGotThemAll,a0											; load title card patterns
+		move.l	#((Art_TitCardGotThemAll_End-Art_TitCardGotThemAll)/tile_size)-1,d0	; # of tiles
+		
+.load:
+		jsr		(LoadUncArt).w
+		locVRAM	(ArtTile_Title_Card+$32)*tile_size									; if we don't call this, locVRAM will pick up where left off.
+		lea		Art_TitCardBonuses,a0												; load title card patterns
+		move.l	#((Art_TitCardBonuses_End-Art_TitCardBonuses)/tile_size)-1,d0		; # of tiles
+		jsr		(LoadUncArt).w
+		movea.l	#Art_TitCardOval,a0													; load title card patterns
+		move.l	#Art_TitCardOvalCt,d0												; # of tiles
+		jsr		(LoadUncArt).w
+	; Optimal Title Cards End
+	else
 	; AURORA☆FIELDS Title Card Optimization
 		lea		Art_TitleCard,a0									; load title card patterns
 		move.l	#((Art_TitleCard_End-Art_TitleCard)/tile_size)-1,d0	; # of tiles
 		jsr		(LoadUncArt).w
 	; Title Card Optimization End
+	endif
 		
 		jsr		(Hud_Base).l
 
@@ -3144,11 +3208,19 @@ GM_Continue:
 
 		locVRAM	ArtTile_Title_Card*tile_size
 
+	if OptimalTitleCardArt
+	; RetroKoH Optimal Title Cards for VRAM/SpritePiece Reduction
+		lea		Art_TitCardContinue,a0												; load title card patterns
+		move.l	#((Art_TitCardContinue_End-Art_TitCardContinue)/tile_size)-1,d0		; # of tiles
+		jsr		(LoadUncArt).w
+	; Optimal Title Cards End
+	else
 	; AURORA☆FIELDS Title Card Optimization
 		lea		Art_TitleCard,a0									; load title card patterns
 		move.l	#((Art_TitleCard_End-Art_TitleCard)/tile_size)-1,d0	; # of tiles
 		jsr		(LoadUncArt).w
 	; Title Card Optimization End
+	endif
 
 		locVRAM	ArtTile_Continue_Sonic*tile_size
 		lea		(Nem_ContSonic).l,a0						; load Sonic patterns
@@ -7276,6 +7348,13 @@ Art_Mon_Rand:	binclude	"artunc/Monitors - Random.bin"		; Monitor Art Mod
 		even
 	endif
 
+	if OptimalTitleCardArt
+	; RetroKoH Optimal Title Cards for VRAM/SpritePiece Reduction
+	
+	include "artunc/Title and End Cards/Art Includes.asm"
+	
+	else
+
 ; AURORA☆FIELDS Title Card Optimization
 	if CoolBonusEnabled
 Art_TitleCard:	binclude	"artunc/Title Cards - COOL.bin"		; Title Card patterns
@@ -7283,6 +7362,8 @@ Art_TitleCard:	binclude	"artunc/Title Cards - COOL.bin"		; Title Card patterns
 Art_TitleCard:	binclude	"artunc/Title Cards.bin"			; Title Card patterns
 	endif
 Art_TitleCard_End:	even
+
+	endif
 
 Art_TimeOver:	binclude	"artunc/Time Over.bin"				; time over (TI) -- RetroKoH VRAM Overhaul
 Art_TimeOver_End:	even
@@ -7855,7 +7936,6 @@ Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.bin"
 ; ---------------------------------------------------------------------------
 		include	"_maps/Sonic.asm"
 
-		include	"_maps/Continue Screen.asm"
 		include	"_maps/Ending Sequence Sonic.asm"
 		include	"_maps/Ending Sequence Emeralds.asm"
 		include	"_maps/Ending Sequence STH.asm"
@@ -7917,12 +7997,19 @@ Map_RingBIN:
 		include	"_maps/Button.asm"
 		include	"_maps/Pushable Blocks.asm"
 		
-		include "_maps/Zone Title Cards.asm"
-
 		include	"_maps/Game Over.asm"
 		
+	if OptimalTitleCardArt
+		include "_maps/Zone Title Cards - Optimal.asm"
+		include "_maps/Got Through Card - Optimal.asm"
+		include "_maps/SS Results Card - Optimal.asm"
+		include	"_maps/Continue Screen - Optimal.asm"
+	else
+		include "_maps/Zone Title Cards.asm"
 		include "_maps/Got Through Card.asm"
 		include "_maps/SS Results Card.asm"
+		include	"_maps/Continue Screen.asm"
+	endif
 
 		include	"_maps/SS Result Chaos Emeralds.asm"
 		include	"_maps/Spikes.asm"
