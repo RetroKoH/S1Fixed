@@ -1,38 +1,34 @@
-; ---------------------------------------------------------------------------
-; Uncompressed graphics	loading	array for the Signpost
-; RetroKoH VRAM Overhaul
-; ---------------------------------------------------------------------------
-SignpostDynPLC:	mappingsTable
-	mappingsTableEntry.w	SignpostPLC_Eggman
-	mappingsTableEntry.w	SignpostPLC_Spin1
-	mappingsTableEntry.w	SignpostPLC_Spin2
-	mappingsTableEntry.w	SignpostPLC_Spin3
-	mappingsTableEntry.w	SignpostPLC_Sonic
+SignpostDynPLC: mappingsTable
+	mappingsTableEntry.w	SignpostDynPLC_0
+	mappingsTableEntry.w	SignpostDynPLC_1
+	mappingsTableEntry.w	SignpostDynPLC_2
+	mappingsTableEntry.w	SignpostDynPLC_3
+	mappingsTableEntry.w	SignpostDynPLC_4
 
-SignpostPLC_Eggman:	dplcHeader
-	dplcEntry	$C, 0
-	dplcEntry	5, $38
-SignpostPLC_Eggman_End
+SignpostDynPLC_0:	dplcHeader
+ dplcEntry $C, 0
+ dplcEntry 5, $38
+SignpostDynPLC_0_End
 
-SignpostPLC_Spin1:	dplcHeader
-	dplcEntry	$10, $C
-	dplcEntry	2, $38
-SignpostPLC_Spin1_End
+SignpostDynPLC_1:	dplcHeader
+ dplcEntry $10, $C
+ dplcEntry 2, $38
+SignpostDynPLC_1_End
 
-SignpostPLC_Spin2:	dplcHeader
-	dplcEntry	4, $1C
-	dplcEntry	2, $38
-SignpostPLC_Spin2_End
+SignpostDynPLC_2:	dplcHeader
+ dplcEntry 4, $1C
+ dplcEntry 2, $38
+SignpostDynPLC_2_End
 
-SignpostPLC_Spin3:	dplcHeader
-	dplcEntry	$10, $C
-	dplcEntry	2, $38
-SignpostPLC_Spin3_End
+SignpostDynPLC_3:	dplcHeader
+ dplcEntry $10, $C
+ dplcEntry 2, $38
+SignpostDynPLC_3_End
 
-SignpostPLC_Sonic:	dplcHeader
-	dplcEntry	$C, $20
-	dplcEntry	$C, $2C
-	dplcEntry	2, $38
-SignpostPLC_Sonic_End
+SignpostDynPLC_4:	dplcHeader
+ dplcEntry $C, $20
+ dplcEntry $C, $2C
+ dplcEntry 2, $38
+SignpostDynPLC_4_End
 
 	even
