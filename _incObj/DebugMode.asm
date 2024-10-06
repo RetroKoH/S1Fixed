@@ -26,6 +26,7 @@ Debug_Main:	; Routine 0
 		clr.w	obVelX(a0)
 		clr.w	obVelY(a0)
 		clr.w	obInertia(a0)
+		clr.b	obSpinDashFlag(a0)			; clear spindash flag
 		btst	#staOnObj,obStatus(a0)		; is Sonic standing on an object?
 		beq.s	.setpos						; if not, branch
 		bclr	#staOnObj,obStatus(a0)		; clear Sonic's standing flag
