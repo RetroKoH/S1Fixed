@@ -540,7 +540,8 @@ ArtTile_LZ_Door:				equ $380				; ✓
 ArtTile_LZ_Harpoon:				equ $388				; ✓
 ArtTile_LZ_Push_Block:			equ $392				; ✓ -- Appears to be correct
 ArtTile_LZ_Blocks:				equ $39A				; ✓
-ArtTile_LZ_Conveyor_Belt:		equ $3AA				; ✓
+ArtTile_LZ_Conveyor_Wheel:		equ $3AA				; ✓ (Now only $10 tiles here)
+ArtTile_LZ_Conveyor_Ptfm:		equ $3BA				; ✓ (Only 8 tiles here)
 ArtTile_LZ_Rising_Platform:		equ $3F2				; ✓
 ArtTile_LZ_Cork:				equ $429				; ✓
 ArtTile_LZ_Sonic_Drowning:		equ $440				; For now, leave this alone.

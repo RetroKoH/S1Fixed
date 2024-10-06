@@ -127,7 +127,7 @@ PLC_LZ:		dc.w ((PLC_LZ2-PLC_LZ-2)/6)-1
 PLC_LZ2:	dc.w ((PLC_LZ2end-PLC_LZ2-2)/6)-1
 		plcm	Nem_LzPole,			ArtTile_LZ_Pole					; pole that breaks
 		plcm	Nem_LzDoor2,		ArtTile_LZ_Blocks				; large horizontal door
-		plcm	Nem_LzWheel,		ArtTile_LZ_Conveyor_Belt		; wheel
+		plcm	Nem_LzConvPtfm,		ArtTile_LZ_Conveyor_Ptfm		; conveyor platform
 		plcm	Nem_Gargoyle,		ArtTile_LZ_Gargoyle				; gargoyle head
 		plcm	Nem_LzPlatfm,		ArtTile_LZ_Rising_Platform		; rising platform
 		plcm	Nem_Orbinaut,		ArtTile_Orbinaut				; orbinaut enemy
@@ -252,7 +252,7 @@ PLC_SBZ3:	dc.w ((PLC_SBZ3_2-PLC_SBZ3-2)/6)-1
 PLC_SBZ3_2:	dc.w ((PLC_SBZ3_2end-PLC_SBZ3_2-2)/6)-1
 		plcm	Nem_LzPole,			ArtTile_LZ_Pole					; pole that breaks
 		plcm	Nem_LzDoor2,		ArtTile_LZ_Blocks				; large horizontal door
-		plcm	Nem_LzWheel,		ArtTile_LZ_Conveyor_Belt		; wheel
+		plcm	Nem_LzConvPtfm,		ArtTile_LZ_Conveyor_Ptfm		; conveyor platform
 		plcm	Nem_Gargoyle,		ArtTile_LZ_Gargoyle				; gargoyle head
 		plcm	Nem_LzPlatfm,		ArtTile_LZ_Rising_Platform		; rising platform
 		plcm	Nem_Orbinaut_SBZ3,	ArtTile_Orbinaut				; orbinaut enemy

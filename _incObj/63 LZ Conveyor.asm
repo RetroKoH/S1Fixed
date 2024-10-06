@@ -1,5 +1,6 @@
 ; ---------------------------------------------------------------------------
 ; Object 63 - platforms	on a conveyor belt (LZ)
+; Removed the wheels. Those are now animated art that is dynamically loaded in
 ; ---------------------------------------------------------------------------
 
 LabyrinthConvey:
@@ -31,7 +32,7 @@ LCon_Index:	offsetTable
 		offsetTableEntry.w LCon_Main
 		offsetTableEntry.w loc_124B2
 		offsetTableEntry.w loc_124C2
-		offsetTableEntry.w LCon_WheelFrame
+		offsetTableEntry.w LCon_Wheel
 
 lcon_targetx = objoff_34		; target x-position to move platform towards (2 bytes)
 lcon_targety = objoff_36		; target y-position to move platform towards (2 bytes)
@@ -41,23 +42,28 @@ lcon_dataaddr = objoff_3C		; address where platform's data is located (4 bytes)
 
 LCon_Main:	; Routine 0
 		move.b	obSubtype(a0),d0			; is this the conveyor group spawner?
-		bmi.w	.spawner					; if yes (subtype >= $80), branch
+		bmi.w	LCon_Spawner				; if yes (subtype >= $80), branch
+
+	; Continue onward for platforms created by the spawner
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_LConv,obMap(a0)
-		move.w	#make_art_tile(ArtTile_LZ_Conveyor_Belt,2,0),obGfx(a0)
+		move.w	#make_art_tile(ArtTile_LZ_Conveyor_Ptfm,2,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
 		move.b	#$10,obActWid(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		cmpi.b	#$7F,obSubtype(a0)			; is this the static conveyor wheel?
-		bne.s	.platform					; if not, branch
+		bne.s	LCon_Platform				; if not, branch
 		addq.b	#4,obRoutine(a0)			; jump straight to display routine
-		move.w	#make_art_tile(ArtTile_LZ_Conveyor_Belt,0,0),obGfx(a0)
+		move.w	#make_art_tile(ArtTile_LZ_Conveyor_Wheel,0,0),obGfx(a0)
 		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		bra.w	LCon_WheelFrame
+
+LCon_Wheel:
+		addq.l	#4,sp
+		bra.w	RememberState
 ; ===========================================================================
 
-.platform:
-		move.b	#4,obFrame(a0)
+LCon_Platform:
+		move.b	#1,obFrame(a0)				; Platform frame
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0			; get platform subtype assigned by spawner (based on 3rd word in ObjPosLZPlatform_Index)
 		move.w	d0,d1						; copy to d1
@@ -94,11 +100,11 @@ LCon_Main:	; Routine 0
 ._1244C:
 		move.w	(a2,d1.w),lcon_targetx(a0)	; set target x-position
 		move.w	2(a2,d1.w),lcon_targety(a0)	; set target y-position
-		bsr.w	LCon_SetInMotion				; set initial direction and speed
+		bsr.w	LCon_SetInMotion			; set initial direction and speed
 		bra.w	loc_124B2					; jump down to routine 2
 ; ===========================================================================
 
-.spawner:
+LCon_Spawner:
 		move.b	d0,objoff_2F(a0)		; move spawner subtype to $2F(a0)
 		andi.w	#$7F,d0					; clear upper-most bit of subtype to isolate platform group ID
 		lea		(v_obj63).w,a2
@@ -157,25 +163,6 @@ loc_124C2:	; Routine 4
 		bsr.w	LCon_MovePlatforms
 		move.w	(sp)+,d2
 		jmp		(MvSonicOnPtfm2).l
-; ===========================================================================
-
-LCon_WheelFrame:	; Routine 6
-; use sync animations similar to the SYZ Light. Incorporate the reversal function
-		move.w	(v_framecount).w,d0
-		andi.w	#3,d0
-		bne.s	loc_124FC
-		moveq	#1,d1
-		tst.b	(f_conveyrev).w			; have conveyors been reversed?
-		beq.s	loc_124F2				; if not, branch
-		neg.b	d1
-
-loc_124F2:
-		add.b	d1,obFrame(a0)
-		andi.b	#3,obFrame(a0)
-
-loc_124FC:
-		addq.l	#4,sp
-		bra.w	RememberState
 ; ===========================================================================
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||

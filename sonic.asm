@@ -7456,11 +7456,11 @@ Nem_GhzWall2:	binclude	"artnem/GHZ Edge Wall.nem"
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - LZ stuff
 ; ---------------------------------------------------------------------------
-Nem_Water:	binclude	"artnem/LZ Water Surface.nem"
+Nem_Water:		binclude	"artnem/LZ Water Surface.nem"
 		even
 Nem_Waterfall:	binclude	"artnem/LZ Waterfall.nem"	; Split Waterfall and Splash -- RetroKoH VRAM Reshuffle
 		even
-Nem_Splash:		binclude	"artnem/Water Splash.nem"	; Make uncompressed and load in dash dust spot -- RetroKoH VRAM Reshuffle
+Nem_Splash:		binclude	"artnem/Water Splash.nem"	; To-Do: Make uncompressed and load in dash dust spot -- RetroKoH VRAM Reshuffle
 		even
 Nem_LzSpikeBall:binclude	"artnem/LZ Spiked Ball & Chain.nem"
 		even
@@ -7474,11 +7474,11 @@ Nem_LzDoor1:	binclude	"artnem/LZ Vertical Door.nem"
 		even
 Nem_Harpoon:	binclude	"artnem/LZ Harpoon.nem"
 		even
-Nem_LzPole:	binclude	"artnem/LZ Breakable Pole.nem"
+Nem_LzPole:		binclude	"artnem/LZ Breakable Pole.nem"
 		even
 Nem_LzDoor2:	binclude	"artnem/LZ Horizontal Door.nem"
 		even
-Nem_LzWheel:	binclude	"artnem/LZ Wheel.nem"
+Nem_LzConvPtfm:	binclude	"artnem/LZ Conveyor Platform.nem"
 		even
 Nem_Gargoyle:	binclude	"artnem/LZ Gargoyle & Fireball.nem"
 		even
@@ -7486,7 +7486,7 @@ Nem_LzBlock2:	binclude	"artnem/LZ Blocks.nem"
 		even
 Nem_LzPlatfm:	binclude	"artnem/LZ Rising Platform.nem"
 		even
-Nem_Cork:	binclude	"artnem/LZ Cork.nem"
+Nem_Cork:		binclude	"artnem/LZ Cork.nem"
 		even
 Nem_LzBlock1:	binclude	"artnem/LZ 32x32 Block.nem"
 		even
@@ -7925,6 +7925,8 @@ Art_MzLava1:	binclude	"artunc/MZ Lava Surface.bin"
 Art_MzLava2:	binclude	"artunc/MZ Lava.bin"
 		even
 Art_MzTorch:	binclude	"artunc/MZ Background Torch.bin"
+		even
+Art_LzWheel:	binclude	"artunc/LZ Wheel.bin"				; Formerly compressed art as part of the Conveyor object (63).
 		even
 Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.bin"
 		even

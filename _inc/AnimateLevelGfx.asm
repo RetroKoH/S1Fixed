@@ -24,12 +24,12 @@ AnimateLevelGfx:
 ; ---------------------------------------------------------------------------
 ; ===========================================================================
 AniArt_Index:	offsetTable
-		offsetTableEntry.w	AniArt_GHZ
+		offsetTableEntry.w	AniArt_GHZ		; Flowers
+		offsetTableEntry.w	AniArt_LZ		; Conveyor Wheels (New)
+		offsetTableEntry.w	AniArt_MZ		; Lava and Background Torches
 		offsetTableEntry.w	AniArt_none
-		offsetTableEntry.w	AniArt_MZ
 		offsetTableEntry.w	AniArt_none
-		offsetTableEntry.w	AniArt_none
-		offsetTableEntry.w	AniArt_SBZ
+		offsetTableEntry.w	AniArt_SBZ		; Background Smoke Clouds in Act 1
 		zonewarning AniArt_Index,2
 		offsetTableEntry.w	AniArt_Ending
 ; ===========================================================================
@@ -116,6 +116,41 @@ AniArt_GHZ_Smallflower:
 
 .sequence:	dc.b 0,	1, 2, 1
 ; ===========================================================================
+; ---------------------------------------------------------------------------
+; Animated pattern routine - Labyrinth
+; ---------------------------------------------------------------------------
+
+AniArt_LZ:
+
+; Conveyor Wheels
+AniArt_LZ_Wheel:
+
+.size		= $10	; number of tiles per frame
+
+		moveq	#0,d0
+		move.w	(v_framecount).w,d0
+		andi.w	#3,d0
+		bne.s	.dontchange
+		lea		(Art_LzWheel).l,a1		; load wheel patterns
+		moveq	#1,d1
+		tst.b	(f_conveyrev).w			; have conveyors been reversed?
+		beq.s	.notreverse				; if not, branch
+		neg.b	d1
+
+.notreverse:
+		add.b	d1,(v_lani0_frame).w
+		andi.b	#3,(v_lani0_frame).w
+		
+		move.b	(v_lani0_frame).w,d0
+		mulu.w	#.size*tile_size,d0
+		adda.w	d0,a1					; jump to appropriate tile
+		locVRAM	ArtTile_LZ_Conveyor_Wheel*tile_size
+		move.w	#.size-1,d1
+		bsr.w	LoadTiles
+
+.dontchange:
+		rts
+; ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Animated pattern routine - Marble
 ; ---------------------------------------------------------------------------

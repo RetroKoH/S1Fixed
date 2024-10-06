@@ -76,7 +76,7 @@ CDBalancing: = 1
 ; Name: CD Camera Panning
 ; Credit: Naoto
 ; Function: Applies a panning effect to the screen when moving quickly, a la Sonic CD
-CDCamera: = 1							; if set to 1, screen will pan forward, a la Sonic CD
+CDCamera: = 0							; if set to 1, screen will pan forward, a la Sonic CD
 
 ; Name: S3K AfterImages (Incomplete: Add for Super Sonic)
 ; Credit: Hitaxas (Wooloo Engine)
