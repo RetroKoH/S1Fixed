@@ -414,6 +414,11 @@
  Function: Adds a rotation effect to the swinging checkered balls (including the GHZ Boss), akin to Taxman's Sonic 1.
  Date: 2024-09-14
 
+## Eggman having yellow stripes in the signpost art
+ Credit: DeltaW
+ Function: Fixes the Eggman signpost to show his yellow sprites in his jacket (ripped from the 2013 mobile remake)
+ Date: 2024-10-06
+
 ***
 
 # Fixes

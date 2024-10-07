@@ -1,7 +1,7 @@
 {
     "Flex": 2,
     "name": "S1 Fixed",
-    "node": "7fd4d422-f43f-4ed1-bc29-d58b5f0d2c6b",
+    "node": "472ab9f3-6355-46ce-a3a8-3fd70d6d9cd8",
     "objects": [
         {
             "name": "Common",
@@ -364,7 +364,7 @@
                 }
             ],
             "isDirectory": true,
-            "expanded": false,
+            "expanded": true,
             "uuid": "14da472a-b9f3-4355-a6ce-e3a83fd70d6d"
         },
         {
