@@ -324,6 +324,8 @@ v_trackpos:				ds.w	1		; position tracking reference number
 v_trackbyte = 			v_trackpos+1	; low byte for position tracking
 f_lockscreen:			ds.b	1		; flag set to lock screen during bosses
 					ds.b	5		; unused
+
+Anim_Counters:
 v_lani0_frame:			ds.b	1		; level graphics animation 0 - current frame
 v_lani0_time:			ds.b	1		; level graphics animation 0 - time until next frame
 v_lani1_frame:			ds.b	1		; level graphics animation 1 - current frame
