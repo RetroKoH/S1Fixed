@@ -4,6 +4,11 @@
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
+; Constants for use with (a3) - Usually Anim_Counters
+dynAniTimer:	equ 0	; duration timer for current frame
+dynAniFrame:	equ 1	; current animation frame
+dynAniNext:		equ 2	; size of dyn level animation timing data (2 bytes)
+
 
 AnimateLevelGfx:
 		tst.b	(f_pause).w				; is the game paused?
@@ -40,7 +45,7 @@ AniArt_Index:	offsetTable
 		offsetTableEntry.w	Dynamic_LZ		; Write new routine (that takes into account reversing animation)
 		offsetTableEntry.w	AniArt_LZ		; Conveyor Wheels (New)
 
-		offsetTableEntry.w	Dynamic_Normal	; Write new routine to oscillate lava flow
+		offsetTableEntry.w	Dynamic_MZ		; Write new routine to oscillate lava flow
 		offsetTableEntry.w	AniArt_MZ		; Lava and Background Torches
 
 		offsetTableEntry.w	Dynamic_Null
@@ -60,31 +65,30 @@ Dynamic_Null:
 		rts
 ; ===========================================================================
 
-; ===========================================================================
-Dynamic_Normal:
 Dynamic_GHZ:
+Dynamic_Normal:
 		lea		(Anim_Counters).w,a3
-		move.w	(a2)+,d6			; Get number of scripts in list
+		move.w	(a2)+,d6					; Get number of scripts in list
 
 .loop:
-		subq.b	#1,(a3)				; Decrement frame duration timer
-		bpl.s	.nextscript			; If frame isn't over, move on to next script
+		subq.b	#1,dynAniTimer(a3)			; Decrement frame duration timer
+		bpl.s	.nextscript					; If frame isn't over, move on to next script
 
 ;.nextframe:
 		moveq	#0,d0
-		move.b	1(a3),d0			; Get current frame
-		cmp.b	6(a2),d0			; Have we processed the last frame in the script?
+		move.b	dynAniFrame(a3),d0			; Get current frame
+		cmp.b	6(a2),d0					; Have we processed the last frame in the script?
 		bcs.s	.notlastframe
 		moveq	#0,d0
-		move.b	d0,1(a3)			; If so, reset to first frame
+		move.b	d0,dynAniFrame(a3)			; If so, reset to first frame
 
 .notlastframe:
-		addq.b	#1,1(a3)			; Consider this frame processed; set counter to next frame
-		move.b	(a2),(a3)			; Set frame duration to global duration value
+		addq.b	#1,dynAniFrame(a3)			; Consider this frame processed; set counter to next frame
+		move.b	(a2),dynAniTimer(a3)		; Set frame duration to global duration value
 		bpl.s	.globalduration
 		; If script uses per-frame durations, use those instead
 		add.w	d0,d0
-		move.b	9(a2,d0.w),(a3)		; Set frame duration to current frame's duration value
+		move.b	9(a2,d0.w),dynAniTimer(a3)	; Set frame duration to current frame's duration value
 
 .globalduration:
 		; Prepare for DMA transfer
@@ -114,12 +118,11 @@ Dynamic_GHZ:
 		addq.b	#1,d0
 		andi.w	#$FE,d0				; Round to next even address, if it isn't already
 		lea		8(a2,d0.w),a2		; Advance to next script in list
-		addq.w	#2,a3				; Advance to next script's slot in a3 (usually Anim_Counters)
+		addq.w	#dynAniNext,a3		; Advance to next script's slot in a3 (usually Anim_Counters)
 		dbf		d6,.loop
 		rts
 ; ===========================================================================
 
-; ===========================================================================
 Dynamic_LZ:
 		; We don't need Anim_Counters to a3, or a script count because we only use
 		; one script. We just need special coding for it.
@@ -156,6 +159,88 @@ Dynamic_LZ:
 		jmp		(QueueDMATransfer).l
 
 .dontchange:
+		rts
+; ===========================================================================
+
+Dynamic_MZ:
+		lea		(Anim_Counters).w,a3
+;		move.b	dynAniFrame(a3),d4			; Store lava surface's current frame for use w/ magma later
+		move.w	(a2)+,d6					; Get number of scripts in list
+
+.loop:
+		subq.b	#1,dynAniTimer(a3)			; Decrement frame duration timer
+		bpl.w	.nextscript					; If frame isn't over, move on to next script
+
+;.nextframe:
+		moveq	#0,d0
+		move.b	dynAniFrame(a3),d0			; Get current frame
+		cmp.b	6(a2),d0					; Have we processed the last frame in the script?
+		bcs.s	.notlastframe
+		moveq	#0,d0
+		move.b	d0,dynAniFrame(a3)			; If so, reset to first frame
+
+.notlastframe:
+		addq.b	#1,dynAniFrame(a3)			; Consider this frame processed; set counter to next frame
+		move.b	(a2),dynAniTimer(a3)		; Set frame duration to global duration value
+		bpl.s	.globalduration				; Handle like normal
+
+		; In this routine, -1 is a special handler for magma flow script
+		move.b	#2,dynAniTimer(a3)			; Hard reset frame duration
+		
+;		moveq	#0,d0
+;		move.b	d4,d0						; get surface lava frame number
+		lea		(Art_MzLava2).l,a4			; load magma gfx
+;		ror.w	#7,d0						; multiply frame num by $200 to get tile offset
+;		adda.w	d0,a4						; magma gfx + tile offset
+		locVRAM	ArtTile_MZ_Animated_Magma*tile_size
+		moveq	#0,d3
+		move.b	(v_oscillate+$A).w,d3		; d3 = oscillating value
+		move.w	#3,d2						; iterate 4 times, filling 4 tile spaces each time.
+
+.loop_magma:
+		move.w	d3,d0						; d0 = tile offset + osc value
+		add.w	d0,d0						; multiply by 2
+		andi.w	#$1E,d0						; cap value at $1E
+		lea		(AniArt_MZextra).l,a3
+		move.w	(a3,d0.w),d0
+		lea		(a3,d0.w),a3
+		movea.l	a4,a1
+		move.w	#$1F,d1
+		jsr		(a3)
+		addq.w	#4,d3
+		dbf		d2,.loop_magma
+		rts
+
+.globalduration:
+		; Prepare for DMA transfer
+		; Get relative address of frame's art
+		move.b	8(a2,d0.w),d0		; Get tile ID
+		lsl.w	#5,d0				; Turn it into an offset
+		; Get VRAM destination address
+		move.w	4(a2),d2
+		; Get ROM source address
+		move.l	(a2),d1				; Get start address of animated tile art
+		andi.l	#$FFFFFF,d1
+		add.l	d0,d1				; Offset into art, to get the address of new frame
+		; Get size of art to be transferred
+		moveq	#0,d3
+		move.b	7(a2),d3
+		lsl.w	#4,d3				; Turn it into actual size (in words)
+		; Use d1, d2 and d3 to queue art for transfer
+		jsr		(QueueDMATransfer).l
+
+.nextscript:
+		move.b	6(a2),d0			; Get total size of frame data
+		tst.b	(a2)				; Is per-frame duration data present?
+		bpl.s	.globalduration2	; If not, keep the current size; it's correct
+		add.b	d0,d0				; Double size to account for the additional frame duration data
+
+.globalduration2:
+		addq.b	#1,d0
+		andi.w	#$FE,d0				; Round to next even address, if it isn't already
+		lea		8(a2,d0.w),a2		; Advance to next script in list
+		addq.w	#dynAniNext,a3		; Advance to next script's slot in a3 (usually Anim_Counters)
+		dbf		d6,.loop
 		rts
 ; ===========================================================================
 
@@ -229,13 +314,6 @@ AniArt_MZ:	zoneanimstart
 		dc.b	16			; 4 (tile offset 16; $13 frames)
 		even
 	; ===========================================================
-	; Magma (Needs new routine to oscillate lave flow)
-	zoneanimdecl 1, Art_MzLava2, ArtTile_MZ_Animated_Magma, 13, 16
-	; -----------------------------------------------------------
-		dc.b	0, 2, 4, 6, 8, 10, 12
-		dc.b	14, 16, 18, 20, 22, 24
-		even
-	; ===========================================================
 	; Background Torches
 		zoneanimdecl $13, Art_MzTorch, ArtTile_MZ_Torch, 3, 6
 	; -----------------------------------------------------------
@@ -243,6 +321,13 @@ AniArt_MZ:	zoneanimstart
 		dc.b	6			; 2 (tile offset 6; $13 frames)
 		dc.b	12			; 4 (tile offset 12; $13 frames)
 		dc.b	18			; 6 (tile offset 18; $13 frames)
+		even
+	; ===========================================================
+	; Magma (Needs new routine to oscillate lave flow)
+	zoneanimdecl $FF, Art_MzLava2, ArtTile_MZ_Animated_Magma, 13, 16
+	; -----------------------------------------------------------
+		dc.b	0, 2, 4, 6, 8, 10, 12
+		dc.b	14, 16, 18, 20, 22, 24
 		even
 	
 	zoneanimend
