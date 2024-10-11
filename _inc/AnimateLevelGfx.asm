@@ -47,11 +47,10 @@ AniArt_Index:
 		dc.l	AniArt_Null,			AniArt_Null
 		dc.l	AniArt_SBZ_InitDraw,	AniArt_SBZ		; Background Smoke Clouds in Act 1
 		zonewarning AniArt_Index,8
-		dc.l	AniArt_Ending_InitDraw,	AniArt_Null
+		dc.l	AniArt_Ending_InitDraw,	AniArt_Ending
 ; ===========================================================================
 
 AniArt_Null:
-AniArt_Ending_InitDraw:
 		rts
 ; ===========================================================================
 
@@ -500,7 +499,7 @@ AniArt_SBZ:
 ; ===========================================================================
 
 .untilnextpuff2:
-		move.b	#120,(v_lani2_time).w ; time between smoke puffs (2 seconds)
+		move.b	#120,(v_lani2_time).w			; time between smoke puffs (2 seconds)
 		;bra.s	.clearsky
 		move.l	a0,d1							; d1 = transfer source
 												; d2 is already set up
@@ -516,4 +515,103 @@ AniArt_SBZ:
 
 .end:
 		rts	
+; ===========================================================================
+
+; --------------------------------------------------------------
+; Animated art routines : Ending
+; --------------------------------------------------------------
+
+AniArt_Ending:
+		add.b	#$20,(v_lani0_time).w
+		bcs.s	AniArt_Ending_Flower1
+
+		add.b	#$20,(v_lani1_time).w
+		bcs.s	AniArt_Ending_Flower2
+
+		add.b	#$11,(v_lani2_time).w
+		bcs.w	AniArt_Ending_Flower3
+
+		add.b	#$15,(v_lani3_time).w
+		bcs.w	AniArt_Ending_Flower4
+		rts
+; ===========================================================================
+
+AniArt_Ending_Flower1:
+		eor.b	#2,(v_lani1_frame).w
+
+AniArt_Ending_Flower1_Draw:
+		move.w	(v_lani1_frame).w,d0
+		clr.b	d0
+		move.w	d0,d4									; copy for second use
+		lea 	(Art_GhzFlower1).l,a0					; load big flower patterns
+		adda.w	d0,a0
+		move.l	a0,d1									; d1 = transfer source
+		move.w	#ArtTile_GHZ_Sunflower*tile_size,d2		; d2 = VRAM address
+		move.w	#$200/2,d3								; d3 = transfer size (words)
+		jsr		(QueueDMATransfer).l
+
+		lea		((v_128x128+$1000)&$FFFFFF).l,a0		; load 2nd big flower from RAM
+		adda.w	d4,a0
+		move.l	a0,d1									; d1 = transfer source
+		move.w	#ArtTile_GHZ_Big_Flower_2*tile_size,d2	; d2 = VRAM address
+		move.w	#$200/2,d3								; d3 = transfer size (words)
+		jmp		(QueueDMATransfer).l
+; ===========================================================================
+
+AniArt_Ending_Flower2:
+		addq.b	#2,(v_lani2_frame).w
+
+AniArt_Ending_Flower2_Draw:
+		lea 	(Art_GhzFlower2).l,a0					; load small flower patterns
+		moveq	#%1110,d0
+		and.b	(v_lani2_frame).w,d0
+		add.w	AniArt_Ending_Flower2_FrameOffsets(pc,d0),a0
+		move.l	a0,d1									; d1 = transfer source
+		move.w	#ArtTile_GHZ_Purple_Flower*tile_size,d2	; d2 = VRAM address
+		move.w	#$200/2,d3								; d3 = transfer size (words)
+		jmp		(QueueDMATransfer).l
+; ===========================================================================
+
+AniArt_Ending_Flower2_FrameOffsets:
+		dc.w	$0000, $0000, $0000, $0180
+		dc.w	$0300, $0300, $0300, $0180
+; ===========================================================================
+
+AniArt_Ending_InitDraw:
+		bsr.s	AniArt_Ending_Flower1_Draw
+		bsr.s	AniArt_Ending_Flower2_Draw
+		bsr.s	AniArt_Ending_Flower4_Draw
+		bra.s	AniArt_Ending_Flower3_Draw
+; ===========================================================================
+
+AniArt_Ending_Flower3:
+		addq.b	#2,(v_lani3_frame).w
+
+AniArt_Ending_Flower3_Draw:
+		lea		((v_128x128+$1000+$400)&$FFFFFF).l,a0	; load special flower patterns (from RAM)
+		moveq	#%110,d0
+		and.b	(v_lani3_frame).w,d0
+		add.w	AniArt_Ending_Flower3_FrameOffsets(pc,d0),a0
+		move.l	a0,d1								; d1 = transfer source
+		move.w	#ArtTile_GHZ_Flower_3*tile_size,d2	; d2 = VRAM address
+		move.w	#$200/2,d3							; d3 = transfer size
+		jmp		(QueueDMATransfer).l
+; ===========================================================================
+
+AniArt_Ending_Flower3_FrameOffsets:
+		dc.w	$0000, $0200, $0400, $0200
+; ===========================================================================
+
+AniArt_Ending_Flower4:
+		addq.b	#2,(v_lani4_frame).w		; frame = [0, 2, 4, 6]
+
+AniArt_Ending_Flower4_Draw:
+		lea		((v_128x128+$1000+$A00)&$FFFFFF).l,a0	; load special flower patterns (from RAM)
+		moveq	#%110,d0
+		and.b	(v_lani4_frame).w,d0
+		add.w	AniArt_Ending_Flower3_FrameOffsets(pc,d0),a0
+		move.l	a0,d1								; d1 = transfer source
+		move.w	#ArtTile_GHZ_Flower_4*tile_size,d2	; d2 = VRAM address
+		move.w	#$200/2,d3							; d3 = transfer size (words)
+		jmp		(QueueDMATransfer).l
 ; ===========================================================================
