@@ -598,7 +598,7 @@ VBla_08:
 
 Demo_Time:
 		bsr.w	LoadTilesAsYouMove
-		jsr		(AnimateLevelGfx).l
+	;	jsr		(AnimateLevelGfx).l
 		jsr		(HUD_Update).l
 		bsr.w	ProcessDPLC2
 		tst.w	(v_demolength).w ; is there time left on the demo?
@@ -670,7 +670,7 @@ VBla_0C:
 		movem.l	(v_fg_scroll_flags).w,d0-d1
 		movem.l	d0-d1,(v_fg_scroll_flags_dup).w
 		bsr.w	LoadTilesAsYouMove
-		jsr		(AnimateLevelGfx).l
+	;	jsr		(AnimateLevelGfx).l
 		jsr		(HUD_Update).l
 		bra.w	sub_1642
 ; ===========================================================================
@@ -2202,6 +2202,7 @@ Level_SkipTtlCard:
 
 		moveq	#palid_Sonic,d0
 		bsr.w	PalLoad_Fade					; load Sonic's palette
+		jsr		(AnimateLevelGfx_Init).l
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformLayers
 		bset	#2,(v_fg_scroll_flags).w
@@ -2384,6 +2385,7 @@ Level_SkipHUDScroll:
 		bsr.w	OscillateNumDo
 		bsr.w	SynchroAnimate
 		bsr.w	SignpostArtLoad
+		jsr		(AnimateLevelGfx).l
 
 		cmpi.b	#id_Demo,(v_gamemode).w
 		beq.s	Level_ChkDemo				; if mode is 8 (demo), branch
@@ -3337,6 +3339,7 @@ GM_Ending:
 		move.w	#(id_EndZ<<8)+1,(v_zone).w ; set level number to 0601 (no flowers)
 
 End_LoadData:
+		jsr		(AnimateLevelGfx_Init).l
 		moveq	#plcid_Ending,d0
 		bsr.w	QuickPLC							; load ending sequence patterns
 		bsr.w	LevelSizeLoad
@@ -3404,6 +3407,7 @@ End_MainLoop:
 		bsr.w	DeformLayers
 		jsr		(BuildSprites).l
 		jsr		(ObjPosLoad).l
+		jsr		(AnimateLevelGfx).l
 		bsr.w	PaletteCycle
 		bsr.w	OscillateNumDo
 		bsr.w	SynchroAnimate

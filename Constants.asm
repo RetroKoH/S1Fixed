@@ -562,8 +562,8 @@ ArtTile_SLZ_Smashable_Wall:		equ $486				; ✓
 ArtTile_SLZ_Collapsing_Floor:	equ $48E				; ✓
 
 ; Scrap Brain Zone
-ArtTile_SBZ_Smoke_Puff_1:		equ $2A9				; ✓ 448
-ArtTile_SBZ_Smoke_Puff_2:		equ $2B5				; ✓ 454
+ArtTile_SBZ_Smoke_Puff_1:		equ $2A9				; ✓
+ArtTile_SBZ_Smoke_Puff_2:		equ $2B5				; ✓
 ArtTile_SBZ_Moving_Block_Short:	equ $2C1				; ✓
 ArtTile_SBZ_Door:				equ $2E9				; ✓
 ArtTile_SBZ_Girder:				equ $2F1				; ✓

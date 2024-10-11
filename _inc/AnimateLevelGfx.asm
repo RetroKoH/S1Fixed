@@ -1,504 +1,519 @@
 ; ---------------------------------------------------------------------------
-; Subroutine to	animate	level graphics
+; Subroutine to animate level graphics
+; Credit: Selbi (EraZor)
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
-; Constants for use with (a3) - Usually Anim_Counters
-dynAniTimer:	equ 0	; duration timer for current frame
-dynAniFrame:	equ 1	; current animation frame
-dynAniNext:		equ 2	; size of dyn level animation timing data (2 bytes)
 
+AnimateLevelGfx_Init:
+		; Clear animated art slot RAM
+		lea		(Anim_Counters).w,a1
+		moveq	#0,d0
+		move.l	d0,(a1)+
+		move.l	d0,(a1)+
+
+		; Setup animated art update pointer
+		move.b	(v_zone).w,d0				; d0 = zone
+		lsl.w	#3,d0						; d0 = zone * 8
+		lea		AniArt_Index(pc,d0),a0
+		movea.l	(a0)+,a1					; a1 = "initial draw" routine
+		move.l	(a0)+,(v_lani_updateproc).w	; set "update" routine
+		jmp		(a1)						; run "initial draw" routine
+; ===========================================================================
+
+; --------------------------------------------------------------
+; Subroutine to update animated art during gameplay
+; --------------------------------------------------------------
 
 AnimateLevelGfx:
-		tst.b	(f_pause).w				; is the game paused?
-		bne.s	.ispaused				; if yes, branch
-		moveq	#0,d0
-		move.b	(v_zone).w,d0
-		add.w	d0,d0
-		add.w	d0,d0
-		move.w	AniArt_Index+2(pc,d0.w),d1
-		lea		AniArt_Index(pc,d1.w),a2	; Load animated art data to a2
-		move.w	AniArt_Index(pc,d0.w),d0
-		jmp		AniArt_Index(pc,d0.w)		; jump to dynamic art routine
+		tst.b	(f_pause).w					; is the game paused?
+		bne.s	.ispaused					; if yes, branch
+		movea.l	(v_lani_updateproc).w,a0
+		jmp		(a0)
 
 .ispaused:
-		rts	
-; ===========================================================================
+		rts
 
 ; ---------------------------------------------------------------------------
-; Offset index for animated art routines and scripts (System ported from Sonic 2)
-;
-; Each zone gets two entries in this jump table. The first entry points to the
-; zone's animation procedure (usually Dynamic_Normal, but some zones may have special
-; procedures for complicated animations). The second points to the zone's animation
-; script.
-;
-; Note that Animated_Null is not a valid animation script, so don't pair it up
-; with anything except Dynamic_Null, or bad things will happen (for example, a bus error exception).
+; Offset index for animated art routines
 ; ---------------------------------------------------------------------------
-; ===========================================================================
-AniArt_Index:	offsetTable
-		offsetTableEntry.w	Dynamic_GHZ
-		offsetTableEntry.w	AniArt_GHZ		; Waterfall/Flowers
 
-		offsetTableEntry.w	Dynamic_LZ		; Write new routine (that takes into account reversing animation)
-		offsetTableEntry.w	AniArt_LZ		; Conveyor Wheels (New)
-
-		offsetTableEntry.w	Dynamic_MZ		; Write new routine to oscillate lava flow
-		offsetTableEntry.w	AniArt_MZ		; Lava and Background Torches
-
-		offsetTableEntry.w	Dynamic_Null
-		offsetTableEntry.w	AniArt_none
-
-		offsetTableEntry.w	Dynamic_Null
-		offsetTableEntry.w	AniArt_none
-
-		offsetTableEntry.w	Dynamic_Normal
-		offsetTableEntry.w	AniArt_SBZ		; Background Smoke Clouds in Act 1
-		zonewarning AniArt_Index,4
-		offsetTableEntry.w	Dynamic_Normal
-		offsetTableEntry.w	AniArt_Ending
+AniArt_Index:
+		dc.l	AniArt_GHZ_InitDraw,	AniArt_GHZ		; Waterfall/Flowers
+		dc.l	AniArt_LZ_InitDraw,		AniArt_LZ		; Conveyor Wheels (New)
+		dc.l	AniArt_MZ_InitDraw,		AniArt_MZ		; Lava and Background Torches
+		dc.l	AniArt_Null,			AniArt_Null
+		dc.l	AniArt_Null,			AniArt_Null
+		dc.l	AniArt_SBZ_InitDraw,	AniArt_SBZ		; Background Smoke Clouds in Act 1
+		zonewarning AniArt_Index,8
+		dc.l	AniArt_Ending_InitDraw,	AniArt_Null
 ; ===========================================================================
 
-Dynamic_Null:
+AniArt_Null:
+AniArt_Ending_InitDraw:
 		rts
 ; ===========================================================================
 
-Dynamic_GHZ:
-Dynamic_Normal:
-		lea		(Anim_Counters).w,a3
-		move.w	(a2)+,d6					; Get number of scripts in list
+; --------------------------------------------------------------
+; Animated art routines : GHZ
+; --------------------------------------------------------------
 
-.loop:
-		subq.b	#1,dynAniTimer(a3)			; Decrement frame duration timer
-		bpl.s	.nextscript					; If frame isn't over, move on to next script
+AniArt_GHZ:
+		add.b	#$2A,(v_lani0_time).w
+		bcs.s	AniArt_GHZ_Waterfall
 
-;.nextframe:
-		moveq	#0,d0
-		move.b	dynAniFrame(a3),d0			; Get current frame
-		cmp.b	6(a2),d0					; Have we processed the last frame in the script?
-		bcs.s	.notlastframe
-		moveq	#0,d0
-		move.b	d0,dynAniFrame(a3)			; If so, reset to first frame
+		add.b	#$10,(v_lani1_time).w
+		bcs.s	AniArt_GHZ_Flower1
 
-.notlastframe:
-		addq.b	#1,dynAniFrame(a3)			; Consider this frame processed; set counter to next frame
-		move.b	(a2),dynAniTimer(a3)		; Set frame duration to global duration value
-		bpl.s	.globalduration
-		; If script uses per-frame durations, use those instead
-		add.w	d0,d0
-		move.b	9(a2,d0.w),dynAniTimer(a3)	; Set frame duration to current frame's duration value
-
-.globalduration:
-		; Prepare for DMA transfer
-		; Get relative address of frame's art
-		move.b	8(a2,d0.w),d0		; Get tile ID
-		lsl.w	#5,d0				; Turn it into an offset
-		; Get VRAM destination address
-		move.w	4(a2),d2
-		; Get ROM source address
-		move.l	(a2),d1				; Get start address of animated tile art
-		andi.l	#$FFFFFF,d1
-		add.l	d0,d1				; Offset into art, to get the address of new frame
-		; Get size of art to be transferred
-		moveq	#0,d3
-		move.b	7(a2),d3
-		lsl.w	#4,d3				; Turn it into actual size (in words)
-		; Use d1, d2 and d3 to queue art for transfer
-		jsr		(QueueDMATransfer).l
-
-.nextscript:
-		move.b	6(a2),d0			; Get total size of frame data
-		tst.b	(a2)				; Is per-frame duration data present?
-		bpl.s	.globalduration2	; If not, keep the current size; it's correct
-		add.b	d0,d0				; Double size to account for the additional frame duration data
-
-.globalduration2:
-		addq.b	#1,d0
-		andi.w	#$FE,d0				; Round to next even address, if it isn't already
-		lea		8(a2,d0.w),a2		; Advance to next script in list
-		addq.w	#dynAniNext,a3		; Advance to next script's slot in a3 (usually Anim_Counters)
-		dbf		d6,.loop
+		add.b	#$20,(v_lani2_time).w 
+		bcs.s	AniArt_GHZ_Flower2
 		rts
 ; ===========================================================================
 
-Dynamic_LZ:
-		; We don't need Anim_Counters to a3, or a script count because we only use
-		; one script. We just need special coding for it.
+AniArt_GHZ_Waterfall:
+		eor.b	#1,(v_lani0_frame).w
+	
+AniArt_GHZ_Waterfall_Draw:
+		move.w	(v_lani0_frame).w,d0
+		clr.b	d0
+		lea		(Art_GhzWater).l,a0
+		adda.w	d0,a0
+		move.l	a0,d1								; d1 = transfer source
+		move.w	#ArtTile_GHZ_Waterfall*tile_size,d2	; d2 = transfer destination
+		move.w	#$100/2,d3							; d3 = transfer size (words)
+		jmp		(QueueDMATransfer).l
+; ===========================================================================
+
+AniArt_GHZ_Flower1:
+		eor.b	#2,(v_lani1_frame).w
+
+AniArt_GHZ_Flower1_Draw:
+		move.w	(v_lani1_frame).w,d0
+		clr.b	d0   
+		lea		(Art_GhzFlower1).l,a0
+		adda.w	d0,a0
+		move.l	a0,d1								; d1 = transfer source
+		move.w	#ArtTile_GHZ_Sunflower*tile_size,d2	; d2 = transfer destination
+		move.w	#$200/2,d3							; d3 = transfer size (words)
+		jmp		(QueueDMATransfer).l
+; ===========================================================================
+AniArt_GHZ_InitDraw:
+		bsr.s	AniArt_GHZ_Waterfall_Draw   
+		bsr.s	AniArt_GHZ_Flower1_Draw
+		;bra.s	AniArt_GHZ_Flower2_Draw
+; ===========================================================================
+
+AniArt_GHZ_Flower2_Draw:
+		moveq	#32*2-1,d0
+		and.b	(v_lani2_frame).w,d0
+		move.w	AniArt_GHZ_Flower2_FrameOffsets(pc,d0),d0
+		and.w	#$7FFF,d0
+		bra.s	AniArt_GHZ_Flower2_Render	
+; ===========================================================================
+
+AniArt_GHZ_Flower2:
+		addq.b	#2,(v_lani2_frame).w
+		moveq	#32*2-1,d0
+		and.b	(v_lani2_frame).w,d0
+		move.w	AniArt_GHZ_Flower2_FrameOffsets(pc,d0),d0
+		bmi.s	AniArt_GHZ_Flower2_Skip					; if frame is the same as the previous one, skip
+
+AniArt_GHZ_Flower2_Render:
+		lea 	(Art_GhzFlower2).l,a0
+		adda.w	d0,a0
+		move.l	a0,d1									; d1 = transfer source
+		move.w	#ArtTile_GHZ_Purple_Flower*tile_size,d2	; d2 = transfer destination
+		move.w	#$180/2,d3								; d3 = transfer size (words)
+		jmp		(QueueDMATransfer).l	
+
+AniArt_GHZ_Flower2_Skip:
+		rts
+; ===========================================================================
+
+AniArt_GHZ_Flower2_FrameOffsets:
+		dc.w 	$0000, $8000, $8000, $8000
+		dc.w	$8000, $8000, $8000, $8000
+		dc.w	$8000, $8000, $8000, $8000
+		dc.w	$8000, $8000, $8000
+
+		dc.w	$0180, $0300, $8300, $8300
+		dc.w	$8300, $8300, $8300, $8300
+		dc.w	$8300, $8300, $8300, $8300
+		dc.w	$8300, $8300, $8300, $8300
+
+		dc.w	$0180
+; ===========================================================================
+
+; --------------------------------------------------------------
+; Animated art routines : LZ
+; --------------------------------------------------------------
+
+AniArt_LZ:
 		moveq	#0,d0
 		move.w	(v_framecount).w,d0
 		andi.w	#3,d0
-		bne.s	.dontchange
+		beq.s	AniArt_LZ_Wheels
+		rts
+; ===========================================================================
 
-		moveq	#0,d0
-		move.b	(v_lani0_frame).w,d0
-		moveq	#1,d1
+AniArt_LZ_InitDraw:
+		;bra.s	AniArt_LZ_Wheels
+; ===========================================================================
+
+AniArt_LZ_Wheels_Draw:
+		moveq	#4*2-1,d0
+		and.b	(v_lani0_frame).w,d0
+		move.w	AniArt_LZ_Wheels_FrameOffsets(pc,d0),d0
+		and.w	#$7FFF,d0
+		bra.s	AniArt_LZ_Wheels_Render	
+; ===========================================================================
+
+AniArt_LZ_Wheels:
+		moveq	#2,d1
 		tst.b	(f_conveyrev).w			; have conveyors been reversed?
 		beq.s	.notreverse				; if not, branch
 		neg.b	d1
 
 .notreverse:
-		add.b	d1,d0
-		andi.b	#3,d0
-		move.b	d0,(v_lani0_frame).w	; update frame
+		add.b	d1,(v_lani0_frame).w
+		moveq	#4*2-1,d0
+		and.b	(v_lani0_frame).w,d0
+		move.w	AniArt_LZ_Wheels_FrameOffsets(pc,d0),d0
+		bmi.s	AniArt_LZ_Wheels_Skip					; if frame is the same as the previous one, skip
 
-		; Get relative address of frame's art
-		move.b	$A(a2,d0.w),d0			; Get tile ID
-		lsl.w	#5,d0					; Turn it into an offset
-		; Get VRAM destination address
-		move.w	#(ArtTile_LZ_Conveyor_Wheel*tile_size),d2
-		; Get ROM source address
-		move.l	2(a2),d1				; Get start address of animated tile art
-		andi.l	#$FFFFFF,d1
-		add.l	d0,d1					; Offset into art, to get the address of new frame
-		; Get size of art to be transferred
-		moveq	#$10,d3					; # of tiles in the frame
-		lsl.w	#4,d3					; Turn it into actual size (in words)
-		; Use d1, d2 and d3 to queue art for transfer
+AniArt_LZ_Wheels_Render:
+		lea		(Art_LzWheel).l,a0
+		adda.w	d0,a0
+		move.l	a0,d1									; d1 = transfer source
+		move.w	#ArtTile_LZ_Conveyor_Wheel*tile_size,d2	; d2 = transfer destintation
+		move.w	#$200/2,d3								; d3 = transfer size (words)
 		jmp		(QueueDMATransfer).l
 
-.dontchange:
+AniArt_LZ_Wheels_Skip:
 		rts
 ; ===========================================================================
 
-Dynamic_MZ:
-		lea		(Anim_Counters).w,a3
-;		move.b	dynAniFrame(a3),d4			; Store lava surface's current frame for use w/ magma later
-		move.w	(a2)+,d6					; Get number of scripts in list
+AniArt_LZ_Wheels_FrameOffsets:
+		dc.w 	$0000, $0200, $0400, $0600
+; ===========================================================================
 
-.loop:
-		subq.b	#1,dynAniTimer(a3)			; Decrement frame duration timer
-		bpl.w	.nextscript					; If frame isn't over, move on to next script
+; --------------------------------------------------------------
+; Animated art routines : MZ
+; --------------------------------------------------------------
 
-;.nextframe:
-		moveq	#0,d0
-		move.b	dynAniFrame(a3),d0			; Get current frame
-		cmp.b	6(a2),d0					; Have we processed the last frame in the script?
-		bcs.s	.notlastframe
-		moveq	#0,d0
-		move.b	d0,dynAniFrame(a3)			; If so, reset to first frame
+AniArt_MZ:
+		subq.b	#1,(v_lani0_time).w
+		bpl.s	.lava_surface_done
+		move.b	#$13,(v_lani0_time).w
+		bra.s	AniArt_MZ_LavaSurface
 
-.notlastframe:
-		addq.b	#1,dynAniFrame(a3)			; Consider this frame processed; set counter to next frame
-		move.b	(a2),dynAniTimer(a3)		; Set frame duration to global duration value
-		bpl.s	.globalduration				; Handle like normal
+.lava_surface_done:
+		add.b	#$80,(v_lani1_time).w
+		bcs.s	AniArt_MZ_LavaMain
 
-		; In this routine, -1 is a special handler for magma flow script
-		move.b	#2,dynAniTimer(a3)			; Hard reset frame duration
-		
-;		moveq	#0,d0
-;		move.b	d4,d0						; get surface lava frame number
-		lea		(Art_MzLava2).l,a4			; load magma gfx
-;		ror.w	#7,d0						; multiply frame num by $200 to get tile offset
-;		adda.w	d0,a4						; magma gfx + tile offset
-		locVRAM	ArtTile_MZ_Animated_Magma*tile_size
+		add.b	#$20,(v_lani2_time).w
+		bcs.w	AniArt_MZ_Torch
+		rts
+; ===========================================================================
+
+AniArt_MZ_InitDraw:
+		bsr.s	AniArt_MZ_LavaSurface_Draw
+		bsr.s	AniArt_MZ_LavaMain
+		bra.s	AniArt_MZ_Torch_Draw
+; ===========================================================================
+
+AniArt_MZ_LavaSurface:
+		addq.b	#1,(v_lani0_frame).w
+		cmp.b	#3,(v_lani0_frame).w
+		blo.s	AniArt_MZ_LavaSurface_Draw
+		clr.b	(v_lani0_frame).w	
+	
+AniArt_MZ_LavaSurface_Draw:
+		move.w	(v_lani0_frame).w,d0
+		andi.w	#$300,d0
+		lea		(Art_MzLava1).l,a0
+		adda.w	d0,a0
+		move.l	a0,d1									; d1 = transfer source
+		move.w	#ArtTile_MZ_Animated_Lava*tile_size,d2	; d2 = transfer destintation
+		move.w	#$100/2,d3								; d3 = transfer size (words)
+		jmp		(QueueDMATransfer).l
+; ===========================================================================
+
+AniArt_MZ_LavaMain:
+		move.w	(v_lani0_frame).w,d0	; get surface lava frame number
+		lea		(Art_MzLava2).l,a4		; a4 = lava 16x32 blocks base offset
+		lea		$FFFFA200,a0			; a0 = art buffer (WARNING! Overlaps with the end of chunks data, but it should be unused in MZ)
+		add.w	d0,d0
+		andi.w	#$600,d0
+		adda.w	d0,a4					; magma gfx + tile offset
 		moveq	#0,d3
-		move.b	(v_oscillate+$A).w,d3		; d3 = oscillating value
-		move.w	#3,d2						; iterate 4 times, filling 4 tile spaces each time.
+		move.b	(v_oscillate+$A).w,d3	; d3 = oscillating value
+		moveq	#4-1,d2					; iterate 4 times, filling 4 tile spaces each time.
 
-.loop_magma:
-		move.w	d3,d0						; d0 = tile offset + osc value
-		add.w	d0,d0						; multiply by 2
-		andi.w	#$1E,d0						; cap value at $1E
-		lea		(AniArt_MZextra).l,a3
-		move.w	(a3,d0.w),d0
-		lea		(a3,d0.w),a3
-		movea.l	a4,a1
-		move.w	#$1F,d1
-		jsr		(a3)
-		addq.w	#4,d3
-		dbf		d2,.loop_magma
+.render_loop:
+		moveq	#$F,d0
+		and.w	d3,d0
+		add.w	d0,d0                                  
+		lea 	AniArt_MZ_LavaRenderers(pc),a3
+		add.w	(a3,d0),a3                        
+		movea.l a4,a1					; a1 = art ptr
+		jsr 	(a3)
+		addq.w	#4,d3					; do next 8 pixels
+		dbf 	d2,.render_loop
+
+		move.l	#$FFA200,d1				; d1 = art buffer (WARNING! Overlaps with the end of chunks data, but it should be unused in MZ)
+		move.w	#ArtTile_MZ_Animated_Magma*tile_size,d2
+		move.w	#$200/2,d3
+		jmp		(QueueDMATransfer).l
+; ===========================================================================
+
+AniArt_MZ_Torch:
+		addq.b	#1,(v_lani3_frame).w
+	
+AniArt_MZ_Torch_Draw:
+		lea		(Art_MzTorch).l,a0
+		move.w	(v_lani3_frame).w,d0
+		and.w	#$300,d0
+		move.w	d0,d1
+		lsr.w	#2,d1
+		sub.w	d1,d0
+		adda.w	d0,a0
+		move.l	a0,d1							; d1 = transfer source
+		move.w	#ArtTile_MZ_Torch*tile_size,d2	; d2 = transfer destintation
+		move.w	#$C0/2,d3						; d3 = transfer size (words)
+		jmp		(QueueDMATransfer).l
+; ===========================================================================
+
+; ---------------------------------------------------------------------------
+; MZ lava renderers
+; Each routine handles the art starting at a different pixel offset
+; ---------------------------------------------------------------------------
+AniArt_MZ_LavaRenderers:	offsetTable
+		offsetTableEntry.w	MZMagma_RendOffset0
+		offsetTableEntry.w	MZMagma_RendOffset2
+		offsetTableEntry.w	MZMagma_RendOffset4
+		offsetTableEntry.w	MZMagma_RendOffset6
+		offsetTableEntry.w	MZMagma_RendOffset8
+		offsetTableEntry.w	MZMagma_RendOffset10
+		offsetTableEntry.w	MZMagma_RendOffset12
+		offsetTableEntry.w	MZMagma_RendOffset14
+		offsetTableEntry.w	MZMagma_RendOffset16
+		offsetTableEntry.w	MZMagma_RendOffset18
+		offsetTableEntry.w	MZMagma_RendOffset20
+		offsetTableEntry.w	MZMagma_RendOffset22
+		offsetTableEntry.w	MZMagma_RendOffset24
+		offsetTableEntry.w	MZMagma_RendOffset26
+		offsetTableEntry.w	MZMagma_RendOffset28
+		offsetTableEntry.w	MZMagma_RendOffset30
+; ===========================================================================
+
+MZMagma_RendOffset28:
+	rept	$20
+		move.w	$E(a1),(a0)+
+		move.w	(a1),(a0)+
+		lea		$10(a1),a1
+	endr
+		rts
+; ===========================================================================
+
+MZMagma_RendOffset24:
+		lea		$C(a1),a1     
+		bra.s	MZMagma_RenderTransDirect
+; ===========================================================================
+
+MZMagma_RendOffset20:
+		addq.w	#2,a1
+
+MZMagma_RendOffset16:
+		addq.w	#8,a1
+		bra.s	MZMagma_RenderTransDirect	
+; ===========================================================================
+
+MZMagma_RendOffset12:
+		addq.w	#2,a1
+
+MZMagma_RendOffset8:
+		addq.w	#2,a1
+
+MZMagma_RendOffset4:
+		addq.w	#2,a1
+
+MZMagma_RendOffset0:    
+MZMagma_RenderTransDirect:
+	rept	$20
+		move.l	(a1),(a0)+
+		lea		$10(a1),a1
+	endr
+		rts	
+; ===========================================================================
+
+MZMagma_RendOffset30:   	
+	rept $20
+		move.b	$F(a1),(a0)+
+		move.b	(a1)+,(a0)+
+		move.b	(a1)+,(a0)+
+		move.b	(a1)+,(a0)+
+		lea		$10-3(a1),a1
+	endr
+		rts
+; ===========================================================================
+
+MZMagma_RendOffset26:
+		lea		$D(a1),a1
+	
+	rept $20
+		move.b	(a1)+,(a0)+
+		move.b	(a1)+,(a0)+
+		move.b	(a1)+,(a0)+
+		move.b	-$10(a1),(a0)+
+		lea		$10-3(a1),a1
+	endr
+		rts
+; ===========================================================================
+
+MZMagma_RendOffset22:
+	lea		$B(a1),a1     
+	bra.s	MZMagma_RenderTransDirectOdd
+; ===========================================================================
+
+MZMagma_RendOffset18:
+		addq.w	#2,a1
+	
+MZMagma_RendOffset14:
+		addq.w	#7,a1  
+		bra.s	MZMagma_RenderTransDirectOdd		 
+; ===========================================================================
+
+MZMagma_RendOffset10:
+		addq.w	#2,a1
+
+MZMagma_RendOffset6:
+		addq.w	#2,a1
+
+MZMagma_RendOffset2:
+		addq.w	#1,a1
+		 
+MZMagma_RenderTransDirectOdd:
+	rept	$20
+		move.b	(a1)+,(a0)+
+		move.b	(a1)+,(a0)+
+		move.b	(a1)+,(a0)+
+		move.b	(a1)+,(a0)+
+		lea		$C(a1),a1
+	endr  
+		rts			 
+; ===========================================================================
+
+; --------------------------------------------------------------
+; Animated art routines : SBZ
+; --------------------------------------------------------------
+
+AniArt_SBZ_InitDraw:
+		tst.b	(v_act).w								; only run on Act 1
+		bne.s	.skip
+		lea		(Art_SbzSmoke).l,a0						; load smoke patterns
+		move.w	#ArtTile_SBZ_Smoke_Puff_1*tile_size,d2	; d2 = transfer destination
+		bsr.s	AniArt_SBZ.clearsky
+		lea		(Art_SbzSmoke).l,a0						; load smoke patterns
+		move.w	#ArtTile_SBZ_Smoke_Puff_2*tile_size,d2	; d2 = transfer destination
+		bra.s	AniArt_SBZ.clearsky
+
+.skip:
 		rts
 
-.globalduration:
-		; Prepare for DMA transfer
-		; Get relative address of frame's art
-		move.b	8(a2,d0.w),d0		; Get tile ID
-		lsl.w	#5,d0				; Turn it into an offset
-		; Get VRAM destination address
-		move.w	4(a2),d2
-		; Get ROM source address
-		move.l	(a2),d1				; Get start address of animated tile art
-		andi.l	#$FFFFFF,d1
-		add.l	d0,d1				; Offset into art, to get the address of new frame
-		; Get size of art to be transferred
-		moveq	#0,d3
-		move.b	7(a2),d3
-		lsl.w	#4,d3				; Turn it into actual size (in words)
-		; Use d1, d2 and d3 to queue art for transfer
+AniArt_SBZ:
+		tst.b	(v_act).w						; only run on Act 1
+		bne.s	.skip
+		tst.b	(v_lani2_frame).w
+		beq.s	.smokepuff						; branch if counter hits 0
+		
+		subq.b	#1,(v_lani2_frame).w			; decrement counter
+		bra.s	.chk_smokepuff2
+
+.skip:
+		rts
+; ===========================================================================
+
+.smokepuff:
+		subq.b	#1,(v_lani0_time).w				; decrement timer
+		bpl.s	.chk_smokepuff2					; branch if not 0
+
+		move.b	#7,(v_lani0_time).w				; time to display each frame
+		lea		(Art_SbzSmoke).l,a0				; load smoke patterns
+		move.w	#ArtTile_SBZ_Smoke_Puff_1*tile_size,d2	; d2 = transfer destination
+		move.w	(v_lani0_frame).w,d0			; d0 = current frame
+		clr.b	d0
+		addq.b	#1,(v_lani0_frame).w			; increment frame counter
+		andi.w	#$700,d0						; cap at 7
+		beq.s	.untilnextpuff					; branch if frame 0
+		subi.w	#$100,d0						; frame - 1 (range: 0-6)
+		adda.w	d0,a0
+		move.l	a0,d1							; d1 = transfer source
+												; d2 is already set up
+		move.w	#$180/2,d3						; d3 = transfer size (words)
+		jmp		(QueueDMATransfer).l
+; ===========================================================================
+
+.untilnextpuff:
+		move.b	#180,(v_lani2_frame).w			; time between smoke puffs (3 seconds)
+
+.clearsky:
+		move.l	a0,d1							; d1 = transfer source
+												; d2 is already set up
+		move.w	#$C0/2,d3						; d3 = transfer size (words)
 		jsr		(QueueDMATransfer).l
 
-.nextscript:
-		move.b	6(a2),d0			; Get total size of frame data
-		tst.b	(a2)				; Is per-frame duration data present?
-		bpl.s	.globalduration2	; If not, keep the current size; it's correct
-		add.b	d0,d0				; Double size to account for the additional frame duration data
-
-.globalduration2:
-		addq.b	#1,d0
-		andi.w	#$FE,d0				; Round to next even address, if it isn't already
-		lea		8(a2,d0.w),a2		; Advance to next script in list
-		addq.w	#dynAniNext,a3		; Advance to next script's slot in a3 (usually Anim_Counters)
-		dbf		d6,.loop
-		rts
+	; reestablish values
+		move.l	a0,d1							; d1 = transfer source
+		move.w	#(ArtTile_SBZ_Smoke_Puff_1+6)*tile_size,d2	; d2 = next transfer destination
+		move.w	#$C0/2,d3						; d3 = transfer size (words)
+		jmp		(QueueDMATransfer).l			; load blank tiles for no smoke puff
 ; ===========================================================================
 
-; ---------------------------------------------------------------------------
-; Animated pattern scripts - Green Hill
-; ---------------------------------------------------------------------------
-
-AniArt_none:
-AniArt_Ending:
-AniArt_GHZ:	zoneanimstart
-	; Waterfalls
-	zoneanimdecl 5, Art_GhzWater, ArtTile_GHZ_Waterfall, 2, 8
-;		dc.l	Art_GhzWater+$05000000				; Art address + (Fixed duration << 24)
-;		dc.w	(ArtTile_GHZ_Waterfall*tile_size)	; VRAM loc
-;		dc.b	2									; # of frames
-;		dc.b	8									; number of tiles per frame
-	; -----------------------------------------------------------
-		dc.b	0			; 0 (tile offset 0; 5 frames)
-		dc.b	8			; 2 (tile offset 8; 5 frames)
-		even
-	; ===========================================================
-	; Big Flower -- Increase from 2 to 4 frames
-	zoneanimdecl 15, Art_GhzFlower1, ArtTile_GHZ_Sunflower, 2, 16
-	; -----------------------------------------------------------
-		dc.b	0			; 0 (tile offset 0; 15 ($F) frames)
-		dc.b	16			; 2 (tile offset 16 ($10); 15 ($F) frames)
-		even
-	; ===========================================================
-	; Smaller Purple Flower -- Increase frames?
-	zoneanimdecl $FF, Art_GhzFlower2, ArtTile_GHZ_Purple_Flower, 4, 12
-	; $FF denotes a non-fixed frame duration. We must specify duration in each frame below
-	; -----------------------------------------------------------
-		dc.b	0,$7F		; 0 (tile offset 0; $7F frames)
-		dc.b	12,7		; 2 (tile offset 12; 7 frames)
-		dc.b	24,$7F		; 4 (tile offset 24; $7F frames)
-		dc.b	12,7		; 6 (tile offset 12; 7 frames)
-		even
-	
-	zoneanimend
-; ===========================================================================
-
-; ---------------------------------------------------------------------------
-; Animated pattern scripts - Labyrinth (NEW)
-; ---------------------------------------------------------------------------
-
-AniArt_LZ:	zoneanimstart
-
-	; Conveyor Wheels
-	zoneanimdecl 4, Art_LzWheel, ArtTile_LZ_Conveyor_Wheel, 4, $10
-	; -----------------------------------------------------------
-		dc.b	0			; 0 (tile offset 0; 4 frames)
-		dc.b	$10			; 2 (tile offset 16; 4 frames)
-		dc.b	$20			; 4 (tile offset 32; 4 frames)
-		dc.b	$30			; 6 (tile offset 48; 4 frames)
-		even
+.chk_smokepuff2:
+		tst.b	(v_lani2_time).w
+		beq.s	.smokepuff2						; branch if counter hits 0
 		
-	zoneanimend
+		subq.b	#1,(v_lani2_time).w				; decrement counter
+		bra.s	.end
 ; ===========================================================================
 
-; ---------------------------------------------------------------------------
-; Animated pattern scripts - Marble
-; ---------------------------------------------------------------------------
-
-AniArt_MZ:	zoneanimstart
-
-	; Lava surface
-	zoneanimdecl $13, Art_MzLava1, ArtTile_MZ_Animated_Lava, 3, 8
-	; -----------------------------------------------------------
-		dc.b	0			; 0 (tile offset 0; $13 frames)
-		dc.b	8			; 2 (tile offset 8; $13 frames)
-		dc.b	16			; 4 (tile offset 16; $13 frames)
-		even
-	; ===========================================================
-	; Background Torches
-		zoneanimdecl $13, Art_MzTorch, ArtTile_MZ_Torch, 3, 6
-	; -----------------------------------------------------------
-		dc.b	0			; 0 (tile offset 0; $13 frames)
-		dc.b	6			; 2 (tile offset 6; $13 frames)
-		dc.b	12			; 4 (tile offset 12; $13 frames)
-		dc.b	18			; 6 (tile offset 18; $13 frames)
-		even
-	; ===========================================================
-	; Magma (Needs new routine to oscillate lave flow)
-	zoneanimdecl $FF, Art_MzLava2, ArtTile_MZ_Animated_Magma, 13, 16
-	; -----------------------------------------------------------
-		dc.b	0, 2, 4, 6, 8, 10, 12
-		dc.b	14, 16, 18, 20, 22, 24
-		even
-	
-	zoneanimend
+.smokepuff2:
+		subq.b	#1,(v_lani1_time).w				; decrement timer
+		bpl.s	.end							; branch if not 0
+		
+		move.b	#7,(v_lani1_time).w				; time to display each frame
+		lea		(Art_SbzSmoke).l,a0				; load smoke patterns
+		move.w	#ArtTile_SBZ_Smoke_Puff_2*tile_size,d2	; d2 = transfer destination
+		move.w	(v_lani1_frame).w,d0			; d0 = current frame
+		clr.b	d0
+		addq.b	#1,(v_lani1_frame).w			; increment frame counter
+		andi.w	#$700,d0						; cap at 7
+		beq.s	.untilnextpuff2					; branch if frame 0
+		subi.w	#$100,d0						; frame - 1 (range: 0-6)
+		adda.w	d0,a0
+		move.l	a0,d1							; d1 = transfer source
+												; d2 is already set up
+		move.w	#$180/2,d3						; d3 = transfer size (words)
+		jmp		(QueueDMATransfer).l
 ; ===========================================================================
 
-; ---------------------------------------------------------------------------
-; Animated pattern scripts - Scrap Brain
-; ---------------------------------------------------------------------------
+.untilnextpuff2:
+		move.b	#120,(v_lani2_time).w ; time between smoke puffs (2 seconds)
+		;bra.s	.clearsky
+		move.l	a0,d1							; d1 = transfer source
+												; d2 is already set up
+		move.w	#$C0/2,d3						; d3 = transfer size (words)
+		jsr		(QueueDMATransfer).l
 
-AniArt_SBZ:	zoneanimstart
-	; Smoke puff 1
-	zoneanimdecl 7, Art_SbzSmoke, ArtTile_SBZ_Smoke_Puff_1, 7, 12
-	; -----------------------------------------------------------
-		dc.b	0
-		dc.b	12
-		dc.b	24
-		dc.b	36
-		dc.b	48
-		dc.b	60
-		dc.b	72
-		even
-
-	zoneanimend
+	; reestablish values
+		move.l	a0,d1							; d1 = transfer source
+		move.w	#(ArtTile_SBZ_Smoke_Puff_2+6)*tile_size,d2	; d2 = next transfer destination
+		move.w	#$C0/2,d3						; d3 = transfer size (words)
+		jmp		(QueueDMATransfer).l			; load blank tiles for no smoke puff
 ; ===========================================================================
 
-; ---------------------------------------------------------------------------
-; Animated pattern routine - more Marble Zone
-; ---------------------------------------------------------------------------
-AniArt_MZextra:
-		dc.w loc_1C3EE-AniArt_MZextra, loc_1C3FA-AniArt_MZextra
-		dc.w loc_1C410-AniArt_MZextra, loc_1C41E-AniArt_MZextra
-		dc.w loc_1C434-AniArt_MZextra, loc_1C442-AniArt_MZextra
-		dc.w loc_1C458-AniArt_MZextra, loc_1C466-AniArt_MZextra
-		dc.w loc_1C47C-AniArt_MZextra, loc_1C48A-AniArt_MZextra
-		dc.w loc_1C4A0-AniArt_MZextra, loc_1C4AE-AniArt_MZextra
-		dc.w loc_1C4C4-AniArt_MZextra, loc_1C4D2-AniArt_MZextra
-		dc.w loc_1C4E8-AniArt_MZextra, loc_1C4FA-AniArt_MZextra
-; ===========================================================================
-
-loc_1C3EE:
-		move.l	(a1),(a6)
-		lea		$10(a1),a1
-		dbf		d1,loc_1C3EE
+.end:
 		rts	
 ; ===========================================================================
-
-loc_1C3FA:
-		move.l	2(a1),d0
-		move.b	1(a1),d0
-		ror.l	#8,d0
-		move.l	d0,(a6)
-		lea		$10(a1),a1
-		dbf		d1,loc_1C3FA
-		rts	
-; ===========================================================================
-
-loc_1C410:
-		move.l	2(a1),(a6)
-		lea		$10(a1),a1
-		dbf		d1,loc_1C410
-		rts	
-; ===========================================================================
-
-loc_1C41E:
-		move.l	4(a1),d0
-		move.b	3(a1),d0
-		ror.l	#8,d0
-		move.l	d0,(a6)
-		lea		$10(a1),a1
-		dbf		d1,loc_1C41E
-		rts	
-; ===========================================================================
-
-loc_1C434:
-		move.l	4(a1),(a6)
-		lea		$10(a1),a1
-		dbf		d1,loc_1C434
-		rts	
-; ===========================================================================
-
-loc_1C442:
-		move.l	6(a1),d0
-		move.b	5(a1),d0
-		ror.l	#8,d0
-		move.l	d0,(a6)
-		lea		$10(a1),a1
-		dbf		d1,loc_1C442
-		rts	
-; ===========================================================================
-
-loc_1C458:
-		move.l	6(a1),(a6)
-		lea		$10(a1),a1
-		dbf		d1,loc_1C458
-		rts	
-; ===========================================================================
-
-loc_1C466:
-		move.l	8(a1),d0
-		move.b	7(a1),d0
-		ror.l	#8,d0
-		move.l	d0,(a6)
-		lea		$10(a1),a1
-		dbf		d1,loc_1C466
-		rts	
-; ===========================================================================
-
-loc_1C47C:
-		move.l	8(a1),(a6)
-		lea		$10(a1),a1
-		dbf		d1,loc_1C47C
-		rts	
-; ===========================================================================
-
-loc_1C48A:
-		move.l	$A(a1),d0
-		move.b	9(a1),d0
-		ror.l	#8,d0
-		move.l	d0,(a6)
-		lea		$10(a1),a1
-		dbf		d1,loc_1C48A
-		rts	
-; ===========================================================================
-
-loc_1C4A0:
-		move.l	$A(a1),(a6)
-		lea		$10(a1),a1
-		dbf		d1,loc_1C4A0
-		rts	
-; ===========================================================================
-
-loc_1C4AE:
-		move.l	$C(a1),d0
-		move.b	$B(a1),d0
-		ror.l	#8,d0
-		move.l	d0,(a6)
-		lea		$10(a1),a1
-		dbf		d1,loc_1C4AE
-		rts	
-; ===========================================================================
-
-loc_1C4C4:
-		move.l	$C(a1),(a6)
-		lea		$10(a1),a1
-		dbf		d1,loc_1C4C4
-		rts	
-; ===========================================================================
-
-loc_1C4D2:
-		move.l	$C(a1),d0
-		rol.l	#8,d0
-		_move.b	0(a1),d0
-		move.l	d0,(a6)
-		lea		$10(a1),a1
-		dbf		d1,loc_1C4D2
-		rts	
-; ===========================================================================
-
-loc_1C4E8:
-		move.w	$E(a1),(a6)
-		_move.w	0(a1),(a6)
-		lea		$10(a1),a1
-		dbf		d1,loc_1C4E8
-		rts	
-; ===========================================================================
-
-loc_1C4FA:
-		_move.l	0(a1),d0
-		move.b	$F(a1),d0
-		ror.l	#8,d0
-		move.l	d0,(a6)
-		lea		$10(a1),a1
-		dbf		d1,loc_1C4FA
-		rts
