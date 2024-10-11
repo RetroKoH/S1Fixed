@@ -39,9 +39,9 @@ Card_LoadConfig:
 
 Card_Loop:
 		_move.b	#id_TitleCard,obID(a1)
-		move.w	(a3),obX(a1)	; load start x-position
-		move.w	(a3)+,card_finalX(a1) ; load finish x-position (same as start)
-		move.w	(a3)+,card_mainX(a1) ; load main x-position
+		move.w	(a3),obX(a1)			; load start x-position
+		move.w	(a3)+,card_finalX(a1)	; load finish x-position (same as start)
+		move.w	(a3)+,card_mainX(a1)	; load main x-position
 		move.w	(a2)+,obScreenY(a1)
 		move.b	(a2)+,obRoutine(a1)
 		move.b	(a2)+,d0
@@ -145,15 +145,19 @@ Card_ItemData:
 ; ---------------------------------------------------------------------------
 ; Title	card configuration data
 ; Format:
-; 4 bytes per item (YYYY XXXX)
+; 4 bytes per item (AAAA BBBB); AAAA < obX and card_finalX; BBBB < card_mainX
 ; 4 items per level (GREEN HILL, ZONE, ACT X, oval)
 ; ---------------------------------------------------------------------------
+TitleCardMap:    macro    x
+        dc.w	0, $120, $FEB8+x, $F8+x, $3D0+x, $110+x, $1D0+x, $110+x
+        endm
+
 Card_ConData:
-		dc.w 0,	$120, $FEFC, $13C, $414, $154, $214, $154 ; GHZ
-		dc.w 0,	$120, $FEF4, $134, $40C, $14C, $20C, $14C ; LZ
-		dc.w 0,	$120, $FEE0, $120, $3F8, $138, $1F8, $138 ; MZ
-		dc.w 0,	$120, $FEFC, $13C, $414, $154, $214, $154 ; SLZ
-		dc.w 0,	$120, $FF04, $144, $41C, $15C, $21C, $15C ; SYZ
-		dc.w 0,	$120, $FF04, $144, $41C, $15C, $21C, $15C ; SBZ
-		dc.w 0,	$120, $FEE4, $124, $3EC, $3EC, $1EC, $12C ; FZ
+		TitleCardMap 	$44	;0,	$120, $FEFC, $13C, $414, $154, $214, $154 ; GHZ
+		TitleCardMap 	$3C	;0,	$120, $FEF4, $134, $40C, $14C, $20C, $14C ; LZ
+		TitleCardMap 	$28	;0,	$120, $FEE0, $120, $3F8, $138, $1F8, $138 ; MZ
+		TitleCardMap 	$44	;0,	$120, $FEFC, $13C, $414, $154, $214, $154 ; SLZ
+		TitleCardMap 	$4C	;0,	$120, $FF04, $144, $41C, $15C, $21C, $15C ; SYZ
+		TitleCardMap 	$4C	;0,	$120, $FF04, $144, $41C, $15C, $21C, $15C ; SBZ
+		TitleCardMap 	$18	;0,	$120, $FEE4, $124, $3EC, $3EC, $1EC, $12C ; FZ
 ; ===========================================================================
