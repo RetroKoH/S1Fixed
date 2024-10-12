@@ -45,7 +45,7 @@ RM_Main:
 		move.l	a1,(v_ringend_addr_ROM).w	; set end address
 		rts
 ; ===========================================================================
-; loc_16FDE:
+
 RM_Next:
 		lea		(v_ringconsumedata).w,a2
 		move.w	(a2)+,d1					; d1 = (v_ringconsumecount).w

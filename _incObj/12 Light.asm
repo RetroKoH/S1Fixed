@@ -1,6 +1,5 @@
 ; ---------------------------------------------------------------------------
 ; Object 12 - lamp (SYZ)
-; I could probably remove this object and use animated tiles
 ; ---------------------------------------------------------------------------
 
 SpinningLight:

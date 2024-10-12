@@ -5610,7 +5610,7 @@ MusicList2:
 		even
 
 	if SuperMod=1
-		include	"_incObj\Sonic Super.asm"
+		include	"_incObj/Sonic Super.asm"
 	endif
 		include	"_incObj/Sonic Display.asm"
 		include	"_incObj/Sonic RecordPosition.asm"
@@ -7200,7 +7200,7 @@ AddPoints:
 		include	"_inc/HUD Update.asm"
 
 	if HUDInSpecialStage=1	; Mercury HUD In Special Stage
-		include	"_inc\HUD Update SS.asm"
+		include	"_inc/HUD Update SS.asm"
 	endif	; HUD In Special Stage End
 
 ; ---------------------------------------------------------------------------
@@ -7288,10 +7288,10 @@ Eni_SegaLogo:	binclude	"tilemaps/Sega Logo.eni" ; large Sega logo (mappings)
 
 
 	if ChunksInROM=1	;Mercury Chunks In ROM
-Eni_Title:	binclude	"tilemaps_u\Title Screen.bin" ; title screen foreground (mappings)
+Eni_Title:	binclude	"tilemaps_u/Title Screen.bin" ; title screen foreground (mappings)
 		even
 	else
-Eni_Title:	binclude	"tilemaps\Title Screen.eni" ; title screen foreground (mappings)
+Eni_Title:	binclude	"tilemaps/Title Screen.eni" ; title screen foreground (mappings)
 		even
 	endif	;Chunks In ROM
 
@@ -7312,25 +7312,25 @@ Nem_JapNames:	binclude	"artnem/Hidden Japanese Credits.nem"
 		even
 
 	if NewLevelSelect
-Eni_MenuBack:		binclude	"tilemaps\SONIC MILES background.eni"
+Eni_MenuBack:		binclude	"tilemaps/SONIC MILES background.eni"
 		even
-Art_MenuBack:		binclude	"artunc\SONIC MILES background art.bin"
+Art_MenuBack:		binclude	"artunc/SONIC MILES background art.bin"
 		even
-Nem_MenuStuff:		binclude	"artnem\S2 Level Select Font.nem"
+Nem_MenuStuff:		binclude	"artnem/S2 Level Select Font.nem"
 		even
 
 	if BetaLevelOrder
-Eni_LevSel:			binclude	"tilemaps\S2 Level Select (Beta Order).eni"
+Eni_LevSel:			binclude	"tilemaps/S2 Level Select (Beta Order).eni"
 		even
 	else
-Eni_LevSel:			binclude	"tilemaps\S2 Level Select.eni"
+Eni_LevSel:			binclude	"tilemaps/S2 Level Select.eni"
 		even
 	endif
 
 
-Eni_LevSelIcons:	binclude	"tilemaps\S2 Level Select Icons.eni"
+Eni_LevSelIcons:	binclude	"tilemaps/S2 Level Select Icons.eni"
 		even
-Nem_LevSelIcons:	binclude	"artnem\S2 Level Select Icons.nem"
+Nem_LevSelIcons:	binclude	"artnem/S2 Level Select Icons.nem"
 		even
 	endif
 
@@ -7347,17 +7347,17 @@ Art_Goggles:	binclude	"artunc/Goggles.bin"				; Goggles
 		even
 
 	if ShieldsMode>0
-Art_Insta:		binclude	"artunc\Shield - Insta.bin"
+Art_Insta:		binclude	"artunc/Shield - Insta.bin"
 		even
 	endif
 	if ShieldsMode>1
-Art_Shield_F:	binclude	"artunc\Shield - Flame.bin"
+Art_Shield_F:	binclude	"artunc/Shield - Flame.bin"
 		even
-Art_Shield_B:	binclude	"artunc\Shield - Bubble.bin"
+Art_Shield_B:	binclude	"artunc/Shield - Bubble.bin"
 		even
-Art_Shield_L:	binclude	"artunc\Shield - Lightning.bin"
+Art_Shield_L:	binclude	"artunc/Shield - Lightning.bin"
 		even
-Art_Shield_L2:	binclude	"artunc\Shield - Lightning Sparks.bin"
+Art_Shield_L2:	binclude	"artunc/Shield - Lightning Sparks.bin"
 		even
 	endif
 
@@ -8133,7 +8133,7 @@ Map_RingBIN:
 		include	"_maps/HUD (centiseconds).asm"
 
 	if HUDInSpecialStage=1	; Mercury HUD in Special Stage
-		include	"_maps\HUD SS (centiseconds).asm"
+		include	"_maps/HUD SS (centiseconds).asm"
 	endif	; HUD in Special Stage End
 	
 	else
@@ -8141,7 +8141,7 @@ Map_RingBIN:
 		include	"_maps/HUD.asm"
 
 	if HUDInSpecialStage=1	; Mercury HUD in Special Stage
-		include	"_maps\HUD SS.asm"
+		include	"_maps/HUD SS.asm"
 	endif	; HUD in Special Stage End
 	
 	endif	; HUD Centiseconds End
