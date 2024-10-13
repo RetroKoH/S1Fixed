@@ -13,9 +13,11 @@ DynamicLevelEvents:
 		beq.s	DLE_NoChg
 	; Exit DLE In Special Stage And Title end
 
-		moveq	#0,d0
-		move.b	(v_zone).w,d0
-		add.w	d0,d0
+	; Filter Optimized DLE Manager
+		move.w	(v_zone).w,d0
+		ror.b	#2,d0 ; lsl.b	#6,d0 > Filter Optimized Shifting
+		lsr.w	#5,d0
+	; Optimized DLE Manager End
 		move.w	DLE_Index(pc,d0.w),d0
 		jsr		DLE_Index(pc,d0.w) ; run level-specific events
 		moveq	#2,d1
@@ -58,71 +60,95 @@ loc_6DC4:
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
-; Offset index for dynamic level events
+; Offset index for dynamic level events -- Filter Optimized DLE Manager
 ; ---------------------------------------------------------------------------
 ; ===========================================================================
 DLE_Index:	offsetTable
-		offsetTableEntry.w	DLE_GHZ
-		offsetTableEntry.w	DLE_LZ
-		offsetTableEntry.w	DLE_MZ
-		offsetTableEntry.w	DLE_SLZ
-		offsetTableEntry.w	DLE_SYZ
-		offsetTableEntry.w	DLE_SBZ
-		zonewarning DLE_Index,2
-		offsetTableEntry.w	DLE_Ending
+		offsetTableEntry.w DLE_GHZ1
+		offsetTableEntry.w DLE_GHZ2
+		offsetTableEntry.w DLE_GHZ3
+		offsetTableEntry.w DLE_GHZ1
+
+		offsetTableEntry.w DLE_LZ12
+		offsetTableEntry.w DLE_LZ12
+		offsetTableEntry.w DLE_LZ3
+		offsetTableEntry.w DLE_SBZ3
+
+		offsetTableEntry.w DLE_MZ1
+		offsetTableEntry.w DLE_MZ2
+		offsetTableEntry.w DLE_MZ3
+		offsetTableEntry.w DLE_MZ1
+
+		offsetTableEntry.w DLE_SLZ12
+		offsetTableEntry.w DLE_SLZ12
+		offsetTableEntry.w DLE_SLZ3
+		offsetTableEntry.w DLE_SLZ12
+
+		offsetTableEntry.w DLE_SYZ1
+		offsetTableEntry.w DLE_SYZ2
+		offsetTableEntry.w DLE_SYZ3
+		offsetTableEntry.w DLE_SYZ1
+
+		offsetTableEntry.w DLE_SBZ1
+		offsetTableEntry.w DLE_SBZ2
+		offsetTableEntry.w DLE_FZ
+		offsetTableEntry.w DLE_SBZ1
+
+		offsetTableEntry.w DLE_Ending
+		offsetTableEntry.w DLE_Ending
+		offsetTableEntry.w DLE_Ending
+		offsetTableEntry.w DLE_Ending
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
 ; Green	Hill Zone dynamic level events
 ; ---------------------------------------------------------------------------
 
-DLE_GHZ:
-		moveq	#0,d0
-		move.b	(v_act).w,d0
-		add.w	d0,d0
-		move.w	DLE_GHZx(pc,d0.w),d0
-		jmp	DLE_GHZx(pc,d0.w)
-; ===========================================================================
-DLE_GHZx:	dc.w DLE_GHZ1-DLE_GHZx
-		dc.w DLE_GHZ2-DLE_GHZx
-		dc.w DLE_GHZ3-DLE_GHZx
-; ===========================================================================
-
 DLE_GHZ1:
 		move.w	#$300,(v_limitbtm1).w ; set lower y-boundary
 		cmpi.w	#$1780,(v_screenposx).w ; has the camera reached $1780 on x-axis?
-		blo.s	locret_6E08	; if not, branch
+		blo.s	.ret	; if not, branch
 		move.w	#$400,(v_limitbtm1).w ; set lower y-boundary
 
-locret_6E08:
+	.ret:
+DLE_LZ12:
+DLE_SLZ12:
+DLE_SYZ1:
+DLE_Ending:
 		rts	
 ; ===========================================================================
 
 DLE_GHZ2:
 		move.w	#$300,(v_limitbtm1).w
 		cmpi.w	#$ED0,(v_screenposx).w
-		blo.s	locret_6E3A
+		blo.s	.ret
 		move.w	#$200,(v_limitbtm1).w
 		cmpi.w	#$1600,(v_screenposx).w
-		blo.s	locret_6E3A
+		blo.s	.ret
 		move.w	#$400,(v_limitbtm1).w
 		cmpi.w	#$1D60,(v_screenposx).w
-		blo.s	locret_6E3A
+		blo.s	.ret
 		move.w	#$300,(v_limitbtm1).w
 
-locret_6E3A:
+.ret:
 		rts	
 ; ===========================================================================
 
+	; RetroKoH Routine Optimization
 DLE_GHZ3:
-		moveq	#0,d0
-		move.b	(v_dle_routine).w,d0
-		move.w	off_6E4A(pc,d0.w),d0
-		jmp	off_6E4A(pc,d0.w)
+		move.w	(v_dle_routine).w,d0	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
+		jmp		GHZ3_Index(pc,d0.w)
 ; ===========================================================================
-off_6E4A:	dc.w DLE_GHZ3main-off_6E4A
-		dc.w DLE_GHZ3boss-off_6E4A
-		dc.w DLE_GHZ3end-off_6E4A
+GHZ3_Index:
+		bra.s	DLE_GHZ3main
+		bra.s	DLE_GHZ3boss
+		;bra.s	DLE_GHZ3end
+; ===========================================================================
+	; Routine Optimization End
+
+DLE_GHZ3end:
+		move.w	(v_screenposx).w,(v_limitleft2).w
+		rts	
 ; ===========================================================================
 
 DLE_GHZ3main:
@@ -150,18 +176,18 @@ locret_6E96:
 
 loc_6E98:
 		move.w	#boss_ghz_y,(v_limitbtm1).w
-		addq.b	#2,(v_dle_routine).w
+		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 		rts	
 ; ===========================================================================
 
 DLE_GHZ3boss:
 		cmpi.w	#$960,(v_screenposx).w
 		bhs.s	loc_6EB0
-		subq.b	#2,(v_dle_routine).w
+		subq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 
 loc_6EB0:
 		cmpi.w	#boss_ghz_x,(v_screenposx).w
-		blo.s	locret_6EE8
+		blo.s	locret_6E96
 		bsr.w	FindFreeObj
 		bne.s	loc_6ED0
 		_move.b	#id_BossGreenHill,obID(a1) ; load GHZ boss	object
@@ -173,40 +199,14 @@ loc_6ED0:
 		bsr.w	PlaySound				; play boss music
 		move.b	d0,(v_lastbgmplayed).w	; store last played music
 		move.b	#1,(f_lockscreen).w		; lock screen
-		addq.b	#2,(v_dle_routine).w
+		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 		moveq	#plcid_Boss_GHZ,d0		; RetroKoH VRAM Overhaul
 		bra.w	AddPLC					; load boss patterns
 ; ===========================================================================
 
-locret_6EE8:
-		rts	
-; ===========================================================================
-
-DLE_GHZ3end:
-		move.w	(v_screenposx).w,(v_limitleft2).w
-		rts	
-; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Labyrinth Zone dynamic level events
 ; ---------------------------------------------------------------------------
-
-DLE_LZ:
-		moveq	#0,d0
-		move.b	(v_act).w,d0
-		add.w	d0,d0
-		move.w	DLE_LZx(pc,d0.w),d0
-		jmp		DLE_LZx(pc,d0.w)
-; ===========================================================================
-DLE_LZx:
-		dc.w DLE_LZ12-DLE_LZx
-		dc.w DLE_LZ12-DLE_LZx
-		dc.w DLE_LZ3-DLE_LZx
-		dc.w DLE_SBZ3-DLE_LZx
-; ===========================================================================
-
-DLE_LZ12:
-		rts	
-; ===========================================================================
 
 DLE_LZ3:
 		tst.b	(f_switch+$F).w				; has switch $F	been pressed? (At the start, next to the endless slide)
@@ -223,20 +223,20 @@ loc_6F28:
 		tst.b	(f_switch+8).w				; has switch 8 been triggered? (At the start, next to the endless slide)
 		bne.s	DLE_LZ3_BossChk				; if yes, branch
 		cmpi.w	#$1BE8,(v_screenposx).w
-		blo.s	locret_6F62
+		blo.s	locret_6F8C
 		cmpi.w	#$598,(v_screenposy).w
-		bhs.s	locret_6F62
+		bhs.s	locret_6F8C
 		move.b	#1,(f_switch+8).w			; trigger the door
 		move.w	#sfx_Rumbling,d0
 		bsr.w	PlaySound_Special			; play rumbling sound
 
 DLE_LZ3_BossChk:
-		tst.b	(v_dle_routine).w
-		bne.s	locret_6F62
+		tst.w	(v_dle_routine).w			; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
+		bne.s	locret_6F8C
 		cmpi.w	#boss_lz_x-$140,(v_screenposx).w
-		blo.s	locret_6F62
+		blo.s	locret_6F8C
 		cmpi.w	#boss_lz_y+$540,(v_screenposy).w
-		bhs.s	locret_6F62
+		bhs.s	locret_6F8C
 		bsr.w	FindFreeObj
 		bne.s	loc_6F4A
 		_move.b	#id_BossLabyrinth,obID(a1)	; load LZ boss object
@@ -246,13 +246,9 @@ loc_6F4A:
 		bsr.w	PlaySound					; play boss music
 		move.b	d0,(v_lastbgmplayed).w		; store last played music
 		move.b	#1,(f_lockscreen).w			; lock screen
-		addq.b	#2,(v_dle_routine).w
+		addq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 		moveq	#plcid_Boss,d0
 		bra.w	AddPLC						; load boss patterns
-; ===========================================================================
-
-locret_6F62:
-		rts	
 ; ===========================================================================
 
 DLE_SBZ3:
@@ -274,29 +270,18 @@ locret_6F8C:
 ; Marble Zone dynamic level events
 ; ---------------------------------------------------------------------------
 
-DLE_MZ:
-		moveq	#0,d0
-		move.b	(v_act).w,d0
-		add.w	d0,d0
-		move.w	DLE_MZx(pc,d0.w),d0
-		jmp	DLE_MZx(pc,d0.w)
-; ===========================================================================
-DLE_MZx:	dc.w DLE_MZ1-DLE_MZx
-		dc.w DLE_MZ2-DLE_MZx
-		dc.w DLE_MZ3-DLE_MZx
-; ===========================================================================
-
+	; RetroKoH Routine Optimization
 DLE_MZ1:
-		moveq	#0,d0
-		move.b	(v_dle_routine).w,d0
-		move.w	off_6FB2(pc,d0.w),d0
-		jmp	off_6FB2(pc,d0.w)
+		move.w	(v_dle_routine).w,d0		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
+		jmp		MZ1_Index(pc,d0.w)
 ; ===========================================================================
-off_6FB2:	dc.w loc_6FBA-off_6FB2
-		dc.w loc_6FEA-off_6FB2
-		dc.w loc_702E-off_6FB2
-		dc.w loc_7050-off_6FB2
+MZ1_Index:
+		bra.s loc_6FBA
+		bra.s loc_6FEA
+		bra.s loc_702E
+		bra.w loc_7050
 ; ===========================================================================
+	; Routine Optimization End
 
 loc_6FBA:
 		move.w	#$1D0,(v_limitbtm1).w
@@ -308,7 +293,7 @@ loc_6FBA:
 		move.w	#$340,(v_limitbtm1).w
 		cmpi.w	#$340,(v_screenposy).w
 		blo.s	locret_6FE8
-		addq.b	#2,(v_dle_routine).w
+		addq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 
 locret_6FE8:
 		rts	
@@ -317,7 +302,7 @@ locret_6FE8:
 loc_6FEA:
 		cmpi.w	#$340,(v_screenposy).w
 		bhs.s	loc_6FF8
-		subq.b	#2,(v_dle_routine).w
+		subq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 		rts	
 ; ===========================================================================
 
@@ -332,7 +317,7 @@ loc_6FF8:
 		move.w	#$500,(v_limitbtm1).w
 		cmpi.w	#$370,(v_screenposy).w
 		blo.s	locret_702C
-		addq.b	#2,(v_dle_routine).w
+		addq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 
 locret_702C:
 		rts	
@@ -341,7 +326,7 @@ locret_702C:
 loc_702E:
 		cmpi.w	#$370,(v_screenposy).w
 		bhs.s	loc_703C
-		subq.b	#2,(v_dle_routine).w
+		subq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 		rts	
 ; ===========================================================================
 
@@ -351,7 +336,7 @@ loc_703C:
 		cmpi.w	#$B80,(v_screenposx).w
 		bcs.s	locret_704E
 		move.w	#$500,(v_limittop2).w
-		addq.b	#2,(v_dle_routine).w
+		addq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 
 locret_704E:
 		rts	
@@ -364,12 +349,14 @@ loc_7050:
 		beq.s	locret_7072
 		subq.w	#2,(v_limittop2).w
 		rts
+
 locj_76B8:
 		cmpi.w	#$500,(v_limittop2).w
 		beq.s	locj_76CE
 		cmpi.w	#$500,(v_screenposy).w
 		bcs.s	locret_7072
 		move.w	#$500,(v_limittop2).w
+
 locj_76CE:
 		cmpi.w	#$E70,(v_screenposx).w
 		blo.s	locret_7072
@@ -394,14 +381,15 @@ locret_7088:
 ; ===========================================================================
 
 DLE_MZ3:
-		moveq	#0,d0
-		move.b	(v_dle_routine).w,d0
-		move.w	off_7098(pc,d0.w),d0
-		jmp	off_7098(pc,d0.w)
-; ===========================================================================
-off_7098:	dc.w DLE_MZ3boss-off_7098
-		dc.w DLE_MZ3end-off_7098
-; ===========================================================================
+	; Lavagaming/RetroKoH Optimized Routine Handling
+		tst.w	(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
+		beq.s	DLE_MZ3boss
+	; Optimized Routine Handling End
+
+;DLE_MZ3end:
+		move.w	(v_screenposx).w,(v_limitleft2).w
+locret_70E8:
+		rts
 
 DLE_MZ3boss:
 		move.w	#$720,(v_limitbtm1).w
@@ -421,55 +409,32 @@ loc_70D0:
 		bsr.w	PlaySound				; play boss music
 		move.b	d0,(v_lastbgmplayed).w	; store last played music
 		move.b	#1,(f_lockscreen).w		; lock screen
-		addq.b	#2,(v_dle_routine).w
+		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 		moveq	#plcid_Boss_MZ,d0		; RetroKoH VRAM Overhaul
 		bra.w	AddPLC					; load boss patterns
 ; ===========================================================================
 
-locret_70E8:
-		rts	
-; ===========================================================================
-
-DLE_MZ3end:
-		move.w	(v_screenposx).w,(v_limitleft2).w
-		rts	
-; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Star Light Zone dynamic level events
 ; ---------------------------------------------------------------------------
 
-DLE_SLZ:
-		moveq	#0,d0
-		move.b	(v_act).w,d0
-		add.w	d0,d0
-		move.w	DLE_SLZx(pc,d0.w),d0
-		jmp	DLE_SLZx(pc,d0.w)
-; ===========================================================================
-DLE_SLZx:	dc.w DLE_SLZ12-DLE_SLZx
-		dc.w DLE_SLZ12-DLE_SLZx
-		dc.w DLE_SLZ3-DLE_SLZx
-; ===========================================================================
-
-DLE_SLZ12:
-		rts	
-; ===========================================================================
-
 DLE_SLZ3:
-		moveq	#0,d0
-		move.b	(v_dle_routine).w,d0
-		move.w	off_7118(pc,d0.w),d0
-		jmp	off_7118(pc,d0.w)
+	; RetroKoH Optimized Routine Handling
+		move.w	(v_dle_routine).w,d0	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
+		jmp		SLZ3_Index(pc,d0.w)
 ; ===========================================================================
-off_7118:	dc.w DLE_SLZ3main-off_7118
-		dc.w DLE_SLZ3boss-off_7118
-		dc.w DLE_SLZ3end-off_7118
+SLZ3_Index:
+		bra.s	DLE_SLZ3main
+		bra.s	DLE_SLZ3boss
+		bra.s	DLE_SLZ3end
 ; ===========================================================================
+	; Optimized Routine Handling End
 
 DLE_SLZ3main:
 		cmpi.w	#boss_slz_x-$190,(v_screenposx).w
 		blo.s	locret_7130
 		move.w	#boss_slz_y,(v_limitbtm1).w
-		addq.b	#2,(v_dle_routine).w
+		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 
 locret_7130:
 		rts	
@@ -477,7 +442,7 @@ locret_7130:
 
 DLE_SLZ3boss:
 		cmpi.w	#boss_slz_x,(v_screenposx).w
-		blo.s	locret_715C
+		blo.s	locret_7130
 		bsr.w	FindFreeObj
 		bne.s	loc_7144
 		move.b	#id_BossStarLight,obID(a1) ; load SLZ boss object
@@ -487,39 +452,18 @@ loc_7144:
 		bsr.w	PlaySound				; play boss music
 		move.b	d0,(v_lastbgmplayed).w	; store last played music
 		move.b	#1,(f_lockscreen).w		; lock screen
-		addq.b	#2,(v_dle_routine).w
+		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 		moveq	#plcid_Boss_SLZ,d0		; RetroKoH VRAM Overhaul
 		bra.w	AddPLC					; load boss patterns
-; ===========================================================================
-
-locret_715C:
-		rts	
 ; ===========================================================================
 
 DLE_SLZ3end:
 		move.w	(v_screenposx).w,(v_limitleft2).w
 		rts
-		rts
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Spring Yard Zone dynamic level events
 ; ---------------------------------------------------------------------------
-
-DLE_SYZ:
-		moveq	#0,d0
-		move.b	(v_act).w,d0
-		add.w	d0,d0
-		move.w	DLE_SYZx(pc,d0.w),d0
-		jmp	DLE_SYZx(pc,d0.w)
-; ===========================================================================
-DLE_SYZx:	dc.w DLE_SYZ1-DLE_SYZx
-		dc.w DLE_SYZ2-DLE_SYZx
-		dc.w DLE_SYZ3-DLE_SYZx
-; ===========================================================================
-
-DLE_SYZ1:
-		rts	
-; ===========================================================================
 
 DLE_SYZ2:
 		move.w	#$520,(v_limitbtm1).w
@@ -535,23 +479,25 @@ locret_71A2:
 ; ===========================================================================
 
 DLE_SYZ3:
-		moveq	#0,d0
-		move.b	(v_dle_routine).w,d0
-		move.w	off_71B2(pc,d0.w),d0
-		jmp	off_71B2(pc,d0.w)
+	; RetroKoH Optimized Routine Handling
+		move.w	(v_dle_routine).w,d0	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
+		jmp		SYZ3_Index(pc,d0.w)
 ; ===========================================================================
-off_71B2:	dc.w DLE_SYZ3main-off_71B2
-		dc.w DLE_SYZ3boss-off_71B2
-		dc.w DLE_SYZ3end-off_71B2
+
+SYZ3_Index:
+		bra.s	DLE_SYZ3main
+		bra.s	DLE_SYZ3boss
+		bra.s	DLE_SYZ3end
 ; ===========================================================================
+	; Optimized Routine Handling End
 
 DLE_SYZ3main:
 		cmpi.w	#boss_syz_x-$140,(v_screenposx).w
 		blo.s	locret_71CE
 		bsr.w	FindFreeObj
 		bne.s	locret_71CE
-		move.b	#id_BossBlock,obID(a1) ; load blocks that boss picks up
-		addq.b	#2,(v_dle_routine).w
+		move.b	#id_BossBlock,obID(a1)	; load blocks that boss picks up
+		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 
 locret_71CE:
 		rts	
@@ -563,8 +509,8 @@ DLE_SYZ3boss:
 		move.w	#boss_syz_y,(v_limitbtm1).w
 		bsr.w	FindFreeObj
 		bne.s	loc_71EC
-		move.b	#id_BossSpringYard,obID(a1) ; load SYZ boss object
-		addq.b	#2,(v_dle_routine).w
+		move.b	#id_BossSpringYard,obID(a1)	; load SYZ boss object
+		addq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 
 loc_71EC:
 		move.w	#bgm_Boss,d0
@@ -575,29 +521,14 @@ loc_71EC:
 		bra.w	AddPLC					; load boss patterns
 ; ===========================================================================
 
-locret_7200:
-		rts	
-; ===========================================================================
-
 DLE_SYZ3end:
 		move.w	(v_screenposx).w,(v_limitleft2).w
+locret_7200:
 		rts	
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Scrap	Brain Zone dynamic level events
 ; ---------------------------------------------------------------------------
-
-DLE_SBZ:
-		moveq	#0,d0
-		move.b	(v_act).w,d0
-		add.w	d0,d0
-		move.w	DLE_SBZx(pc,d0.w),d0
-		jmp	DLE_SBZx(pc,d0.w)
-; ===========================================================================
-DLE_SBZx:	dc.w DLE_SBZ1-DLE_SBZx
-		dc.w DLE_SBZ2-DLE_SBZx
-		dc.w DLE_FZ-DLE_SBZx
-; ===========================================================================
 
 DLE_SBZ1:
 		move.w	#$720,(v_limitbtm1).w
@@ -613,15 +544,15 @@ locret_7242:
 ; ===========================================================================
 
 DLE_SBZ2:
-		moveq	#0,d0
-		move.b	(v_dle_routine).w,d0
-		move.w	off_7252(pc,d0.w),d0
-		jmp	off_7252(pc,d0.w)
+		move.w	(v_dle_routine).w,d0	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
+		move.w	SBZ2_Index(pc,d0.w),d0
+		jmp		SBZ2_Index(pc,d0.w)
 ; ===========================================================================
-off_7252:	dc.w DLE_SBZ2main-off_7252
-		dc.w DLE_SBZ2boss-off_7252
-		dc.w DLE_SBZ2boss2-off_7252
-		dc.w DLE_SBZ2end-off_7252
+SBZ2_Index:		offsetTable
+		offsetTableEntry.w DLE_SBZ2main
+		offsetTableEntry.w DLE_SBZ2boss
+		offsetTableEntry.w DLE_SBZ2boss2
+		offsetTableEntry.w DLE_SBZ2end
 ; ===========================================================================
 
 DLE_SBZ2main:
@@ -631,7 +562,7 @@ DLE_SBZ2main:
 		move.w	#boss_sbz2_y,(v_limitbtm1).w
 		cmpi.w	#$1E00,(v_screenposx).w
 		blo.s	locret_727A
-		addq.b	#2,(v_dle_routine).w
+		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 
 locret_727A:
 		rts	
@@ -643,9 +574,9 @@ DLE_SBZ2boss:
 		bsr.w	FindFreeObj
 		bne.s	locret_7298
 		move.b	#id_FalseFloor,obID(a1) ; load collapsing block object
-		addq.b	#2,(v_dle_routine).w
+		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 		moveq	#plcid_EggmanSBZ2,d0
-		bra.w	AddPLC		; load SBZ2 Eggman patterns
+		bra.w	AddPLC					; load SBZ2 Eggman patterns
 ; ===========================================================================
 
 locret_7298:
@@ -654,16 +585,14 @@ locret_7298:
 
 DLE_SBZ2boss2:
 		cmpi.w	#boss_sbz2_x-$F0,(v_screenposx).w
-		blo.s	loc_72B6
+		blo.s	loc_72C2
 		bsr.w	FindFreeObj
 		bne.s	loc_72B0
-		move.b	#id_ScrapEggman,obID(a1) ; load SBZ2 Eggman object
-		addq.b	#2,(v_dle_routine).w
+		move.b	#id_ScrapEggman,obID(a1)	; load SBZ2 Eggman object
+		addq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 
 loc_72B0:
-		move.b	#1,(f_lockscreen).w ; lock screen
-
-loc_72B6:
+		move.b	#1,(f_lockscreen).w			; lock screen
 		bra.s	loc_72C2
 ; ===========================================================================
 
@@ -679,59 +608,45 @@ loc_72C2:
 ; ===========================================================================
 
 DLE_FZ:
-		moveq	#0,d0
-		move.b	(v_dle_routine).w,d0
-		move.w	off_72D8(pc,d0.w),d0
-		jmp	off_72D8(pc,d0.w)
+		move.w	(v_dle_routine).w,d0		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
+		move.w	FZ_Index(pc,d0.w),d0
+		jmp		FZ_Index(pc,d0.w)
 ; ===========================================================================
-off_72D8:	dc.w DLE_FZmain-off_72D8, DLE_FZboss-off_72D8
-		dc.w DLE_FZend-off_72D8, locret_7322-off_72D8
-		dc.w DLE_FZend2-off_72D8
+FZ_Index:		offsetTable
+		offsetTableEntry.w DLE_FZmain
+		offsetTableEntry.w DLE_FZboss
+		offsetTableEntry.w DLE_FZend
+		offsetTableEntry.w locret_7322
+		offsetTableEntry.w loc_72C2		; DLE_FZend2
 ; ===========================================================================
 
 DLE_FZmain:
 		cmpi.w	#boss_fz_x-$308,(v_screenposx).w
-		blo.s	loc_72F4
-		addq.b	#2,(v_dle_routine).w
+		blo.s	loc_72C2
+		addq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 		moveq	#plcid_FZBoss,d0
-		bsr.w	AddPLC		; load FZ boss patterns
-
-loc_72F4:
+		bsr.w	AddPLC						; load FZ boss patterns
 		bra.s	loc_72C2
 ; ===========================================================================
 
 DLE_FZboss:
 		cmpi.w	#boss_fz_x-$150,(v_screenposx).w
-		blo.s	loc_7312
+		blo.s	loc_72C2
 		bsr.w	FindFreeObj
-		bne.s	loc_7312
-		move.b	#id_BossFinal,obID(a1) ; load FZ boss object
-		addq.b	#2,(v_dle_routine).w
-		move.b	#1,(f_lockscreen).w ; lock screen
-
-loc_7312:
+		bne.s	loc_72C2
+		move.b	#id_BossFinal,obID(a1)	; load FZ boss object
+		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
+		move.b	#1,(f_lockscreen).w		; lock screen
 		bra.s	loc_72C2
 ; ===========================================================================
 
 DLE_FZend:
 		cmpi.w	#boss_fz_x,(v_screenposx).w
-		blo.s	loc_7320
-		addq.b	#2,(v_dle_routine).w
-
-loc_7320:
+		blo.s	loc_72C2
+		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 		bra.s	loc_72C2
 ; ===========================================================================
 
 locret_7322:
 		rts	
 ; ===========================================================================
-
-DLE_FZend2:
-		bra.s	loc_72C2
-; ===========================================================================
-; ---------------------------------------------------------------------------
-; Ending sequence dynamic level events (empty)
-; ---------------------------------------------------------------------------
-
-DLE_Ending:
-		rts	

@@ -7,7 +7,7 @@
 
 LevelSizeLoad:
 		moveq	#0,d0
-		move.b	d0,(v_dle_routine).w
+		move.w	d0,(v_dle_routine).w		; Now word-length so we don't need to clear d0 elsewhere -- Filter Optimized DLE Manager
 		move.w	(v_zone).w,d0
 		lsl.b	#6,d0
 		lsr.w	#4,d0

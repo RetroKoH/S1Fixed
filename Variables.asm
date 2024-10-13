@@ -264,10 +264,8 @@ v_screenposy_last:	ds.w	1		; ProjectFM S3K Object Manager
 v_scrshiftx:		ds.w	1		; x-screen shift (new - last) * $100
 v_scrshifty:		ds.w	1		; y-screen shift (new - last) * $100
 v_lookshift:		ds.w	1		; screen shift when Sonic looks up/down
-v_unused7:		ds.b	1		; unused
-v_unused8:		ds.b	1		; unused
-v_dle_routine:		ds.b	1		; dynamic level event - routine counter
-			ds.b	1		; unused
+				ds.b	2		; unused
+v_dle_routine:		ds.w	1		; dynamic level event - routine counter (2 bytes) -- Filter Optimized DLE Manager
 f_nobgscroll:		ds.b	1		; flag set to cancel background scrolling
 			ds.b	1		; unused
 v_unused9:		ds.b	1		; unused
@@ -427,8 +425,7 @@ v_lamp_xpos:		ds.w	1		; x-axis for Sonic to respawn at lamppost
 v_lamp_ypos:		ds.w	1		; y-axis for Sonic to respawn at lamppost
 v_lamp_rings:		ds.w	1		; rings stored at lamppost
 v_lamp_time:		ds.l	1		; time stored at lamppost
-v_lamp_dle:			ds.b	1		; dynamic level event routine counter at lamppost
-				ds.b	1		; unused
+v_lamp_dle:			ds.w	1		; dynamic level event routine counter at lamppost (2 bytes -- Filter DLE Optimization)
 v_lamp_limitbtm:	ds.w	1		; level bottom boundary at lamppost
 v_lamp_scrx:		ds.w	1		; x-axis screen at lamppost
 v_lamp_scry:		ds.w	1		; y-axis screen at lamppost

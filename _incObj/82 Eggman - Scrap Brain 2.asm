@@ -122,7 +122,7 @@ SEgg_FindBlocks:
 SEgg_FindLoop:
 		adda.w	d1,a1							; jump to next object RAM
 		cmpi.b	#id_FalseFloor,obID(a1)			; is object a block? (object $83)
-		dbeq	d0,SEgg_FindLoop				; if not, repeat (max	$3E times)
+		dbeq	d0,SEgg_FindLoop				; if not, repeat (max $3E times)
 
 		bne.s	loc_199D0
 		move.w	#"GO",obSubtype(a1)				; set block to disintegrate

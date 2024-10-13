@@ -142,7 +142,7 @@ Lamp_StoreInfo:
 		move.w	(v_rings).w,(v_lamp_rings).w 			; rings
 		move.b	(v_lifecount).w,(v_lamp_lives).w 		; lives
 		move.l	(v_time).w,(v_lamp_time).w 				; time
-		move.b	(v_dle_routine).w,(v_lamp_dle).w		; routine counter for dynamic level mod
+		move.w	(v_dle_routine).w,(v_lamp_dle).w		; routine counter for dynamic level events -- Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 		move.w	(v_limitbtm2).w,(v_lamp_limitbtm).w 	; lower y-boundary of level
 		move.w	(v_screenposx).w,(v_lamp_scrx).w 		; screen x-position
 		move.w	(v_screenposy).w,(v_lamp_scry).w 		; screen y-position
@@ -175,7 +175,7 @@ Lamp_LoadInfo:
 		move.l	(v_lamp_time).w,(v_time).w
 		move.b	#59,(v_timecent).w
 		subq.b	#1,(v_timesec).w
-		move.b	(v_lamp_dle).w,(v_dle_routine).w
+		move.w	(v_lamp_dle).w,(v_dle_routine).w	; Now word-length so we don't need to clear d0 elsewhere -- Filter Optimized DLE Manager
 		move.b	(v_lamp_wtrrout).w,(v_wtr_routine).w
 		move.w	(v_lamp_limitbtm).w,(v_limitbtm2).w
 		move.w	(v_lamp_limitbtm).w,(v_limitbtm1).w

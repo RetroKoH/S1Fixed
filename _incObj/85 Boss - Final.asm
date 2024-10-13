@@ -295,7 +295,7 @@ loc_1A02A:
 		move.b	#$20,obActWid(a0)
 		move.w	#$100,obVelX(a0)
 		move.w	#-$100,obVelY(a0)
-		addq.b	#2,(v_dle_routine).w
+		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 elsewhere -- Filter Optimized DLE Manager
 		bra.w	loc_1A166
 ; ===========================================================================
 
