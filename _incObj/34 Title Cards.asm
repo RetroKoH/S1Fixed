@@ -159,5 +159,5 @@ Card_ConData:
 		TitleCardMap 	$44	;0,	$120, $FEFC, $13C, $414, $154, $214, $154 ; SLZ
 		TitleCardMap 	$4C	;0,	$120, $FF04, $144, $41C, $15C, $21C, $15C ; SYZ
 		TitleCardMap 	$4C	;0,	$120, $FF04, $144, $41C, $15C, $21C, $15C ; SBZ
-		TitleCardMap 	$18	;0,	$120, $FEE4, $124, $3EC, $3EC, $1EC, $12C ; FZ
+		dc.w	0,	$120, $FEE4, $124, $3EC, $3EC, $1EC, $12C ;TitleCardMap 	$18 (Unused, this causes issues)
 ; ===========================================================================
