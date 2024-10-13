@@ -178,7 +178,7 @@
  Date: 2024-08-10  
 
 ## SRAM Support and Progress Saving
- Credit: Kilo/RetroKoH  
+ Credit: Kilo/RetroKoH, Starleaf  
  Function: Save Game Support, and new menu built off the PRESS START BUTTON object.  
  Date: 2024-08-15  
 
@@ -379,6 +379,11 @@
  Credit: MDTravis  
  Function: Title Card positioning is now far easier for users to edit due to the new macro.  
  Date: 2024-10-11  
+ 
+## Improved DLE System
+ Credit: Filter  
+ Function: Numerous changes by Filter make the DLE system run a bit more efficiently.  
+ Date: 2024-10-13  
 
 ## Extended Sound Index
  (Temporarily Removed)

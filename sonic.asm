@@ -353,12 +353,14 @@ GameInit:
 	if SaveProgressMod=1
 InitSRAM:
 		move.b  #1,(sram_port).l	; Enable SRAM writing
+
 	if AddressSRAM=3
-		; no need to change this by yourself anymore.
+		; no need to change this by yourself anymore -- Starleaf
 		lea 	($200001).l,a0		; Load SRAM memory into a0
 	else
-		lea	($200000).l,a0		; Load SRAM memory into a0
+		lea		($200000).l,a0		; Load SRAM memory into a0
 	endif
+
 		movep.l 0(a0),d0			; Get the existing string at the start of SRAM
 		move.l  #"SRAM",d1			; Write the string "SRAM" to d1
 		cmp.l   d0,d1				; Was it already in SRAM?
