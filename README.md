@@ -21,7 +21,7 @@
  Toggleable: Sonic CD Signpost style; Replace frame, not character pictures (RetroKoH)  
  Toggleable: Perfect Bonus from Sonic 2 (RetroKoH)  
  Add Goggle sprites; Let them extend underwater time (RetroKoH)  
- Add Title Card file w/ missing letters for users
+ Add Title Card file w/ missing letters for users  
  Toggleable: Beta Snare Drum sound (Consult Vladikcomper)  
  Proper Y-Wrapping (RetroKoH)  
  Subsprites for additional objects  
