@@ -12,6 +12,7 @@ Map_Got:	mappingsTable
 		mappingsTableEntry.w	M_Got_CBonus
 	endif
 
+; These mappings are taken straight from the title card mappings
 	mappingsTableEntry.w	M_Card_Oval
 	mappingsTableEntry.w	M_Card_Act1
 	mappingsTableEntry.w	M_Card_Act2

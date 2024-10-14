@@ -7038,9 +7038,14 @@ emldCount: = 6
 
 SS_Load:
 		moveq	#0,d0
+
+	if PerfectBonusEnabled
+		move.w	d0,(v_perfectringsleft).w		; clear perfect rings counter
+	endif
+
 		move.b	(v_lastspecial).w,d0			; load number of last special stage entered
 
-	if SpecialStageAdvancementMod=1	; Mercury Special Stage Index Increases Only If Won
+	if SpecialStageAdvancementMod	; Mercury Special Stage Index Increases Only If Won
 		cmpi.b	#emldCount,d0
 		bcs.s	SS_ChkEmldNum					; We don't increment here (This will instead be done in Obj09)
 		move.b	#0,d0
@@ -7096,20 +7101,31 @@ loc_1B6F6:
 		moveq	#$40-1,d2
 
 loc_1B6F8:
-	if AlteredSpecialStages>0
+	; Real-time layout altering and handling
+	if AlteredSpecialStages
 		move.b	(a0)+,d0				; load the layout item into d0
+		
+		if PerfectBonusEnabled
+			cmpi.b	#SSBlock_Ring,d0			; is this item a ring?
+			bne.s	.notring					; if not, branch
+			addq.w	#1,(v_perfectringsleft).w	; increment perfect rings counter
+	
+	.notring:
+		endif
 
-		if S4SpecialStages=1
+		if S4SpecialStages
 		; S4 Special Stage Mode removes UP, DOWN, and R blocks
-			cmpi.b	#SSBlock_UP,d0			; is the item an UP Block?
-			bcs.s	.loaditem
-			cmpi.b	#SSBlock_R,d0			; is the item an R or DOWN Block?
-			bhi.s	.loaditem				; if not any of these items, branch
-			move.b	#SSBlock_GhostSolid,d0	; else, make a solid mint block
-			bra.s	.loaditem				; if the next mod is disabled, this will become nop
+			cmpi.b	#SSBlock_UP,d0				; is the item an UP Block?
+			bcs.s	.dontchange
+			cmpi.b	#SSBlock_R,d0				; is the item an R or DOWN Block?
+			bhi.s	.dontchange					; if not any of these items, branch
+			move.b	#SSBlock_GhostSolid,d0		; else, make a solid mint block
+			bra.s	.loaditem					; if the next mod is disabled, this will become a nop instead
+	
+	.dontchange:
 		endif
 		
-		if SpecialStagesWithAllEmeralds=1
+		if SpecialStagesWithAllEmeralds
 		; Emeralds are replaced with 1-Ups if already collected
 			cmpi.b	#SSBlock_Emld1,d0			; is the item an emerald?
 			bcs.s	.loaditem
@@ -7123,7 +7139,7 @@ loc_1B6F8:
 	.loaditem:
 		move.b	d0,(a1)+				; load the item into memory
 	else
-		move.b	(a0)+,(a1)+				; load the item into memory
+		move.b	(a0)+,(a1)+				; load the item into memory (called if we aren't counting rings or altering blocks)
 	endif
 
 		dbf		d2,loc_1B6F8
@@ -7146,7 +7162,6 @@ loc_1B714:
 		move.w	#(v_ssitembuffer_end-v_ssitembuffer)/4-1,d1
 
 loc_1B730:
-
 		clr.l	(a1)+
 		dbf		d1,loc_1B730
 

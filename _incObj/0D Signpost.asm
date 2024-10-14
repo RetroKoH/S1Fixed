@@ -234,18 +234,18 @@ GotThroughAct:
 	; RetroKoH Optimal Title Cards for VRAM/SpritePiece Reduction
 		move.l	a0,-(sp)										; save object address to stack
 		locVRAM	ArtTile_Title_Card*tile_size
-		lea		Art_TitCardSonic,a0											; load title card patterns
-		move.l	#((Art_TitCardSonic_End-Art_TitCardSonic)/tile_size)-1,d0	; # of tiles
-		jsr		(LoadUncArt).w												; load uncompressed art
+		lea		Art_TitCardSonic,a0													; load title card patterns
+		move.l	#((Art_TitCardSonic_End-Art_TitCardSonic)/tile_size)-1,d0			; # of tiles
+		jsr		(LoadUncArt).w														; load uncompressed art
 		lea		Art_TitCardHasPassed,a0												; load title card patterns
 		move.l	#((Art_TitCardHasPassed_End-Art_TitCardHasPassed)/tile_size)-1,d0	; # of tiles
 		jsr		(LoadUncArt).w														; load uncompressed art
-		lea		Art_TitCardItems,a0											; load title card patterns
-		move.l	#((Art_TitCardItems_End-Art_TitCardItems)/tile_size)-1,d0	; # of tiles
-		jsr		(LoadUncArt).w												; load uncompressed art
-		lea		Art_TitCardBonuses,a0											; load title card patterns
-		move.l	#((Art_TitCardBonuses_End-Art_TitCardBonuses)/tile_size)-1,d0	; # of tiles
-		jsr		(LoadUncArt).w													; load uncompressed art
+		lea		Art_TitCardItems,a0													; load title card patterns
+		move.l	#((Art_TitCardItems_End-Art_TitCardItems)/tile_size)-1,d0			; # of tiles
+		jsr		(LoadUncArt).w														; load uncompressed art
+		lea		Art_TitCardBonuses,a0												; load title card patterns
+		move.l	#((Art_TitCardBonuses_End-Art_TitCardBonuses)/tile_size)-1,d0		; # of tiles
+		jsr		(LoadUncArt).w														; load uncompressed art
 		move.l	(sp)+,a0										; get object address from stack
 	; Optimal Title Cards End
 	else

@@ -115,10 +115,14 @@ SpeedUpScoreTally: = 2					; if set to 1, score tally can be sped up w/ ABC. If 
 ; Function: The Signpost flies into the air when you run past it fast enough.
 FloatingSignposts: = 1
 
-; Name: Cool Bonuses
+; Name: Cool and Perfect Bonuses
 ; Credit: RetroKoH
-; Function: Sonic gets an additional 10000 points if he doesn't get hit (decrements by 100 for each hit)
+; Cool Bonus Function: Sonic gets an additional 10000 points if he doesn't get hit (decrements by 100 for each hit).
+; Perfect Bonus Function: Sonic gets an additional 50000 points if he collects every ring in a level or Special Stage.
 CoolBonusEnabled: = 1
+PerfectBonusEnabled: = 1
+ExtraBonuses: = CoolBonusEnabled+PerfectBonusEnabled	; if either bonus is enabled, SCORE is removed from the score tally cards.
+; If both are enabled, the Got Through Card has a 4th tally mapping
 
 ; ----- FLAIR MODS ---------------------------------------------------------------
 
@@ -216,7 +220,8 @@ S4SpecialStages: = 1	; (Removes UP/DOWN, and R Blocks)
 ; Function: Makes the Special Stages still accessible even once all emeralds are collected.
 SpecialStagesWithAllEmeralds: = 1		; (Replaces Emeralds w/ 1-Ups if Emeralds are obtained)
 
-AlteredSpecialStages: = (S4SpecialStages+SpecialStagesWithAllEmeralds)
+; Perfect Bonuses are included here because it helps keep SS_Load efficient.
+AlteredSpecialStages: = (S4SpecialStages+SpecialStagesWithAllEmeralds+PerfectBonusEnabled)
 
 ; ----- UNDER-THE-HOOD -----------------------------------------------------------
 

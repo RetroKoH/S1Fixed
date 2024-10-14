@@ -41,6 +41,10 @@ Ring_Animate:	; Routine 2
 	; S3K Objects Manager End
 ; ===========================================================================
 
+RAttract_Collect:
+	if PerfectBonusEnabled
+		subq.w	#1,(v_perfectringsleft).w
+	endif
 Ring_Collect:	; Routine 4
 		addq.b	#2,obRoutine(a0)
 		clr.b	obColType(a0)
@@ -112,7 +116,7 @@ RLoss_Index:		offsetTable
 	if ShieldsMode>1	; Attracted Rings (By the lightning shield)
 		offsetTableEntry.w RAttract_Init
 		offsetTableEntry.w RAttract_Main
-		offsetTableEntry.w Ring_Collect
+		offsetTableEntry.w RAttract_Collect
 		offsetTableEntry.w Ring_Sparkle
 		offsetTableEntry.w Ring_Delete
 	endif

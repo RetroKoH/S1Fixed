@@ -205,6 +205,9 @@ Touch_Rings_Loop:
 
 Touch_DestroyRing:
 		move.w	#$608,(a4)		; set frame and destruction timer - $608 instead of $604 for 8-frame rings
+	if PerfectBonusEnabled
+		subq.w	#1,(v_perfectringsleft).w
+	endif
 		bsr.w	CollectRing
 		lea		(v_ringconsumelist).w,a3
 
@@ -333,7 +336,6 @@ loc_31343C:					  ; Clear positions table
 		move.l	d0,(a1)+
 		dbf		d1,.RMS_2
 
-		moveq	#0,d5
 		moveq	#0,d0
 
 		move.w	(v_zone).w,d0
@@ -349,11 +351,16 @@ loc_31343C:					  ; Clear positions table
 		addq.w	#4,a1
 		moveq	#0,d5
 		move.w	#(Max_Rings-1),d0
+
 .RMS_loop:
 		tst.l	(a1)+
 		bmi.s	.RMS_end
 		addq.w	#1,d5
-		dbf	d0,	.RMS_loop
+		dbf		d0,.RMS_loop
+
 .RMS_end:
+	if PerfectBonusEnabled
+		move.w	d5,(v_perfectringsleft).w
+	endif
 		rts
 ; ===========================================================================

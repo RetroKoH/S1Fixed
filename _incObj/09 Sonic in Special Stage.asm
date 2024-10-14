@@ -530,6 +530,10 @@ Obj09_ChkRing:
 		move.l	a1,4(a2)
 
 Obj09_GetCont:
+	if PerfectBonusEnabled
+		subq.w	#1,(v_perfectringsleft).w
+	endif
+
 		jsr		(CollectRing).l
 		cmpi.w	#50,(v_rings).w				; check if you have 50 rings
 		blo.s	Obj09_NoCont
@@ -537,9 +541,9 @@ Obj09_GetCont:
 		bne.s	Obj09_NoCont
 		addq.b	#1,(v_continues).w			; add 1 to number of continues
 
-	if SpecialStagesWithAllEmeralds=1	; Mercury Special Stages Still Appear With All Emeralds
+	if SpecialStagesWithAllEmeralds	; Mercury Special Stages Still Appear With All Emeralds
 		bset	#7,(v_continues).w	; set "got continue" flag bit
-	endc	; Special Stages Still Appear With All Emeralds	End
+	endif	; Special Stages Still Appear With All Emeralds	End
 
 		move.w	#sfx_Continue,d0
 		jsr		(PlaySound).w				; play extra continue sound

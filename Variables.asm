@@ -112,18 +112,16 @@ v_starsobj4		= v_objspace+object_size*10	; ($D280) object variable space for the
 v_splash		= v_objspace+object_size*11	; ($D2C0) object variable space for the water splash ($40 bytes)
 v_sonicbubbles	= v_objspace+object_size*12	; ($D300) object variable space for the bubbles that come out of Sonic's mouth/drown countdown ($40 bytes)
 v_sparksobj		= v_objspace+object_size*13	; ($D340) object variable space for lightning shield sparks ($100 bytes)
-
-
+;				= v_objspace+object_size*14
+;				= v_objspace+object_size*15
+;				= v_objspace+object_size*16
 v_trails		= v_objspace+object_size*17	; ($D440) object variable space for after-images ($C0 bytes)
 v_followobject	= v_objspace+object_size*18
 v_trails2		= v_objspace+object_size*19
-
 v_sstarsobj		= v_objspace+object_size*20 ; object variable space for super stars
+v_gogglesobj	= v_objspace+object_size*21 ; object variable space for goggles
 
-; - 1 Slot Unused
-v_gogglesobj	= v_objspace+object_size*22 ; object variable space for goggles
-
-v_endcard		= v_objspace+object_size*23	; ($D5C0) object variable space for the level results card ($1C0 bytes)
+v_endcard		= v_objspace+object_size*22	; ($D5C0) object variable space for the level results card ($1C0 bytes)
 v_endcardsonic	= v_endcard+object_size*0	; ($D5C0) object variable space for the level results card "SONIC HAS" text ($40 bytes)
 v_endcardpassed	= v_endcard+object_size*1	; ($D600) object variable space for the level results card "PASSED" text ($40 bytes)
 v_endcardact	= v_endcard+object_size*2	; ($D640) object variable space for the level results card act text ($40 bytes)
@@ -131,6 +129,7 @@ v_endcardscore	= v_endcard+object_size*3	; ($D680) object variable space for the
 v_endcardtime	= v_endcard+object_size*4	; ($D6C0) object variable space for the level results card time bonus tally ($40 bytes)
 v_endcardring	= v_endcard+object_size*5	; ($D700) object variable space for the level results card ring bonus tally ($40 bytes)
 v_endcardoval	= v_endcard+object_size*6	; ($D740) object variable space for the level results card oval ($40 bytes)
+; A final slot is reserved in case we use both Cool and Perfect Bonuses.
 
 v_watersurface1	= v_objspace+object_size*30	; ($D780) object variable space for the water surface #1 ($40 bytes)
 v_watersurface2	= v_objspace+object_size*31	; ($D7C0) object variable space for the water surface #1 ($40 bytes)
@@ -442,7 +441,9 @@ v_lamp_lives:		ds.b	1		; lives counter at lamppost
 				ds.b	1		; unused (Placed here to set v_emeralds at an even address
 v_emeralds:			ds.b	1		; number of chaos emeralds
 v_emldlist:			ds.b	1		; emerald bitfield
-				ds.b	6		; unused
+v_perfectringsleft:	ds.w	1
+v_perfectringsflag:	ds.w	1
+				ds.b	2		; unused
 v_oscillate:		ds.w	1		; oscillation bitfield
 v_timingandscreenvariables:
 v_timingvariables:	ds.b	$40		; values which oscillate - for swinging platforms, et al
