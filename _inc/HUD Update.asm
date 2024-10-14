@@ -102,7 +102,7 @@ HUD_Update:
 		bsr.w	Hud_Lives
 
 .chkbonus:
-		tst.b	(f_endactbonus).w			; do time/ring bonus counters need updating?
+		tst.b	(f_endactbonus).w			; do the bonus counters need updating?
 		beq.s	.finish						; if not, branch
 		move.b	d7,(f_endactbonus).w
 		locVRAM	ArtTile_Bonuses*tile_size
@@ -111,11 +111,20 @@ HUD_Update:
 		bsr.w	Hud_TimeRingBonus
 		moveq	#0,d1
 		move.w	(v_ringbonus).w,d1			; load ring bonus
+
 	if CoolBonusEnabled
 		bsr.w	Hud_TimeRingBonus
 		moveq	#0,d1
 		move.w	(v_coolbonus).w,d1			; load cool bonus
 	endif
+
+	if PerfectBonusEnabled
+		bsr.w	Hud_TimeRingBonus
+		locVRAM	(ArtTile_Bonuses-8)*tile_size
+		moveq	#0,d1
+		move.w	(v_perfectbonus).w,d1		; load perfect bonus
+	endif
+
 		bra.w	Hud_TimeRingBonus
 
 .finish:

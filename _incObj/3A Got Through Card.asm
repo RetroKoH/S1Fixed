@@ -2,8 +2,8 @@
 ; Object 3A - "SONIC GOT THROUGH" title	card
 ; ---------------------------------------------------------------------------
 
-	if CoolBonusEnabled
-got_pieces = 7
+	if (CoolBonusEnabled=0)&(PerfectBonusEnabled=1)
+got_pieces = 5
 	else
 got_pieces = 6	
 	endif
@@ -42,15 +42,15 @@ Got_Main:
 
 Got_Loop:
 		_move.b	#id_GotThroughCard,obID(a1)
-		move.w	(a2),obX(a1)	; load start x-position
-		move.w	(a2)+,got_finalX(a1) ; load finish x-position (same as start)
-		move.w	(a2)+,got_mainX(a1) ; load main x-position
-		move.w	(a2)+,obScreenY(a1) ; load y-position
+		move.w	(a2),obX(a1)			; load start x-position
+		move.w	(a2)+,got_finalX(a1)	; load finish x-position (same as start)
+		move.w	(a2)+,got_mainX(a1)		; load main x-position
+		move.w	(a2)+,obScreenY(a1)		; load y-position
 		move.b	(a2)+,obRoutine(a1)
 		move.b	(a2)+,d0
 		cmpi.b	#got_pieces,d0
 		bne.s	loc_C5CA
-		add.b	(v_act).w,d0	; add act number to frame number
+		add.b	(v_act).w,d0			; add act number to frame number
 
 loc_C5CA:
 		move.b	d0,obFrame(a1)
@@ -59,7 +59,25 @@ loc_C5CA:
 		clr.b	obRender(a1)
 		move.w	#priority0,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		lea		object_size(a1),a1
-		dbf		d1,Got_Loop	; repeat 6 times
+		dbf		d1,Got_Loop				; repeat [got_pieces] times
+
+Got_ChkPerfect:
+	if PerfectBonusEnabled
+		tst.w	(v_perfectringsleft).w
+		bne.s	Got_Move
+	; Create PERFECT piece
+		_move.b	#id_GotThroughCard,obID(a1)
+		move.w	(a2),obX(a1)			; load start x-position
+		move.w	(a2)+,got_finalX(a1)	; load finish x-position (same as start)
+		move.w	(a2)+,got_mainX(a1)		; load main x-position
+		move.w	(a2)+,obScreenY(a1)		; load y-position
+		move.b	(a2)+,obRoutine(a1)
+		move.b	(a2)+,obFrame(a1)
+		move.l	#Map_Got,obMap(a1)
+		move.w	#make_art_tile(ArtTile_Title_Card,0,1),obGfx(a1)
+		clr.b	obRender(a1)
+		move.w	#priority0,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
+	endif
 
 Got_Move:	; Routine 2
 		moveq	#$10,d1		; set horizontal speed
@@ -107,7 +125,7 @@ Got_Display:
 ; ===========================================================================
 
 	if SpeedUpScoreTally<>2
-
+; ---------------------------------------------------------------------------
 	if SpeedUpScoreTally=1	; Mercury Speed Up Score Tally
 Got_TimeBonus:	; Routine 6
 		bsr.w	DisplaySprite
@@ -131,13 +149,39 @@ Got_TimeBonus:	; Routine 6
 
 Got_RingBonus:
 		tst.w	(v_ringbonus).w			; is ring bonus	= zero?
-		beq.s	Got_ChkBonus			; if yes, branch
+		beq.s	.afterrings				; if yes, branch (We must use a temp label to ensure potential mods are branched to)
 		cmp.w	(v_ringbonus).w,d1		; compare ring bonus to score decrement
 		blt.s	.skip					; if it's greater or equal, branch
 		move.w	(v_ringbonus).w,d1		; else, set the decrement to the remaining bonus
 .skip:
 		add.w	d1,d0					; add decrement to score
 		sub.w	d1,(v_ringbonus).w		; subtract decrement from ring bonus
+	
+.afterrings:
+		if CoolBonusEnabled
+	Got_CoolBonus:
+		tst.w	(v_coolbonus).w			; is cool bonus = zero?
+		beq.s	.aftercool				; if yes, branch (We must use a temp label to ensure potential mods are branched to)
+		cmp.w	(v_coolbonus).w,d1		; compare cool bonus to score decrement
+		blt.s	.skip					; if it's greater or equal, branch
+		move.w	(v_coolbonus).w,d1		; else, set the decrement to the remaining bonus
+.skip:
+		add.w	d1,d0					; add decrement to score
+		sub.w	d1,(v_coolbonus).w		; subtract decrement from cool bonus
+	.aftercool:
+		endif
+
+		if PerfectBonusEnabled
+	Got_PerfectBonus:
+		tst.w	(v_perfectbonus).w		; is perfect bonus = zero?
+		beq.s	Got_ChkBonus			; if yes, branch (We must use a temp label to ensure potential mods are branched to)
+		cmp.w	(v_perfectbonus).w,d1	; compare perfect bonus to score decrement
+		blt.s	.skip					; if it's greater or equal, branch
+		move.w	(v_perfectbonus).w,d1	; else, set the decrement to the remaining bonus
+.skip:
+		add.w	d1,d0					; add decrement to score
+		sub.w	d1,(v_perfectbonus).w	; subtract decrement from perfect bonus
+		endif
 
 	else
 
@@ -152,17 +196,37 @@ Got_TimeBonus:	; Routine 6
 
 Got_RingBonus:
 		tst.w	(v_ringbonus).w			; is ring bonus	= zero?
-		beq.s	Got_ChkBonus			; if yes, branch
+		beq.s	.afterrings				; if yes, branch (We must use a temp label to ensure potential mods are branched to)
 		addi.w	#10,d0					; add 10 to score
 		subi.w	#10,(v_ringbonus).w		; subtract 10 from ring bonus
-	endif	;end Speed Up Score Tally
+
+	.afterrings:
+		if CoolBonusEnabled
+	Got_CoolBonus:
+			tst.w	(v_coolbonus).w			; is cool bonus	= zero?
+			beq.s	.aftercool				; if yes, branch (We must use a temp label to ensure potential mods are branched to)
+			addi.w	#10,d0					; add 10 to score
+			subi.w	#10,(v_coolbonus).w		; subtract 10 from cool bonus
+	.aftercool:
+		endif
+
+		if PerfectBonusEnabled
+	Got_PerfectBonus:
+			tst.w	(v_perfectbonus).w		; is perfect bonus = zero?
+			beq.s	Got_ChkBonus			; if yes, branch
+			addi.w	#10,d0					; add 10 to score
+			subi.w	#10,(v_perfectbonus).w	; subtract 10 from perfect bonus
+		endif
+
+	endif	; Speed Up Score Tally End
+; ---------------------------------------------------------------------------
 
 Got_ChkBonus:
 		tst.w	d0						; is there any bonus?
 		bne.s	Got_AddBonus			; if yes, branch
 
 	else	; RetroKoH Instant Score Tally
-
+; ---------------------------------------------------------------------------
 Got_TimeBonus:	; Routine 6
 		bsr.w	DisplaySprite
 		move.b	#1,(f_endactbonus).w	; set time/ring bonus update flag
@@ -175,9 +239,14 @@ Got_TimeBonus:	; Routine 6
 		add.w	(v_coolbonus).w,d0		; load cool bonus to d0
 		clr.w	(v_coolbonus).w			; clear cool bonus
 	endif
+	if PerfectBonusEnabled
+		add.w	(v_perfectbonus).w,d0	; load cool bonus to d0
+		clr.w	(v_perfectbonus).w		; clear cool bonus
+	endif
 		jsr		(AddPoints).l			; add to score
 
 	endif	;end Instant Score Tally
+; ---------------------------------------------------------------------------
 
 		move.w	#sfx_Cash,d0
 		jsr		(PlaySound_Special).w	; play "ker-ching" sound
@@ -367,9 +436,12 @@ Got_Config:
 		dc.w -$120,	$120,	$D0			; "PASSED"
 		dc.b 				2,	1
 
-		dc.w $40C,	$14C,	$D6			; "ACT" 1/2/3 -- Modified to accomodate Cool Bonus toggle
+		dc.w $40C,	$14C,	$D6			; "ACT" 1/2/3 -- Modified to accomodate toggles
 		dc.b 				2,	got_pieces
 
+; ---------------------------------------------------------------------------
+	if ExtraBonuses=0
+	
 		dc.w $520,	$120,	$EC			; score
 		dc.b 				2,	2
 
@@ -379,10 +451,30 @@ Got_Config:
 		dc.w $560,	$120,	$10C		; ring bonus
 		dc.b 				2,	4
 
-	if CoolBonusEnabled
-		dc.w $580,	$120,	$11C		; cool bonus
-		dc.b 				2,	5
-	endif
+		dc.w $20C,	$14C,	$CC			; oval -- Modified to accomodate toggles
+		dc.b 				2,	(got_pieces-1)
+
+; ---------------------------------------------------------------------------
+	else
+	
+		dc.w $520,	$120,	$EC			; time bonus
+		dc.b 				2,	2
+
+		dc.w $540,	$120,	$FC			; ring bonus
+		dc.b 				2,	3
+
+		if CoolBonusEnabled
+			dc.w $560,	$120,	$10C	; cool bonus
+			dc.b 				2,	4
+		endif
 
 		dc.w $20C,	$14C,	$CC			; oval -- Modified to accomodate Cool Bonus toggle
 		dc.b 				2,	(got_pieces-1)
+		
+		if PerfectBonusEnabled
+			dc.w $560+($20*CoolBonusEnabled),	$120,	$10C+($10*CoolBonusEnabled)		; perfect
+			dc.b 				2,	got_pieces+3
+		endif
+
+; ---------------------------------------------------------------------------
+	endif

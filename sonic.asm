@@ -2799,18 +2799,18 @@ loc_47D4:
 
 		enable_ints
 		moveq	#palid_SSResult,d0
-		bsr.w	PalLoad	; load results screen palette
+		bsr.w	PalLoad					; load results screen palette
 		moveq	#plcid_Main,d0
 		bsr.w	NewPLC
 		moveq	#plcid_SSResult,d0
-		bsr.w	AddPLC		; load results screen patterns
-		move.b	#1,(f_scorecount).w ; update score counter
-		move.b	#1,(f_endactbonus).w ; update ring bonus counter
+		bsr.w	AddPLC					; load results screen patterns
+		move.b	#1,(f_scorecount).w		; update score counter
+		move.b	#1,(f_endactbonus).w	; update ring bonus counter
 		move.w	(v_rings).w,d0
-		mulu.w	#10,d0		; multiply rings by 10
-		move.w	d0,(v_ringbonus).w ; set rings bonus
+		mulu.w	#10,d0					; multiply rings by 10
+		move.w	d0,(v_ringbonus).w		; set rings bonus
 		move.w	#bgm_GotThrough,d0
-		jsr		(PlaySound_Special).w	 ; play end-of-level music
+		jsr		(PlaySound_Special).w	; play end-of-level music
 
 		clearRAM v_objspace
 
@@ -7421,6 +7421,13 @@ Art_TitleCard_End:	even
 
 	endif
 
+; RetroKoH Perfect Bonus Mod
+	if PerfectBonusEnabled
+Art_Perfect:	binclude	"artunc/Perfect Text.bin"			; Result Perfect Bonus Text
+Art_Perfect_End:
+	endif
+	
+
 Art_TimeOver:	binclude	"artunc/Time Over.bin"				; time over (TI) -- RetroKoH VRAM Overhaul
 Art_TimeOver_End:	even
 
@@ -8057,17 +8064,43 @@ Map_RingBIN:
 		
 		include	"_maps/Game Over.asm"
 		
-	if OptimalTitleCardArt
+	if OptimalTitleCardArt	; RetroKoH Optimal Title Card Art
 		include "_maps/Zone Title Cards - Optimal.asm"
-		include "_maps/Got Through Card - Optimal.asm"
-		include "_maps/SS Results Card - Optimal.asm"
 		include	"_maps/Continue Screen - Optimal.asm"
+
+		if PerfectBonusEnabled
+			if CoolBonusEnabled
+				include "_maps/Got Through Card_BOTH - Optimal.asm"
+			else
+				include "_maps/Got Through Card_PERFECT - Optimal.asm"
+			endif
+		elseif CoolBonusEnabled
+			include "_maps/Got Through Card_COOL - Optimal.asm"
+		else
+			include "_maps/Got Through Card - Optimal.asm"
+		endif
+		
+		include "_maps/SS Results Card - Optimal.asm"
+
 	else
+
 		include "_maps/Zone Title Cards.asm"
-		include "_maps/Got Through Card.asm"
-		include "_maps/SS Results Card.asm"
 		include	"_maps/Continue Screen.asm"
-	endif
+
+		if PerfectBonusEnabled
+			if CoolBonusEnabled
+				include "_maps/Got Through Card_BOTH.asm"
+			else
+				include "_maps/Got Through Card_PERFECT.asm"
+			endif
+		elseif CoolBonusEnabled
+			include "_maps/Got Through Card_COOL.asm"
+		else
+			include "_maps/Got Through Card.asm"
+		endif
+		
+		include "_maps/SS Results Card.asm"
+	endif	; Optimal Title Card Art End
 
 		include	"_maps/SS Result Chaos Emeralds.asm"
 		include	"_maps/Spikes.asm"

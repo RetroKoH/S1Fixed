@@ -625,6 +625,7 @@ ArtTile_Warp:					equ $541				; Currently unused. Can overwrite Shield art if us
 ArtTile_Mini_Sonic:				equ ArtTile_Monitor		; ✓
 ArtTile_Signpost:				equ $680				; ✓
 ArtTile_Bonuses:				equ $6B0				; ✓ - Moved to overwrite some monitor art.
+ArtTile_Perfect:				equ $5F0				; Test special stage (or give new location there)
 
 ; Sega Screen
 ArtTile_Sega_Tiles:				equ $000

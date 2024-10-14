@@ -246,15 +246,30 @@ GotThroughAct:
 		lea		Art_TitCardBonuses,a0												; load title card patterns
 		move.l	#((Art_TitCardBonuses_End-Art_TitCardBonuses)/tile_size)-1,d0		; # of tiles
 		jsr		(LoadUncArt).w														; load uncompressed art
+
+	if PerfectBonusEnabled
+		lea		Art_Perfect,a0														; load title card patterns
+		move.l	#((Art_Perfect_End-Art_Perfect)/tile_size)-1,d0						; # of tiles
+		jsr		(LoadUncArt).w														; load uncompressed art
+	endif
+
 		move.l	(sp)+,a0										; get object address from stack
 	; Optimal Title Cards End
 	else
 	; AURORA☆FIELDS Title Card Optimization
 		move.l	a0,-(sp)										; save object address to stack
 		locVRAM	ArtTile_Title_Card*tile_size
-		lea		Art_TitleCard,a0								; load title card patterns
-		move.l	#((Art_TitleCard_End-Art_TitleCard)/$20)-1,d0	; the title card art lenght, in tiles
+		lea		Art_TitleCard,a0									; load title card patterns
+		move.l	#((Art_TitleCard_End-Art_TitleCard)/tile_size)-1,d0	; the title card art lenght, in tiles
+		jsr		(LoadUncArt).w										; load uncompressed art
+
+	if PerfectBonusEnabled
+		locVRAM	$69A*tile_size
+		lea		Art_Perfect,a0									; load title card patterns
+		move.l	#((Art_Perfect_End-Art_Perfect)/tile_size)-1,d0	; # of tiles
 		jsr		(LoadUncArt).w									; load uncompressed art
+	endif
+
 		move.l	(sp)+,a0										; get object address from stack
 	; Title Card Optimization End
 	endif
@@ -284,6 +299,15 @@ GotThroughAct:
 		move.b	(v_hitscount).w,d0						; get hits count (starts at 10, counts down toward 0 w/ each hit)
 		mulu.w	#100,d0									; multiply by 100
 		move.w	d0,(v_coolbonus).w						; set cool bonus
+	endif
+	
+	if PerfectBonusEnabled
+		moveq	#0,d0
+		tst.w	(v_perfectringsleft).w					; did Sonic get all the rings?
+		bne.s	.noperfect
+		move.w	#5000,d0
+	.noperfect:
+		move.w	d0,(v_perfectbonus).w					; set perfect bonus
 	endif
 
 		move.b	#bgm_GotThrough,d0

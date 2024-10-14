@@ -7,11 +7,6 @@ Map_Got:	mappingsTable
 	mappingsTableEntry.w	M_Got_Score
 	mappingsTableEntry.w	M_Got_TBonus
 	mappingsTableEntry.w	M_Got_RBonus
-	
-	if CoolBonusEnabled
-		mappingsTableEntry.w	M_Got_CBonus
-	endif
-
 ; These mappings are taken straight from the title card mappings
 	mappingsTableEntry.w	M_Card_Oval
 	mappingsTableEntry.w	M_Card_Act1
@@ -66,17 +61,5 @@ M_Got_RBonus:	spriteHeader		; RING BONUS
 	spritePiece	$28, -8, 4, 2, $150, 0, 0, 0, 0		; RING BONUS VALUE
 	spritePiece	$48, -8, 1, 2, $186, 0, 0, 0, 0		; 0
 M_Got_RBonus_End
-
-	if CoolBonusEnabled
-M_Got_CBonus:	spriteHeader		; COOL BONUS
-	spritePiece	-$50, -8, 4, 2, $80, 0, 0, 0, 0		; COOL
-	spritePiece	-$27, -8, 4, 2, $66, 0, 0, 0, 0		; BONU
-	spritePiece	-7, -8, 1, 2, $162, 0, 0, 0, 0		; S - USE SCORE's S
-	spritePiece	-$A, -9, 2, 1, $6E, 0, 0, 0, 0		; Small oval
-	spritePiece	-$A, -1, 2, 1, $6E, 1, 1, 0, 0		; Small oval
-	spritePiece	$28, -8, 4, 2, $158, 0, 0, 0, 0		; COOL BONUS VALUE
-	spritePiece	$48, -8, 1, 2, $186, 0, 0, 0, 0		; 0
-M_Got_CBonus_End
-	endif
 
 	even

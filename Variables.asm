@@ -340,7 +340,6 @@ v_lani_updateproc:		ds.l	1		; Update procedure pointer (4 bytes)
 f_conveyrev:			ds.b	1		; flag set to reverse conveyor belts in LZ/SBZ
 v_obj63:				ds.b	6		; object 63 (LZ/SBZ platforms) variables
 f_wtunnelmode:			ds.b	1		; LZ water tunnel mode
-					ds.b	1		; unused -- obCtrlLock
 f_wtunnelallow:			ds.b	1		; LZ water tunnels (00 = enabled; 01 = disabled)
 f_slidemode:			ds.b	1		; LZ water slide mode
 v_obj6B:				ds.b	1		; object 6B (SBZ stomper) variable
@@ -348,11 +347,11 @@ f_lockctrl:				ds.b	1		; flag set to lock controls during ending sequence
 f_bigring:				ds.b	1		; flag set when Sonic collects the giant ring
 f_obj56:				ds.b	1		; object 56 flag
 
-					ds.b	1		; unused
 v_itembonus:			ds.w	1		; item bonus from broken enemies, blocks etc.
 v_timebonus:			ds.w	1		; time bonus at the end of an act
 v_ringbonus:			ds.w	1		; ring bonus at the end of an act
 v_coolbonus:			ds.w	1		; cool bonus at the end of an act (Only used if Cool Bonus toggle is enabled)
+v_perfectbonus:			ds.w	1		; perfect bonus at the end of an act (Only used if Perfect Bonus toggle is enabled)
 f_endactbonus:			ds.b	1		; time/ring bonus update flag at the end of an act
 v_sonicend:				ds.b	1		; routine counter for Sonic in the ending sequence
 v_lz_deform:			ds.w	1		; LZ deformation offset, in units of $80
