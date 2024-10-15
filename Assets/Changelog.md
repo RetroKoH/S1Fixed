@@ -229,6 +229,11 @@
  Function: An under-the-hood mod that has the game only load required art for title cards.  
  Date: 2024-10-06  
 
+## Perfect Bonus
+ Credit: RetroKoH  
+ Function: Adds PERFECT to the End of Level tally, from Sonic 2. The sprite only appears in level cards if you attain every ring, but always appears in the Special Stage result card.  
+ Date: 2024-10-15  
+
 ## Scrap Brain 3 Art Mod (WIP)
  (WIP; Incomplete)
  Credit: Rohan (Level Art) RetroKoH (Code, Object Art)  

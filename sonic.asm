@@ -2825,9 +2825,9 @@ loc_47D4:
 		move.w	d0,(v_ringbonus).w		; set rings bonus
 		
 	if PerfectBonusEnabled
-		tst.w	(v_perfectringsleft).w
+		tst.w	(v_perfectringsleft).w					; did Sonic get all the rings?
 		bne.s	.noperfect
-		move.w	#5000,(v_perfectbonus).w	; set perfect bonus
+		move.w	#PerfectScore,(v_perfectbonus).w		; set perfect bonus
 	.noperfect:
 	endif
 		

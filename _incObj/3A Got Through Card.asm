@@ -278,7 +278,7 @@ Got_NextLevel:	; Routine $A
 
 Got_ChkSS:
 	if CoolBonusEnabled
-		move.b	#10,(v_hitscount).w			; set hits count for next cool bonus
+		move.b	#CoolBonusHits,(v_hitscount).w	; set hits count for next cool bonus
 	endif
 
 		clr.b	(v_lastlamp).w				; clear	lamppost counter

@@ -296,18 +296,15 @@ GotThroughAct:
 
 	if CoolBonusEnabled
 		moveq	#0,d0
-		move.b	(v_hitscount).w,d0						; get hits count (starts at 10, counts down toward 0 w/ each hit)
+		move.b	(v_hitscount).w,d0						; get hits count (starts at [CoolBonusHits], counts down toward 0 w/ each hit)
 		mulu.w	#100,d0									; multiply by 100
 		move.w	d0,(v_coolbonus).w						; set cool bonus
 	endif
 	
 	if PerfectBonusEnabled
-		moveq	#0,d0
 		tst.w	(v_perfectringsleft).w					; did Sonic get all the rings?
 		bne.s	.noperfect
-		move.w	#5000,d0
-	.noperfect:
-		move.w	d0,(v_perfectbonus).w					; set perfect bonus
+		move.w	#PerfectScore,(v_perfectbonus).w		; set perfect bonus
 	endif
 
 		move.b	#bgm_GotThrough,d0
