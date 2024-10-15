@@ -488,7 +488,7 @@ loc_3FF56:
 		moveq	#0,d3
 		move.b	7(a2),d3
 		lsl.w	#4,d3
-		jsr	(QueueDMATransfer).l	; Use d1, d2, and d3 to locate the decompressed art and ready for transfer to VRAM
+		jsr		(QueueDMATransfer).l	; Use d1, d2, and d3 to locate the decompressed art and ready for transfer to VRAM
 loc_3FF78:
 		move.b	6(a2),d0
 		tst.b	(a2)
@@ -497,9 +497,9 @@ loc_3FF78:
 loc_3FF82:
 		addq.b	#1,d0
 		andi.w	#$FE,d0
-		lea	8(a2,d0.w),a2
+		lea		8(a2,d0.w),a2
 		addq.w	#2,a3
-		dbf	d6,loc_3FF32
+		dbf		d6,loc_3FF32
 		rts
 ; ===========================================================================
 

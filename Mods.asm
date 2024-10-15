@@ -260,4 +260,4 @@ DynamicPalettes: = 0					; if set to 1, there will be a separate palette for eac
 ; Credit: RetroKoH
 ; Loads only necessary tiles for various cards. The benefit is less VRAM taken up by cards.
 ; The drawback is that they may be harder to edit for new users, and ROM size is slightly larger.
-OptimalTitleCardArt: = 1				; if set to 1, new art and mappings are used, reducing VRAM footprint and sprite piece count
+OptimalTitleCardArt: = 0				; if set to 1, new art and mappings are used, reducing VRAM footprint and sprite piece count

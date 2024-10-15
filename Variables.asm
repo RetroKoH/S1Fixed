@@ -148,7 +148,12 @@ v_ssrestext		= v_ssrescard+object_size*0	; object variable space for the Special
 v_ssresscore	= v_ssrescard+object_size*1	; object variable space for the Special Stage results card score tally ($40 bytes)
 v_ssresring		= v_ssrescard+object_size*2	; object variable space for the Special Stage results card ring bonus tally ($40 bytes)
 v_ssresoval		= v_ssrescard+object_size*3	; object variable space for the Special Stage results card oval ($40 bytes)
+	if PerfectBonusEnabled
+v_ssresperfect	= v_ssrescard+object_size*4	; object variable space for the Special Stage results card PERFECT bonus tally ($40 bytes)
+v_ssrescontinue	= v_ssrescard+object_size*5	; object variable space for the Special Stage results card continue icon ($40 bytes)
+	else
 v_ssrescontinue	= v_ssrescard+object_size*4	; object variable space for the Special Stage results card continue icon ($40 bytes)
+	endif
 v_ssresemeralds	= v_objspace+object_size*32	; object variable space for the emeralds in the Special Stage results ($180 bytes)
 
 ; Continue screen objects

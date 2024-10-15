@@ -30,8 +30,8 @@ got_finalX = objoff_32		; position for card to finish on
 ; ===========================================================================
 
 Got_ChkPLC:	; Routine 0
-		tst.l	(v_plc_buffer).w ; are the pattern load cues empty?
-		beq.s	Got_Main	; if yes, branch
+		tst.l	(v_plc_buffer).w		; are the pattern load cues empty?
+		beq.s	Got_Main				; if yes, branch
 		rts	
 ; ===========================================================================
 
@@ -39,6 +39,12 @@ Got_Main:
 		movea.l	a0,a1
 		lea		(Got_Config).l,a2
 		moveq	#got_pieces,d1
+		
+	if PerfectBonusEnabled
+		tst.w	(v_perfectringsleft).w	; did you score a Perfect?
+		bne.s	Got_Loop
+		addq.w	#1,d1					; if yes, add 1	to d1 (number of sprites)
+	endif
 
 Got_Loop:
 		_move.b	#id_GotThroughCard,obID(a1)
@@ -61,40 +67,22 @@ loc_C5CA:
 		lea		object_size(a1),a1
 		dbf		d1,Got_Loop				; repeat [got_pieces] times
 
-Got_ChkPerfect:
-	if PerfectBonusEnabled
-		tst.w	(v_perfectringsleft).w
-		bne.s	Got_Move
-	; Create PERFECT piece
-		_move.b	#id_GotThroughCard,obID(a1)
-		move.w	(a2),obX(a1)			; load start x-position
-		move.w	(a2)+,got_finalX(a1)	; load finish x-position (same as start)
-		move.w	(a2)+,got_mainX(a1)		; load main x-position
-		move.w	(a2)+,obScreenY(a1)		; load y-position
-		move.b	(a2)+,obRoutine(a1)
-		move.b	(a2)+,obFrame(a1)
-		move.l	#Map_Got,obMap(a1)
-		move.w	#make_art_tile(ArtTile_Title_Card,0,1),obGfx(a1)
-		clr.b	obRender(a1)
-		move.w	#priority0,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-	endif
-
 Got_Move:	; Routine 2
-		moveq	#$10,d1		; set horizontal speed
+		moveq	#$10,d1					; set horizontal speed
 		move.w	got_mainX(a0),d0
-		cmp.w	obX(a0),d0	; has item reached its target position?
-		beq.s	loc_C61A	; if yes, branch
+		cmp.w	obX(a0),d0				; has item reached its target position?
+		beq.s	loc_C61A				; if yes, branch
 		bge.s	Got_ChgPos
 		neg.w	d1
 
 Got_ChgPos:
-		add.w	d1,obX(a0)	; change item's position
+		add.w	d1,obX(a0)				; change item's position
 
 loc_C5FE:
 		move.w	obX(a0),d0
 		bmi.s	locret_C60E
-		cmpi.w	#$200,d0	; has item moved beyond	$200 on	x-axis?
-		bhs.s	locret_C60E	; if yes, branch
+		cmpi.w	#$200,d0				; has item moved beyond	$200 on	x-axis?
+		bhs.s	locret_C60E				; if yes, branch
 		bra.w	DisplaySprite
 ; ===========================================================================
 
@@ -426,7 +414,7 @@ loc_C766:	; Routine $10
 		beq.w	DeleteObject
 		rts	
 ; ===========================================================================
-		;    x-start,	x-main,	y-main,
+		;    x-start,	x-main,	y-pos,
 		;				routine, frame number
 
 Got_Config:

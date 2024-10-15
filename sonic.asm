@@ -2659,10 +2659,10 @@ GM_Special:
 		clr.b	(v_lifecount).w
 		clr.w	(v_debuguse).w
 		move.w	#1800,(v_demolength).w
-		tst.b	(f_debugcheat).w				; has debug cheat been entered?
-		beq.s	SS_NoDebug						; if not, branch
-		btst	#bitA,(v_jpadhold1).w			; is A button pressed?
-		beq.s	SS_NoDebug						; if not, branch
+;		tst.b	(f_debugcheat).w				; has debug cheat been entered?
+;		beq.s	SS_NoDebug						; if not, branch
+;		btst	#bitA,(v_jpadhold1).w			; is A button pressed?
+;		beq.s	SS_NoDebug						; if not, branch
 		move.b	#1,(f_debugmode).w				; enable debug mode
 
 SS_NoDebug:
@@ -2782,12 +2782,26 @@ loc_47D4:
 		movea.l	#Art_TitCardOval,a0													; load title card patterns
 		move.l	#Art_TitCardOvalCt,d0												; # of tiles
 		jsr		(LoadUncArt).w
+	
+	if PerfectBonusEnabled
+		locVRAM	$670*tile_size
+		lea		Art_Perfect,a0									; load title card patterns
+		move.l	#((Art_Perfect_End-Art_Perfect)/tile_size)-1,d0	; # of tiles
+		jsr		(LoadUncArt).w									; load uncompressed art
+	endif
 	; Optimal Title Cards End
 	else
 	; AURORA☆FIELDS Title Card Optimization
 		lea		Art_TitleCard,a0									; load title card patterns
 		move.l	#((Art_TitleCard_End-Art_TitleCard)/tile_size)-1,d0	; # of tiles
 		jsr		(LoadUncArt).w
+		
+	if PerfectBonusEnabled
+		locVRAM	$670*tile_size
+		lea		Art_Perfect,a0									; load title card patterns
+		move.l	#((Art_Perfect_End-Art_Perfect)/tile_size)-1,d0	; # of tiles
+		jsr		(LoadUncArt).w									; load uncompressed art
+	endif
 	; Title Card Optimization End
 	endif
 		
@@ -2809,6 +2823,14 @@ loc_47D4:
 		move.w	(v_rings).w,d0
 		mulu.w	#10,d0					; multiply rings by 10
 		move.w	d0,(v_ringbonus).w		; set rings bonus
+		
+	if PerfectBonusEnabled
+		tst.w	(v_perfectringsleft).w
+		bne.s	.noperfect
+		move.w	#5000,(v_perfectbonus).w	; set perfect bonus
+	.noperfect:
+	endif
+		
 		move.w	#bgm_GotThrough,d0
 		jsr		(PlaySound_Special).w	; play end-of-level music
 
@@ -8080,7 +8102,11 @@ Map_RingBIN:
 			include "_maps/Got Through Card - Optimal.asm"
 		endif
 		
-		include "_maps/SS Results Card - Optimal.asm"
+		if PerfectBonusEnabled
+			include "_maps/SS Results Card_PERFECT - Optimal.asm"
+		else
+			include "_maps/SS Results Card - Optimal.asm"
+		endif
 
 	else
 
@@ -8099,7 +8125,11 @@ Map_RingBIN:
 			include "_maps/Got Through Card.asm"
 		endif
 		
-		include "_maps/SS Results Card.asm"
+		if PerfectBonusEnabled
+			include "_maps/SS Results Card_PERFECT.asm"
+		else
+			include "_maps/SS Results Card.asm"
+		endif
 	endif	; Optimal Title Card Art End
 
 		include	"_maps/SS Result Chaos Emeralds.asm"

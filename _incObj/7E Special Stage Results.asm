@@ -33,23 +33,23 @@ SSR_ChkPLC:	; Routine 0
 SSR_Main:
 		movea.l	a0,a1
 		lea		(SSR_Config).l,a2
-		moveq	#3,d1
+		moveq	#3+(1*PerfectBonusEnabled),d1
 
 	if SpecialStagesWithAllEmeralds=1	; Mercury Special Stages Still Appear With All Emeralds
 		btst	#7,(v_continues).w
-		beq.s	SSR_Loop			; if no, branch
+		beq.s	SSR_Loop				; if no, branch
 	else
-		cmpi.w	#50,(v_rings).w		; do you have 50 or more rings?
-		blo.s	SSR_Loop			; if no, branch
+		cmpi.w	#50,(v_rings).w			; do you have 50 or more rings?
+		blo.s	SSR_Loop				; if no, branch
 	endif	; Special Stages Still Appear With All Emeralds	End
 
-		addq.w	#1,d1				; if yes, add 1	to d1 (number of sprites)
+		addq.w	#1,d1					; if yes, add 1	to d1 (number of sprites)
 
 SSR_Loop:
 		_move.b	#id_SSResult,obID(a1)
-		move.w	(a2)+,obX(a1)		; load start x-position
-		move.w	(a2)+,ssr_mainX(a1)	; load main x-position
-		move.w	(a2)+,obScreenY(a1)	; load y-position
+		move.w	(a2)+,obX(a1)			; load start x-position
+		move.w	(a2)+,ssr_mainX(a1)		; load main x-position
+		move.w	(a2)+,obScreenY(a1)		; load y-position
 		move.b	(a2)+,obRoutine(a1)
 		move.b	(a2)+,obFrame(a1)
 		move.l	#Map_SSR,obMap(a1)
@@ -57,17 +57,17 @@ SSR_Loop:
 		clr.b	obRender(a1)
 		move.w	#priority0,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		lea		object_size(a1),a1
-		dbf		d1,SSR_Loop			; repeat sequence 3 or 4 times
+		dbf		d1,SSR_Loop				; repeat sequence 3 or 4 times
 
 		moveq	#7,d0
 		move.b	(v_emeralds).w,d1
 		beq.s	loc_C842
 		moveq	#0,d0
-		cmpi.b	#emldCount,d1		; do you have all chaos	emeralds?
-		bne.s	loc_C842			; if not, branch
-		moveq	#8,d0				; load "Got Them All" text
+		cmpi.b	#emldCount,d1			; do you have all chaos	emeralds?
+		bne.s	loc_C842				; if not, branch
+		moveq	#8,d0					; load "Got Them All" text
 		move.w	#$18,obX(a0)
-		move.w	#$118,ssr_mainX(a0) ; change position of text
+		move.w	#$118,ssr_mainX(a0) 	; change position of text
 
 loc_C842:
 		move.b	d0,obFrame(a0)
@@ -136,7 +136,8 @@ SSR_RingBonus:	; Routine 6
 	else
 		subi.w	#10,(v_ringbonus).w	; subtract 10 from ring bonus
 		moveq	#10,d0				; add 10 to score
-	endc	;end Speed Up Score Tally
+	endif	;end Speed Up Score Tally
+; ---------------------------------------------------------------------------
 
 		jsr		(AddPoints).l
 		move.b	(v_vbla_byte).w,d0
@@ -147,15 +148,24 @@ SSR_RingBonus:	; Routine 6
 ; ===========================================================================
 
 loc_C8C4:
-	else
+	else	; RetroKoH Instant Score Tally
+; ---------------------------------------------------------------------------
 SSR_RingBonus:	; Routine 6
 		bsr.w	DisplaySprite
 		move.b	#1,(f_endactbonus).w	; set time/ring bonus update flag
 		moveq	#0,d0
 		move.w	(v_ringbonus).w,d0		; load ring bonus to d0
 		clr.w	(v_ringbonus).w			; clear ring bonus
-		jsr		(AddPoints).l			; add to score
+	
+	if PerfectBonusEnabled
+		add.w	(v_perfectbonus).w,d0	; add perfect bonus to d0
+		clr.w	(v_perfectbonus).w		; clear perfect bonus
 	endif
+
+		jsr		(AddPoints).l			; add to score
+	endif	;end Instant Score Tally
+; ---------------------------------------------------------------------------
+
 		move.w	#sfx_Cash,d0
 		jsr		(PlaySound_Special).w	; play "ker-ching" sound
 		addq.b	#2,obRoutine(a0)
@@ -193,13 +203,21 @@ loc_C91A:	; Routine $14
 SSR_Display2:
 		bra.w	DisplaySprite
 ; ===========================================================================
-SSR_Config:	dc.w $20, $120,	$C4	; start	x-pos, main x-pos, y-pos
-		dc.b 2,	0		; rountine number, frame number
-		dc.w $320, $120, $118
+		;    x-start,	x-main,	y-pos,
+		;				routine, frame number
+
+SSR_Config:
+		dc.w $20,	$120,	$C4		; "CHAOS EMERALDS"
+		dc.b 2,	0
+		dc.w $320,	$120,	$118	; SCORE
 		dc.b 2,	1
-		dc.w $360, $120, $128
+		dc.w $360,	$120,	$128	; RING BONUS
 		dc.b 2,	2
-		dc.w $1EC, $11C, $C4
+		dc.w $1EC,	$11C,	$C4		; Oval
 		dc.b 2,	3
-		dc.w $3A0, $120, $138
+	if PerfectBonusEnabled
+		dc.w $3A0,	$120,	$138	; PERFECT
+		dc.b 2,	9
+	endif
+		dc.w $3A0+($40*PerfectBonusEnabled),	$120,	$138+($10*PerfectBonusEnabled)	; CONTINUE
 		dc.b 2,	6
