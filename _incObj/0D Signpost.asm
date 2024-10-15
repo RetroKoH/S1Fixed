@@ -305,6 +305,8 @@ GotThroughAct:
 		tst.w	(v_perfectringsleft).w					; did Sonic get all the rings?
 		bne.s	.noperfect
 		move.w	#PerfectScore,(v_perfectbonus).w		; set perfect bonus
+		
+.noperfect:		
 	endif
 
 		move.b	#bgm_GotThrough,d0
