@@ -407,7 +407,7 @@ v_air:				ds.b	1		; air remaining while underwater
 v_lastspecial:		ds.b	1		; last special stage number
 				ds.b	1		; unused
 v_continues:		ds.b	1		; number of continues
-				ds.b	1		; unused
+v_carddelay:		ds.b	1		; timer to delay during card art loading (solves certain bugs, namely in LZ)
 f_timeover:			ds.b	1		; time over flag
 v_lifecount:		ds.b	1		; lives counter value (for actual number, see "v_lives")
 f_lifecount:		ds.b	1		; lives counter update flag

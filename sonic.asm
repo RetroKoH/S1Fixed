@@ -2181,7 +2181,7 @@ Level_PlayBgm:
 		move.b	d0,(v_lastbgmplayed).w			; store last played music
 		move.b	#id_TitleCard,(v_titlecard).w	; load title card object
 
-		move.b  #3,(v_framecount).w			; set the delay timer -- Fixes bug w/ HUD elements not appearing
+		move.b  #3,(v_carddelay).w				; set the delay timer -- Fixes bug w/ HUD elements not appearing
 
 Level_TtlCardLoop:
 		move.b	#$C,(v_vbla_routine).w
@@ -2194,16 +2194,15 @@ Level_TtlCardLoop:
 		bne.s	Level_TtlCardLoop				; if not, branch
 		tst.l	(v_plc_buffer).w				; are there any items in the pattern load cue?
 		bne.s	Level_TtlCardLoop				; if yes, branch
-		subq.b  #1,(v_framecount).w				; substract 1 from timer
+		subq.b  #1,(v_carddelay).w				; substract 1 from timer
         bne.s   Level_TtlCardLoop				; if timer is not 0, branch
 		jsr		(Hud_Base).l					; load basic HUD gfx
-	
 
 Level_SkipTtlCard:
 	if RandomMonitors
 		locVRAM	(ArtTile_Monitor+$14)*tile_size
-		lea		Art_Mon_Rand,a0		; load random monitor patterns
-		move.l	#3,d0				; # of tiles
+		lea		Art_Mon_Rand,a0					; load random monitor patterns
+		move.l	#3,d0							; # of tiles
 		jsr		(LoadUncArt).w
 	endif
 
@@ -5434,7 +5433,12 @@ Obj_Index:
 
 		include	"_incObj/0D Signpost.asm" ; includes "GotThroughAct" subroutine
 		include	"_anim/Signpost.asm"
+
+	if UpdatedSignposts
+		include	"_maps/Signpost - Updated - DPLCs.asm"
+	else
 		include	"_maps/Signpost - DPLCs.asm"
+	endif
 
 		include	"_incObj/4C & 4D Lava Geyser Maker.asm"
 		include	"_incObj/4E Wall of Lava.asm"
@@ -6434,12 +6438,12 @@ BossDefeated:
 		move.b	(v_vbla_byte).w,d0
 		andi.b	#7,d0
 		bne.s	locret_178A2
-		jsr	(FindFreeObj).l
+		jsr		(FindFreeObj).l
 		bne.s	locret_178A2
 		_move.b	#id_ExplosionBomb,obID(a1)	; load explosion object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		jsr	(RandomNumber).w
+		jsr		(RandomNumber).w
 		move.w	d0,d1
 		moveq	#0,d1
 		move.b	d0,d1
@@ -7405,13 +7409,19 @@ Art_Shield_L2:	binclude	"artunc/Shield - Lightning Sparks.bin"
 		even
 	endif
 
-	if SuperMod=1
+	if SuperMod
 Art_SuperStars:	binclude	"artunc/Super Sonic Stars.bin"
 Art_SuperStars_End:	even
 	endif
 
+	if UpdatedSignposts
+Art_Signpost:	binclude	"artunc/Signpost - Updated.bin"		; End-of-level Signpost -- RetroKoH VRAM Overhaul
+		even
+	else
 Art_Signpost:	binclude	"artunc/Signpost.bin"				; End-of-level Signpost -- RetroKoH VRAM Overhaul
 		even
+	endif
+
 Art_BigRing:	binclude	"artunc/Giant Ring.bin"				; Giant Ring -- RetroKoH VRAM Overhaul
 		even
 
@@ -8145,7 +8155,13 @@ Map_RingBIN:
 		include	"_maps/MZ Bricks.asm"
 		include	"_maps/Light.asm"
 		include	"_maps/Bumper.asm"
+
+	if UpdatedSignposts
+		include	"_maps/Signpost - Updated.asm"
+	else
 		include	"_maps/Signpost.asm"
+	endif
+
 		include	"_maps/Lava Tag.asm"
 		include	"_maps/Lava Geyser.asm"
 		include	"_maps/Wall of Lava.asm"

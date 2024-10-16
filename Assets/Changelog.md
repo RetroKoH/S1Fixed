@@ -233,6 +233,11 @@
  Credit: RetroKoH  
  Function: Adds PERFECT to the End of Level tally, from Sonic 2. The sprite only appears in level cards if you attain every ring, but always appears in the Special Stage result card.  
  Date: 2024-10-15  
+ 
+## Updated Signposts
+ Credit: RetroKoH
+ Function: Gives the Signposts a base, similar to those in Sonic CD.
+ Date: 2024-10-16
 
 ## Scrap Brain 3 Art Mod (WIP)
  (WIP; Incomplete)

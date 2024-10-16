@@ -178,6 +178,11 @@ HUDCentiseconds: = 1
 ; Function: Makes "TIME" and "RINGS" will blink on and off instead of flashing red. Useful when changing palettes.
 HUDBlinking: = 1
 
+; Name: Updated Signposts
+; Credit: RetroKoH
+; Function: Gives the Signposts a base, similar to those in Sonic CD.
+UpdatedSignposts: = 1
+
 ; Name: SBZ3 New Art Mod
 ; Credit: Trickster/Rohan, RetroKoH
 ; Function: Provides new art for SBZ Act 3
@@ -262,4 +267,4 @@ DynamicPalettes: = 0					; if set to 1, there will be a separate palette for eac
 ; Credit: RetroKoH
 ; Loads only necessary tiles for various cards. The benefit is less VRAM taken up by cards.
 ; The drawback is that they may be harder to edit for new users, and ROM size is slightly larger.
-OptimalTitleCardArt: = 0				; if set to 1, new art and mappings are used, reducing VRAM footprint and sprite piece count
+OptimalTitleCardArt: = 1				; if set to 1, new art and mappings are used, reducing VRAM footprint and sprite piece count
