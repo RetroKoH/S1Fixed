@@ -284,17 +284,18 @@ Debug_ShowItem:
 
 
 Debug_RestartMusic:
+		cmpi.b	#id_Ending,(v_gamemode).w
+		beq.s	.dontrestart
+
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
-		cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; check if level is SBZ3
+		cmpi.w	#(id_LZ<<8)+3,(v_zone).w		; check if level is SBZ3
 		bne.s	.music
-		move.w	#bgm_SBZ,d0					; play SBZ music
-
+		move.b	#id_SBZ,d0						; play SBZ music instead
 .music:
-		lea		(MusicList2).l,a1
+		lea		(MusicList).l,a1
 		move.b	(a1,d0.w),d0
 
-; checks
 	if SuperMod=1
 		btst	#sta2ndSuper,(v_player+obStatus2nd).w	; is player in Super Form?
 		bne.s	.playinvinc								; if yes, branch
@@ -307,15 +308,25 @@ Debug_RestartMusic:
 		move.w	#bgm_Invincible,d0
 
 .notinvinc:
-		tst.b	(f_lockscreen).w			; is Sonic at a boss?
-		beq.s	.playselected				; if not, branch
+		cmpi.w	#(id_SBZ<<8)+2,(v_zone).w		; check if level is FZ
+		bne.s	.notfinalzone
+		move.w	#bgm_FZ,d0						; play FZ music instead
+		bra.s	.playselected
+
+.notfinalzone:
+		tst.b	(f_lockscreen).w				; is Sonic at a boss?
+		beq.s	.finalcheck						; if not, branch
 		move.w	#bgm_Boss,d0
 
+.finalcheck:
+		cmpi.b	#bgm_FZ,(v_lastbgmplayed).w		; were we playing Final Zone music in SBZ2?
+		beq.s	.dontrestart					; if yes, branch
+
 .playselected:
-		cmp.b	(v_lastbgmplayed).w,d0		; was this music already playing?
+		cmp.b	(v_lastbgmplayed).w,d0			; was this music already playing?
 		beq.s	.dontrestart
-		move.b	d0,(v_lastbgmplayed).w		; store last played music
-		jmp		(PlaySound).w				; restart last played music
+		move.b	d0,(v_lastbgmplayed).w			; store last played music
+		jmp		(PlaySound).w					; restart last played music
 
 .dontrestart:
 		rts

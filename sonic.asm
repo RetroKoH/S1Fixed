@@ -1983,7 +1983,7 @@ MusicList:
 		dc.b bgm_SYZ	; SYZ
 		dc.b bgm_SBZ	; SBZ
 		zonewarning MusicList,1
-		dc.b bgm_FZ	; Ending
+		dc.b bgm_FZ		; Final Zone (Never used w/ Ending)
 		even
 ; ===========================================================================
 
@@ -5628,19 +5628,6 @@ Sonic_Modes:
 		dc.w Sonic_MdAir-Sonic_Modes
 		dc.w Sonic_MdRoll-Sonic_Modes
 		dc.w Sonic_MdJump-Sonic_Modes
-; ---------------------------------------------------------------------------
-; Music	to play	after invincibility wears off
-; ---------------------------------------------------------------------------
-MusicList2:
-		dc.b bgm_GHZ
-		dc.b bgm_LZ
-		dc.b bgm_MZ
-		dc.b bgm_SLZ
-		dc.b bgm_SYZ
-		dc.b bgm_SBZ
-		zonewarning MusicList2,1
-		; The ending doesn't get an entry
-		even
 
 	if SuperMod=1
 		include	"_incObj/Sonic Super.asm"

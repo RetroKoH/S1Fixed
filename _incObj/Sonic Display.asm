@@ -43,11 +43,16 @@ Sonic_Display:
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
 		cmpi.w	#(id_LZ<<8)+3,(v_zone).w		; check if level is SBZ3
+		bne.s	.notSBZ3
+		move.b	#id_SBZ,d0						; play SBZ music instead
+
+.notSBZ3:
+		cmpi.w	#(id_SBZ<<8)+2,(v_zone).w		; check if level is FZ
 		bne.s	.music
-		move.w	#bgm_SBZ,d0						; play SBZ music
+		move.b	#6,d0							; play FZ music instead
 
 .music:
-		lea		(MusicList2).l,a1
+		lea		(MusicList).l,a1
 		move.b	(a1,d0.w),d0
 		cmp.b	(v_lastbgmplayed).w,d0
 		beq.s	.removeinvincible
