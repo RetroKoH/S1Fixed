@@ -107,7 +107,13 @@ LevelSelect_PressStart:
 		cmpi.w	#(id_SS<<8),d0
 		bne.w	LevelSelect_StartZone
 		move.b	#id_Special,(v_gamemode).w	; set screen mode to $10 (Special Stage)
-		bsr.w	ResetLevel					; Reset level variables
+	;	tst.b	(f_debugcheat).w			; has debug cheat been entered?
+	;	beq.s	.nodebug					; if not, branch
+	;	btst	#bitA,(v_jpadhold1).w		; is A button held?
+	;	beq.s	.nodebug					; if not, branch
+		move.b	#1,(f_debugmode).w			; enable debug mode
+.nodebug:
+		bsr.w	ResetLevel					; reset level variables
 		move.w	d0,(v_zone).w				; also clear current zone (start at GHZ 1 after the Special Stage)
 		rts
 ; ===========================================================================
@@ -176,6 +182,11 @@ LevSel_Ptrs:
 LevelSelect_StartZone:
 		andi.w	#$3FFF,d0
 		move.w	d0,(v_zone).w
+	;	tst.b	(f_debugcheat).w		; has debug cheat been entered?
+	;	beq.s	PlayLevel				; if not, branch
+	;	btst	#bitA,(v_jpadhold1).w	; is A button held?
+	;	beq.s	PlayLevel				; if not, branch
+		move.b	#1,(f_debugmode).w		; enable debug mode
 		bra.w	PlayLevel				; added branch because I consolidated all level select code/data to this file
 ; ===========================================================================
 ; ---------------------------------------------------------------------------

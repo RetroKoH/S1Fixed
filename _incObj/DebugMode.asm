@@ -10,6 +10,8 @@ DebugMode:
 
 Debug_Main:	; Routine 0
 		addq.b	#2,(v_debuguse).w
+		cmpi.b	#id_Special,(v_gamemode).w
+		beq.s	.isntlevel
 		clr.b	(v_sonicbubbles+objoff_2C).w
 		jsr		(ResumeMusic).l						; cancel countdown music
 		move.w	(v_limittop2).w,(v_limittopdb).w	; buffer level x-boundary
@@ -43,9 +45,7 @@ Debug_Main:	; Routine 0
 .setpos:
 	; Debug Improvements end
 
-		cmpi.b	#id_Special,(v_gamemode).w	; is game mode $10 (special stage)?
-		bne.s	.islevel					; if not, branch
-
+.isntlevel:
 		clr.w	(v_ssrotate).w				; stop special stage rotating
 		clr.w	(v_ssangle).w				; make special stage "upright"
 		moveq	#6,d0						; use 6th debug	item list
@@ -284,8 +284,8 @@ Debug_ShowItem:
 
 
 Debug_RestartMusic:
-		cmpi.b	#id_Ending,(v_gamemode).w
-		beq.s	.dontrestart
+		cmpi.b	#id_Level,(v_gamemode).w
+		bne.s	.dontrestart					; don't restart music outside of levels (Ending or Special Stage)
 
 		moveq	#0,d0
 		move.b	(v_zone).w,d0

@@ -2224,13 +2224,6 @@ Level_SkipTtlCard:
 		move.b	#1,(v_shieldobj+obSubtype).w
 	endif
 
-Level_ChkDebug:
-	;	tst.b	(f_debugcheat).w		; has debug cheat been entered?
-	;	beq.s	Level_ChkWater			; if not, branch
-	;	btst	#bitA,(v_jpadhold1).w	; is A button held?
-	;	beq.s	Level_ChkWater			; if not, branch
-		move.b	#1,(f_debugmode).w		; enable debug mode
-
 Level_ChkWater:
 		moveq	#0,d0
 		move.w	d0,(v_jpadhold2).w
@@ -3391,9 +3384,6 @@ End_LoadData:
 		move.w	#bgm_Ending,d0
 		bsr.w	PlaySound							; play ending sequence music
 		move.b	d0,(v_lastbgmplayed).w				; store last played music
-		btst	#bitA,(v_jpadhold1).w				; is button A pressed?
-		beq.s	End_LoadSonic						; if not, branch
-		move.b	#1,(f_debugmode).w					; enable debug mode
 
 End_LoadSonic:
 		move.b	#id_SonicPlayer,(v_player).w		; load Sonic object
@@ -3411,6 +3401,7 @@ End_LoadSonic:
 		move.w	d0,(v_debuguse).w
 		move.b	d0,(f_restart).w
 		move.w	d0,(v_framecount).w
+		move.w	d0,(f_debugmode).w					; disable debug mode
 		bsr.w	OscillateNumInit
 		move.w	#1800,(v_demolength).w
 		move.b	#$18,(v_vbla_routine).w
