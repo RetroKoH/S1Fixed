@@ -8,7 +8,7 @@
 ReactToItem:
 		jsr		(Touch_Rings).l					; RetroKoH S3K Rings Manager
 
-	if ShieldsMode>0
+	if S3KDoubleJump
 		move.b	obStatus2nd(a0),d0				; does the player have a Shield or Invincibility?
 		andi.b	#mask2ndChkShield,d0
 		bne.s	.noInstaShield					; if yes, branch
@@ -333,7 +333,7 @@ React_Caterkiller:
 		bset	#7,obStatus(a1)
 
 React_ChkHurt:
-	if ShieldsMode=0
+	if S3KDoubleJump=0
 		btst	#sta2ndInvinc,obStatus2nd(a0)	; is Sonic invincible?
 		beq.s	.notinvincible					; if not, branch
 

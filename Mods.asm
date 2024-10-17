@@ -32,7 +32,9 @@ DropDashEnabled: = 1
 ; Name: Elemental Shields (Incomplete: Minor bugfixes)
 ; Credit: RetroKoH, DeltaW
 ; Function: Enables the usage of S3K Shields and abilities.
-ShieldsMode: = 3						; 0 - Blue Shield only, 1 - Blue + Instashield, 2 - Blue + Elementals, 3 - Elementals only.
+InstashieldEnabled: = 0					; if set to 1, instashield is now enabled (Now split from Elemental Shields toggle).
+ShieldsMode: = 2						; 0 - Blue Shield only, 1 - Blue + Elementals, 2 - Elementals only.
+S3KDoubleJump: = (InstashieldEnabled|ShieldsMode)>0
 
 ; Name: 7th Emerald and Super Sonic (Incomplete: Minor Bugfixes)
 ; Credit: RetroKoH (Palette Credit: Clownacy)

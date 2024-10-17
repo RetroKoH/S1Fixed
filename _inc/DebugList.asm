@@ -27,7 +27,7 @@ standards:	macro
 	dbug	Map_Monitor,	id_Monitor,			3,		5,		make_art_tile(ArtTile_Monitor,0,0)				; Speed Shoes Monitor
 	dbug	Map_Monitor,	id_Monitor,			2,		4,		make_art_tile(ArtTile_Monitor,0,0)				; Sonic Monitor
 	dbug	Map_Monitor,	id_Monitor,			1,		3,		make_art_tile(ArtTile_Monitor,0,0)				; Eggman Monitor
-	if ShieldsMode>1
+	if ShieldsMode
 	dbug	Map_Monitor,	id_Monitor,			7,		9,		make_art_tile(ArtTile_Monitor,0,0)				; Flame Shield Monitor
 	dbug	Map_Monitor,	id_Monitor,			8,		$A,		make_art_tile(ArtTile_Monitor,0,0)				; Bubble Shield Monitor
 	dbug	Map_Monitor,	id_Monitor,			9,		$B,		make_art_tile(ArtTile_Monitor,0,0)				; Lightning Shield Monitor

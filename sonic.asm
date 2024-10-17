@@ -2219,9 +2219,10 @@ Level_SkipTtlCard:
 		bsr.w	ColIndexLoad
 		bsr.w	LZWaterFeatures
 		move.b	#id_SonicPlayer,(v_player).w	; load Sonic object
-	if ShieldsMode>0
+
+	if InstashieldEnabled
 		move.b	#id_ShieldItem,(v_shieldobj).w	; load instashield object
-		move.b	#1,(v_shieldobj+obSubtype).w
+		move.b	#shTypeInsta,(v_shieldobj+obSubtype).w
 	endif
 
 Level_ChkWater:
@@ -5800,11 +5801,12 @@ ResumeMusic:
 		include	"_anim/Shield and Invincibility.asm"
 		include "_maps/Shield and Invincibility - DPLCs.asm"		; RetroKoH VRAM Overhaul
 
-	if ShieldsMode>0
+	if InstashieldEnabled
 			include "_maps/Shield - Insta.asm"
 			include "_maps/Shield - Insta - DPLCs.asm"
 	endif
-	if ShieldsMode>1
+
+	if ShieldsMode
 			include "_maps/Shield - Flame.asm"
 			include "_maps/Shield - Flame - DPLCs.asm"
 			include "_maps/Shield - Bubble.asm"
@@ -7375,11 +7377,12 @@ Art_Stars:		binclude	"artunc/Invincibility Stars.bin"	; Invincibility Stars -- R
 Art_Goggles:	binclude	"artunc/Goggles.bin"				; Goggles
 		even
 
-	if ShieldsMode>0
+	if InstashieldEnabled
 Art_Insta:		binclude	"artunc/Shield - Insta.bin"
 		even
 	endif
-	if ShieldsMode>1
+
+	if ShieldsMode
 Art_Shield_F:	binclude	"artunc/Shield - Flame.bin"
 		even
 Art_Shield_B:	binclude	"artunc/Shield - Bubble.bin"
@@ -7709,7 +7712,7 @@ Nem_Lives:		binclude	"artnem/HUD - Life Counter Icon.nem"
 Nem_Ring:		binclude	"artnem/Rings.nem"
 		even
 
-	if ShieldsMode>1
+	if ShieldsMode
 Nem_Monitors:	binclude	"artnem/Monitors - S3K.nem"
 		even
 	else
@@ -8057,13 +8060,13 @@ Map_RingBIN:
 		include	"_maps/Giant Ring.asm"	; Now includes the ring flash
 
 ; Split these into seperate files so SonLVL can render monitors properly	
-	if ShieldsMode>1
+	if ShieldsMode
 		include	"_maps/Monitor - S3K.asm"
 	else
 		include	"_maps/Monitor.asm"
 	endif
 
-	if SaveProgressMod=1
+	if SaveProgressMod
 		include	"_maps/Press Start and TM (Menu).asm"
 	else
 		include	"_maps/Press Start and TM.asm"
@@ -8391,7 +8394,7 @@ ObjPosSBZPlatform_Index:
 
 		dc.b $FF, $FF, 0, 0, 0,	0
 
-	if ShieldsMode>1
+	if ShieldsMode
 ObjPos_GHZ1:	binclude	"objpos/S3K Monitors/ghz1.bin"
 		even
 ObjPos_GHZ2:	binclude	"objpos/S3K Monitors/ghz2.bin"

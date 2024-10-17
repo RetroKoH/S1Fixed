@@ -8,12 +8,12 @@ ptr_ShiAni_Stars2:		dc.w stars2-Ani_Shield
 ptr_ShiAni_Stars3:		dc.w stars3-Ani_Shield
 ptr_ShiAni_Stars4:		dc.w stars4-Ani_Shield
 
-	if ShieldsMode>0
+	if InstashieldEnabled
 ptr_ShiAni_Insta:		dc.w insta1-Ani_Shield
 ptr_ShiAni_InstaActive:	dc.w insta2-Ani_Shield
 	endif
 	
-	if ShieldsMode>1
+	if ShieldsMode
 ptr_ShiAni_Flame:		dc.w flame1-Ani_Shield
 ptr_ShiAni_FlameDash:	dc.w flame2-Ani_Shield
 ptr_ShiAni_Bubble:		dc.w bubble1-Ani_Shield
@@ -38,13 +38,13 @@ stars3:			dc.b 0,	4, 4, 0, 4, 0, 0, 5, 5,	0, 5, 0, 0, 6, 6, 0, 6
 stars4:			dc.b 0,	4, 0, 0, 4, 0, 0, 5, 0,	0, 5, 0, 0, 6, 0, 0, 6
 				dc.b 0,	0, 7, 0, 0, 7, 0, 0, afEnd
 
-	if ShieldsMode>0
+	if InstashieldEnabled
 insta1:			dc.b  $1F,   6,	afEnd
 
 insta2:			dc.b	0,   0,	  1,   2,   3,	 4,   5,   6,	6,   6,	  6,   6,   6,	 6,   7, afChange, aniID_InstaIdle
 	endif
 
-	if ShieldsMode>1
+	if ShieldsMode
 flame1:			dc.b 1, 0, $F, 1, $10, 2, $11, 3, $12, 4, $13, 5, $14, 6, $15, 7, $16, 8, $17, afEnd
 
 flame2:			dc.b 1, 9, $A, $B, $C, $D, $E, 9, $A, $B, $C, $D, $E, afChange, aniID_FlameShield
@@ -75,12 +75,12 @@ aniID_InvStars2:		equ	(ptr_ShiAni_Stars2-Ani_Shield)/2		; 2
 aniID_InvStars3:		equ	(ptr_ShiAni_Stars3-Ani_Shield)/2		; 3
 aniID_InvStars4:		equ	(ptr_ShiAni_Stars4-Ani_Shield)/2		; 4
 
-	if ShieldsMode>0
+	if InstashieldEnabled
 aniID_InstaIdle:		equ	(ptr_ShiAni_Insta-Ani_Shield)/2			; 5 - Set by default for Sonic
 aniID_InstaActive:		equ	(ptr_ShiAni_InstaActive-Ani_Shield)/2	; 6 - Triggered by Sonic_JumpHeight
 	endif
 
-	if ShieldsMode>1
+	if ShieldsMode
 aniID_FlameShield:		equ	(ptr_ShiAni_Flame-Ani_Shield)/2			; 7 - Standard animation for Flame Shield
 aniID_FlameDash:		equ	(ptr_ShiAni_FlameDash-Ani_Shield)/2		; 8 - Used by Sonic_JumpHeight when activating double jump
 aniID_BubbleShield:		equ	(ptr_ShiAni_Bubble-Ani_Shield)/2		; 9 - Standard animation for Bubble Shield

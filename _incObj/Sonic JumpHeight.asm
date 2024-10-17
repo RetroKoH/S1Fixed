@@ -41,17 +41,17 @@ locret_134D2:
 
 ; Files for Double Jump Techniques
 		
-	if ShieldsMode=0
+	if S3KDoubleJump=0
 		include "_incObj/Sonic DoubleJump - NoShield.asm"	; Use if there are NO elemental shields or instashield
 	else
 		include "_incObj/Sonic DoubleJump - Shields.asm"	; Use when in S3K mode (Shields and Insta)
 	endif
 
-	if DropDashEnabled=1
+	if DropDashEnabled
 		include "_incObj/Sonic DropDash.asm"
 	endif
 	
-	if SuperMod=1
+	if SuperMod
 		include "_incObj/Sonic TurnSuper.asm"
 	endif
 

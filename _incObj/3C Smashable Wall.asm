@@ -38,7 +38,7 @@ Smash_Solid:	; Routine 2
 		move.w	obX(a0),d4
 		bsr.w	SolidObject
 
-	if ShieldsMode>1
+	if ShieldsMode
 		beq.s	.donothing
 
 ;		tst.b	obCharID(a1)						; is the player Sonic?

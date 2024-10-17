@@ -134,7 +134,7 @@ Touch_Rings:
 		beq.w	Touch_Rings_Done			; if not, return
 		movea.w	(v_ringstart_addr_RAM).w,a4
 
-	if ShieldsMode>1
+	if ShieldsMode
 		btst	#sta2ndLShield,obStatus2nd(a0)	; does the player have a lightning shield?
 		beq.s	Touch_Rings_NoAttraction		; if not, branch
 		move.w	obX(a0),d2
@@ -198,16 +198,18 @@ Touch_Rings_Loop:
 		bhi.s	Touch_NextRing	; if he has, branch
 
 .chkshield:
-	if ShieldsMode>1
+	if ShieldsMode
 		btst	#sta2ndLShield,obStatus2nd(a0)	; does the player have a lightning shield?
 		bne.s	Touch_Ring_AttractRing			; if yes, branch
 	endif
 
 Touch_DestroyRing:
 		move.w	#$608,(a4)		; set frame and destruction timer - $608 instead of $604 for 8-frame rings
+
 	if PerfectBonusEnabled
 		subq.w	#1,(v_perfectringsleft).w
 	endif
+
 		bsr.w	CollectRing
 		lea		(v_ringconsumelist).w,a3
 
@@ -229,7 +231,7 @@ Touch_Rings_Done:
 		rts
 ; ---------------------------------------------------------------------------
 
-	if ShieldsMode>1
+	if ShieldsMode
 Touch_Ring_AttractRing:
 		movea.l	a1,a3
 		jsr		(FindFreeObj).l

@@ -16,16 +16,20 @@ Ani_Monitor:
 		dc.w	.shield-Ani_Monitor
 		dc.w	.invincible-Ani_Monitor
 		dc.w	.rings-Ani_Monitor
-	if ShieldsMode>1
+
+	if ShieldsMode
 		dc.w	.fshield-Ani_Monitor	; Added
 		dc.w	.bshield-Ani_Monitor	; Added
 		dc.w	.lshield-Ani_Monitor	; Added
 	endif
+
 		dc.w	.s-Ani_Monitor
 		dc.w	.goggles-Ani_Monitor
+
 	if RandomMonitors
 		dc.w	.random-Ani_Monitor		; Added
 	endif
+
 		dc.w	.breaking-Ani_Monitor
 
 .static:	dc.b 1,	0, 1, Static2, afEnd
@@ -43,7 +47,7 @@ Ani_Monitor:
 .rings:		dc.b 1,	0, 8, 8, 1, 8, 8, Static2, 8,	8, afEnd
 		even
 
-	if ShieldsMode>1
+	if ShieldsMode
 
 .fshield:	dc.b 1,	0, 9, 9, 1, 9, 9, Static2, 9, 9, afEnd
 		even

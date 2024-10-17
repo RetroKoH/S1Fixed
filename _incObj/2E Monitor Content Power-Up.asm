@@ -76,11 +76,13 @@ Pow_Types:	offsetTable
 		offsetTableEntry.w Pow_Shield	; 4 - Shield
 		offsetTableEntry.w Pow_Invinc	; 5 - Invincibility
 		offsetTableEntry.w Pow_Rings	; 6 - Rings
-	if ShieldsMode>1
+
+	if ShieldsMode
 		offsetTableEntry.w Pow_FShield	; 7 - Flame Shield		; Added
 		offsetTableEntry.w Pow_BShield	; 8 - Bubble Shield		; Added
 		offsetTableEntry.w Pow_LShield	; 9 - Lightning Shield	; Added
 	endif
+
 		offsetTableEntry.w Pow_S		; 7/A - S
 		offsetTableEntry.w Pow_Goggles	; 8/B - Goggles
 ; ===========================================================================
@@ -251,14 +253,14 @@ Pow_Goggles:
 		jmp		(PlaySound).w								; play sound
 ; ===========================================================================
 
-	if ShieldsMode>1
+	if ShieldsMode
 Pow_FShield:
 		andi.b	#mask2ndRmvShield,(v_player+obStatus2nd).w	; remove shield status
 		bset	#sta2ndShield,(v_player+obStatus2nd).w		; give Sonic a shield
 		bset	#sta2ndFShield,(v_player+obStatus2nd).w		; give Sonic a flame shield
 		move.b	#id_ShieldItem,(v_shieldobj).w				; load shield object
 		clr.b	(v_shieldobj+obRoutine).w
-		move.b	#2,(v_shieldobj+obSubtype).w
+		move.b	#shTypeFlame,(v_shieldobj+obSubtype).w
 		move.w	#sfx_FShield,d0
 		jmp		(PlaySound_Special).w						; play shield sound
 ; ===========================================================================
@@ -269,7 +271,7 @@ Pow_BShield:
 		bset	#sta2ndBShield,(v_player+obStatus2nd).w		; give Sonic a bubble shield
 		move.b	#id_ShieldItem,(v_shieldobj).w				; load shield object
 		clr.b	(v_shieldobj+obRoutine).w
-		move.b	#3,(v_shieldobj+obSubtype).w
+		move.b	#shtypeBubble,(v_shieldobj+obSubtype).w
 		move.w	#sfx_BShield,d0
 		jmp		(PlaySound_Special).w						; play shield sound
 ; ===========================================================================
@@ -280,7 +282,7 @@ Pow_LShield:
 		bset	#sta2ndLShield,(v_player+obStatus2nd).w		; give Sonic a lightning shield
 		move.b	#id_ShieldItem,(v_shieldobj).w				; load shield object
 		clr.b	(v_shieldobj+obRoutine).w
-		move.b	#4,(v_shieldobj+obSubtype).w
+		move.b	#shTypeLtning,(v_shieldobj+obSubtype).w
 		move.w	#sfx_LShield,d0
 		jmp		(PlaySound_Special).w						; play shield sound
 ; ===========================================================================

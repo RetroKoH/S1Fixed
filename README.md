@@ -18,7 +18,6 @@
  Toggleable: SBZ3 Level Art (Rohan)  
  Badniks auto-destroy at End-of-level; no points. (RetroKoH)  
  Sonic doesn't take damage once he is sent to the right at EoL (RetroKoH)  
- Toggleable: Sonic CD Signpost style; Replace frame, not character pictures (RetroKoH)  
  Add Goggle sprites; Let them extend underwater time (RetroKoH)  
  Add Title Card file w/ missing letters for users  
  Toggleable: Beta Snare Drum sound (Consult Vladikcomper)  

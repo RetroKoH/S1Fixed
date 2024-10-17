@@ -3,7 +3,7 @@ MonitorRandomizer:
 
 		jsr		(RandomNumber).w	; call for random number
 
-	if ShieldsMode>1
+	if ShieldsMode
 	; Get random factor for elemental shield (1, 2, 3)
 		move.l	d0,d1
 		swap	d1
@@ -19,11 +19,11 @@ MonitorRandomizer:
 		swap	d0			; Get remainder of division
 		addi.w	#1,d0		; Add minimum number
 	
-	if ShieldsMode>1
+	if ShieldsMode
 		cmpi.b	#4,d0					; is this a shield?
 		bne.s	.skipcheck				; if not, skip and exit
 		
-		if ShieldsMode=2
+		if ShieldsMode=1
 			btst	#sta2ndShield,(v_player+obStatus2nd).w	; does Sonic already have a shield?
 			beq.s	.skipcheck								; if no, don't change it.
 		endif
@@ -34,5 +34,6 @@ MonitorRandomizer:
 
 .skipcheck:
 	endif
+
 		move.b	d0,obAnim(a0)		; get subtype
 		rts

@@ -225,7 +225,7 @@ Bub_ChkSonic:
 		bne.s	.loc_12998
 		lea		(v_player).w,a1		; moved to the front to call obCtrlLock directly from a1
 
-	if ShieldsMode>1
+	if ShieldsMode
 		btst	#sta2ndBShield,obStatus2nd(a1)
 		bne.s	.loc_12998
 	endif

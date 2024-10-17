@@ -18,7 +18,7 @@ Sonic_ResetOnFloor:
 		bclr	#staSpin,obStatus(a0)
 		subq.w	#5,obY(a0)						; move Sonic up 5 pixels so the increased height doesn't push him into the ground
 
-	if ShieldsMode<2
+	if ShieldsMode=0
 
 		if DropDashEnabled=1
 			tst.b	obDoubleJumpFlag(a0)
@@ -75,7 +75,7 @@ Sonic_ResetOnFloor:
 	endif				; Mode 1+
 
 
-	if ShieldsMode>1
+	if ShieldsMode
 ; ---------------------------------------------------------------------------
 ; Subroutine to	bounce Sonic in the air when he has a bubble shield
 ; ---------------------------------------------------------------------------

@@ -184,7 +184,7 @@ Drown_Countdown:; Routine $A
 		cmpi.b	#6,obRoutine(a2)				; is Sonic dead?
 		bhs.s	.cantdrown						; if yes, branch
 
-	if ShieldsMode>1	; RetroKoH S3K Elemental Shields
+	if ShieldsMode	; RetroKoH S3K Elemental Shields
 		btst	#sta2ndBShield,obStatus2nd(a2)	; does the player have the Bubble Shield?
 		bne.s   .cantdrown
 	endif

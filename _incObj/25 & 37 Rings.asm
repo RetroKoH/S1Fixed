@@ -113,7 +113,7 @@ RLoss_Index:		offsetTable
 		offsetTableEntry.w Ring_Sparkle
 		offsetTableEntry.w Ring_Delete
 
-	if ShieldsMode>1	; Attracted Rings (By the lightning shield)
+	if ShieldsMode	; Attracted Rings (By the lightning shield)
 		offsetTableEntry.w RAttract_Init
 		offsetTableEntry.w RAttract_Main
 		offsetTableEntry.w RAttract_Collect
@@ -298,7 +298,7 @@ SpillRingData_Water:
                 even
 ; ===========================================================================
 
-	if ShieldsMode>1
+	if ShieldsMode
 RAttract_Init:
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Ring,obMap(a0)

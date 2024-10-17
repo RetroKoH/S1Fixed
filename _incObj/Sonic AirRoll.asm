@@ -17,11 +17,11 @@ Sonic_ChkAirRoll:
 		move.b	#aniID_Roll,obAnim(a0)	; enter rolling animation
 		bset	#staSpin,obStatus(a0)	; set spin status
 
-	if (ShieldsMode>0) | (AirRollIntoDropDash=1)
+	if (S3KDoubleJump) | (AirRollIntoDropDash)
 		move.b	#2,obDoubleJumpFlag(a0)	; disable shield abilities and/or enable Drop Dash transition
 	endif
 
-	if AirRollIntoDropDash=1
+	if AirRollIntoDropDash
 		move.b	#1,obJumping(a0)		; enable this for potential drop dash transition
 	endif
 

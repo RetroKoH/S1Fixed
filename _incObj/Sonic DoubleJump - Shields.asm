@@ -8,7 +8,7 @@
 Sonic_DoubleJump:
 		tst.b	obDoubleJumpFlag(a0)			; is double jump flag set?
 
-	if DropDashEnabled=1
+	if DropDashEnabled
 		bne.w	Sonic_ChkDropDash				; if yes, check for Drop Dash
 	else
 		bne.s	Sonic_ShieldDoNothing			; if yes, branch and exit
@@ -23,7 +23,7 @@ Sonic_DoubleJump:
 ; Unlike w/ S3K, we will only branch IF we meet the conditions.
 		moveq	#0,d0
 		move.b	(v_player+obStatus2nd).w,d0
-	if SuperMod=1
+	if SuperMod
 		btst	#sta2ndSuper,d0					; is Sonic currently in his Super form?
 		bne.s	Sonic_SetDoubleJumpFlag			; if yes, branch towards the exit
 	endif
@@ -31,7 +31,7 @@ Sonic_DoubleJump:
 		bne.s	Sonic_SetDoubleJumpFlag			; if so, no shield ability is uaable.
 
 ; Check for elemental shields first, as we cannot turn super or insta-shield with these.
-	if ShieldsMode>1
+	if ShieldsMode
 		btst	#sta2ndFShield,d0				; does Sonic have a Flame Shield?
 		bne.s	Sonic_FlameShieldAttack			; if yes, branch
 		btst	#sta2ndBShield,d0				; does Sonic have a Bubble Shield?
@@ -41,7 +41,7 @@ Sonic_DoubleJump:
 	endif
 
 ; if we don't have elementals, start checking for Super, then insta-shield.
-	if SuperMod=1
+	if SuperMod
 		cmpi.b	#emldCount,(v_emeralds).w		; does Sonic have all Chaos Emeralds?
 		bcs.s	Sonic_NoSuper					; if not, branch
 		cmpi.w	#50,(v_rings).w					; does Sonic have 50 rings or more?
@@ -51,8 +51,11 @@ Sonic_DoubleJump:
 
 Sonic_NoSuper:
 	endif
+
+	if InstashieldEnabled
 		btst	#sta2ndShield,d0				; does Sonic have any Shield?
 		beq.s	Sonic_InstaShieldAttack			; if not, branch to the Insta-Shield.
+	endif
 
 ; at this point, we must have a Blue shield. Fall through to do nothing.
 
@@ -62,17 +65,19 @@ Sonic_SetDoubleJumpFlag:
 Sonic_ShieldDoNothing:
 		rts
 ; ===========================================================================
-
+	if InstashieldEnabled
 Sonic_InstaShieldAttack:
-		addq.b	#1,(v_shieldobj+obAnim).w				; Set animation
+		addq.b	#1,(v_shieldobj+obAnim).w				; Set animation to aniID_InstaActive
 		move.b	#1,obDoubleJumpFlag(a0)					; Set to 1. Will be set to 2 when finished.
 		move.w	#sfx_InstaAtk,d0
 		jmp		(PlaySound_Special).w
-; ===========================================================================
 
-	if ShieldsMode>1
+; ===========================================================================
+	endif
+
+	if ShieldsMode
 Sonic_FlameShieldAttack:
-		addq.b	#1,(v_shieldobj+obAnim).w				; Set animation
+		addq.b	#1,(v_shieldobj+obAnim).w				; Set animation to aniID_FlameDash
 		move.b	#1,obDoubleJumpFlag(a0)					; Set double jump flag
 		move.b	#$20,(v_cameralag).w					; hard-coded camera lag
 		bsr.w	Reset_Sonic_Position_Array
@@ -90,7 +95,7 @@ Sonic_FlameShieldAttack:
 ; ===========================================================================
 
 Sonic_BubbleShieldAttack:
-		addq.b	#1,(v_shieldobj+obAnim).w				; Set animation
+		addq.b	#1,(v_shieldobj+obAnim).w				; Set animation to aniID_BubbleBounce
 		move.b	#1,obDoubleJumpFlag(a0)
 		clr.w	obVelX(a0)
 		clr.w	obInertia(a0)

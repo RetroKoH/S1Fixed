@@ -2,7 +2,7 @@
 ; Object 26 - monitors
 ; ---------------------------------------------------------------------------
 
-	if ShieldsMode>1
+	if ShieldsMode
 monLastID: = $C+RandomMonitors
 	else
 monLastID: = 9+RandomMonitors
@@ -54,7 +54,8 @@ Mon_Main:	; Routine 0
 	endif
 
 Mon_Solid:	; Routine 2
-	if ShieldsMode=2
+
+	if ShieldsMode=1	; RetroKoH Scaling Shields
 		move.b	obSubtype(a0),d0
 		cmpi.b	#7,d0					; is this a flame shield?
 		blt.s	.skipcheck
@@ -67,7 +68,8 @@ Mon_Solid:	; Routine 2
 		move.b	#4,obAnim(a0)							; reset to blue shield.
 
 .skipcheck:
-	endif
+	endif	; Scaling Shields End
+
 		move.b	ob2ndRout(a0),d0		; is monitor set to fall?
 		beq.s	.normal					; if not, branch
 		subq.b	#2,d0

@@ -395,6 +395,12 @@
  Function: Numerous changes by Filter make the DLE system run a bit more efficiently.  
  Date: 2024-10-13  
 
+## Brand New Special Stage Debug Editor
+ (Incomplete: Cursor positioning needs fixing)  
+ Credit: RetroKoH (Original work from Sonic 1 (2013))  
+ Function: Gives the Special Stages a proper Debug Mode.  
+ Date: 2024-10-17  
+
 ## Extended Sound Index
  (Temporarily Removed)
  Credit: Alex Field

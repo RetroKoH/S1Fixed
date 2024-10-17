@@ -60,7 +60,7 @@ Map_Monitor:	mappingsTable
 	spritePiece	-$10, -$11, 4, 4, 0, 0, 0, 0, 0
 .rings_End
 
-	if ShieldsMode>1
+	if ShieldsMode
 
 .fshield:	spriteHeader
 	spritePiece	-8, -$B, 2, 2, $2C, 0, 0, 0, 0	; flame shield monitor
