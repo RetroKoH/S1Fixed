@@ -6,7 +6,7 @@ SonicSpecial:
 		tst.w	(v_debuguse).w	; is debug mode	being used?
 		beq.s	Obj09_Normal	; if not, branch
 		bsr.w	SS_FixCamera
-		bra.w	DebugMode
+		bra.w	DebugMode_SS
 ; ===========================================================================
 
 Obj09_Normal:
@@ -29,7 +29,7 @@ Obj09_Main:	; Routine 0
 		move.l	#Map_Sonic,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Sonic,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.w	#priority0,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
+		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager (Bumped to 1 to put it behind the cursor in Debug Mode)
 		move.b	#aniID_Roll,obAnim(a0)
 		bset	#staSpin,obStatus(a0)
 		bset	#staAir,obStatus(a0)
@@ -437,7 +437,7 @@ loc_1BCD4:
 
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
+; d0=obVelX, d1=obVelY, d2=obY, d3=obX
 
 sub_1BCE8:
 		lea		(v_ssbuffer1&$FFFFFF).l,a1
@@ -456,6 +456,8 @@ sub_1BCE8:
 		addi.w	#$14,d4
 		divu.w	#$18,d4
 		adda.w	d4,a1
+
+; Using stage coordinates, check whether or not there's a solid block at that location
 		moveq	#0,d5
 		move.b	(a1)+,d4
 		bsr.s	Obj09_ChkForSolids

@@ -2612,7 +2612,8 @@ GM_Special:
 		jsr		(SS_Load).l						; load SS layout data
 		clr.l	(v_screenposx).w
 		clr.l	(v_screenposy).w
-		move.b	#id_SonicSpecial,(v_player).w	; load special stage Sonic object
+		move.b	#id_SonicSpecial,(v_player).w		; load special stage Sonic object
+		move.b	#id_SpecialCursor,(v_playerdust).w	; load new debug cursor object (RetroKoH)
 
 	if DynamicSpecialStageWalls=1	; Mercury Dynamic Special Stage Walls
 		move.b	#$FF,(v_ssangleprev).w			; fill previous angle with obviously false value to force an update
@@ -6776,7 +6777,7 @@ SS_LoadWalls:
 		locVRAM	$2840					; VRAM address
 		
 		move.w	#$F,d1					; number of 8x8 tiles
-		bsr.s		LoadTiles
+		bsr.s	LoadTiles
 		move.b	d0,(v_ssangleprev).w	; record the modified angle for comparison
 		
 .return:
@@ -7179,6 +7180,7 @@ SS_MapIndex:
 SS_MapIndex_End:
 
 		include	"_incObj/09 Sonic in Special Stage.asm"
+		include "_incObj/06 SS Debug Cursor.asm"
 
 		include	"_incObj/10.asm"
 
@@ -7298,6 +7300,7 @@ Art_LivesNums:	binclude	"artunc/Lives Counter Numbers.bin" ; 8x8 pixel numbers o
 
 		include	"_incObj/DebugMode.asm"
 		include	"_inc/DebugList.asm"
+		include "_inc/DebugList - Special.asm"
 		include	"_inc/LevelHeaders.asm"
 		include	"_inc/Pattern Load Cues.asm"
 
@@ -7489,6 +7492,8 @@ Nem_SSZone5:	binclude	"artnem/Special ZONE5.nem" ; ZONE5 block
 		even
 Nem_SSZone6:	binclude	"artnem/Special ZONE6.nem" ; ZONE6 block
 		even
+Nem_SSZone7:	binclude	"artnem/Special ZONE7.nem" ; ZONE7 block (RetroKoH: imported from Sonic 1 (2013))
+		even
 Nem_SSUpDown:	binclude	"artnem/Special UP-DOWN.nem" ; special stage UP/DOWN block
 		even
 Nem_SSEmerald:	binclude	"artnem/Special Emeralds.nem" ; special stage chaos emeralds
@@ -7498,6 +7503,10 @@ Nem_SSGhost:	binclude	"artnem/Special Ghost.nem" ; special stage ghost block
 Nem_SSWBlock:	binclude	"artnem/Special W.nem"	; special stage W block
 		even
 Nem_SSGlass:	binclude	"artnem/Special Glass.nem" ; special stage destroyable glass block
+		even
+Nem_SSCursor:	binclude	"artnem/Special Cursor.nem" ; special stage debug cursor (RetroKoH: imported from Sonic 1 (2013))
+		even
+Nem_SSDelete:	binclude	"artnem/Special Delete.nem" ; special stage debug delete icon (RetroKoH: imported from Sonic 1 (2013))
 		even
 Nem_ResultEm:	binclude	"artnem/Special Result Emeralds.nem" ; chaos emeralds on special stage results screen
 		even
@@ -8230,6 +8239,7 @@ Map_RingBIN:
 		include	"_maps/SS UP Block.asm"
 		include	"_maps/SS DOWN Block.asm"
 		include	"_maps/SS Chaos Emeralds.asm"
+		include "_maps/SS Cursor.asm"				; Also used for the Delete Block
 
 ; ---------------------------------------------------------------------------
 ; Level	layout index -- MJ: unused data and BG data have been stripped out

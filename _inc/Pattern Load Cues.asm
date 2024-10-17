@@ -319,8 +319,8 @@ PLC_Signpostend:
 ; Pattern load cues - special stage
 ; ---------------------------------------------------------------------------
 PLC_SpecialStage:	dc.w ((PLC_SpeStageend-PLC_SpecialStage-2)/6)-1
-		plcm	Nem_SSBgCloud,  ArtTile_SS_Background_Clouds ; bubble and cloud background
-		plcm	Nem_SSBgFish,   ArtTile_SS_Background_Fish   ; bird and fish background
+		plcm	Nem_SSBgCloud,  ArtTile_SS_Background_Clouds	; bubble and cloud background
+		plcm	Nem_SSBgFish,   ArtTile_SS_Background_Fish		; bird and fish background
 
 	if DynamicSpecialStageWalls=1	; Mercury Dynamic Special Stage Walls
 		plcm	Nem_Hud,		ArtTile_SS_HUD					; HUD
@@ -342,6 +342,8 @@ PLC_SpecialStage:	dc.w ((PLC_SpeStageend-PLC_SpecialStage-2)/6)-1
 		plcm	Nem_SSEmerald,  ArtTile_SS_Emerald				; emeralds
 ;		plcm	Nem_SSZone1,    ArtTile_SS_Zone_1				; ZONE X block
 		plcm	Nem_Ring,		ArtTile_SS_Ring					; Rings	-- RetroKoH VRAM Overhaul
+		plcm	Nem_SSCursor,	ArtTile_SS_Cursor				; Debug Mode Cursor
+		plcm	Nem_SSDelete,	ArtTile_SS_Delete				; Delete Icon (Debug)
 PLC_SpeStageend:
 ; ---------------------------------------------------------------------------
 ; Pattern load cues - GHZ animals

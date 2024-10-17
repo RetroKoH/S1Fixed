@@ -684,6 +684,8 @@ ArtTile_SS_Plane_6:				equ $700				; Check this
 ArtTile_SS_Emerald:				equ $770
 ArtTile_SS_Zone_1:				equ $790				; ✓
 ArtTile_SS_Ring:				equ $799				; ✓
+ArtTile_SS_Cursor:				equ $790				; ✓
+ArtTile_SS_Delete:				equ $7B0				; Check this
 
 ; Special Stage Results
 ArtTile_SS_Results_Emeralds:	equ $541
@@ -695,7 +697,10 @@ ArtTile_Credits_Font:			equ $58C				; ✓
 ; Special Stage Block IDs (Used in _incObj/09 Sonic in Special Stage.asm -- Obj09_ChkItems:)
 ; I could consolidate the ZONE blocks into one block ID and dynamically load art in.
 ; Possibly use the W block to warp Sonic.
-
+SSBlock_BlueWall:				equ $01
+SSBlock_YellowWall:				equ $0A
+SSBlock_PinkWall:				equ $13
+SSBlock_GreenWall:				equ $1C
 ; Everything prior is standard wall
 SSBlock_Bumper:					equ $25
 ; $26 is unused W block
@@ -709,9 +714,9 @@ SSBlock_Glass1:					equ $2D
 SSBlock_Glass2:					equ $2E
 SSBlock_Glass3:					equ $2F
 SSBlock_Glass4:					equ $30
-SSBlock_R2:						equ $31
-SSBlock_BumperHit1:				equ $32
-SSBlock_BumperHit2:				equ $33
+SSBlock_R2:						equ $31		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_BumperHit1:				equ $32		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_BumperHit2:				equ $33		; not used in initial layouts (Only used in real-time for animation)
 ; $34-39 are unused ZONE Blocks
 SSBlock_Ring:					equ $3A
 SSBlock_Emld1:					equ $3B
@@ -726,36 +731,36 @@ SSBlock_Emld6:					equ $40
 SSBlock_Emld7:					equ $41
 SSBlock_EmldLast:				equ SSBlock_Emld7
 SSBlock_Ghost:					equ $42
-SSBlock_RingSparkle1:			equ $43
-SSBlock_RingSparkle2:			equ $44
-SSBlock_RingSparkle3:			equ $45
-SSBlock_RingSparkle4:			equ $46
-SSBlock_ItemSparkle1:			equ $47
-SSBlock_ItemSparkle2:			equ $48
-SSBlock_ItemSparkle3:			equ $49
-SSBlock_ItemSparkle4:			equ $4A
-SSBlock_GhostSwitch:			equ $4B
-SSBlock_GlassAni1:				equ $4C
-SSBlock_GlassAni2:				equ $4D
-SSBlock_GlassAni3:				equ $4E
-SSBlock_GlassAni4:				equ $4F
+SSBlock_RingSparkle1:			equ $43		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_RingSparkle2:			equ $44		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_RingSparkle3:			equ $45		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_RingSparkle4:			equ $46		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_ItemSparkle1:			equ $47		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_ItemSparkle2:			equ $48		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_ItemSparkle3:			equ $49		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_ItemSparkle4:			equ $4A		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_GhostSwitch:			equ $4B		; used in initial layouts, not placeable in Debug Mode
+SSBlock_GlassAni1:				equ $4C		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_GlassAni2:				equ $4D		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_GlassAni3:				equ $4E		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_GlassAni4:				equ $4F		; not used in initial layouts (Only used in real-time for animation)
 
 	else
 
 SSBlock_EmldLast:				equ SSBlock_Emld6
 SSBlock_Ghost:					equ $41
-SSBlock_RingSparkle1:			equ $42
-SSBlock_RingSparkle2:			equ $43
-SSBlock_RingSparkle3:			equ $44
-SSBlock_RingSparkle4:			equ $45
-SSBlock_ItemSparkle1:			equ $46
-SSBlock_ItemSparkle2:			equ $47
-SSBlock_ItemSparkle3:			equ $48
-SSBlock_ItemSparkle4:			equ $49
-SSBlock_GhostSwitch:			equ $4A
-SSBlock_GlassAni1:				equ $4B
-SSBlock_GlassAni2:				equ $4C
-SSBlock_GlassAni3:				equ $4D
-SSBlock_GlassAni4:				equ $4E
+SSBlock_RingSparkle1:			equ $42		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_RingSparkle2:			equ $43		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_RingSparkle3:			equ $44		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_RingSparkle4:			equ $45		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_ItemSparkle1:			equ $46		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_ItemSparkle2:			equ $47		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_ItemSparkle3:			equ $48		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_ItemSparkle4:			equ $49		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_GhostSwitch:			equ $4A		; used in initial layouts, not placeable in Debug Mode
+SSBlock_GlassAni1:				equ $4B		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_GlassAni2:				equ $4C		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_GlassAni3:				equ $4D		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_GlassAni4:				equ $4E		; not used in initial layouts (Only used in real-time for animation)
 
 	endif

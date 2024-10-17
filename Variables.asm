@@ -531,14 +531,18 @@ v_ram_end:
 	dephase
 
 ; Special stage
-v_ssbuffer1		= v_128x128
-v_ssblockbuffer		= v_ssbuffer1+$1020 ; ($2000 bytes)
+v_ssbuffer1			= v_128x128
+
+v_ssblockbuffer		= v_ssbuffer1+$1020			; ($2000 bytes)
 v_ssblockbuffer_end	= v_ssblockbuffer+$80*$40
-v_ssbuffer2		= v_128x128+$4000
+
+v_ssbuffer2			= v_128x128+$4000
 v_ssblocktypes		= v_ssbuffer2
-v_ssitembuffer		= v_ssbuffer2+$400 ; ($100 bytes)
+
+v_ssitembuffer		= v_ssbuffer2+$400			; ($100 bytes)
 v_ssitembuffer_end	= v_ssitembuffer+$100
-v_ssbuffer3		= v_ssitembuffer_end
+
+v_ssbuffer3			= v_ssitembuffer_end
 v_ssscroll_buffer	= v_ngfx_buffer+$100
 
 ; Error handler

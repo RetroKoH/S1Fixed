@@ -10,8 +10,6 @@ DebugMode:
 
 Debug_Main:	; Routine 0
 		addq.b	#2,(v_debuguse).w
-		cmpi.b	#id_Special,(v_gamemode).w
-		beq.s	.isntlevel
 		clr.b	(v_sonicbubbles+objoff_2C).w
 		jsr		(ResumeMusic).l						; cancel countdown music
 		move.w	(v_limittop2).w,(v_limittopdb).w	; buffer level x-boundary
@@ -44,19 +42,8 @@ Debug_Main:	; Routine 0
 
 .setpos:
 	; Debug Improvements end
-
-.isntlevel:
-		clr.w	(v_ssrotate).w				; stop special stage rotating
-		clr.w	(v_ssangle).w				; make special stage "upright"
-		moveq	#6,d0						; use 6th debug	item list
-		bra.s	.selectlist
-; ===========================================================================
-
-.islevel:
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
-
-.selectlist:
 		lea		(DebugList).l,a2
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2
@@ -71,19 +58,13 @@ Debug_Main:	; Routine 0
 		move.b	#1,(v_debugyspeed).w
 
 Debug_Action:	; Routine 2
-		moveq	#6,d0
-		cmpi.b	#id_Special,(v_gamemode).w
-		beq.s	.isntlevel
-
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
-
-.isntlevel:
 		lea		(DebugList).l,a2
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2
 		move.w	(a2)+,d6
-		bsr.w	Debug_Control
+		bsr.s	Debug_Control
 		jmp		(DisplaySprite).l
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -194,11 +175,10 @@ Debug_ChgItem:
 		move.b	(v_debugitem).w,d0
 		lsl.w	#3,d0
 		move.b	4(a2,d0.w),obSubtype(a1)
-		rts	
-; ===========================================================================
 
 .stayindebug:
 		rts
+; ===========================================================================
 
 .backtonormal:
 	; RetroKoH Debug Mode Fix
@@ -207,8 +187,6 @@ Debug_ChgItem:
 		clr.w	(v_debuguse).w						; deactivate debug mode
 		jsr		(Reset_Sonic_Position_Array).l
 		lea		(v_player).w,a1
-		cmpi.b	#id_Special,(v_gamemode).w			; are you in the special stage?
-		beq.w	.special							; if yes, branch
 
 		move.l	#Map_Sonic,obMap(a1)
 		move.w	#ArtTile_Sonic,obGfx(a1)			; Also resets high priority bit in case of drowning
@@ -242,28 +220,8 @@ Debug_ChgItem:
 		move.b	#1,(f_ringcount).w					; update ring counter
 		move.b	#1,(f_scorecount).w					; update score counter
 		jmp		(HUD_Update.updatetime).l			; directly update timer
-
-.special
-		clr.w	(v_ssangle).w
-	if S4SpecialStages=0
-		move.w	#$40,(v_ssrotate).w					; set new stage rotation speed
-	else
-		move.w	#$100,(v_ssrotate).w				; set new stage rotation speed
-	endif
-		move.l	#Map_Sonic,obMap(a1)
-		move.w	#ArtTile_Sonic,obGfx(a1)
-		move.b	#aniID_Roll,obAnim(a1)
-		move.b	#maskAir+maskSpin,obStatus(a1)		; Set spin and in air bits. all other bits clear.
-
-	if HUDInSpecialStage=1
-		jsr		(Hud_Base_SS).l						; reload basic HUD gfx	-- RetroKoH Debug Mode Improvement
-		move.b	#1,(f_ringcount).w					; update ring counter
-		move.b	#1,(f_scorecount).w					; update score counter
-		jmp		(HUD_Update_SS.updatetime).l		; directly update timer
-	else
-		rts
-	endif
 ; End of function Debug_Control
+; ===========================================================================
 
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -331,3 +289,187 @@ Debug_RestartMusic:
 .dontrestart:
 		rts
 ; End of function Debug_RestartMusic
+
+DebugMode_SS:
+	; LavaGaming Object Routine Optimization
+		tst.b	(v_debuguse).w
+		bne.w	Debug_SS_Action
+	; Object Routine Optimization End
+
+Debug_SS_Main:	; Routine 0
+		addq.b	#2,(v_debuguse).w
+		moveq	#0,d0
+		move.w	d0,obVelX(a0)
+		move.w	d0,obVelY(a0)
+		move.w	d0,obInertia(a0)
+		move.w	d0,(v_ssrotate).w			; stop special stage rotating
+		move.w	d0,(v_ssangle).w			; make special stage "upright"
+		lea		(DebugList_Special).l,a2	; load special list for Special Stage
+		move.w	(a2)+,d6
+		cmp.b	(v_debugitem).w,d6			; have you gone past the last item?
+		bhi.s	.noreset					; if not, branch
+		move.b	d0,(v_debugitem).w			; back to start of list
+
+.noreset:
+		bsr.w	Debug_ShowItem
+		move.b	#12,(v_debugxspeed).w
+		move.b	#1,(v_debugyspeed).w
+
+Debug_SS_Action:	; Routine 2
+		lea		(DebugList_Special).l,a2
+		move.w	(a2)+,d6
+		bsr.w	Debug_SpecialControl		; need slightly different operation for Special Stages
+		jmp		(DisplaySprite).l
+
+; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+
+
+Debug_SpecialControl:
+		moveq	#0,d4
+		move.w	#1,d1
+		move.b	(v_jpadpress1).w,d4
+		andi.w	#btnDir,d4				; is up/down/left/right	pressed?
+		bne.s	.dirpressed				; if yes, branch
+
+		move.b	(v_jpadhold1).w,d0
+		andi.w	#btnDir,d0				; is up/down/left/right	held?
+		bne.s	.dirheld				; if yes, branch
+
+		move.b	#15,(v_debugxspeed).w
+		move.b	#15,(v_debugyspeed).w
+		bra.w	.chgitem
+; ===========================================================================
+
+.dirheld:
+		subq.b	#1,(v_debugxspeed).w
+		bne.s	.skipdir
+		move.b	#1,(v_debugxspeed).w
+		addq.b	#1,(v_debugyspeed).w
+		bne.s	.dirpressed
+		move.b	#-1,(v_debugyspeed).w
+
+.dirpressed:
+		move.b	(v_jpadhold1).w,d4
+
+.skipdir:
+		moveq	#0,d1
+		move.b	(v_debugyspeed).w,d1
+		addq.w	#1,d1
+		swap	d1
+		asr.l	#4,d1
+		move.l	obY(a0),d2
+		move.l	obX(a0),d3
+		btst	#bitUp,d4			; is up	being pressed?
+		beq.s	.notup				; if not, branch
+		sub.l	d1,d2
+		bcc.s	.notup
+		moveq	#0,d2
+
+.notup:
+		btst	#bitDn,d4			; is down being	pressed?
+		beq.s	.notdown			; if not, branch
+		add.l	d1,d2
+		cmpi.l	#$7FF0000,d2
+		blo.s	.notdown
+		move.l	#$7FF0000,d2
+
+.notdown:
+		btst	#bitL,d4
+		beq.s	.notleft
+		sub.l	d1,d3
+		bcc.s	.notleft
+		moveq	#0,d3
+
+.notleft:
+		btst	#bitR,d4
+		beq.s	.notright
+		add.l	d1,d3
+
+.notright:
+		move.l	d2,obY(a0)
+		move.l	d3,obX(a0)
+
+.chgitem:
+		btst	#bitA,(v_jpadhold1).w	; is button A pressed?
+		beq.s	.createitem				; if not, branch
+		btst	#bitC,(v_jpadpress1).w	; is button C pressed?
+		beq.s	.nextitem				; if not, branch
+		subq.b	#1,(v_debugitem).w		; go back 1 item
+		bcc.s	.display
+		add.b	d6,(v_debugitem).w
+		bra.s	.display
+; ===========================================================================
+
+.nextitem:
+		btst	#bitA,(v_jpadpress1).w	; is button A pressed?
+		beq.s	.createitem				; if not, branch
+		addq.b	#1,(v_debugitem).w		; go forwards 1 item
+		cmp.b	(v_debugitem).w,d6
+		bhi.s	.display
+		clr.b	(v_debugitem).w			; loop back to first item
+
+.display:
+		bra.w	Debug_ShowItem
+; ===========================================================================
+
+.createitem:
+		btst	#bitC,(v_jpadpress1).w		; is button C pressed?
+		beq.s	.backtonormal				; if not, branch
+
+; place new block at our current location
+		move.b	(v_debugitem).w,d0
+		lsl.b	#3,d0						; multiply by 8
+		lea		(v_ssbuffer1&$FFFFFF).l,a1
+		moveq	#0,d2
+		move.w	obY(a0),d2
+		addi.w	#$50,d2
+		divu.w	#$18,d2
+		mulu.w	#$80,d2
+		adda.l	d2,a1
+		moveq	#0,d2
+		move.w	obX(a0),d2
+		addi.w	#$14,d2
+		divu.w	#$18,d2
+		adda.w	d2,a1
+
+	; If last entry, instead set (a1) to 00
+		move.b	(a2,d0.w),(a1)				; Place block
+
+.stayindebug:
+		rts
+
+.backtonormal:
+	; RetroKoH Debug Mode Fix
+		btst	#bitB,(v_jpadpress1).w				; is button B pressed?
+		beq.s	.stayindebug						; if not, branch
+		clr.w	(v_debuguse).w						; deactivate debug mode
+		jsr		(Reset_Sonic_Position_Array).l
+		lea		(v_player).w,a1
+
+		clr.w	(v_ssangle).w
+	if S4SpecialStages=0
+		move.w	#$40,(v_ssrotate).w					; set new stage rotation speed
+	else
+		move.w	#$100,(v_ssrotate).w				; set new stage rotation speed
+	endif
+		move.l	#Map_Sonic,obMap(a1)
+		move.w	#ArtTile_Sonic,obGfx(a1)
+		move.b	#aniID_Roll,obAnim(a1)
+		move.b	#maskAir+maskSpin,obStatus(a1)		; Set spin and in air bits. all other bits clear.
+		moveq	#0,d0
+		move.w	d0,obX+2(a1)
+		move.w	d0,obY+2(a1)
+		move.w	d0,obVelX(a1)
+		move.w	d0,obVelY(a1)
+		move.w	d0,obInertia(a1)
+
+	if HUDInSpecialStage=1
+		jsr		(Hud_Base_SS).l						; reload basic HUD gfx	-- RetroKoH Debug Mode Improvement
+		move.b	#1,(f_ringcount).w					; update ring counter
+		move.b	#1,(f_scorecount).w					; update score counter
+		jmp		(HUD_Update_SS.updatetime).l		; directly update timer
+	else
+		rts
+	endif
+; End of function Debug_SpecialControl
+; ===========================================================================
