@@ -7495,7 +7495,7 @@ Nem_SSZone5:	binclude	"artnem/Special ZONE5.nem" ; ZONE5 block
 		even
 Nem_SSZone6:	binclude	"artnem/Special ZONE6.nem" ; ZONE6 block
 		even
-;em_SSZone7:	binclude	"artnem/Special ZONE7.nem" ; ZONE7 block (RetroKoH: imported from Sonic 1 (2013)) -- Temporarily removed.
+;Nem_SSZone7:	binclude	"artnem/Special ZONE7.nem" ; ZONE7 block (RetroKoH: imported from Sonic 1 (2013)) -- Temporarily removed.
 ;		even
 Nem_SSUpDown:	binclude	"artnem/Special UP-DOWN.nem" ; special stage UP/DOWN block
 		even
