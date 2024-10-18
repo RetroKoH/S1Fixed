@@ -585,7 +585,7 @@ Obj09_Get1Up:
 
 .playbgm:
 	; Lives Over/Underflow Fix End
-		move.w	#bgm_ExtraLife,d0
+		move.w	#mus_ExtraLife,d0
 		jsr		(PlaySound).w				; play extra life music
 
 		moveq	#0,d4
@@ -618,7 +618,7 @@ Obj09_GetEmer:
 	endif	; HUD in Special Stage End
 
 Obj09_NoEmer:
-		move.w	#bgm_Emerald,d0
+		move.w	#mus_Emerald,d0
 		jsr		(PlaySound_Special).w		; play emerald music
 		moveq	#0,d4
 		rts	

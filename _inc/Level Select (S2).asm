@@ -66,7 +66,7 @@ GM_MenuScreen:
 		clr.l	(a1)+
 		dbf		d1,.loop
 
-		move.b	#bgm_MZ,d0
+		move.b	#mus_MZ,d0
 		bsr.w	PlaySound				; play Level Select Menu sound (placeholder)
 		move.b	#$16,(v_vbla_routine).w
 		bsr.w	WaitForVBla
@@ -259,9 +259,6 @@ LevSelControls_CheckLR:
         	beq.s   .rts
         	cmpi.w  #$5F,d0
       		beq.s   .rts
-		addi.w	#$80,d0
-		bra.w	PlaySound
-		addi.w	#$80,d0
 		bra.w	PlaySound
 		;lea	(debug_cheat).l,a0
 		;lea	(super_sonic_cheat).l,a2

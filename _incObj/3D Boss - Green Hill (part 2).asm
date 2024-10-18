@@ -103,7 +103,7 @@ loc_179DA:
 
 loc_179E0:
 		clr.w	obVelY(a0)
-		move.w	#bgm_GHZ,d0
+		move.w	#mus_GHZ,d0
 		jsr		(PlaySound).w			; play GHZ music
 		move.b	d0,(v_lastbgmplayed).w	; store last played music
 

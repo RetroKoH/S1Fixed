@@ -266,7 +266,7 @@ loc_180F6:
 		move.b	#$32,objoff_3C(a0)
 
 loc_18112:
-		move.w	#bgm_LZ,d0
+		move.w	#mus_LZ,d0
 		jsr		(PlaySound).w			; play LZ music
 		move.b	d0,(v_lastbgmplayed).w	; store last played music
 		clr.b	(f_lockscreen).w

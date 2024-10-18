@@ -1,5 +1,3 @@
-	include "s1.sounddriver.ram.asm"
-
 ; sign-extends a 32-bit integer to 64-bit
 ; all RAM addresses are run through this function to allow them to work in both 16-bit and 32-bit addressing modes
 ramaddr function x,(-(x&$80000000)<<1)|x
@@ -172,10 +170,10 @@ v_endeggman		= v_objspace+object_size*2	; object variable space for Eggman after
 v_tryagain		= v_objspace+object_size*3	; object variable space for the "TRY AGAIN" text ($40 bytes)
 v_eggmanchaos	= v_objspace+object_size*32	; object variable space for the emeralds juggled by Eggman ($180 bytes)
 
+v_snddriver_ram:	ds.b	$5C0		; sound driver state
+				ds.b	$40		; unused
 
-
-v_snddriver_ram:	SMPS_RAM		; sound driver state
-					ds.b	$40		; unused
+SegaCD_Mode	= v_snddriver_ram+$580
 
 v_gamemode:			ds.b	1		; game mode (00=Sega; 04=Title; 08=Demo; 0C=Level; 10=SS; 14=Cont; 18=End; 1C=Credit; +8C=PreLevel)
 v_lastbgmplayed:	ds.b	1		; last bgm played by PlaySound (Used by RestartMusic)

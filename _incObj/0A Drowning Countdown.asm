@@ -210,7 +210,7 @@ Drown_Countdown:; Routine $A
 		bhi.s	.reduceair						; if air is above 12, branch
 
 		bne.s	.skipmusic						; if air is less than 12, branch
-		move.b	#bgm_Drowning,d0
+		move.b	#mus_Drowning,d0
 		jsr		(PlaySound).w					; play countdown music
 		clr.b	(v_lastbgmplayed).w				; clear last played music
 

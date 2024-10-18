@@ -309,7 +309,7 @@ loc_18BAE:
 
 loc_18BB4:
 		clr.w	obVelY(a0)
-		move.w	#bgm_SLZ,d0
+		move.w	#mus_SLZ,d0
 		jsr		(PlaySound).w			; play SLZ music
 		move.b	d0,(v_lastbgmplayed).w	; store last played music
 		bra.w	loc_189EE

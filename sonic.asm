@@ -5,22 +5,27 @@
 ;
 ; Updated disassembly for AS by Clownacy and MarkeyJester
 ; Mods by RetroKoH, DeltaW, Hitaxas, Redhotsonic, and Mercury
+; Clone Driver V2 by Clownacy; MegaPCM2 by Vladikcomper
+; Sound Driver implementation by TheBlad768
 ; Additional Credits listed in README.md
 ;
 ; ===========================================================================
 
 	cpu 68000
+	
+MSUMode	= 0	; if 1, enable MSU
 
 ZoneCount	  = 6	; discrete zones are: GHZ, MZ, SYZ, LZ, SLZ, and SBZ
 zeroOffsetOptimization = 1	; if 1, makes a handful of zero-offset instructions smaller
 
-	include "Mods.asm"			; S1Fixed Mod Variables (Sorted by Context)
+	include "Mods.asm"				; S1Fixed Mod Variables (Sorted by Context)
 
 	include "MacroSetup.asm"
 	include	"Constants.asm"
 	include	"Variables.asm"
 	include	"Macros.asm"
 	include	"Debugger.asm"
+	include "sound/Definitions.asm"	; include sound driver macros and functions
 
 ; ===========================================================================
 
@@ -344,6 +349,13 @@ GameInit:
 		move.l	d7,(a6)+
 		dbf	d6,.clearRAM	; clear RAM ($0000-$FDFF)
 
+	if MSUMode
+		jsr	(Init_MSU_Driver).l
+		seq	(SegaCD_Mode).w
+	else
+		clr.b	(SegaCD_Mode).w
+	endif
+
 		jsr 	(InitDMAQueue).l	; Flamewing Ultra DMA Queue
 		bsr.w	VDPSetupGame
 		bsr.w	DACDriverLoad ; Remove this call to old Sound Driver when adding MegaPCM2
@@ -455,7 +467,7 @@ VBlank:
 		jsr		VBla_Index(pc,d0.w)
 
 VBla_Music:
-		jsr		(UpdateMusic).l
+		SMPS_UpdateSoundDriver			; update SMPS	; warning: a5-a6 will be overwritten
 
 VBla_Exit:
 		addq.l	#1,(v_vbla_count).w
@@ -772,7 +784,7 @@ loc_119E:
 		move.b	#0,(f_doupdatesinhblank).w
 		movem.l	d0-a6,-(sp)
 		bsr.w	Demo_Time
-		jsr		(UpdateMusic).l
+		SMPS_UpdateSoundDriver			; update SMPS	; warning: a5-a6 will be overwritten
 		movem.l	(sp)+,d0-a6
 		rte	
 ; End of function HBlank
@@ -903,29 +915,11 @@ ClearScreen:
 ; End of function ClearScreen
 
 ; ---------------------------------------------------------------------------
-; Subroutine to load the DAC driver - Remove for MegaPCM2
+; Clone Driver - Functions Subroutine
 ; ---------------------------------------------------------------------------
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+		include "sound/engine/Functions.asm"
+; ---------------------------------------------------------------------------
 
-; SoundDriverLoad:
-DACDriverLoad:
-		nop	
-		stopZ80
-		resetZ80
-		lea	(DACDriver).l,a0	; load DAC driver
-		lea	(z80_ram).l,a1		; target Z80 RAM
-		bsr.w	KosDec			; decompress
-		resetZ80a
-		nop	
-		nop	
-		nop	
-		nop	
-		resetZ80
-		startZ80
-		rts	
-; End of function DACDriverLoad
-
-		include	"_incObj/sub PlaySound.asm"
 		include	"_inc/PauseGame.asm"
 
 ; ---------------------------------------------------------------------------
@@ -959,7 +953,6 @@ Tilemap_Cell:
 
 		include	"_inc/DMA Queue.asm"
 		include	"_inc/Nemesis Decompression.asm"
-
 
 ; ---------------------------------------------------------------
 ; uncompressed art to VRAM loader -- AURORA☆FIELDS Title Card Optimization
@@ -1572,7 +1565,7 @@ WaitForVBla:
 ; ---------------------------------------------------------------------------
 
 GM_Sega:
-		move.b	#bgm_Stop,d0
+		move.b	#mus_Stop,d0
 		bsr.w	PlaySound_Special			; stop music
 		bsr.w	ClearPLC
 		bsr.w	PaletteFadeOut
@@ -1639,8 +1632,7 @@ Sega_WaitPal:
 		bsr.w	PlaySound_Special				; play "SEGA" sound
 		move.b	#$14,(v_vbla_routine).w
 		bsr.w	WaitForVBla
-		move.w	#$1E,(v_demolength).w
-		;move.w	#$1E+2*60,(v_demolength).w		; modified due to MegaPCM 2 (2 seconds of wait time)
+		move.w	#3*60,(v_demolength).w			; 3 seconds
 
 Sega_WaitEnd:
 		move.b	#2,(v_vbla_routine).w
@@ -1660,7 +1652,7 @@ Sega_GotoTitle:
 ; ---------------------------------------------------------------------------
 
 GM_Title:
-		move.b	#bgm_Stop,d0
+		move.b	#mus_Stop,d0
 		bsr.w	PlaySound_Special ; stop music
 		bsr.w	ClearPLC
 		bsr.w	PaletteFadeOut
@@ -1790,7 +1782,7 @@ Tit_LoadText:
 		bsr.w	PalLoad_Fade
 		moveq	#palid_Title,d0							; overwrite first 2 lines w/ title screen palette
 		bsr.w	PalLoad_Fade
-		move.b	#bgm_Title,d0
+		move.b	#mus_Title,d0
 		bsr.w	PlaySound_Special						; play title screen music
 		clr.b	(f_debugmode).w							; disable debug mode
 		move.w	#$178,(v_demolength).w					; run title screen for $178 frames
@@ -1855,7 +1847,7 @@ PlayLevel:
 	.nosaving:
 	endif
 
-		move.b	#bgm_Fade,d0
+		move.b	#mus_Fade,d0
 		bra.w	PlaySound_Special		; fade out music	
 ; ===========================================================================
 
@@ -1917,7 +1909,7 @@ PlayLevel_Load:
 		move.b	#10,(v_hitscount).w			; set hits count for cool bonus
 	endif
 
-		move.b	#bgm_Fade,d0
+		move.b	#mus_Fade,d0
 		bra.w	PlaySound_Special			; fade out music
 	endif
 
@@ -1948,7 +1940,7 @@ loc_33E4:
 		bne.w	Tit_ChkLevSel				; if yes, branch
 		tst.w	(v_demolength).w
 		bne.w	loc_33B6
-		move.b	#bgm_Fade,d0
+		move.b	#mus_Fade,d0
 		bsr.w	PlaySound_Special			; fade out music
 		move.w	(v_demonum).w,d0			; load demo number
 		andi.w	#7,d0
@@ -1988,14 +1980,14 @@ Demo_Levels:	binclude	"misc/Demo Level Order - Intro.bin"
 ; Music	playlist
 ; ---------------------------------------------------------------------------
 MusicList:
-		dc.b bgm_GHZ	; GHZ
-		dc.b bgm_LZ		; LZ
-		dc.b bgm_MZ		; MZ
-		dc.b bgm_SLZ	; SLZ
-		dc.b bgm_SYZ	; SYZ
-		dc.b bgm_SBZ	; SBZ
+		dc.b mus_GHZ	; GHZ
+		dc.b mus_LZ		; LZ
+		dc.b mus_MZ		; MZ
+		dc.b mus_SLZ	; SLZ
+		dc.b mus_SYZ	; SYZ
+		dc.b mus_SBZ	; SBZ
 		zonewarning MusicList,1
-		dc.b bgm_FZ		; Final Zone (Never used w/ Ending)
+		dc.b mus_FZ		; Final Zone (Never used w/ Ending)
 		even
 ; ===========================================================================
 
@@ -2007,7 +1999,7 @@ GM_Level:
 		bset	#7,(v_gamemode).w			; add $80 to screen mode (for pre level sequence)
 		tst.w	(f_demo).w
 		bmi.s	Level_NoMusicFade
-		move.b	#bgm_Fade,d0
+		move.b	#mus_Fade,d0
 		bsr.w	PlaySound_Special			; fade out music
 
 Level_NoMusicFade:
@@ -2652,7 +2644,7 @@ GM_Special:
 	else
 		move.w	#$100,(v_ssrotate).w			; set stage rotation speed
 	endif
-		move.w	#bgm_SS,d0
+		move.w	#mus_SS,d0
 		bsr.w	PlaySound						; play special stage BG	music
 		clr.w	(v_btnpushtime1).w
 		lea		DemoDataPtr(pc),a1
@@ -2837,7 +2829,7 @@ loc_47D4:
 	.noperfect:
 	endif
 		
-		move.w	#bgm_GotThrough,d0
+		move.w	#mus_GotThrough,d0
 		jsr		(PlaySound_Special).w	; play end-of-level music
 
 		clearRAM v_objspace
@@ -3269,7 +3261,7 @@ GM_Continue:
 		jsr		(ContScrCounter).l							; run countdown	(start from 10)
 		moveq	#palid_Continue,d0
 		bsr.w	PalLoad_Fade								; load continue	screen palette
-		move.b	#bgm_Continue,d0
+		move.b	#mus_Continue,d0
 		bsr.w	PlaySound									; play continue	music
 		move.w	#659,(v_demolength).w						; set time delay to 11 seconds
 		clr.l	(v_screenposx).w
@@ -3343,7 +3335,7 @@ Cont_GotoLevel:
 ; ---------------------------------------------------------------------------
 
 GM_Ending:
-		move.b	#bgm_Stop,d0
+		move.b	#mus_Stop,d0
 		bsr.w	PlaySound_Special ; stop music
 		bsr.w	PaletteFadeOut
 
@@ -3395,7 +3387,7 @@ End_LoadData:
 		bsr.w	KosDec
 		moveq	#palid_Sonic,d0
 		bsr.w	PalLoad_Fade						; load Sonic's palette
-		move.w	#bgm_Ending,d0
+		move.w	#mus_Ending,d0
 		bsr.w	PlaySound							; play ending sequence music
 		move.b	d0,(v_lastbgmplayed).w				; store last played music
 
@@ -3449,7 +3441,7 @@ End_MainLoop:
 
 		move.b	#id_Credits,(v_gamemode).w	; goto credits
 		clr.w	(v_creditsnum).w			; set credits index number to 0
-		move.b	#bgm_Credits,d0
+		move.b	#mus_Credits,d0
 		bra.w	PlaySound_Special			; play credits music
 ; ===========================================================================
 
@@ -3757,6 +3749,7 @@ Demo_EndGHZ2:	binclude	"demodata/Ending - GHZ2.bin"
 
 		include	"_inc/LevelSizeLoad & BgScrollSpeed.asm"
 		include	"_inc/DeformLayers.asm"
+		include	"_incObj/sub AnimateSprite.asm"		; Moved here to make every jmp use ().w address mode
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
@@ -4686,8 +4679,6 @@ LevelLayoutLoad:
 ; End of function LevelLayoutLoad
 
 		include	"_inc/DynamicLevelEvents.asm"
-		
-		include	"_incObj/sub AnimateSprite.asm"		; Moved here to make every jmp use ().w address mode
 
 		include	"_incObj/11 Bridge.asm"
 
@@ -5770,10 +5761,10 @@ loc_12EA6:
 ResumeMusic:
 		cmpi.b	#12,(v_air).w				; more than 12 seconds of air left?
 		bhi.s	.over12						; if yes, branch
-		move.w	#bgm_LZ,d0					; play LZ music
+		move.w	#mus_LZ,d0					; play LZ music
 		cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; check if level is 0103 (SBZ3)
 		bne.s	.notsbz
-		move.w	#bgm_SBZ,d0					; play SBZ music
+		move.w	#mus_SBZ,d0					; play SBZ music
 
 .notsbz:
 	if SuperMod=1
@@ -5785,12 +5776,12 @@ ResumeMusic:
 		beq.s	.notinvinc								; if not, branch
 
 .playinvinc:
-		move.w	#bgm_Invincible,d0
+		move.w	#mus_Invincible,d0
 
 .notinvinc:
 		tst.b	(f_lockscreen).w			; is Sonic at a boss?
 		beq.s	.playselected				; if not, branch
-		move.w	#bgm_Boss,d0
+		move.w	#mus_Boss,d0
 
 .playselected:
 		jsr		(PlaySound).w				; restore music
@@ -7232,7 +7223,7 @@ AddPoints:
 .playbgm:
 	; Lives Over/Underflow Fix end
 		
-		move.w	#bgm_ExtraLife,d0
+		move.w	#mus_ExtraLife,d0
 		jmp		(PlaySound).w			; play extra life bgm
 
 .noextralife:
@@ -8589,16 +8580,25 @@ RingPos_Null:	dc.b $FF, $FF, 0, 0, 0, 0
 		dc.b $FF
 		endm
 
-; We can readd these later
-;				include "MegaPCM.asm"
-;				include "SampleTable.asm"
-
-SoundDriver:	include "s1.sounddriver.asm"
-
-; end of 'ROM'
-		even
-
 ; ==============================================================
+; ---------------------------------------------------------------------------
+; Vladikcomper's Mega PCM 2.0 - DAC Sound Driver
+; ---------------------------------------------------------------------------
+
+		include "sound/engine/MegaPCM.asm"
+
+; ---------------------------------------------------------------------------
+; Clone sound driver subroutines
+; ---------------------------------------------------------------------------
+
+		include "sound/engine/Sonic 2 Clone Driver v2.asm"
+
+; ---------------------------------------------------------------------------
+; MegaCD Driver
+; ---------------------------------------------------------------------------
+
+		include "sound/msu/MSU.asm"
+
 ; --------------------------------------------------------------
 ; Debugging modules
 ; --------------------------------------------------------------
@@ -8612,6 +8612,7 @@ SoundDriver:	include "s1.sounddriver.asm"
 ;	by ConvSym utility, otherwise debugger modules won't be able
 ;	to resolve symbol names.
 ; --------------------------------------------------------------
+; end of 'ROM'
 EndOfRom:
 
 		END

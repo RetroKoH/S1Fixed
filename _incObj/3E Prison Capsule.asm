@@ -203,7 +203,7 @@ Pri_Animals:	; Routine $C
 		subq.w	#1,obTimeFrame(a0)
 		bne.s	.wait
 	if EndLevelFadeMusic=1
-		move.b	#bgm_Fade,d0
+		move.b	#mus_Fade,d0
 		jsr		PlaySound_Special	; fade out music (RetroKoH)
 	endif
 		addq.b	#2,obRoutine(a0)

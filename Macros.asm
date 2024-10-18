@@ -1,26 +1,3 @@
-; macros for defining animated PLC script lists
-zoneanimstart macro {INTLABEL}
-__LABEL__ label *
-zoneanimcount := 0
-zoneanimcur := "__LABEL__"
-	dc.w zoneanimcount___LABEL__	; Number of scripts for a zone (-1)
-    endm
-
-zoneanimend macro
-zoneanimcount_{"\{zoneanimcur}"} = zoneanimcount-1
-    endm
-
-zoneanimdeclanonid := 0
-
-zoneanimdecl macro duration,artaddr,vramaddr,numentries,numvramtiles
-zoneanimdeclanonid := zoneanimdeclanonid + 1
-start:
-	dc.l (duration&$FF)<<24|artaddr		; using dmaSource breaks this for some reason
-	dc.w vramaddr*tile_size				; we can do this instead of tiles_to_bytes for now
-	dc.b numentries, numvramtiles
-zoneanimcount := zoneanimcount + 1
-    endm
-
 ; ---------------------------------------------------------------------------
 ; Set a VRAM address via the VDP control port.
 ; input: 16-bit VRAM address, control port (default is (vdp_control_port).l)
@@ -144,10 +121,10 @@ waitZ80:	macro
 ; ---------------------------------------------------------------------------
 ; reset the Z80
 ; ---------------------------------------------------------------------------
-resetZ80:	macro
+deassertZ80Reset:	macro
 		move.w	#$100,(z80_reset).l
 		endm
-resetZ80a:	macro
+assertZ80Reset:	macro
 		move.w	#0,(z80_reset).l
 		endm
 
@@ -176,6 +153,23 @@ disable_ints:	macro
 enable_ints:	macro
 		move	#$2300,sr
 		endm
+
+; ---------------------------------------------------------------------------
+; disable interrupts
+; ---------------------------------------------------------------------------
+
+disableIntsSave macro
+	move.w	sr,-(sp)		; Save current interrupt mask
+	disable_ints			; Mask off interrupts
+    endm
+
+; ---------------------------------------------------------------------------
+; enable interrupts
+; ---------------------------------------------------------------------------
+
+enableIntsSave macro
+	move.w	(sp)+,sr		; Restore interrupts to previous state
+    endm
 
 ; ---------------------------------------------------------------------------
 ; long conditional jumps

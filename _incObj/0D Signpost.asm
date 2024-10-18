@@ -140,7 +140,7 @@ Sign_Spin:	; Routine 4
 		cmpi.b	#3,obAnim(a0)					; have 3 spin cycles completed?
 		bne.s	.chksparkle						; if not, branch
 	if EndLevelFadeMusic=1
-		move.b	#bgm_Fade,d0
+		move.b	#mus_Fade,d0
 		jsr		(PlaySound_Special).w			; fade out music (RetroKoH)
 	endif
 		addq.b	#2,obRoutine(a0)
@@ -309,7 +309,7 @@ GotThroughAct:
 .noperfect:		
 	endif
 
-		move.b	#bgm_GotThrough,d0
+		move.b	#mus_GotThrough,d0
 		jmp		(PlaySound_Special).w					; play "Sonic got through" music
 
 locret_ECEE:
