@@ -346,7 +346,7 @@ GameInit:
 
 		jsr 	(InitDMAQueue).l	; Flamewing Ultra DMA Queue
 		bsr.w	VDPSetupGame
-		; Removed call to old Sound Driver
+		bsr.w	DACDriverLoad ; Remove this call to old Sound Driver when adding MegaPCM2
 		bsr.w	JoypadInit
 		move.b	#id_Sega,(v_gamemode).w ; set Game Mode to Sega Screen
 
@@ -373,19 +373,7 @@ InitSRAM:
         move.b	#0,(sram_port).l		; Disable SRAM writing
 	endif
 
-	; Load up the new MegaPCM 2 driver
-		jsr		MegaPCM_LoadDriver
-		lea		SampleTable, a0
-		jsr		MegaPCM_LoadSampleTable
-		tst.w	d0						; was sample table loaded successfully?
-		beq.s	.SampleTableOk			; if yes, branch
-		ifdef __DEBUG__
-			; for MD Debugger v.2.5 or above
-			RaiseError "MegaPCM_LoadSampleTable returned %<.b d0>", MPCM_Debugger_LoadSampleTableException
-		else
-			illegal
-		endif
-.SampleTableOk:
+	; Load up the new MegaPCM 2 driver here later
 
 MainGameLoop:
 		moveq	#0,d0						; clear d0 before using it w/ the new Game Mode system to avoid bugs
@@ -510,8 +498,8 @@ VBla_00:
 
 .notPAL:
 		move.w	#1,(f_hbla_pal).w ; set HBlank flag
-		; removed Z80 macro
-		; removed Z80 macro
+		stopZ80		; removed Z80 macro
+		waitZ80		; removed Z80 macro
 		tst.b	(f_wtr_state).w	; is water above top of screen?
 		bne.s	.waterabove 	; if yes, branch
 
@@ -523,7 +511,7 @@ VBla_00:
 
 .waterbelow:
 		move.w	(v_hbla_hreg).w,(a5)
-		; removed Z80 macro
+		startZ80	; removed Z80 macro
 		; instead of branching back to VBla_Music, call directly.
 		jsr		(UpdateMusic).l
 		addq.l	#1,(v_vbla_count).w
@@ -565,8 +553,8 @@ VBla_10:
 		beq.w	VBla_0A		; if yes, branch
 
 VBla_08:
-		; removed Z80 macro
-		; removed Z80 macro
+		stopZ80		; removed Z80 macro
+		waitZ80		; removed Z80 macro
 		bsr.w	ReadJoypads
 		tst.b	(f_wtr_state).w
 		bne.s	.waterabove
@@ -585,7 +573,7 @@ VBla_08:
 
 		bsr.w		ProcessDMAQueue	; Mercury Use DMA Queue
 
-		; removed Z80 macro
+		startZ80	; removed Z80 macro
 		movem.l	(v_screenposx).w,d0-d7
 		movem.l	d0-d7,(v_screenposx_dup).w
 		movem.l	(v_fg_scroll_flags).w,d0-d1
@@ -619,13 +607,13 @@ Demo_Time:
 ; ===========================================================================
 
 VBla_0A:
-		; removed Z80 macro
-		; removed Z80 macro
+		stopZ80		; removed Z80 macro
+		waitZ80		; removed Z80 macro
 		bsr.w	ReadJoypads
 		writeCRAM	v_palette,0
 		writeVRAM	v_spritetablebuffer,vram_sprites
 		writeVRAM	v_hscrolltablebuffer,vram_hscroll
-		; removed Z80 macro
+		startZ80	; removed Z80 macro
 		bsr.w	PalCycle_SS
 		
 		bsr.w	ProcessDMAQueue	; Mercury Use DMA Queue
@@ -652,8 +640,8 @@ VBla_0A:
 ; ===========================================================================
 
 VBla_0C:
-		; removed Z80 macro
-		; removed Z80 macro
+		stopZ80		; removed Z80 macro
+		waitZ80		; removed Z80 macro
 		bsr.w	ReadJoypads
 		tst.b	(f_wtr_state).w
 		bne.s	.waterabove
@@ -671,7 +659,7 @@ VBla_0C:
 		
 		bsr.w	ProcessDMAQueue	; Mercury Use DMA Queue
 
-		; removed Z80 macro
+		startZ80	; removed Z80 macro
 		movem.l	(v_screenposx).w,d0-d7
 		movem.l	d0-d7,(v_screenposx_dup).w
 		movem.l	(v_fg_scroll_flags).w,d0-d1
@@ -696,13 +684,13 @@ VBla_12:
 ; ===========================================================================
 
 VBla_16:
-		; removed Z80 macro
-		; removed Z80 macro
+		stopZ80		; removed Z80 macro
+		waitZ80		; removed Z80 macro
 		bsr.w	ReadJoypads
 		writeCRAM	v_palette,0
 		writeVRAM	v_spritetablebuffer,vram_sprites
 		writeVRAM	v_hscrolltablebuffer,vram_hscroll
-		; removed Z80 macro
+		startZ80	; removed Z80 macro
 
 		bsr.w	ProcessDMAQueue	; Mercury Use DMA Queue
 
@@ -729,8 +717,8 @@ VBla_16:
 
 
 sub_106E:
-		; removed Z80 macro
-		; removed Z80 macro
+		stopZ80		; removed Z80 macro
+		waitZ80		; removed Z80 macro
 		bsr.w	ReadJoypads
 		tst.b	(f_wtr_state).w ; is water above top of screen?
 		bne.s	.waterabove	; if yes, branch
@@ -743,7 +731,7 @@ sub_106E:
 .waterbelow:
 		writeVRAM	v_spritetablebuffer,vram_sprites
 		writeVRAM	v_hscrolltablebuffer,vram_hscroll
-		; removed Z80 macro
+		startZ80	; removed Z80 macro
 		
 		bra.w		ProcessDMAQueue	; Mercury Use DMA Queue
 		
@@ -797,13 +785,13 @@ loc_119E:
 
 
 JoypadInit:
-		; removed Z80 macro
-		; removed Z80 macro
+		stopZ80		; removed Z80 macro
+		waitZ80		; removed Z80 macro
 		moveq	#$40,d0
 		move.b	d0,(z80_port_1_control+1).l		; init port 1 (joypad 1)
 		move.b	d0,(z80_port_2_control+1).l		; init port 2 (joypad 2)
 		move.b	d0,(z80_expansion_control+1).l	; init port 3 (expansion/extra)
-		; removed Z80 macro
+		startZ80	; removed Z80 macro
 		rts	
 ; End of function JoypadInit
 
@@ -913,6 +901,29 @@ ClearScreen:
 
 		rts	
 ; End of function ClearScreen
+
+; ---------------------------------------------------------------------------
+; Subroutine to load the DAC driver - Remove for MegaPCM2
+; ---------------------------------------------------------------------------
+; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+
+; SoundDriverLoad:
+DACDriverLoad:
+		nop	
+		stopZ80
+		resetZ80
+		lea	(DACDriver).l,a0	; load DAC driver
+		lea	(z80_ram).l,a1		; target Z80 RAM
+		bsr.w	KosDec			; decompress
+		resetZ80a
+		nop	
+		nop	
+		nop	
+		nop	
+		resetZ80
+		startZ80
+		rts	
+; End of function DACDriverLoad
 
 		include	"_incObj/sub PlaySound.asm"
 		include	"_inc/PauseGame.asm"
@@ -1628,7 +1639,8 @@ Sega_WaitPal:
 		bsr.w	PlaySound_Special				; play "SEGA" sound
 		move.b	#$14,(v_vbla_routine).w
 		bsr.w	WaitForVBla
-		move.w	#$1E+2*60,(v_demolength).w		; modified due to MegaPCM 2 (2 seconds of wait time)
+		move.w	#$1E,(v_demolength).w
+		;move.w	#$1E+2*60,(v_demolength).w		; modified due to MegaPCM 2 (2 seconds of wait time)
 
 Sega_WaitEnd:
 		move.b	#2,(v_vbla_routine).w
@@ -7483,20 +7495,6 @@ Nem_SSEmStars:	binclude	"artnem/Special Emerald Twinkle.nem" ; special stage sta
 		even
 Nem_SSRedWhite:	binclude	"artnem/Special Red-White.nem" ; special stage red/white block
 		even
-Nem_SSZone1:	binclude	"artnem/Special ZONE1.nem" ; special stage ZONE1 block
-		even
-Nem_SSZone2:	binclude	"artnem/Special ZONE2.nem" ; ZONE2 block
-		even
-Nem_SSZone3:	binclude	"artnem/Special ZONE3.nem" ; ZONE3 block
-		even
-Nem_SSZone4:	binclude	"artnem/Special ZONE4.nem" ; ZONE4 block
-		even
-Nem_SSZone5:	binclude	"artnem/Special ZONE5.nem" ; ZONE5 block
-		even
-Nem_SSZone6:	binclude	"artnem/Special ZONE6.nem" ; ZONE6 block
-		even
-;Nem_SSZone7:	binclude	"artnem/Special ZONE7.nem" ; ZONE7 block (RetroKoH: imported from Sonic 1 (2013)) -- Temporarily removed.
-;		even
 Nem_SSUpDown:	binclude	"artnem/Special UP-DOWN.nem" ; special stage UP/DOWN block
 		even
 Nem_SSEmerald:	binclude	"artnem/Special Emeralds.nem" ; special stage chaos emeralds
@@ -8591,8 +8589,9 @@ RingPos_Null:	dc.b $FF, $FF, 0, 0, 0, 0
 		dc.b $FF
 		endm
 
-				include "MegaPCM.asm"
-				include "SampleTable.asm"
+; We can readd these later
+;				include "MegaPCM.asm"
+;				include "SampleTable.asm"
 
 SoundDriver:	include "s1.sounddriver.asm"
 
