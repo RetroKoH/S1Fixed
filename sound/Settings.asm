@@ -118,6 +118,6 @@ SndID_Ring			= sfx_Ring
 SndID_RingLeft		= sfx_RingLeft
 ;	| ID of your alternate ring SFX
 ;
-SndID_SpindashRev	= $D1
+SndID_SpindashRev	= sfx_SpinDash
 ;	| Set this to the ID of your Spin Dash SFX (if you have one). Use with EnableSpinDashSFX
 ;
