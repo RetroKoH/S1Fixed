@@ -107,7 +107,7 @@ ExtraLife:
 		addq.b	#1,(f_lifecount).w	; update the lives counter
 .playbgm:
 	; Lives Over/Underflow Fix End
-		move.w	#bgm_ExtraLife,d0
+		move.w	#mus_ExtraLife,d0
 		jmp		(PlaySound).w		; play extra life music
 ; ===========================================================================
 
@@ -128,8 +128,8 @@ Pow_Shoes:
 		lea		(v_sonspeedmax).w,a2					; Load Sonic_top_speed into a2
 		jsr		ApplySpeedSettings						; Fetch Speed settings
 		movem.l (sp)+,a0-a2								; Move a0, a1 and a2 from stack
-		move.w	#bgm_Speedup,d0
-		jmp		(PlaySound).w							; Speed	up the music
+		moveq	#8,d0
+		jmp		(Change_Music_Tempo).w					; speed up the music (flamedriver change)
 ; ===========================================================================
 
 Pow_Shield:
@@ -139,7 +139,7 @@ Pow_Shield:
 		clr.b	(v_shieldobj+obRoutine).w
 		clr.b	(v_shieldobj+obSubtype).w
 		move.w	#sfx_Shield,d0
-		jmp		(PlaySound).w								; play shield sound
+		jmp		(PlaySound_Special).w						; play shield sound
 ; ===========================================================================
 
 Pow_Invinc:
@@ -156,7 +156,7 @@ Pow_Invinc:
 		bne.s	.nomusic								; if yes, branch
 		cmpi.b	#$C,(v_air).w
 		bls.s	.nomusic
-		move.w	#bgm_Invincible,d0
+		move.w	#mus_Invincible,d0
 		move.b	d0,(v_lastbgmplayed).w					; store last played music
 		jmp		(PlaySound).w							; play invincibility music
 ; ===========================================================================
@@ -184,7 +184,7 @@ Pow_Rings:
 
 Pow_RingSound:
 		move.w	#sfx_Ring,d0
-		jmp		(PlaySound).w	; play ring sound
+		jmp		(PlaySound_Special).w	; play ring sound
 ; ===========================================================================
 
 Pow_S:
@@ -249,8 +249,8 @@ Pow_S:
 Pow_Goggles:
 		bset	#sta2ndGoggles,(v_player+obStatus2nd).w		; give Sonic goggles
 		move.b	#id_GogglesItem,(v_gogglesobj).w			; load goggles object ($8F)
-		move.w	#sfx_A2,d0
-		jmp		(PlaySound).w								; play sound
+		move.w	#sfx_Grab,d0
+		jmp		(PlaySound_Special).w						; play sound
 ; ===========================================================================
 
 	if ShieldsMode

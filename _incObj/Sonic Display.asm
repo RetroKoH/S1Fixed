@@ -80,8 +80,8 @@ Sonic_Display:
 		lea     (v_sonspeedmax).w,a2			; Load Sonic_top_speed into a2
 		bsr.w   ApplySpeedSettings				; Fetch Speed settings
 		bclr	#sta2ndShoes,obStatus2nd(a0)	; cancel speed shoes
-		move.w	#bgm_Slowdown,d0
-		jmp		(PlaySound).w					; run music at normal speed
+		moveq	#0,d0
+		jmp		(Change_Music_Tempo).w			; run music at normal speed (flamedriver change)
 
 .exit:
 		rts	

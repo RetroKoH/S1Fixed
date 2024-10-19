@@ -18,8 +18,8 @@ MDis_Main:	; Routine 0
 		move.b	#$C,obActWid(a0)
 		move.b	#9,obTimeFrame(a0)
 		clr.b	obFrame(a0)
-		move.w	#sfx_A5,d0
-		jsr		(PlaySound_Special).w		; play sound
+;		move.w	#sfx_A5,d0
+;		jsr		(PlaySound_Special).w		; play sound
 
 MDis_Animate:	; Routine 2
 		subq.b	#1,obTimeFrame(a0) ; subtract 1 from frame duration

@@ -16,8 +16,8 @@ WSnd_PlaySnd:	; Routine 2
 		move.b	(v_vbla_byte).w,d0		; get low byte of VBlank counter
 		andi.b	#$3F,d0
 		bne.s	WSnd_ChkDel
-		move.w	#sfx_Waterfall,d0
-		jsr		(PlaySound_Special).w	; play waterfall sound
+	;	move.w	#sfx_Waterfall,d0
+	;	jsr		(PlaySound_Special).w	; play waterfall sound
 
 WSnd_ChkDel:
 		offscreen.w	DeleteObject		; ProjectFM S3K Objects Manager

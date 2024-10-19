@@ -110,6 +110,11 @@ clearRAM:	macro startAddress,endAddress
 		move.b	d0,(a1)+
 	endif
 		endm
+; ---------------------------------------------------------------------------
+
+; calculates initial loop counter value for a dbf loop
+; that writes n bytes total at x bytes per iteration
+bytesToXcnt function n,x,n/x-1
 
 ; ---------------------------------------------------------------------------
 ; Copy a tilemap from 68K (ROM/RAM) to the VRAM without using DMA

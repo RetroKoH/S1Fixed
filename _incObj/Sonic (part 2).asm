@@ -124,7 +124,7 @@ GameOver:
 .playmusic:
 		moveq	#plcid_GameOver,d0
 		jsr		(AddPLC).w			; load game over patterns
-		move.w	#bgm_GameOver,d0
+		move.w	#mus_GameOver,d0
 		jmp		(PlaySound).w		; play game over music
 ; ===========================================================================
 

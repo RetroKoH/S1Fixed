@@ -58,7 +58,7 @@ Sign_Touch:	; Routine 2
 		cmpi.w	#$20,d0								; is Sonic within $20 pixels of	the signpost?
 		bhs.s	.notouch							; if not, branch
 		move.b	#sfx_Signpost,d0
-		jsr		(PlaySound).w						; play signpost sound
+		jsr		(PlaySound_Special).w				; play signpost sound
 
 ; RetroKoH Floating Signpost Mechanic
 	if FloatingSignposts=1
@@ -140,8 +140,8 @@ Sign_Spin:	; Routine 4
 		cmpi.b	#3,obAnim(a0)					; have 3 spin cycles completed?
 		bne.s	.chksparkle						; if not, branch
 	if EndLevelFadeMusic=1
-		move.b	#bgm_Fade,d0
-		jsr		(PlaySound_Special).w			; fade out music (RetroKoH)
+		move.b	#mus_Fade,d0
+		jsr		(PlaySound).w					; fade out music (RetroKoH)
 	endif
 		addq.b	#2,obRoutine(a0)
 
@@ -309,8 +309,8 @@ GotThroughAct:
 .noperfect:		
 	endif
 
-		move.b	#bgm_GotThrough,d0
-		jmp		(PlaySound_Special).w					; play "Sonic got through" music
+		move.b	#mus_GotThrough,d0
+		jmp		(PlaySound).w					; play "Sonic got through" music
 
 locret_ECEE:
 		rts	

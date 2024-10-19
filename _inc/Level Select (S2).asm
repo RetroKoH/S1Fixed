@@ -66,7 +66,7 @@ GM_MenuScreen:
 		clr.l	(a1)+
 		dbf		d1,.loop
 
-		move.b	#bgm_MZ,d0
+		move.b	#mus_MZ,d0
 		bsr.w	PlaySound				; play Level Select Menu sound (placeholder)
 		move.b	#$16,(v_vbla_routine).w
 		bsr.w	WaitForVBla
@@ -255,14 +255,27 @@ LevSelControls_CheckLR:
 		beq.s	.rts	; rts
 		move.w	(v_levselsound).w,d0
 		; temp. bandaid fix for crashes when playing these sounds in particular.
-        	cmpi.w  #$5D,d0
-        	beq.s   .rts
-        	cmpi.w  #$5F,d0
-      		beq.s   .rts
-		addi.w	#$80,d0
-		bra.w	PlaySound
-		addi.w	#$80,d0
-		bra.w	PlaySound
+		cmpi.w  #$5A,d0
+		bcc.s   .rts
+
+		cmpi.w	#mus__End+1,d0	; is sound $80-$93 being played?
+		blo.s	.gotoplaysnd	; if yes, branch
+		cmpi.w	#sfx__First,d0	; is sound $94-$9F being played?
+		blo.s	.rts	; if yes, branch
+
+.gotoplaysnd:
+		lea	(PlaySound).w,a1			; play music
+
+		cmpi.w	#mus__End,d0		; is sound $A0-$DF being played?
+		blo.s		.play				; if not, branch
+		subi.w	#(mus__End-mus__First),d0
+
+		lea	(PlaySound_Special).w,a1	; play sfx
+
+.play
+		jmp	(a1)
+
+;		bra.w	PlaySound
 		;lea	(debug_cheat).l,a0
 		;lea	(super_sonic_cheat).l,a2
 		;lea	(Night_mode_flag).w,a1

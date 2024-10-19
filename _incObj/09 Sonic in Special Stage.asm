@@ -548,7 +548,7 @@ Obj09_GetCont:
 	endif	; Special Stages Still Appear With All Emeralds	End
 
 		move.w	#sfx_Continue,d0
-		jsr		(PlaySound).w				; play extra continue sound
+		jsr		(PlaySound_Special).w		; play extra continue sound
 
 Obj09_NoCont:
 		moveq	#0,d4
@@ -585,7 +585,7 @@ Obj09_Get1Up:
 
 .playbgm:
 	; Lives Over/Underflow Fix End
-		move.w	#bgm_ExtraLife,d0
+		move.w	#mus_ExtraLife,d0
 		jsr		(PlaySound).w				; play extra life music
 
 		moveq	#0,d4
@@ -618,8 +618,8 @@ Obj09_GetEmer:
 	endif	; HUD in Special Stage End
 
 Obj09_NoEmer:
-		move.w	#bgm_Emerald,d0
-		jsr		(PlaySound_Special).w		; play emerald music
+		move.w	#mus_Emerald,d0
+		jsr		(PlaySound).w				; play emerald music
 		moveq	#0,d4
 		rts	
 ; ===========================================================================

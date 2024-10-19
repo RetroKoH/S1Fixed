@@ -66,7 +66,6 @@ Ring_Delete:	; Routine 8
 
 CollectRing:
 	; RetroKoH Ring Count Cap
-		move.w	#sfx_Ring,d0	 	; prepare to play ring sound
 		cmpi.w	#999,(v_rings).w	; did the Sonic collect 999+ rings? < Added ring cap
 		bcc.s	.playsnd         	; if yes, branch
 		addq.w	#1,(v_rings).w	 	; add 1 to rings
@@ -89,10 +88,12 @@ CollectRing:
 		addq.b	#1,(f_lifecount).w	; update the lives counter
 .playbgm:
 	; Lives Over/Underflow Fix End
-		move.w	#bgm_ExtraLife,d0	; play extra life music
+		move.w	#mus_ExtraLife,d0	; play extra life music
+		jmp	(PlaySound).w
 
 .playsnd:
-		jmp	(PlaySound_Special).w
+		move.w	#sfx_Ring,d0	 	; play ring sound
+		jmp	(PlaySound_Special).l
 ; End of function CollectRing
 
 ; ===========================================================================

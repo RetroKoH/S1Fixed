@@ -263,21 +263,21 @@ Debug_RestartMusic:
 		beq.s	.notinvinc								; if not, branch
 
 .playinvinc:
-		move.w	#bgm_Invincible,d0
+		move.w	#mus_Invincible,d0
 
 .notinvinc:
 		cmpi.w	#(id_SBZ<<8)+2,(v_zone).w		; check if level is FZ
 		bne.s	.notfinalzone
-		move.w	#bgm_FZ,d0						; play FZ music instead
+		move.w	#mus_FZ,d0						; play FZ music instead
 		bra.s	.playselected
 
 .notfinalzone:
 		tst.b	(f_lockscreen).w				; is Sonic at a boss?
 		beq.s	.finalcheck						; if not, branch
-		move.w	#bgm_Boss,d0
+		move.w	#mus_Boss,d0
 
 .finalcheck:
-		cmpi.b	#bgm_FZ,(v_lastbgmplayed).w		; were we playing Final Zone music in SBZ2?
+		cmpi.b	#mus_FZ,(v_lastbgmplayed).w		; were we playing Final Zone music in SBZ2?
 		beq.s	.dontrestart					; if yes, branch
 
 .playselected:

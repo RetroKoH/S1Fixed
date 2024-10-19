@@ -195,7 +195,7 @@ loc_6EB0:
 		move.w	#boss_ghz_y-$80,obY(a1)
 
 loc_6ED0:
-		move.w	#bgm_Boss,d0
+		move.w	#mus_Boss,d0
 		bsr.w	PlaySound				; play boss music
 		move.b	d0,(v_lastbgmplayed).w	; store last played music
 		move.b	#1,(f_lockscreen).w		; lock screen
@@ -242,7 +242,7 @@ DLE_LZ3_BossChk:
 		_move.b	#id_BossLabyrinth,obID(a1)	; load LZ boss object
 
 loc_6F4A:
-		move.w	#bgm_Boss,d0
+		move.w	#mus_Boss,d0
 		bsr.w	PlaySound					; play boss music
 		move.b	d0,(v_lastbgmplayed).w		; store last played music
 		move.b	#1,(f_lockscreen).w			; lock screen
@@ -405,7 +405,7 @@ DLE_MZ3boss:
 		move.w	#boss_mz_y+$1C,obY(a1)
 
 loc_70D0:
-		move.w	#bgm_Boss,d0
+		move.w	#mus_Boss,d0
 		bsr.w	PlaySound				; play boss music
 		move.b	d0,(v_lastbgmplayed).w	; store last played music
 		move.b	#1,(f_lockscreen).w		; lock screen
@@ -448,7 +448,7 @@ DLE_SLZ3boss:
 		move.b	#id_BossStarLight,obID(a1) ; load SLZ boss object
 
 loc_7144:
-		move.w	#bgm_Boss,d0
+		move.w	#mus_Boss,d0
 		bsr.w	PlaySound				; play boss music
 		move.b	d0,(v_lastbgmplayed).w	; store last played music
 		move.b	#1,(f_lockscreen).w		; lock screen
@@ -513,7 +513,7 @@ DLE_SYZ3boss:
 		addq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 
 loc_71EC:
-		move.w	#bgm_Boss,d0
+		move.w	#mus_Boss,d0
 		bsr.w	PlaySound				; play boss music
 		move.b	d0,(v_lastbgmplayed).w	; store last played music
 		move.b	#1,(f_lockscreen).w		; lock screen

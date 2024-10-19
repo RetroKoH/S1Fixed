@@ -309,8 +309,8 @@ LZWindTunnels:
 		move.b	(v_vbla_byte).w,d0
 		andi.b	#$3F,d0				; does VInt counter fall on 0, $40, $80 or $C0?
 		bne.s	.skipsound			; if not, branch
-		move.w	#sfx_Waterfall,d0
-		jsr		(PlaySound_Special).w	; play rushing water sound (only every $40 frames)
+;		move.w	#sfx_Waterfall,d0
+;		jsr		(PlaySound_Special).w	; play rushing water sound (only every $40 frames)
 
 .skipsound:
 		tst.b	(f_wtunnelallow).w		; are wind tunnels disabled?
@@ -431,8 +431,8 @@ loc_3F9A:
 		move.b	(v_vbla_byte).w,d0
 		andi.b	#$1F,d0
 		bne.s	locret_3FBE
-		move.w	#sfx_Waterfall,d0
-		jsr		(PlaySound_Special).w	; play water sound
+;		move.w	#sfx_Waterfall,d0
+;		jsr		(PlaySound_Special).w	; play water sound
 
 locret_3FBE:
 		rts	
