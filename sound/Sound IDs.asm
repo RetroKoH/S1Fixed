@@ -66,6 +66,7 @@ mus__End =				*			; next ID after last music
 sfx__First =				*		; ID of the first sound effect
 
 sfx_Ring				ds.b 1		; $01 (panning right)
+sfx_RingRight = sfx_Ring
 sfx_RingLeft			ds.b 1		; $02
 sfx_RingLoss			ds.b 1		; $03
 sfx_Jump				ds.b 1		; $04
@@ -136,9 +137,9 @@ sfx_SignpostRotation	ds.b 1		; $44
 sfx_Bonus				ds.b 1		; $45 (Hidden Bonuses)
 sfx_GiantRing			ds.b 1		; $46
 ; Peelout sfx
-sfx_Charge				ds.b 1		;
-sfx_Release				ds.b 1		;
-sfx_Stop				ds.b 1		;
+sfx_Charge = sfx_SpinDash
+sfx_Release = sfx_Teleport
+sfx_Stop = sfx_Switch
 ;
 sfx_DropDash			ds.b 1		;
 

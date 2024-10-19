@@ -504,6 +504,20 @@ SndID_SpindashRev		= 0ABh-33h+SndID__First
 		endif
 	endif
 
+	ifndef SndID_DropdashRev
+		ifdef sfx_DropDash
+SndID_DropdashRev		= sfx_DropDash
+		else
+			ifdef sfx_Roll
+SndID_DropdashRev		= sfx_Roll
+				warning "Approximating dropdash rev sound by rolling sound. Please provide an adequate equate for the ported dropdash rev sound"
+			endif
+		endif
+		ifndef SndID_DropdashRev
+SndID_DropdashRev		= 0ABh-33h+SndID__First
+		endif
+	endif
+
 	ifndef SndID__End
 		ifdef sfx__End
 SndID__End				= sfx__End
