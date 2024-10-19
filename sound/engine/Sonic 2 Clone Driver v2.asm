@@ -1362,13 +1362,13 @@ PlaySFX_Gloop:
 PlaySFX_SpinDashRev:
 	move.b	SMPS_RAM.v_spindash_pitch(a6),d0	; Store extra frequency
 	tst.b	SMPS_RAM.v_spindash_timer(a6)		; Is the Spin Dash timer active?
-	bne.s	.sfx_timeractive			; If it is, branch
-	moveq	#-1,d0					; Otherwise, reset frequency (becomes 0 on next line)
+	bne.s	.sfx_timeractive					; If it is, branch
+	moveq	#-1,d0								; Otherwise, reset frequency (becomes 0 on next line)
 
 .sfx_timeractive:
 	addq.b	#1,d0
-	cmpi.b	#$C,d0					; Has the limit been reached?
-	bhs.s	.sfx_limitreached			; If it has, branch
+	cmpi.b	#$C,d0								; Has the limit been reached?
+	bhs.s	.sfx_limitreached					; If it has, branch
 	move.b	d0,SMPS_RAM.v_spindash_pitch(a6)	; Otherwise, set new frequency
 
 .sfx_limitreached:
@@ -1488,7 +1488,9 @@ Sound_PlaySFX:
 	move.b	d0,(SMPS_psg_input).l	; Silence PSG 4 (noise), too
 ; loc_7226E:
 .sfxoverridedone:
-	movea.w	SFX_SFXChannelRAM(pc,d3.w),a5
+;	movea.w	SFX_SFXChannelRAM(pc,d3.w),a5
+	lea	SFX_SFXChannelRAM(pc),a5
+	movea.w	(a5,d3.w),a5
 	movea.l	a5,a2
 	moveq	#(SMPS_Track.len/4)-1,d0	; $30 bytes
 	moveq	#0,d2

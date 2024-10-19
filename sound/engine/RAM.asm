@@ -194,7 +194,7 @@ v_ring_speaker			= 0	; which speaker the "ring" sound is played in (0 = right; 1
 v_gloop_toggle			= 1	; if set, prevents further gloop sounds from playing
     endif
     if SMPS_EnableSpinDashSFX
-f_spindash_lastsound		= 2
+f_spindash_lastsound	= 2
     endif
     if SMPS_PushSFXBehaviour
 f_push_playing			= 3
@@ -202,7 +202,7 @@ f_push_playing			= 3
     if SMPS_EnableContSFX
 f_continuous_sfx		= 4
     endif
-f_pal				= 5
+f_pal					= 5
 
     if SMPS_EnableSpinDashSFX
 	v_spindash_timer:	ds.b 1

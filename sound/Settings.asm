@@ -13,7 +13,7 @@ SMPS_PushSFXBehaviour	= 1
 SMPS_EnableSpecSFX	= 1
 ;	| If 1, include the Special SFX system. Used by S1's waterfall SFX
 ;
-SMPS_EnableSpinDashSFX	= 0
+SMPS_EnableSpinDashSFX	= 1
 ;	| If 1, include S2's spin dash SFX pitch system
 ;
 SMPS_EnableContSFX	= 0
@@ -51,15 +51,15 @@ SMPS_S1DACSamples		= 1
 SMPS_S2DACSamples		= 0
 SMPS_S3DACSamples		= 0
 SMPS_SKDACSamples		= 0
-SMPS_S3DDACSamples	= 0
+SMPS_S3DDACSamples		= 0
 SMPS_SCDACSamples		= 0
 
-SMPS_S1PSGEnvelopes	= 1
-SMPS_S2PSGEnvelopes	= 0
-SMPS_S3PSGEnvelopes	= 0
-SMPS_SKPSGEnvelopes	= 0
+SMPS_S1PSGEnvelopes		= 1
+SMPS_S2PSGEnvelopes		= 0
+SMPS_S3PSGEnvelopes		= 0
+SMPS_SKPSGEnvelopes		= 0
 SMPS_S3DPSGEnvelopes	= 0
-SMPS_KCPSGEnvelopes	= 0
+SMPS_KCPSGEnvelopes		= 0
 
 ; ---DISASM-DEPENDANT VARIABLES AND FUNCTIONS---
 SoundDriverLoad		= SMPS_LoadDACDriver
@@ -76,7 +76,7 @@ Play_Sound_2		= SMPS_QueueSound2
 PlaySound_Unused	= SMPS_QueueSound3
 Play_Sample			= SMPS_PlayDACSample
 
-mus_FadeOut		= mus_Fade
+mus_FadeOut			= mus_Fade
 
 Clone_Driver_RAM	= (-(v_snddriver_ram&$80000000)<<1)|v_snddriver_ram
 
@@ -87,7 +87,7 @@ MusID__First		= mus__First
 MusID__End			= mus__Last+1
 ;	| ID of your last song+1
 ;
-SndID__First			= sfx__First
+SndID__First		= sfx__First
 ;	| ID of your first SFX
 ;
 SndID__End			= sfx__Last+1
@@ -99,7 +99,7 @@ SpecID__First		= spec__First
 SpecID__End			= spec__Last+1
 ;	| ID of your last Special SFX+1
 ;
-FlgID__First			= flg__First
+FlgID__First		= flg__First
 ;	| ID of your first command
 ;
 FlgID__End			= flg__Last+1
@@ -118,6 +118,6 @@ SndID_Ring			= sfx_Ring
 SndID_RingLeft		= sfx_RingLeft
 ;	| ID of your alternate ring SFX
 ;
-SndID_SpindashRev	= $00
+SndID_SpindashRev	= $D1
 ;	| Set this to the ID of your Spin Dash SFX (if you have one). Use with EnableSpinDashSFX
 ;

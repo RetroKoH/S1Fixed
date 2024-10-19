@@ -525,7 +525,7 @@ VBla_00:
 		move.w	(v_hbla_hreg).w,(a5)
 		startZ80	; removed Z80 macro
 		; instead of branching back to VBla_Music, call directly.
-		jsr		(UpdateMusic).l
+		SMPS_UpdateSoundDriver			; update SMPS	; warning: a5-a6 will be overwritten
 		addq.l	#1,(v_vbla_count).w
 		movem.l	(sp)+,d0-a6
 		rte
