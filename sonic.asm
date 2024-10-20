@@ -5020,7 +5020,7 @@ loc_8486:
 .endloop:
 	; Mass Object Load Optimization End
 		bsr.w	DisplaySprite
-		move.w	#sfx_Collapse,d0
+		move.w	#sfx_WallSmash,d0		; Compare to S1 Collapse
 		jmp		(PlaySound_Special).w	; play collapsing sound
 ; ===========================================================================
 ; ---------------------------------------------------------------------------

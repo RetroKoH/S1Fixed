@@ -94,7 +94,7 @@ sfx_HitBoss				ds.b 1		; $19
 sfx_Warning				ds.b 1		; $1A
 sfx_Bubble				ds.b 1		; $1B
 sfx_Bomb				ds.b 1		; $1C Explode
-sfx_Signpost			ds.b 1		; $1D
+sfx_SignpostFloat		ds.b 1		; $1D S3K Signpost (Not used here)
 sfx_Switch				ds.b 1		; $1E
 sfx_Cash				ds.b 1		; $1F
 sfx_Projectile			ds.b 1		; $20
@@ -108,32 +108,32 @@ sfx_BossMagma			ds.b 1		; $27
 sfx_ChainRise			ds.b 1		; $28
 sfx_ChainStomp			ds.b 1		; $29
 sfx_Push				ds.b 1		; $2A ; Push Block
-sfx_BossZoom			ds.b 1		; $2B
-sfx_Grab				ds.b 1		; $2C
-sfx_Flying				ds.b 1		; $2D
-sfx_FlyTired			ds.b 1		; $2E
-sfx_GlideLand			ds.b 1		; $2F
-sfx_GroundSlide			ds.b 1		; $30
-sfx_Laser				ds.b 1		; $31
+sfx_BossZoom			ds.b 1		; $2B (Not used here)
+sfx_Grab				ds.b 1		; $2C (Goggles)
+sfx_Flying				ds.b 1		; $2D (Extended)
+sfx_FlyTired			ds.b 1		; $2E (Extended)
+sfx_GlideLand			ds.b 1		; $2F (Extended)
+sfx_GroundSlide			ds.b 1		; $30 (Extended)
+sfx_Laser				ds.b 1		; $31 (Not used here)
 sfx_Continue			ds.b 1		; $32
 sfx_EnterSS				ds.b 1		; $33
 sfx_SSGlass				ds.b 1		; $34
 sfx_SSItem				ds.b 1		; $35
 sfx_SSGoal				ds.b 1		; $36
-sfx_Perfect				ds.b 1		; $37
-sfx_BossHitFloor		ds.b 1		; $38
+sfx_Perfect				ds.b 1		; $37 (Might use for Perfect Bonus mod)
+sfx_BossHitFloor		ds.b 1		; $38 (Not used here)
 sfx_Rumbling			ds.b 1		; $39
 sfx_Door				ds.b 1		; $3A
-sfx_MissileThrow		ds.b 1		; $3B
-sfx_BossProjectile		ds.b 1		; $3C
+sfx_MissileThrow		ds.b 1		; $3B (Not used here)
+sfx_BossProjectile		ds.b 1		; $3C (Not used here)
 sfx_Electric			ds.b 1		; $3D
 sfx_Harpoon				ds.b 1		; $3E
 sfx_Flamethrower		ds.b 1		; $3F
 sfx_Saw					ds.b 1		; $40
-sfx_SuperEmerald		ds.b 1		; $41
-sfx_SuperTransform		ds.b 1		; $42
-sfx_MechaTransform		ds.b 1		; $43
-sfx_SignpostRotation	ds.b 1		; $44
+sfx_SuperEmerald		ds.b 1		; $41 (Not used here)
+sfx_SuperTransform		ds.b 1		; $42 (Not used here)
+sfx_MechaTransform		ds.b 1		; $43 (Not used here)
+sfx_Signpost			ds.b 1		; $44
 sfx_Bonus				ds.b 1		; $45 (Hidden Bonuses)
 sfx_GiantRing			ds.b 1		; $46
 ; Peelout sfx
