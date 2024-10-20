@@ -6,11 +6,11 @@ Size_of_SegaPCM:			equ $6978
 Size_of_DAC_driver_guess:	equ $1760
 
 ; Clocks
-Master_Clock:    			equ 53693175				; ($3334AF7)
-M68000_Clock:    			equ Master_Clock/7			; 7,670,453 ($750AB5)
-Z80_Clock:       			equ Master_Clock/15			; 3,579,545 ($369E99)
-FM_Sample_Rate:  			equ M68000_Clock/(6*6*4)	; 53,267 ($D013)
-PSG_Sample_Rate: 			equ Z80_Clock/16			; 223,721 ($369E9)
+Master_Clock:    			equ 53693175
+M68000_Clock:    			equ Master_Clock/7
+Z80_Clock:       			equ Master_Clock/15
+FM_Sample_Rate:  			equ M68000_Clock/(6*6*4)
+PSG_Sample_Rate: 			equ Z80_Clock/16
 
 ; VDP addressses
 vdp_data_port:				equ $C00000

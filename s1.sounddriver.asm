@@ -1902,10 +1902,8 @@ PSGSetFreq:
 		subi.b	#$81,d5		; Convert to 0-based index
 		bcs.s	.restpsg	; If $80, put track at rest
 		add.b	SMPS_Track.Transpose(a5),d5 ; Add in channel transposition
-	; Minor EraZor Optimization (Vladikcomper) (-8 cycles, -1 read)
-		ext.w	d5
-		add.w	d5,d5
-	; Optimization End
+		andi.w	#$7F,d5		; Clear high byte and sign bit
+		lsl.w	#1,d5
 		lea		PSGFrequencies(pc),a0
 		move.w	(a0,d5.w),SMPS_Track.Freq(a5)	; Set new frequency
 		bra.w	FinishTrackUpdate
@@ -2101,12 +2099,6 @@ MakePSGFrequencies macro
 		endm
 	endm
 
-; Example MakePSGFrequency(130.98) = min($3FF,roundFloatToInteger(223,721/(130.98*2))) = $356
-
-		; Extra octave available through note disposition (Fixes Rhythm port) -- Vladikcomper fix taken from EraZor
-		; Will try to apply macro values later.
-		dc.w $3FF, $3FF, $3FF, $3FF, $3FF, $3FF, $3FF, $3FF, $3FF, $3F7, $3BE, $388
-
 ; word_729CE:
 PSGFrequencies:
 		MakePSGFrequencies  130.98,    138.78,    146.99,    155.79,    165.22,    174.78,    185.19,    196.24,    207.91,    220.63,    233.52,    247.47
@@ -2114,7 +2106,7 @@ PSGFrequencies:
 		MakePSGFrequencies  522.71,    556.51,    588.73,    621.44,    661.89,    699.12,    740.79,    782.24,    828.59,    880.79,    932.17,    989.91
 		MakePSGFrequencies 1045.42,   1107.52,   1177.47,   1242.89,   1316.00,   1398.25,   1491.47,   1575.50,   1669.55,   1747.82,   1864.34,   1962.46
 		MakePSGFrequencies 2071.49,   2193.34,   2330.42,   2485.78,   2601.40,   2796.51,   2943.69,   3107.23,   3290.01,   3495.64,   3608.40,   3857.25
-		MakePSGFrequencies 4142.98,   4302.32,   4660.85,   4863.50,   5084.56,   5326.69,   5887.39,   6214.47,   6580.02,   6945.57,   6945.57, 223721.56		; I added the 6945.57's to match Vladikcomper's $0010 values
+		MakePSGFrequencies 4142.98,   4302.32,   4660.85,   4863.50,   5084.56,   5326.69,   5887.39,   6214.47,   6580.02, 223721.56
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
