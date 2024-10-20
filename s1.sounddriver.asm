@@ -199,34 +199,20 @@ UpdateMusic:
 ; loc_71BDA:
 .bgmfmloop:
 		adda.w	#SMPS_Track.len,a5
-		tst.b	SMPS_Track.PlaybackControl(a5)	; Is track playing?
-		bpl.s	.nofm							; Branch if not (new branch -- Fuzzy-bit; EraZor)
-		jsr		FMUpdateTrack(pc)
-	; Fuzzy-bit Sound driver now tracks notes in RAM
-		bra.s	.bgmfmnext
-.nofm:
-		lea		v_smps_fm,a0
-		move.b	#0,(a0,d7.w)
-	; RAM notes mod end
-
+		tst.b	SMPS_Track.PlaybackControl(a5) ; Is track playing?
+		bpl.s	.bgmfmnext		; Branch if not
+		jsr	FMUpdateTrack(pc)
 ; loc_71BE6:
 .bgmfmnext:
 		dbf	d7,.bgmfmloop
 
-		moveq	#SMPS_MUSIC_PSG_TRACK_COUNT-1,d7	; 3 PSG tracks
+		moveq	#SMPS_MUSIC_PSG_TRACK_COUNT-1,d7 ; 3 PSG tracks
 ; loc_71BEC:
 .bgmpsgloop:
 		adda.w	#SMPS_Track.len,a5
-		tst.b	SMPS_Track.PlaybackControl(a5)		; Is track playing?
-		bpl.s	.nopsg								; Branch if not
-		jsr		PSGUpdateTrack(pc)
-	; Fuzzy-bit Sound driver now tracks notes in RAM
-		bra.s	.bgmpsgnext
-.nopsg:
-		lea		v_smps_fm,a0
-		move.b	#0,1(a0,d7.w)
-	; RAM notes mod end
-
+		tst.b	SMPS_Track.PlaybackControl(a5) ; Is track playing?
+		bpl.s	.bgmpsgnext		; Branch if not
+		jsr	PSGUpdateTrack(pc)
 ; loc_71BF8:
 .bgmpsgnext:
 		dbf	d7,.bgmpsgloop
@@ -311,20 +297,18 @@ DACUpdateTrack:
 		bne.s	.locret								; Return if yes
 		moveq	#0,d0
 		move.b	SMPS_Track.SavedDAC(a5),d0			; Get sample
-		cmpi.b	#$80,d0								; Is it a rest?
-		beq.s	.locret								; Return if yes
+		cmpi.b	#$80,d0						; Is it a rest?
+		beq.s	.locret						; Return if yes
 
-		btst	#3,d0								; Is bit 3 set (samples between $88-$8F)?
-		bne.s	.timpani							; Various timpani
+		btst	#3,d0			; Is bit 3 set (samples between $88-$8F)?
+		bne.s	.timpani		; Various timpani
 		move.b	d0,(z80_dac_sample).l
-	; Fuzzy-bit Sound driver now tracks notes in RAM
-		move.b	#1,v_smps_dac						; set DAC status
-		rts
-	; RAM notes mod end
+	;	MPCM_stopZ80							; ++
+	;	move.b	d0, z80_ram+Z_MPCM_CommandInput	; ++ send DAC sample to Mega PCM
+	;	MPCM_startZ80							; ++
 
 ; locret_71CAA:
 .locret:
-		move.b	#0,v_smps_dac						; clear DAC status -- Fuzzy-bit Sound driver now tracks notes in RAM
 		rts	
 ; ===========================================================================
 ; loc_71CAC:
@@ -347,7 +331,7 @@ DAC_sample_rate:
 		dc.b dpcmLoopCounter(8750)
 		dc.b dpcmLoopCounter(7150)
 		dc.b dpcmLoopCounter(7000)
-		dc.b $FF,$FF
+		dc.b $FF, $FF
 		even
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -407,27 +391,14 @@ FMDoNext:
 ; sub_71D22:
 FMSetFreq:
 		subi.b	#$80,d5			; Make it a zero-based index
-		beq.s	.restfm
-
-	; Fuzzy-bit Sound driver now tracks notes in RAM
-		lea		v_smps_fm,a0
-		move.b	d5,(a0,d7.w)
-	; RAM notes mod end
-
+		beq.s	TrackSetRest
 		add.b	SMPS_Track.Transpose(a5),d5	; Add track transposition
 		andi.w	#$7F,d5			; Clear high byte and sign bit
 		lsl.w	#1,d5
 		lea		FMFrequencies(pc),a0
 		move.w	(a0,d5.w),d6
 		move.w	d6,SMPS_Track.Freq(a5)	; Store new frequency
-		rts
-
-	; Fuzzy-bit Sound driver now tracks notes in RAM
-.restfm:
-		lea		v_smps_fm,a0
-		move.b	d5,(a0,d7.w)
-		bra		TrackSetRest
-	; RAM notes mod end
+		rts	
 ; End of function FMSetFreq
 
 
@@ -891,9 +862,6 @@ Sound_PlayBGM:
 		add.l	a3,d0				; Relative pointer
 		move.l	d0,SMPS_Track.DataPointer(a1)		; Store track pointer
 		move.w	(a4)+,SMPS_Track.Transpose(a1)	; load FM channel modifier
-
-		move.b	#0,v_smps_dac				; clear DAC status -- Fuzzy-bit Sound driver now tracks notes in RAM
-
 		adda.w	d6,a1
 		dbf	d7,.bgm_fmloadloop
 
@@ -1933,13 +1901,6 @@ PSGDoNext:
 PSGSetFreq:
 		subi.b	#$81,d5		; Convert to 0-based index
 		bcs.s	.restpsg	; If $80, put track at rest
-
-	; Fuzzy-bit Sound driver now tracks notes in RAM
-		lea		v_smps_fm,a0
-		move.b	d5,1(a0,d7.w) ; move that note
-		addq.b	#1,1(a0,d7.w) ; inc by 1 because yeah
-	; RAM notes mod end
-
 		add.b	SMPS_Track.Transpose(a5),d5 ; Add in channel transposition
 	; Minor EraZor Optimization (Vladikcomper) (-8 cycles, -1 read)
 		ext.w	d5
@@ -1951,11 +1912,6 @@ PSGSetFreq:
 ; ===========================================================================
 ; loc_728CA:
 .restpsg:
-	; Fuzzy-bit Sound driver now tracks notes in RAM
-		lea		v_smps_fm,a0
-		move.b	#0,1(a0,d7.w) ; clear
-	; RAM notes mod end
-
 		bset	#1,SMPS_Track.PlaybackControl(a5)	; Set 'track at rest' bit
 		move.w	#-1,SMPS_Track.Freq(a5)		; Invalidate note frequency
 		jsr		FinishTrackUpdate(pc)

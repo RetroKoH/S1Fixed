@@ -52,12 +52,7 @@ v_objstate_end:
 
 v_col_response_list		ds.b	$70				; $9C0C
 
-v_smps_notes:			ds.b	$10				; $9C7C: SMPS note status (I believe this occupies $10 bytes?)
-v_smps_fm:				equ v_smps_notes		; ... for FM
-v_smps_psg:				equ v_smps_fm+5			; ... for PSG
-v_smps_dac:				equ v_smps_psg+3		; ... for DAC
-
-					ds.b	$B74			; unused -- $9C7C
+						ds.b	$B84			; unused -- $9C7C
 
 v_bgscroll_buffer:		ds.b	$200			; $A800 - background scroll buffer
 v_ngfx_buffer:			ds.b	$200			; Nemesis graphics decompression buffer
