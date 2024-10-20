@@ -1470,6 +1470,10 @@ DoFadeOut:
 ; ===========================================================================
 ; loc_72558:
 .sendpsgvol:
+	; Clownacy PSG fading fix
+		tst.b	SMPS_Track.VoiceIndex(a5)
+		bne.s	.nextpsg
+	; fix end
 		move.b	SMPS_Track.Volume(a5),d6	; Store new volume attenuation
 		jsr		SetPSGVolume(pc)
 ; loc_72560:
@@ -1969,7 +1973,7 @@ PSGUpdateVolFX:
 		tst.b	SMPS_Track.VoiceIndex(a5)	; Test PSG tone
 		beq.w	locret_7298A		; Return if it is zero
 ; loc_7292E:
-PSGDoVolFX:	; This can actually be made a bit more efficient, see the comments for more
+PSGDoVolFX:
 		move.b	SMPS_Track.Volume(a5),d6	; Get volume
 		moveq	#0,d0
 		move.b	SMPS_Track.VoiceIndex(a5),d0	; Get PSG tone
@@ -1978,6 +1982,9 @@ PSGDoVolFX:	; This can actually be made a bit more efficient, see the comments f
 		subq.w	#1,d0
 		lsl.w	#2,d0
 		movea.l	(a0,d0.w),a0
+
+; Clownacy PSG Fading Fix -- Added a loop at this point		; This can actually be made a bit more efficient, see the comments for more
+PSGDoVolFX_Loop:
 		move.b	SMPS_Track.VolEnvIndex(a5),d0	; Get volume envelope index		; move.b	SMPS_Track.VolEnvIndex(a5),d0
 		move.b	(a0,d0.w),d0			; Volume envelope value			; addq.b	#1,SMPS_Track.VolEnvIndex(a5)
 		addq.b	#1,SMPS_Track.VolEnvIndex(a5)	; Increment volume envelope index	; move.b	(a0,d0.w),d0
@@ -2029,8 +2036,8 @@ PSGCheckNoteTimeout:
 ; ===========================================================================
 ; loc_7299A: FlutterDone:
 VolEnvHold:
-		subq.b	#1,SMPS_Track.VolEnvIndex(a5)		; Decrement volume envelope index
-		rts	
+		subq.b	#2,SMPS_Track.VolEnvIndex(a5)		; Decrement volume envelope index -- Clownacy PSG fading fix #1 > #2
+		bra.s	PSGDoVolFX_Loop						; Replace rts w/ a branch to a loop for proper fading -- Clownacy PSG fading fix
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
@@ -2424,13 +2431,13 @@ FMSlotMask:	dc.b 8,	8, 8, 8, $A, $E, $E, $F
 ; sub_72CB4:
 SendVoiceTL:
 		btst	#2,SMPS_Track.PlaybackControl(a5)	; Is SFX overriding?
-		bne.s	.locret				; Return if so
+		bne.s	.locret								; Return if so
 		moveq	#0,d0
-		move.b	SMPS_Track.VoiceIndex(a5),d0	; Current voice
-		movea.l	SMPS_RAM.v_voice_ptr(a6),a1	; Voice pointer
+		move.b	SMPS_Track.VoiceIndex(a5),d0		; Current voice
+		movea.l	SMPS_RAM.v_voice_ptr(a6),a1			; Voice pointer
 		tst.b	SMPS_RAM.f_voice_selector(a6)
 		beq.s	.gotvoiceptr
-		movea.l	SMPS_Track.VoicePtr(a5),a1	; Sound driver fixes: upload the correct voice instead of (a6)
+		movea.l	SMPS_Track.VoicePtr(a5),a1			; Sound driver fixes: upload the correct voice instead of (a6)
 		tst.b	SMPS_RAM.f_voice_selector(a6)
 		bmi.s	.gotvoiceptr
 		movea.l	SMPS_RAM.v_special_voice_ptr(a6),a1
