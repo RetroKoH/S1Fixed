@@ -744,6 +744,11 @@ ptr_flgend
 ; ---------------------------------------------------------------------------
 ; Sound_E1: PlaySega:
 PlaySegaSound:
+	; ValleyBell Panning Reset Fix
+		move.b	#$B6,d0						; Register: FM3/6 Panning
+		move.b	#$C0,d1						; Value: Enable both channels
+		jsr		WriteFMII(pc)				; Write to YM2612 Port 1 (for FM6) [sub_72764]
+	; Fix end
 	; Puto Sega Sound Fix
 		lea		(SegaPCM).l,a2				; Load the SEGA PCM sample into a2. It's important that we use a2 since a0 and a1 are going to be used up ahead when reading the joypad ports 
 		move.l	#$6978,d3					; Load the size of the SEGA PCM sample into d3 
