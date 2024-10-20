@@ -2207,6 +2207,13 @@ cfFadeInToPrevious:
 		move.l	(a1)+,(a0)+
 		dbf	d0,.restoreramloop
 
+	; ValleyBell DAC 1-up bugfix
+	; Fixes a bug where getting a 1-up in the Special Stage mutes the 6th FM channel when fading in
+		move.b	#$2B,d0			; Register: DAC mode (bit 7 = enable)
+		moveq	#0,d1			; Value: DAC mode disable
+		jsr		WriteFMI(pc)	; Write to YM2612 Port 0 [sub_7272E]
+	; bugfix end
+
 		bset	#2,SMPS_RAM.v_music_dac_track.PlaybackControl(a6)	; Set 'SFX overriding' bit
 		movea.l	a5,a3
 		move.b	#$28,d6
