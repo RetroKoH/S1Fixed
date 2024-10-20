@@ -344,11 +344,11 @@ GameInit:
 		move.l	d7,(a6)+
 		dbf	d6,.clearRAM	; clear RAM ($0000-$FDFF)
 
-		jsr 	(InitDMAQueue).l	; Flamewing Ultra DMA Queue
+		jsr 	(InitDMAQueue).l		; Flamewing Ultra DMA Queue
 		bsr.w	VDPSetupGame
-		bsr.w	DACDriverLoad ; Remove this call to old Sound Driver when adding MegaPCM2
+		bsr.w	DACDriverLoad
 		bsr.w	JoypadInit
-		move.b	#id_Sega,(v_gamemode).w ; set Game Mode to Sega Screen
+		move.b	#id_Sega,(v_gamemode).w	; set Game Mode to Sega Screen
 
 	if SaveProgressMod=1
 InitSRAM:
@@ -370,10 +370,8 @@ InitSRAM:
 		; Example - 8(a0) => $A(a0)
 
 	.skip:
-        move.b	#0,(sram_port).l		; Disable SRAM writing
+        move.b	#0,(sram_port).l			; Disable SRAM writing
 	endif
-
-	; Load up the new MegaPCM 2 driver here later
 
 MainGameLoop:
 		moveq	#0,d0						; clear d0 before using it w/ the new Game Mode system to avoid bugs
@@ -498,8 +496,8 @@ VBla_00:
 
 .notPAL:
 		move.w	#1,(f_hbla_pal).w ; set HBlank flag
-		stopZ80		; removed Z80 macro
-		waitZ80		; removed Z80 macro
+		stopZ80
+		waitZ80
 		tst.b	(f_wtr_state).w	; is water above top of screen?
 		bne.s	.waterabove 	; if yes, branch
 
@@ -511,7 +509,7 @@ VBla_00:
 
 .waterbelow:
 		move.w	(v_hbla_hreg).w,(a5)
-		startZ80	; removed Z80 macro
+		startZ80
 		; instead of branching back to VBla_Music, call directly.
 		jsr		(UpdateMusic).l
 		addq.l	#1,(v_vbla_count).w
@@ -553,8 +551,8 @@ VBla_10:
 		beq.w	VBla_0A		; if yes, branch
 
 VBla_08:
-		stopZ80		; removed Z80 macro
-		waitZ80		; removed Z80 macro
+		stopZ80
+		waitZ80
 		bsr.w	ReadJoypads
 		tst.b	(f_wtr_state).w
 		bne.s	.waterabove
@@ -573,7 +571,7 @@ VBla_08:
 
 		bsr.w		ProcessDMAQueue	; Mercury Use DMA Queue
 
-		startZ80	; removed Z80 macro
+		startZ80
 		movem.l	(v_screenposx).w,d0-d7
 		movem.l	d0-d7,(v_screenposx_dup).w
 		movem.l	(v_fg_scroll_flags).w,d0-d1
@@ -607,13 +605,13 @@ Demo_Time:
 ; ===========================================================================
 
 VBla_0A:
-		stopZ80		; removed Z80 macro
-		waitZ80		; removed Z80 macro
+		stopZ80
+		waitZ80
 		bsr.w	ReadJoypads
 		writeCRAM	v_palette,0
 		writeVRAM	v_spritetablebuffer,vram_sprites
 		writeVRAM	v_hscrolltablebuffer,vram_hscroll
-		startZ80	; removed Z80 macro
+		startZ80
 		bsr.w	PalCycle_SS
 		
 		bsr.w	ProcessDMAQueue	; Mercury Use DMA Queue
@@ -640,8 +638,8 @@ VBla_0A:
 ; ===========================================================================
 
 VBla_0C:
-		stopZ80		; removed Z80 macro
-		waitZ80		; removed Z80 macro
+		stopZ80
+		waitZ80
 		bsr.w	ReadJoypads
 		tst.b	(f_wtr_state).w
 		bne.s	.waterabove
@@ -659,7 +657,7 @@ VBla_0C:
 		
 		bsr.w	ProcessDMAQueue	; Mercury Use DMA Queue
 
-		startZ80	; removed Z80 macro
+		startZ80
 		movem.l	(v_screenposx).w,d0-d7
 		movem.l	d0-d7,(v_screenposx_dup).w
 		movem.l	(v_fg_scroll_flags).w,d0-d1
@@ -684,13 +682,13 @@ VBla_12:
 ; ===========================================================================
 
 VBla_16:
-		stopZ80		; removed Z80 macro
-		waitZ80		; removed Z80 macro
+		stopZ80
+		waitZ80
 		bsr.w	ReadJoypads
 		writeCRAM	v_palette,0
 		writeVRAM	v_spritetablebuffer,vram_sprites
 		writeVRAM	v_hscrolltablebuffer,vram_hscroll
-		startZ80	; removed Z80 macro
+		startZ80
 
 		bsr.w	ProcessDMAQueue	; Mercury Use DMA Queue
 
@@ -717,8 +715,8 @@ VBla_16:
 
 
 sub_106E:
-		stopZ80		; removed Z80 macro
-		waitZ80		; removed Z80 macro
+		stopZ80
+		waitZ80
 		bsr.w	ReadJoypads
 		tst.b	(f_wtr_state).w ; is water above top of screen?
 		bne.s	.waterabove	; if yes, branch
@@ -731,7 +729,7 @@ sub_106E:
 .waterbelow:
 		writeVRAM	v_spritetablebuffer,vram_sprites
 		writeVRAM	v_hscrolltablebuffer,vram_hscroll
-		startZ80	; removed Z80 macro
+		startZ80
 		
 		bra.w		ProcessDMAQueue	; Mercury Use DMA Queue
 		
@@ -785,13 +783,13 @@ loc_119E:
 
 
 JoypadInit:
-		stopZ80		; removed Z80 macro
-		waitZ80		; removed Z80 macro
+		stopZ80
+		waitZ80
 		moveq	#$40,d0
 		move.b	d0,(z80_port_1_control+1).l		; init port 1 (joypad 1)
 		move.b	d0,(z80_port_2_control+1).l		; init port 2 (joypad 2)
 		move.b	d0,(z80_expansion_control+1).l	; init port 3 (expansion/extra)
-		startZ80	; removed Z80 macro
+		startZ80
 		rts	
 ; End of function JoypadInit
 
@@ -903,7 +901,7 @@ ClearScreen:
 ; End of function ClearScreen
 
 ; ---------------------------------------------------------------------------
-; Subroutine to load the DAC driver - Remove for MegaPCM2
+; Subroutine to load the DAC driver
 ; ---------------------------------------------------------------------------
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
@@ -1640,7 +1638,6 @@ Sega_WaitPal:
 		move.b	#$14,(v_vbla_routine).w
 		bsr.w	WaitForVBla
 		move.w	#$1E,(v_demolength).w
-		;move.w	#$1E+2*60,(v_demolength).w		; modified due to MegaPCM 2 (2 seconds of wait time)
 
 Sega_WaitEnd:
 		move.b	#2,(v_vbla_routine).w
@@ -8588,10 +8585,6 @@ RingPos_Null:	dc.b $FF, $FF, 0, 0, 0, 0
 		rept $63C
 		dc.b $FF
 		endm
-
-; We can readd these later
-;				include "MegaPCM.asm"
-;				include "SampleTable.asm"
 
 SoundDriver:	include "s1.sounddriver.asm"
 

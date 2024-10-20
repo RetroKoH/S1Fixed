@@ -127,7 +127,6 @@ SoundPriorities:
 
 ; sub_71B4C:
 UpdateMusic:
-; Block of code removed for MegaPCM2
 		stopZ80
 		nop	
 		nop	
@@ -146,10 +145,9 @@ UpdateMusic:
 		nop	
 		bra.s	UpdateMusic
 ; ===========================================================================
+
 ; loc_71B82:
 .driverinput:
-; Block of code removed for MegaPCM2
-
 		lea		(v_snddriver_ram&$FFFFFF).l,a6
 		clr.b	SMPS_RAM.f_voice_selector(a6)
 		tst.b	SMPS_RAM.f_pausemusic(a6)		; is music paused?
@@ -255,7 +253,7 @@ UpdateMusic:
 		jsr	PSGUpdateTrack(pc)
 ; loc_71C44:
 DoStartZ80:
-		startZ80 ; remove Z80 macro for MegaPCM2
+		startZ80
 		rts	
 ; End of function UpdateMusic
 
@@ -311,8 +309,6 @@ DACUpdateTrack:
 
 ; locret_71CAA:
 .locret:
-
-; Block of code removed for MegaPCM2
 		rts	
 ; ===========================================================================
 ; loc_71CAC:
@@ -323,8 +319,6 @@ DACUpdateTrack:
 		; use this value from then on.
 		move.b	d0,(z80_dac_timpani_pitch).l
 		move.b	#$83,(z80_dac_sample).l	; Use timpani
-; Block of code removed for MegaPCM2
-
 		rts
 ; End of function DACUpdateTrack
 
@@ -345,16 +339,16 @@ DAC_sample_rate:
 ; sub_71CCA:
 FMUpdateTrack:
 		subq.b	#1,SMPS_Track.DurationTimeout(a5)	; Update duration timeout
-		bne.s	.notegoing			; Branch if it hasn't expired
+		bne.s	.notegoing							; Branch if it hasn't expired
 		bclr	#4,SMPS_Track.PlaybackControl(a5)	; Clear 'do not attack next note' bit
-		jsr	FMDoNext(pc)
-		jsr	FMPrepareNote(pc)
+		jsr		FMDoNext(pc)
+		jsr		FMPrepareNote(pc)
 		bra.w	FMNoteOn
 ; ===========================================================================
 ; loc_71CE0:
 .notegoing:
-		jsr	NoteTimeoutUpdate(pc)
-		jsr	DoModulation(pc)
+		jsr		NoteTimeoutUpdate(pc)
+		jsr		DoModulation(pc)
 		bra.w	FMUpdateFreq
 ; End of function FMUpdateTrack
 
@@ -750,16 +744,13 @@ ptr_flgend
 ; ---------------------------------------------------------------------------
 ; Sound_E1: PlaySega:
 PlaySegaSound:
-;		moveq	#$FFFFFF8C, d0		; request SEGA PCM sample
-;		jmp		MegaPCM_PlaySample
-
 	; Puto Sega Sound Fix
 		lea		(SegaPCM).l,a2				; Load the SEGA PCM sample into a2. It's important that we use a2 since a0 and a1 are going to be used up ahead when reading the joypad ports 
 		move.l	#$6978,d3					; Load the size of the SEGA PCM sample into d3 
 		move.b	#$2A,(ym2612_a0).l			; $A04000 = $2A -> Write to DAC channel	  
 PlayPCM_Loop:	  
 		move.b	(a2)+,(ym2612_d0).l			; Write the PCM data (contained in a2) to $A04001 (YM2612 register D0) 
-		move.w	#$4,d0						; Write the pitch ($3 in this case) to d0 
+		move.w	#$3,d0						; Write the pitch ($3 in this case) to d0 
 		dbf		d0,*						; Decrement d0; jump to itself if not 0. (for pitch control, avoids playing the sample too fast)  
 		sub.l	#1,d3						; Subtract 1 from the PCM sample size 
 		beq.s	return_PlayPCM				; If d3 = 0, we finished playing the PCM sample, so stop playing, leave this loop, and unfreeze the 68K 
@@ -1666,24 +1657,20 @@ DoFadeIn:
 ; loc_726AA:
 .nextfm:
 		adda.w	#SMPS_Track.len,a5
-		dbf	d7,.fmloop
+		dbf		d7,.fmloop
 		moveq	#SMPS_MUSIC_PSG_TRACK_COUNT-1,d7		; 3 PSG tracks
 ; loc_726B4:
 .psgloop:
-		tst.b	SMPS_Track.PlaybackControl(a5) ; Is track playing?
-		bpl.s	.nextpsg		; Branch if not
-		subq.b	#1,SMPS_Track.Volume(a5)	; Reduce volume attenuation
-		move.b	SMPS_Track.Volume(a5),d6	; Get value
-		cmpi.b	#$10,d6			; Is it is < $10?
-		blo.s	.sendpsgvol		; Branch if yes
-		moveq	#$F,d6			; Limit to $F (maximum attenuation)
-; loc_726C8:
-.sendpsgvol:
-		jsr	SetPSGVolume(pc)
+		tst.b	SMPS_Track.PlaybackControl(a5)	; Is track playing?
+		bpl.s	.nextpsg						; Branch if not
+		subq.b	#1,SMPS_Track.Volume(a5)		; Reduce volume attenuation
+		move.b	SMPS_Track.Volume(a5),d6		; Get value
+		; removed redundant lines, we'll perform this when we jsr below.
+		jsr		SetPSGVolume(pc)
 ; loc_726CC:
 .nextpsg:
 		adda.w	#SMPS_Track.len,a5
-		dbf	d7,.psgloop
+		dbf		d7,.psgloop
 		rts	
 ; ===========================================================================
 ; loc_726D6:
@@ -1761,7 +1748,6 @@ WriteFMIorII:
 ; sub_7272E:
 ; ---------------------------------------------------------------------------
 WriteFMI:
-; This gets rewritten in MegaPCM2
 		move.b	(ym2612_a0).l,d2
 		btst	#7,d2		; Is FM busy?
 		bne.s	WriteFMI	; Loop if so
@@ -1788,7 +1774,6 @@ WriteFMIIPart:
 
 ; sub_72764:
 WriteFMII:
-; This gets rewritten in MegaPCM2
 		move.b	(ym2612_a0).l,d2
 		btst	#7,d2		; Is FM busy?
 		bne.s	WriteFMII	; Loop if so
@@ -1996,9 +1981,7 @@ PSGDoVolFX:	; This can actually be made a bit more efficient, see the comments f
 ; loc_72960:
 .gotflutter:
 		add.w	d0,d6		; Add volume envelope value to volume
-		cmpi.b	#$10,d6		; Is volume $10 or higher?
-		blo.s	SetPSGVolume	; Branch if not
-		moveq	#$F,d6		; Limit to silence and fall through
+		; removed redundant check as it's performed below (We could also branch to PSGSendVolume?)
 ; End of function PSGUpdateVolFX
 
 
@@ -2007,15 +1990,21 @@ PSGDoVolFX:	; This can actually be made a bit more efficient, see the comments f
 ; sub_7296A:
 SetPSGVolume:
 		btst	#1,SMPS_Track.PlaybackControl(a5)	; Is track at rest?
-		bne.s	locret_7298A			; Return if so
+		bne.s	locret_7298A						; Return if so
 		btst	#2,SMPS_Track.PlaybackControl(a5)	; Is SFX overriding?
-		bne.s	locret_7298A			; Return if so
+		bne.s	locret_7298A						; Return if so
 		btst	#4,SMPS_Track.PlaybackControl(a5)	; Is track set to not attack next note?
-		bne.s	PSGCheckNoteTimeout ; Branch if yes
+		bne.s	PSGCheckNoteTimeout					; Branch if yes
 ; loc_7297C:
 PSGSendVolume:
-		or.b	SMPS_Track.VoiceControl(a5),d6 ; Add in track selector bits
-		addi.b	#$10,d6			; Mark it as a volume command
+; ValleyBell bugfix - Fix PSG Fading bug
+		cmpi.b	#$10,d6								; Is volume $10 or higher?
+		blo.s	.sendvol							; Branch if not
+		moveq	#$F,d6								; Limit to silence and fall through
+.sendvol:
+; Bugfix end
+		or.b	SMPS_Track.VoiceControl(a5),d6		; Add in track selector bits
+		addi.b	#$10,d6								; Mark it as a volume command
 		move.b	d6,(psg_input).l
 
 locret_7298A:
@@ -2024,16 +2013,16 @@ locret_7298A:
 ; loc_7298C: PSGCheckNoteFill:
 PSGCheckNoteTimeout:
 		tst.b	SMPS_Track.NoteTimeoutMaster(a5)	; Is note timeout on?
-		beq.s	PSGSendVolume			; Branch if not
-		tst.b	SMPS_Track.NoteTimeout(a5)		; Has note timeout expired?
-		bne.s	PSGSendVolume			; Branch if not
+		beq.s	PSGSendVolume						; Branch if not
+		tst.b	SMPS_Track.NoteTimeout(a5)			; Has note timeout expired?
+		bne.s	PSGSendVolume						; Branch if not
 		rts	
 ; End of function SetPSGVolume
 
 ; ===========================================================================
 ; loc_7299A: FlutterDone:
 VolEnvHold:
-		subq.b	#1,SMPS_Track.VolEnvIndex(a5)	; Decrement volume envelope index
+		subq.b	#1,SMPS_Track.VolEnvIndex(a5)		; Decrement volume envelope index
 		rts	
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -2245,8 +2234,15 @@ cfFadeInToPrevious:
 		btst	#7,SMPS_Track.PlaybackControl(a5)	; Is track playing?
 		beq.s	.nextpsg			; Branch if not
 		bset	#1,SMPS_Track.PlaybackControl(a5)	; Set 'track at rest' bit
-		jsr	PSGNoteOff(pc)
+		jsr		PSGNoteOff(pc)
 		add.b	d6,SMPS_Track.Volume(a5)	; Apply current volume fade-in
+
+; ValleyBell bugfix (Fix PSG noise bug (1-up bug, part 2))
+		cmpi.b	#$E0,1(a5)					; is this the Noise Channel?
+		bne.s	.nextpsg					; no - skip
+		move.b	$1F(a5),($C00011).l			; restore Noise setting
+; Valleybell bugfix
+
 ; loc_72B78:
 .nextpsg:
 		adda.w	#SMPS_Track.len,a5
@@ -2256,7 +2252,7 @@ cfFadeInToPrevious:
 		move.b	#$80,SMPS_RAM.f_fadein_flag(a6)		; Trigger fade-in
 		move.b	#$28,SMPS_RAM.v_fadein_counter(a6)	; Fade-in delay
 		clr.b	SMPS_RAM.f_1up_playing(a6)
-		startZ80	; remove Z80 macro for MegaPCM2
+		startZ80
 		addq.w	#8,sp		; Tamper return value so we don't return to caller
 		rts	
 ; ===========================================================================
@@ -2651,7 +2647,7 @@ cfOpF9:
 		bra.w	WriteFMI
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
-; DAC driver (Kosinski-compressed) -- Remove DAC DRIVER for MegaPCM2
+; DAC driver (Kosinski-compressed)
 ; ---------------------------------------------------------------------------
 ; Kos_Z80:
 DACDriver:	include		"sound/z80.asm"
@@ -2908,7 +2904,7 @@ SoundDC:	include	"sound/sfx/SndDC - Drop Dash.asm"
 		even
 
 ; ---------------------------------------------------------------------------
-; 'Sega' chant PCM sample -- Remove for MegaPCM2
+; 'Sega' chant PCM sample
 ; ---------------------------------------------------------------------------
 		; Don't let Sega sample cross $8000-byte boundary
 		; (DAC driver doesn't switch banks automatically)
