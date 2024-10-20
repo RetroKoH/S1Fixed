@@ -1,7 +1,8 @@
-# S1Fixed
+# S1Fixed (CloneDriver Branch)
  A successor to ReadySonic (Bugfixes, Optimizations, Changes)  
  Base: Updated Sonic One Two-Eight disassembly for AS by Clownacy  
- Version: REV01. Revision options removed.  
+ Version: REV01. Revision options removed  
+ Sound Driver: Sonic3K Flamedriver by flamewing  
 
 # Credits
  RetroKoH - S1Fixed  
