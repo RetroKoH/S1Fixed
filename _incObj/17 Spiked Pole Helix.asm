@@ -1,12 +1,20 @@
 ; ---------------------------------------------------------------------------
 ; Object 17 - helix of spikes on a pole	(GHZ)
+; Adapted an optimized version from S1: Sonic Clean Engine
 ; ---------------------------------------------------------------------------
 
 Helix:
+		btst	#6,obRender(a0)		; Is this object set to render sub sprites?
+		bne.s	.SubSprs			; If so, branch
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Hel_Index(pc,d0.w),d1
 		jmp		Hel_Index(pc,d1.w)
+; ===========================================================================
+.SubSprs:
+	; child sprite objects only need to be drawn
+		move.w	#priority3,d0			; RetroKoH/Devon S3K+ Priority Manager
+		bra.w	DisplaySprite2			; Display sprites
 ; ===========================================================================
 Hel_Index:		offsetTable
 		offsetTableEntry.w Hel_Main
@@ -24,68 +32,35 @@ Hel_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Hel,obMap(a0)
 		move.w	#make_art_tile(ArtTile_GHZ_Spike_Pole,2,0),obGfx(a0)
+		move.b	#128,obActWid(a0)
 		move.b	#7,obStatus(a0)				; bit 2 is also set... is this used?
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#8,obActWid(a0)
-		move.w	obY(a0),d2
-		move.w	obX(a0),d3
-		_move.b	obID(a0),d4
-		lea		obSubtype(a0),a2		; move helix length to a2
-		moveq	#0,d1
-		move.b	(a2),d1					; move helix length to d1
-		clr.b	(a2)+					; clear subtype
-		move.w	d1,d0
-		lsr.w	#1,d0
-		lsl.w	#4,d0
-		sub.w	d0,d3					; d3 is x-axis position of leftmost spike
-		subq.b	#2,d1
-		bcs.w	Hel_Action				; skip to action if length is only 1 (The one piece has already been created!)
-		moveq	#0,d6
+		bset	#6,obRender(a0)				; set subsprites flag
 
-	; RetroKoH Mass Object Load Optimization -- Based on Spirituinsanum Guides
-	; Here we begin what's replacing SingleObjLoad, in order to avoid resetting its d0 every time an object is created.
-		lea		(v_lvlobjspace).w,a1
-		move.w	#v_lvlobjcount,d0
+		; create sub objects
+		moveq	#0,d0
+		move.b	obActWid(a0),d0
+		move.w	obX(a0),d1
+		sub.w	d0,d1						; move spikes back
+		moveq	#16,d2						; +16 pixels
+		
+		; load 8 spike pole spikes (Change to accomodate subtypes, like the bridge)
+		move.b	#8,mainspr_childsprites(a0)
+		lea		sub2_x_pos(a0),a1
+		lea		obY(a0),a2
 
-.loop:
-		tst.b	obID(a1)	; is object RAM	slot empty?
-		beq.s	.makehelix	; if so, create object piece
-		lea		object_size(a1),a1
-		dbf		d0,.loop	; loop through object RAM
-		bne.s	Hel_Action	; We're moving this line here.
+	; Perform a loop here once subtype is implemented
+	rept 7
+		move.w	d1,(a1)+					; set xpos
+		move.w	(a2),(a1)					; set ypos
+		addq.w	#4,a1						; skip frame
+		add.w	d2,d1						; +16 pixels
+	endr
 
-.makehelix:
-		addq.b	#1,obSubtype(a0)
-		move.w	a1,d5
-		subi.w	#v_objspace&$FFFF,d5
-		lsr.w	#object_size_bits,d5
-		andi.w	#$7F,d5
-		move.b	d5,(a2)+				; copy child address to parent RAM
-		move.b	#8,obRoutine(a1)
-		_move.b	d4,obID(a1)
-		move.w	d2,obY(a1)
-		move.w	d3,obX(a1)
-		move.l	obMap(a0),obMap(a1)
-		move.w	#make_art_tile(ArtTile_GHZ_Spike_Pole,2,0),obGfx(a1)
-		move.b	#4,obRender(a1)
-		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#8,obActWid(a1)
-		move.b	d6,hel_frame(a1)
-		addq.b	#1,d6
-		andi.b	#7,d6
-		addi.w	#$10,d3
-		cmp.w	obX(a0),d3				; is this spike in the centre?
-		bne.s	.notCentre				; if not, branch
-
-		move.b	d6,hel_frame(a0)		; set parent spike frame
-		addq.b	#1,d6
-		andi.b	#7,d6
-		addi.w	#$10,d3					; skip to next spike
-		addq.b	#1,obSubtype(a0)
-
-.notCentre:
-		dbf		d1,.loop				; repeat d1 times (helix length)
+		; last spike
+		move.w	d1,(a1)+					; set xpos
+		move.w	(a2),(a1)					; set ypos
 
 Hel_Action:	; Routine 2, 4
 		bsr.w	Hel_RotateSpikes
@@ -95,13 +70,30 @@ Hel_Action:	; Routine 2, 4
 
 
 Hel_RotateSpikes:
+		moveq	#0,d0
 		move.b	(v_ani0_frame).w,d0
-		clr.b	obColType(a0) ; make object harmless
-		add.b	hel_frame(a0),d0
-		andi.b	#7,d0
-		move.b	d0,obFrame(a0)	; change current frame
-		bne.s	locret_7DA6
-		move.b	#$84,obColType(a0) ; make object harmful
+		moveq	#7,d1						; max spikes frames
+
+		set	.a,sub2_mapframe
+
+	rept 7
+		move.b	d0,.a(a0)					; set frame
+		addq.b	#1,d0						; next frame
+		and.b	d1,d0						; max spikes frames
+		set	.a,.a + next_subspr
+	endr
+
+		; last spike
+		move.b	d0,.a(a0)					; set frame
+
+		; collision move
+		move.b	(v_ani0_frame).w,d2			; spike frame
+		neg.b	d2							; change direction of movement
+		and.w	d1,d2						; max spikes
+		move.w	sub2_x_pos(a0),d0			; get spike pole spikes xpos
+		asl.w	#4,d2						; +16 pixels
+		add.w	d2,d0						; "
+		move.w	d0,obX(a0)					; set collision xpos
 
 locret_7DA6:
 		rts	
