@@ -7,31 +7,32 @@ Helix:
 		btst	#6,obRender(a0)		; Is this object set to render sub sprites?
 		bne.s	.SubSprs			; If so, branch
 		moveq	#0,d0
-		move.b	mainspr_routine(a0),d0
+		move.b	obRoutine(a0),d0
 		move.w	Hel_Index(pc,d0.w),d1
 		jmp		Hel_Index(pc,d1.w)
 ; ===========================================================================
 .SubSprs:
 	; child sprite objects only need to be drawn
-		bsr.w	Hel_RotateSpikes
+;		bsr.w	Hel_RotateSpikes
 		move.w	#priority3,d0			; RetroKoH/Devon S3K+ Priority Manager
 		bra.w	DisplaySprite2			; Display sprites
 ; ===========================================================================
 Hel_Index:		offsetTable
 		offsetTableEntry.w Hel_Main
 		offsetTableEntry.w Hel_Action
-		offsetTableEntry.w Hel_Display
+		offsetTableEntry.w Hel_Delete
 
 obHelChild		= objoff_30	; pointer to the helix subsprite object
 ; ===========================================================================
 
 Hel_Main:	; Routine 0
-		addq.b	#2,mainspr_routine(a0)
+		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Hel,obMap(a0)
 		move.w	#make_art_tile(ArtTile_GHZ_Spike_Pole,2,0),obGfx(a0)
-		move.b	#$80,obActWid(a0)
+		move.b	#8,obActWid(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
+		move.b	#$84,obColType(a0)			; make object harmful
 		
 ;Hel_MakeSubsprite:
 		bsr.w	FindFreeObj
@@ -43,11 +44,11 @@ Hel_Main:	; Routine 0
 		move.w	obGfx(a0),obGfx(a1)
 		move.b	obRender(a0),obRender(a1)
 		bset	#6,obRender(a1)				; set subsprites flag
-		move.b	#128,mainspr_width(a1)		; base this on subtype later
+		move.b	#$80,mainspr_width(a1)		; base this on subtype later
 
 		; create subsprites
 		moveq	#0,d0
-		move.b	mainspr_width(a1),d0
+		move.b	#128,d0						; proper width in pixels
 		move.w	obX(a1),d1
 		sub.w	d0,d1						; move spikes back
 		moveq	#16,d2						; +16 pixels
@@ -77,14 +78,20 @@ Hel_Main:	; Routine 0
 		move.l	a1,obHelChild(a0)			; pointer to subsprite object
 
 Hel_Action:	; Routine 2
-		rts
-	;	bsr.w	Hel_RotateSpikes
-	;	bra.w	Hel_ChkDel			; Clownacy DisplaySprite Fix
+		bsr.w	Hel_RotateSpikes
+		lea		(v_col_response_list).w,a1
+		cmpi.w	#$7E,(a1)		; Is list full?
+		bhs.s	Hel_ChkDel		; If so, return
+		addq.w	#2,(a1)			; Count this new entry
+		adda.w	(a1),a1			; Offset into right area of list
+		move.w	a0,(a1)			; Store RAM address in list
+		bra.w	Hel_ChkDel					; Clownacy DisplaySprite Fix
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
 Hel_RotateSpikes:
+		movea.l	obHelChild(a0),a1 ; a1=object
 		moveq	#0,d0
 		move.b	(v_ani0_frame).w,d0
 		moveq	#7,d1						; max spikes frames
@@ -92,23 +99,30 @@ Hel_RotateSpikes:
 		set	.a,sub2_mapframe
 
 	rept 7
-		move.b	d0,.a(a0)					; set frame
+		move.b	d0,.a(a1)					; set frame
 		addq.b	#1,d0						; next frame
 		and.b	d1,d0						; max spikes frames
 		set	.a,.a + next_subspr
 	endr
 
 		; last spike
-		move.b	d0,.a(a0)					; set frame
+		move.b	d0,.a(a1)					; set frame
 
 		; collision move
 		move.b	(v_ani0_frame).w,d2			; spike frame
 		neg.b	d2							; change direction of movement
 		and.w	d1,d2						; max spikes
-		move.w	sub2_x_pos(a0),d0			; get spike pole spikes xpos
+		move.w	sub2_x_pos(a1),d0			; get spike pole spikes xpos
 		asl.w	#4,d2						; +16 pixels
 		add.w	d2,d0						; "
 		move.w	d0,obX(a0)					; set collision xpos
+
+;		lea		(v_col_response_list).w,a1
+;		cmpi.w	#$7E,(a1)		; Is list full?
+;		bhs.s	locret_7DA6		; If so, return
+;		addq.w	#2,(a1)			; Count this new entry
+;		adda.w	(a1),a1			; Offset into right area of list
+;		move.w	a0,(a1)			; Store RAM address in list
 
 locret_7DA6:
 		rts	
@@ -118,26 +132,18 @@ locret_7DA6:
 
 Hel_ChkDel:
 		out_of_range.s	Hel_Delete		; ProjectFM S3K Objects Manager
+	;	rts
 		move.w	#priority3,d0			; RetroKoH/Devon S3K+ Priority Manager
 		bra.w	DisplaySprite2			; Display sprites
 ; ===========================================================================
 
-Hel_Delete:	; Routine 6
+Hel_Delete:	; Routine 4
 		move.w	obRespawnNo(a0),d0
-		beq.w	DeleteObject
+		beq.w	.del
 		movea.w	d0,a2
 		bclr	#7,(a2)
+	.del:
+		movea.l	obHelChild(a0),a1 ; a1=object
+		bsr.w	DeleteChild
 		bra.w	DeleteObject
 ; ===========================================================================
-
-Hel_Display:	; Routine 8
-		bsr.w	Hel_RotateSpikes
-		tst.b	obColType(a0)
-		beq.w	DisplaySprite
-		lea		(v_col_response_list).w,a1
-		cmpi.w	#$7E,(a1)		; Is list full?
-		bhs.w	DisplaySprite	; If so, return
-		addq.w	#2,(a1)			; Count this new entry
-		adda.w	(a1),a1			; Offset into right area of list
-		move.w	a0,(a1)			; Store RAM address in list
-		bra.w	DisplaySprite
