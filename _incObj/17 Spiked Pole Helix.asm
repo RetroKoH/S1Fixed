@@ -4,17 +4,10 @@
 ; ---------------------------------------------------------------------------
 
 Helix:
-		btst	#6,obRender(a0)		; Is this object set to render sub sprites?
-		bne.s	.SubSprs			; If so, branch
 		moveq	#0,d0
-		move.b	obRoutine(a0),d0
+		move.b	mainspr_routine(a0),d0
 		move.w	Hel_Index(pc,d0.w),d1
 		jmp		Hel_Index(pc,d1.w)
-; ===========================================================================
-.SubSprs:
-	; child sprite objects only need to be drawn
-		move.w	#priority3,d0			; RetroKoH/Devon S3K+ Priority Manager
-		bra.w	DisplaySprite2			; Display sprites
 ; ===========================================================================
 Hel_Index:		offsetTable
 		offsetTableEntry.w Hel_Main
@@ -29,7 +22,7 @@ hel_frame = objoff_3E		; start frame (different for each spike)
 ; ===========================================================================
 
 Hel_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)
+		addq.b	#2,mainspr_routine(a0)
 		move.l	#Map_Hel,obMap(a0)
 		move.w	#make_art_tile(ArtTile_GHZ_Spike_Pole,2,0),obGfx(a0)
 		move.b	#128,obActWid(a0)
@@ -103,7 +96,8 @@ locret_7DA6:
 
 Hel_ChkDel:
 		offscreen.s	Hel_DelAll		; ProjectFM S3K Objects Manager
-		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix
+		move.w	#priority3,d0			; RetroKoH/Devon S3K+ Priority Manager
+		bra.w	DisplaySprite2			; Display sprites
 ; ===========================================================================
 
 Hel_DelAll:
