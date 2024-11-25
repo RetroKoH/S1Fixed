@@ -33,7 +33,9 @@ Hel_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$84,obColType(a0)			; make object harmful
-		move.w	obX(a0),obHelOrigX(a0)	; save xpos
+		move.w	obX(a0),obHelOrigX(a0)		; save xpos
+		andi.b	#7,obSubtype(a0)			; cap at 8 spikes
+		addi.w	#$40,obHelOrigX(a0)
 		
 ;Hel_MakeSubsprite:
 		bsr.w	FindFreeObj
@@ -45,47 +47,33 @@ Hel_Main:	; Routine 0
 		move.w	obGfx(a0),obGfx(a1)
 		move.b	obRender(a0),obRender(a1)
 		bset	#6,obRender(a1)				; set subsprites flag
-		move.b	#$40,mainspr_width(a1)		; base this on subtype later
+		move.b	#$40,mainspr_width(a1)
 
-		; create subsprites
-		moveq	#0,d0
-		move.b	#128,d0						; proper width in pixels
-		move.w	obX(a1),d1
-		sub.w	d0,d1						; move spikes back
-		moveq	#16,d2						; +16 pixels
-		
-		; load 8 spike pole spikes (Change to accomodate subtypes, like the bridge)
-	;	move.b	obSubtype(a0),d1
-	;	andi.b	#7,d1
-	;	addq.b	#1,d1
-	;	move.b	d1,mainspr_childsprites(a1)
-		move.b	#8,mainspr_childsprites(a1)
+		; load log spikes, # based on subtype (up to 8)
+		moveq	#0,d1
+		moveq	#0,d4
+		move.b	obSubtype(a0),d1
+		move.b	d1,d4						; loop iterator
+		addq.b	#1,d1						; subsprite count
+		move.b	d1,mainspr_childsprites(a1)
 		lea		sub2_x_pos(a1),a2			; starting address for subsprite data
+		move.w	obX(a1),d2
 		move.w	obY(a1),d3
 
-	; Perform a loop here once subtype is implemented
-	rept 7
-		move.w	d1,(a2)+					; set xpos
-		move.w	d3,(a2)						; set ypos
+.loop:
+		move.w	d2,(a2)+					; sub?_x_pos
+		move.w	d3,(a2)						; sub?_y_pos
 		addq.w	#4,a2						; skip frame
-		add.w	d2,d1						; +16 pixels
-	endr
-
-		; last spike
-		move.w	d1,(a2)+					; set xpos
-		move.w	d3,(a2)						; set ypos
+		addi.w	#$10,d2						; width of a spike, x_pos for next spike
+		dbf		d4,.loop					; repeat for d4 spikes
 
 .done:
 		move.l	a1,obHelChild(a0)			; pointer to subsprite object
+		
+	; Spiked Log Helix is finished
 
 Hel_Action:	; Routine 2
 		bsr.w	Hel_RotateSpikes
-		lea		(v_col_response_list).w,a1
-		cmpi.w	#$7E,(a1)					; Is list full?
-		bhs.s	Hel_ChkDel					; If so, return
-		addq.w	#2,(a1)						; Count this new entry
-		adda.w	(a1),a1						; Offset into right area of list
-		move.w	a0,(a1)						; Store RAM address in list
 		bra.w	Hel_ChkDel					; Clownacy DisplaySprite Fix
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -97,28 +85,41 @@ Hel_RotateSpikes:
 		move.b	(v_ani0_frame).w,d0
 		moveq	#7,d1						; max spikes frames
 
-		set	.a,sub2_mapframe
+		moveq	#0,d2
+		move.b	obSubtype(a0),d2			; get number of spikes
+		lea		sub2_mapframe(a1),a2		; address for subsprite frames	
 
-	rept 7
-		move.b	d0,.a(a1)					; set frame
+	.loop:
+		move.b	d0,(a2)						; set frame
 		addq.b	#1,d0						; next frame
 		and.b	d1,d0						; max spikes frames
-		set	.a,.a + next_subspr
-	endr
-
-		; last spike
-		move.b	d0,.a(a1)					; set frame
+		addq.w	#6,a2						; go to next frame address
+		dbf		d2,.loop					; repeat for d2 spikes
 
 		; collision move
-		move.b	(v_ani0_frame).w,d2			; spike frame
-		neg.b	d2							; change direction of movement
-		and.w	d1,d2						; max spikes
+		move.b	(v_ani0_frame).w,d3			; spike frame
+		neg.b	d3							; change direction of movement
+		and.w	d1,d3						; max spikes
+		move.b	d3,d4
 		move.w	sub2_x_pos(a1),d0			; get spike pole spikes xpos
-		asl.w	#4,d2						; +16 pixels
-		add.w	d2,d0						; "
+		asl.w	#4,d3						; +16 pixels
+		add.w	d3,d0						; "
 		move.w	d0,obX(a0)					; set collision xpos
 
-locret_7DA6:
+.framecheck:
+		move.b	obSubtype(a0),d2			; get number of spikes
+		cmp.b	d4,d2
+		bcs.s	.nocollision
+
+		; set collision IF spike frame is available
+		lea		(v_col_response_list).w,a1
+		cmpi.w	#$7E,(a1)					; Is list full?
+		bhs.s	Hel_ChkDel					; If so, return
+		addq.w	#2,(a1)						; Count this new entry
+		adda.w	(a1),a1						; Offset into right area of list
+		move.w	a0,(a1)						; Store RAM address in list
+
+.nocollision:
 		rts	
 ; End of function Hel_RotateSpikes
 

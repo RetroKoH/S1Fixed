@@ -22,7 +22,7 @@ namespace S1ObjectDefinitions.GHZ
 
 		public override ReadOnlyCollection<byte> Subtypes
 		{
-			get { return new ReadOnlyCollection<byte>(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 }); }
+			get { return new ReadOnlyCollection<byte>(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7 }); }
 		}
 
 		public override string Name
@@ -35,11 +35,11 @@ namespace S1ObjectDefinitions.GHZ
 			get { return false; }
 		}
 
-		public override byte DefaultSubtype { get { return 0x8; } }
+		public override byte DefaultSubtype { get { return 0x7; } }
 
 		public override string SubtypeName(byte subtype)
 		{
-			return Math.Min(0x8, (int)subtype) + " spikes";
+			return Math.Min(0x8, (int)subtype+1) + " spikes";
 		}
 
 		public override Sprite Image
@@ -55,13 +55,13 @@ namespace S1ObjectDefinitions.GHZ
 		public override Sprite GetSprite(ObjectEntry obj)
 		{
 			List<Sprite> sprs = new List<Sprite>();
-			int spikeoffset = 0x10 * Math.Min(0x8, (int)obj.SubType);
-			for (int i = 0; i < Math.Min(0x8, (int)obj.SubType); i++)
+			int spikeoffset = 0x00;
+			for (int i = 0; i < Math.Min(0x8, (int)obj.SubType+1); i++)
 			{
 				Sprite tmp = new Sprite(imgs[i & 7]);
-				tmp.Offset(-spikeoffset, 0);
+				tmp.Offset(spikeoffset, 0);
 				sprs.Add(tmp);
-				spikeoffset -= 0x10;
+				spikeoffset += 0x10;
 			}
 			return new Sprite(sprs.ToArray());
 		}
@@ -80,12 +80,12 @@ namespace S1ObjectDefinitions.GHZ
 
 		private static object GetSpikes(ObjectEntry obj)
 		{
-			return Math.Min(0x8, (int)obj.SubType);
+			return Math.Min(0x8, (int)obj.SubType+1);
 		}
 
 		private static void SetSpikes(ObjectEntry obj, object value)
 		{
-			obj.SubType = (byte)(Math.Max(1, (Math.Min(0x8, (int)value))));
+			obj.SubType = (byte)(Math.Max(0x0, (Math.Min(0x7, (int)value))));
 		}
 	}
 }
