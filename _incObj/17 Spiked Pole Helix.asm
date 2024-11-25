@@ -22,6 +22,7 @@ Hel_Index:		offsetTable
 		offsetTableEntry.w Hel_Delete
 
 obHelChild		= objoff_30	; pointer to the helix subsprite object
+obHelOrigX		= objoff_3A
 ; ===========================================================================
 
 Hel_Main:	; Routine 0
@@ -32,6 +33,7 @@ Hel_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$84,obColType(a0)			; make object harmful
+		move.w	obX(a0),obHelOrigX(a0)	; save xpos
 		
 ;Hel_MakeSubsprite:
 		bsr.w	FindFreeObj
@@ -123,7 +125,7 @@ locret_7DA6:
 ; ===========================================================================
 
 Hel_ChkDel:
-		offscreen.s	Hel_Delete	; ProjectFM S3K Objects Manager
+		offscreen.s	Hel_Delete,obHelOrigX(a0)	; ProjectFM S3K Objects Manager
 		rts
 ; ===========================================================================
 
