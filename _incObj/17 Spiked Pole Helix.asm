@@ -22,6 +22,7 @@ Hel_Index:		offsetTable
 		offsetTableEntry.w Hel_Delete
 
 obHelChild		= objoff_30	; pointer to the helix subsprite object
+obOffsetX		= objoff_38
 obHelOrigX		= objoff_3A
 ; ===========================================================================
 
@@ -37,7 +38,7 @@ Hel_Main:	; Routine 0
 		andi.b	#7,obSubtype(a0)			; cap at 8 spikes
 		addi.w	#$40,obHelOrigX(a0)
 		
-;Hel_MakeSubsprite:
+Hel_MakeSubsprite:
 		bsr.w	FindFreeObj
 		bne.w	.done
 		move.b	obID(a0),obID(a1)			; load obj17
@@ -68,6 +69,7 @@ Hel_Main:	; Routine 0
 		dbf		d4,.loop					; repeat for d4 spikes
 
 .done:
+		addi.w	#$40,obX(a1)
 		move.l	a1,obHelChild(a0)			; pointer to subsprite object
 		
 	; Spiked Log Helix is finished
