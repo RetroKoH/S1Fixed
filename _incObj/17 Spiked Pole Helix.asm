@@ -13,7 +13,6 @@ Helix:
 ; ===========================================================================
 .SubSprs:
 	; child sprite objects only need to be drawn
-;		bsr.w	Hel_RotateSpikes
 		move.w	#priority3,d0			; RetroKoH/Devon S3K+ Priority Manager
 		bra.w	DisplaySprite2			; Display sprites
 ; ===========================================================================
@@ -29,7 +28,7 @@ Hel_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Hel,obMap(a0)
 		move.w	#make_art_tile(ArtTile_GHZ_Spike_Pole,2,0),obGfx(a0)
-		move.b	#8,obActWid(a0)
+		move.b	#$80,obActWid(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$84,obColType(a0)			; make object harmful
@@ -44,7 +43,7 @@ Hel_Main:	; Routine 0
 		move.w	obGfx(a0),obGfx(a1)
 		move.b	obRender(a0),obRender(a1)
 		bset	#6,obRender(a1)				; set subsprites flag
-		move.b	#$80,mainspr_width(a1)		; base this on subtype later
+		move.b	#$40,mainspr_width(a1)		; base this on subtype later
 
 		; create subsprites
 		moveq	#0,d0
@@ -80,11 +79,11 @@ Hel_Main:	; Routine 0
 Hel_Action:	; Routine 2
 		bsr.w	Hel_RotateSpikes
 		lea		(v_col_response_list).w,a1
-		cmpi.w	#$7E,(a1)		; Is list full?
-		bhs.s	Hel_ChkDel		; If so, return
-		addq.w	#2,(a1)			; Count this new entry
-		adda.w	(a1),a1			; Offset into right area of list
-		move.w	a0,(a1)			; Store RAM address in list
+		cmpi.w	#$7E,(a1)					; Is list full?
+		bhs.s	Hel_ChkDel					; If so, return
+		addq.w	#2,(a1)						; Count this new entry
+		adda.w	(a1),a1						; Offset into right area of list
+		move.w	a0,(a1)						; Store RAM address in list
 		bra.w	Hel_ChkDel					; Clownacy DisplaySprite Fix
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -117,13 +116,6 @@ Hel_RotateSpikes:
 		add.w	d2,d0						; "
 		move.w	d0,obX(a0)					; set collision xpos
 
-;		lea		(v_col_response_list).w,a1
-;		cmpi.w	#$7E,(a1)		; Is list full?
-;		bhs.s	locret_7DA6		; If so, return
-;		addq.w	#2,(a1)			; Count this new entry
-;		adda.w	(a1),a1			; Offset into right area of list
-;		move.w	a0,(a1)			; Store RAM address in list
-
 locret_7DA6:
 		rts	
 ; End of function Hel_RotateSpikes
@@ -131,18 +123,11 @@ locret_7DA6:
 ; ===========================================================================
 
 Hel_ChkDel:
-		out_of_range.s	Hel_Delete		; ProjectFM S3K Objects Manager
-	;	rts
-		move.w	#priority3,d0			; RetroKoH/Devon S3K+ Priority Manager
-		bra.w	DisplaySprite2			; Display sprites
+		offscreen.s	Hel_Delete	; ProjectFM S3K Objects Manager
+		rts
 ; ===========================================================================
 
 Hel_Delete:	; Routine 4
-		move.w	obRespawnNo(a0),d0
-		beq.w	.del
-		movea.w	d0,a2
-		bclr	#7,(a2)
-	.del:
 		movea.l	obHelChild(a0),a1 ; a1=object
 		bsr.w	DeleteChild
 		bra.w	DeleteObject
