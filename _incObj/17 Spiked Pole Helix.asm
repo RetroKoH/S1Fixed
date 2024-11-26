@@ -120,8 +120,8 @@ Hel_RotateSpikes:
 
 .framecheck:
 		move.b	obSubtype(a0),d2			; get number of spikes
-		cmp.b	d4,d2
-		bcs.s	.nocollision
+		cmp.b	d4,d2						; is the spike log to short to display a "high frame" right now?
+		bcs.s	.nocollision				; if yes, branch and don't register any collision
 
 		; set collision IF spike frame is available
 		lea		(v_col_response_list).w,a1
