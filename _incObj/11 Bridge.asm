@@ -35,9 +35,8 @@ Bri_Main:	; Routine 0
 		move.w	obY(a0),d2
 		move.w	d2,objoff_3C(a0)
 		move.w	obX(a0),d3
-		lea		obSubtype(a0),a2
 		moveq	#0,d1
-		move.b	(a2),d1				; copy subtype (bridge length) to d1
+		move.b	obSubtype(a0),d1	; copy subtype (bridge length) to d1
 		move.w	d1,d0
 		lsr.w	#1,d0
 		lsl.w	#4,d0				; (d0 div 2) * 16
@@ -61,7 +60,7 @@ Bri_Main:	; Routine 0
 		add.w	d4,d0	; d0*3
 		move.w	sub2_x_pos(a1,d0.w),d0
 		subq.w	#8,d0
-		move.w	d0,obX(a1)		; center of second subsprite object
+		move.w	d0,obX(a1)			; center of second subsprite object
 
 .nomore:
 		bra.s	Bri_Action			; Bridge is finished

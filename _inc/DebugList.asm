@@ -84,7 +84,7 @@ standards:	macro
 	dbug	Map_Smash,		id_SmashWall,		2,		2,		make_art_tile(ArtTile_GHZ_Smashable_Wall,2,0)	; Smashable Wall (Right side)
 	dbug	Map_Ledge,		id_CollapseLedge,	0,		0,		make_art_tile(ArtTile_Level,2,0)				; Cliff facing left
 	dbug	Map_Ledge,		id_CollapseLedge,	1,		1,		make_art_tile(ArtTile_Level,2,0)				; Cliff facing right
-	dbug	Map_Hel,		id_Helix,			8,		1,		make_art_tile(ArtTile_GHZ_Spike_Pole,2,0)		; Spiked Pole Helix
+	dbug	Map_Hel,		id_Helix,			7,		1,		make_art_tile(ArtTile_GHZ_Spike_Pole,2,0)		; Spiked Pole Helix
 	; animals
 	; Giant Ball
 .GHZend:
