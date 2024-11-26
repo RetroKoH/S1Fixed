@@ -21,9 +21,14 @@ Hel_Index:		offsetTable
 		offsetTableEntry.w Hel_Action
 		offsetTableEntry.w Hel_Delete
 
-obHelChild		= objoff_30	; pointer to the helix subsprite object
-obOffsetX		= objoff_38
-obHelOrigX		= objoff_3A
+obHelChild		= objoff_30		; pointer to the helix subsprite object
+obOffsetX		= objoff_38		; x-offset amount to ensure proper rendering
+obHelOrigX		= objoff_3A		; origin x-position (obX+OffsetX)
+; ===========================================================================
+; Number of spikes determines our offset.
+; These are byte values, but we use words to avoid repeatedly clearing d0
+Hel_XOffsets:
+		dc.b	8, $10, $18, $20, $28, $30, $38, $40
 ; ===========================================================================
 
 Hel_Main:	; Routine 0
@@ -36,7 +41,11 @@ Hel_Main:	; Routine 0
 		move.b	#$84,obColType(a0)			; make object harmful
 		move.w	obX(a0),obHelOrigX(a0)		; save xpos
 		andi.b	#7,obSubtype(a0)			; cap at 8 spikes
-		addi.w	#$40,obHelOrigX(a0)
+		moveq	#0,d0
+		move.b	obSubtype(a0),d0
+		move.b	Hel_XOffsets(pc,d0.w),d0	; number of spikes determines the x-offset applied
+		move.w	d0,obOffsetX(a0)
+		addi.w	d0,obHelOrigX(a0)
 		
 Hel_MakeSubsprite:
 		bsr.w	FindFreeObj
@@ -69,7 +78,8 @@ Hel_MakeSubsprite:
 		dbf		d4,.loop					; repeat for d4 spikes
 
 .done:
-		addi.w	#$40,obX(a1)
+		move.w	obOffsetX(a0),d0
+		addi.w	d0,obX(a1)					; x-offset from above (still in d0)
 		move.l	a1,obHelChild(a0)			; pointer to subsprite object
 		
 	; Spiked Log Helix is finished
