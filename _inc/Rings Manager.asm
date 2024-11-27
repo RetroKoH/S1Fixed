@@ -341,7 +341,7 @@ loc_31343C:					  ; Clear positions table
 		moveq	#0,d0
 
 		move.w	(v_zone).w,d0
-		lsl.b	#6,d0
+		ror.b	#2,d0					; lsl.b	#6,d0 > Filter Optimized Shifting
 		lsr.w	#4,d0
 		lea		(RingPos_Index).l,a1
 		movea.l	(a1,d0.w),a1			; Table read optimization - RetroKoH
