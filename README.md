@@ -1,4 +1,8 @@
-# S1Fixed
+# S1Fixed (Sandbox Version)
+ Please refrain from using this version. This is for testing additions and changes, and
+ may not always operate as desired. Please use one of the other three branches available.
+ Changelog also might not be fully up-to-date in this version.
+
  A successor to ReadySonic (Bugfixes, Optimizations, Changes)  
  Base: Updated Sonic One Two-Eight disassembly for AS by Clownacy  
  Version: REV01. Revision options removed.  
