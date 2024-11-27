@@ -5258,14 +5258,19 @@ loc_8B48:
 		include	"_incObj/7C Ring Flash.asm"		; No longer used
 
 		include	"_anim/Rings.asm"
+dplcTiles := Art_BigRing		; MainMemory 128k Boundary Check for DPLCs
 		include "_maps/Giant Ring - DPLCs.asm"
+dplcTiles := 0					; 128k Boundary Check for DPLCs End
 
 		include	"_incObj/26 Monitor.asm"
 		include	"_incObj/2E Monitor Content Power-Up.asm"
 		include	"_incObj/26 Monitor (SolidSides subroutine).asm"
 		include	"_anim/Monitor.asm"
 
+dplcTiles := Art_TitleSonic		; MainMemory 128k Boundary Check for DPLCs
 		include	"_maps/Title Screen Sonic - DPLCs.asm"
+dplcTiles := 0					; 128k Boundary Check for DPLCs End
+
 		include	"_incObj/0E Title Screen Sonic.asm"
 		include	"_incObj/0F Press Start and TM.asm"
 
@@ -5436,11 +5441,13 @@ Obj_Index:
 		include	"_incObj/0D Signpost.asm" ; includes "GotThroughAct" subroutine
 		include	"_anim/Signpost.asm"
 
+dplcTiles := Art_Signpost		; MainMemory 128k Boundary Check for DPLCs
 	if UpdatedSignposts
 		include	"_maps/Signpost - Updated - DPLCs.asm"
 	else
 		include	"_maps/Signpost - DPLCs.asm"
 	endif
+dplcTiles := 0					; 128k Boundary Check for DPLCs End
 
 		include	"_incObj/4C & 4D Lava Geyser Maker.asm"
 		include	"_incObj/4E Wall of Lava.asm"
@@ -5521,7 +5528,11 @@ Obj_Index:
 
 	if (SpinDashEnabled|SkidDustEnabled)=1
 		include "_incObj/07 Effects.asm"	; Skid Dust and/or Spindash Dust
-		include "_maps/Effects - DPLCs.asm"
+
+dplcTiles := Art_Effects		; MainMemory 128k Boundary Check for DPLCs
+		include	"_maps/Effects - DPLCs.asm"
+dplcTiles := 0					; 128k Boundary Check for DPLCs End
+
 		include "_anim/Effects.asm"
 	endif
 
@@ -5749,7 +5760,10 @@ loc_12EA6:
 		include	"_incObj/Sonic Animate.asm"
 		include	"_anim/Sonic.asm"
 		include	"_incObj/Sonic LoadGfx.asm"
+
+dplcTiles := Art_Sonic			; MainMemory 128k Boundary Check for DPLCs
 		include	"_maps/Sonic - DPLCs.asm"
+dplcTiles := 0					; 128k Boundary Check for DPLCs End
 
 		include "_incObj/sub ApplySpeedSettings.asm"
 
@@ -5808,20 +5822,36 @@ ResumeMusic:
 		include	"_anim/Water Splash.asm"
 
 		include	"_anim/Shield and Invincibility.asm"
+dplcTiles := Art_Shield			; MainMemory 128k Boundary Check for DPLCs
+	; Ensure that this check works w/ both art files
 		include "_maps/Shield and Invincibility - DPLCs.asm"		; RetroKoH VRAM Overhaul
+dplcTiles := 0					; 128k Boundary Check for DPLCs End
 
 	if InstashieldEnabled
 			include "_maps/Shield - Insta.asm"
+dplcTiles := Art_Insta			; MainMemory 128k Boundary Check for DPLCs
 			include "_maps/Shield - Insta - DPLCs.asm"
+dplcTiles := 0					; 128k Boundary Check for DPLCs End
 	endif
 
 	if ShieldsMode
+
 			include "_maps/Shield - Flame.asm"
+dplcTiles := Art_Shield_F		; MainMemory 128k Boundary Check for DPLCs
 			include "_maps/Shield - Flame - DPLCs.asm"
+dplcTiles := 0					; 128k Boundary Check for DPLCs End
+
 			include "_maps/Shield - Bubble.asm"
+dplcTiles := Art_Shield_B		; MainMemory 128k Boundary Check for DPLCs
 			include "_maps/Shield - Bubble - DPLCs.asm"
+dplcTiles := 0					; 128k Boundary Check for DPLCs End
+
 			include "_maps/Shield - Lightning.asm"
+dplcTiles := Art_Shield_L		; MainMemory 128k Boundary Check for DPLCs
+	; Ensure that this check works w/ both art files
 			include "_maps/Shield - Lightning - DPLCs.asm"
+dplcTiles := 0					; 128k Boundary Check for DPLCs End
+
 	endif
 
 		include	"_incObj/4A Special Stage Entry (Unused).asm"
@@ -5834,7 +5864,9 @@ ResumeMusic:
 		include	"_incObj/sub FindWall.asm"
 		
 		include "_incObj/8F Goggles.asm"
+dplcTiles := Art_Goggles		; MainMemory 128k Boundary Check for DPLCs
 		include "_maps/Goggles - DPLCs.asm"
+dplcTiles := 0					; 128k Boundary Check for DPLCs End
 
 ; ---------------------------------------------------------------------------
 ; This subroutine takes 'raw' bitmap-like collision block data as input and
@@ -7456,8 +7488,9 @@ Art_Perfect_End:
 Art_TimeOver:	binclude	"artunc/Time Over.bin"				; time over (TI) -- RetroKoH VRAM Overhaul
 Art_TimeOver_End:	even
 
-	align $20000
 
+; We only need to add an 'align $20000' at any point where art that is used by DPLCs crosses a 128k boundary
+;	align $20000
 Art_TitleSonic:	binclude	"artunc/Title Screen Sonic.bin"		; Title Sonic -- RetroKoH VRAM Overhaul
 		even
 
