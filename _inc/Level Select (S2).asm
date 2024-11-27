@@ -259,6 +259,9 @@ LevSelControls_CheckLR:
         	beq.s   .rts
         	cmpi.w  #$5F,d0
       		beq.s   .rts
+		addi.w	#$80,d0
+		bra.w	PlaySound
+		addi.w	#$80,d0
 		bra.w	PlaySound
 		;lea	(debug_cheat).l,a0
 		;lea	(super_sonic_cheat).l,a2
@@ -411,10 +414,12 @@ LevelSelect_DrawIcon:
 		move.b	(a3),d0					; Get respective icon frame
 		lsl.w	#5,d0
 		lea		(a1,d0.w),a1
-		lea		(v_palette+$40).w,a2
+		lea		(v_palette+$40).w,a2	
+		move.l  #$C0400000,vdp_control_port-vdp_data_port(a6)	; fixing delay with palette updating when changing icons (Clownacy)
 		moveq	#7,d1
 
 	.loop:
+		move.l	(a1),(a6)	; Upload colours to the VDP (Clownacy)
 		move.l	(a1)+,(a2)+
 		dbf		d1,.loop
 		rts
