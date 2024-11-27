@@ -4411,14 +4411,7 @@ LoadTilesFromStart:
 		lea	(v_bgscreenposx).w,a3
 		lea	(v_lvllayout+$80).w,a4		; MJ: Load address of layout BG
 		move.w	#$6000,d2
-		tst.b	(v_zone).w
-		beq.w	Draw_GHz_Bg
-		cmpi.b	#id_MZ,(v_zone).w
-		beq.w	Draw_Mz_Bg
-		cmpi.w	#(id_SBZ<<8)+0,(v_zone).w
-		beq.w	Draw_SBz_Bg
-		cmpi.b	#id_EndZ,(v_zone).w
-		beq.w	Draw_GHz_Bg
+;	fallthrough
 ; End of function LoadTilesFromStart
 
 
@@ -4442,77 +4435,6 @@ DrawChunks:
 		dbf	d6,.loop
 		rts	
 ; End of function DrawChunks
-
-Draw_GHz_Bg:
-		moveq	#0,d4
-		moveq	#((224+16+16)/16)-1,d6
-locj_7224:			
-		movem.l	d4-d6,-(sp)
-		lea	(locj_724a).l,a0
-		move.w	(v_bgscreenposy).w,d0
-		add.w	d4,d0
-		andi.w	#$F0,d0
-		bsr.w	locj_72Ba
-		movem.l	(sp)+,d4-d6
-		addi.w	#16,d4
-		dbf	d6,locj_7224
-		rts
-locj_724a:
-		dc.b $00,$00,$00,$00,$06,$06,$06,$04,$04,$04,$00,$00,$00,$00,$00,$00
-;-------------------------------------------------------------------------------
-Draw_Mz_Bg:;locj_725a:
-		moveq	#-16,d4
-		moveq	#((224+16+16)/16)-1,d6
-locj_725E:			
-		movem.l	d4-d6,-(sp)
-		lea	(locj_6EF2+1).l,a0
-		move.w	(v_bgscreenposy).w,d0
-		subi.w	#$200,d0
-		add.w	d4,d0
-		andi.w	#$7F0,d0
-		bsr.w	locj_72Ba
-		movem.l	(sp)+,d4-d6
-		addi.w	#16,d4
-		dbf	d6,locj_725E
-		rts
-;-------------------------------------------------------------------------------
-Draw_SBz_Bg:;locj_7288:
-		moveq	#-16,d4
-		moveq	#((224+16+16)/16)-1,d6
-locj_728C:			
-		movem.l	d4-d6,-(sp)
-		lea	(locj_6DF4+1).l,a0
-		move.w	(v_bgscreenposy).w,d0
-		add.w	d4,d0
-		andi.w	#$1F0,d0
-		bsr.w	locj_72Ba
-		movem.l	(sp)+,d4-d6
-		addi.w	#16,d4
-		dbf	d6,locj_728C
-		rts
-;-------------------------------------------------------------------------------
-locj_72B2:
-		dc.w v_bgscreenposx, v_bgscreenposx, v_bg2screenposx, v_bg3screenposx
-locj_72Ba:
-		lsr.w	#4,d0
-		move.b	(a0,d0.w),d0
-		movea.w	locj_72B2(pc,d0.w),a3
-		beq.s	locj_72da
-		moveq	#-16,d5
-		movem.l	d4/d5,-(sp)
-		bsr.w	Calc_VRAM_Pos
-		movem.l	(sp)+,d4/d5
-		bsr.w	DrawBlocks_LR
-		bra.s	locj_72EE
-locj_72da:
-		moveq	#0,d5
-		movem.l	d4/d5,-(sp)
-		bsr.w	Calc_VRAM_Pos_2
-		movem.l	(sp)+,d4/d5
-		moveq	#(512/16)-1,d6
-		bra.w	DrawBlocks_LR_3
-locj_72EE:
-		rts
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to load level art -- Clownacy Level Art Loading
