@@ -426,13 +426,13 @@ loc_3F84:
 
 loc_3F9A:
 		clr.b	obInertia+1(a1)
-		move.b	#aniID_WaterSlide,obAnim(a1) ; use Sonic's "sliding" animation
-		move.b	#1,(f_slidemode).w	; set water slide flag
-		move.b	(v_vbla_byte).w,d0
-		andi.b	#$1F,d0
+		move.b	#aniID_WaterSlide,obAnim(a1)	; use Sonic's "sliding" animation
+		move.b	#1,(f_slidemode).w				; set water slide flag
+		moveq	#$1F,d0
+		and.b	(v_vbla_byte).w,d0				; reversed instructions to save cycles (Filter)
 		bne.s	locret_3FBE
 		move.w	#sfx_Waterfall,d0
-		jsr		(PlaySound_Special).w	; play water sound
+		jmp		(PlaySound_Special).w			; play water sound
 
 locret_3FBE:
 		rts	

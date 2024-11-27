@@ -9,7 +9,7 @@ LevelSizeLoad:
 		moveq	#0,d0
 		move.w	d0,(v_dle_routine).w		; Now word-length so we don't need to clear d0 elsewhere -- Filter Optimized DLE Manager
 		move.w	(v_zone).w,d0
-		lsl.b	#6,d0
+		ror.b	#2,d0						; lsl.b	#6,d0 > Filter Optimized Shifting
 		lsr.w	#4,d0
 		move.w	d0,d1
 		add.w	d0,d0
@@ -96,7 +96,7 @@ LevSz_ChkLamp:
 
 LevSz_StartLoc:
 		move.w	(v_zone).w,d0
-		lsl.b	#6,d0
+		ror.b	#2,d0							; lsl.b	#6,d0 > Filter Optimized Shifting
 		lsr.w	#4,d0
 		;lea		StartLocArray(pc,d0.w),a1	; MJ: load Sonic's start location address
 		lea		StartLocArray,a1

@@ -40,7 +40,7 @@ OPL_ClrList:
 	; SLZ Pylons Fix End
 		
 		move.w	(v_zone).w,d0
-		lsl.b	#6,d0
+		ror.b	#2,d0					; lsl.b	#6,d0 > Filter Optimized Shifting
 		lsr.w	#4,d0
 		lea		(ObjPos_Index).l,a0		; load the first pointer in the object layout list pointer index,
 		movea.l (a0,d0.w),a0			; Changed from adda.w to movea.l for new object layout pointers - RetroKoH
