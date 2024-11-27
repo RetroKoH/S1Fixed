@@ -300,6 +300,7 @@ object_size:			equ 1<<object_size_bits
 
 ; Devon Subsprite SSTs -- Subsprite properties set DO override some standard object SSTs.
 ; What is overridden really depends on the amount of sub sprites you have set to display.
+mainspr_routine:		equ $A	; added by RetroKoH
 mainspr_mapframe:		equ $B	; last byte of obX (2nd byte of obScreenY)
 mainspr_width:			equ $E
 mainspr_childsprites:	equ $F	; amount of child sprites

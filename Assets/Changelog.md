@@ -344,7 +344,7 @@
  
 ## Subsprites System
  Credit: Devon  
- Function: Allows one object to draw out multiple sprites. This paves the way for various optimizations.  
+ Function: Allows one object to draw out multiple sprites. (Obj11 Bridge, Obj17 Spiked Log Helix) 
  Date: 2024-06-21  
  
 ## Optimized Routine Handling
