@@ -14,8 +14,11 @@ Sonic_ChkAirRoll:
 		beq.s	.noAirRoll				; if not, branch
 		
 ; Air Roll
-		move.b	#aniID_Roll,obAnim(a0)	; enter rolling animation
 		bset	#staSpin,obStatus(a0)	; set spin status
+		move.b	#$E,obHeight(a0)
+		move.b	#7,obWidth(a0)
+		move.b	#aniID_Roll,obAnim(a0)	; enter rolling animation
+
 
 	if (S3KDoubleJump) | (AirRollIntoDropDash)
 		move.b	#2,obDoubleJumpFlag(a0)	; disable shield abilities and/or enable Drop Dash transition
