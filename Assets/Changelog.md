@@ -401,6 +401,11 @@
  Function: Gives the Special Stages a proper Debug Mode.  
  Date: 2024-10-17  
 
+## Optimized End-of-Level Procedure
+ Credit: RetroKoH
+ Function: Optimizes Prison Capsule Routine
+ Date: 2024-11-27
+
 ## Extended Sound Index
  (Temporarily Removed)
  Credit: Alex Field

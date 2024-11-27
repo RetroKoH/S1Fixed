@@ -78,6 +78,8 @@ Anml_EndVram:
 		dc.w make_art_tile(ArtTile_Ending_Pig,0,0)
 		dc.w make_art_tile(ArtTile_Ending_Chicken,0,0)
 		dc.w make_art_tile(ArtTile_Ending_Squirrel,0,0)
+
+anml_capsule	= objoff_3C		; address of prison capsule that spawned this animal (if applicable)
 ; ===========================================================================
 
 Anml_Main:	; Routine 0
@@ -160,7 +162,7 @@ loc_911C:
 ; Animals freed from Badnik enemies and Animal Prisons.
 Anml_Freed: ;loc_912A:	; Routine 2
 		tst.b	obRender(a0)
-		bpl.w	DeleteObject
+		bpl.w	AnimalDelete
 		bsr.w	ObjectFall_YOnly
 		tst.w	obVelY(a0)
 		bmi.w	DisplaySprite
@@ -198,9 +200,9 @@ loc_9184:	; Routine 04, 08, 0A, 0C, $10
 
 loc_91AE:
 		tst.b	obSubtype(a0)
-		bne.s	loc_9224
+		bne.w	loc_9224
 		tst.b	obRender(a0)
-		bpl.w	DeleteObject
+		bpl.w	AnimalDelete
 		bra.w	DisplaySprite
 ; ===========================================================================
 
@@ -232,8 +234,17 @@ loc_9212:
 		tst.b	obSubtype(a0)
 		bne.s	loc_9224
 		tst.b	obRender(a0)
-		bpl.w	DeleteObject
+		bpl.w	AnimalDelete
 		bra.w	DisplaySprite
+; ===========================================================================
+; New deletion routine made to optimize the End-of-Level waiting procedure (RetroKoH)
+
+AnimalDelete:
+		tst.w	anml_capsule(a0)	; did this spawn from a capsule?
+		beq.w	DeleteObject		; if not, simply despawn
+		movea.w	anml_capsule(a0),a2	; a2=capsule
+		subq.b	#1,pri_animalCt(a2)	; decrement capsule's animal count
+		bra.w	DeleteObject		; despawn
 ; ===========================================================================
 
 loc_9224:
@@ -243,13 +254,13 @@ loc_9224:
 		subi.w	#$180,d0
 		bpl.w	DisplaySprite
 		tst.b	obRender(a0)
-		bpl.w	DeleteObject
+		bpl.w	AnimalDelete
 		bra.w	DisplaySprite
 ; ===========================================================================
 
 loc_9240:	; Routine $12
 		tst.b	obRender(a0)
-		bpl.w	DeleteObject
+		bpl.w	AnimalDelete
 		subq.w	#1,objoff_36(a0)
 		bne.w	loc_925C
 		move.b	#2,obRoutine(a0)
