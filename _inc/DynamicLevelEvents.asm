@@ -15,7 +15,7 @@ DynamicLevelEvents:
 
 	; Filter Optimized DLE Manager
 		move.w	(v_zone).w,d0
-		ror.b	#2,d0 ; lsl.b	#6,d0 > Filter Optimized Shifting
+		ror.b	#2,d0		; lsl.b	#6,d0 > Filter Optimized Shifting
 		lsr.w	#5,d0
 	; Optimized DLE Manager End
 		move.w	DLE_Index(pc,d0.w),d0
