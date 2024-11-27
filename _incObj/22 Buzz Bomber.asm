@@ -30,28 +30,29 @@ Buzz_Main:	; Routine 0
 Buzz_Action:	; Routine 2
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
-		move.w	.index(pc,d0.w),d1
-		jsr		.index(pc,d1.w)
+		move.w	Buzz_ActIndex(pc,d0.w),d0
+		jsr		Buzz_ActIndex(pc,d0.w)
 		lea		Ani_Buzz(pc),a1
 		bsr.w	AnimateSprite
 		bra.w	RememberState
 ; ===========================================================================
-.index:		dc.w .move-.index
-		dc.w .chknearsonic-.index
+Buzz_ActIndex:		offsetTable
+		offsetTableEntry.w Buzz_Move
+		offsetTableEntry.w Buzz_ChkNearSonic
 ; ===========================================================================
 
-.move:
-		subq.w	#1,buzz_timedelay(a0) ; subtract 1 from time delay
-		bpl.s	.noflip		; if time remains, branch
-		btst	#1,buzz_buzzstatus(a0) ; is Buzz Bomber near Sonic?
-		bne.s	.fire		; if yes, branch
+Buzz_Move:
+		subq.b	#1,buzz_timedelay(a0)	; subtract 1 from time delay
+		bpl.s	.noflip					; if time remains, branch
+		btst	#1,buzz_buzzstatus(a0)	; is Buzz Bomber near Sonic?
+		bne.s	.fire					; if yes, branch
 		addq.b	#2,ob2ndRout(a0)
-		move.w	#127,buzz_timedelay(a0) ; set time delay to just over 2 seconds
-		move.w	#$400,obVelX(a0) ; move Buzz Bomber to the right
-		move.b	#1,obAnim(a0)	; use "flying" animation
+		move.b	#127,buzz_timedelay(a0)	; set time delay to just over 2 seconds
+		move.w	#$400,obVelX(a0)		; move Buzz Bomber to the right
+		move.b	#1,obAnim(a0)			; use "flying" animation
 		btst	#staFlipX,obStatus(a0)	; is Buzz Bomber facing	left?
-		bne.s	.noflip		; if not, branch
-		neg.w	obVelX(a0)	; move Buzz Bomber to the left
+		bne.s	.noflip					; if not, branch
+		neg.w	obVelX(a0)				; move Buzz Bomber to the left
 
 .noflip:
 		rts	
@@ -75,18 +76,18 @@ Buzz_Action:	; Routine 2
 .noflip2:
 		add.w	d0,obX(a1)
 		move.b	obStatus(a0),obStatus(a1)
-		move.w	#$E,buzz_timedelay(a1)
+		move.b	#$E,buzz_timedelay(a1)
 		move.l	a0,buzz_parent(a1)
 		move.b	#1,buzz_buzzstatus(a0)	; set to "already fired" to prevent refiring
-		move.w	#59,buzz_timedelay(a0)
+		move.b	#59,buzz_timedelay(a0)
 		move.b	#2,obAnim(a0)			; use "firing" animation
 
 .fail:
 		rts	
 ; ===========================================================================
 
-.chknearsonic:
-		subq.w	#1,buzz_timedelay(a0) ; subtract 1 from time delay
+Buzz_ChkNearSonic:
+		subq.b	#1,buzz_timedelay(a0) ; subtract 1 from time delay
 		bmi.s	.chgdirection
 		bsr.w	SpeedToPos_XOnly
 		tst.b	buzz_buzzstatus(a0)
@@ -102,14 +103,14 @@ Buzz_Action:	; Routine 2
 		tst.b	obRender(a0)
 		bpl.s	.keepgoing
 		move.b	#2,buzz_buzzstatus(a0) ; set Buzz Bomber to "near Sonic"
-		move.w	#29,buzz_timedelay(a0) ; set time delay to half a second
+		move.b	#29,buzz_timedelay(a0) ; set time delay to half a second
 		bra.s	.stop
 ; ===========================================================================
 
 .chgdirection:
 		clr.b	buzz_buzzstatus(a0) ; set Buzz Bomber to "normal"
 		bchg	#staFlipX,obStatus(a0)	; change direction
-		move.w	#59,buzz_timedelay(a0)
+		move.b	#59,buzz_timedelay(a0)
 
 .stop:
 		subq.b	#2,ob2ndRout(a0)

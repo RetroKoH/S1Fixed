@@ -5,8 +5,8 @@
 Missile:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
-		move.w	Msl_Index(pc,d0.w),d1
-		jmp		Msl_Index(pc,d1.w)
+		move.w	Msl_Index(pc,d0.w),d0
+		jmp		Msl_Index(pc,d0.w)
 ; ===========================================================================
 Msl_Index:	offsetTable
 		offsetTableEntry.w Msl_Main
@@ -19,7 +19,7 @@ msl_parent = objoff_3C
 ; ===========================================================================
 
 Msl_Main:	; Routine 0
-		subq.w	#1,objoff_32(a0)
+		subq.b	#1,buzz_timedelay(a0)
 		bpl.s	Msl_ChkCancel
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Missile,obMap(a0)
@@ -82,7 +82,7 @@ Msl_FromBuzz:	; Routine 4
 		move.b	#1,obAnim(a0)
 		bsr.w	SpeedToPos
 		move.w	(v_limitbtm2).w,d0
-		addi.w	#$E0,d0
+		addi.w	#224,d0
 		cmp.w	obY(a0),d0			; has object moved below the level boundary?
 		blo.w	DeleteObject		; if yes, branch
 		lea		Ani_Missile(pc),a1
