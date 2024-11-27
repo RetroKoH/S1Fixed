@@ -18,7 +18,8 @@ Pri_Index:	offsetTable
 		offsetTableEntry.w Pri_Animals
 		offsetTableEntry.w Pri_EndAct
 
-pri_origY = objoff_30		; original y-axis position
+pri_origY 		= objoff_30		; original y-axis position
+pri_animalCt	= objoff_3F		; number of animals spawned from the prison
 
 Pri_Var:
 		; 		routine,	width,	frame,	priority
@@ -171,11 +172,15 @@ Pri_Explosion:	; Routine 6, 8, $A
 		addq.w	#7,d4
 		move.w	d5,objoff_36(a1)
 		subq.w	#8,d5
+; RetroKoH End-of-Level optimization
+		move.w	a0,anml_capsule(a1)	; set capsule as parent
+		addq.b	#1,pri_animalCt(a0)		; increment animal counter
+; End-of-Level optimization end
 		dbf		d6,.loop				; repeat 7 more	times
 
 .fail:
 	; Clownacy DisplaySprite Fix (Alt method by RetroKoH)
-		offscreen.s	.delete2
+		offscreen.w	.delete2
 		jmp		(DisplaySprite).l	
 ; ===========================================================================
 
@@ -188,6 +193,10 @@ Pri_Animals:	; Routine $C
 		_move.b	#id_Animals,obID(a1)	; load animal object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
+; RetroKoH End-of-Level optimization
+		move.w	a0,anml_capsule(a1)	; set capsule as parent
+		addq.b	#1,pri_animalCt(a0)		; increment animal counter
+; End-of-Level optimization end
 		jsr		(RandomNumber).w
 		andi.w	#$1F,d0
 		subq.w	#6,d0
@@ -202,9 +211,9 @@ Pri_Animals:	; Routine $C
 .noanimal:
 		subq.w	#1,obTimeFrame(a0)
 		bne.s	.wait
-	if EndLevelFadeMusic
+	if EndLevelFadeMusic=1
 		move.b	#mus_Fade,d0
-		jsr		(PlaySound).w	; fade out music (RetroKoH)
+		jsr		PlaySound_Special	; fade out music (RetroKoH)
 	endif
 		addq.b	#2,obRoutine(a0)
 		move.w	#180,obTimeFrame(a0)
@@ -214,16 +223,10 @@ Pri_Animals:	; Routine $C
 ; ===========================================================================
 
 Pri_EndAct:	; Routine $E
-		moveq	#v_lvlobjcount,d0		; Bugfix -- Originally it only covered the first half of object RAM.
-		moveq	#id_Animals,d1
-		moveq	#object_size,d2
-		lea		(v_lvlobjspace).w,a1	; Bugfix -- Originally was v_objspace+object_size*1. Nonsensical starting point, since dynamic object allocations begin at v_lvlobjspace.
-
-.findanimal:
-		cmp.b	obID(a1),d1		; is object $28	(animal) loaded?
-		beq.s	.found			; if yes, branch
-		adda.w	d2,a1			; next object RAM
-		dbf		d0,.findanimal	; repeat $3E times
+; RetroKoH End-of-Level optimization
+		tst.b	pri_animalCt(a0)	; are any object $28 (animal) loaded?
+		bne.s	.found				; if yes, branch
+; End-of-Level optimization end
 
 		jsr		(GotThroughAct).l
 		jmp		(DeleteObject).l
