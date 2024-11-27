@@ -1,147 +1,149 @@
 ; ---------------------------------------------------------------------------
 ; Object 17 - helix of spikes on a pole	(GHZ)
+; Adapted an optimized version from S1: Sonic Clean Engine
 ; ---------------------------------------------------------------------------
 
 Helix:
+		btst	#6,obRender(a0)		; Is this object set to render sub sprites?
+		bne.s	.SubSprs			; If so, branch
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Hel_Index(pc,d0.w),d1
 		jmp		Hel_Index(pc,d1.w)
 ; ===========================================================================
+.SubSprs:
+	; child sprite objects only need to be drawn
+		move.w	#priority3,d0			; RetroKoH/Devon S3K+ Priority Manager
+		bra.w	DisplaySprite2			; Display sprites
+; ===========================================================================
 Hel_Index:		offsetTable
 		offsetTableEntry.w Hel_Main
 		offsetTableEntry.w Hel_Action
-		offsetTableEntry.w Hel_Action
 		offsetTableEntry.w Hel_Delete
-		offsetTableEntry.w Hel_Display
 
-hel_frame = objoff_3E		; start frame (different for each spike)
-
-;		$29-38 are used for child object addresses
+obHelChild		= objoff_30		; pointer to the helix subsprite object
+obOffsetX		= objoff_38		; x-offset amount to ensure proper rendering
+obHelOrigX		= objoff_3A		; origin x-position (obX+OffsetX)
+; ===========================================================================
+; Number of spikes determines our offset.
+; These are byte values, but we use words to avoid repeatedly clearing d0
+Hel_XOffsets:
+		dc.b	8, $10, $18, $20, $28, $30, $38, $40
 ; ===========================================================================
 
 Hel_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Hel,obMap(a0)
 		move.w	#make_art_tile(ArtTile_GHZ_Spike_Pole,2,0),obGfx(a0)
-		move.b	#7,obStatus(a0)				; bit 2 is also set... is this used?
+		move.b	#$80,obActWid(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#8,obActWid(a0)
-		move.w	obY(a0),d2
-		move.w	obX(a0),d3
-		_move.b	obID(a0),d4
-		lea		obSubtype(a0),a2		; move helix length to a2
-		moveq	#0,d1
-		move.b	(a2),d1					; move helix length to d1
-		clr.b	(a2)+					; clear subtype
-		move.w	d1,d0
-		lsr.w	#1,d0
-		lsl.w	#4,d0
-		sub.w	d0,d3					; d3 is x-axis position of leftmost spike
-		subq.b	#2,d1
-		bcs.w	Hel_Action				; skip to action if length is only 1 (The one piece has already been created!)
-		moveq	#0,d6
+		move.b	#$84,obColType(a0)			; make object harmful
+		move.w	obX(a0),obHelOrigX(a0)		; save xpos
+		andi.b	#7,obSubtype(a0)			; cap at 8 spikes
+		moveq	#0,d0
+		move.b	obSubtype(a0),d0
+		move.b	Hel_XOffsets(pc,d0.w),d0	; number of spikes determines the x-offset applied
+		move.w	d0,obOffsetX(a0)
+		addi.w	d0,obHelOrigX(a0)
+		
+Hel_MakeSubsprite:
+		bsr.w	FindFreeObj
+		bne.w	.done
+		move.b	obID(a0),obID(a1)			; load obj17
+		move.w	obX(a0),obX(a1)
+		move.w	obY(a0),obY(a1)
+		move.l	obMap(a0),obMap(a1)
+		move.w	obGfx(a0),obGfx(a1)
+		move.b	obRender(a0),obRender(a1)
+		bset	#6,obRender(a1)				; set subsprites flag
+		move.b	#$40,mainspr_width(a1)
 
-	; RetroKoH Mass Object Load Optimization -- Based on Spirituinsanum Guides
-	; Here we begin what's replacing SingleObjLoad, in order to avoid resetting its d0 every time an object is created.
-		lea		(v_lvlobjspace).w,a1
-		move.w	#v_lvlobjcount,d0
+		; load log spikes, # based on subtype (up to 8)
+		moveq	#0,d1
+		moveq	#0,d4
+		move.b	obSubtype(a0),d1
+		move.b	d1,d4						; loop iterator
+		addq.b	#1,d1						; subsprite count
+		move.b	d1,mainspr_childsprites(a1)
+		lea		sub2_x_pos(a1),a2			; starting address for subsprite data
+		move.w	obX(a1),d2
+		move.w	obY(a1),d3
 
 .loop:
-		tst.b	obID(a1)	; is object RAM	slot empty?
-		beq.s	.makehelix	; if so, create object piece
-		lea		object_size(a1),a1
-		dbf		d0,.loop	; loop through object RAM
-		bne.s	Hel_Action	; We're moving this line here.
+		move.w	d2,(a2)+					; sub?_x_pos
+		move.w	d3,(a2)						; sub?_y_pos
+		addq.w	#4,a2						; skip frame
+		addi.w	#$10,d2						; width of a spike, x_pos for next spike
+		dbf		d4,.loop					; repeat for d4 spikes
 
-.makehelix:
-		addq.b	#1,obSubtype(a0)
-		move.w	a1,d5
-		subi.w	#v_objspace&$FFFF,d5
-		lsr.w	#object_size_bits,d5
-		andi.w	#$7F,d5
-		move.b	d5,(a2)+				; copy child address to parent RAM
-		move.b	#8,obRoutine(a1)
-		_move.b	d4,obID(a1)
-		move.w	d2,obY(a1)
-		move.w	d3,obX(a1)
-		move.l	obMap(a0),obMap(a1)
-		move.w	#make_art_tile(ArtTile_GHZ_Spike_Pole,2,0),obGfx(a1)
-		move.b	#4,obRender(a1)
-		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#8,obActWid(a1)
-		move.b	d6,hel_frame(a1)
-		addq.b	#1,d6
-		andi.b	#7,d6
-		addi.w	#$10,d3
-		cmp.w	obX(a0),d3				; is this spike in the centre?
-		bne.s	.notCentre				; if not, branch
+.done:
+		move.w	obOffsetX(a0),d0
+		addi.w	d0,obX(a1)					; x-offset from above (still in d0)
+		move.l	a1,obHelChild(a0)			; pointer to subsprite object
+		
+	; Spiked Log Helix is finished
 
-		move.b	d6,hel_frame(a0)		; set parent spike frame
-		addq.b	#1,d6
-		andi.b	#7,d6
-		addi.w	#$10,d3					; skip to next spike
-		addq.b	#1,obSubtype(a0)
-
-.notCentre:
-		dbf		d1,.loop				; repeat d1 times (helix length)
-
-Hel_Action:	; Routine 2, 4
+Hel_Action:	; Routine 2
 		bsr.w	Hel_RotateSpikes
-		bra.w	Hel_ChkDel			; Clownacy DisplaySprite Fix
+		bra.w	Hel_ChkDel					; Clownacy DisplaySprite Fix
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
 Hel_RotateSpikes:
+		movea.l	obHelChild(a0),a1 ; a1=object
+		moveq	#0,d0
 		move.b	(v_ani0_frame).w,d0
-		clr.b	obColType(a0) ; make object harmless
-		add.b	hel_frame(a0),d0
-		andi.b	#7,d0
-		move.b	d0,obFrame(a0)	; change current frame
-		bne.s	locret_7DA6
-		move.b	#$84,obColType(a0) ; make object harmful
+		moveq	#7,d1						; max spikes frames
 
-locret_7DA6:
+		moveq	#0,d2
+		move.b	obSubtype(a0),d2			; get number of spikes
+		lea		sub2_mapframe(a1),a2		; address for subsprite frames	
+
+	.loop:
+		move.b	d0,(a2)						; set frame
+		addq.b	#1,d0						; next frame
+		and.b	d1,d0						; max spikes frames
+		addq.w	#6,a2						; go to next frame address
+		dbf		d2,.loop					; repeat for d2 spikes
+
+		; collision move
+		move.b	(v_ani0_frame).w,d3			; spike frame
+		neg.b	d3							; change direction of movement
+		and.w	d1,d3						; max spikes
+		move.b	d3,d4
+		move.w	sub2_x_pos(a1),d0			; get spike pole spikes xpos
+		asl.w	#4,d3						; +16 pixels
+		add.w	d3,d0						; "
+		move.w	d0,obX(a0)					; set collision xpos
+
+.framecheck:
+		move.b	obSubtype(a0),d2			; get number of spikes
+		cmp.b	d4,d2						; is the spike log to short to display a "high frame" right now?
+		bcs.s	.nocollision				; if yes, branch and don't register any collision
+
+		; set collision IF spike frame is available
+		lea		(v_col_response_list).w,a1
+		cmpi.w	#$7E,(a1)					; Is list full?
+		bhs.s	Hel_ChkDel					; If so, return
+		addq.w	#2,(a1)						; Count this new entry
+		adda.w	(a1),a1						; Offset into right area of list
+		move.w	a0,(a1)						; Store RAM address in list
+
+.nocollision:
 		rts	
 ; End of function Hel_RotateSpikes
 
 ; ===========================================================================
 
 Hel_ChkDel:
-		offscreen.s	Hel_DelAll		; ProjectFM S3K Objects Manager
-		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix
+		offscreen.s	Hel_Delete,obHelOrigX(a0)	; ProjectFM S3K Objects Manager
+		rts
 ; ===========================================================================
 
-Hel_DelAll:
-		moveq	#0,d2
-		lea		obSubtype(a0),a2 ; move helix length to a2
-		move.b	(a2)+,d2	; move helix length to d2
-		subq.b	#2,d2
-		bcs.w	DeleteObject
-
-Hel_DelLoop:
-		moveq	#0,d0
-		move.b	(a2)+,d0
-		lsl.w	#object_size_bits,d0
-		addi.l	#v_objspace&$FFFFFF,d0
-		movea.l	d0,a1		; get child address
-		bsr.w	DeleteChild	; delete object
-		dbf		d2,Hel_DelLoop ; repeat d2 times (helix length)
-
-Hel_Delete:	; Routine 6
+Hel_Delete:	; Routine 4
+		movea.l	obHelChild(a0),a1 ; a1=object
+		bsr.w	DeleteChild
 		bra.w	DeleteObject
 ; ===========================================================================
-
-Hel_Display:	; Routine 8
-		bsr.w	Hel_RotateSpikes
-		tst.b	obColType(a0)
-		beq.w	DisplaySprite
-		lea		(v_col_response_list).w,a1
-		cmpi.w	#$7E,(a1)		; Is list full?
-		bhs.w	DisplaySprite	; If so, return
-		addq.w	#2,(a1)			; Count this new entry
-		adda.w	(a1),a1			; Offset into right area of list
-		move.w	a0,(a1)			; Store RAM address in list
-		bra.w	DisplaySprite
