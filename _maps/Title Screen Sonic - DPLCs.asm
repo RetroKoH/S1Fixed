@@ -1,6 +1,3 @@
-; Uncomment this only if you need to ensure art is within a 128kB bank
-dplcTiles := Art_TitleSonic
-
 TSonDynPLC:	mappingsTable
 	mappingsTableEntry.w	TSonDPLC_0
 	mappingsTableEntry.w	TSonDPLC_1
@@ -99,6 +96,3 @@ TSonDPLC_7:	dplcHeader
 TSonDPLC_7_End
 
 	even
-
-; Uncomment this only if you need to ensure art is within a 128kB bank
-dplcTiles := 0
