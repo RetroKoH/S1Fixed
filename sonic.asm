@@ -2212,8 +2212,7 @@ Level_SkipTtlCard:
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformLayers
 		bset	#2,(v_fg_scroll_flags).w
-		bsr.w	LoadZoneTiles					; load level art -- Clownacy Level Art Loading
-		bsr.w	LevelDataLoad					; load block mappings and palettes
+		bsr.w	LevelDataLoad					; load level art -- Clownacy Level Art Loading + load block mappings and palettes
 		bsr.w	LoadTilesFromStart
 		jsr		(ConvertCollisionArray).l
 		bsr.w	ColIndexLoad
@@ -3368,8 +3367,7 @@ End_LoadData:
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformLayers
 		bset	#2,(v_fg_scroll_flags).w
-		bsr.w	LoadZoneTiles						; load level art -- Clownacy Level Art Loading
-		bsr.w	LevelDataLoad
+		bsr.w	LevelDataLoad						; load level art -- Clownacy Level Art Loading + load block mappings and palettes
 		bsr.w	LoadTilesFromStart
 		lea		(Col_GHZ_1).l,a0					; MJ: Set first collision for ending
 		lea		(v_collision1).w,a1
@@ -4516,82 +4514,60 @@ locj_72EE:
 		rts
 
 ; ---------------------------------------------------------------------------
-; Subroutine to load level art -- Clownacy Level Art Loading
-; ---------------------------------------------------------------------------
-
-LoadZoneTiles:
-		moveq	#0,d0				; Clear d0
-		move.b	(v_zone).w,d0		; d0 = zone ID
-
-	if NewSBZ3LevelArt
-		cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; is level SBZ3 (LZ4) ?
-		bne.s	.notSBZ3					; if not, branch
-		moveq	#SBZ3_Art,d0				; use SBZ3 art
-
-.notSBZ3:
-	endif
-
-		lsl.w	#4,d0				; Multiply by $10, converting the zone ID into an offset
-		lea		(LevelHeaders).l,a2	; a2 = LevelHeaders address
-		lea		(a2,d0.w),a2		; a2 = LevelHeaders + zone offset
-		move.l	(a2),d0				; d0 = 1st longword of data that a2 points to, (zone's first PLC ID and art address).
-	; The auto increment was pointless as a2 is overwritten later, and nothing reads from a2 before then
-		andi.l	#$FFFFFF,d0			; Filter out the high byte, which contains the first PLC ID, leaving the address of the zone's art in d0
-		movea.l	d0,a0				; a0 = address of the zone's art (SOURCE)
-		lea		($FF0000).l,a1		; a1 = StartOfRAM (in this context, an art buffer) (DESTINATION)
-		bsr.w	KosDec				; Decompress a0 to a1 (Switch to Comper compression??)
-
-	; Move a word of a1 to d3, note that a1 doesn't exactly contain the address of v_128x128/StartOfRAM anymore, after KosDec, a1 now contains v_128x128/StartOfRAM + the size of the file decompressed to it, d3 now contains the length of the file that was decompressed
-		move.w	a1,d3
-		move.w	d3,d7				; Move d3 to d7, for use in seperate calculations
-		andi.w	#$FFF,d3			; Remove the high nibble of the high byte of the length of decompressed file, this nibble is how many $1000 bytes the decompressed art is
-		lsr.w	#1,d3				; Half the value of 'length of decompressed file', d3 becomes the 'DMA transfer length'
-		rol.w	#4,d7				; Rotate (left) length of decompressed file by one nibble
-		andi.w	#$F,d7				; Only keep the low nibble of low byte (the same one filtered out of d3 above), this nibble is how many $1000 bytes the decompressed art is
- 
-.loop:
-		move.w	d7,d2					; Move d7 to d2, note that the ahead dbf removes 1 byte from d7 each time it loops, meaning that the following calculations will have different results each time
-		lsl.w	#7,d2
-		lsl.w	#5,d2					; Shift (left) d2 by $C, making it high nibble of the high byte, d2 is now the size of the decompressed file rounded down to the nearest $1000 bytes, d2 becomes the 'destination address'
-		move.l	#$FFFFFF,d1				; Fill d1 with $FF
-		move.w	d2,d1					; Move d2 to d1, overwriting the last word of $FF's with d2, this turns d1 into 'StartOfRAM'+'However many $1000 bytes the decompressed art is', d1 becomes the 'source address'
-		jsr		(QueueDMATransfer).w	; Use d1, d2, and d3 to locate the decompressed art and ready for transfer to VRAM
-		move.w	d7,-(sp)				; Store d7 in the Stack
-		move.b	#$C,(v_vbla_routine).w
-		bsr.w	WaitForVBla
-		bsr.w	RunPLC
-		move.w	(sp)+,d7				; Restore d7 from the Stack
-		move.w	#$800,d3				; Force the DMA transfer length to be $1000/2 (the first cycle is dynamic because the art's DMA'd backwards)
-		dbf		d7,.loop				; Loop for each $1000 bytes the decompressed art is
-
-		rts
-; End of function LoadZoneTiles
-
-; ---------------------------------------------------------------------------
-; Subroutine to load basic level data
+; Subroutine to load level art and data
+; Clownacy Level Art Loading + Filter's Optimized Level Data Loader
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
-
 LevelDataLoad:
-		moveq	#0,d0
-		move.b	(v_zone).w,d0
+		moveq	#0,d0						; Clear d0
+		move.b	(v_zone).w,d0				; d0 = zone ID
 
 	if NewSBZ3LevelArt
 		cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; is level SBZ3 (LZ4) ?
-		bne.s	.notSBZ3					; if not, branch
+		bne.s	.notSBZ3Art					; if not, branch
 		moveq	#SBZ3_Art,d0				; use SBZ3 art
 
-.notSBZ3:
+.notSBZ3Art:
 	endif
 
-		lsl.w	#4,d0
+		lsl.w	#4,d0						; Multiply by $10, converting the zone ID into an offset
 		lea		(LevelHeaders).l,a2			; a2 = LevelHeaders address
 		lea		(a2,d0.w),a2				; a2 = LevelHeaders + zone offset
-		move.l	a2,-(sp)
-		addq.l	#4,a2
+		move.l	a2,-(sp)					; store LevelHeader location for future use (Data Load)
 
+		move.l	(a2)+,d0					; d0 = 1st longword of data that a2 points to, (zone's first PLC ID and art address).
+	; The auto increment was pointless as a2 is overwritten later, and nothing reads from a2 before then
+		andi.l	#$FFFFFF,d0					; Filter out the high byte, which contains the first PLC ID, leaving the address of the zone's art in d0
+		movea.l	d0,a0						; a0 = address of the zone's art (SOURCE)
+		lea		(v_ram_start).l,a1			; a1 = StartOfRAM (in this context, an art buffer) (DESTINATION)
+		bsr.w	KosDec						; Decompress a0 to a1 (Switch to Comper compression??)
+
+	; Move a word of a1 to d3, note that a1 doesn't exactly contain the address of v_128x128/StartOfRAM anymore, after KosDec, a1 now contains v_128x128/StartOfRAM + the size of the file decompressed to it, d3 now contains the length of the file that was decompressed
+		move.w	a1,d3
+		move.w	d3,d7						; Move d3 to d7, for use in seperate calculations
+		andi.w	#$FFF,d3					; Remove the high nibble of the high byte of the length of decompressed file, this nibble is how many $1000 bytes the decompressed art is
+		lsr.w	#1,d3						; Half the value of 'length of decompressed file', d3 becomes the 'DMA transfer length'
+		rol.w	#4,d7						; Rotate (left) length of decompressed file by one nibble
+		andi.w	#$F,d7						; Only keep the low nibble of low byte (the same one filtered out of d3 above), this nibble is how many $1000 bytes the decompressed art is
+ 
+.loop:
+		move.w	d7,d2						; Move d7 to d2, note that the ahead dbf removes 1 byte from d7 each time it loops, meaning that the following calculations will have different results each time
+		moveq	#12,d0
+		lsl.w	d0,d2						; Shift (left) d2 by $C, making it high nibble of the high byte, d2 is now the size of the decompressed file rounded down to the nearest $1000 bytes, d2 becomes the 'destination address'
+		move.l	#$FFFFFF,d1					; Fill d1 with $FF
+		move.w	d2,d1						; Move d2 to d1, overwriting the last word of $FF's with d2, this turns d1 into 'StartOfRAM'+'However many $1000 bytes the decompressed art is', d1 becomes the 'source address'
+		jsr		(QueueDMATransfer).w		; Use d1, d2, and d3 to locate the decompressed art and ready for transfer to VRAM
+		move.w	d7,-(sp)					; Store d7 in the Stack
+		move.b	#$C,(v_vbla_routine).w
+		bsr.w	WaitForVBla
+		bsr.w	RunPLC
+		move.w	(sp)+,d7					; Restore d7 from the Stack
+		move.w	#$800,d3					; Force the DMA transfer length to be $1000/2 (the first cycle is dynamic because the art's DMA'd backwards)
+		dbf		d7,.loop					; Loop for each $1000 bytes the decompressed art is
+
+;LevelDataLoad:
 	if BlocksInROM=1	;Mercury Blocks In ROM
 		move.l	(a2)+,(v_16x16).l			; store the ROM address for the block mappings
 		andi.l	#$FFFFFF,(v_16x16).l
