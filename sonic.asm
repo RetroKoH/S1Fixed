@@ -4768,8 +4768,7 @@ locret_75F2:
 		rts	
 ; End of function ExitPlatform
 
-		include	"_incObj/15 Swinging Platforms (part 1).asm"
-;		include	"_incObj/15 Swinging Platforms S2.asm"
+		include	"_incObj/15 Swinging Platforms SCE.asm"
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	change Sonic's position with a platform
@@ -4858,8 +4857,6 @@ MvSonic2:
 locret_7B62:
 		rts	
 ; End of function MvSonicOnPtfm2
-
-		include	"_incObj/15 Swinging Platforms (part 2).asm"
 		
 		include	"_incObj/17 Spiked Pole Helix.asm"
 

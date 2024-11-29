@@ -7,8 +7,8 @@ Map_Swing_GHZ:	mappingsTable
 	mappingsTableEntry.w	.anchor
 
 .block:	spriteHeader
-	spritePiece	-$18, -8, 3, 2, 4, 0, 0, 0, 0
-	spritePiece	0, -8, 3, 2, 4, 0, 0, 0, 0
+	spritePiece	-$18, -8, 3, 2, 4, 0, 0, 2, 0
+	spritePiece	0, -8, 3, 2, 4, 0, 0, 2, 0
 .block_End
 
 .chain:	spriteHeader
@@ -16,7 +16,7 @@ Map_Swing_GHZ:	mappingsTable
 .chain_End
 
 .anchor:	spriteHeader
-	spritePiece	-8, -8, 2, 2, $A, 0, 0, 0, 0
+	spritePiece	-8, -8, 2, 2, $A, 0, 0, 2, 0
 .anchor_End
 
 	even
