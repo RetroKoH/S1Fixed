@@ -18,7 +18,7 @@ Map_Swing_SLZ:	mappingsTable
 .block_End
 
 .chain:	spriteHeader
-	spritePiece	-8, -8, 2, 2, 0, 0, 0, 2, 0
+	spritePiece	-8, -8, 2, 2, 0, 0, 0, 0, 0
 .chain_End
 
 .anchor:	spriteHeader

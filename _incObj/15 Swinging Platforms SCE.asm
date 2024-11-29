@@ -19,7 +19,8 @@ Swing_Index:	offsetTable
 		offsetTableEntry.w Swing_Main			;  0
 		offsetTableEntry.w Swing_NormalSwing	;  2 -- GHZ/MZ
 		offsetTableEntry.w Swing_Action2		;  4 -- GHZ/MZ (When stood upon; Called by Platform3)
-		offsetTableEntry.w Swing_SLZSwing		;  4 -- SLZ
+		offsetTableEntry.w Swing_SLZSwing		;  6 -- SLZ
+		offsetTableEntry.w Swing_Action2		;  8 -- GHZ/MZ (When stood upon; Called by Platform3)
 		offsetTableEntry.w Swing_SBZSwing		;  6
 
 swing_parent = objoff_30
@@ -49,7 +50,7 @@ Swing_Main:
 		bne.s	.notSLZ
 
 	; SLZ specific code
-		addq.b	#2,obRoutine(a0)				; initialize to SLZ routine (#4)
+		addq.b	#4,obRoutine(a0)				; initialize to SLZ routine (#6)
 		move.l	#Map_Swing_SLZ,d1
 		move.w	#make_art_tile(ArtTile_SLZ_Swing,2,0),d0
 		move.b	#$20,obActWid(a0)
@@ -80,7 +81,6 @@ Swing_Main:
 		move.l	obMap(a0),obMap(a1)
 		move.w	obGfx(a0),obGfx(a1)
 		move.b	obRender(a0),obRender(a1)
-		move.w	#priority4,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
 		bset	#6,obRender(a1)					; set multi-draw flag
 		move.w	a1,swing_parent(a0)				; save chain address
 		move.w	obX(a0),d2
@@ -98,14 +98,14 @@ Swing_Main:
 		move.b	d1,mainspr_childsprites(a1)		; number of chain links
 		subq.b	#1,d1							; loop iterator
 		blo.s	Swing_OffScreen
-		lea		sub2_x_pos(a1),a2
+		lea		subspr_data(a1),a2
 
 .loop:
 		move.w	d2,(a2)+						; sub?_x_pos
 		move.w	d3,(a2)+						; sub?_y_pos
-		move.w	#1,(a2)+						; sub2_mapframe
+		move.w	#1,(a2)+						; sub?_mapframe
 		dbf		d1,.loop
-		move.b	#2,sub2_mapframe(a1)
+		move.b	#2,mainspr_mapframe(a1)			; set frame for anchor
 
 		rts
 ; ===========================================================================
