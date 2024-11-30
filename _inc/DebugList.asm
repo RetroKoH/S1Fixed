@@ -73,7 +73,7 @@ standards:	macro
 	dbug	Map_GBall,		id_GiantBall,		0,		1,		make_art_tile(ArtTile_GHZ_Giant_Ball,2,0)		; Giant Ball
 	dbug	Map_PRock,		id_PurpleRock,		0,		0,		make_art_tile(ArtTile_GHZ_Purple_Rock,3,0)		; Purple Rock
 	dbug	Map_Bri,		id_Bridge,			8,		0,		make_art_tile(ArtTile_GHZ_Bridge,2,0)			; Bridge (Add subtypes and Debug Mappings)
-	dbug	Map_Swing_GHZ,	id_SwingingPlatform, 5,		0,		make_art_tile(ArtTile_GHZ_MZ_Swing,2,0)			; Swing (Add subtypes and Debug Mappings)
+	dbug	Map_Swing_GHZ,	id_SwingingPlatform, 5,		0,		make_art_tile(ArtTile_GHZ_MZ_Swing,0,0)			; Swing (Add subtypes and Debug Mappings)
 	dbug	Map_Plat_GHZ,	id_BasicPlatform,	0,		0,		make_art_tile(ArtTile_Level,2,0)				; Basic Floating Platform
 	dbug	Map_Plat_GHZ,	id_BasicPlatform,	3,		0,		make_art_tile(ArtTile_Level,2,0)				; Falling Platform
 	dbug	Map_Plat_GHZ,	id_BasicPlatform,	1,		0,		make_art_tile(ArtTile_Level,2,0)				; Horizontally Moving Platform
@@ -148,7 +148,7 @@ standards:	macro
 	dbug	Map_Brick,		id_MarbleBrick,		2,		0,		make_art_tile(ArtTile_Level,2,0)				; Purple Brick - Falling block
 	dbug	Map_MBlock,		id_MovingBlock,		0,		0,		make_art_tile(ArtTile_MZ_Block,2,0)				; Moving Block
 	dbug	Map_Fire,		id_LavaMaker,		0,		0,		make_art_tile(ArtTile_Fireball,0,0)				; Fireball Spawner - spawns upward, add downward one, and sideward one
-	dbug	Map_Swing_GHZ,	id_SwingingPlatform, 5,		0,		make_art_tile(ArtTile_GHZ_MZ_Swing,2,0)			; Swing (Add subtypes and Debug Mappings)
+	dbug	Map_Swing_GHZ,	id_SwingingPlatform, 5,		0,		make_art_tile(ArtTile_GHZ_MZ_Swing,0,0)			; Swing (Add subtypes and Debug Mappings)
 	dbug	Map_Smab,		id_SmashBlock,		0,		0,		make_art_tile(ArtTile_MZ_Block,2,0)				; Smashable Block
 	dbug	Map_MBlock,		id_MovingBlock,		2,		0,		make_art_tile(ArtTile_MZ_Block,2,0)				; Moving Block, activated by Sonic stepping on it.
 	dbug	Map_LWall,		id_LavaWall,		0,		0,		make_art_tile(ArtTile_MZ_Lava,3,0)				; Moving Lava Wall
@@ -238,7 +238,7 @@ standards:	macro
 	dbug	Map_Trap,		id_SpinPlatform,	3,		0,		make_art_tile(ArtTile_SBZ_Trap_Door,2,0)			; Flapping Trap Door
 	dbug	Map_Flame,		id_Flamethrower,	$64,	0,		make_art_tile(ArtTile_SBZ_Flamethrower,0,1)			; Flamethrower (Broken Pipe)
 	dbug	Map_Flame,		id_Flamethrower,	$64,	$B,		make_art_tile(ArtTile_SBZ_Flamethrower,0,1)			; Flamethrower (Proper)
-	dbug	Map_BBall,		id_SwingingPlatform, 7,		2,		make_art_tile(ArtTile_SYZ_Big_Spikeball,2,0)		; Swinging Spikeball
+	dbug	Map_BBall,		id_SwingingPlatform, 7,		2,		make_art_tile(ArtTile_SYZ_Big_Spikeball,0,0)		; Swinging Spikeball
 	dbug	Map_Saw,		id_Saws,			1,		0,		make_art_tile(ArtTile_SBZ_Saw,2,0)					; Sideways moving pizza cutter
 	dbug	Map_Saw,		id_Saws,			2,		0,		make_art_tile(ArtTile_SBZ_Saw,2,0)					; Vertical Pizza Cutter
 	dbug	Map_Saw,		id_Saws,			4,		2,		make_art_tile(ArtTile_SBZ_Saw,2,0)					; Ambushing Sawblade (Right to left)

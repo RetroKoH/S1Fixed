@@ -17,11 +17,9 @@ SwingingPlatform:
 ; ===========================================================================
 Swing_Index:	offsetTable
 		offsetTableEntry.w Swing_Main			;  0
-		offsetTableEntry.w Swing_NormalSwing	;  2 -- GHZ/MZ
-		offsetTableEntry.w Swing_Action2		;  4 -- GHZ/MZ (When stood upon; Called by Platform3)
-		offsetTableEntry.w Swing_SLZSwing		;  6 -- SLZ
-		offsetTableEntry.w Swing_Action2		;  8 -- GHZ/MZ (When stood upon; Called by Platform3)
-		offsetTableEntry.w Swing_SBZSwing		;  6
+		offsetTableEntry.w Swing_Platform		;  2 -- GHZ/MZ, and SLZ
+		offsetTableEntry.w Swing_Action2		;  4 -- GHZ/MZ/SLZ when stood upon
+		offsetTableEntry.w Swing_SBZ			;  $6 -- SBZ2 Spikeball
 
 swing_parent = objoff_30
 swing_origX = objoff_3A		; original x-axis position
@@ -35,6 +33,7 @@ swing_angle = $10			; precise rotation angle (2 bytes)
 	; routines.
 ; ===========================================================================
 Swing_Main:
+		addq.b	#2,obRoutine(a0)				; initialize to normal swinging platform routine
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$18,obActWid(a0)
@@ -43,14 +42,12 @@ Swing_Main:
 		move.w	obX(a0),swing_origX(a0)
 
 	; GHZ and MZ specific code
-		addq.b	#2,obRoutine(a0)				; initialize to normal routine (#2: GHZ/MZ)
 		move.l	#Map_Swing_GHZ,d1
 		move.w	#make_art_tile(ArtTile_GHZ_MZ_Swing,0,0),d0
 		cmpi.b	#id_SLZ,(v_zone).w				; check if level is SLZ
 		bne.s	.notSLZ
 
 	; SLZ specific code
-		addq.b	#4,obRoutine(a0)				; initialize to SLZ routine (#6)
 		move.l	#Map_Swing_SLZ,d1
 		move.w	#make_art_tile(ArtTile_SLZ_Swing,2,0),d0
 		move.b	#$20,obActWid(a0)
@@ -63,12 +60,11 @@ Swing_Main:
 		bne.s	.finishInit
 
 	; SBZ specific code
-		addq.b	#4,obRoutine(a0)				; initialize to SBZ routine (#4)
+		addq.b	#4,obRoutine(a0)				; initialize to spikeball routine (6)
 		move.l	#Map_BBall,d1
 		move.w	#make_art_tile(ArtTile_SYZ_Big_Spikeball,0,0),d0
 		move.b	#$18,obHeight(a0)
 		move.b	#$86,obColType(a0)
-		move.b	#$C,obRoutine(a0)				; goto Swing_Action next
 
 .finishInit:
 		move.w	d0,obGfx(a0)
@@ -110,9 +106,7 @@ Swing_Main:
 		rts
 ; ===========================================================================
 
-Swing_NormalSwing:
-Swing_SLZSwing:		; Should be the same as GHZ, but have harmful collision as well.
-Swing_SBZSwing:		; Only harmful collision
+Swing_Platform:	; Routine 2
 		move.w	obX(a0),-(sp)
 		bsr.w	Swing_Move
 		moveq	#0,d1
@@ -121,6 +115,8 @@ Swing_SBZSwing:		; Only harmful collision
 		add.b	obHeight(a0),d3
 		move.w	(sp)+,d4
 		bsr.w	PlatformObject
+		tst.b	obColType(a0)
+		bne.s	Swing_SpikeChkDel
 
 Swing_ChkDel:
 		moveq	#-$80,d0						; round down to nearest $80
@@ -141,6 +137,16 @@ Swing_OffScreen:
 		jmp		(DeleteObject).l
 ; ===========================================================================
 
+Swing_SBZ:	; Routine 6
+		bsr.s	Swing_Move
+
+Swing_SpikeChkDel:
+		moveq	#-$80,d0					; round down to nearest $80
+		and.w	swing_origX(a0),d0			; get object position
+		offscreen.s	Swing_OffScreen
+		bra.w	DisplayAndCollision
+; ===========================================================================
+
 Swing_Action2:	; Routine 4
 		moveq	#0,d1
 		move.b	obActWid(a0),d1
@@ -154,6 +160,7 @@ Swing_Action2:	; Routine 4
 		bsr.w	MvSonicOnPtfm
 		bra.w	Swing_ChkDel		; Clownacy DisplaySprite Fix
 ; ===========================================================================
+
 
 ; =============== S U B R O U T I N E =======================================
 
