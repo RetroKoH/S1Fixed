@@ -4,16 +4,16 @@
 ; Adapted from Sonic Clean Engine
 ; ----------------------------------------------------------------------------
 SwingingPlatform:
-	btst	#6,obRender(a0)
-	bne.w	.subSpr
-	moveq	#0,d0
-	move.b	obRoutine(a0),d0
-	move.w	Swing_Index(pc,d0.w),d0
-	jmp		Swing_Index(pc,d0.w)
+		btst	#6,obRender(a0)
+		bne.w	.subSpr
+		moveq	#0,d0
+		move.b	obRoutine(a0),d0
+		move.w	Swing_Index(pc,d0.w),d0
+		jmp		Swing_Index(pc,d0.w)
 ; ---------------------------------------------------------------------------
 .subSpr
-	move.w	#priority4,d0	; 4 or 5?
-	bra.w	DisplaySprite2
+		move.w	#priority4,d0	; 4 or 5?
+		bra.w	DisplaySprite2
 ; ===========================================================================
 Swing_Index:	offsetTable
 		offsetTableEntry.w Swing_Main			;  0
@@ -21,7 +21,9 @@ Swing_Index:	offsetTable
 		offsetTableEntry.w Swing_Action2		;  4 -- GHZ/MZ/SLZ when stood upon
 		offsetTableEntry.w Swing_SBZ			;  $6 -- SBZ2 Spikeball
 
-swing_parent = objoff_30
+swing_chain = objoff_30	; address of chain object
+swing_anchor = objoff_32	; address of chain anchor
+swing_center = objoff_34	; index of central subsprite of chain
 swing_origX = objoff_3A		; original x-axis position
 swing_origY = objoff_38		; original y-axis position
 
@@ -78,7 +80,7 @@ Swing_Main:
 		move.w	obGfx(a0),obGfx(a1)
 		move.b	obRender(a0),obRender(a1)
 		bset	#6,obRender(a1)					; set multi-draw flag
-		move.w	a1,swing_parent(a0)				; save chain address
+		move.w	a1,swing_chain(a0)				; save chain address
 		move.w	obX(a0),d2
 		move.w	d2,obX(a1)						; store x, but retain for later use
 		move.w	obY(a0),d3
@@ -93,7 +95,11 @@ Swing_Main:
 		move.b	d0,mainspr_height(a1)		
 		move.b	d1,mainspr_childsprites(a1)		; number of chain links
 		subq.b	#1,d1							; loop iterator
-		blo.s	Swing_OffScreen
+		blo.w	Swing_OffScreen
+		
+		move.l	d1,d4							; copy the iterator
+		lsr.b	#1,d4							; divide by 2
+		move.b	d4,swing_center(a0)
 		lea		subspr_data(a1),a2
 
 .loop:
@@ -101,6 +107,18 @@ Swing_Main:
 		move.w	d3,(a2)+						; sub?_y_pos
 		move.w	#1,(a2)+						; sub?_mapframe
 		dbf		d1,.loop
+
+		bsr.w	FindFreeObj						; Optimize this step
+		bne.w	Swing_OffScreen
+		move.b	obID(a0),obID(a1)				; load obj15
+		move.l	obMap(a0),obMap(a1)
+		move.w	obGfx(a0),obGfx(a1)
+		move.b	obRender(a0),obRender(a1)
+		move.w	obX(a0),obX(a1)
+		move.w	obY(a0),obY(a1)
+		bset	#6,obRender(a1)					; set multi-draw flag (we aren't drawing subsprites,
+											; but we won't need to run extra object code with this set.
+		move.w	a1,swing_anchor(a0)				; save anchor address
 		move.b	#2,mainspr_mapframe(a1)			; set frame for anchor
 
 		rts
@@ -132,7 +150,7 @@ Swing_OffScreen:
 		bclr	#7,(a2)
 
 .delete
-		movea.w	swing_parent(a0),a1
+		movea.w	swing_chain(a0),a1
 		bsr.w	DeleteChild
 		jmp		(DeleteObject).l
 ; ===========================================================================
@@ -181,7 +199,7 @@ Swing_Move:
 		jsr		(CalcSine).w
 		move.w	swing_origY(a0),d2
 		move.w	swing_origX(a0),d3
-		movea.w	swing_parent(a0),a1				; load chain address
+		movea.w	swing_chain(a0),a1				; load chain address
 		moveq	#0,d6
 		move.b	mainspr_childsprites(a1),d6
 		subq.b	#1,d6
@@ -204,6 +222,13 @@ Swing_Move:
 		add.w	d3,d5
 		move.w	d5,(a2)+						; x_pos
 		move.w	d4,(a2)+						; y_pos
+
+		cmp.b	swing_center(a0),d6
+		bne.s	.notcenter
+		move.w	d5,obX(a1)
+		move.w	d4,obY(a1)
+
+.notcenter:
 		movem.l	(sp)+,d4-d5
 		add.l	d0,d4
 		add.l	d1,d5

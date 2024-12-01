@@ -4768,7 +4768,7 @@ locret_75F2:
 		rts	
 ; End of function ExitPlatform
 
-		include	"_incObj/15 Swinging Platforms SCE.asm"
+		include	"_incObj/15 Swinging Platforms.asm"
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	change Sonic's position with a platform
