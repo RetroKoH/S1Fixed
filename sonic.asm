@@ -4595,10 +4595,10 @@ LevelLayoutLoad:
 		bra.w	KosDec				; MJ: decompress layout
 ; End of function LevelLayoutLoad
 
-		include	"_inc/DynamicLevelEvents.asm"
-		
 		include	"_incObj/sub AnimateSprite.asm"		; Moved here to make every jmp use ().w address mode
 
+		include	"_inc/DynamicLevelEvents.asm"
+		
 		include	"_incObj/11 Bridge.asm"
 
 ; ---------------------------------------------------------------------------
