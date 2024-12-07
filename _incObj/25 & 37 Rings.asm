@@ -144,7 +144,7 @@ RLoss_Count:	; Routine 0
 		subq.w	#1,d5					; decrease the counter the first time, as we are creating the first ring now.
 
 	; Spirituinsanum Mass Object Load Optimization
-	; Create the first instance, then loop create the others afterward.
+	; Create the first instance, then loop to create the others afterward.
 		move.b	#id_RingLoss,obID(a1) 	; load bouncing ring object
 		addq.b	#2,obRoutine(a1)
 		move.b	#8,obHeight(a1)
@@ -161,7 +161,7 @@ RLoss_Count:	; Routine 0
 		move.w  (a3)+,obVelY(a1)	; move the data contained in the array to the y velocity and increment the address in a3
 		subq	#1,d5				; decrement for the first ring created
 		bmi.s	.resetcounter		; if only one ring is needed, branch and skip EVERYTHING below altogether
-		; Here we begin what's replacing SingleObjLoad, in order to avoid resetting its d0 every time an object is created.
+		; Here we begin what's replacing FindFreeObj, in order to avoid resetting its d0 every time an object is created.
 		lea		(v_lvlobjspace).w,a1
 		move.w	#v_lvlobjcount,d0
 

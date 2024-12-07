@@ -1,6 +1,5 @@
 ; ---------------------------------------------------------------------------
 ; Object 63 - platforms	on a conveyor belt (LZ)
-; Removed the wheels. Those are now animated art that is dynamically loaded in
 ; ---------------------------------------------------------------------------
 
 LabyrinthConvey:
@@ -8,23 +7,23 @@ LabyrinthConvey:
 		move.b	obRoutine(a0),d0
 		move.w	LCon_Index(pc,d0.w),d1
 		jsr		LCon_Index(pc,d1.w)
-		offscreen.s	loc_1236A,objoff_30(a0)	; PFM S3K OBJ
+		offscreen.s	loc_1236A,lcon_origx(a0)	; PFM S3K OBJ
 
 LCon_Display:
 		bra.w	DisplaySprite
 ; ===========================================================================
 
 loc_1236A:
-		cmpi.b	#2,(v_act).w
-		bne.s	loc_12378
+		cmpi.b	#2,(v_act).w	; is this LZ Act 3?
+		bne.s	loc_12378		; if not, branch
 		cmpi.w	#-$80,d0
 		bhs.s	LCon_Display
 
 loc_12378:
-		move.b	objoff_2F(a0),d0
+		move.b	lcon_spawnertype(a0),d0
 		bpl.w	DeleteObject
 		andi.w	#$7F,d0
-		lea		(v_obj63).w,a2
+		lea		(v_conveyactive).w,a2
 		bclr	#0,(a2,d0.w)
 		bra.w	DeleteObject
 ; ===========================================================================
@@ -34,9 +33,13 @@ LCon_Index:	offsetTable
 		offsetTableEntry.w loc_124C2
 		offsetTableEntry.w LCon_Wheel
 
+lcon_spawnertype = objoff_2F	; saved subtype
+lcon_origx = objoff_30			; original x-position (2 bytes)
 lcon_targetx = objoff_34		; target x-position to move platform towards (2 bytes)
 lcon_targety = objoff_36		; target y-position to move platform towards (2 bytes)
-lcon_coords = objoff_38			; total number of coord pairs in this set (in bytes) (1 byte)
+lcon_origy = objoff_38			; original y-position (2 bytes)
+lcon_flag = objoff_3A			; set to 4 or -4
+lcon_flag2 = objoff_3B			; used to check if platform direction has already been reversed if the button is hit.
 lcon_dataaddr = objoff_3C		; address where platform's data is located (4 bytes)
 ; ===========================================================================
 
@@ -71,31 +74,31 @@ LCon_Platform:
 		andi.w	#$1E,d0						; cap d0 to $1E (no odd values) -- Only 0-$A is used
 		lea		LCon_Data(pc),a2
 		adda.w	(a2,d0.w),a2				; load correct data based on the platform subtype
-		move.w	(a2)+,objoff_38(a0)			; total number of coord pairs in this set in bytes (2 bytes) -- byte count stored in $39(a0). $38(a0) is cleared.
-		move.w	(a2)+,objoff_30(a0)
+		move.w	(a2)+,lcon_origy(a0)
+		move.w	(a2)+,lcon_origx(a0)
 		move.l	a2,lcon_dataaddr(a0)		; address of this data set (4 bytes)
 		andi.w	#$F,d1						; get lowest nybble of the platform subtype
 		lsl.w	#2,d1						; multiply by 4
-		move.b	d1,objoff_38(a0)			; store this value in $38(a0)
-		move.b	#4,objoff_3A(a0)			; $3A(a0) is intialized to #4
+		move.b	d1,lcon_origy(a0)			; store this value in $38(a0)
+		move.b	#4,lcon_flag(a0)			; $3A(a0) is intialized to #4
 		tst.b	(f_conveyrev).w				; have conveyors been reversed?
 		beq.s	._1244C						; if not, branch
-		move.b	#1,objoff_3B(a0)			; set platform's local reverse flag
-		neg.b	objoff_3A(a0)				; negate this value to -4
+		move.b	#1,lcon_flag2(a0)			; set platform's local reverse flag
+		neg.b	lcon_flag(a0)				; negate this value to -4
 		moveq	#0,d1
-		move.b	objoff_38(a0),d1
-		add.b	objoff_3A(a0),d1
-		cmp.b	objoff_39(a0),d1
+		move.b	lcon_origy(a0),d1
+		add.b	lcon_flag(a0),d1
+		cmp.b	lcon_origy+1(a0),d1
 		blo.s	._12448
 		move.b	d1,d0
 		moveq	#0,d1
 		tst.b	d0
 		bpl.s	._12448
-		move.b	objoff_39(a0),d1
+		move.b	lcon_origy+1(a0),d1
 		subq.b	#4,d1
 
 ._12448:
-		move.b	d1,objoff_38(a0)
+		move.b	d1,lcon_origy(a0)
 
 ._1244C:
 		move.w	(a2,d1.w),lcon_targetx(a0)	; set target x-position
@@ -105,23 +108,23 @@ LCon_Platform:
 ; ===========================================================================
 
 LCon_Spawner:
-		move.b	d0,objoff_2F(a0)		; move spawner subtype to $2F(a0)
-		andi.w	#$7F,d0					; clear upper-most bit of subtype to isolate platform group ID
-		lea		(v_obj63).w,a2
-		bset	#0,(a2,d0.w)
-		bne.s	.delete
-		add.w	d0,d0					; multiply platform group ID by 2 (use for word AND longword pointers)
-		add.w	d0,d0					; multiply platform group ID by 4 (use only for longword pointers)
-		andi.w	#$1E,d0					; capped at $10 groups of platforms (0-$F)
+		move.b	d0,lcon_spawnertype(a0)		; move spawner subtype to $2F(a0)
+		andi.w	#$7F,d0						; clear upper-most bit of subtype to isolate platform group ID
+		lea		(v_conveyactive).w,a2
+		bset	#0,(a2,d0.w)				; set this group's respective bit
+		bne.s	.delete						; if it was already set, delete this spawner object, as it's not needed.
+		add.w	d0,d0						; multiply platform group ID by 2 (use for word AND longword pointers)
+		add.w	d0,d0						; multiply platform group ID by 4 (use only for longword pointers)
+		andi.w	#$1E,d0						; capped at $10 groups of platforms (0-$F)
 
 	; RetroKoH Object Loading Optimization
 		lea		(ObjPosLZPlatform_Index).l,a2	; Next, we load the first pointer in the object layout list pointer index,
 		movea.l (a2,d0.w),a2					; Changed from adda.w to movea.l for longword object layout pointers
-;		adda.w	(a2,d0.w),a2			; a2 = positioning data for this platform group (use only for word-length pointers)
+;		adda.w	(a2,d0.w),a2				; a2 = positioning data for this platform group (use only for word-length pointers)
 
-		move.w	(a2)+,d1				; d1 = number of platforms minus 1
+		move.w	(a2)+,d1					; d1 = number of platforms minus 1
 		movea.l	a0,a1
-		bra.s	LCon_MakePtfms
+		bra.s	.firstPlatform
 
 		; Avoid returning to LabyrinthConvey to prevent a
 		; display-and-delete bug.
@@ -130,20 +133,38 @@ LCon_Spawner:
 		bra.w	DeleteObject
 ; ===========================================================================
 
-LCon_Loop:
-		bsr.w	FindFreeObj
-		bne.s	loc_124AA
-
-LCon_MakePtfms:
+	; RetroKoH Mass Object Load Optimization (Based on SpirituInsanum's Ring Loss Optimization)
+	; Create the first instance, then loop to create the others afterward.
+.firstPlatform:
 		_move.b	#id_LabyrinthConvey,obID(a1)
 		move.w	(a2)+,obX(a1)			; set x-position
 		move.w	(a2)+,obY(a1)			; set y-position
 		move.w	(a2)+,d0
 		move.b	d0,obSubtype(a1)		; set subtype, discarding upper byte
+		subq	#1,d1					; decrement for the first platform created
+		bmi.s	.endloop				; if, somehow, only one platform is needed, skip
 
-loc_124AA:
-		dbf		d1,LCon_Loop
+		; Here we begin what's replacing FindFreeObj, in order to avoid resetting its d0 every time an object is created.
+		lea		(v_lvlobjspace).w,a1
+		move.w	#v_lvlobjcount,d2
 
+.loop:
+		; REMOVE FindFreeObj. It's the routine that causes such slowdown
+		tst.b	obID(a1)				; is object RAM	slot empty?
+		beq.s	.makePtfms				; Let's correct the branches. Here we can also skip the bne that was originally after bsr.w FindFreeObj because we already know there's a free object slot in memory.
+		lea		object_size(a1),a1
+		dbf		d2,.loop				; Branch correction again.
+		bne.s	.endloop
+
+.makePtfms:
+		_move.b	#id_LabyrinthConvey,obID(a1)
+		move.w	(a2)+,obX(a1)			; set x-position
+		move.w	(a2)+,obY(a1)			; set y-position
+		move.w	(a2)+,d0
+		move.b	d0,obSubtype(a1)		; set subtype, discarding upper byte
+		dbf		d1,.loop				; repeat for number of platforms
+
+.endloop:
 		addq.l	#4,sp
 		rts	
 ; ===========================================================================
@@ -171,11 +192,11 @@ loc_124C2:	; Routine 4
 LCon_MovePlatforms:
 		tst.b	(f_switch+$E).w			; has switch $E been pressed?
 		beq.s	.noreverse				; if not, branch
-		tst.b	objoff_3B(a0)			; has this platform's movement already been reversed?
+		tst.b	lcon_flag2(a0)			; has this platform's movement already been reversed?
 		bne.s	.noreverse				; if yes, branch
-		move.b	#1,objoff_3B(a0)		; reverse movement of this platform
+		move.b	#1,lcon_flag2(a0)		; reverse movement of this platform
 		move.b	#1,(f_conveyrev).w		; reverse conveyor belts
-		neg.b	objoff_3A(a0)			; negate this value to -4
+		neg.b	lcon_flag(a0)			; negate this value to -4
 		bra.s	.resetplatforms
 ; ===========================================================================
 
@@ -189,19 +210,19 @@ LCon_MovePlatforms:
 
 .resetplatforms:
 		moveq	#0,d1
-		move.b	objoff_38(a0),d1
-		add.b	objoff_3A(a0),d1
-		cmp.b	objoff_39(a0),d1
+		move.b	lcon_origy(a0),d1
+		add.b	lcon_flag(a0),d1
+		cmp.b	lcon_origy+1(a0),d1
 		blo.s	.settargetpos
 		move.b	d1,d0
 		moveq	#0,d1
 		tst.b	d0
 		bpl.s	.settargetpos
-		move.b	objoff_39(a0),d1
+		move.b	lcon_origy+1(a0),d1
 		subq.b	#4,d1
 
 .settargetpos:
-		move.b	d1,objoff_38(a0)
+		move.b	d1,lcon_origy(a0)
 		movea.l	lcon_dataaddr(a0),a1
 		move.w	(a1,d1.w),lcon_targetx(a0)	; set next target x-position
 		move.w	2(a1,d1.w),lcon_targety(a0)	; set next target y-position

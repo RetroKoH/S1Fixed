@@ -28,7 +28,7 @@ SpinC_Act1or2:
 		move.b	objoff_2F(a0),d0
 		bpl.s	SpinC_Delete
 		andi.w	#$7F,d0
-		lea		(v_obj63).w,a2
+		lea		(v_conveyactive).w,a2
 		bclr	#0,(a2,d0.w)
 
 SpinC_Delete:
@@ -96,7 +96,7 @@ loc_16378:
 loc_16380:
 		move.b	d0,objoff_2F(a0)
 		andi.w	#$7F,d0
-		lea		(v_obj63).w,a2
+		lea		(v_conveyactive).w,a2
 		bset	#0,(a2,d0.w)
 		beq.s	loc_1639A
 		jmp		(DeleteObject).l
