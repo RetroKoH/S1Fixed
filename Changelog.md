@@ -406,6 +406,11 @@
  Function: Optimizes Prison Capsule Routine
  Date: 2024-11-27
 
+## Optimized LZ Deformation
+ Credit: MarkeyJester (Adapted by Malachi)
+ Function: Optimizes Deformation in Labyrinth Zone, specifically the water portion of the code.
+ Date: 2024-12-07
+
 ## Extended Sound Index
  (Temporarily Removed)
  Credit: Alex Field

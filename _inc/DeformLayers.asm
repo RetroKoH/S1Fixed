@@ -160,6 +160,7 @@ Deform_GHZ:
 
 ; ---------------------------------------------------------------------------
 ; Labyrinth Zone background layer deformation code
+; Optimised by MarkeyJester; Adapted to the modern disassembly by Malachi
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -167,78 +168,130 @@ Deform_GHZ:
 
 Deform_LZ:
 	; plain background scroll
-		move.w	(v_scrshiftx).w,d4
-		ext.l	d4
-		asl.l	#7,d4
-		move.w	(v_scrshifty).w,d5
-		ext.l	d5
-		asl.l	#7,d5
-		bsr.w	BGScroll_XY
+		moveq	#7,d0									; prepare multiplication 100 / 2 for BG scrolling
 
-		move.w	(v_bgscreenposy).w,(v_bgscrposy_vdp).w
-		lea	(Lz_Scroll_Data).l,a3
-		lea	(Drown_WobbleData).l,a2
-		move.b	(v_lz_deform).w,d2
-		move.b	d2,d3
-		addi.w	#$80,(v_lz_deform).w
+		move.w	(v_scrshiftx).w,d4						; load horizontal movement distance (Since last frame)
+		ext.l	d4										; extend to long-word signed
+		asl.l	d0,d4									; align as fixed point 16, but divide by 2 for BG
+		move.w	(v_scrshifty).w,d5						; load vertical movement distance (Since last frame)
+		ext.l	d5										; extend to long-word signed
+		asl.l	d0,d5									; align as fixed point 16, but divide by 2 for BG
+		bsr.w	BGScroll_XY								; rev01 scrolling	; ''
 
-		add.w	(v_bgscreenposy).w,d2
-		andi.w	#$FF,d2
-		add.w	(v_screenposy).w,d3
-		andi.w	#$FF,d3
-		lea	(v_hscrolltablebuffer).w,a1
-		move.w	#$DF,d1
-		move.w	(v_screenposx).w,d0
-		neg.w	d0
-		move.w	d0,d6
-		swap	d0
-		move.w	(v_bgscreenposx).w,d0
-		neg.w	d0
-		move.w	(v_waterpos1).w,d4
-		move.w	(v_screenposy).w,d5
-	; write normal scroll before meeting water position
-	.normalLoop:		
-		cmp.w	d4,d5	; is current y >= water y?
-		bge.s	.underwaterLoop	; if yes, branch
-		move.l	d0,(a1)+
-		addq.w	#1,d5
-		addq.b	#1,d2
-		addq.b	#1,d3
-		dbf	d1,.normalLoop
-		rts
-	; apply water deformation when underwater
-	.underwaterLoop:
-		move.b	(a3,d3.w),d4
-		ext.w	d4
-		add.w	d6,d4
-		move.w	d4,(a1)+
-		move.b	(a2,d2.w),d4
-		ext.w	d4
-		add.w	d0,d4
-		move.w	d4,(a1)+
-		addq.b	#1,d2
-		addq.b	#1,d3
-		dbf	d1,.underwaterLoop
-		rts
+		move.w	(v_bgscreenposy).w,(v_bgscrposy_vdp).w	; set BG V-scroll position
+		lea	(v_hscrolltablebuffer).w,a1					; load H-scroll buffer
+		move.w	(v_screenposx).w,d0						; load FG X position
+		add.w	d7,d0
+		neg.w	d0										; reverse
+		swap	d0										; send to upper word
+		move.w	(v_bgscreenposx).w,d0					; load BG X position
+		add.w	d7,d0
+		neg.w	d0										; reverse
+		moveq	#0,d3									; clear d3
+		move.b	(v_lz_deform).w,d3						; load wave-scroll timer
+		addi.w	#$80,(v_lz_deform).w					; increase wave-scroll timer
+		move.w	#224,d2									; prepare water-line count
+		move.w	(v_waterpos1).w,d1						; load water line position
+		sub.w	(v_screenposy).w,d1						; minus FG Y position
+		bmi.s	.water									; if the screen is already underwater, branch
+		cmp.w	d2,d1									; is the water line below the screen?
+		ble.s	.nowater								; if not, branch
+		move.w	d2,d1									; set at maximum
 
-Lz_Scroll_Data:
-		dc.b $01,$01,$02,$02,$03,$03,$03,$03,$02,$02,$01,$01,$00,$00,$00,$00
-		dc.b $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-		dc.b $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-		dc.b $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-		dc.b $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-		dc.b $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-		dc.b $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-		dc.b $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-		dc.b $FF,$FF,$FE,$FE,$FD,$FD,$FD,$FD,$FE,$FE,$FF,$FF,$00,$00,$00,$00
-		dc.b $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-		dc.b $01,$01,$02,$02,$03,$03,$03,$03,$02,$02,$01,$01,$00,$00,$00,$00
-		dc.b $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-		dc.b $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-		dc.b $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-		dc.b $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-		dc.b $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-; End of function Deform_LZ
+.nowater:
+		sub.w	d1,d2									; subtract from water-line count
+		add.b	d1,d3									; advance scroll wave timer to correct amount
+		subq.b	#1,d1									; decrease above water count
+		bcs.s	.water									; if finished, branch
+
+.abovewater:
+		move.l	d0,(a1)+								; save scroll position to buffer
+		dbf	d1,.abovewater								; repeat for all above water lines
+
+.water:
+		subq.b	#1,d2									; decrease below water count
+		bcs.s	.finish									; if finished, branch
+		move.w	d0,d1									; copy BG position back to d1
+		swap	d0										; move FG position back to lower word in d0
+		move.w	d3,d4									; copy sroll timer for BG use
+		add.b	(v_screenposy+1).w,d3					; add FG Y position
+		add.b	(v_bgscreenposy+1).w,d4					; add BG Y position
+		add.w	d3,d3									; multiply by word size (2)
+		add.w	d4,d4									; ''
+
+		lea	DLZ_WaveBG(pc),a3							; load beginning of BG wave data
+		adda.w	d4,a3									; advance to correct starting point
+		move.b	(a3),d4									; get current position byte
+		asr.b	#2,d4									; get only the position bits
+		ext.w	d4										; extend to word
+		add.w	d4,d1									; adjust BG's current position
+
+		lea	DLZ_WaveFG(pc,d3.w),a2						; load correct starting point of FG wave data
+		move.b	(a2),d4									; get current position byte
+		asr.b	#2,d4									; get only the position bits
+		ext.w	d4										; extend to word
+		add.w	d4,d0									; adjust FG's current position
+
+.belowwater:
+		add.w	(a2)+,d0								; alter FG horizontal position
+		move.w	d0,(a1)+								; save to scroll buffer
+		add.w	(a3)+,d1								; alter BG horizontal position
+		move.w	d1,(a1)+								; save to scroll buffer
+		dbf		d2,.belowwater							; repeat for all below water lines
+
+.finish:
+		rts												; return
+; ---------------------------------------------------------------------------
+; Deformation conversion documentation and macro
+; IIII IIAA AAAA AAAA
+; I = initial value
+; A = accumulator
+.dlzrip_I	:= 0
+dlzripple macro data
+	if "data"<>""
+	dc.w (.dlzrip_I&$3F)<<10|(data-.dlzrip_I)&$3FF
+.dlzrip_I	:= data
+	shift
+	dlzripple ALLARGS
+	endif
+	endm
+; ===========================================================================
+; FG ripple data
+DLZ_WaveFG:
+.dlzrip_I	:= 0
+	rept 2
+	dlzripple  1, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 1, 0, 0, 0, 0
+	dlzripple  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	dlzripple  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	dlzripple  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	dlzripple  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	dlzripple  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	dlzripple  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	dlzripple  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	dlzripple -1,-1,-2,-2,-3,-3,-3,-3,-2,-2,-1,-1, 0, 0, 0, 0
+	dlzripple  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	dlzripple  1, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 1, 0, 0, 0, 0
+	dlzripple  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	dlzripple  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	dlzripple  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	dlzripple  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	dlzripple  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	endr
+; ===========================================================================
+; BG ripple data
+DLZ_WaveBG:
+.dlzrip_I	:= -1
+	rept 4
+	dlzripple  0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2
+	dlzripple  2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3
+	dlzripple  3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2
+	dlzripple  2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0
+	dlzripple  0,-1,-1,-1,-1,-1,-2,-2,-2,-2,-2,-3,-3,-3,-3,-3
+	dlzripple -3,-3,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4
+	dlzripple -4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3
+	dlzripple -3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1
+	endr
+; ===========================================================================
 
 ; ---------------------------------------------------------------------------
 ; Marble Zone background layer deformation code
