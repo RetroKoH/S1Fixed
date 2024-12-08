@@ -343,7 +343,7 @@ v_lani5_time:			ds.b	1		; level graphics animation 5 - time until next frame
 v_lani_updateproc:		ds.l	1		; Update procedure pointer (4 bytes)
 
 f_conveyrev:			ds.b	1		; flag set to reverse conveyor belts in LZ/SBZ
-v_obj63:				ds.b	6		; object 63 (LZ/SBZ platforms) variables
+v_conveyactive:			ds.b	6		; obj63 (LZ/SBZ platforms) flags (when a group of platforms is spawned, their respective bit is set.
 f_wtunnelmode:			ds.b	1		; LZ water tunnel mode
 f_wtunnelallow:			ds.b	1		; LZ water tunnels (00 = enabled; 01 = disabled)
 f_slidemode:			ds.b	1		; LZ water slide mode
