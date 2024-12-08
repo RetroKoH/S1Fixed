@@ -6370,16 +6370,6 @@ locret_15098:
 		include	"_incObj/6F SBZ Spin Platform Conveyor.asm"
 		include	"_anim/SBZ Spin Platform Conveyor.asm"
 
-off_164A6:	dc.w word_164B2-off_164A6, word_164C6-off_164A6, word_164DA-off_164A6
-		dc.w word_164EE-off_164A6, word_16502-off_164A6, word_16516-off_164A6
-word_164B2:	dc.w $10, $E80,	$E14, $370, $EEF, $302,	$EEF, $340, $E14, $3AE
-word_164C6:	dc.w $10, $F80,	$F14, $2E0, $FEF, $272,	$FEF, $2B0, $F14, $31E
-word_164DA:	dc.w $10, $1080, $1014,	$270, $10EF, $202, $10EF, $240,	$1014, $2AE
-word_164EE:	dc.w $10, $F80,	$F14, $570, $FEF, $502,	$FEF, $540, $F14, $5AE
-word_16502:	dc.w $10, $1B80, $1B14,	$670, $1BEF, $602, $1BEF, $640,	$1B14, $6AE
-word_16516:	dc.w $10, $1C80, $1C14,	$5E0, $1CEF, $572, $1CEF, $5B0,	$1C14, $61E
-; ===========================================================================
-
 		include	"_incObj/70 Girder Block.asm"
 
 		include	"_incObj/72 Teleporter.asm"
