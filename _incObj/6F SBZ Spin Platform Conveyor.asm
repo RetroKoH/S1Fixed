@@ -7,15 +7,13 @@ SpinConvey:
 		tst.b	obRoutine(a0)
 		bne.w	SpinC_Action
 	; Object Routine Optimization End
+; ===========================================================================
 
 SpinC_Main:	; Routine 0
 	; Clownacy DisplaySprite Fix (Alt Method by RetroKoH)
 		bsr.s	SpinC_Rout1
 		offscreen.s	loc_1629A,lcon_origx(a0)	; ProjectFM
-		jmp		(DisplaySprite).l
-
-; Clownacy DisplaySprite Fix (Alt Method by RetroKoH)
-SpinC_Display:
+SpinC_Display:	; Clownacy DisplaySprite Fix (Alt Method by RetroKoH)
 		jmp		(DisplaySprite).l
 
 loc_1629A:
@@ -220,8 +218,8 @@ loc_16480:
 
 loc_16484:
 		jmp		(SpeedToPos).l
+; ===========================================================================
 
-; ===========================================================================	
 SpinC_Data:		offsetTable
 		offsetTableEntry.w	word_164B2
 		offsetTableEntry.w	word_164C6

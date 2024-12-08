@@ -289,8 +289,8 @@ loc_125D4:
 		clr.w	obX+2(a0)
 		rts	
 ; End of function LCon_SetInMotion
-
 ; ===========================================================================
+
 LCon_Data:	offsetTable
 		offsetTableEntry.w	word_125F4
 		offsetTableEntry.w	word_12610
