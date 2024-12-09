@@ -5717,7 +5717,7 @@ ResumeMusic:
 		include	"_incObj/08 Water Splash.asm"
 		include	"_anim/Water Splash.asm"
 
-		include	"_anim/Shield and Invincibility.asm"
+		include	"_anim/Shields.asm"									; Removed invinc anim scripts
 		include "_maps/Shield and Invincibility - DPLCs.asm"		; RetroKoH VRAM Overhaul
 
 	if InstashieldEnabled
