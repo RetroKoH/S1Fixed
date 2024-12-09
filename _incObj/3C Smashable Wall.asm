@@ -41,12 +41,12 @@ Smash_Solid:	; Routine 2
 	if ShieldsMode
 		beq.s	.donothing
 
-;		tst.b	obCharID(a1)						; is the player Sonic?
-;		bne.s	.chkPush							; if not, skip and check if player is rolling on the ground
-		btst	#sta2ndFShield,obStatus2nd(a1)		; does Sonic have the Flame Shield
-		beq.s	.chkPush							; if not, skip and check if player is rolling on the ground
-		cmpi.b	#8,(v_shieldobj+obAnim).w			; is Sonic using his ability? (Check Flame Shield's animation)
-		beq.s	.cont								; if yes, branch. ABILITY TIME
+;		tst.b	obCharID(a1)							; is the player Sonic?
+;		bne.s	.chkPush								; if not, skip and check if player is rolling on the ground
+		btst	#sta2ndFShield,obStatus2nd(a1)			; does Sonic have the Flame Shield
+		beq.s	.chkPush								; if not, skip and check if player is rolling on the ground
+		cmpi.b	#sta2ndFShield,(v_shieldobj+obAnim).w	; is Sonic using his ability? (Check Flame Shield's animation)
+		beq.s	.cont									; if yes, branch. ABILITY TIME
 
 	.chkPush:
 	endif
