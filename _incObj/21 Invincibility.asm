@@ -39,21 +39,22 @@ Stars_Next:	; Routine 2
 		moveq	#0,d3									; d3 = loop iterator
 		moveq	#0,d4
 		lea		subspr_data(a0),a2						; starting address for subsprite data
-		lea		Star_main(pc),a3
+		lea		Star_main(pc),a3						; starting address for animations
 		move.b	mainspr_routine(a0),d4					; d4 = current animation frame
 		lea		(a3,d4.w),a3							; a3 = location of mapping frame
+		lea		objoff_30(a0),a4						; previous tracking data for each subsprite
 
 ; loop to set track position
 .trail:
 		move.w	(v_trackpos).w,d0		; get index value for tracking data
-		move.b	d3,d1					; d1 = subframe/anim number
+		move.l	d3,d1					; d1 = subframe/anim number
 		lsl.b	#3,d1					; multiply animation number by 8
 		move.b	d1,d2
 		add.b	d1,d1
 		add.b	d2,d1					; multiply by 3
 		addq.b	#4,d1
 		sub.b	d1,d0
-		move.b	objoff_30(a0),d1
+		move.b	(a4),d1
 		sub.b	d1,d0					; use earlier tracking data to create trail
 		addq.b	#4,d1
 		cmpi.b	#$18,d1
@@ -61,7 +62,7 @@ Stars_Next:	; Routine 2
 		moveq	#0,d1
 
 .a:
-		move.b	d1,objoff_30(a0)
+		move.b	d1,(a4)+
 		lea		(v_tracksonic).w,a1
 		lea		(a1,d0.w),a1
 		tst.b	d3						; is this the main anim?
