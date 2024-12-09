@@ -20,9 +20,13 @@ Cbal_Main:	; Routine 0
 		move.b	#$87,obColType(a0)
 		move.b	#8,obActWid(a0)
 		moveq	#0,d0
-		move.b	obSubtype(a0),d0	; move subtype to d0
-		mulu.w	#60,d0				; multiply by 60 frames	(1 second)
-		move.w	d0,cbal_time(a0)	; set explosion time
+		move.b	obSubtype(a0),d0			; move subtype to d0
+		add.w	d0,d0						; multiply by 60 (1 second)
+		add.w	d0,d0						; Optimization from S1 in S.C.E.
+		move.w	d0,d1
+		lsl.w	#4,d0
+		sub.w	d1,d0
+		move.w	d0,cbal_time(a0)			; set explosion time
 		move.b	#4,obFrame(a0)
 
 Cbal_Bounce:	; Routine 2

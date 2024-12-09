@@ -2815,7 +2815,11 @@ loc_47D4:
 		move.b	#1,(f_scorecount).w		; update score counter
 		move.b	#1,(f_endactbonus).w	; update ring bonus counter
 		move.w	(v_rings).w,d0
-		mulu.w	#10,d0					; multiply rings by 10
+		add.w	d0,d0					; multiply by 10
+		move.w	d0,d1					; Optimization from S1 in S.C.E.
+		add.w	d0,d0
+		add.w	d0,d0
+		add.w	d1,d0
 		move.w	d0,(v_ringbonus).w		; set rings bonus
 		
 	if PerfectBonusEnabled
