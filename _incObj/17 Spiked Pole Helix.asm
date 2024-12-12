@@ -66,7 +66,7 @@ Hel_MakeSubsprite:
 		move.b	d1,d4						; loop iterator
 		addq.b	#1,d1						; subsprite count
 		move.b	d1,mainspr_childsprites(a1)
-		lea		sub2_x_pos(a1),a2			; starting address for subsprite data
+		lea		subspr_data(a1),a2			; starting address for subsprite data
 		move.w	obX(a1),d2
 		move.w	obY(a1),d3
 

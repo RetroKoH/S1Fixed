@@ -5774,7 +5774,7 @@ ResumeMusic:
 		include	"_incObj/08 Water Splash.asm"
 		include	"_anim/Water Splash.asm"
 
-		include	"_anim/Shield and Invincibility.asm"
+		include	"_anim/Shields.asm"
 dplcTiles := Art_Shield			; MainMemory 128k Boundary Check for DPLCs
 	; Ensure that this check works w/ both art files
 		include "_maps/Shield and Invincibility - DPLCs.asm"		; RetroKoH VRAM Overhaul

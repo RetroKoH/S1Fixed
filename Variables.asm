@@ -104,10 +104,8 @@ v_gameovertext2	= v_objspace+object_size*3	; ($D0C0) object variable space for t
 v_shieldobj		= v_objspace+object_size*6	; ($D180) object variable space for the shield ($40 bytes)
 
 ; Use subsprites and free up some v_stars slots
-v_starsobj1		= v_objspace+object_size*7	; ($D1C0) object variable space for the invincibility stars #1 ($40 bytes)
-v_starsobj2		= v_objspace+object_size*8	; ($D200) object variable space for the invincibility stars #2 ($40 bytes)
-v_starsobj3		= v_objspace+object_size*9	; ($D240) object variable space for the invincibility stars #3 ($40 bytes)
-v_starsobj4		= v_objspace+object_size*10	; ($D280) object variable space for the invincibility stars #4 ($40 bytes)
+v_starsobj		= v_objspace+object_size*7	; ($D1C0) object variable space for the invincibility stars ($40 bytes)
+; ($D200), ($D240), ($D280) $C0 bytes free
 
 v_splash		= v_objspace+object_size*11	; ($D2C0) object variable space for the water splash ($40 bytes)
 v_sonicbubbles	= v_objspace+object_size*12	; ($D300) object variable space for the bubbles that come out of Sonic's mouth/drown countdown ($40 bytes)
