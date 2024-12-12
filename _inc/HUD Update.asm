@@ -301,8 +301,8 @@ HudDb_XYLoop:
 		move.w	d1,d2
 		andi.w	#$F,d2
 		cmpi.w	#$A,d2
-		blo.s	loc_1C8B2
-		addq.w	#7,d2
+		bcs.s	loc_1C8B2
+		addq.w	#4,d2			; Accomodate new text art for ASCII text
 
 loc_1C8B2:
 		lsl.w	#5,d2
@@ -316,7 +316,7 @@ loc_1C8B2:
 		move.l	(a3)+,(a6)
 		move.l	(a3)+,(a6)
 		swap	d1
-		dbf		d6,HudDb_XYLoop	; repeat 7 more	times
+		dbf		d6,HudDb_XYLoop	; repeat 7 more times
 
 		rts	
 ; End of function HudDb_XY2
