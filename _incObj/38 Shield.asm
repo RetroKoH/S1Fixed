@@ -572,16 +572,11 @@ Shi_LightningDestroy: ; Routine $10
 ; RetroKoH VRAM Overhaul
 ; ---------------------------------------------------------------------------
 
-Stars_LoadGfx:
-		moveq	#0,d0
-		move.b	(v_starsobj1+obFrame).w,d0	; load frame number
-		bra.s   ShieldPLC_Cont
-
 Shield_LoadGfx:
 		moveq	#0,d0
 		move.b	(v_shieldobj+obFrame).w,d0	; load frame number
 
-ShieldPLC_Cont:
+Stars_LoadGfx:
 		movea.l	obDPLCLoc(a0),a2
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2
