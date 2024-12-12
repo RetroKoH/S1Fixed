@@ -1,12 +1,8 @@
 ; ---------------------------------------------------------------------------
-; Animation script - shield and invincibility stars
+; Animation script - shields
 ; ---------------------------------------------------------------------------
 Ani_Shield:
 ptr_ShiAni_Blue:		dc.w shield-Ani_Shield
-ptr_ShiAni_Stars1:		dc.w stars1-Ani_Shield
-ptr_ShiAni_Stars2:		dc.w stars2-Ani_Shield
-ptr_ShiAni_Stars3:		dc.w stars3-Ani_Shield
-ptr_ShiAni_Stars4:		dc.w stars4-Ani_Shield
 
 	if InstashieldEnabled
 ptr_ShiAni_Insta:		dc.w insta1-Ani_Shield
@@ -27,16 +23,6 @@ ptr_ShiAni_Lightning3:	dc.w lightning3-Ani_Shield
 
 shield:			dc.b 1,	1, 0, 2, 0, 3, 0, afEnd
 
-stars1:			dc.b 5,	4, 5, 6, 7, afEnd
-
-stars2:			dc.b 0,	4, 4, 0, 4, 4, 0, 5, 5,	0, 5, 5, 0, 6, 6, 0, 6
-				dc.b 6,	0, 7, 7, 0, 7, 7, 0, afEnd
-
-stars3:			dc.b 0,	4, 4, 0, 4, 0, 0, 5, 5,	0, 5, 0, 0, 6, 6, 0, 6
-				dc.b 0,	0, 7, 7, 0, 7, 0, 0, afEnd
-
-stars4:			dc.b 0,	4, 0, 0, 4, 0, 0, 5, 0,	0, 5, 0, 0, 6, 0, 0, 6
-				dc.b 0,	0, 7, 0, 0, 7, 0, 0, afEnd
 
 	if InstashieldEnabled
 insta1:			dc.b  $1F,   6,	afEnd
@@ -70,23 +56,19 @@ lightning3:		dc.b	3,   0,	  1,   2, afRoutine, -1,   0
 		even
 
 aniID_BlueShield:		equ	(ptr_ShiAni_Blue-Ani_Shield)/2			; 0
-aniID_InvStars1:		equ	(ptr_ShiAni_Stars1-Ani_Shield)/2		; 1
-aniID_InvStars2:		equ	(ptr_ShiAni_Stars2-Ani_Shield)/2		; 2
-aniID_InvStars3:		equ	(ptr_ShiAni_Stars3-Ani_Shield)/2		; 3
-aniID_InvStars4:		equ	(ptr_ShiAni_Stars4-Ani_Shield)/2		; 4
 
 	if InstashieldEnabled
-aniID_InstaIdle:		equ	(ptr_ShiAni_Insta-Ani_Shield)/2			; 5 - Set by default for Sonic
-aniID_InstaActive:		equ	(ptr_ShiAni_InstaActive-Ani_Shield)/2	; 6 - Triggered by Sonic_JumpHeight
+aniID_InstaIdle:		equ	(ptr_ShiAni_Insta-Ani_Shield)/2			; 1 - Set by default for Sonic
+aniID_InstaActive:		equ	(ptr_ShiAni_InstaActive-Ani_Shield)/2	; 2 - Triggered by Sonic_JumpHeight
 	endif
 
 	if ShieldsMode
-aniID_FlameShield:		equ	(ptr_ShiAni_Flame-Ani_Shield)/2			; 7 - Standard animation for Flame Shield
-aniID_FlameDash:		equ	(ptr_ShiAni_FlameDash-Ani_Shield)/2		; 8 - Used by Sonic_JumpHeight when activating double jump
-aniID_BubbleShield:		equ	(ptr_ShiAni_Bubble-Ani_Shield)/2		; 9 - Standard animation for Bubble Shield
-aniID_BubbleBounce:		equ	(ptr_ShiAni_BubbleDown-Ani_Shield)/2	; A - Used by Sonic_JumpHeight when going downward for the bounce
-aniID_BubbleBounceUp:	equ	(ptr_ShiAni_BubbleUp-Ani_Shield)/2		; B - Used by Sonic_ResetOnFloor when bouncing up
-aniID_LightningShield:	equ	(ptr_ShiAni_Lightning-Ani_Shield)/2		; C - Standard animation for Lightning Shield
-aniID_LightningSpark:	equ	(ptr_ShiAni_Lightning2-Ani_Shield)/2	; D - Used by Sonic_JumpHeight when jumping up, and used by sparks
-aniID_LightningStars:	equ	(ptr_ShiAni_Lightning3-Ani_Shield)/2	; E - Apparently used for Super Sonic Stars
+aniID_FlameShield:		equ	(ptr_ShiAni_Flame-Ani_Shield)/2			; 3 - Standard animation for Flame Shield
+aniID_FlameDash:		equ	(ptr_ShiAni_FlameDash-Ani_Shield)/2		; 4 - Used by Sonic_JumpHeight when activating double jump
+aniID_BubbleShield:		equ	(ptr_ShiAni_Bubble-Ani_Shield)/2		; 5 - Standard animation for Bubble Shield
+aniID_BubbleBounce:		equ	(ptr_ShiAni_BubbleDown-Ani_Shield)/2	; 6 - Used by Sonic_JumpHeight when going downward for the bounce
+aniID_BubbleBounceUp:	equ	(ptr_ShiAni_BubbleUp-Ani_Shield)/2		; 7 - Used by Sonic_ResetOnFloor when bouncing up
+aniID_LightningShield:	equ	(ptr_ShiAni_Lightning-Ani_Shield)/2		; 8 - Standard animation for Lightning Shield
+aniID_LightningSpark:	equ	(ptr_ShiAni_Lightning2-Ani_Shield)/2	; 9 - Used by Sonic_JumpHeight when jumping up, and used by sparks
+aniID_LightningStars:	equ	(ptr_ShiAni_Lightning3-Ani_Shield)/2	; $A - Apparently used for Super Sonic Stars
 	endif
