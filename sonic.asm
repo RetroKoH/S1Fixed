@@ -6416,10 +6416,12 @@ SS_ShowLayout:
 		bsr.w	SS_AniItems
 		move.w	d5,-(sp)
 		lea		(v_ssbuffer3&$FFFFFF).l,a1
-		move.b	(v_ssangle).w,d0
 
-	if SmoothSpecialStages=0	; Cinossu Smooth Special Stages
-		andi.b	#$FC,d0
+	if ~~SmoothSpecialStages	; Cinossu Smooth Special Stages
+		moveq	#$FC,d0
+		and.b	(v_ssangle).w,d0		; original rotation
+	else
+		move.b	(v_ssangle).w,d0		; smooth rotation
 	endif						; Smooth Special Stages End
 
 		jsr		(CalcSine).w
@@ -6439,7 +6441,7 @@ SS_ShowLayout:
 		swap	d3
 		neg.w	d3
 		addi.w	#-$B4,d3
-		move.w	#$10-1,d7
+		move.w	#16-1,d7
 
 loc_1B19E:
 		movem.w	d0-d2,-(sp)
@@ -6454,7 +6456,7 @@ loc_1B19E:
 		muls.w	d3,d1
 		add.l	d0,d1
 		move.l	d6,d2
-		move.w	#$F,d6
+		move.w	#16-1,d6
 
 loc_1B1C0:
 		move.l	d2,d0
@@ -6483,7 +6485,7 @@ loc_1B1C0:
 		divu.w	#$18,d0
 		adda.w	d0,a0
 		lea		(v_ssbuffer3&$FFFFFF).l,a4
-		move.w	#$10-1,d7
+		move.w	#16-1,d7
 
 loc_1B20C:
 		move.w	#$F,d6
@@ -6556,67 +6558,75 @@ SS_AniWallsRings:
 		andi.w	#$F,d0
 		moveq	#$24-1,d1
 
-loc_1B2A4:
+	.loop:
 		move.w	d0,(a1)
 		addq.w	#8,a1
-		dbf		d1,loc_1B2A4
+		dbf		d1,.loop
 	endif	; Dynamic Special Stage Walls End
 
 		lea		((v_ssblocktypes+5)&$FFFFFF).l,a1
 		subq.b	#1,(v_ani1_time).w
-		bpl.s	loc_1B2C8
+		bpl.s	.setringframe
 		move.b	#3,(v_ani1_time).w		; Smooth Rings
 		addq.b	#1,(v_ani1_frame).w
 		andi.b	#7,(v_ani1_frame).w		; Smooth Rings
+		
+		; insert dynamic ring graphics here (if I decide to do so)
 
-loc_1B2C8:
-		move.b	(v_ani1_frame).w,$1D0(a1)
+	.setringframe:
+		move.b	(v_ani1_frame).w,SSBlock_Ring*8(a1)		; set sync anim frame for rings
+
 		subq.b	#1,(v_ani2_time).w
-		bpl.s	loc_1B2E4
+		bpl.s	.setmiscframes
 		move.b	#7,(v_ani2_time).w
 		addq.b	#1,(v_ani2_frame).w
 		andi.b	#1,(v_ani2_frame).w
 
-loc_1B2E4:
-		move.b	(v_ani2_frame).w,d0
-		move.b	d0,$138(a1)
-		move.b	d0,$160(a1)
-		move.b	d0,$148(a1)
-		move.b	d0,$150(a1)
-		move.b	d0,$1D8(a1)
-		move.b	d0,$1E0(a1)
-		move.b	d0,$1E8(a1)
-		move.b	d0,$1F0(a1)
-		move.b	d0,$1F8(a1)
-		move.b	d0,$200(a1)
+	.setmiscframes:
+		move.b	(v_ani2_frame).w,d0						; set sync anim frame for the following item types
+		move.b	d0,SSBlock_GOAL*8(a1)
+		move.b	d0,SSBlock_UP*8(a1)
+		move.b	d0,SSBlock_DOWN*8(a1)
+		move.b	d0,SSBlock_GhostSolid*8(a1)
+		move.b	d0,SSBlock_Emld1*8(a1)
+		move.b	d0,SSBlock_Emld2*8(a1)
+		move.b	d0,SSBlock_Emld3*8(a1)
+		move.b	d0,SSBlock_Emld4*8(a1)
+		move.b	d0,SSBlock_Emld5*8(a1)
+		move.b	d0,SSBlock_Emld6*8(a1)
 	if SuperMod=1
-		move.b	d0,$208(a1)
+		move.b	d0,SSBlock_Emld7*8(a1)
 	endif
+
 		subq.b	#1,(v_ani3_time).w
-		bpl.s	loc_1B326
+		bpl.s	.setglassframes
 		move.b	#4,(v_ani3_time).w
 		addq.b	#1,(v_ani3_frame).w
 		andi.b	#3,(v_ani3_frame).w
 
-loc_1B326:
-		move.b	(v_ani3_frame).w,d0
-		move.b	d0,$168(a1)
-		move.b	d0,$170(a1)
-		move.b	d0,$178(a1)
-		move.b	d0,$180(a1)
+	.setglassframes:
+		move.b	(v_ani3_frame).w,d0						; set sync anim frame for the following item types
+		move.b	d0,SSBlock_Glass1*8(a1)
+		move.b	d0,SSBlock_Glass2*8(a1)
+		move.b	d0,SSBlock_Glass3*8(a1)
+		move.b	d0,SSBlock_Glass4*8(a1)
+
 		subq.b	#1,(v_ani0_time).w
-		bpl.s	loc_1B350
+		bpl.s	.setwallframes
 		move.b	#7,(v_ani0_time).w
 		subq.b	#1,(v_ani0_frame).w
 		andi.b	#7,(v_ani0_frame).w
 
-loc_1B350:
+	.setwallframes:
 		lea		((v_ssblocktypes+$16)&$FFFFFF).l,a1
 		lea		SS_WaRiVramSet(pc),a0
 		moveq	#0,d0
 		move.b	(v_ani0_frame).w,d0
 		add.w	d0,d0
 		lea		(a0,d0.w),a0
+
+	; wall anim (blue, yellow, purple)
+	rept 3
 		move.w	(a0),(a1)
 		move.w	2(a0),8(a1)
 		move.w	4(a0),$10(a1)
@@ -6627,6 +6637,9 @@ loc_1B350:
 		move.w	$E(a0),$38(a1)
 		adda.w	#$20,a0
 		adda.w	#$48,a1
+	endr
+
+	; wall anim (green)
 		move.w	(a0),(a1)
 		move.w	2(a0),8(a1)
 		move.w	4(a0),$10(a1)
@@ -6635,28 +6648,6 @@ loc_1B350:
 		move.w	$A(a0),$28(a1)
 		move.w	$C(a0),$30(a1)
 		move.w	$E(a0),$38(a1)
-		adda.w	#$20,a0
-		adda.w	#$48,a1
-		move.w	(a0),(a1)
-		move.w	2(a0),8(a1)
-		move.w	4(a0),$10(a1)
-		move.w	6(a0),$18(a1)
-		move.w	8(a0),$20(a1)
-		move.w	$A(a0),$28(a1)
-		move.w	$C(a0),$30(a1)
-		move.w	$E(a0),$38(a1)
-		adda.w	#$20,a0
-		adda.w	#$48,a1
-		move.w	(a0),(a1)
-		move.w	2(a0),8(a1)
-		move.w	4(a0),$10(a1)
-		move.w	6(a0),$18(a1)
-		move.w	8(a0),$20(a1)
-		move.w	$A(a0),$28(a1)
-		move.w	$C(a0),$30(a1)
-		move.w	$E(a0),$38(a1)
-		adda.w	#$20,a0
-		adda.w	#$48,a1
 		rts	
 ; End of function SS_AniWallsRings
 
@@ -6687,42 +6678,26 @@ SS_LoadWalls:
 		move.w	d0,d1
 		lsl.w	#8,d1
 		add.w	d1,d1
-		add.w	d1,a1
+		add.w	d1,a1					; a1 = source address
 		
-		locVRAM	$2840					; VRAM address
+		locVRAM	ArtTile_SS_Wall*$20		; VRAM address
 		
-		move.w	#$F,d1					; number of 8x8 tiles
-		bsr.s	LoadTiles
+		move.w	#$F,d1					; d1 = number of tiles to load (minus one)
+	; transfer graphics to VRAM
+	.loadwalltiles:
+		move.l	(a1)+,(a6)
+		move.l	(a1)+,(a6)
+		move.l	(a1)+,(a6)
+		move.l	(a1)+,(a6)
+		move.l	(a1)+,(a6)
+		move.l	(a1)+,(a6)
+		move.l	(a1)+,(a6)
+		move.l	(a1)+,(a6)
+		dbf		d1,.loadwalltiles
 		move.b	d0,(v_ssangleprev).w	; record the modified angle for comparison
 		
 .return:
 		rts
-
-; ---------------------------------------------------------------------------
-; Subroutine to	transfer graphics to VRAM
-
-; input:
-;	a1 = source address
-;	a6 = vdp_data_port ($C00000)
-;	d1 = number of tiles to load (minus one)
-; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
-LoadTiles:
-		move.l	(a1)+,(a6)
-		move.l	(a1)+,(a6)
-		move.l	(a1)+,(a6)
-		move.l	(a1)+,(a6)
-		move.l	(a1)+,(a6)
-		move.l	(a1)+,(a6)
-		move.l	(a1)+,(a6)
-		move.l	(a1)+,(a6)
-		dbf		d1,LoadTiles
-		rts	
-; End of function LoadTiles
-; ===========================================================================
 	endif	; Dynamic Special Stage Walls End
 
 ; ---------------------------------------------------------------------------
@@ -6757,20 +6732,18 @@ SS_AniItems:
 		lea		(v_ssitembuffer&$FFFFFF).l,a0
 		move.w	#(v_ssitembuffer_end-v_ssitembuffer)/8-1,d7
 
-loc_1B4DA:
+	.loop:
 		moveq	#0,d0
 		move.b	(a0),d0
-		beq.s	loc_1B4E8
-		lsl.w	#2,d0
+		beq.s	.next
+		add.w	d0,d0
+		add.w	d0,d0
 		movea.l	SS_AniIndex-4(pc,d0.w),a1
 		jsr		(a1)
 
-loc_1B4E8:
+	.next:
 		addq.w	#8,a0
-
-loc_1B4EA:
-		dbf		d7,loc_1B4DA
-
+		dbf		d7,.loop
 		rts	
 ; End of function SS_AniItems
 
@@ -6785,143 +6758,192 @@ SS_AniIndex:
 ; ===========================================================================
 
 SS_AniRingSparks:
+	; wait
 		subq.b	#1,2(a0)
-		bpl.s	locret_1B530
+		bpl.s	.return
 		move.b	#5,2(a0)
+	; anim
 		moveq	#0,d0
 		move.b	3(a0),d0
 		addq.b	#1,3(a0)
 		movea.l	4(a0),a1
 		move.b	SS_AniRingData(pc,d0.w),d0
-		move.b	d0,(a1)
-		bne.s	locret_1B530
+		move.b	d0,(a1)					; set animation frame
+		bne.s	.return
 		clr.l	(a0)
 		clr.l	4(a0)
 
-locret_1B530:
+	.return:
 		rts	
 ; ===========================================================================
-SS_AniRingData:	dc.b SSBlock_RingSparkle1, SSBlock_RingSparkle2, SSBlock_RingSparkle3, SSBlock_RingSparkle4, 0, 0
+
+SS_AniRingData:
+		dc.b SSBlock_RingSparkle1
+		dc.b SSBlock_RingSparkle2
+		dc.b SSBlock_RingSparkle3
+		dc.b SSBlock_RingSparkle4
+		dc.b 0
+	even
 ; ===========================================================================
 
 SS_AniBumper:
+	; wait
 		subq.b	#1,2(a0)
-		bpl.s	locret_1B566
+		bpl.s	.return
 		move.b	#7,2(a0)
+	; anim
 		moveq	#0,d0
 		move.b	3(a0),d0
 		addq.b	#1,3(a0)
 		movea.l	4(a0),a1
 		move.b	SS_AniBumpData(pc,d0.w),d0
-		bne.s	loc_1B564
+		bne.s	.nonzero
 		clr.l	(a0)
 		clr.l	4(a0)
 		move.b	#SSBlock_Bumper,(a1)	; Revert to the original bumper block
 		rts	
 ; ===========================================================================
 
-loc_1B564:
+	.nonzero:
 		move.b	d0,(a1)					; set animation frame
 
-locret_1B566:
+	.return:
 		rts	
 ; ===========================================================================
-SS_AniBumpData:	dc.b SSBlock_BumperHit1, SSBlock_BumperHit2, SSBlock_BumperHit1, SSBlock_BumperHit2, 0, 0
+
+SS_AniBumpData:
+		dc.b SSBlock_BumperHit1
+		dc.b SSBlock_BumperHit2
+		dc.b SSBlock_BumperHit1
+		dc.b SSBlock_BumperHit2
+		dc.b 0
+	even
 ; ===========================================================================
 
 SS_Ani1Up:
+	; wait
 		subq.b	#1,2(a0)
-		bpl.s	locret_1B596
+		bpl.s	.return
 		move.b	#5,2(a0)
+	; anim
 		moveq	#0,d0
 		move.b	3(a0),d0
 		addq.b	#1,3(a0)
 		movea.l	4(a0),a1
 		move.b	SS_Ani1UpData(pc,d0.w),d0
-		move.b	d0,(a1)
-		bne.s	locret_1B596
+		move.b	d0,(a1)					; set animation frame
+		bne.s	.return
 		clr.l	(a0)
 		clr.l	4(a0)
 
-	if SpecialStagesWithAllEmeralds=1	; Mercury Special Stages Still Appear With All Emeralds
-		move.b	#4,($FFFFD024).w
-	endc	; Special Stages Still Appear With All Emeralds End
+	if SpecialStagesWithAllEmeralds	; Mercury Special Stages Still Appear With All Emeralds
+		move.b	#4,(v_player+obRoutine).w
+	endif	; Special Stages Still Appear With All Emeralds End
 
-locret_1B596:
+	.return:
 		rts	
 ; ===========================================================================
-SS_Ani1UpData:	dc.b SSBlock_ItemSparkle1, SSBlock_ItemSparkle2, SSBlock_ItemSparkle3, SSBlock_ItemSparkle4, 0, 0
+
+SS_Ani1UpData:
+		dc.b SSBlock_ItemSparkle1
+		dc.b SSBlock_ItemSparkle2
+		dc.b SSBlock_ItemSparkle3
+		dc.b SSBlock_ItemSparkle4
+		dc.b 0
+	even
 ; ===========================================================================
 
 SS_AniReverse:
+	; wait
 		subq.b	#1,2(a0)
-		bpl.s	locret_1B5CC
+		bpl.s	.return
 		move.b	#7,2(a0)
+	; anim
 		moveq	#0,d0
 		move.b	3(a0),d0
 		addq.b	#1,3(a0)
 		movea.l	4(a0),a1
 		move.b	SS_AniRevData(pc,d0.w),d0
-		bne.s	loc_1B5CA
+		bne.s	.nonzero
 		clr.l	(a0)
 		clr.l	4(a0)
-		move.b	#$2B,(a1)
+		move.b	#SSBlock_R,(a1)			; Revert to the original R block
 		rts	
 ; ===========================================================================
 
-loc_1B5CA:
-		move.b	d0,(a1)
+.nonzero:
+		move.b	d0,(a1)					; set animation frame
 
-locret_1B5CC:
+.return:
 		rts	
 ; ===========================================================================
-SS_AniRevData:	dc.b SSBlock_R, SSBlock_R2, SSBlock_R, SSBlock_R2, 0, 0
+
+SS_AniRevData:
+		dc.b SSBlock_R
+		dc.b SSBlock_R2
+		dc.b SSBlock_R
+		dc.b SSBlock_R2
+		dc.b 0
+	even
 ; ===========================================================================
 
 SS_AniEmeraldSparks:
+	; wait
 		subq.b	#1,2(a0)
-		bpl.s	locret_1B60C
+		bpl.s	.return
 		move.b	#5,2(a0)
+	; anim
 		moveq	#0,d0
 		move.b	3(a0),d0
 		addq.b	#1,3(a0)
 		movea.l	4(a0),a1
 		move.b	SS_AniEmerData(pc,d0.w),d0
-		move.b	d0,(a1)
-		bne.s	locret_1B60C
+		move.b	d0,(a1)					; set animation frame
+		bne.s	.return
 		clr.l	(a0)
 		clr.l	4(a0)
 		move.b	#4,(v_player+obRoutine).w
 		move.w	#sfx_SSGoal,d0
-		jsr		(PlaySound_Special).w	; play special stage GOAL sound
+		jmp		(PlaySound_Special).w	; play special stage GOAL sound
 
-locret_1B60C:
+	.return:
 		rts	
 ; ===========================================================================
-SS_AniEmerData:	dc.b SSBlock_ItemSparkle1, SSBlock_ItemSparkle2, SSBlock_ItemSparkle3, SSBlock_ItemSparkle4, 0, 0
+
+SS_AniEmerData:
+		dc.b SSBlock_ItemSparkle1
+		dc.b SSBlock_ItemSparkle2
+		dc.b SSBlock_ItemSparkle3
+		dc.b SSBlock_ItemSparkle4
+		dc.b 0
+	even
 ; ===========================================================================
 
 SS_AniGlassBlock:
+	; wait
 		subq.b	#1,2(a0)
-		bpl.s	locret_1B640
+		bpl.s	.return
 		move.b	#1,2(a0)
+	; anim
 		moveq	#0,d0
 		move.b	3(a0),d0
 		addq.b	#1,3(a0)
 		movea.l	4(a0),a1
 		move.b	SS_AniGlassData(pc,d0.w),d0
-		move.b	d0,(a1)
-		bne.s	locret_1B640
+		move.b	d0,(a1)					; set animation frame
+		bne.s	.return
 		move.b	4(a0),(a1)
 		clr.l	(a0)
 		clr.l	4(a0)
 
-locret_1B640:
+	.return:
 		rts	
 ; ===========================================================================
 SS_AniGlassData:
 		dc.b SSBlock_GlassAni1, SSBlock_GlassAni2, SSBlock_GlassAni3, SSBlock_GlassAni4
-		dc.b SSBlock_GlassAni1, SSBlock_GlassAni2, SSBlock_GlassAni3, SSBlock_GlassAni4, 0,	0
+		dc.b SSBlock_GlassAni1, SSBlock_GlassAni2, SSBlock_GlassAni3, SSBlock_GlassAni4
+		dc.b 0
+	even
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
@@ -6968,7 +6990,7 @@ SS_Load:
 	if SpecialStageAdvancementMod	; Mercury Special Stage Index Increases Only If Won
 		cmpi.b	#emldCount,d0
 		bcs.s	SS_ChkEmldNum					; We don't increment here (This will instead be done in Obj09)
-		move.b	#0,d0
+		moveq	#0,d0
 		move.b	d0,(v_lastspecial).w			; reset if higher than 6/7 (emldCount)
 	else
 		addq.b	#1,(v_lastspecial).w			; increment, as we are entering a special stage
@@ -6992,7 +7014,8 @@ SS_ChkEmldNum:
 
 SS_LoadData:
 		; Load player position data
-		lsl.w	#2,d0
+		add.w	d0,d0
+		add.w	d0,d0
 		lea		SS_StartLoc(pc,d0.w),a1
 		move.w	(a1)+,(v_player+obX).w
 		move.w	(a1)+,(v_player+obY).w

@@ -65,12 +65,22 @@ Obj09_Display:
 		bsr.w	Obj09_ChkItems_Nonsolid
 		bsr.w	Obj09_ChkItems_Solid
 		jsr		(SpeedToPos).l
+
+	; prevent players from going out of bounds (to work on later)
+;		move.w	obX(a0),d0		; get Sonic's X pos
+;		bmi.s	.oobLeft		; if it's negative, we're out of bounds to the left
+;		cmpi.w	#$9FF,d0		; did we go out of bounds to the right?
+;		bhs.s	.oobRight		; if yes, branch
+;		move.w	obY(a0),d0		; get Sonic's Y pos
+;		bmi.s	.oobTop			; if it's negative, we're out of bounds to the top
+;		cmpi.w	#$9FF,d0		; did we go out of bounds to the bottom?
+;		blo.s	@display		; if not, we're all good
+
 		bsr.w	SS_FixCamera
 
 	if S4SpecialStages=0
-		move.w	(v_ssangle).w,d0
-		add.w	(v_ssrotate).w,d0
-		move.w	d0,(v_ssangle).w
+		move.w	(v_ssrotate).w,d0
+		add.w	d0,(v_ssangle).w
 	endif
 
 		jsr		(Sonic_Animate).l
@@ -96,8 +106,8 @@ Obj09_ChkRight:
 		bsr.w	Obj09_MoveRight
 
 loc_1BA78:
-		move.b	(v_jpadhold2).w,d0
-		andi.b	#btnL+btnR,d0			; is left/right being pressed?
+		moveq	#btnLR,d0
+		and.b	(v_jpadhold2).w,d0		; is left/right being pressed?
 		bne.s	loc_1BAA8				; if yes, branch
 	; Apply friction
 		move.w	obInertia(a0),d0
@@ -105,7 +115,7 @@ loc_1BA78:
 		bmi.s	loc_1BA9A				; if inertia < 0
 		subi.w	#$C,d0					; decelerate
 		bcc.s	loc_1BA94
-		clr.w	d0						; clear to 0 if negative following deceleration
+		moveq	#0,d0					; clear to 0 if negative following deceleration
 
 loc_1BA94:
 		move.w	d0,obInertia(a0)		; apply change to inertia
@@ -115,14 +125,14 @@ loc_1BA94:
 loc_1BA9A:
 		addi.w	#$C,d0					; decelerate
 		bcc.s	loc_1BAA4
-		clr.w	d0						; clear to 0 if negative following deceleration
+		moveq	#0,d0					; clear to 0 if negative following deceleration
 
 loc_1BAA4:
 		move.w	d0,obInertia(a0)		; apply change to inertia
 
 loc_1BAA8:
-		move.b	(v_ssangle).w,d0
-		addi.b	#$20,d0
+		moveq	#$20,d0
+		add.b	(v_ssangle).w,d0
 		andi.b	#$C0,d0
 		neg.b	d0
 		jsr		(CalcSine).w
@@ -133,8 +143,8 @@ loc_1BAA8:
 		movem.l	d0-d1,-(sp)
 		move.l	obY(a0),d2
 		move.l	obX(a0),d3
-		bsr.w	sub_1BCE8
-		beq.s	loc_1BAF2
+		bsr.w	Obj09_Collision			; check for block collision
+		beq.s	loc_1BAF2				; branch if no collision
 		movem.l	(sp)+,d0-d1
 		sub.l	d1,obX(a0)
 		sub.l	d0,obY(a0)
@@ -171,16 +181,11 @@ loc_1BB14:
 
 loc_1BB1A:
 		subi.w	#$40,d0
-		bcc.s	loc_1BB22
-		nop	
-
-loc_1BB22:
 		move.w	d0,obInertia(a0)
 
 	else
-		move.w	(v_ssangle).w,d0
-		sub.w	(v_ssrotate).w,d0
-		move.w	d0,(v_ssangle).w
+		move.w	(v_ssrotate).w,d0
+		sub.w	d0,(v_ssangle).w
 	endif
 		rts
 ; End of function Obj09_MoveLeft
@@ -206,16 +211,11 @@ loc_1BB42:
 
 loc_1BB48:
 		addi.w	#$40,d0
-		bcc.s	loc_1BB50
-		nop	
-
-loc_1BB50:
 		move.w	d0,obInertia(a0)
 
 	else
-		move.w	(v_ssangle).w,d0
-		add.w	(v_ssrotate).w,d0
-		move.w	d0,(v_ssangle).w
+		move.w	(v_ssrotate).w,d0
+		add.w	d0,(v_ssangle).w
 	endif
 		rts
 ; End of function Obj09_MoveRight
@@ -225,22 +225,25 @@ loc_1BB50:
 
 
 Obj09_Jump:
-		move.b	(v_jpadpress2).w,d0
-		andi.b	#btnABC,d0		; is A,	B or C pressed?
-		beq.s	Obj09_NoJump	; if not, branch
-		move.b	(v_ssangle).w,d0
+		moveq	#btnABC,d0				; is A, B or C pressed?
+		and.b	(v_jpadpress2).w,d0
+		beq.s	Obj09_NoJump			; if not, branch
 
-	if SmoothSpecialStages=0	; Cinossu Smooth Special Stages
-		andi.b	#$FC,d0
+	if ~~SmoothSpecialStages	; Cinossu Smooth Special Stages
+		moveq	#$FC,d0
+		and.b	(v_ssangle).w,d0		; original rotation
+	else
+		move.b	(v_ssangle).w,d0		; smooth rotation
 	endif						; Smooth Special Stages End
 
 		neg.b	d0
 		subi.b	#$40,d0
 		jsr		(CalcSine).w
-		muls.w	#$680,d1
+		move.w	#$680,d2				; multiply by register instead of by the same immediate value twice
+		muls.w	d2,d1
 		asr.l	#8,d1
 		move.w	d1,obVelX(a0)
-		muls.w	#$680,d0
+		muls.w	d2,d0
 		asr.l	#8,d0
 		move.w	d0,obVelY(a0)
 		bset	#staAir,obStatus(a0)
@@ -262,42 +265,47 @@ Obj09_NoJump:
 
 Obj09_JumpHeight:
 	; Mercury Fixed SS Jumping Physics
-		move.b	(v_jpadhold2).w,d0		; is the jump button up?
-		andi.b	#btnABC,d0
+		moveq	#btnABC,d0				; is A, B or C held?
+		and.b	(v_jpadhold2).w,d0
 		bne.s	locret_1BBB4			; if not, branch to return
 		btst	#staSSJump,obStatus(a0)	; did Sonic jump or is he just falling or hit by a bumper?
 		beq.s	locret_1BBB4			; if not, branch to return
-		move.b	(v_ssangle).w,d0		; get SS angle
 
-	if SmoothSpecialStages=0	; Cinossu Smooth Special Stages
-		andi.b	#$FC,d0
+	if ~~SmoothSpecialStages	; Cinossu Smooth Special Stages
+		moveq	#$FC,d0
+		and.b	(v_ssangle).w,d0		; original rotation
+	else
+		move.b	(v_ssangle).w,d0		; smooth rotation
 	endif						; Smooth Special Stages End
 
 		neg.b	d0
 		subi.b	#$40,d0
 		jsr		(CalcSine).w			
-		move.w	obVelY(a0),d2		; get Y speed
-		muls.w	d2,d0				; multiply Y speed by sin
-		asr.l	#8,d0				; find the new Y speed
-		move.w	obVelX(a0),d2		; get X speed
-		muls.w	d2,d1				; multiply X speed by cos
-		asr.l	#8,d1				; find the new X speed
-		add.w	d0,d1				; combine the two speeds
-		cmpi.w	#$400,d1			; compare the combined speed with the jump release speed
-		ble.s	locret_1BBB4		; if it's less, branch to return
-		move.b	(v_ssangle).w,d0
+		move.w	obVelY(a0),d2			; get Y speed
+		muls.w	d2,d0					; multiply Y speed by sin
+		asr.l	#8,d0					; find the new Y speed
+		move.w	obVelX(a0),d2			; get X speed
+		muls.w	d2,d1					; multiply X speed by cos
+		asr.l	#8,d1					; find the new X speed
+		add.w	d0,d1					; combine the two speeds
+		move.w	#$400,d2				; compare and multiply by register instead of by the same immediate value each time
+		cmp.w	d2,d1					; compare the combined speed with the jump release speed
+		ble.s	locret_1BBB4			; if it's less, branch to return
 
-	if SmoothSpecialStages=0	; Cinossu Smooth Special Stages
-		andi.b	#$FC,d0
+	if ~~SmoothSpecialStages	; Cinossu Smooth Special Stages
+		moveq	#$FC,d0
+		and.b	(v_ssangle).w,d0		; original rotation
+	else
+		move.b	(v_ssangle).w,d0		; smooth rotation
 	endif						; Smooth Special Stages End
 
 		neg.b	d0
 		subi.b	#$40,d0
 		jsr		(CalcSine).w
-		muls.w	#$400,d1
+		muls.w	d2,d1
 		asr.l	#8,d1
 		move.w	d1,obVelX(a0)
-		muls.w	#$400,d0
+		muls.w	d2,d0
 		asr.l	#8,d0
 		move.w	d0,obVelY(a0)			; set the speed to the jump release speed
 		bclr	#staSSJump,obStatus(a0)	; clear "Sonic has jumped" flag
@@ -317,14 +325,14 @@ SS_FixCamera:
 		move.w	obY(a0),d2
 		move.w	obX(a0),d3
 		move.w	(v_screenposx).w,d0
-		subi.w	#$A0,d3
+		subi.w	#320/2,d3				; $A0
 		bcs.s	loc_1BBCE
 		sub.w	d3,d0
 		sub.w	d0,(v_screenposx).w
 
 loc_1BBCE:
 		move.w	(v_screenposy).w,d0
-		subi.w	#$70,d2
+		subi.w	#224/2,d2				; $70
 		bcs.s	locret_1BBDE
 		sub.w	d2,d0
 		sub.w	d0,(v_screenposy).w
@@ -344,15 +352,14 @@ Obj09_ExitStage:		; Routine 4
 loc_1BBF4:
 		cmpi.w	#$3000,(v_ssrotate).w
 		blt.s	loc_1BC12
+		addq.b	#2,obRoutine(a0)
 		clr.w	(v_ssrotate).w
 		move.w	#$4000,(v_ssangle).w
-		addq.b	#2,obRoutine(a0)
-		move.w	#$3C,objoff_38(a0)
+		move.w	#60,objoff_38(a0)
 
 loc_1BC12:
-		move.w	(v_ssangle).w,d0
-		add.w	(v_ssrotate).w,d0
-		move.w	d0,(v_ssangle).w
+		move.w	(v_ssrotate).w,d0
+		add.w	d0,(v_ssangle).w
 		jsr		(Sonic_Animate).l
 		jsr		(Sonic_LoadGfx).l
 		bsr.w	SS_FixCamera
@@ -376,33 +383,32 @@ loc_1BC40:
 Obj09_Fall:
 		move.l	obY(a0),d2
 		move.l	obX(a0),d3
-		move.b	(v_ssangle).w,d0
 
-	if SmoothSpecialStages=0	; Cinossu Smooth Special Stages
-		andi.b	#$FC,d0
+	if ~~SmoothSpecialStages	; Cinossu Smooth Special Stages
+		moveq	#$FC,d0
+		and.b	(v_ssangle).w,d0		; original rotation
+	else
+		move.b	(v_ssangle).w,d0		; smooth rotation
 	endif						; Smooth Special Stages End
 
 		jsr		(CalcSine).w
-		move.w	obVelX(a0),d4
-		ext.l	d4
-		asl.l	#8,d4
-		muls.w	#$2A,d0
-		add.l	d4,d0
-		move.w	obVelY(a0),d4
-		ext.l	d4
-		asl.l	#8,d4
+		muls.w	#$2A,d0					; multiply sine and cosine first
 		muls.w	#$2A,d1
-		add.l	d4,d1
+		movem.w	obVelX(a0),d4-d5		; load xy speeds to d4 and d5, respectively
+		asl.l	#8,d4
+		asl.l	#8,d5
+		add.l	d4,d0
+		add.l	d5,d1
 		add.l	d0,d3
-		bsr.w	sub_1BCE8
-		beq.s	loc_1BCB0
+		bsr.w	Obj09_Collision			; check for block collision
+		beq.s	loc_1BCB0				; branch if no collision
 		sub.l	d0,d3
 		moveq	#0,d0
 		move.w	d0,obVelX(a0)
 		bclr	#staAir,obStatus(a0)
 		add.l	d1,d2
-		bsr.w	sub_1BCE8
-		beq.s	loc_1BCC6
+		bsr.w	Obj09_Collision			; check for block collision
+		beq.s	loc_1BCC6				; branch if no collision
 		sub.l	d1,d2
 		moveq	#0,d1
 		move.w	d1,obVelY(a0)
@@ -411,8 +417,8 @@ Obj09_Fall:
 
 loc_1BCB0:
 		add.l	d1,d2
-		bsr.w	sub_1BCE8
-		beq.s	loc_1BCD4
+		bsr.w	Obj09_Collision			; check for block collision
+		beq.s	loc_1BCD4				; branch if no collision
 		sub.l	d1,d2
 		moveq	#0,d1
 		move.w	d1,obVelY(a0)
@@ -421,16 +427,14 @@ loc_1BCB0:
 loc_1BCC6:
 		asr.l	#8,d0
 		asr.l	#8,d1
-		move.w	d0,obVelX(a0)
-		move.w	d1,obVelY(a0)
+		movem.w	d0-d1,obVelX(a0)		; load d0 and d1 to x/y speeds, respectively
 		rts	
 ; ===========================================================================
 
 loc_1BCD4:
 		asr.l	#8,d0
 		asr.l	#8,d1
-		move.w	d0,obVelX(a0)
-		move.w	d1,obVelY(a0)
+		movem.w	d0-d1,obVelX(a0)		; load d0 and d1 to x/y speeds, respectively
 		bset	#staAir,obStatus(a0)
 		rts	
 ; End of function Obj09_Fall
@@ -439,7 +443,7 @@ loc_1BCD4:
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 ; d0=obVelX, d1=obVelY, d2=obY, d3=obX
 
-sub_1BCE8:
+Obj09_Collision:	; sub_1BCE8:
 		lea		(v_ssbuffer1&$FFFFFF).l,a1
 		moveq	#0,d4
 		swap	d2
@@ -458,19 +462,20 @@ sub_1BCE8:
 		adda.w	d4,a1
 
 ; Using stage coordinates, check whether or not there's a solid block at that location
-		moveq	#0,d5
-		move.b	(a1)+,d4
+; this works by taking a 2x2 grid of the four nearest blocks to Sonic and checking them one by one
+		moveq	#0,d5					; set to no collision detected
+		move.b	(a1)+,d4				; get top left block
 		bsr.s	Obj09_ChkForSolids
-		move.b	(a1)+,d4
+		move.b	(a1)+,d4				; get top right block
 		bsr.s	Obj09_ChkForSolids
-		adda.w	#$7E,a1
-		move.b	(a1)+,d4
+		adda.w	#$7E,a1					; go to next row
+		move.b	(a1)+,d4				; get bottom left block
 		bsr.s	Obj09_ChkForSolids
-		move.b	(a1)+,d4
+		move.b	(a1)+,d4				; get bottom right block
 		bsr.s	Obj09_ChkForSolids
-		tst.b	d5
+		tst.b	d5						; set ccr for whether we hit anything. If no, d5 = 0.
 		rts	
-; End of function sub_1BCE8
+; End of function Obj09_Collision
 
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -478,21 +483,23 @@ sub_1BCE8:
 
 Obj09_ChkForSolids: ;sub_1BD30:
 		beq.s	.noSolidFound			; if no object detected, branch and exit
+
 		cmpi.b	#SSBlock_1Up,d4			; did Sonic collide w/ a 1-Up icon?
 		beq.s	.noSolidFound			; if yes, branch and exit
+
 		cmpi.b	#SSBlock_Ring,d4		; is the object ID < $3A (ring)?
 		blo.s	.solidFound				; if yes, this object was solid.
 		cmpi.b	#SSBlock_GlassAni1,d4	; is this object animated glass?
 		bhs.s	.solidFound				; if yes, this object was solid
 
 .noSolidFound:
-		rts	
+		rts								; block is not solid
 ; ===========================================================================
 
 .solidFound:
-		move.b	d4,objoff_30(a0)
-		move.l	a1,objoff_32(a0)
-		moveq	#-1,d5
+		move.b	d4,objoff_30(a0)		; copy collided ID of block
+		move.l	a1,objoff_32(a0)		; copy RAM location of collided block
+		moveq	#-1,d5					; register collision
 		rts	
 ; End of function Obj09_ChkForSolids
 
@@ -504,15 +511,13 @@ Obj09_ChkForSolids: ;sub_1BD30:
 ; Rework this in a similar manner to the Monitor Icon (Object 2E)
 Obj09_ChkItems_Nonsolid:
 		lea		(v_ssbuffer1&$FFFFFF).l,a1
-		moveq	#0,d4
-		move.w	obY(a0),d4
-		addi.w	#$50,d4
+		moveq	#$50,d4
+		add.w	obY(a0),d4
 		divu.w	#$18,d4
 		mulu.w	#$80,d4
 		adda.l	d4,a1
-		moveq	#0,d4
-		move.w	obX(a0),d4
-		addi.w	#$20,d4
+		moveq	#$20,d4
+		add.w	obX(a0),d4
 		divu.w	#$18,d4
 		adda.w	d4,a1
 		move.b	(a1),d4					; d4 = SS block being collided with.
@@ -647,6 +652,7 @@ Obj09_MakeGhostSolid:
 		lea		(v_ssblockbuffer&$FFFFFF).l,a1
 		moveq	#(v_ssblockbuffer_end-v_ssblockbuffer)/$80-1,d1
 
+; This needs to be optimized (Consult S1 in SCE)
 Obj09_GhostLoop2:
 		moveq	#$40-1,d2
 
@@ -704,10 +710,11 @@ Obj09_ChkBumper:
 		sub.w	obY(a0),d2
 		jsr		(CalcAngle).w
 		jsr		(CalcSine).w
-		muls.w	#-$700,d1
+		move.w	#-$700,d2					; multiply by register instead of by the same immediate value twice
+		muls.w	d2,d1
 		asr.l	#8,d1
 		move.w	d1,obVelX(a0)
-		muls.w	#-$700,d0
+		muls.w	d2,d0
 		asr.l	#8,d0
 		move.w	d0,obVelY(a0)
 		bset	#staAir,obStatus(a0)
@@ -742,10 +749,10 @@ Obj09_UPblock:
 		bne.s	Obj09_DOWNblock
 		tst.b	objoff_36(a0)
 		bne.w	Obj09_NoGlass
-		move.b	#$1E,objoff_36(a0)
+		move.b	#30,objoff_36(a0)
 		btst	#6,(v_ssrotate+1).w
 		beq.s	Obj09_UPsnd
-		asl		(v_ssrotate).w				; increase stage rotation speed
+		asl.w	(v_ssrotate).w				; increase stage rotation speed
 		movea.l	objoff_32(a0),a1
 		subq.l	#1,a1
 		move.b	#SSBlock_DOWN,(a1)			; change item to a "DOWN" block
@@ -760,10 +767,10 @@ Obj09_DOWNblock:
 		bne.s	Obj09_Rblock
 		tst.b	objoff_36(a0)
 		bne.w	Obj09_NoGlass
-		move.b	#$1E,objoff_36(a0)
+		move.b	#30,objoff_36(a0)
 		btst	#6,(v_ssrotate+1).w
 		bne.s	Obj09_DOWNsnd
-		asr		(v_ssrotate).w				; reduce stage rotation speed
+		asr.w	(v_ssrotate).w				; reduce stage rotation speed
 		movea.l	objoff_32(a0),a1
 		subq.l	#1,a1
 		move.b	#SSBlock_UP,(a1)			; change item to an "UP" block
@@ -778,7 +785,7 @@ Obj09_Rblock:
 		bne.s	Obj09_ChkGlass
 		tst.b	objoff_37(a0)
 		bne.w	Obj09_NoGlass
-		move.b	#$1E,objoff_37(a0)
+		move.b	#30,objoff_37(a0)
 		bsr.w	SS_RemoveCollectedItem
 		bne.s	Obj09_RevStage
 		move.b	#4,(a2)
