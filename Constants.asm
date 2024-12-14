@@ -482,7 +482,6 @@ boss_fz_y:		equ $510
 boss_fz_end:	equ boss_fz_x+$2B0
 
 ; Tile VRAM Locations
-
 ; Shared
 ArtTile_GHZ_MZ_Swing:			equ $39C				; ✓ -- GHZ and MZ
 ArtTile_Fireball:				equ $3AA				; ✓ -- MZ and SLZ
@@ -769,3 +768,9 @@ SSBlock_GlassAni3:				equ $4D		; not used in initial layouts (Only used in real-
 SSBlock_GlassAni4:				equ $4E		; not used in initial layouts (Only used in real-time for animation)
 
 	endif
+
+; collision flag (obColType) constants
+colEnemy:						equ $00
+colPowerup:						equ $40
+colHarmful:						equ $80
+colSpecial:						equ $C0
