@@ -2385,6 +2385,7 @@ Level_SkipHUDScroll:
 		bsr.w	SynchroAnimate
 		bsr.w	SignpostArtLoad
 		jsr		(AnimateLevelGfx).l
+		clr.b	(f_gfxbigring).w
 
 		cmpi.b	#id_Demo,(v_gamemode).w
 		beq.s	Level_ChkDemo				; if mode is 8 (demo), branch
@@ -4345,6 +4346,8 @@ locret_6C1E:
 		rts	
 ; End of function GetBlockData
 
+		include	"_incObj/sub AnimateSprite.asm"		; Moved here to make every jmp use ().w address mode
+
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
@@ -4371,9 +4374,6 @@ Calc_VRAM_Pos_2:
 		move.w	d4,d0
 		rts	
 ; End of function Calc_VRAM_Pos
-
-
-		include	"_incObj/sub AnimateSprite.asm"		; Moved here to make every jmp use ().w address mode
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	load tiles as soon as the level	appears

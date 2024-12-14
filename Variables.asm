@@ -316,7 +316,7 @@ v_palss_index:			ds.w	1		; palette cycling in Special Stage - index into palette
 v_ssbganim:				ds.w	1		; Special Stage background animation
 v_camera_pan:			ds.w	1		; Extended Camera - how far the camera/view is panned to the left or right of Sonic (2 bytes)
 v_obj31ypos:			ds.w	1		; y-position of object 31 (MZ stomper)
-					ds.b	1		; unused
+f_gfxbigring:			ds.b	1		; flag noting whether or not ring gfx have been loaded
 v_bossstatus:			ds.b	1		; status of boss and prison capsule (01 = boss defeated; 02 = prison opened)
 v_trackpos:				ds.w	1		; position tracking reference number
 v_trackbyte = 			v_trackpos+1	; low byte for position tracking
