@@ -277,7 +277,11 @@ GotThroughAct:
 		move.b	#1,(f_endactbonus).w
 		moveq	#0,d0
 		move.b	(v_timemin).w,d0
-		mulu.w	#60,d0		; convert minutes to seconds
+		add.w	d0,d0				; multiply by 60 (1 second)
+		add.w	d0,d0				; Optimization from S1 in S.C.E.
+		move.w	d0,d1
+		lsl.w	#4,d0
+		sub.w	d1,d0
 		moveq	#0,d1
 		move.b	(v_timesec).w,d1
 		add.w	d1,d0		; add up your time
@@ -291,7 +295,11 @@ GotThroughAct:
 		add.w	d0,d0
 		move.w	TimeBonuses(pc,d0.w),(v_timebonus).w	; set time bonus
 		move.w	(v_rings).w,d0							; load number of rings
-		mulu.w	#10,d0									; multiply by 10
+		add.w	d0,d0									; multiply by 10
+		move.w	d0,d1									; Optimization from S1 in S.C.E.
+		add.w	d0,d0
+		add.w	d0,d0
+		add.w	d1,d0
 		move.w	d0,(v_ringbonus).w						; set ring bonus
 
 	if CoolBonusEnabled

@@ -46,7 +46,10 @@ Elev_Main:	; Routine 0
 	; Elevator Spawners:
 		addq.b	#4,obRoutine(a0)	; goto Elev_MakeMulti next
 		andi.w	#$7F,d0
-		mulu.w	#6,d0
+		add.w	d0,d0				; multiply by 6
+		move.w	d0,d1				; Optimization from S1 in S.C.E.
+		add.w	d0,d0
+		add.w	d1,d0
 		move.w	d0,elev_dist(a0)
 		move.w	d0,objoff_3E(a0)
 		addq.l	#4,sp

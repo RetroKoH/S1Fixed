@@ -11,8 +11,12 @@ Scenery:
 Scen_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		moveq	#0,d0
-		move.b	obSubtype(a0),d0 ; copy object subtype to d0
-		mulu.w	#$A,d0		; multiply by $A
+		move.b	obSubtype(a0),d0		; copy object subtype to d0
+		add.w	d0,d0					; multiply by 10 ($A)
+		move.w	d0,d1					; Optimization from S1 in S.C.E.
+		add.w	d0,d0
+		add.w	d0,d0
+		add.w	d1,d0
 		lea		Scen_Values(pc,d0.w),a1
 		move.l	(a1)+,obMap(a0)
 		move.w	(a1)+,obGfx(a0)

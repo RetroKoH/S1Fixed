@@ -23,9 +23,13 @@ Pole_Main:	; Routine 0
 		move.b	#8,obActWid(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$E1,obColType(a0)
-		moveq	#0,d0
-		move.b	obSubtype(a0),d0			; get object type
-		mulu.w	#60,d0						; multiply by 60 (1 second)
+		moveq	#$F,d0
+		and.b	obSubtype(a0),d0			; get object type (clamp at 0-F)
+		add.w	d0,d0						; multiply by 60 (1 second)
+		add.w	d0,d0						; Optimization from S1 in S.C.E.
+		move.w	d0,d1
+		lsl.w	#4,d0
+		sub.w	d1,d0
 		move.w	d0,pole_time(a0)			; set breakage time
 
 Pole_Action:	; Routine 2
