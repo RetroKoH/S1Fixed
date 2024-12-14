@@ -2394,6 +2394,7 @@ Level_SkipHUDScroll:
 		bsr.w	SynchroAnimate
 		bsr.w	SignpostArtLoad
 		jsr		(AnimateLevelGfx).l
+		clr.b	(f_gfxbigring).w
 
 		cmpi.b	#id_Demo,(v_gamemode).w
 		beq.s	Level_ChkDemo				; if mode is 8 (demo), branch

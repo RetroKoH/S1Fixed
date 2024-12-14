@@ -42,7 +42,12 @@ GRing_Okay:
 
 GRing_Animate:	; Routine 2
 		move.b	(v_ani1_frame).w,obFrame(a0)
+		tst.b	(f_gfxbigring).w				; have rings already been drawn?
+		bne.s	.dontload						; if yes, branch
 		bsr.w	GRing_LoadGfx					; RetroKoH VRAM Overhaul
+		move.b	#1,(f_gfxbigring).w
+
+.dontload:
 		offscreen.w	DeleteObject				; ProjectFM S3K Objects Manager
 		jmp		(DisplayAndCollision).l			; S3K TouchResponse
 ; ===========================================================================
