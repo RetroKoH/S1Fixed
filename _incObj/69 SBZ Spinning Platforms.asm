@@ -24,10 +24,13 @@ Spin_Main:	; Routine 0
 		ori.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$40,obActWid(a0)			; Ralakimus Trapdoor Glitch Fix
-		moveq	#0,d0
-		move.b	obSubtype(a0),d0
-		andi.w	#$F,d0
-		mulu.w	#$3C,d0
+		moveq	#$F,d0
+		and.b	obSubtype(a0),d0
+		add.w	d0,d0						; multiply by 60 (1 second)
+		add.w	d0,d0						; Optimization from S1 in S.C.E.
+		move.w	d0,d1
+		lsl.w	#4,d0
+		sub.w	d1,d0
 		move.w	d0,spin_timelen(a0)
 		tst.b	obSubtype(a0)		; is subtype $8x?
 		bpl.s	Spin_Trapdoor		; if not, branch
@@ -41,7 +44,10 @@ Spin_Main:	; Routine 0
 		move.b	obSubtype(a0),d0	; get object type
 		move.w	d0,d1
 		andi.w	#$F,d0				; read only the	2nd digit
-		mulu.w	#6,d0				; multiply by 6
+		add.w	d0,d0				; multiply by 6
+		move.w	d0,d1				; Optimization from S1 in S.C.E.
+		add.w	d0,d0
+		add.w	d1,d0
 		move.w	d0,spin_timer(a0)
 		move.w	d0,spin_timelen(a0)	; set time delay
 		andi.w	#$70,d1
