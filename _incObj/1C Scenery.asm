@@ -10,14 +10,12 @@ Scenery:
 
 Scen_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
-		moveq	#0,d0
-		move.b	obSubtype(a0),d0 		; copy object subtype to d0
-		add.w	d0,d0					; multiply by 10 ($A)
-		move.w	d0,d1					; Optimization from S1 in S.C.E.
-		add.w	d0,d0
-		add.w	d0,d0
-		add.w	d1,d0
-		lea		Scen_Values(pc,d0.w),a1
+		lea		Scen_Cannon,a1
+		tst.b	obSubtype(a0)
+		beq.s	.notbridge
+		lea		Scen_Bridge,a1
+
+.notbridge:
 		move.l	(a1)+,obMap(a0)
 		move.w	(a1)+,obGfx(a0)
 		ori.b	#4,obRender(a0)
@@ -32,22 +30,13 @@ Scen_ChkDel:	; Routine 2
 ; ---------------------------------------------------------------------------
 ; Variables for	object $1C are stored in an array
 ; ---------------------------------------------------------------------------
-Scen_Values:
+Scen_Cannon:
 		dc.l Map_Scen											; mappings address
 		dc.w make_art_tile(ArtTile_SLZ_Fireball_Launcher,2,0)	; VRAM setting
 		dc.b 0,	8                                   			; frame, width
 		dc.w priority2											; priority
 
-		dc.l Map_Scen
-		dc.w make_art_tile(ArtTile_SLZ_Fireball_Launcher,2,0)
-		dc.b 0,	8
-		dc.w priority2
-
-		dc.l Map_Scen
-		dc.w make_art_tile(ArtTile_SLZ_Fireball_Launcher,2,0)
-		dc.b 0,	8
-		dc.w priority2
-
+Scen_Bridge:
 		dc.l Map_Bri
 		dc.w make_art_tile(ArtTile_GHZ_Bridge,2,0)
 		dc.b 1,	$10
