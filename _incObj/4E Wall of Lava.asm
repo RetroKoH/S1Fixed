@@ -39,7 +39,7 @@ LWall_Main:	; Routine 0
 		move.w	obY(a0),obY(a1)
 		move.w	#priority1,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		clr.b	obAnim(a1)
-		move.b	#$94,obColType(a1)
+		move.b	#(colHarmful|colSz_64x32),obColType(a1)
 		
 		bset	#shPropFlame,obShieldProp(a1)	; Negated by Flame Shield
 		

@@ -55,18 +55,18 @@ loc_17B60:
 		move.b	d5,(a2)+
 		move.b	#4,obRender(a1)
 		move.b	#8,obActWid(a1)
-		move.w	#priority6,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
+		move.w	#priority6,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
 		move.l	objoff_34(a0),objoff_34(a1)
-		dbf		d1,GBall_MakeLinks ; repeat sequence 5 more times
+		dbf		d1,GBall_MakeLinks				; repeat sequence 5 more times
 
 GBall_MakeBall:
 		move.b	#8,obRoutine(a1)
-		move.l	#Map_GBall,obMap(a1)		; load different mappings for final link
+		move.l	#Map_GBall,obMap(a1)			; load different mappings for final link
 		move.w	#make_art_tile(ArtTile_GHZ_Giant_Ball,2,0),obGfx(a1) ; use different graphics
 		move.b	#1,obFrame(a1)
-		move.w	#priority5,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$81,obColType(a1)			; make object hurt Sonic
-		move.w	a0,objoff_30(a1)			; store address of head chain object to transfer angle to the ball
+		move.w	#priority5,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
+		move.b	#(colHarmful|colSz_20x20),obColType(a1)	; make object hurt Sonic
+		move.w	a0,objoff_30(a1)				; store address of head chain object to transfer angle to the ball
 		rts	
 ; ===========================================================================
 

@@ -17,7 +17,7 @@ SEgg_Index:		offsetTable
 SEgg_Main:	; Routine 0
 		move.w	#boss_sbz2_x+$110,obX(a0)
 		move.w	#boss_sbz2_y+$94,obY(a0)
-		move.b	#$F,obColType(a0)
+		move.b	#(colEnemy|colSz_24x24),obColType(a0)
 		move.b	#$10,obColProp(a0)
 		bclr	#staFlipX,obStatus(a0)
 		clr.b	ob2ndRout(a0)

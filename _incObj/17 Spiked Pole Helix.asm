@@ -38,7 +38,7 @@ Hel_Main:	; Routine 0
 		move.b	#$80,obActWid(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$84,obColType(a0)			; make object harmful
+		move.b	#(colHarmful|colSz_4x16),obColType(a0)	; make object harmful
 		move.w	obX(a0),obHelOrigX(a0)		; save xpos
 		andi.b	#7,obSubtype(a0)			; cap at 8 spikes
 		moveq	#0,d0

@@ -59,10 +59,10 @@ SStom_Main:	; Routine 0
 		move.b	obSubtype(a0),obSubtype(a1)
 		move.b	#$20,obActWid(a1)
 		move.w	d2,objoff_34(a1)
-		move.w	#priority4,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		cmpi.b	#1,(a2)						; is subobject spikes?
-		bne.s	.notspikes					; if not, branch
-		move.b	#$91,obColType(a1)			; use harmful collision type
+		move.w	#priority4,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
+		cmpi.b	#1,(a2)							; is subobject spikes?
+		bne.s	.notspikes						; if not, branch
+		move.b	#(colHarmful|colSz_16x24),obColType(a1)	; use harmful collision type
 
 .notspikes:
 		move.b	(a2)+,obFrame(a1)

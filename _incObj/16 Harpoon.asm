@@ -34,7 +34,7 @@ Harp_Move:	; Routine 2
 		bra.w	RememberState
 
 .types:
-		dc.b $9B, $9C, $9D, $9E, $9F, $A0
+		dc.b (colHarmful|$1B), (colHarmful|$1C), (colHarmful|$1D), (colHarmful|$1E), (colHarmful|$1F), (colHarmful|$20)
 		even
 
 Harp_Wait:	; Routine 4

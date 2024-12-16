@@ -15,7 +15,7 @@ Bump_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.b	#$10,obActWid(a0)
 		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$D7,obColType(a0)
+		move.b	#(colSpecial|colSz_8x8_2),obColType(a0)
 
 Bump_Hit:	; Routine 2
 		tst.b	obColProp(a0)			; has Sonic touched the	bumper?

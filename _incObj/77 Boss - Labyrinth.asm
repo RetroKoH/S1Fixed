@@ -25,7 +25,7 @@ BossLabyrinth_Main:	; Routine 0
 		move.w	#boss_lz_y+$500,obY(a0)
 		move.w	obX(a0),objoff_30(a0)
 		move.w	obY(a0),objoff_38(a0)
-		move.b	#$F,obColType(a0)
+		move.b	#(colEnemy|colSz_24x24),obColType(a0)
 		move.b	#8,obColProp(a0)				; set number of hits to 8
 		move.w	#priority4,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		lea		BossLabyrinth_ObjData(pc),a2
@@ -116,7 +116,7 @@ loc_17F7E:
 		move.w	d0,(a1)
 		subq.b	#1,objoff_3E(a0)
 		bne.s	locret_17F8C
-		move.b	#$F,obColType(a0)
+		move.b	#(colEnemy|colSz_24x24),obColType(a0)
 
 locret_17F8C:
 		rts	

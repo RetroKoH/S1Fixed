@@ -38,7 +38,7 @@ GRing_Main:	; Routine 0
 
 GRing_Okay:
 		addq.b	#2,obRoutine(a0)
-		move.b	#$52,obColType(a0)
+		move.b	#(colPowerup|colSz_8x16),obColType(a0)
 
 GRing_Animate:	; Routine 2
 		move.b	(v_ani1_frame).w,obFrame(a0)

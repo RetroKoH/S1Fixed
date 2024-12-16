@@ -403,7 +403,7 @@ loc_1A192:
 		bhs.w	loc_1A15C
 		move.w	#$180,obVelX(a0)
 		move.w	#-$18,obVelY(a0)
-		move.b	#$F,obColType(a0)
+		move.b	#(colEnemy|colSz_24x24),obColType(a0)
 		addq.b	#2,objoff_34(a0)
 		bra.w	loc_1A15C
 ; ===========================================================================
@@ -429,7 +429,7 @@ loc_1A1FC:
 ; ===========================================================================
 
 loc_1A210:
-		move.b	#$F,obColType(a0)
+		move.b	#(colEnemy|colSz_24x24),obColType(a0)
 
 loc_1A216:
 		cmpi.w	#boss_fz_end+$90,(v_player+obX).w
