@@ -167,7 +167,7 @@ Geyser_Main:	; Routine 0
 		addi.w	#$60,obY(a1)
 		move.w	objoff_30(a0),objoff_30(a1)
 		addi.w	#$60,objoff_30(a1)
-		move.b	#$93,obColType(a1)
+		move.b	#(colHarmful|colSz_32x112),obColType(a1)
 
 		bset	#shPropFlame,obShieldProp(a1)	; Negated by Flame Shield
 

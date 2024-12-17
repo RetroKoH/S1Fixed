@@ -40,7 +40,7 @@ BossSpikeball_Main:	; Routine 0
 		move.b	#1,obFrame(a0)
 		ori.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$8B,obColType(a0)
+		move.b	#(colHarmful|colSz_8x8),obColType(a0)
 		move.b	#$C,obActWid(a0)
 		movea.l	objoff_3C(a0),a1
 		move.w	obX(a1),objoff_30(a0)
@@ -344,7 +344,7 @@ BossSpikeball_Loop:
 		move.w	obY(a0),obY(a1)
 		move.w	(a2)+,obVelX(a1)
 		move.w	(a2)+,obVelY(a1)
-		move.b	#$98,obColType(a1)
+		move.b	#(colHarmful|colSz_4x4),obColType(a1)
 
 		bset	#shPropReflect,obShieldProp(a1)	; Reflected by Elemental Shields
 

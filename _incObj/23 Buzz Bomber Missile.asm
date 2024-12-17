@@ -33,7 +33,7 @@ Msl_Main:	; Routine 0
 		beq.s	Msl_Animate						; if not, branch
 
 		move.b	#8,obRoutine(a0)				; run "Msl_FromNewt" routine
-		move.b	#$87,obColType(a0)
+		move.b	#(colHarmful|colSz_6x6),obColType(a0)
 		move.b	#1,obAnim(a0)
 		bra.s	Msl_Animate2
 ; ===========================================================================
@@ -78,7 +78,7 @@ Msl_ChkCancel:
 Msl_FromBuzz:	; Routine 4
 		btst	#7,obStatus(a0)
 		bne.s	.explode
-		move.b	#$87,obColType(a0)
+		move.b	#(colHarmful|colSz_6x6),obColType(a0)
 		move.b	#1,obAnim(a0)
 		bsr.w	SpeedToPos
 		move.w	(v_limitbtm2).w,d0

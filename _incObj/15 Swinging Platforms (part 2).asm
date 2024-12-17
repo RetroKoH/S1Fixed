@@ -107,7 +107,7 @@ Swing_Display:	; Routine $A
 		tst.b	obColType(a0)
 		beq.w	DisplaySprite
 
-		cmpi.b	#$81,obColType(a0)		; is object type $1X?
+		cmpi.b	#(colHarmful|colSz_20x20),obColType(a0)		; is object type $1X?
 		bne.s	.notwreckingball
 ; The following only applies to the wrecking ball
 		moveq	#0,d0

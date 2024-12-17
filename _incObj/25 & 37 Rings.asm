@@ -30,7 +30,7 @@ Ring_Main:	; Routine 0 -- Stripped down init routine -- RetroKoH S3K Rings Manag
 		move.w	#make_art_tile(ArtTile_Ring,1,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority2,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$47,obColType(a0)
+		move.b	#(colPowerup|colSz_6x6),obColType(a0)
 		move.b	#8,obActWid(a0
 
 Ring_Animate:	; Routine 2
@@ -156,7 +156,7 @@ RLoss_Count:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Ring,1,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$47,obColType(a1)
+		move.b	#(colPowerup|colSz_6x6),obColType(a1)
 		move.b	#8,obActWid(a1)
 		move.w  (a3)+,obVelX(a1)	; move the data contained in the array to the x velocity and increment the address in a3
 		move.w  (a3)+,obVelY(a1)	; move the data contained in the array to the y velocity and increment the address in a3
@@ -185,7 +185,7 @@ RLoss_Count:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Ring,1,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$47,obColType(a1)
+		move.b	#(colPowerup|colSz_6x6),obColType(a1)
 		move.b	#8,obActWid(a1)
 		move.w  (a3)+,obVelX(a1)	; move the data contained in the array to the x velocity and increment the address in a3
 		move.w  (a3)+,obVelY(a1)	; move the data contained in the array to the y velocity and increment the address in a3
@@ -306,7 +306,7 @@ RAttract_Init:
 		move.w	#make_art_tile(ArtTile_Ring,1,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority2,obPriority(a0)
-		move.b	#$47,obColType(a0)
+		move.b	#(colPowerup|colSz_6x6),obColType(a0)
 		move.b	#8,obActWid(a0)
 		move.b	#8,obHeight(a0)
 		move.b	#8,obWidth(a0)

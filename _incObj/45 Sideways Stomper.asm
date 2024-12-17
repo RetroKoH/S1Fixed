@@ -62,7 +62,7 @@ SStom_Main:	; Routine 0
 		move.w	#priority4,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		cmpi.b	#1,(a2)						; is subobject spikes?
 		bne.s	.notspikes					; if not, branch
-		move.b	#$91,obColType(a1)			; use harmful collision type
+		move.b	#(colHarmful|colSz_16x24),obColType(a1)			; use harmful collision type
 
 .notspikes:
 		move.b	(a2)+,obFrame(a1)

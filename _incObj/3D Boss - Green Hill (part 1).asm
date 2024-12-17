@@ -48,7 +48,7 @@ BGHZ_LoadBoss:
 loc_17772:
 		move.w	obX(a0),objoff_30(a0)
 		move.w	obY(a0),objoff_38(a0)
-		move.b	#$F,obColType(a0)
+		move.b	#(colEnemy|colSz_24x24),obColType(a0)
 		move.b	#8,obColProp(a0) ; set number of hits to 8
 
 BGHZ_ShipMain:	; Routine 2
@@ -113,7 +113,7 @@ loc_1783C:
 		move.w	d0,(a1)		; load colour stored in	d0
 		subq.b	#1,objoff_3E(a0)
 		bne.s	locret_1784A
-		move.b	#$F,obColType(a0)
+		move.b	#(colEnemy|colSz_24x24),obColType(a0)
 
 locret_1784A:
 		rts	
