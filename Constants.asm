@@ -796,19 +796,19 @@ colSz_40x16:					equ $10		; Chained Stompers
 colSz_16x24:					equ $11		; Sideways Stompers
 colSz_8x16:						equ $12		; Giant Ring
 colSz_32x112:					equ $13		; Lava Fall/Geyser
-colSz_64x32:					equ $14		; Lava Wall
-colSz_128x32:					equ $15		; unused?
-colSz_32x32:					equ $16		; unused?
+colSz_64x32:					equ $14		; Lava Wall, Lava Tag
+colSz_128x32:					equ $15		; Lava Tag
+colSz_32x32:					equ $16		; Lava Tag
 colSz_8x8_2:					equ $17		; Bumper
 colSz_4x4:						equ $18		; SYZ Small Spike Chain, Bomb shrapnel, Orbinaut orbs, Gargoyle Fireball, SLZ Spikeball shrapnel
 colSz_32x8:						equ $19		; SLZ Spiked Platform
 colSz_12x12:					equ $1A		; Bomb badnik, and FZ Plasma Balls
-colSz_8x4:						equ $1B		; unused?
-colSz_24x4:						equ $1C		; unused?
-colSz_40x4:						equ $1D		; unused?
-colSz_4x8:						equ $1E		; unused?
-colSz_4x24:						equ $1F		; unused?
-colSz_4x40:						equ $20		; unused?
+colSz_8x4:						equ $1B		; Harpoon
+colSz_24x4:						equ $1C		; Harpoon
+colSz_40x4:						equ $1D		; Harpoon
+colSz_4x8:						equ $1E		; Harpoon
+colSz_4x24:						equ $1F		; Harpoon
+colSz_4x40:						equ $20		; Harpoon
 colSz_4x32:						equ $21		; LZ Breakable Pole
 colSz_24x24_2:					equ $22		; SBZ Saws and Cutters
 colSz_12x24:					equ $23		; SBZ Flamethrower

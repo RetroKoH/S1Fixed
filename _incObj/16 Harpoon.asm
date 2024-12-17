@@ -34,7 +34,8 @@ Harp_Move:	; Routine 2
 		bra.w	RememberState
 
 .types:
-		dc.b (colHarmful|$1B), (colHarmful|$1C), (colHarmful|$1D), (colHarmful|$1E), (colHarmful|$1F), (colHarmful|$20)
+		dc.b	(colHarmful|colSz_8x4), (colHarmful|colSz_24x4), (colHarmful|colSz_40x4)	; Horizontal Harpoons
+		dc.b	(colHarmful|colSz_4x8), (colHarmful|colSz_4x24), (colHarmful|colSz_4x40)	; Vertical Harpoons
 		even
 
 Harp_Wait:	; Routine 4
