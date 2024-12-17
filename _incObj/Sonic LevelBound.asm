@@ -4,18 +4,26 @@
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
-
+	; flamewing Left Boundary Zip Fix
 Sonic_LevelBound:
+		moveq	#0,d2			; +++ clear d2 for use
 		move.l	obX(a0),d1
+		smi.b	d2				; +++ set d2 if player on position > 32767
+		add.w	d2,d2			; +++ move bit up
 		move.w	obVelX(a0),d0
+		spl.b	d2				; +++ set if speed is positive
+		add.w	d2,d2			; +++ move bit up
 		ext.l	d0
 		asl.l	#8,d0
 		add.l	d0,d1
+		spl.b	d2				; +++ set if position+speed is < 32768
 		swap	d1
 		move.w	(v_limitleft2).w,d0
 		addi.w	#$10,d0
-		cmp.w	d1,d0		; has Sonic touched the	side boundary?
-		bhi.s	.sides		; if yes, branch
+		tst.w	d2				; +++ if d2 is zero, we had an underflow of position
+		beq.s	.sides
+		cmp.w	d1,d0			; has Sonic touched the left side boundary?
+		bhi.s	.sides			; if yes, branch
 		move.w	(v_limitright2).w,d0
 		addi.w	#$128,d0
 		tst.b	(f_lockscreen).w
