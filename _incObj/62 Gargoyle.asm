@@ -56,7 +56,7 @@ Gar_FireBall:	; Routine 4
 		move.w	#make_art_tile(ArtTile_LZ_Gargoyle,0,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#(colHarmful|$18),obColType(a0)
+		move.b	#(colHarmful|colSz_4x4),obColType(a0)
 
 		bset	#shPropFlame,obShieldProp(a0)	; Negated by Flame Shield
 

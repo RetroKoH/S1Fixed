@@ -50,7 +50,7 @@ Swing_Main:
 		move.w	#make_art_tile(ArtTile_SLZ_Swing,2,0),obGfx(a0)
 		move.b	#$20,obActWid(a0)
 		move.b	#$10,obHeight(a0)
-		move.b	#(colHarmful|$19),obColType(a0)
+		move.b	#(colHarmful|colSz_32x8),obColType(a0)
 
 .notSLZ:
 		cmpi.b	#id_SBZ,(v_zone).w		; check if level is SBZ
@@ -60,7 +60,7 @@ Swing_Main:
 		move.w	#make_art_tile(ArtTile_SYZ_Big_Spikeball,0,0),obGfx(a0)
 		move.b	#$18,obActWid(a0)
 		move.b	#$18,obHeight(a0)
-		move.b	#(colHarmful|$6),obColType(a0)
+		move.b	#(colHarmful|colSz_16x16),obColType(a0)
 		move.b	#$C,obRoutine(a0)		; goto Swing_Action next
 
 .length:

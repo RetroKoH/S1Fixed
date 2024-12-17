@@ -80,7 +80,7 @@ Newt_Action:	; Routine 2
 .fall:
 		cmpi.b	#1,obFrame(a0)
 		bne.s	.loc_DE42
-		move.b	#(colEnemy|$C),obColType(a0)
+		move.b	#(colEnemy|colSz_20x16),obColType(a0)
 
 .loc_DE42:
 		bsr.w	ObjectFall_YOnly
@@ -97,7 +97,7 @@ Newt_Action:	; Routine 2
 		addq.b	#1,obAnim(a0)
 
 .pppppppp:
-		move.b	#(colEnemy|$D),obColType(a0)
+		move.b	#(colEnemy|colSz_20x8),obColType(a0)
 		move.w	#$200,obVelX(a0) ; move newtron horizontally
 		btst	#staFlipX,obStatus(a0)
 		bne.s	.keepfalling
@@ -130,7 +130,7 @@ Newt_Action:	; Routine 2
 .type01:
 		cmpi.b	#1,obFrame(a0)
 		bne.s	.firemissile
-		move.b	#(colEnemy|$C),obColType(a0)
+		move.b	#(colEnemy|colSz_20x16),obColType(a0)
 
 .firemissile:
 		cmpi.b	#2,obFrame(a0)

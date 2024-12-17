@@ -18,7 +18,7 @@ Yad_Main:	; Routine 0
 		move.b	#$14,obActWid(a0)
 		move.b	#$11,obHeight(a0)
 		move.b	#8,obWidth(a0)
-		move.b	#(colSpecial|$C),obColType(a0)
+		move.b	#(colSpecial|colSz_20x16),obColType(a0)
 		bsr.w	ObjectFall_YOnly
 		bsr.w	ObjFloorDist
 		tst.w	d1

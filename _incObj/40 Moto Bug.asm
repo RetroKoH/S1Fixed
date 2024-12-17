@@ -29,7 +29,7 @@ Moto_Main:	; Routine 0
 		bne.s	.smoke						; if yes, branch
 		move.b	#$E,obHeight(a0)
 		move.b	#8,obWidth(a0)
-		move.b	#(colEnemy|$C),obColType(a0)
+		move.b	#(colEnemy|colSz_20x16),obColType(a0)
 		bsr.w	ObjectFall_YOnly
 		bsr.w	ObjFloorDist
 		tst.w	d1

@@ -27,7 +27,7 @@ BossFire_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		tst.b	obSubtype(a0)
 		bne.s	loc_1870A
-		move.b	#(colHarmful|$B),obColType(a0)
+		move.b	#(colHarmful|colSz_8x8),obColType(a0)
 
 		bset	#shPropFlame,obShieldProp(a0)	; Negated by Flame Shield
 
@@ -67,7 +67,7 @@ BossFire_Drop:
 		bset	#staFlipY,obStatus(a0)
 		subq.b	#1,objoff_29(a0)
 		bpl.s	locret_18780
-		move.b	#(colHarmful|$B),obColType(a0)
+		move.b	#(colHarmful|colSz_8x8),obColType(a0)
 		clr.b	obSubtype(a0)
 		addi.w	#$18,obVelY(a0)
 		bclr	#staFlipY,obStatus(a0)

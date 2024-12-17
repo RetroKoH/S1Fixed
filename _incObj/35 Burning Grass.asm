@@ -24,7 +24,7 @@ GFire_Main:	; Routine 0
 		move.w	obX(a0),gfire_origX(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority1,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#(colHarmful|$B),obColType(a0)
+		move.b	#(colHarmful|colSz_8x8),obColType(a0)
 
 		bset	#shPropFlame,obShieldProp(a0)	; Negated by Flame Shield
 

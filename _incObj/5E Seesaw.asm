@@ -135,7 +135,7 @@ See_Spikeball:	; Routine 6
 		move.w	#make_art_tile(ArtTile_SLZ_Spikeball,0,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#(colHarmful|$B),obColType(a0)
+		move.b	#(colHarmful|colSz_8x8),obColType(a0)
 		move.b	#$C,obActWid(a0)
 		move.w	obX(a0),see_origX(a0)
 		addi.w	#$28,obX(a0)

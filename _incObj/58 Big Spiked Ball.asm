@@ -26,7 +26,7 @@ BBall_Main:	; Routine 0
 		move.b	#$18,obActWid(a0)
 		move.w	obX(a0),bball_origX(a0)
 		move.w	obY(a0),bball_origY(a0)
-		move.b	#(colHarmful|$6),obColType(a0)
+		move.b	#(colHarmful|colSz_16x16),obColType(a0)
 		move.b	obSubtype(a0),d1 ; get object type
 		andi.b	#$F0,d1		; read only the	1st digit
 		ext.w	d1

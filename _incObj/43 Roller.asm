@@ -71,7 +71,7 @@ Roll_RollChk:
 		addq.b	#4,ob2ndRout(a0)
 		move.b	#2,obAnim(a0)
 		move.w	#$700,obVelX(a0) ; move Roller horizontally
-		move.b	#(colHarmful|$E),obColType(a0) ; make Roller invincible
+		move.b	#(colHarmful|colSz_16x14),obColType(a0) ; make Roller invincible
 
 loc_E0D2:
 		addq.l	#4,sp
@@ -85,7 +85,7 @@ Roll_RollNoChk:
 		bpl.s	locret_E0F6
 		move.b	#1,obAnim(a0)
 		move.w	#$700,obVelX(a0)
-		move.b	#(colHarmful|$E),obColType(a0)
+		move.b	#(colHarmful|colSz_16x14),obColType(a0)
 
 locret_E0F6:
 		rts	
@@ -143,7 +143,7 @@ Roll_Stop:
 		sub.w	obX(a0),d0
 		bcc.s	locret_E188
 		clr.b	obAnim(a0)
-		move.b	#(colEnemy|$E),obColType(a0)
+		move.b	#(colEnemy|colSz_16x14),obColType(a0)
 		clr.w	obVelX(a0)
 		move.w	#120,objoff_30(a0)	; set waiting time to 2	seconds
 		move.b	#2,ob2ndRout(a0)

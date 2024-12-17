@@ -167,7 +167,7 @@ loc_1A9E6:
 		bne.s	locret_1AA1C
 		addq.b	#2,ob2ndRout(a0)
 		move.b	#1,obAnim(a0)
-		move.b	#(colHarmful|$1A),obColType(a0)
+		move.b	#(colHarmful|colSz_12x12),obColType(a0)
 		move.w	#$B4,obSubtype(a0)
 		moveq	#0,d0
 		move.w	(v_player+obX).w,d0

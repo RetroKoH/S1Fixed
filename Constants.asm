@@ -661,7 +661,8 @@ SSBlock_GlassAni4:				equ $4E		; not used in initial layouts (Only used in real-
 
 	endif
 	
-; collision flag (obColType) constants
+; obColType constants (See _incObj/sub ReactToItem.asm)
+; collision flags
 colEnemy:						equ $00
 colPowerup:						equ $40
 colHarmful:						equ $80

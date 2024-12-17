@@ -51,7 +51,7 @@ loc_E57A:
 		move.b	objoff_36(a0),d0
 		cmp.b	obFrame(a0),d0
 		bne.s	Flame_ChkDel
-		move.b	#(colHarmful|$23),obColType(a0)
+		move.b	#(colHarmful|colSz_12x24),obColType(a0)
 
 Flame_ChkDel:
 		offscreen.w	DeleteObject	; ProjectFM S3K Object Manager

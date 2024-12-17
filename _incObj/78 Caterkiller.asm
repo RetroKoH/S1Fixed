@@ -51,7 +51,7 @@ Cat_Main:	; Routine 0
 		move.b	obRender(a0),obStatus(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#8,obActWid(a0)
-		move.b	#(colEnemy|$B),obColType(a0)
+		move.b	#(colEnemy|colSz_8x8),obColType(a0)
 		move.w	obX(a0),d2
 		moveq	#$C,d5
 		btst	#staFlipX,obStatus(a0)
@@ -89,7 +89,7 @@ Cat_Main:	; Routine 0
 		move.w	obGfx(a0),obGfx(a1)
 		move.w	#priority5,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#8,obActWid(a1)
-		move.b	#(colSpecial|$B),obColType(a1)
+		move.b	#(colSpecial|colSz_8x8),obColType(a1)
 		add.w	d5,d2
 		move.w	d2,obX(a1)
 		move.w	obY(a0),obY(a1)

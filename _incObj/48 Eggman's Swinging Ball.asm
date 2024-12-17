@@ -65,7 +65,7 @@ GBall_MakeBall:
 		move.w	#make_art_tile(ArtTile_GHZ_Giant_Ball,2,0),obGfx(a1) ; use different graphics
 		move.b	#1,obFrame(a1)
 		move.w	#priority5,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#(colHarmful|$1),obColType(a1)			; make object hurt Sonic
+		move.b	#(colHarmful|colSz_20x20),obColType(a1)			; make object hurt Sonic
 		move.w	a0,objoff_30(a1)			; store address of head chain object to transfer angle to the ball
 		rts	
 ; ===========================================================================
