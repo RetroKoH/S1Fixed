@@ -37,7 +37,7 @@ Orb_Main:	; Routine 0
 	endif	; SLZ Orbinaut Behaviour Mod
 		ori.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$B,obColType(a0)
+		move.b	#(colEnemy|$B),obColType(a0)
 		move.b	#$C,obActWid(a0)
 		moveq	#0,d2
 		lea		objoff_37(a0),a2
@@ -76,7 +76,7 @@ Orb_Main:	; Routine 0
 		move.w	#priority4,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#8,obActWid(a1)
 		move.b	#3,obFrame(a1)
-		move.b	#$98,obColType(a1)
+		move.b	#(colHarmful|$18),obColType(a1)
 		move.b	d2,obAngle(a1)
 		addi.b	#$40,d2
 		move.l	a0,orb_parent(a1)

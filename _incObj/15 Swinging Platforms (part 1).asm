@@ -45,7 +45,7 @@ Swing_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_SLZ_Swing,2,0),obGfx(a0)
 		move.b	#$20,obActWid(a0)
 		move.b	#$10,obHeight(a0)
-		move.b	#$99,obColType(a0)
+		move.b	#(colHarmful|$19),obColType(a0)
 
 .notSLZ:
 		cmpi.b	#id_SBZ,(v_zone).w		; check if level is SBZ
@@ -55,7 +55,7 @@ Swing_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_SYZ_Big_Spikeball,0,0),obGfx(a0)
 		move.b	#$18,obActWid(a0)
 		move.b	#$18,obHeight(a0)
-		move.b	#$86,obColType(a0)
+		move.b	#(colHarmful|$6),obColType(a0)
 		move.b	#$A,obRoutine(a0)		; goto Swing_Action next
 
 .length:
@@ -133,7 +133,7 @@ Swing_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_GHZ_Giant_Ball,2,0),obGfx(a0)
 		move.b	#1,obFrame(a0)
 		move.w	#priority2,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$81,obColType(a0)			; make object hurt when touched
+		move.b	#(colHarmful|$1),obColType(a0)			; make object hurt when touched
 
 .not1X:
 		cmpi.b	#id_SBZ,(v_zone).w	; is zone SBZ?

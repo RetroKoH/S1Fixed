@@ -16,7 +16,7 @@ Chop_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Chopper,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#9,obColType(a0)
+		move.b	#(colEnemy|$9),obColType(a0)
 		move.b	#$10,obActWid(a0)
 		move.w	#-$700,obVelY(a0)			; set vertical speed
 		move.w	obY(a0),chop_origY(a0)		; save original position

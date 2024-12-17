@@ -32,7 +32,7 @@ BossStarLight_Main:
 		move.w	#boss_slz_y+$18,obY(a0)
 		move.w	obX(a0),objoff_30(a0)
 		move.w	obY(a0),objoff_38(a0)
-		move.b	#$F,obColType(a0)
+		move.b	#(colEnemy|$F),obColType(a0)
 		move.b	#8,obColProp(a0)	; set number of hits to 8
 		lea		BossStarLight_ObjData(pc),a2
 		movea.l	a0,a1
@@ -146,7 +146,7 @@ loc_18A36:
 		move.w	d0,(a1)
 		subq.b	#1,objoff_3E(a0)
 		bne.s	locret_18A44
-		move.b	#$F,obColType(a0)
+		move.b	#(colEnemy|$F),obColType(a0)
 
 locret_18A44:
 		rts	

@@ -81,6 +81,8 @@ ReactToItem:
 		rts	
 ; ===========================================================================
 
+; We must load (Touch_Sizes-2) to a2 because the first pair of values must be accessed by
+; an index of $01. This is because an obColType value of $00 means no collision whatsoever.
 .proximity:
 		andi.w	#$3F,d0
 		add.w	d0,d0
@@ -121,43 +123,43 @@ ReactToItem:
 ; ===========================================================================
 
 Touch_Sizes:
-		; width, height
-		dc.b  $14, $14		; $01
-		dc.b   $C, $14		; $02
-		dc.b  $14,  $C		; $03
-		dc.b	4, $10		; $04
-		dc.b   $C, $12		; $05
-		dc.b  $10, $10		; $06
-		dc.b	6,   6		; $07
-		dc.b  $18,  $C		; $08
-		dc.b   $C, $10		; $09
-		dc.b  $10,  $C		; $0A
-		dc.b	8,   8		; $0B
-		dc.b  $14, $10		; $0C
-		dc.b  $14,   8		; $0D
-		dc.b   $E,  $E		; $0E
-		dc.b  $18, $18		; $0F
-		dc.b  $28, $10		; $10
-		dc.b  $10, $18		; $11
-		dc.b	8, $10		; $12
-		dc.b  $20, $70		; $13
-		dc.b  $40, $20		; $14
-		dc.b  $80, $20		; $15
-		dc.b  $20, $20		; $16
-		dc.b	8,   8		; $17
-		dc.b	4,   4		; $18
-		dc.b  $20,   8		; $19
-		dc.b   $C,  $C		; $1A
-		dc.b	8,   4		; $1B
-		dc.b  $18,   4		; $1C
-		dc.b  $28,   4		; $1D
-		dc.b	4,   8		; $1E
-		dc.b	4, $18		; $1F
-		dc.b	4, $28		; $20
-		dc.b	4, $20		; $21
-		dc.b  $18, $18		; $22
-		dc.b   $C, $18		; $23
-		dc.b  $48,   8		; $24
+		; 		width,	height
+		dc.b	20,		20		; $01
+		dc.b	12,		20		; $02
+		dc.b	20,		12		; $03 (Unused)
+		dc.b	4,		16		; $04
+		dc.b	12,		18		; $05
+		dc.b	16,		16		; $06
+		dc.b	6,		6		; $07
+		dc.b	24,		12		; $08
+		dc.b	12,		16		; $09
+		dc.b	16,		12		; $0A
+		dc.b	8,		8		; $0B
+		dc.b	20,		16		; $0C
+		dc.b	20,		8		; $0D
+		dc.b	14,		14		; $0E
+		dc.b	24,		24		; $0F
+		dc.b	40,		16		; $10
+		dc.b	16,		24		; $11
+		dc.b	8,		16		; $12
+		dc.b	32,		112		; $13
+		dc.b	64,		32		; $14
+		dc.b	128,	32		; $15 (Unused)
+		dc.b	32,		32		; $16 (Unused)
+		dc.b	8,		8		; $17 (Identical w/ $B)
+		dc.b	4,		4		; $18
+		dc.b	32,		8		; $19
+		dc.b	12,		12		; $1A
+		dc.b	8,		4		; $1B (Unused)
+		dc.b	24,		4		; $1C (Unused)
+		dc.b	40,		4		; $1D (Unused)
+		dc.b	4,		8		; $1E (Unused)
+		dc.b	4,		24		; $1F (Unused)
+		dc.b	4,		40		; $20 (Unused)
+		dc.b	4,		32		; $21
+		dc.b	24,		24		; $22 (Identical w/ $F)
+		dc.b	12,		24		; $23
+		dc.b	72,		8		; $24
 ; ===========================================================================
 
 Touch_ChkValue:

@@ -43,7 +43,7 @@ Elec_Shock:	; Routine 2
 		clr.b	obColType(a0)
 		cmpi.b	#4,obFrame(a0)						; is 4th frame displayed?
 		bne.s	.display							; if not, branch
-		move.b	#$A4,obColType(a0)					; if yes, make object hurt Sonic
+		move.b	#(colHarmful|$24),obColType(a0)					; if yes, make object hurt Sonic
 
 .display:
 		jmp		(RememberState).l

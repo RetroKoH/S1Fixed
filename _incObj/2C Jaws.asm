@@ -16,7 +16,7 @@ Jaws_Main:	; Routine 0
 		move.l	#Map_Jaws,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Jaws,1,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
-		move.b	#$A,obColType(a0)
+		move.b	#(colEnemy|$A),obColType(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$10,obActWid(a0)
 		moveq	#0,d0

@@ -24,7 +24,7 @@ Splats_Main:	; Routine 0
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$C,obActWid(a0)
 		move.b	#$14,obHeight(a0)
-		move.b	#2,obColType(a0)
+		move.b	#(colEnemy|$2),obColType(a0)
 		tst.b	obSubtype(a0)
 		beq.s	Splats_1
 		move.w	#$300,d2

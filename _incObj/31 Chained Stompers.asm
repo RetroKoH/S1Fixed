@@ -89,7 +89,7 @@ CStom_MakeStomper:
 		cmpi.w	#$20,d0
 		beq.s	CStom_MakeStomper
 		move.b	#$38,obActWid(a1)
-		move.b	#$90,obColType(a1)
+		move.b	#(colHarmful|$10),obColType(a1)
 		addq.w	#1,d1
 
 loc_B76A:

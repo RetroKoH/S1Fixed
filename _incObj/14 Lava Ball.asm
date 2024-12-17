@@ -26,7 +26,7 @@ LBall_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Fireball,0,0),obGfx(a0)	; RetroKoH VRAM Overhaul
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$8B,obColType(a0)
+		move.b	#(colHarmful|$B),obColType(a0)
 		
 		bset	#shPropFlame,obShieldProp(a0)	; Negated by Flame Shield
 		

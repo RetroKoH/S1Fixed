@@ -27,7 +27,7 @@ BossSpringYard_Main:	; Routine 0
 		move.w	#boss_syz_y+$E,obY(a0)
 		move.w	obX(a0),objoff_30(a0)
 		move.w	obY(a0),objoff_38(a0)
-		move.b	#$F,obColType(a0)
+		move.b	#(colEnemy|$F),obColType(a0)
 		move.b	#8,obColProp(a0) ; set number of hits to 8
 		lea		BossSpringYard_ObjData(pc),a2
 		movea.l	a0,a1
@@ -123,7 +123,7 @@ loc_19248:
 		move.w	d0,(a1)
 		subq.b	#1,objoff_3E(a0)
 		bne.s	locret_19256
-		move.b	#$F,obColType(a0)
+		move.b	#(colEnemy|$F),obColType(a0)
 
 locret_19256:
 		rts	
@@ -586,7 +586,7 @@ loc_19658:
 		beq.w	loc_195DA
 		tst.b	objoff_29(a1)
 		bne.w	loc_195DA
-		move.b	#$84,obColType(a0)
+		move.b	#(colHarmful|$4),obColType(a0)
 		bra.w	loc_195DA
 ; ===========================================================================
 

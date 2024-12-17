@@ -34,7 +34,7 @@ Bom_Main:	; Routine 0
 ; ===========================================================================
 
 loc_11A3C:
-		move.b	#$9A,obColType(a0)
+		move.b	#(colHarmful|$1A),obColType(a0)
 		bchg	#staFlipX,obStatus(a0)
 
 Bom_Action:	; Routine 2
@@ -174,7 +174,7 @@ loc_11B7C:
 		move.b	#4,obAnim(a1)
 		move.w	(a2)+,obVelX(a1)
 		move.w	(a2)+,obVelY(a1)
-		move.b	#$98,obColType(a1)
+		move.b	#(colHarmful|$18),obColType(a1)
 
 		bset	#shPropReflect,obShieldProp(a1)	; Reflected by Elemental Shields
 
