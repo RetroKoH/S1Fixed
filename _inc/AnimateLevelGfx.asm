@@ -441,13 +441,14 @@ AniArt_SBZ:
 		move.b	#7,(v_lani0_time).w				; time to display each frame
 		lea		(Art_SbzSmoke).l,a0				; load smoke patterns
 		move.w	#ArtTile_SBZ_Smoke_Puff_1*tile_size,d2	; d2 = transfer destination
-		move.w	(v_lani0_frame).w,d0			; d0 = current frame
-		clr.b	d0
+		moveq	#0,d0
+		move.b	(v_lani0_frame).w,d0			; d0 = current frame
 		addq.b	#1,(v_lani0_frame).w			; increment frame counter
-		andi.w	#$700,d0						; cap at 7
+		andi.b	#7,d0							; cap at 7
 		beq.s	.untilnextpuff					; branch if frame 0
-		subi.w	#$100,d0						; frame - 1 (range: 0-6)
-		adda.w	d0,a0
+		subq.b	#1,d0							; frame - 1 (range: 0-6)
+		add.b	d0,d0
+		add.w	.frameOffsets(pc,d0),a0
 		move.l	a0,d1							; d1 = transfer source
 												; d2 is already set up
 		move.w	#$180/2,d3						; d3 = transfer size (words)
@@ -485,17 +486,23 @@ AniArt_SBZ:
 		move.b	#7,(v_lani1_time).w				; time to display each frame
 		lea		(Art_SbzSmoke).l,a0				; load smoke patterns
 		move.w	#ArtTile_SBZ_Smoke_Puff_2*tile_size,d2	; d2 = transfer destination
-		move.w	(v_lani1_frame).w,d0			; d0 = current frame
-		clr.b	d0
+		moveq	#0,d0
+		move.b	(v_lani1_frame).w,d0			; d0 = current frame
 		addq.b	#1,(v_lani1_frame).w			; increment frame counter
-		andi.w	#$700,d0						; cap at 7
+		andi.b	#7,d0							; cap at 7
 		beq.s	.untilnextpuff2					; branch if frame 0
-		subi.w	#$100,d0						; frame - 1 (range: 0-6)
-		adda.w	d0,a0
+		subq.b	#1,d0							; frame - 1 (range: 0-6)
+		add.b	d0,d0
+		add.w	.frameOffsets(pc,d0),a0
 		move.l	a0,d1							; d1 = transfer source
 												; d2 is already set up
 		move.w	#$180/2,d3						; d3 = transfer size (words)
 		jmp		(QueueDMATransfer).l
+; ===========================================================================
+
+.frameOffsets:
+		dc.w	$0000, $0180, $0300, $0480
+		dc.w	$0600, $0780, $0900, $0A80
 ; ===========================================================================
 
 .untilnextpuff2:
