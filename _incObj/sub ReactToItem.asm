@@ -18,12 +18,12 @@ ReactToItem:
 		move.b	obStatus2nd(a0),d0
 		move.w	d0,-(sp)
 		bset	#sta2ndInvinc,obStatus2nd(a0)	; Set invincibility
-		move.w	obX(a0),d2
-		move.w	obY(a0),d3
-		subi.w	#$18,d2
-		subi.w	#$18,d3
-		move.w	#$30,d4
-		move.w	#$30,d5
+		moveq	#-24,d2							; subtract width of Insta-Shield
+		add.w	obX(a0),d2						; get player's x_pos
+		moveq	#-24,d3							; subtract height of Insta-Shield
+		add.w	obY(a0),d3						; get player's y_pos
+		move.w	#48,d4							; player's width
+		move.w	#48,d5							; player's height
 		bsr.s	.chkobjecttype					; check collision flags to see if object is negated by insta-shield
 		move.w	(sp)+,d0
 		btst	#sta2ndInvinc,d0
@@ -36,21 +36,21 @@ ReactToItem:
 
 .noInstaShield
 	endif
-		move.w	obX(a0),d2				; load Sonic's x-axis position
-		move.w	obY(a0),d3				; load Sonic's y-axis position
+		move.w	obX(a0),d2						; load Sonic's x-axis position
+		move.w	obY(a0),d3						; load Sonic's y-axis position
 		subq.w	#8,d2
 		moveq	#0,d5
-		move.b	obHeight(a0),d5			; load Sonic's height
+		move.b	obHeight(a0),d5					; load Sonic's height
 		subq.b	#3,d5
 		sub.w	d5,d3
 
 	; Mercury Ducking Size Fix
-	if SpinDashEnabled=1	; Mercury Spin Dash
-		cmpi.b	#aniID_SpinDash,obAnim(a0)
-		beq.s	.short
+	if SpinDashEnabled	; Mercury Spin Dash
+		cmpi.b	#aniID_SpinDash,obAnim(a0)		; is player spindashing?
+		beq.s	.short							; if not, branch
 	endif	; Spin Dash End
-		cmpi.b	#aniID_Duck,obAnim(a0)
-		bne.s	.notducking
+		cmpi.b	#aniID_Duck,obAnim(a0)			; is player ducking?
+		bne.s	.notducking						; if not, branch
 		
 .short:
 		addi.w	#$C,d3
@@ -58,122 +58,130 @@ ReactToItem:
 
 .notducking:
 	; Ducking Size Fix end
-		move.w	#$10,d4
+		move.w	#16,d4							; player's collision width
 		add.w	d5,d5
 
 .chkobjecttype:
 		lea		(v_col_response_list).w,a4
-		move.w	(a4)+,d6				; Get number of objects queued
-		beq.s	.end					; If there are none, return
+		move.w	(a4)+,d6						; Get number of objects queued
+		beq.s	.end							; If there are none, return
 
 .loop:
-		movea.w	(a4)+,a1				; Get address of first object's RAM
-		move.b	obColType(a1),d0		; Get its collision_flags
-
-		bne.s	.proximity				; If it actually has collision, branch
+		movea.w	(a4)+,a1						; Get address of first object's RAM
+		move.b	obColType(a1),d0				; Get its collision_flags
+		bne.s	.proximity						; If it actually has collision, branch
 
 .next:
-		subq.w	#2,d6					; Count the object as done
-		bne.s	.loop					; If there are still objects left, loop
-
+		subq.w	#2,d6							; Count the object as done
+		bne.s	.loop							; If there are still objects left, loop
 		moveq	#0,d0
 .end
 		rts	
 ; ===========================================================================
 
+; We must load (Touch_Sizes-2) to a2 because the first pair of values must be accessed by
+; an index of $01. This is because an obColType value of $00 means no collision whatsoever.
 .proximity:
 		andi.w	#$3F,d0
 		add.w	d0,d0
 		lea		Touch_Sizes-2(pc,d0.w),a2
 		moveq	#0,d1
-		move.b	(a2)+,d1
-		move.w	obX(a1),d0
-		sub.w	d1,d0
-		sub.w	d2,d0
-		bcc.s	.outsidex		; branch if not touching
-		add.w	d1,d1
-		add.w	d1,d0
-		bcs.s	.withinx		; branch if touching
-		bra.s	.next
+		move.b	(a2)+,d1						; get width value from Touch_Sizes
+		move.w	obX(a1),d0						; get object's x-position
+		sub.w	d1,d0							; subtract object's width
+		sub.w	d2,d0							; subtract player's left collision boundary
+		bcc.s	.outsidex						; if player's left side is to the left of the object (not touching), branch
+		add.w	d1,d1							; double object's width value
+		add.w	d1,d0							; add object's width*2 (now at right of object)
+		bcs.s	.withinx						; branch if touching
+		bra.s	.next							; if not, loop and check next object
 ; ===========================================================================
 
 .outsidex:
-		cmp.w	d4,d0
-		bhi.s	.next
+		cmp.w	d4,d0							; is player's right side to the left of the object?
+		bhi.s	.next							; if so, loop and check next object
 
 .withinx:
 		moveq	#0,d1
-		move.b	(a2)+,d1
-		move.w	obY(a1),d0
-		sub.w	d1,d0
-		sub.w	d3,d0
-		bcc.s	.outsidey		; branch if not touching
-		add.w	d1,d1
-		add.w	d0,d1
-		bcs.s	Touch_ChkValue	; branch if touching
-		bra.s	.next
+		move.b	(a2)+,d1						; get height value from Touch_Sizes
+		move.w	obY(a1),d0						; get object's y_pos
+		sub.w	d1,d0							; subtract object's height
+		sub.w	d3,d0							; subtract player's bottom collision boundary
+		bcc.s	.outsidey						; if bottom of player is under the object, branch
+		add.w	d1,d1							; double object's height value
+		add.w	d1,d0							; add object's height*2 (now at top of object)
+		bcs.s	Touch_ChkValue					; branch if touching
+		bra.s	.next							; if not, loop and check next object
 ; ===========================================================================
 
 .outsidey:
-		cmp.w	d5,d0
-		bhi.s	.next	
+		cmp.w	d5,d0							; is top of player under the object?
+		bhi.s	.next							; if so, loop and check next object
 		bra.s	Touch_ChkValue
 ; ===========================================================================
 
+; ---------------------------------------------------------------------------
+; collision sizes $00-$3F (width,height)
+; $00-$3F	- enemy collision
+; $40-$7F	- ring/monitor collision
+; $80-$BF	- hurt collision
+; $C0-$FF	- special collision
+; ---------------------------------------------------------------------------
+
 Touch_Sizes:
-		; width, height
-		dc.b  $14, $14		; $01
-		dc.b   $C, $14		; $02
-		dc.b  $14,  $C		; $03
-		dc.b	4, $10		; $04
-		dc.b   $C, $12		; $05
-		dc.b  $10, $10		; $06
-		dc.b	6,   6		; $07
-		dc.b  $18,  $C		; $08
-		dc.b   $C, $10		; $09
-		dc.b  $10,  $C		; $0A
-		dc.b	8,   8		; $0B
-		dc.b  $14, $10		; $0C
-		dc.b  $14,   8		; $0D
-		dc.b   $E,  $E		; $0E
-		dc.b  $18, $18		; $0F
-		dc.b  $28, $10		; $10
-		dc.b  $10, $18		; $11
-		dc.b	8, $10		; $12
-		dc.b  $20, $70		; $13
-		dc.b  $40, $20		; $14
-		dc.b  $80, $20		; $15
-		dc.b  $20, $20		; $16
-		dc.b	8,   8		; $17
-		dc.b	4,   4		; $18
-		dc.b  $20,   8		; $19
-		dc.b   $C,  $C		; $1A
-		dc.b	8,   4		; $1B
-		dc.b  $18,   4		; $1C
-		dc.b  $28,   4		; $1D
-		dc.b	4,   8		; $1E
-		dc.b	4, $18		; $1F
-		dc.b	4, $28		; $20
-		dc.b	4, $20		; $21
-		dc.b  $18, $18		; $22
-		dc.b   $C, $18		; $23
-		dc.b  $48,   8		; $24
+		; 		width,	height
+		dc.b	20,		20		; $01
+		dc.b	12,		20		; $02
+		dc.b	20,		12		; $03 (Unused)
+		dc.b	4,		16		; $04
+		dc.b	12,		18		; $05
+		dc.b	16,		16		; $06
+		dc.b	6,		6		; $07
+		dc.b	24,		12		; $08
+		dc.b	12,		16		; $09
+		dc.b	16,		12		; $0A
+		dc.b	8,		8		; $0B
+		dc.b	20,		16		; $0C
+		dc.b	20,		8		; $0D
+		dc.b	14,		14		; $0E
+		dc.b	24,		24		; $0F
+		dc.b	40,		16		; $10
+		dc.b	16,		24		; $11
+		dc.b	8,		16		; $12
+		dc.b	32,		112		; $13
+		dc.b	64,		32		; $14
+		dc.b	128,	32		; $15 (Unused)
+		dc.b	32,		32		; $16 (Unused)
+		dc.b	8,		8		; $17 (Identical w/ $B)
+		dc.b	4,		4		; $18
+		dc.b	32,		8		; $19
+		dc.b	12,		12		; $1A
+		dc.b	8,		4		; $1B (Unused)
+		dc.b	24,		4		; $1C (Unused)
+		dc.b	40,		4		; $1D (Unused)
+		dc.b	4,		8		; $1E (Unused)
+		dc.b	4,		24		; $1F (Unused)
+		dc.b	4,		40		; $20 (Unused)
+		dc.b	4,		32		; $21
+		dc.b	24,		24		; $22 (Identical w/ $F)
+		dc.b	12,		24		; $23
+		dc.b	72,		8		; $24
 ; ===========================================================================
 
 Touch_ChkValue:
-		move.b	obColType(a1),d1	; load collision type
-		andi.b	#$C0,d1				; is obColType $40 or higher?
-		beq.w	React_Enemy			; if not, branch
-		cmpi.b	#$C0,d1				; is obColType $C0 or higher?
-		beq.w	React_Special		; if yes, branch
-		tst.b	d1					; is obColType $80-$BF?
-		bmi.w	React_ChkHurt		; if yes, branch
+		moveq	#signextendB($C0),d1
+		and.b	obColType(a1),d1	; d1 = collision type
+		beq.w	React_Enemy			; if $00 ($00-$3F), branch to enemy collision
+		cmpi.b	#$C0,d1
+		beq.w	React_Special		; if $C0 ($C0-$FF), branch to special collision
+		tst.b	d1
+		bmi.w	React_ChkHurt		; if $80 ($80-$BF), branch to harmful collision
 
-; obColType is $40-$7F (powerups)
-
-		move.b	obColType(a1),d0
-		andi.b	#$3F,d0
-		cmpi.b	#6,d0				; is collision type $46?
+; if $40 ($40-$7F), fallthrough to ring/monitor collision
+;React_Powerup:
+		moveq	#$3F,d0
+		and.b	obColType(a1),d0	; d1 = collision size
+		cmpi.b	#6,d0				; is this a monitor?
 		beq.s	React_Monitor		; if yes, branch
 	; Otherwise, check if Sonic is able to collect rings
 		cmpi.b	#90,obInvuln(a0)	; is Sonic too early in invuln frames to collect rings? -- RetroKoH Sonic SST Compaction
@@ -188,20 +196,20 @@ React_Monitor:
 		tst.w	obVelY(a0)	; is Sonic moving upwards?
 		bpl.s	.movingdown	; if not, branch
 
-		move.w	obY(a0),d0
-		subi.w	#$10,d0
+		moveq	#-16,d0
+		add.w	obY(a0),d0			; get player's y_pos - monitor height
 		cmp.w	obY(a1),d0
-		blo.s	.donothing
-		neg.w	obVelY(a0)	; reverse Sonic's vertical speed
+		blo.s	.donothing			; if new value is lower than monitor's y_pos, return
+		neg.w	obVelY(a0)			; reverse Sonic's vertical speed
 		move.w	#-$180,obVelY(a1)
 		tst.b	ob2ndRout(a1)
 		bne.s	.donothing
-		addq.b	#4,ob2ndRout(a1) ; advance the monitor's routine counter
+		addq.b	#4,ob2ndRout(a1)	; advance the monitor's routine counter
 		rts	
 ; ===========================================================================
 
 .movingdown:
-	if DropDashEnabled=1	; RetroKoH Drop Dash
+	if DropDashEnabled	; RetroKoH Drop Dash
 		cmpi.b	#aniID_DropDash,obAnim(a0)	; is Sonic Drop Dashing? -- Fix to allow rebounding
 		beq.s	.spinning					; if yes, branch
 	endif	; Drop Dash End
@@ -211,7 +219,7 @@ React_Monitor:
 
 .spinning:
 		neg.w	obVelY(a0)				; reverse Sonic's y-motion
-	if ReboundMod=1	; Mercury Rebound Mod
+	if ReboundMod	; Mercury Rebound Mod
 		tst.b	obJumping(a0)
 		bne.s	.isjumping
 		move.b	#1,obJumping(a0)
@@ -229,12 +237,12 @@ React_Enemy:
 		btst	#sta2ndInvinc,obStatus2nd(a0)	; is Sonic invincible?
 		bne.s	.donthurtsonic					; if yes, branch
 
-	if SpinDashEnabled=1	; Mercury Spin Dash
+	if SpinDashEnabled	; Mercury Spin Dash
 		cmpi.b	#aniID_SpinDash,obAnim(a0)	; is Sonic Spin Dashing?
 		beq.w	.breakenemy					; if yes, branch
 	endif	; Spin Dash End
 	
-	if DropDashEnabled=1	; RetroKoH Drop Dash
+	if DropDashEnabled	; RetroKoH Drop Dash
 		cmpi.b	#aniID_DropDash,obAnim(a0)	; is Sonic Drop Dashing?
 		beq.w	.breakenemy					; if yes, branch
 	endif	; Drop Dash End
@@ -246,7 +254,7 @@ React_Enemy:
 		tst.b	obColProp(a1)
 		beq.s	.breakenemy
 
-		neg.w	obVelX(a0)	; repel Sonic
+		neg.w	obVelX(a0)					; repel Sonic
 		neg.w	obVelY(a0)
 		asr		obVelX(a0)
 		asr		obVelY(a0)
@@ -263,18 +271,18 @@ React_Enemy:
 		bset	#7,obStatus(a1)
 		moveq	#0,d0
 		move.w	(v_itembonus).w,d0
-		addq.w	#2,(v_itembonus).w ; add 2 to item bonus counter
+		addq.w	#2,(v_itembonus).w			; add 2 to item bonus counter
 		cmpi.w	#6,d0
 		blo.s	.bonusokay
-		moveq	#6,d0		; max bonus is lvl6
+		moveq	#6,d0						; max bonus is lvl6
 
 .bonusokay:
 		move.w	d0,objoff_3E(a1)
 		move.w	.points(pc,d0.w),d0
-		cmpi.w	#$20,(v_itembonus).w ; have 16 enemies been destroyed?
-		blo.s	.lessthan16	; if not, branch
-		move.w	#1000,d0	; fix bonus to 10000
-		move.w	#$A,objoff_3E(a1)
+		cmpi.w	#(16*2),(v_itembonus).w		; have 16 enemies been destroyed?
+		blo.s	.lessthan16					; if not, branch
+		move.w	#1000,d0					; fix bonus to 10000
+		move.w	#10,objoff_3E(a1)
 
 .lessthan16:
 		bsr.w	AddPoints
@@ -333,7 +341,7 @@ React_Caterkiller:
 		bset	#7,obStatus(a1)
 
 React_ChkHurt:
-	if S3KDoubleJump=0
+	if ~~S3KDoubleJump
 		btst	#sta2ndInvinc,obStatus2nd(a0)	; is Sonic invincible?
 		beq.s	.notinvincible					; if not, branch
 
@@ -376,10 +384,11 @@ React_ChkHurt:
 		sub.w	obY(a1),d2
 		jsr		(CalcAngle).w
 		jsr		(CalcSine).w
-		muls.w	#-$800,d1
+		move.w	#-$800,d2
+		muls.w	d2,d1
 		asr.l	#8,d1
 		move.w	d1,obVelX(a1)
-		muls.w	#-$800,d0
+		muls.w	d2,d0
 		asr.l	#8,d0
 		move.w	d0,obVelY(a1)
 		clr.b	obColType(a1)
@@ -435,13 +444,11 @@ HurtSonic:
 		move.b	#4,obRoutine(a0)
 		jsr		(Sonic_ResetOnFloor).l
 		bset	#staAir,obStatus(a0)
-		move.w	#-$400,obVelY(a0)				; make Sonic bounce away from the object
-		move.w	#-$200,obVelX(a0)
+		move.l	#$FE00FC00,obVelX(a0)			; bounce player away (xspd = -$200, yspd = -$400)
 		btst	#staWater,obStatus(a0)			; is Sonic underwater?
 		beq.s	.isdry							; if not, branch
 
-		move.w	#-$200,obVelY(a0)				; slower bounce
-		move.w	#-$100,obVelX(a0)
+		move.l	#$FF00FE00,obVelX(a0)			; bounce player away (xspd = -$100, yspd = -$200)
 
 .isdry:
 		move.w	obX(a0),d0
@@ -450,7 +457,7 @@ HurtSonic:
 		neg.w	obVelX(a0)						; if Sonic is right of the object, reverse
 
 .isleft:
-	if SpinDashEnabled=1
+	if SpinDashEnabled
 		clr.b	obSpinDashFlag(a0)
 	endif
 		clr.w	obInertia(a0)
@@ -543,8 +550,8 @@ KillSonic:
 
 
 React_Special:
-		move.b	obColType(a1),d1
-		andi.b	#$3F,d1
+		moveq	#$3F,d1
+		and.b	obColType(a1),d1	; get collision size
 		cmpi.b	#$B,d1				; is collision type $CB	?
 		beq.w	React_Caterkiller	; if yes, branch
 		cmpi.b	#$C,d1				; is collision type $CC	?
@@ -564,12 +571,12 @@ React_Special:
 		subq.w	#4,d0
 		btst	#staFlipX,obStatus(a1)
 		beq.s	.noflip
-		subi.w	#$10,d0
+		subi.w	#16,d0
 
 .noflip:
 		sub.w	d2,d0
 		bcc.s	.loc_1B13C
-		addi.w	#$18,d0
+		addi.w	#24,d0
 		bcs.w	React_ChkHurt
 		bra.w	React_Enemy			; .normalenemy
 ; ===========================================================================
