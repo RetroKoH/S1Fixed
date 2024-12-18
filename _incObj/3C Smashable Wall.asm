@@ -2,8 +2,6 @@
 ; Object 3C - smashable	wall (GHZ, SLZ)
 ; ---------------------------------------------------------------------------
 
-smash_speed = objoff_30		; Sonic's horizontal speed
-
 SmashWall:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
@@ -31,7 +29,7 @@ Smash_Main:	; Routine 0
 		move.b	obSubtype(a0),obFrame(a0)
 
 Smash_Solid:	; Routine 2
-		move.w	(v_player+obVelX).w,smash_speed(a0)	; load Sonic's horizontal speed
+		move.w	(v_player+obVelX).w,d6				; store Sonic's horizontal speed
 		moveq	#$1B,d1								; save 4 cycles - Filter
 		moveq	#$20,d2								; save 4 cycles - Filter
 		move.w	d2,d3								; save 4 cycles - Filter
@@ -45,7 +43,7 @@ Smash_Solid:	; Routine 2
 ;		bne.s	.chkPush								; if not, skip and check if player is rolling on the ground
 		btst	#sta2ndFShield,obStatus2nd(a1)			; does Sonic have the Flame Shield
 		beq.s	.chkPush								; if not, skip and check if player is rolling on the ground
-		cmpi.b	#sta2ndFShield,(v_shieldobj+obAnim).w	; is Sonic using his ability? (Check Flame Shield's animation)
+		cmpi.b	#aniID_FlameDash,(v_shieldobj+obAnim).w	; is Sonic using his ability? (Check Flame Shield's animation)
 		beq.s	.cont									; if yes, branch. ABILITY TIME
 
 	.chkPush:
@@ -65,16 +63,16 @@ Smash_Solid:	; Routine 2
 	endif
 		cmpi.b	#aniID_Roll,obAnim(a1)			; is Sonic rolling?
 		bne.s	.donothing						; if not, branch
-		move.w	smash_speed(a0),d0
+		move.w	d6,d0							; load Sonic's stored speed
 		bpl.s	.chkspeed
-		neg.w	d0
+		neg.w	d0								; get absolute value if Sonic was moving left
 
 .chkspeed:
-		cmpi.w	#$480,d0						; is Sonic's speed $480 or higher?
+		cmpi.w	#$480,d0						; is Sonic's speed 4.5 or higher?
 		blo.s	.donothing						; if not, branch
 
 .cont:
-		move.w	smash_speed(a0),obVelX(a1)
+		move.w	d6,obVelX(a1)					; restore Sonic's x-speed to what it was prior to colliding with the wall
 		addq.w	#4,obX(a1)
 		lea		Smash_FragSpd1(pc),a4			; use fragments that move right -- save 4 cycles - Filter
 		move.w	obX(a0),d0
