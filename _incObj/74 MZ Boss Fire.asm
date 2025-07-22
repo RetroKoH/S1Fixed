@@ -25,12 +25,12 @@ BossFire_Main:	; Routine 0
 		move.w	obY(a0),objoff_38(a0)
 		move.b	#8,obActWid(a0)
 		addq.b	#2,obRoutine(a0)
-		tst.b	obSubtype(a0)
-		bne.s	loc_1870A
-		move.b	#(colHarmful|colSz_8x8),obColType(a0)
 
 		bset	#shPropFlame,obShieldProp(a0)	; Negated by Flame Shield
 
+		tst.b	obSubtype(a0)
+		bne.s	loc_1870A
+		move.b	#(colHarmful|colSz_8x8),obColType(a0)
 		addq.b	#2,obRoutine(a0)
 		bra.w	loc_18886
 ; ===========================================================================
