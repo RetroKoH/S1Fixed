@@ -1,6 +1,6 @@
 ; ---------------------------------------------------------------------------
 ; Object 38 - shields
-; Invincibility Stars have been removed and moved to their own object ($4F)
+; Invincibility Stars have been removed and moved to their own object ($21)
 ; ---------------------------------------------------------------------------
 
 ; w/ DPLCs and dynamic pointers -- RetroKoH VRAM Overhaul
