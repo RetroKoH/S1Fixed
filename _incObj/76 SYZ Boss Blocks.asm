@@ -35,7 +35,7 @@ BossBlock_MakeBlock:
 		move.b	#$10,obHeight(a1)
 		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.w	d5,obX(a1)	; set x-position
-		move.w	#$582,obY(a1)
+		move.w	#boss_syz_y+$B6,obY(a1)
 		move.w	d4,obSubtype(a1)
 		addi.w	#$101,d4
 		addi.w	#$20,d5		; add $20 to next x-position

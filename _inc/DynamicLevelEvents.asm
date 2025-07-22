@@ -211,10 +211,11 @@ loc_6ED0:
 DLE_LZ3:
 		tst.b	(f_switch+$F).w				; has switch $F	been pressed? (At the start, next to the endless slide)
 		beq.s	loc_6F28					; if not, branch
-		lea		(v_lvllayout+$50C).w,a1
+		lea		(v_lvllayout+$50C).w,a1		; a1 = (Foreground chunk: 6th row, 13th column)
 		cmpi.w	#$1718,(a1)
 		beq.s	loc_6F28
 		move.w	#$1718,(a1)					; modify level layout to open a path out of the endless slide
+											; (Replace this chunk, and the next one, w/ chunks $17 and $18, respectively).
 		move.w	#sfx_Rumbling,d0
 		bsr.w	PlaySound_Special			; play rumbling sound
 
