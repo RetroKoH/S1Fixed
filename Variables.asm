@@ -306,7 +306,7 @@ v_ssrotate:				ds.w	1		; Special Stage rotation speed
 v_ssangleprev:			ds.b	1		; Previous Special Stage angle -- Mercury Dynamic Special Stage Walls
 					ds.b	$9		; unused
 f_levelstarted:			ds.b	1		; level start flag (for drawing non-objects) -- RetroKoH S/3K Rings Manager
-v_hudscrollpos			ds.b	1		; Scrolling x-position for the HUD. -- RetroKoH Scrolling HUD Display
+v_hudscrollpos:			ds.b	1		; Scrolling x-position for the HUD. -- RetroKoH Scrolling HUD Display
 v_btnpushtime1:			ds.w	1		; button push duration - in level
 v_btnpushtime2:			ds.w	1		; button push duration - in demo
 v_palchgspeed:			ds.w	1		; palette fade/transition speed (0 is fastest)

@@ -16,22 +16,25 @@ BossStarLight_Index:	offsetTable
 		offsetTableEntry.w BossStarLight_TubeMain
 
 BossStarLight_ObjData:
-		; 	routine, anim, priority
-		dc.b 2,	0
-		dc.w	priority4
-		dc.b 4,	1
-		dc.w	priority4
-		dc.b 6,	7
-		dc.w	priority4
-		dc.b 8,	0
-		dc.w	priority3
+	; Ship
+		dc.b 2,	aniID_Ship		; routine number, animation
+		dc.w priority4			; priority
+	; Face
+		dc.b 4,	aniID_NormalFace1
+		dc.w priority4
+	; Flame
+		dc.b 6,	aniID_Blank
+		dc.w priority4
+	; Tube
+		dc.b 8,	0				; does not animate
+		dc.w priority3
 ; ===========================================================================
 
 BossStarLight_Main:
 		move.w	#boss_slz_x+$188,obX(a0)
 		move.w	#boss_slz_y+$18,obY(a0)
-		move.w	obX(a0),objoff_30(a0)
-		move.w	obY(a0),objoff_38(a0)
+		move.w	obX(a0),boss_bufferX(a0)
+		move.w	obY(a0),boss_bufferY(a0)
 		move.b	#(colEnemy|colSz_24x24),obColType(a0)
 		move.b	#8,obColProp(a0)	; set number of hits to 8
 		lea		BossStarLight_ObjData(pc),a2
@@ -57,7 +60,7 @@ BossStarLight_LoadBoss:
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.b	#$20,obActWid(a1)
-		move.l	a0,objoff_34(a1)
+		move.l	a0,boss_parent(a1)
 		dbf		d1,BossStarLight_Loop	; repeat sequence 3 more times
 
 loc_1895C:
@@ -91,78 +94,66 @@ BossStarLight_ShipMain:	; Routine 2
 		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 ; ===========================================================================
 BossStarLight_ShipIndex:	offsetTable
-		offsetTableEntry.w loc_189B8
-		offsetTableEntry.w loc_18A5E
-		offsetTableEntry.w BossStarLight_MakeBall
-		offsetTableEntry.w loc_18B48
-		offsetTableEntry.w loc_18B80
-		offsetTableEntry.w loc_18BC6
+		offsetTableEntry.w BossStarLight_ShipStart
+		offsetTableEntry.w BossStarLight_ShipMove
+		offsetTableEntry.w BossStarLight_ShipMakeBall
+		offsetTableEntry.w BossStarLight_ShipExplode
+		offsetTableEntry.w BossStarLight_ShipDestroyed
+		offsetTableEntry.w BossStarLight_ShipFlee
 ; ===========================================================================
 
-loc_189B8:
+BossStarLight_ShipStart:		; Secondary Routine 0
 		move.w	#-$100,obVelX(a0)
-		cmpi.w	#boss_slz_x+$120,objoff_30(a0)
+		cmpi.w	#boss_slz_x+$120,boss_bufferX(a0)
 		bhs.s	loc_189CA
 		addq.b	#2,ob2ndRout(a0)
 
 loc_189CA:
 		bsr.w	BossMove
-		move.b	objoff_3F(a0),d0
-		addq.b	#2,objoff_3F(a0)
+		move.b	boss_hoverangle(a0),d0
+		addq.b	#2,boss_hoverangle(a0)
 		jsr		(CalcSine).w
 		asr.w	#6,d0
-		add.w	objoff_38(a0),d0
+		add.w	boss_bufferY(a0),d0
 		move.w	d0,obY(a0)
-		move.w	objoff_30(a0),obX(a0)
-		bra.s	loc_189FE
+		move.w	boss_bufferX(a0),obX(a0)
+		bra.s	BossStarLight_ChkHit
 ; ===========================================================================
 
-loc_189EE:
+BossStarLight_ApplyMovement:
 		bsr.w	BossMove
-		move.w	objoff_38(a0),obY(a0)
-		move.w	objoff_30(a0),obX(a0)
+		move.w	boss_bufferY(a0),obY(a0)
+		move.w	boss_bufferX(a0),obX(a0)
 
-loc_189FE:
+BossStarLight_ChkHit:
 		cmpi.b	#6,ob2ndRout(a0)
 		bhs.s	locret_18A44
 		tst.b	obStatus(a0)
-		bmi.s	loc_18A46
+		bmi.s	BossStarLight_AwardPoints	; if bit 7 is set, branch
 		tst.b	obColType(a0)
 		bne.s	locret_18A44
-		tst.b	objoff_3E(a0)
-		bne.s	BossStarLight_ShipFlash
-		move.b	#$20,objoff_3E(a0)
+		tst.b	boss_flashframes(a0)
+		bne.w	BossFlash
+		move.b	#$20,boss_flashframes(a0)	; set number of	times for ship to flash
 		move.w	#sfx_HitBoss,d0
-		jsr		(PlaySound_Special).w	; play boss damage sound
-
-BossStarLight_ShipFlash:
-		lea		(v_palette+$22).w,a1 ; load 2nd palette, 2nd entry
-		moveq	#0,d0		; move 0 (black) to d0
-		tst.w	(a1)
-		bne.s	loc_18A36
-		move.w	#cWhite,d0	; move 0EEE (white) to d0
-
-loc_18A36:
-		move.w	d0,(a1)
-		subq.b	#1,objoff_3E(a0)
-		bne.s	locret_18A44
-		move.b	#(colEnemy|colSz_24x24),obColType(a0)
+		jsr		(PlaySound_Special).w		; play boss damage sound
+		bra.w	BossFlash
 
 locret_18A44:
 		rts	
 ; ===========================================================================
 
-loc_18A46:
+BossStarLight_AwardPoints:
 		moveq	#100,d0
-		bsr.w	AddPoints
-		move.b	#6,ob2ndRout(a0)
-		move.b	#$78,objoff_3C(a0)
+		bsr.w	AddPoints			; award 1000 points
+		move.b	#6,ob2ndRout(a0)	; set ship to exploding routine
+		move.b	#$78,boss_delaytime(a0)
 		clr.w	obVelX(a0)
 		rts	
 ; ===========================================================================
 
-loc_18A5E:
-		move.w	objoff_30(a0),d0
+BossStarLight_ShipMove:		; Secondary Routine 2
+		move.w	boss_bufferX(a0),d0
 		move.w	#$200,obVelX(a0)
 		btst	#staFlipX,obStatus(a0)
 		bne.s	loc_18A7C
@@ -209,12 +200,12 @@ loc_18AB4:
 loc_18AC0:
 		move.b	d2,obSubtype(a0)
 		addq.b	#2,ob2ndRout(a0)
-		move.b	#$28,objoff_3C(a0)
+		move.b	#$28,boss_delaytime(a0)
 		bra.w	loc_189CA
 ; ===========================================================================
 
-BossStarLight_MakeBall:
-		cmpi.b	#$28,objoff_3C(a0)
+BossStarLight_ShipMakeBall:		; Secondary Routine 4
+		cmpi.b	#$28,boss_delaytime(a0)
 		bne.s	loc_18B36
 		moveq	#-1,d0
 		move.b	obSubtype(a0),d0
@@ -230,7 +221,7 @@ BossStarLight_MakeBall:
 		moveq	#v_lvlobjcount,d1		; FixBugs: Normally only covered the first half of object RAM.
 
 loc_18AFA:
-		cmp.l	objoff_3C(a1),d0
+		cmp.l	boss_delaytime(a1),d0
 		beq.s	loc_18B40
 		adda.w	#object_size,a1
 		dbf		d1,loc_18AFA
@@ -245,12 +236,12 @@ loc_18AFA:
 		move.w	obY(a0),obY(a1)
 		addi.w	#$20,obY(a1)
 		move.b	obStatus(a2),obStatus(a1)
-		move.l	a2,objoff_3C(a1)
+		move.l	a2,boss_delaytime(a1)
 
 loc_18B36:
-		subq.b	#1,objoff_3C(a0)
+		subq.b	#1,boss_delaytime(a0)
 		beq.s	loc_18B40
-		bra.w	loc_189FE
+		bra.w	BossStarLight_ChkHit
 ; ===========================================================================
 
 loc_18B40:
@@ -258,10 +249,10 @@ loc_18B40:
 		bra.w	loc_189CA
 ; ===========================================================================
 
-loc_18B48:
-		subq.b	#1,objoff_3C(a0)
+BossStarLight_ShipExplode:		; Secondary Routine 6
+		subq.b	#1,boss_delaytime(a0)
 		bmi.s	loc_18B52
-		bra.w	BossDefeated
+		bra.w	BossDefeated		; Make explosion in a random spot on the ship
 ; ===========================================================================
 
 loc_18B52:
@@ -270,52 +261,52 @@ loc_18B52:
 		bset	#staFlipX,obStatus(a0)
 		bclr	#7,obStatus(a0)
 		clr.w	obVelX(a0)
-		move.b	#-$18,objoff_3C(a0)
+		move.b	#-$18,boss_delaytime(a0)
 		tst.b	(v_bossstatus).w
 		bne.s	loc_18B7C
 		move.b	#1,(v_bossstatus).w
 
 loc_18B7C:
-		bra.w	loc_189FE
+		bra.w	BossStarLight_ChkHit
 ; ===========================================================================
 
-loc_18B80:
-		addq.b	#1,objoff_3C(a0)
-		beq.s	loc_18B90
-		bpl.s	loc_18B96
-		addi.w	#$18,obVelY(a0)
-		bra.w	loc_189EE
+BossStarLight_ShipDestroyed:		; Secondary Routine 8
+		addq.b	#1,boss_delaytime(a0)
+		beq.s	loc_18B90					; if timer has ticked up to 0, branch
+		bpl.s	loc_18B96					; if timer is greater than zero, branch
+		addi.w	#$18,obVelY(a0)				; while timer is negative, the ship should sink down
+		bra.w	BossStarLight_ApplyMovement
 ; ===========================================================================
 
 loc_18B90:
-		clr.w	obVelY(a0)
-		bra.w	loc_189EE
+		clr.w	obVelY(a0)					; stop sinking
+		bra.w	BossStarLight_ApplyMovement
 ; ===========================================================================
 
 loc_18B96:
-		cmpi.b	#$20,objoff_3C(a0)
-		blo.s	loc_18BAE
-		beq.s	loc_18BB4
-		cmpi.b	#$2A,objoff_3C(a0)
-		blo.w	loc_189EE
+		cmpi.b	#$20,boss_delaytime(a0)
+		blo.s	loc_18BAE					; for about half a second, the ship will rise back up
+		beq.s	loc_18BB4					; if timer == $30, the ship stops rising and music resets
+		cmpi.b	#$2A,boss_delaytime(a0)
+		blo.w	BossStarLight_ApplyMovement
 		addq.b	#2,ob2ndRout(a0)
-		bra.w	loc_189EE
+		bra.w	BossStarLight_ApplyMovement
 ; ===========================================================================
 
 loc_18BAE:
 		subq.w	#8,obVelY(a0)
-		bra.w	loc_189EE
+		bra.w	BossStarLight_ApplyMovement
 ; ===========================================================================
 
 loc_18BB4:
 		clr.w	obVelY(a0)
 		move.w	#bgm_SLZ,d0
-		jsr		(PlaySound).w			; play SLZ music
-		move.b	d0,(v_lastbgmplayed).w	; store last played music
-		bra.w	loc_189EE
+		jsr		(PlaySound).w				; play SLZ music
+		move.b	d0,(v_lastbgmplayed).w		; store last played music
+		bra.w	BossStarLight_ApplyMovement
 ; ===========================================================================
 
-loc_18BC6:
+BossStarLight_ShipFlee:		; Secondary Routine $A
 		move.w	#$400,obVelX(a0)
 		move.w	#-$40,obVelY(a0)
 		cmpi.w	#boss_slz_end,(v_limitright2).w
@@ -341,61 +332,61 @@ BossStarLight_PopAndDelete:
 
 BossStarLight_FaceMain:	; Routine 4
 		moveq	#0,d0
-		moveq	#1,d1
-		movea.l	objoff_34(a0),a1
+		moveq	#aniID_NormalFace1,d1
+		movea.l	boss_parent(a0),a1
 		move.b	ob2ndRout(a1),d0
 		cmpi.b	#6,d0
 		bmi.s	loc_18C06
-		moveq	#$A,d1
+		moveq	#aniID_DefeatFace,d1
 		bra.s	loc_18C1A
 ; ===========================================================================
 
 loc_18C06:
 		tst.b	obColType(a1)
 		bne.s	loc_18C10
-		moveq	#5,d1
+		moveq	#aniID_HurtFace,d1
 		bra.s	loc_18C1A
 ; ===========================================================================
 
 loc_18C10:
 		cmpi.b	#4,(v_player+obRoutine).w
 		blo.s	loc_18C1A
-		moveq	#4,d1
+		moveq	#aniID_LaughFace,d1
 
 loc_18C1A:
 		move.b	d1,obAnim(a0)
 		cmpi.b	#$A,d0
-		bne.s	loc_18C6C
-		move.b	#6,obAnim(a0)
+		bne.s	BossStarLight_Animate
+		move.b	#aniID_PanicFace,obAnim(a0)
 		tst.b	obRender(a0)
 		bpl.w	BossStarLight_Delete
-		bra.s	loc_18C6C
+		bra.s	BossStarLight_Animate
 ; ===========================================================================
 
 BossStarLight_FlameMain:; Routine 6
-		move.b	#8,obAnim(a0)
-		movea.l	objoff_34(a0),a1
+		move.b	#aniID_Flame1,obAnim(a0)
+		movea.l	boss_parent(a0),a1
 		cmpi.b	#$A,ob2ndRout(a1)
 		bne.s	loc_18C56
 		tst.b	obRender(a0)
 		bpl.s	BossStarLight_Delete
-		move.b	#$B,obAnim(a0)
-		bra.s	loc_18C6C
+		move.b	#aniID_EscapeFlame,obAnim(a0)
+		bra.s	BossStarLight_Animate
 ; ===========================================================================
 
 loc_18C56:
 		cmpi.b	#8,ob2ndRout(a1)
-		bgt.s	loc_18C6C
+		bgt.s	BossStarLight_Animate
 		cmpi.b	#4,ob2ndRout(a1)
-		blt.s	loc_18C6C
-		move.b	#7,obAnim(a0)
+		blt.s	BossStarLight_Animate
+		move.b	#aniID_Blank,obAnim(a0)
 
-loc_18C6C:
+BossStarLight_Animate:
 		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
 
-loc_18C78:
-		movea.l	objoff_34(a0),a1
+BossStarLight_Display:
+		movea.l	boss_parent(a0),a1
 		move.w	obX(a1),obX(a0)
 		move.w	obY(a1),obY(a0)
 		move.b	obStatus(a1),obStatus(a0)
@@ -403,11 +394,11 @@ loc_18C78:
 		and.b	obStatus(a0),d0
 		andi.b	#$FC,obRender(a0)
 		or.b	d0,obRender(a0)
-		jmp		(DisplayAndCollision).l	; S3K TouchResponse
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 
 BossStarLight_TubeMain:	; Routine 8
-		movea.l	objoff_34(a0),a1
+		movea.l	boss_parent(a0),a1
 		cmpi.b	#$A,ob2ndRout(a1)
 		bne.s	loc_18CB8
 		tst.b	obRender(a0)
@@ -417,8 +408,9 @@ loc_18CB8:
 		move.l	#Map_BossItems,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Eggman_Weapons,1,0),obGfx(a0)
 		move.b	#3,obFrame(a0)
-		bra.s	loc_18C78
+		bra.s	BossStarLight_Display
 ; ===========================================================================
 
 BossStarLight_Delete:
-		jmp	(DeleteObject).l
+		jmp		(DeleteObject).l
+; ===========================================================================
