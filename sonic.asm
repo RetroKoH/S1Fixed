@@ -6532,11 +6532,7 @@ locret_15098:
 
 		include	"_incObj/7D Hidden Bonuses.asm"
 
-
 		include	"_incObj/8A Credits.asm"
-
-
-		include	"_incObj/3D Boss - Green Hill (part 1).asm"
 
 ; ---------------------------------------------------------------------------
 ; Defeated boss	subroutine
@@ -6568,6 +6564,7 @@ BossDefeated:
 locret_178A2:
 		rts	
 ; End of function BossDefeated
+; ===========================================================================
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	move a boss
@@ -6580,32 +6577,64 @@ BossMove:
 	; DeltaW Optimized Object Movement
 		movem.w	obVelX(a0),d0/d2	; load horizontal speed (d0) and vertical speed (d2)
 		lsl.l	#8,d0				; multiply by $100 (combine ext and asl to become lsl)
-		add.l	d0,objoff_30(a0)	; apply to stored x-axis position
+		add.l	d0,boss_bufferX(a0)	; apply to stored x-axis position
 		lsl.l	#8,d2				; multiply by $100 (combine ext and asl to become lsl)
-		add.l	d2,objoff_38(a0)	; apply to stored y-axis position
+		add.l	d2,boss_bufferY(a0)	; apply to stored y-axis position
 		rts
 ; End of function BossMove
-
 ; ===========================================================================
 
-		include	"_incObj/3D Boss - Green Hill (part 2).asm"
-		include	"_incObj/48 Eggman's Swinging Ball.asm"
+; ---------------------------------------------------------------------------
+; Subroutine to	make a boss flash white
+; ---------------------------------------------------------------------------
+
+; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+
+
+BossFlash:
+		lea		(v_palette+$22).w,a1	; load 2nd palette, 2nd entry
+		moveq	#0,d0					; move 0 (black) to d0
+		tst.w	(a1)					; is this palette color black?
+		bne.s	.notBlack				; if not, it's white. Branch ahead.
+		move.w	#cWhite,d0				; move 0EEE (white) to d0
+
+	.notBlack:
+		move.w	d0,(a1)					; load colour stored in	d0
+		subq.b	#1,boss_flashframes(a0)	; decrement number of times to flash
+		bne.s	.stillFlashing
+		move.b	#(colEnemy|colSz_24x24),obColType(a0)	; reset collision after flashing
+
+	.stillFlashing:
+		rts	
+; End of function BossFlash
+; ===========================================================================
+
+	; Boss variables (Any unique variables are found within the object file itself)
+boss_bufferX = objoff_30		; stored X-position (2 bytes)
+boss_parent = objoff_34			; parent address (4 bytes) -- Used by face, flame, and weapon
+boss_bufferY = objoff_38		; stored Y-position (2 bytes)
+boss_delaytime = objoff_3C		; delay timer (1/2 bytes)
+boss_flashframes = objoff_3E	; # of frames to flash white when hit (1 byte)
+boss_hoverangle = objoff_3F		; Used w/ CalcSine for the ship's hover effect (1 byte)
+
+	; Zone bosses
 		include	"_anim/Eggman.asm"
-
-		include	"_incObj/77 Boss - Labyrinth.asm"
+		include	"_incObj/3D Boss - Green Hill.asm"
+		include	"_incObj/48 Eggman's Swinging Ball.asm"
 		include	"_incObj/73 Boss - Marble.asm"
-
+		include	"_incObj/75 Boss - Spring Yard.asm"
+		include	"_incObj/76 SYZ Boss Blocks.asm"
+		include	"_incObj/77 Boss - Labyrinth.asm"
 		include	"_incObj/7A Boss - Star Light.asm"
 		include	"_incObj/7B SLZ Boss Spikeball.asm"
 
-		include	"_incObj/75 Boss - Spring Yard.asm"
-		include	"_incObj/76 SYZ Boss Blocks.asm"
-
+	; Cutscene boss
 		include	"_incObj/82 Eggman - Scrap Brain 2.asm"
 		include	"_anim/Eggman - Scrap Brain 2 & Final.asm"
 
 		include	"_incObj/83 SBZ Eggman's Crumbling Floor.asm"
 
+	; Final boss
 		include	"_incObj/85 Boss - Final.asm"
 		include	"_anim/FZ Eggman in Ship.asm"
 
