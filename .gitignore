@@ -4,12 +4,13 @@ SonLVL INI Files/dllcache
 SonLVL INI Files/SonLVL.log
 
 # Misc. compiler output.
-sonic.log
-sonic.p
+sonic.lst
+sonic.debug.lst
+*.log
+*.p
 
 # Built ROMs.
+S1Fixed.bin
+S1Fixed.debug.bin
 S1Fixed.prev.bin
 S1Fixed.debug.prev.bin
-
-# Typical CMake build directory.
-build_tools/s1p2bin/build
