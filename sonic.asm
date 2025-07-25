@@ -6601,6 +6601,8 @@ BossFlash:
 ; ===========================================================================
 
 	; Boss variables (Any unique variables are found within the object file itself)
+ob3rdRout = obSubtype			; bosses may use this OST as a tertiary routine counter
+
 boss_bufferX = objoff_30		; stored X-position (2 bytes)
 boss_parent = objoff_34			; parent address (4 bytes) -- Used by face, flame, and weapon
 boss_bufferY = objoff_38		; stored Y-position (2 bytes)

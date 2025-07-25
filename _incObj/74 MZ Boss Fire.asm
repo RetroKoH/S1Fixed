@@ -12,7 +12,7 @@ BossFire_Index:		offsetTable
 		offsetTableEntry.w BossFire_Main
 		offsetTableEntry.w BossFire_Action
 		offsetTableEntry.w loc_18886
-		offsetTableEntry.w BossFire_Delete3
+		offsetTableEntry.w BossFire_Delete2
 ; ===========================================================================
 
 BossFire_Main:	; Routine 0
@@ -38,7 +38,7 @@ BossFire_Main:	; Routine 0
 loc_1870A:
 		move.b	#$1E,objoff_29(a0)
 		move.w	#sfx_Fireball,d0
-		jsr		(PlaySound_Special).w	; play lava sound
+		jsr		(PlaySound_Special).w		; play lava sound
 
 BossFire_Action:	; Routine 2
 		moveq	#0,d0
@@ -49,13 +49,10 @@ BossFire_Action:	; Routine 2
 		lea		Ani_Fire(pc),a1
 		jsr		(AnimateSprite).w
 		cmpi.w	#boss_mz_y+$D8,obY(a0)
-		bhi.s	BossFire_Delete
+		bhi.w	BossFire_Delete2
 		jmp		(DisplayAndCollision).l		; Clownacy DisplaySprite Fix; S3K TouchResponse
 ; ===========================================================================
 
-BossFire_Delete:
-		jmp		(DeleteObject).l
-; ===========================================================================
 BossFire_Index2:	offsetTable
 		offsetTableEntry.w.w BossFire_Drop
 		offsetTableEntry.w.w BossFire_MakeFlame
@@ -175,7 +172,7 @@ loc_18856:
 		tst.w	d1
 		bpl.s	locret_1887E
 		subq.b	#1,objoff_29(a0)
-		beq.s	BossFire_Delete2
+		beq.s	BossFire_Delete
 		clr.w	obVelY(a0)
 		move.w	objoff_32(a0),obX(a0)
 		move.w	objoff_38(a0),obY(a0)
@@ -186,14 +183,16 @@ locret_1887E:
 		rts	
 ; ===========================================================================
 
-BossFire_Delete2:
+BossFire_Delete:
 		; Do not return to BossFire_Action, to avoid double-delete
 		; and display-and-delete bugs.
 		addq.l	#4,sp			; Clownacy DisplaySprite Fix
+
+BossFire_Delete2:	; Routine 6
 		jmp		(DeleteObject).l
 ; ===========================================================================
 
-loc_18886:	; Routine 4
+loc_18886:			; Routine 4
 		bset	#7,obGfx(a0)
 		subq.b	#1,objoff_29(a0)
 		bne.s	BossFire_Animate
@@ -207,6 +206,3 @@ BossFire_Animate:
 		jsr		(AnimateSprite).w
 		jmp		(DisplayAndCollision).l	; S3K TouchResponse; Clownacy DisplaySprite Fix
 ; ===========================================================================
-
-BossFire_Delete3:	; Routine 6
-		jmp		(DeleteObject).l
