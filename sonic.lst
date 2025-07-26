@@ -1,4 +1,4 @@
- AS V1.42 Beta [Bld 212] - Source File sonic.asm - Page 1 - 7/25/2025 14:5:36
+ AS V1.42 Beta [Bld 212] - Source File sonic.asm - Page 1 - 7/26/2025 12:28:52
 
 
        1/       0 :                     ;  =========================================================================
@@ -61,7 +61,7 @@
 (1)   41/       0 :                     ; Function: Adds 7th Special Stage, 7th Emerald and Super Sonic Form
 (1)   42/       0 : =$1                  SuperMod: = 1
 (1)   43/       0 :                     
- AS V1.42 Beta [Bld 212] - Source File sonic.asm(Mods.asm) - Page 2 - 7/25/2025 14:5:36
+ AS V1.42 Beta [Bld 212] - Source File sonic.asm(Mods.asm) - Page 2 - 7/26/2025 12:28:52
 
 
 (1)   44/       0 :                     ; ----- GAMEPLAY TWEAKS ----------------------------------------------------------
@@ -124,7 +124,7 @@
 (1)  101/       0 : =$1                  OrbinautAnimationTweak: = 1
 (1)  102/       0 : =$80                 	OrbinautAnimationTweakRange: = $80	; horizontal range in pixels at which Sonic is noticed by the Orbinaut
 (1)  103/       0 : =$8                  	OrbinautAnimationTweakSpeed: = $8	; animation speed of the Orbinaut's "getting angry" animation
- AS V1.42 Beta [Bld 212] - Source File sonic.asm(Mods.asm) - Page 3 - 7/25/2025 14:5:36
+ AS V1.42 Beta [Bld 212] - Source File sonic.asm(Mods.asm) - Page 3 - 7/26/2025 12:28:52
 
 
 (1)  104/       0 :                     	
@@ -187,7 +187,7 @@
 (1)  161/       0 : =$1                  ActiveDeathSequence: = 1				; if set to 1, active elements don't freeze on death a la Sonic CD
 (1)  162/       0 :                     
 (1)  163/       0 :                     ; Name: End-of-Level Music Fade
- AS V1.42 Beta [Bld 212] - Source File sonic.asm(Mods.asm) - Page 4 - 7/25/2025 14:5:36
+ AS V1.42 Beta [Bld 212] - Source File sonic.asm(Mods.asm) - Page 4 - 7/26/2025 12:28:52
 
 
 (1)  164/       0 :                     ; Credit: RetroKoH
@@ -250,7 +250,7 @@
 (1)  221/       0 : =$0                  	TimeLimitInSpecialStage: = 0		; if set, time counts down in the Special Stage from a specified time limit
 (1)  222/       0 : =$1E00               		SSTimeLimitPinch: = $00001E00	; "pinch" threshold that time must reach in order to trigger "TIME" to flash. Format: $000MSSCC
 (1)  223/       0 : =$10000              		SSTimeLimitStart: = $00010000	; time on the clock to start with when Special Stage is entered. Format: $000MSSCC
- AS V1.42 Beta [Bld 212] - Source File sonic.asm(Mods.asm) - Page 5 - 7/25/2025 14:5:36
+ AS V1.42 Beta [Bld 212] - Source File sonic.asm(Mods.asm) - Page 5 - 7/26/2025 12:28:52
 
 
 (1)  224/       0 :                     		; NOTE: SSTimeLimitStart must always end in 00
@@ -32523,211 +32523,218 @@
 (1)   12/    F652 : 0008                        dc.w BossFire_Main-current_offset_table
 (1)   13/    F654 : (MACRO)              		offsetTableEntry.w BossFire_Action
 (1)   13/    F654 : 0066                        dc.w BossFire_Action-current_offset_table
-(1)   14/    F656 : (MACRO)              		offsetTableEntry.w loc_18886
-(1)   14/    F656 : 01D6                        dc.w loc_18886-current_offset_table
+(1)   14/    F656 : (MACRO)              		offsetTableEntry.w BossFire_OffScreenRight
+(1)   14/    F656 : 01D6                        dc.w BossFire_OffScreenRight-current_offset_table
 (1)   15/    F658 : (MACRO)              		offsetTableEntry.w BossFire_Delete2
 (1)   15/    F658 : 01D0                        dc.w BossFire_Delete2-current_offset_table
-(1)   16/    F65A :                     ; ===========================================================================
-(1)   17/    F65A :                     
-(1)   18/    F65A :                     BossFire_Main:	; Routine 0
-(1)   19/    F65A : 117C 0008 0016      		move.b	#8,obHeight(a0)
-(1)   20/    F660 : 117C 0008 0017      		move.b	#8,obWidth(a0)
-(1)   21/    F666 : 217C 000C EAAA      		move.l	#Map_Fire,obMap(a0)
+(1)   16/    F65A :                     
+(1)   17/    F65A : =$29                 bossfire_delaytimer = objoff_29					; delay timer for various actions (1 byte)
+(1)   18/    F65A : =$30                 bossfire_bufferX = objoff_30					; stored X-position (2 bytes)
+(1)   19/    F65A : =$32                 bossfire_bufferX2 = objoff_32					; second stored X-position (2 bytes)
+(1)   20/    F65A : =$38                 bossfire_bufferY = objoff_38					; stored Y-position (2 bytes)
+(1)   21/    F65A :                     ; ===========================================================================
+(1)   22/    F65A :                     
+(1)   23/    F65A :                     BossFire_Main:	; Routine 0
+(1)   24/    F65A : 117C 0008 0016      		move.b	#8,obHeight(a0)
+(1)   25/    F660 : 117C 0008 0017      		move.b	#8,obWidth(a0)
+(1)   26/    F666 : 217C 000C EAAA      		move.l	#Map_Fire,obMap(a0)
              F66C : 0004             
-(1)   22/    F66E : 317C 03AA 0002      		move.w	#make_art_tile(ArtTile_Fireball,0,0),obGfx(a0)
-(1)   23/    F674 : 117C 0004 0001      		move.b	#4,obRender(a0)
-(1)   24/    F67A : 317C AE80 0018      		move.w	#priority5,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-(1)   25/    F680 : 3168 000C 0038      		move.w	obY(a0),objoff_38(a0)
-(1)   26/    F686 : 117C 0008 0023      		move.b	#8,obActWid(a0)
-(1)   27/    F68C : 5428 0024           		addq.b	#2,obRoutine(a0)
-(1)   28/    F690 :                     
-(1)   29/    F690 : 08E8 0004 0027      		bset	#shPropFlame,obShieldProp(a0)	; Negated by Flame Shield
-(1)   30/    F696 :                     
-(1)   31/    F696 : 4A28 0028           		tst.b	obSubtype(a0)
-(1)   32/    F69A : 660E                		bne.s	loc_1870A
-(1)   33/    F69C : 117C 008B 0020      		move.b	#(colHarmful|colSz_8x8),obColType(a0)
-(1)   34/    F6A2 : 5428 0024           		addq.b	#2,obRoutine(a0)
-(1)   35/    F6A6 : 6000 0180           		bra.w	loc_18886
-(1)   36/    F6AA :                     ; ===========================================================================
-(1)   37/    F6AA :                     
-(1)   38/    F6AA :                     loc_1870A:
-(1)   39/    F6AA : 117C 001E 0029      		move.b	#$1E,objoff_29(a0)
-(1)   40/    F6B0 : 303C 00AE           		move.w	#sfx_Fireball,d0
-(1)   41/    F6B4 : 4EB8 13A0           		jsr		(PlaySound_Special).w		; play lava sound
-(1)   42/    F6B8 :                     
-(1)   43/    F6B8 :                     BossFire_Action:	; Routine 2
-(1)   44/    F6B8 : 7000                		moveq	#0,d0
-(1)   45/    F6BA : 1028 0025           		move.b	ob2ndRout(a0),d0
-(1)   46/    F6BE : 303B 0024           		move.w	BossFire_Index2(pc,d0.w),d0
-(1)   47/    F6C2 : 4EBB 0020           		jsr		BossFire_Index2(pc,d0.w)
-(1)   48/    F6C6 : 4EB9 0000 E2B2      		jsr		(SpeedToPos).l
-(1)   49/    F6CC : 43FA FF5A           		lea		Ani_Fire(pc),a1
-(1)   50/    F6D0 : 4EB8 6B78           		jsr		(AnimateSprite).w
-(1)   51/    F6D4 : 0C68 02E8 000C      		cmpi.w	#boss_mz_y+$D8,obY(a0)
-(1)   52/    F6DA : 6200 0146           		bhi.w	BossFire_Delete2
-(1)   53/    F6DE : 4EF9 0001 0840      		jmp		(DisplayAndCollision).l		; Clownacy DisplaySprite Fix; S3K TouchResponse
-(1)   54/    F6E4 :                     ; ===========================================================================
-(1)   55/    F6E4 :                     
-(1)   56/    F6E4 : (MACRO)              BossFire_Index2:	offsetTable
-(1)   56/    F6E4 : =$F6E4               current_offset_table := BossFire_Index2
-(1)   56/    F6E4 : =$F6E4               BossFire_Index2 label *
-(1)   57/    F6E4 : (MACRO)              		offsetTableEntry.w.w BossFire_Drop
-(1)   57/    F6E4 : 0008                        dc.w.w BossFire_Drop-current_offset_table
-(1)   58/    F6E6 : (MACRO)              		offsetTableEntry.w.w BossFire_MakeFlame
-(1)   58/    F6E6 : 003A                        dc.w.w BossFire_MakeFlame-current_offset_table
-(1)   59/    F6E8 : (MACRO)              		offsetTableEntry.w.w BossFire_Duplicate
-(1)   59/    F6E8 : 00A8                        dc.w.w BossFire_Duplicate-current_offset_table
-(1)   60/    F6EA : (MACRO)              		offsetTableEntry.w.w BossFire_FallEdge
-(1)   60/    F6EA : 00EC                        dc.w.w BossFire_FallEdge-current_offset_table
-(1)   61/    F6EC :                     ; ===========================================================================
-(1)   62/    F6EC :                     
-(1)   63/    F6EC :                     BossFire_Drop:
-(1)   64/    F6EC : 08E8 0001 0022      		bset	#staFlipY,obStatus(a0)
-(1)   65/    F6F2 : 5328 0029           		subq.b	#1,objoff_29(a0)
-(1)   66/    F6F6 : 6A24                		bpl.s	locret_18780
-(1)   67/    F6F8 : 117C 008B 0020      		move.b	#(colHarmful|colSz_8x8),obColType(a0)
-(1)   68/    F6FE : 4228 0028           		clr.b	obSubtype(a0)
-(1)   69/    F702 : 0668 0018 0012      		addi.w	#$18,obVelY(a0)
-(1)   70/    F708 : 08A8 0001 0022      		bclr	#staFlipY,obStatus(a0)
-(1)   71/    F70E : 4EB9 0001 7868      		jsr		(ObjFloorDist).l
-(1)   72/    F714 : 4A41                		tst.w	d1
-(1)   73/    F716 : 6A04                		bpl.s	locret_18780
-(1)   74/    F718 : 5428 0025           		addq.b	#2,ob2ndRout(a0)
-(1)   75/    F71C :                     
-(1)   76/    F71C :                     locret_18780:
-(1)   77/    F71C : 4E75                		rts	
-(1)   78/    F71E :                     ; ===========================================================================
-(1)   79/    F71E :                     
-(1)   80/    F71E :                     BossFire_MakeFlame:
-(1)   81/    F71E : 5568 000C           		subq.w	#2,obY(a0)
-(1)   82/    F722 : 08E8 0007 0002      		bset	#7,obGfx(a0)
-(1)   83/    F728 : 317C 00A0 0010      		move.w	#$A0,obVelX(a0)
-(1)   84/    F72E : 4268 0012           		clr.w	obVelY(a0)
-(1)   85/    F732 : 3168 0008 0030      		move.w	obX(a0),objoff_30(a0)
-(1)   86/    F738 : 3168 000C 0038      		move.w	obY(a0),objoff_38(a0)
-(1)   87/    F73E : 117C 0003 0029      		move.b	#3,objoff_29(a0)
-(1)   88/    F744 : 4EB9 0000 ED6E      		jsr		(FindNextFreeObj).l
-(1)   89/    F74A : 661A                		bne.s	loc_187CA
-(1)   90/    F74C : 47D1                		lea		(a1),a3
-(1)   91/    F74E : 45D0                		lea		(a0),a2
-(1)   92/    F750 : 7003                		moveq	#3,d0
-(1)   93/    F752 :                     
-(1)   94/    F752 :                     BossFire_Loop:
-(1)   95/    F752 : 26DA                		move.l	(a2)+,(a3)+
-(1)   96/    F754 : 26DA                		move.l	(a2)+,(a3)+
-(1)   97/    F756 : 26DA                		move.l	(a2)+,(a3)+
-(1)   98/    F758 : 26DA                		move.l	(a2)+,(a3)+
-(1)   99/    F75A : 51C8 FFF6           		dbf		d0,BossFire_Loop
-(1)  100/    F75E :                     
-(1)  101/    F75E : 4469 0010           		neg.w	obVelX(a1)
-(1)  102/    F762 : 5429 0025           		addq.b	#2,ob2ndRout(a1)
-(1)  103/    F766 :                     
-(1)  104/    F766 :                     loc_187CA:
-(1)  105/    F766 : 5428 0025           		addq.b	#2,ob2ndRout(a0)
-(1)  106/    F76A : 4E75                		rts	
-(1)  107/    F76C :                     
-(1)  108/    F76C :                     ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-(1)  109/    F76C :                     
-(1)  110/    F76C :                     
-(1)  111/    F76C :                     BossFire_Duplicate2:
-(1)  112/    F76C : 4EB9 0000 ED6E      		jsr		(FindNextFreeObj).l
-(1)  113/    F772 : 6616                		bne.s	locret_187EE
-(1)  114/    F774 : 3368 0008 0008      		move.w	obX(a0),obX(a1)
-(1)  115/    F77A : 3368 000C 000C      		move.w	obY(a0),obY(a1)
-(1)  116/    F780 : 12BC 0074           		move.b	#id_BossFire,obID(a1)
-(1)  117/    F784 : 337C 0067 0028      		move.w	#$67,obSubtype(a1)
-(1)  118/    F78A :                     
-(1)  119/    F78A :                     locret_187EE:
-(1)  120/    F78A : 4E75                		rts	
-(1)  121/    F78C :                     ; End of function BossFire_Duplicate2
-(1)  122/    F78C :                     
-(1)  123/    F78C :                     ; ===========================================================================
-(1)  124/    F78C :                     
-(1)  125/    F78C :                     BossFire_Duplicate:
-(1)  126/    F78C : 4EB9 0001 7868      		jsr		(ObjFloorDist).l
-(1)  127/    F792 : 4A41                		tst.w	d1
-(1)  128/    F794 : 6A2E                		bpl.s	loc_18826
-(1)  129/    F796 : 3028 0008           		move.w	obX(a0),d0
-(1)  130/    F79A : 0C40 1940           		cmpi.w	#boss_mz_x+$140,d0
-(1)  131/    F79E : 6E2A                		bgt.s	loc_1882C
-(1)  132/    F7A0 : 3228 0030           		move.w	objoff_30(a0),d1
-(1)  133/    F7A4 : B240                		cmp.w	d0,d1
-(1)  134/    F7A6 : 6714                		beq.s	loc_1881E
-(1)  135/    F7A8 : 0240 0010           		andi.w	#$10,d0
-(1)  136/    F7AC : 0241 0010           		andi.w	#$10,d1
-(1)  137/    F7B0 : B240                		cmp.w	d0,d1
-(1)  138/    F7B2 : 6708                		beq.s	loc_1881E
-(1)  139/    F7B4 : 61B6                		bsr.s	BossFire_Duplicate2
-(1)  140/    F7B6 : 3168 0008 0032      		move.w	obX(a0),objoff_32(a0)
-(1)  141/    F7BC :                     
-(1)  142/    F7BC :                     loc_1881E:
-(1)  143/    F7BC : 3168 0008 0030      		move.w	obX(a0),objoff_30(a0)
-(1)  144/    F7C2 : 4E75                		rts	
-(1)  145/    F7C4 :                     ; ===========================================================================
-(1)  146/    F7C4 :                     
-(1)  147/    F7C4 :                     loc_18826:
-(1)  148/    F7C4 : 5428 0025           		addq.b	#2,ob2ndRout(a0)
-(1)  149/    F7C8 : 4E75                		rts	
-(1)  150/    F7CA :                     ; ===========================================================================
-(1)  151/    F7CA :                     
-(1)  152/    F7CA :                     loc_1882C:
-(1)  153/    F7CA : 5428 0024           		addq.b	#2,obRoutine(a0)
-(1)  154/    F7CE : 4E75                		rts	
-(1)  155/    F7D0 :                     ; ===========================================================================
-(1)  156/    F7D0 :                     
-(1)  157/    F7D0 :                     BossFire_FallEdge:
-(1)  158/    F7D0 : 08A8 0001 0022      		bclr	#staFlipY,obStatus(a0)
-(1)  159/    F7D6 : 0668 0024 0012      		addi.w	#$24,obVelY(a0)	; make flame fall
-(1)  160/    F7DC : 3028 0008           		move.w	obX(a0),d0
-(1)  161/    F7E0 : 9068 0032           		sub.w	objoff_32(a0),d0
-(1)  162/    F7E4 : 6A02                		bpl.s	loc_1884A
-(1)  163/    F7E6 : 4440                		neg.w	d0
-(1)  164/    F7E8 :                     
-(1)  165/    F7E8 :                     loc_1884A:
-(1)  166/    F7E8 : 0C40 0012           		cmpi.w	#$12,d0
-(1)  167/    F7EC : 6606                		bne.s	loc_18856
-(1)  168/    F7EE : 08A8 0007 0002      		bclr	#7,obGfx(a0)
-(1)  169/    F7F4 :                     
-(1)  170/    F7F4 :                     loc_18856:
-(1)  171/    F7F4 : 4EB9 0001 7868      		jsr		(ObjFloorDist).l
-(1)  172/    F7FA : 4A41                		tst.w	d1
-(1)  173/    F7FC : 6A20                		bpl.s	locret_1887E
-(1)  174/    F7FE : 5328 0029           		subq.b	#1,objoff_29(a0)
-(1)  175/    F802 : 671C                		beq.s	BossFire_Delete
-(1)  176/    F804 : 4268 0012           		clr.w	obVelY(a0)
-(1)  177/    F808 : 3168 0032 0008      		move.w	objoff_32(a0),obX(a0)
-(1)  178/    F80E : 3168 0038 000C      		move.w	objoff_38(a0),obY(a0)
-(1)  179/    F814 : 08E8 0007 0002      		bset	#7,obGfx(a0)
-(1)  180/    F81A : 5528 0025           		subq.b	#2,ob2ndRout(a0)
-(1)  181/    F81E :                     
-(1)  182/    F81E :                     locret_1887E:
-(1)  183/    F81E : 4E75                		rts	
-(1)  184/    F820 :                     ; ===========================================================================
-(1)  185/    F820 :                     
-(1)  186/    F820 :                     BossFire_Delete:
-(1)  187/    F820 :                     		; Do not return to BossFire_Action, to avoid double-delete
-(1)  188/    F820 :                     		; and display-and-delete bugs.
-(1)  189/    F820 : 588F                		addq.l	#4,sp			; Clownacy DisplaySprite Fix
-(1)  190/    F822 :                     
-(1)  191/    F822 :                     BossFire_Delete2:	; Routine 6
-(1)  192/    F822 : 4EF9 0000 E344      		jmp		(DeleteObject).l
-(1)  193/    F828 :                     ; ===========================================================================
-(1)  194/    F828 :                     
-(1)  195/    F828 :                     loc_18886:			; Routine 4
-(1)  196/    F828 : 08E8 0007 0002      		bset	#7,obGfx(a0)
-(1)  197/    F82E : 5328 0029           		subq.b	#1,objoff_29(a0)
-(1)  198/    F832 : 660E                		bne.s	BossFire_Animate
-(1)  199/    F834 : 117C 0001 001C      		move.b	#1,obAnim(a0)
-(1)  200/    F83A : 5968 000C           		subq.w	#4,obY(a0)
-(1)  201/    F83E : 4228 0020           		clr.b	obColType(a0)
-(1)  202/    F842 :                     
-(1)  203/    F842 :                     BossFire_Animate:
-(1)  204/    F842 : 43FA FDE4           		lea		Ani_Fire(pc),a1
-(1)  205/    F846 :                     		; DisplaySprite has been moved to avoid a display-after-free bug.
-(1)  206/    F846 : 4EB8 6B78           		jsr		(AnimateSprite).w
-(1)  207/    F84A : 4EF9 0001 0840      		jmp		(DisplayAndCollision).l	; S3K TouchResponse; Clownacy DisplaySprite Fix
-(1)  208/    F850 :                     ; ===========================================================================
-(1)  209/    F850 :                     
+(1)   27/    F66E : 317C 03AA 0002      		move.w	#make_art_tile(ArtTile_Fireball,0,0),obGfx(a0)
+(1)   28/    F674 : 117C 0004 0001      		move.b	#4,obRender(a0)
+(1)   29/    F67A : 317C AE80 0018      		move.w	#priority5,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
+(1)   30/    F680 : 3168 000C 0038      		move.w	obY(a0),bossfire_bufferY(a0)
+(1)   31/    F686 : 117C 0008 0023      		move.b	#8,obActWid(a0)
+(1)   32/    F68C : 5428 0024           		addq.b	#2,obRoutine(a0)
+(1)   33/    F690 :                     
+(1)   34/    F690 : 08E8 0004 0027      		bset	#shPropFlame,obShieldProp(a0)	; Negated by Flame Shield
+(1)   35/    F696 :                     
+(1)   36/    F696 : 4A28 0028           		tst.b	obSubtype(a0)					; is this subtype 00?
+(1)   37/    F69A : 660E                		bne.s	loc_1870A						; if not, branch
+(1)   38/    F69C : 117C 008B 0020      		move.b	#(colHarmful|colSz_8x8),obColType(a0)
+(1)   39/    F6A2 : 5428 0024           		addq.b	#2,obRoutine(a0)
+(1)   40/    F6A6 : 6000 0180           		bra.w	BossFire_OffScreenRight
+(1)   41/    F6AA :                     ; ===========================================================================
+(1)   42/    F6AA :                     
+(1)   43/    F6AA :                     loc_1870A:
+(1)   44/    F6AA : 117C 001E 0029      		move.b	#30,bossfire_delaytimer(a0)		; set delay timer to drop from the tube to half a second
+(1)   45/    F6B0 : 303C 00AE           		move.w	#sfx_Fireball,d0
+(1)   46/    F6B4 : 4EB8 13A0           		jsr		(PlaySound_Special).w			; play lava sound
+(1)   47/    F6B8 :                     
+(1)   48/    F6B8 :                     BossFire_Action:	; Routine 2
+(1)   49/    F6B8 : 7000                		moveq	#0,d0
+(1)   50/    F6BA : 1028 0025           		move.b	ob2ndRout(a0),d0
+(1)   51/    F6BE : 303B 0024           		move.w	BossFire_Index2(pc,d0.w),d0
+(1)   52/    F6C2 : 4EBB 0020           		jsr		BossFire_Index2(pc,d0.w)
+(1)   53/    F6C6 : 4EB9 0000 E2B2      		jsr		(SpeedToPos).l
+(1)   54/    F6CC : 43FA FF5A           		lea		Ani_Fire(pc),a1
+(1)   55/    F6D0 : 4EB8 6B78           		jsr		(AnimateSprite).w
+(1)   56/    F6D4 : 0C68 02E8 000C      		cmpi.w	#boss_mz_y+$D8,obY(a0)
+(1)   57/    F6DA : 6200 0146           		bhi.w	BossFire_Delete2
+(1)   58/    F6DE : 4EF9 0001 0840      		jmp		(DisplayAndCollision).l			; Clownacy DisplaySprite Fix; S3K TouchResponse
+(1)   59/    F6E4 :                     ; ===========================================================================
+(1)   60/    F6E4 :                     
+(1)   61/    F6E4 : (MACRO)              BossFire_Index2:	offsetTable
+(1)   61/    F6E4 : =$F6E4               current_offset_table := BossFire_Index2
+(1)   61/    F6E4 : =$F6E4               BossFire_Index2 label *
+(1)   62/    F6E4 : (MACRO)              		offsetTableEntry.w.w BossFire_Drop
+(1)   62/    F6E4 : 0008                        dc.w.w BossFire_Drop-current_offset_table
+(1)   63/    F6E6 : (MACRO)              		offsetTableEntry.w.w BossFire_MakeFlame
+(1)   63/    F6E6 : 003A                        dc.w.w BossFire_MakeFlame-current_offset_table
+(1)   64/    F6E8 : (MACRO)              		offsetTableEntry.w.w BossFire_ChkDuplicate
+(1)   64/    F6E8 : 00A8                        dc.w.w BossFire_ChkDuplicate-current_offset_table
+(1)   65/    F6EA : (MACRO)              		offsetTableEntry.w.w BossFire_FallEdge
+(1)   65/    F6EA : 00EC                        dc.w.w BossFire_FallEdge-current_offset_table
+(1)   66/    F6EC :                     ; ===========================================================================
+(1)   67/    F6EC :                     
+(1)   68/    F6EC :                     BossFire_Drop:		; Secondary Routine 0
+(1)   69/    F6EC : 08E8 0001 0022      		bset	#staFlipY,obStatus(a0)			; flip it upside down initially
+(1)   70/    F6F2 : 5328 0029           		subq.b	#1,bossfire_delaytimer(a0)		; decrement timer
+(1)   71/    F6F6 : 6A24                		bpl.s	.end							; if timer is positive, branch and exit
+(1)   72/    F6F8 :                     	; delaytimer will continue decrementing, but we can ignore it now
+(1)   73/    F6F8 : 117C 008B 0020      		move.b	#(colHarmful|colSz_8x8),obColType(a0)
+(1)   74/    F6FE : 4228 0028           		clr.b	obSubtype(a0)					; clear subtype to 00
+(1)   75/    F702 : 0668 0018 0012      		addi.w	#$18,obVelY(a0)					; let fireball drop down
+(1)   76/    F708 : 08A8 0001 0022      		bclr	#staFlipY,obStatus(a0)			; fireball is no longer upside down
+(1)   77/    F70E : 4EB9 0001 7868      		jsr		(ObjFloorDist).l
+(1)   78/    F714 : 4A41                		tst.w	d1								; has the fireball collided with the floor?
+(1)   79/    F716 : 6A04                		bpl.s	.end							; if not, branch and exit
+(1)   80/    F718 : 5428 0025           		addq.b	#2,ob2ndRout(a0)				; go to the next secondary routine (_MakeFlame)
+(1)   81/    F71C :                     
+(1)   82/    F71C :                     	.end:
+(1)   83/    F71C : 4E75                		rts	
+(1)   84/    F71E :                     ; ===========================================================================
+(1)   85/    F71E :                     
+(1)   86/    F71E :                     BossFire_MakeFlame:	; Secondary Routine 2
+(1)   87/    F71E : 5568 000C           		subq.w	#2,obY(a0)						; upon landing, nudge the ball up by 2 pixels
+(1)   88/    F722 : 08E8 0007 0002      		bset	#7,obGfx(a0)
+(1)   89/    F728 : 317C 00A0 0010      		move.w	#$A0,obVelX(a0)					; set X-speed to 0.625
+(1)   90/    F72E : 4268 0012           		clr.w	obVelY(a0)						; clear Y-speed
+(1)   91/    F732 : 3168 0008 0030      		move.w	obX(a0),bossfire_bufferX(a0)	; store X and Y positions on the ground
+(1)   92/    F738 : 3168 000C 0038      		move.w	obY(a0),bossfire_bufferY(a0)
+(1)   93/    F73E : 117C 0003 0029      		move.b	#3,bossfire_delaytimer(a0)
+(1)   94/    F744 : 4EB9 0000 ED6E      		jsr		(FindNextFreeObj).l
+(1)   95/    F74A : 661A                		bne.s	.end
+(1)   96/    F74C : 47D1                		lea		(a1),a3							; a3 = new object
+(1)   97/    F74E : 45D0                		lea		(a0),a2							; a2 = THIS object
+(1)   98/    F750 : 7003                		moveq	#3,d0							; run the loop 4 times for $40 bytes
+(1)   99/    F752 :                     
+(1)  100/    F752 :                     	.loop:			; Copy all data to the new object
+(1)  101/    F752 : 26DA                		move.l	(a2)+,(a3)+
+(1)  102/    F754 : 26DA                		move.l	(a2)+,(a3)+
+(1)  103/    F756 : 26DA                		move.l	(a2)+,(a3)+
+(1)  104/    F758 : 26DA                		move.l	(a2)+,(a3)+
+(1)  105/    F75A : 51C8 FFF6           		dbf		d0,.loop
+(1)  106/    F75E :                     
+(1)  107/    F75E : 4469 0010           		neg.w	obVelX(a1)						; negate new object's X-speed to (-0.625)
+(1)  108/    F762 : 5429 0025           		addq.b	#2,ob2ndRout(a1)				; set new object's secondary routine to 4 (_Duplicate)
+(1)  109/    F766 :                     
+(1)  110/    F766 :                     	.end:
+(1)  111/    F766 : 5428 0025           		addq.b	#2,ob2ndRout(a0)				; set current object's secondary routine to 4 (_Duplicate)
+(1)  112/    F76A : 4E75                		rts
+(1)  113/    F76C :                     ; ===========================================================================
+(1)  114/    F76C :                     
+(1)  115/    F76C :                     
+(1)  116/    F76C :                     ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+(1)  117/    F76C :                     
+(1)  118/    F76C :                     
+(1)  119/    F76C :                     BossFire_Duplicate:
+(1)  120/    F76C : 4EB9 0000 ED6E      		jsr		(FindNextFreeObj).l
+(1)  121/    F772 : 6616                		bne.s	.noslot
+(1)  122/    F774 : 12BC 0074           		move.b	#id_BossFire,obID(a1)			; load boss' fireball object
+(1)  123/    F778 : 3368 0008 0008      		move.w	obX(a0),obX(a1)					; copy X and Y-positions
+(1)  124/    F77E : 3368 000C 000C      		move.w	obY(a0),obY(a1)
+(1)  125/    F784 : 337C 0067 0028      		move.w	#$67,obSubtype(a1)				; set subtype (is this arbitrary just to be non-zero)?
+(1)  126/    F78A :                     
+(1)  127/    F78A :                     	.noslot:
+(1)  128/    F78A : 4E75                		rts	
+(1)  129/    F78C :                     ; End of function BossFire_Duplicate2
+(1)  130/    F78C :                     ; ===========================================================================
+(1)  131/    F78C :                     
+(1)  132/    F78C :                     BossFire_ChkDuplicate:	; Secondary Routine 4
+(1)  133/    F78C : 4EB9 0001 7868      		jsr		(ObjFloorDist).l
+(1)  134/    F792 : 4A41                		tst.w	d1								; is the fireball on the floor?
+(1)  135/    F794 : 6A2E                		bpl.s	.notonfloor						; if not, branch
+(1)  136/    F796 : 3028 0008           		move.w	obX(a0),d0
+(1)  137/    F79A : 0C40 1940           		cmpi.w	#boss_mz_x+$140,d0				; is the fireball past the right edge of the right platform?
+(1)  138/    F79E : 6E2A                		bgt.s	.offscreenRight					; if yes, branch
+(1)  139/    F7A0 : 3228 0030           		move.w	bossfire_bufferX(a0),d1			; d1 = stored ground X-position
+(1)  140/    F7A4 : B240                		cmp.w	d0,d1							; is this fireball still at its stored ground position (IE it hasn't moved)?
+(1)  141/    F7A6 : 6714                		beq.s	.donotduplicate					; if yes, branch
+(1)  142/    F7A8 : 0240 0010           		andi.w	#$10,d0							; isolate bit 4 of both X-positions
+(1)  143/    F7AC : 0241 0010           		andi.w	#$10,d1
+(1)  144/    F7B0 : B240                		cmp.w	d0,d1							; are both bit 4's set?
+(1)  145/    F7B2 : 6708                		beq.s	.donotduplicate					; if yes, branch
+(1)  146/    F7B4 : 61B6                		bsr.s	BossFire_Duplicate
+(1)  147/    F7B6 : 3168 0008 0032      		move.w	obX(a0),bossfire_bufferX2(a0)
+(1)  148/    F7BC :                     
+(1)  149/    F7BC :                     	.donotduplicate:
+(1)  150/    F7BC : 3168 0008 0030      		move.w	obX(a0),bossfire_bufferX(a0)
+(1)  151/    F7C2 : 4E75                		rts	
+(1)  152/    F7C4 :                     ; ===========================================================================
+(1)  153/    F7C4 :                     
+(1)  154/    F7C4 :                     	.notonfloor:
+(1)  155/    F7C4 : 5428 0025           		addq.b	#2,ob2ndRout(a0)				; go to the next secondary routine (_FallEdge)
+(1)  156/    F7C8 : 4E75                		rts	
+(1)  157/    F7CA :                     ; ===========================================================================
+(1)  158/    F7CA :                     
+(1)  159/    F7CA :                     .offscreenRight:
+(1)  160/    F7CA : 5428 0024           		addq.b	#2,obRoutine(a0)				; go to the next primary routine 4
+(1)  161/    F7CE : 4E75                		rts	
+(1)  162/    F7D0 :                     ; ===========================================================================
+(1)  163/    F7D0 :                     
+(1)  164/    F7D0 :                     BossFire_FallEdge:	; Secondary Routine 6
+(1)  165/    F7D0 : 08A8 0001 0022      		bclr	#staFlipY,obStatus(a0)
+(1)  166/    F7D6 : 0668 0024 0012      		addi.w	#$24,obVelY(a0)	; make flame fall
+(1)  167/    F7DC : 3028 0008           		move.w	obX(a0),d0
+(1)  168/    F7E0 : 9068 0032           		sub.w	bossfire_bufferX2(a0),d0
+(1)  169/    F7E4 : 6A02                		bpl.s	loc_1884A
+(1)  170/    F7E6 : 4440                		neg.w	d0
+(1)  171/    F7E8 :                     
+(1)  172/    F7E8 :                     loc_1884A:
+(1)  173/    F7E8 : 0C40 0012           		cmpi.w	#$12,d0
+(1)  174/    F7EC : 6606                		bne.s	loc_18856
+(1)  175/    F7EE : 08A8 0007 0002      		bclr	#7,obGfx(a0)
+(1)  176/    F7F4 :                     
+(1)  177/    F7F4 :                     loc_18856:
+(1)  178/    F7F4 : 4EB9 0001 7868      		jsr		(ObjFloorDist).l
+(1)  179/    F7FA : 4A41                		tst.w	d1
+(1)  180/    F7FC : 6A20                		bpl.s	locret_1887E
+(1)  181/    F7FE : 5328 0029           		subq.b	#1,bossfire_delaytimer(a0)
+(1)  182/    F802 : 671C                		beq.s	BossFire_Delete
+(1)  183/    F804 : 4268 0012           		clr.w	obVelY(a0)
+(1)  184/    F808 : 3168 0032 0008      		move.w	bossfire_bufferX2(a0),obX(a0)
+(1)  185/    F80E : 3168 0038 000C      		move.w	bossfire_bufferY(a0),obY(a0)
+(1)  186/    F814 : 08E8 0007 0002      		bset	#7,obGfx(a0)
+(1)  187/    F81A : 5528 0025           		subq.b	#2,ob2ndRout(a0)
+(1)  188/    F81E :                     
+(1)  189/    F81E :                     locret_1887E:
+(1)  190/    F81E : 4E75                		rts	
+(1)  191/    F820 :                     ; ===========================================================================
+(1)  192/    F820 :                     
+(1)  193/    F820 :                     BossFire_Delete:
+(1)  194/    F820 :                     		; Do not return to BossFire_Action, to avoid double-delete
+(1)  195/    F820 :                     		; and display-and-delete bugs.
+(1)  196/    F820 : 588F                		addq.l	#4,sp			; Clownacy DisplaySprite Fix
+(1)  197/    F822 :                     
+(1)  198/    F822 :                     BossFire_Delete2:	; Routine 6
+(1)  199/    F822 : 4EF9 0000 E344      		jmp		(DeleteObject).l
+(1)  200/    F828 :                     ; ===========================================================================
+(1)  201/    F828 :                     
+(1)  202/    F828 :                     BossFire_OffScreenRight:			; Routine 4
+(1)  203/    F828 : 08E8 0007 0002      		bset	#7,obGfx(a0)
+(1)  204/    F82E : 5328 0029           		subq.b	#1,bossfire_delaytimer(a0)
+(1)  205/    F832 : 660E                		bne.s	.animate
+(1)  206/    F834 : 117C 0001 001C      		move.b	#1,obAnim(a0)
+(1)  207/    F83A : 5968 000C           		subq.w	#4,obY(a0)
+(1)  208/    F83E : 4228 0020           		clr.b	obColType(a0)
+(1)  209/    F842 :                     
+(1)  210/    F842 :                     	.animate:
+(1)  211/    F842 : 43FA FDE4           		lea		Ani_Fire(pc),a1
+(1)  212/    F846 :                     		; DisplaySprite has been moved to avoid a display-after-free bug.
+(1)  213/    F846 : 4EB8 6B78           		jsr		(AnimateSprite).w
+(1)  214/    F84A : 4EF9 0001 0840      		jmp		(DisplayAndCollision).l	; S3K TouchResponse; Clownacy DisplaySprite Fix
+(1)  215/    F850 :                     ; ===========================================================================
+(1)  216/    F850 :                     
     5524/    F850 :                     
     5525/    F850 :                     		include	"_incObj/6D Flamethrower.asm"
 (1)    1/    F850 :                     ; ---------------------------------------------------------------------------
@@ -53757,10 +53764,10 @@
 (1)  241/   19FE6 : 0868 0000 0022      		bchg	#staFlipX,obStatus(a0)				; turn Eggman to face toward the center of the field
 (1)  242/   19FEC : 4EB9 0000 ED58      		jsr		(FindFreeObj).l
 (1)  243/   19FF2 : 661C                		bne.s	.countdown
-(1)  244/   19FF4 : 3368 0030 0008      		move.w	boss_bufferX(a0),obX(a1)
-(1)  245/   19FFA : 3368 0038 000C      		move.w	boss_bufferY(a0),obY(a1)
-(1)  246/   1A000 : 0669 0018 000C      		addi.w	#$18,obY(a1)
-(1)  247/   1A006 : 12BC 0074           		move.b	#id_BossFire,obID(a1)				; load boss' fireball object
+(1)  244/   19FF4 : 12BC 0074           		move.b	#id_BossFire,obID(a1)				; load boss' fireball object
+(1)  245/   19FF8 : 3368 0030 0008      		move.w	boss_bufferX(a0),obX(a1)
+(1)  246/   19FFE : 3368 0038 000C      		move.w	boss_bufferY(a0),obY(a1)
+(1)  247/   1A004 : 0669 0018 000C      		addi.w	#$18,obY(a1)
 (1)  248/   1A00A : 137C 0001 0028      		move.b	#1,obSubtype(a1)
 (1)  249/   1A010 :                     
 (1)  250/   1A010 :                     	.countdown:
@@ -126998,7 +127005,7 @@
     8766/   EFA10 :                     EndOfRom:
     8767/   EFA10 :                     
     8768/   EFA10 :                     		END
- AS V1.42 Beta [Bld 212] - Source File sonic.asm - Page 6 - 7/25/2025 14:5:37
+ AS V1.42 Beta [Bld 212] - Source File sonic.asm - Page 6 - 7/26/2025 12:28:54
 
 
   Symbol Table (* = unused):
@@ -127388,12 +127395,18 @@
  BossFinal_Loop :             1B8D6 C |  BossFinal_Main :             1B8C8 C |
  BossFinal_ObjData :          1B868 C |  BossFinal_ObjData2 :         1B8A4 C |
  BossFire :                    F644 C |  BossFire_Action :             F6B8 C |
- BossFire_Animate :            F842 C |  BossFire_Delete :             F820 C |
- BossFire_Delete2 :            F822 C |  BossFire_Drop :               F6EC C |
- BossFire_Duplicate :          F78C C |  BossFire_Duplicate2 :         F76C C |
+ BossFire_ChkDuplicate :       F78C C |
+ BossFire_ChkDuplicate.donotduplicate :                                F7BC C |
+ BossFire_ChkDuplicate.notonfloor :                                    F7C4 C |
+ BossFire_ChkDuplicate.offscreenRight :                                F7CA C |
+ BossFire_Delete :             F820 C |  BossFire_Delete2 :            F822 C |
+ BossFire_Drop :               F6EC C |  BossFire_Drop.end :           F71C C |
+ BossFire_Duplicate :          F76C C |  BossFire_Duplicate.noslot :   F78A C |
  BossFire_FallEdge :           F7D0 C |  BossFire_Index :              F652 C |
- BossFire_Index2 :             F6E4 C |  BossFire_Loop :               F752 C |
- BossFire_Main :               F65A C |  BossFire_MakeFlame :          F71E C |
+ BossFire_Index2 :             F6E4 C |  BossFire_Main :               F65A C |
+ BossFire_MakeFlame :          F71E C |  BossFire_MakeFlame.end :      F766 C |
+ BossFire_MakeFlame.loop :     F752 C |  BossFire_OffScreenRight :     F828 C |
+ BossFire_OffScreenRight.animate :                                     F842 C |
  BossFlash :                  19794 C |  BossFlash.notBlack :         197A2 C |
  BossFlash.stillFlashing :    197B0 C |  BossGreenHill :              1980E C |
  BossGreenHill_AwardPoints :  19938 C |  BossGreenHill_ChkHit :       198EC C |
@@ -127734,7 +127747,7 @@
  DACUpdateTrack.gotsampleduration :                                   DDC8E C |
  DACUpdateTrack.locret :      DDCB0 C |  DACUpdateTrack.notcoord :    DDC74 C |
  DACUpdateTrack.sampleloop :  DDC64 C |  DACUpdateTrack.timpani :     DDCB2 C |
- DAC_sample_rate :            DDCCA C | *DATE :                 "7/25/2025" - |
+ DAC_sample_rate :            DDCCA C | *DATE :                 "7/26/2025" - |
  DEBUGGER__EXTENSIONS__BTN_A_DEBUGGER :                               EF926 - |
  DEBUGGER__EXTENSIONS__BTN_B_DEBUGGER :                               EF972 - |
  DEBUGGER__EXTENSIONS__BTN_C_DEBUGGER :                                   0 - |
@@ -132417,7 +132430,7 @@
 *SyncEnd :                     518E C |  SynchroAnimate :              511E C |
 *TCha_Main :                   6930 C |  TCha_Main.chkemerald :        6986 C |
  TCha_Main.loc_5B42 :          698E C |  TCha_Main.makeemerald :       693C C |
- TCha_Move :                   69B2 C | *TIME :                   "14:5:34" - |
+ TCha_Move :                   69B2 C | *TIME :                  "12:28:38" - |
  TRUE :                           1 - |  TSonDPLC_0 :                  BF3C C |
  TSonDPLC_0_Begin :            BF3E C |  TSonDPLC_0_End :              BF48 C |
  TSonDPLC_1 :                  BF48 C |  TSonDPLC_1_Begin :            BF4A C |
@@ -132648,6 +132661,8 @@
  boss_slz_end :                2160 - |  boss_slz_x :                  2000 - |
  boss_slz_y :                   210 - |  boss_syz_end :                2D40 - |
  boss_syz_x :                  2C00 - |  boss_syz_y :                   4CC - |
+ bossfire_bufferX :              30 - |  bossfire_bufferX2 :             32 - |
+ bossfire_bufferY :              38 - |  bossfire_delaytimer :           29 - |
  brick_origY :                   30 - | *btnA :                          40 - |
  btnABC :                        70 - | *btnB :                          10 - |
  btnBC :                         30 - |  btnC :                          20 - |
@@ -133215,390 +133230,386 @@
  loc_18566 :                  1A08E C |  loc_1856C :                  1A094 C |
  loc_1857A :                  1A0A4 C |  loc_1859C :                  1A0C6 C |
  loc_185A2 :                  1A0CC C |  loc_18688 :                  1A1A8 C |
- loc_1870A :                   F6AA C |  loc_187CA :                   F766 C |
- loc_1881E :                   F7BC C |  loc_18826 :                   F7C4 C |
- loc_1882C :                   F7CA C |  loc_1884A :                   F7E8 C |
- loc_18856 :                   F7F4 C |  loc_18886 :                   F828 C |
- loc_1895C :                  1AD20 C |  loc_18968 :                  1AD2C C |
- loc_18974 :                  1AD38 C |  loc_189CA :                  1AD8A C |
- loc_18A7C :                  1AE22 C |  loc_18A82 :                  1AE28 C |
- loc_18A88 :                  1AE2E C |  loc_18A9E :                  1AE44 C |
- loc_18AB4 :                  1AE5A C |  loc_18AC0 :                  1AE66 C |
- loc_18AFA :                  1AEA0 C |  loc_18B36 :                  1AEDC C |
- loc_18B40 :                  1AEE6 C |  loc_18B52 :                  1AEF8 C |
- loc_18B7C :                  1AF22 C |  loc_18B90 :                  1AF38 C |
- loc_18B96 :                  1AF40 C |  loc_18BAE :                  1AF5C C |
- loc_18BB4 :                  1AF64 C |  loc_18BE0 :                  1AF92 C |
- loc_18BE8 :                  1AF98 C |  loc_18C06 :                  1AFBE C |
- loc_18C10 :                  1AFC8 C |  loc_18C1A :                  1AFD2 C |
- loc_18C56 :                  1B00C C |  loc_18CB8 :                  1B068 C |
- loc_18D68 :                  1B12A C |  loc_18D8E :                  1B14E C |
- loc_18DAE :                  1B16E C |  loc_18DC6 :                  1B186 C |
- loc_18DDA :                  1B19A C |  loc_18E00 :                  1B1C0 C |
- loc_18E16 :                  1B1D6 C |  loc_18E2A :                  1B1EA C |
- loc_18E48 :                  1B206 C |  loc_18E7A :                  1B238 C |
- loc_18E88 :                  1B246 C |  loc_18E96 :                  1B254 C |
- loc_18EAA :                  1B268 C |  loc_18EB4 :                  1B272 C |
- loc_18EC0 :                  1B27E C |  loc_18F38 :                  1B2F6 C |
- loc_18F5C :                  1B31C C |  loc_18F7E :                  1B33C C |
- loc_18F9C :                  1B35C C |  loc_18FA2 :                  1B360 C |
- loc_18FDC :                  1B39A C |  loc_19008 :                  1B3C4 C |
- loc_1909A :                  1B45C C |  loc_1928E :                  1A33E C |
- loc_19294 :                  1A344 C |  loc_1929E :                  1A34E C |
- loc_192AE :                  1A35E C |  loc_192E8 :                  1A398 C |
- loc_1933C :                  1A3EE C |  loc_19362 :                  1A414 C |
- loc_19366 :                  1A418 C |  loc_1937C :                  1A42E C |
- loc_1939C :                  1A44E C |  loc_193B4 :                  1A466 C |
- loc_193BE :                  1A472 C |  loc_193E8 :                  1A49E C |
- loc_193EE :                  1A4A4 C |  loc_19406 :                  1A4BE C |
- loc_19410 :                  1A4C8 C |  loc_1941C :                  1A4D4 C |
- loc_19424 :                  1A4DC C |  loc_19438 :                  1A4F0 C |
- loc_1947E :                  1A536 C |  loc_194BC :                  1A578 C |
- loc_194C2 :                  1A580 C |  loc_194DA :                  1A59C C |
- loc_194E0 :                  1A5A4 C |  loc_1950C :                  1A5D2 C |
- loc_19512 :                  1A5D8 C |  loc_19552 :                  1A614 C |
- loc_19556 :                  1A618 C |  loc_1955A :                  1A61C C |
- loc_19574 :                  1A626 C |  loc_1957E :                  1A630 C |
- loc_195AA :                  1A662 C |  loc_195DA :                  1A686 C |
- loc_1961C :                  1A6C8 C |  loc_1964C :                  1A6F8 C |
- loc_19652 :                  1A6FE C |  loc_19658 :                  1A704 C |
- loc_19712 :                  1A7BC C |  loc_19718 :                  1A7C2 C |
- loc_19762 :                  1A80C C |  loc_197AA :                  1A854 C |
- loc_197D4 :                  1A87E C |  loc_19934 :                  1B59A C |
- loc_19954 :                  1B5BA C |  loc_1996A :                  1B5D4 C |
- loc_19976 :                  1B5E0 C |  loc_199D0 :                  1B63A C |
-*loc_199E6 :                  1B646 C |  loc_19C36 :                  1B76A C |
- loc_19C62 :                  1B79C C |  loc_19C72 :                  1B7AA C |
- loc_19C80 :                  1B7B8 C |  loc_19CC4 :                  1B7FA C |
- loc_19DD8 :                   92B8 C |  loc_19E20 :                  1B91A C |
- loc_19E30 :                   930C C |  loc_19E3E :                  1B938 C |
- loc_19E5A :                  1B954 C |  loc_19E90 :                  1B988 C |
- loc_19EA2 :                  1B99A C |  loc_19EA8 :                  1B9A0 C |
- loc_19EC6 :                  1B9BC C |  loc_19F10 :                  1BA02 C |
- loc_19F2E :                  1BA20 C |  loc_19F48 :                  1BA3A C |
- loc_19F50 :                  1BA42 C |  loc_19F6A :                  1BA5C C |
- loc_19F88 :                  1BA7E C |  loc_19F96 :                  1BA8C C |
- loc_19F9C :                  1BA92 C |  loc_19FA6 :                  1BA9A C |
- loc_19FBC :                  1BAB0 C |  loc_19FE6 :                  1BAE0 C |
- loc_1A000 :                  1BAFA C |  loc_1A00A :                  1BB04 C |
- loc_1A020 :                  1BB1A C |  loc_1A02A :                  1BB22 C |
- loc_1A074 :                  1BB6E C |  loc_1A09A :                  1BB94 C |
- loc_1A0A :                    1E56 C |  loc_1A0B4 :                  1BBAE C |
- loc_1A0F2 :                  1BBEC C |  loc_1A112 :                  1BC0C C |
- loc_1A124 :                  1BC1E C |  loc_1A142 :                  1BC3C C |
- loc_1A15C :                  1BC56 C |  loc_1A166 :                  1BC5E C |
- loc_1A172 :                  1BC6A C |  loc_1A192 :                  1BC8A C |
- loc_1A1D4 :                  1BCCC C |  loc_1A1FC :                  1BCF2 C |
- loc_1A210 :                  1BD06 C |  loc_1A216 :                  1BD0C C |
- loc_1A23A :                  1BD2E C |  loc_1A248 :                  1BD3C C |
- loc_1A264 :                  1BD5A C |  loc_1A280 :                  1BD76 C |
- loc_1A28C :                  1BD82 C |  loc_1A296 :                  1BD8A C |
- loc_1A2A6 :                  1BD9A C |  loc_1A2C6 :                  1BDBA C |
- loc_1A2E4 :                  1BDD8 C |  loc_1A312 :                  1BE04 C |
- loc_1A346 :                  1BE34 C |  loc_1A35E :                  1BE4C C |
- loc_1A376 :                  1BE64 C |  loc_1A38E :                  1BE7E C |
- loc_1A3A6 :                  1BE96 C |  loc_1A3AC :                  1BE9C C |
- loc_1A4CE :                  1BF50 C |  loc_1A4DC :                  1BF5E C |
- loc_1A4EA :                  1BF6C C |  loc_1A514 :                  1BF96 C |
- loc_1A524 :                  1BFA6 C |  loc_1A550 :                  1BFD2 C |
- loc_1A55C :                  1BFDE C |  loc_1A578 :                  1BFFA C |
- loc_1A57E :                  1C000 C | *loc_1A598 :                  1C008 C |
- loc_1A5B4 :                  1C024 C |  loc_1A5D4 :                  1C048 C |
- loc_1A5E4 :                  1C058 C |  loc_1A60 :                    1EAC C |
- loc_1A604 :                  1C07C C |  loc_1A626 :                  1C09E C |
- loc_1A646 :                  1C0C2 C |  loc_1A656 :                  1C0D2 C |
- loc_1A850 :                  1C168 C |  loc_1A86C :                  1C182 C |
- loc_1A89A :                  1C1B0 C |  loc_1A954 :                  1C26A C |
- loc_1A962 :                  1C27A C |  loc_1A982 :                  1C29C C |
- loc_1A9E6 :                  1C2FA C |  loc_1AA34 :                  1C35E C |
- loc_1AD48 :                  1474A C |  loc_1AD48.sound :            1476A C |
- loc_1AD88 :                  14782 C |  loc_1AD8C :                  14786 C |
- loc_1ADA :                    1F26 C |  loc_1AE0 :                    1F2C C |
- loc_1AEA :                    1F36 C |  loc_1AF6 :                    1F42 C |
- loc_1B06 :                    1F52 C |  loc_1B19E :                  1CBB4 C |
- loc_1B1C0 :                  1CBD6 C |  loc_1B20C :                  1CC24 C |
- loc_1B210 :                  1CC28 C |  loc_1B268 :                  1CC7E C |
- loc_1B288 :                  1CC9A C |  loc_1B2C8 :                  1CCBC C |
- loc_1B2E :                    1F78 C |  loc_1B2E4 :                  1CCD2 C |
- loc_1B326 :                  1CD18 C |  loc_1B350 :                  1CD42 C |
- loc_1B38 :                    1F82 C |  loc_1B4C4 :                  1CF06 C |
- loc_1B4DA :                  1CF1C C |  loc_1B4E8 :                  1CF2A C |
-*loc_1B4EA :                  1CF2C C |  loc_1B52 :                    1F9C C |
- loc_1B564 :                  1CFA6 C |  loc_1B5CA :                  1D012 C |
- loc_1B6F6 :                  1D13C C |  loc_1B6F8 :                  1D13E C |
- loc_1B6F8.dontchange :       1D15C C |  loc_1B6F8.loaditem :         1D174 C |
- loc_1B6F8.notring :          1D14A C |  loc_1B714 :                  1D190 C |
- loc_1B730 :                  1D1AA C |  loc_1BA78 :                  1D468 C |
- loc_1BA94 :                  1D482 C |  loc_1BA9A :                  1D488 C |
- loc_1BAA4 :                  1D490 C |  loc_1BAA8 :                  1D494 C |
- loc_1BAF2 :                  1D4DA C |  loc_1BBCE :                  1D5C4 C |
- loc_1BBF4 :                  1D5EA C |  loc_1BC12 :                  1D606 C |
- loc_1BC40 :                  1D634 C |  loc_1BCB0 :                  1D69E C |
- loc_1BCC6 :                  1D6B4 C |  loc_1BCD4 :                  1D6C2 C |
- loc_1BEA0 :                  1D89E C |  loc_1C83E :                  1E9A0 C |
- loc_1C842 :                  1E9A4 C |  loc_1C852 :                  1E9B2 C |
- loc_1C858 :                  1E9B8 C |  loc_1C85E :                  1E9BE C |
- loc_1C8EC :                  1EA50 C |  loc_1C8F4 :                  1EA58 C |
- loc_1C8FE :                  1EA60 C |  loc_1C92C :                  1EA8E C |
- loc_1C95A :                  1EC82 C |  loc_1C962 :                  1EC8A C |
- loc_1C9BA :                  1ECDE C |  loc_1C9C4 :                  1ECE8 C |
- loc_1C9CC :                  1ECF0 C |  loc_1C9D6 :                  1ECF8 C |
- loc_1CA1E :                  1ED3E C |  loc_1CA26 :                  1ED46 C |
- loc_1CA30 :                  1ED4E C |  loc_1CA5A :                  1ED78 C |
- loc_1CA90 :                  1EDAC C |  loc_1CA98 :                  1EDB4 C |
- loc_1CAA2 :                  1EDBE C |  loc_1CAA6 :                  1EDC2 C |
- loc_1CABC :                  1EDD8 C |  loc_1D01C :                  1F3C8 C |
- loc_1D03C :                  1F3E8 C |  loc_1D052 :                  1F3FE C |
- loc_1D05E :                  1F40A C |  loc_1D066 :                  1F412 C |
- loc_1E170 :                  136BA C |  loc_1E176 :                  136C0 C |
- loc_1E188 :                  136D2 C |  loc_1E188.notnegative :      136E0 C |
- loc_1E1AA :                  136F2 C |  loc_2020 :                    26FC C |
- loc_202A :                    2706 C |  loc_2034 :                    2710 C |
- loc_203E :                    271A C |  loc_2054 :                    2730 C |
- loc_2062 :                    273E C |  loc_206A :                    2746 C |
- loc_2088 :                    2764 C |  loc_20A8 :                    2784 C |
- loc_20B2 :                    278E C |  loc_20BC :                    2798 C |
- loc_31343C :                  E8EE C |  loc_31343C.RMS_2 :            E8FC C |
- loc_31343C.RMS_end :          E92C C |  loc_31343C.RMS_loop :         E922 C |
- loc_33B6 :                    44AE C |  loc_33E4 :                    44DC C |
- loc_3422 :                    451A C |  loc_37FC :                    4682 C |
- loc_3BC8 :                    4A6C C |  loc_3F62 :                    4E0A C |
- loc_3F6A :                    4E12 C |  loc_3F84 :                    4E2C C |
- loc_3F9A :                    4E42 C | *loc_3FF30 :                   4320 C |
- loc_3FF32 :                   4322 C |  loc_3FF48 :                   4338 C |
- loc_3FF56 :                   4346 C |  loc_3FF78 :                   4368 C |
- loc_3FF82 :                   4372 C |  loc_47D4 :                    572E C |
- loc_47D4.length :             2000 - |  loc_47D4.load :               5798 C |
- loc_47D4.noperfect :          582C C |  loc_48BE :                    58B8 C |
- loc_48CC :                    58C6 C |  loc_48CE :                    58C8 C |
- loc_48E2 :                    58DC C |  loc_48F2 :                    58EC C |
- loc_491C :                    5916 C |  loc_4992 :                    598C C |
- loc_49E8 :                    59E2 C |  loc_49F4 :                    59EE C |
- loc_4A18 :                    5A12 C |  loc_4A2E :                    5A28 C |
- loc_4BF6 :                    5C26 C |  loc_4C10 :                    5C40 C |
- loc_4C26 :                    5C56 C |  loc_4C4E :                    5C7E C |
- loc_4C64 :                    5C94 C |  loc_4C74 :                    5CA4 C |
- loc_4C7E :                    5CAE C |  loc_4C9A :                    5CCA C |
- loc_4CA4 :                    5CD4 C |  loc_4DF2 :                    5E26 C |
- loc_5B78 :                    69C4 C |  loc_5B80 :                    69CC C |
- loc_5B8C :                    69D8 C |  loc_5B96 :                    69E2 C |
- loc_5BBA :                    6A04 C |  loc_6206 :                    6F12 C |
- loc_6610 :                    7E08 C |  loc_664A :                    7E42 C |
- loc_6656 :                    7E4E C |  loc_665C :                    7E54 C |
- loc_666C :                    7E64 C |  loc_6684 :                    7E7C C |
- loc_6696 :                    7E8E C |  loc_66A8 :                    7EA0 C |
- loc_66AE :                    7EA6 C |  loc_66C0 :                    7EB8 C |
- loc_66CC :                    7EC4 C |  loc_66F0 :                    7EE8 C |
- loc_66F6 :                    7EEE C |  loc_6700 :                    7EF8 C |
- loc_6720 :                    7F18 C |  loc_6724 :                    7F1C C |
- loc_6724.return :             7F5E C |  loc_6724.scrollBottom :       7F58 C |
- loc_6908 :                    815A C |  loc_6922 :                    8174 C |
- loc_6938 :                    818A C |  loc_6972 :                    81C2 C |
- loc_698E :                    81DC C |  loc_6DA0 :                    8892 C |
- loc_6DAC :                    889E C |  loc_6DC4 :                    88B6 C |
- loc_6E8E :                    8994 C |  loc_6E98 :                    899E C |
- loc_6EB0 :                    89B6 C |  loc_6ED0 :                    89D4 C |
- loc_6F28 :                    8A0C C |  loc_6F4A :                    8A50 C |
- loc_6FBA :                    8AA6 C |  loc_6FEA :                    8AD6 C |
- loc_6FF8 :                    8AE4 C |  loc_702E :                    8B18 C |
- loc_703C :                    8B26 C |  loc_7050 :                    8B42 C |
- loc_70D0 :                    8BE6 C |  loc_7144 :                    8C36 C |
- loc_71EC :                    8CC0 C |  loc_72B0 :                    8D6E C |
- loc_72C2 :                    8D80 C |  loc_74AE :                    93AA C |
- loc_74DC :                    93D2 C |  loc_7512 :                    93F8 C |
- loc_754A :                    9430 C |  loc_75E0 :                    948E C |
- loc_7B9C :                    974E C |  loc_7BB6 :                    976C C |
- loc_7BCE :                    9784 C |  loc_7EE0 :                    9A66 C |
- loc_7F06 :                    9A88 C |  loc_82D0 :                    A068 C |
- loc_82FC :                    A08E C |  loc_8402 :                    A190 C |
- loc_842E :                    A1BC C |  loc_8458 :                    A1E0 C |
- loc_846C :                    A1F4 C |  loc_847A :                    A200 C |
- loc_8486 :                    A20A C |  loc_8486.cont :               A27C C |
- loc_8486.endloop :            A2B2 C |  loc_8486.loop :               A26E C |
- loc_854E :                    A30C C |  loc_899A :                    A4F6 C |
- loc_8A7C :                    A560 C |  loc_8A82 :                    A566 C |
- loc_8A92 :                    A572 C |  loc_8AA8 :                    A588 C |
- loc_8AB6 :                    A590 C |  loc_8AC4 :                    A59E C |
- loc_8B30 :                    A620 C |  loc_8B3C :                    A62C C |
- loc_8B44 :                    A634 C |  loc_8B48 :                    A638 C |
- loc_8CA4 :                    A79A C |  loc_90C0 :                    AAA2 C |
- loc_911C :                    AAFE C |  loc_9184 :                    AB6E C |
- loc_91AE :                    AB96 C |  loc_91C0 :                    ABAA C |
- loc_91FC :                    ABE6 C |  loc_9212 :                    ABFC C |
- loc_9224 :                    AC22 C |  loc_9240 :                    AC42 C |
- loc_925C :                    AC5E C |  loc_9306 :                    AD0E C |
- loc_93A0 :                    ADB0 C |  loc_93AA :                    ADBA C |
- loc_93C4 :                    ADD6 C |  loc_93EC :                    ADFC C |
- loc_9640 :                    AFAE C |  loc_9654 :                    AFCC C |
- loc_966E :                    AFEE C |  loc_96A4 :                    B02A C |
- loc_A20A :                    BA6C C |  loc_A220 :                    BA82 C |
- loc_A230 :                    BA92 C |  loc_A236 :                    BA98 C |
- loc_A246 :                    BAA4 C |  loc_A25C :                    BABA C |
- loc_A25C.CheckSpeed :         BAC2 C |  loc_A4DC :                    BE4A C |
- loc_A4E2 :                    BE50 C |  loc_A4E6 :                    BE54 C |
- loc_A4EA :                    BE58 C |  loc_AD6A :                    C326 C |
- loc_AD78 :                    C334 C |  loc_AD84 :                    C340 C |
- loc_ADA4 :                    C35C C |  loc_AE40 :                    C3F6 C |
- loc_AF8E :                    C4E0 C |  loc_AFF2 :                    C540 C |
- loc_B010 :                    C560 C |  loc_B01C :                    C56C C |
- loc_B07A :                    C5C6 C |  loc_B086 :                    C5D2 C |
- loc_B0C6 :                    C612 C | *loc_B0E8 :                    C646 C |
- loc_B0F4 :                    C652 C |  loc_B238 :                    C798 C |
- loc_B2B0 :                    C80E C |  loc_B514 :                    C9B2 C |
- loc_B526 :                    C9C4 C |  loc_B53E :                    C9DC C |
- loc_B54E :                    C9EC C |  loc_B582 :                    CA20 C |
- loc_B594 :                    CA32 C |  loc_B5A4 :                    CA42 C |
- loc_B5AA :                    CA48 C |  loc_B5E0 :                    CA7E C |
- loc_B5EA :                    CA88 C |  loc_B5EE :                    CA8C C |
- loc_B6CE :                    CAEA C |  loc_B6E0 :                    CAFC C |
- loc_B76A :                    CB84 C |  loc_B798 :                    CBB2 C |
- loc_B798.chkdel :             CBF4 C |  loc_B7E2 :                    CC26 C |
- loc_B7FE :                    CC42 C |  loc_B872 :                    CCC4 C |
- loc_B892 :                    CCE2 C |  loc_B8A0 :                    CCEE C |
- loc_B8A8 :                    CCF4 C |  loc_B902 :                    CD4A C |
- loc_B91C :                    CD62 C |  loc_B938 :                    CD78 C |
- loc_B98C :                    CDCA C |  loc_BA8E :                    CEC8 C |
- loc_BAEC :                    CF2C C |  loc_BB08 :                    CF42 C |
- loc_BB3C :                    CF74 C |  loc_BDB2 :                    CFFE C |
- loc_BDBE :                    D00A C |  loc_BDC8 :                    D016 C |
- loc_BDD6 :                    D022 C |  loc_BDDE :                    D02A C |
- loc_BE4E :                    D0A2 C |  loc_BE5E :                    D0B2 C |
- loc_BE80 :                    D0D4 C |  loc_BE84 :                    D0D8 C |
- loc_BE9A :                    D0EE C |  loc_BE9E :                    D0F2 C |
- loc_BF6E :                    D198 C |  loc_BFC6 :                    D1F0 C |
- loc_C016 :                    D24E C |  loc_C02C :                    D260 C |
- loc_C046 :                    D27A C |  loc_C056 :                    D28A C |
- loc_C09E :                    D2D2 C |  loc_C0A0 :                    D2D4 C |
- loc_C0BC :                    D2F0 C |  loc_C0D6 :                    D30A C |
- loc_C0E6 :                    D31A C |  loc_C104 :                    D338 C |
- loc_C186 :                    D3B8 C |  loc_C1A4 :                    D3D6 C |
- loc_C1AA :                    D3DC C |  loc_C1F2 :                    D424 C |
- loc_C218 :                    D44A C |  loc_C218.chkStand :           D45C C |
- loc_C218.locret :             D45A C |  loc_C230 :                    D46C C |
- loc_C230.locret :             D4A4 C |  loc_C268 :                    D4A6 C |
- loc_C294 :                    D4D2 C |  loc_C2D8 :                    D512 C |
- loc_C2E0 :                    D51A C |  loc_C5CA :                    D816 C |
- loc_C5FE :                    D84E C |  loc_C610 :                    D860 C |
- loc_C61A :                    D86A C |  loc_C6EA :                    D926 C |
- loc_C766 :                    D9A4 C |  loc_C842 :                    DA8A C |
- loc_C85A :                    DAA2 C |  loc_C86C :                    DAB4 C |
- loc_C91A :                    DB4E C |  loc_CF20 :                    DD1A C |
- loc_CFA4 :                    DDA2 C |  loc_CFC6 :                    DDC0 C |
- loc_D24A :                   10624 C |  loc_D268 :                   10642 C |
- loc_D2A4 :                   1067E C |  loc_D2AE :                   10688 C |
- loc_D2C4 :                   1069E C |  loc_D2FA :                   106D2 C |
- loc_D2FE :                   106D6 C |  loc_D308 :                   106E0 C |
- loc_D348 :                    E056 C |  loc_D358 :                    E066 C |
- loc_DB72 :                    EE4C C |  loc_DC0C :                    EEE8 C |
- loc_DC56 :                    EF38 C |  loc_DCA4 :                    EF86 C |
- loc_E0D2 :                    F28A C |  loc_E0F8 :                    F2B0 C |
- loc_E41E :                    F584 C |  loc_E57A :                    F8E2 C |
- loc_E888 :                    FA20 C |  loc_E8A8 :                    FA40 C |
- loc_EC86 :                    FE48 C |  loc_EFDA :                   102B2 C |
- loc_EFFA :                   10310 C |  loc_EFFC :                   10350 C |
- loc_F026 :                   1037A C |  loc_F02E :                   10382 C |
- loc_F04C :                   1039E C |  loc_F828 :                   10956 C |
- loc_F82C :                   1095A C |  loc_F836 :                   10964 C |
- loc_F8F0 :                    8F72 C |  loc_F8F0.return :             8F92 C |
- loc_FAD0 :                   10A74 C |  loc_FAD0.short :             10AAC C |
- loc_FAD0.skip :              10AB4 C |  loc_FB0E :                   10ACA C |
- loc_FB0E.isbelow :           10B00 C |  loc_FB0E.isright :           10AF2 C |
- loc_FE44 :                   10DA8 C |  loc_FE60 :                   10DC4 C |
- loc_FF26 :                   10E9C C |  loc_FFE2 :                   10F58 C |
- loc_gta :                       12 - |  loc_ppppp :                   D21E C |
- locj_173E4 :                 191F2 C |  locj_6D56 :                   81F2 C |
- locj_6D70 :                   820C C |  locj_6D88 :                   8224 C |
- locj_6DD2 :                   826E C |  locj_6DF2 :                   828E C |
- locj_6DF4 :                   8290 C |  locj_6E28 :                   82C4 C |
- locj_6E5E :                   82FA C |  locj_6E72 :                   830E C |
- locj_6E78 :                   8314 C |  locj_6E8C :                   8328 C |
- locj_6ED0 :                   836C C |  locj_6EF0 :                   838C C |
- locj_6EF2 :                   838E C |  locj_6F66 :                   8402 C |
- locj_6F9A :                   8436 C |  locj_6FAE :                   844A C |
- locj_6FB4 :                   8450 C |  locj_6FC8 :                   8464 C |
- locj_6FE4 :                   8480 C |  locj_6FEC :                   8488 C |
- locj_6FF4 :                   8490 C |  locj_701C :                   84B8 C |
- locj_7224 :                   86A6 C |  locj_724a :                   86CC C |
- locj_725E :                   86E0 C |  locj_728C :                   870E C |
- locj_72B2 :                   8734 C |  locj_72Ba :                   873C C |
- locj_72EE :                   8770 C |  locj_72da :                   875C C |
- locj_76B8 :                   8B58 C |  locj_76CE :                   8B6E C |
- locret_1002E :               10FA4 C |  locret_10CFA :               11B4A C |
- locret_10FA0 :               11DE8 C |  locret_10FBE :               11E06 C |
- locret_10FDE :               11E26 C |  locret_11038 :               11E80 C |
- locret_11898 :               12564 C |  locret_11938 :               12606 C |
- locret_121C0 :               12DBA C |  locret_1307C :               13E88 C |
- locret_130E8 :               13F06 C |  locret_1314E :               13F7E C |
- locret_132D2 :               1411E C |  locret_1348E :               142DA C |
- locret_134C2 :               14308 C |  locret_134D2 :               14320 C |
- locret_13502 :               147BA C |  locret_13508 :               147C0 C |
- locret_13544 :               147FA C |  locret_135A2 :               14858 C |
- locret_1367E :               14936 C |  locret_13860 :               14CD6 C |
- locret_13914 :               14DA4 C |  locret_146BE :               16EAC C |
- locret_147F0 :               16F6A C |  locret_14892 :               17006 C |
- locret_14934 :               170A2 C |  locret_14DE6 :               17844 C |
- locret_14E16 :               17866 C |  locret_14E4E :               178B8 C |
- locret_14F06 :               17960 C |  locret_14FD4 :               17A20 C |
- locret_15098 :               17AE0 C |  locret_15606 :               17DEE C |
- locret_15622 :               17E0A C |  locret_16950 :               18ED0 C |
- locret_16DA :                 196C C |  locret_170F6 :               195E2 C |
- locret_178A2 :               1977E C |  locret_179AA :               19A26 C |
- locret_17C66 :               19CDC C |  locret_17F8C :               1A9E0 C |
- locret_1852A :               1A050 C |  locret_18780 :                F71C C |
- locret_187EE :                F78A C |  locret_1887E :                F81E C |
- locret_18A44 :               1ADEA C |  locret_18DC4 :               1B184 C |
- locret_18EA8 :               1B266 C |  locret_19256 :               1A306 C |
- locret_19588 :               1A63A C |  locret_1A01E :               1BB18 C |
- locret_1A190 :               1BC88 C |  locret_1A80 :                 1ECC C |
- locret_1AA1C :               1C32E C |  locret_1AC6 :                 1F12 C |
- locret_1B4CE :               1CF10 C |  locret_1B530 :               1CF72 C |
- locret_1B566 :               1CFA8 C |  locret_1B596 :               1CFDE C |
- locret_1B5CC :               1D014 C |  locret_1B60C :               1D052 C |
- locret_1B64 :                 1FAE C |  locret_1B640 :               1D086 C |
- locret_1BBB4 :               1D5AA C |  locret_1BBDE :               1D5D4 C |
- locret_1BEAC :               1D8A8 C |  locret_3F7A :                 4E22 C |
- locret_3FBE :                 4E62 C |  locret_49E6 :                 59E0 C |
- locret_5480 :                 6436 C |  locret_5CEC :                 9CFA C |
- locret_6952 :                 81A4 C |  locret_69F2 :                 8240 C |
-*locret_6C1E :                 8610 C |  locret_6E96 :                 899C C |
- locret_6F8C :                 8A92 C |  locret_6FE8 :                 8AD4 C |
- locret_702C :                 8B16 C |  locret_704E :                 8B40 C |
- locret_7072 :                 8B8E C |  locret_7088 :                 8BA4 C |
- locret_70E8 :                 8BB2 C |  locret_7130 :                 8C22 C |
- locret_71A2 :                 8C7C C |  locret_71CE :                 8CA2 C |
- locret_71E48 :               DDE5E C |  locret_7200 :                 8CDE C |
- locret_7242 :                 8D02 C |  locret_72714 :               DE816 C |
- locret_727A :                 8D38 C |  locret_7298 :                 8D56 C |
- locret_7298A :               DEA96 C |  locret_729B4 :               DEACE C |
- locret_72AEA :               DEC04 C |  locret_72CAA :               DEDDA C |
- locret_7322 :                 8DDE C |  locret_75F2 :                 94A0 C |
- locret_7B62 :                 970E C |  locret_8308 :                 A098 C |
- locret_843A :                 A1C6 C |  locret_856E :                 A32C C |
- locret_8AC2 :                 A59C C |  locret_8AD8 :                 A5B0 C |
- locret_93EA :                 ADFA C |  locret_9402 :                 AE12 C |
- locret_96A2 :                 B028 C |  locret_96B6 :                 B03C C |
- locret_ADF0 :                 C3A6 C |  locret_AE20 :                 C3D6 C |
- locret_B09A :                 C5E6 C |  locret_B116 :                 C670 C |
- locret_C044 :                 D278 C |  locret_C184 :                 D3B6 C |
- locret_C1F0 :                 D422 C |  locret_C2E4 :                 D51E C |
- locret_C3D8 :                 D5EA C |  locret_C412 :                 D624 C |
- locret_C60E :                 D85E C | *locret_C692 :                 D8E2 C |
- locret_C748 :                 D984 C |  locret_C86A :                 DAB2 C |
- locret_C8EA :                 DB20 C |  locret_CFE6 :                 DDE0 C |
- locret_DCAE :                 EF92 C |  locret_E052 :                 F210 C |
- locret_E0F6 :                 F2AE C |  locret_E12E :                 F2E8 C |
- locret_E150 :                 F30A C |  locret_E188 :                 F340 C |
- locret_E430 :                 F596 C |  locret_E452 :                 F5B8 C |
- locret_E474 :                 F5DA C |  locret_E498 :                 F5FE C |
- locret_E4BC :                 F622 C |  locret_E8EE :                 FA86 C |
- locret_F89E :                108BA C |  locret_FFA0 :                10F16 C |
-*long :                           3 - |  lwall_flag :                    36 - |
- mainspr_childsprites :           F - |  mainspr_height :                14 - |
- mainspr_mapframe :               B - |  mainspr_routine :                A - |
- mainspr_width :                  E - | *mask2ndBShield :                20 - |
- mask2ndChkElement :             70 - |  mask2ndChkShield :              71 - |
-*mask2ndFShield :                10 - |  mask2ndInvinc :                  2 - |
-*mask2ndLShield :                40 - |
+ loc_1870A :                   F6AA C |  loc_1884A :                   F7E8 C |
+ loc_18856 :                   F7F4 C |  loc_1895C :                  1AD20 C |
+ loc_18968 :                  1AD2C C |  loc_18974 :                  1AD38 C |
+ loc_189CA :                  1AD8A C |  loc_18A7C :                  1AE22 C |
+ loc_18A82 :                  1AE28 C |  loc_18A88 :                  1AE2E C |
+ loc_18A9E :                  1AE44 C |  loc_18AB4 :                  1AE5A C |
+ loc_18AC0 :                  1AE66 C |  loc_18AFA :                  1AEA0 C |
+ loc_18B36 :                  1AEDC C |  loc_18B40 :                  1AEE6 C |
+ loc_18B52 :                  1AEF8 C |  loc_18B7C :                  1AF22 C |
+ loc_18B90 :                  1AF38 C |  loc_18B96 :                  1AF40 C |
+ loc_18BAE :                  1AF5C C |  loc_18BB4 :                  1AF64 C |
+ loc_18BE0 :                  1AF92 C |  loc_18BE8 :                  1AF98 C |
+ loc_18C06 :                  1AFBE C |  loc_18C10 :                  1AFC8 C |
+ loc_18C1A :                  1AFD2 C |  loc_18C56 :                  1B00C C |
+ loc_18CB8 :                  1B068 C |  loc_18D68 :                  1B12A C |
+ loc_18D8E :                  1B14E C |  loc_18DAE :                  1B16E C |
+ loc_18DC6 :                  1B186 C |  loc_18DDA :                  1B19A C |
+ loc_18E00 :                  1B1C0 C |  loc_18E16 :                  1B1D6 C |
+ loc_18E2A :                  1B1EA C |  loc_18E48 :                  1B206 C |
+ loc_18E7A :                  1B238 C |  loc_18E88 :                  1B246 C |
+ loc_18E96 :                  1B254 C |  loc_18EAA :                  1B268 C |
+ loc_18EB4 :                  1B272 C |  loc_18EC0 :                  1B27E C |
+ loc_18F38 :                  1B2F6 C |  loc_18F5C :                  1B31C C |
+ loc_18F7E :                  1B33C C |  loc_18F9C :                  1B35C C |
+ loc_18FA2 :                  1B360 C |  loc_18FDC :                  1B39A C |
+ loc_19008 :                  1B3C4 C |  loc_1909A :                  1B45C C |
+ loc_1928E :                  1A33E C |  loc_19294 :                  1A344 C |
+ loc_1929E :                  1A34E C |  loc_192AE :                  1A35E C |
+ loc_192E8 :                  1A398 C |  loc_1933C :                  1A3EE C |
+ loc_19362 :                  1A414 C |  loc_19366 :                  1A418 C |
+ loc_1937C :                  1A42E C |  loc_1939C :                  1A44E C |
+ loc_193B4 :                  1A466 C |  loc_193BE :                  1A472 C |
+ loc_193E8 :                  1A49E C |  loc_193EE :                  1A4A4 C |
+ loc_19406 :                  1A4BE C |  loc_19410 :                  1A4C8 C |
+ loc_1941C :                  1A4D4 C |  loc_19424 :                  1A4DC C |
+ loc_19438 :                  1A4F0 C |  loc_1947E :                  1A536 C |
+ loc_194BC :                  1A578 C |  loc_194C2 :                  1A580 C |
+ loc_194DA :                  1A59C C |  loc_194E0 :                  1A5A4 C |
+ loc_1950C :                  1A5D2 C |  loc_19512 :                  1A5D8 C |
+ loc_19552 :                  1A614 C |  loc_19556 :                  1A618 C |
+ loc_1955A :                  1A61C C |  loc_19574 :                  1A626 C |
+ loc_1957E :                  1A630 C |  loc_195AA :                  1A662 C |
+ loc_195DA :                  1A686 C |  loc_1961C :                  1A6C8 C |
+ loc_1964C :                  1A6F8 C |  loc_19652 :                  1A6FE C |
+ loc_19658 :                  1A704 C |  loc_19712 :                  1A7BC C |
+ loc_19718 :                  1A7C2 C |  loc_19762 :                  1A80C C |
+ loc_197AA :                  1A854 C |  loc_197D4 :                  1A87E C |
+ loc_19934 :                  1B59A C |  loc_19954 :                  1B5BA C |
+ loc_1996A :                  1B5D4 C |  loc_19976 :                  1B5E0 C |
+ loc_199D0 :                  1B63A C | *loc_199E6 :                  1B646 C |
+ loc_19C36 :                  1B76A C |  loc_19C62 :                  1B79C C |
+ loc_19C72 :                  1B7AA C |  loc_19C80 :                  1B7B8 C |
+ loc_19CC4 :                  1B7FA C |  loc_19DD8 :                   92B8 C |
+ loc_19E20 :                  1B91A C |  loc_19E30 :                   930C C |
+ loc_19E3E :                  1B938 C |  loc_19E5A :                  1B954 C |
+ loc_19E90 :                  1B988 C |  loc_19EA2 :                  1B99A C |
+ loc_19EA8 :                  1B9A0 C |  loc_19EC6 :                  1B9BC C |
+ loc_19F10 :                  1BA02 C |  loc_19F2E :                  1BA20 C |
+ loc_19F48 :                  1BA3A C |  loc_19F50 :                  1BA42 C |
+ loc_19F6A :                  1BA5C C |  loc_19F88 :                  1BA7E C |
+ loc_19F96 :                  1BA8C C |  loc_19F9C :                  1BA92 C |
+ loc_19FA6 :                  1BA9A C |  loc_19FBC :                  1BAB0 C |
+ loc_19FE6 :                  1BAE0 C |  loc_1A000 :                  1BAFA C |
+ loc_1A00A :                  1BB04 C |  loc_1A020 :                  1BB1A C |
+ loc_1A02A :                  1BB22 C |  loc_1A074 :                  1BB6E C |
+ loc_1A09A :                  1BB94 C |  loc_1A0A :                    1E56 C |
+ loc_1A0B4 :                  1BBAE C |  loc_1A0F2 :                  1BBEC C |
+ loc_1A112 :                  1BC0C C |  loc_1A124 :                  1BC1E C |
+ loc_1A142 :                  1BC3C C |  loc_1A15C :                  1BC56 C |
+ loc_1A166 :                  1BC5E C |  loc_1A172 :                  1BC6A C |
+ loc_1A192 :                  1BC8A C |  loc_1A1D4 :                  1BCCC C |
+ loc_1A1FC :                  1BCF2 C |  loc_1A210 :                  1BD06 C |
+ loc_1A216 :                  1BD0C C |  loc_1A23A :                  1BD2E C |
+ loc_1A248 :                  1BD3C C |  loc_1A264 :                  1BD5A C |
+ loc_1A280 :                  1BD76 C |  loc_1A28C :                  1BD82 C |
+ loc_1A296 :                  1BD8A C |  loc_1A2A6 :                  1BD9A C |
+ loc_1A2C6 :                  1BDBA C |  loc_1A2E4 :                  1BDD8 C |
+ loc_1A312 :                  1BE04 C |  loc_1A346 :                  1BE34 C |
+ loc_1A35E :                  1BE4C C |  loc_1A376 :                  1BE64 C |
+ loc_1A38E :                  1BE7E C |  loc_1A3A6 :                  1BE96 C |
+ loc_1A3AC :                  1BE9C C |  loc_1A4CE :                  1BF50 C |
+ loc_1A4DC :                  1BF5E C |  loc_1A4EA :                  1BF6C C |
+ loc_1A514 :                  1BF96 C |  loc_1A524 :                  1BFA6 C |
+ loc_1A550 :                  1BFD2 C |  loc_1A55C :                  1BFDE C |
+ loc_1A578 :                  1BFFA C |  loc_1A57E :                  1C000 C |
+*loc_1A598 :                  1C008 C |  loc_1A5B4 :                  1C024 C |
+ loc_1A5D4 :                  1C048 C |  loc_1A5E4 :                  1C058 C |
+ loc_1A60 :                    1EAC C |  loc_1A604 :                  1C07C C |
+ loc_1A626 :                  1C09E C |  loc_1A646 :                  1C0C2 C |
+ loc_1A656 :                  1C0D2 C |  loc_1A850 :                  1C168 C |
+ loc_1A86C :                  1C182 C |  loc_1A89A :                  1C1B0 C |
+ loc_1A954 :                  1C26A C |  loc_1A962 :                  1C27A C |
+ loc_1A982 :                  1C29C C |  loc_1A9E6 :                  1C2FA C |
+ loc_1AA34 :                  1C35E C |  loc_1AD48 :                  1474A C |
+ loc_1AD48.sound :            1476A C |  loc_1AD88 :                  14782 C |
+ loc_1AD8C :                  14786 C |  loc_1ADA :                    1F26 C |
+ loc_1AE0 :                    1F2C C |  loc_1AEA :                    1F36 C |
+ loc_1AF6 :                    1F42 C |  loc_1B06 :                    1F52 C |
+ loc_1B19E :                  1CBB4 C |  loc_1B1C0 :                  1CBD6 C |
+ loc_1B20C :                  1CC24 C |  loc_1B210 :                  1CC28 C |
+ loc_1B268 :                  1CC7E C |  loc_1B288 :                  1CC9A C |
+ loc_1B2C8 :                  1CCBC C |  loc_1B2E :                    1F78 C |
+ loc_1B2E4 :                  1CCD2 C |  loc_1B326 :                  1CD18 C |
+ loc_1B350 :                  1CD42 C |  loc_1B38 :                    1F82 C |
+ loc_1B4C4 :                  1CF06 C |  loc_1B4DA :                  1CF1C C |
+ loc_1B4E8 :                  1CF2A C | *loc_1B4EA :                  1CF2C C |
+ loc_1B52 :                    1F9C C |  loc_1B564 :                  1CFA6 C |
+ loc_1B5CA :                  1D012 C |  loc_1B6F6 :                  1D13C C |
+ loc_1B6F8 :                  1D13E C |  loc_1B6F8.dontchange :       1D15C C |
+ loc_1B6F8.loaditem :         1D174 C |  loc_1B6F8.notring :          1D14A C |
+ loc_1B714 :                  1D190 C |  loc_1B730 :                  1D1AA C |
+ loc_1BA78 :                  1D468 C |  loc_1BA94 :                  1D482 C |
+ loc_1BA9A :                  1D488 C |  loc_1BAA4 :                  1D490 C |
+ loc_1BAA8 :                  1D494 C |  loc_1BAF2 :                  1D4DA C |
+ loc_1BBCE :                  1D5C4 C |  loc_1BBF4 :                  1D5EA C |
+ loc_1BC12 :                  1D606 C |  loc_1BC40 :                  1D634 C |
+ loc_1BCB0 :                  1D69E C |  loc_1BCC6 :                  1D6B4 C |
+ loc_1BCD4 :                  1D6C2 C |  loc_1BEA0 :                  1D89E C |
+ loc_1C83E :                  1E9A0 C |  loc_1C842 :                  1E9A4 C |
+ loc_1C852 :                  1E9B2 C |  loc_1C858 :                  1E9B8 C |
+ loc_1C85E :                  1E9BE C |  loc_1C8EC :                  1EA50 C |
+ loc_1C8F4 :                  1EA58 C |  loc_1C8FE :                  1EA60 C |
+ loc_1C92C :                  1EA8E C |  loc_1C95A :                  1EC82 C |
+ loc_1C962 :                  1EC8A C |  loc_1C9BA :                  1ECDE C |
+ loc_1C9C4 :                  1ECE8 C |  loc_1C9CC :                  1ECF0 C |
+ loc_1C9D6 :                  1ECF8 C |  loc_1CA1E :                  1ED3E C |
+ loc_1CA26 :                  1ED46 C |  loc_1CA30 :                  1ED4E C |
+ loc_1CA5A :                  1ED78 C |  loc_1CA90 :                  1EDAC C |
+ loc_1CA98 :                  1EDB4 C |  loc_1CAA2 :                  1EDBE C |
+ loc_1CAA6 :                  1EDC2 C |  loc_1CABC :                  1EDD8 C |
+ loc_1D01C :                  1F3C8 C |  loc_1D03C :                  1F3E8 C |
+ loc_1D052 :                  1F3FE C |  loc_1D05E :                  1F40A C |
+ loc_1D066 :                  1F412 C |  loc_1E170 :                  136BA C |
+ loc_1E176 :                  136C0 C |  loc_1E188 :                  136D2 C |
+ loc_1E188.notnegative :      136E0 C |  loc_1E1AA :                  136F2 C |
+ loc_2020 :                    26FC C |  loc_202A :                    2706 C |
+ loc_2034 :                    2710 C |  loc_203E :                    271A C |
+ loc_2054 :                    2730 C |  loc_2062 :                    273E C |
+ loc_206A :                    2746 C |  loc_2088 :                    2764 C |
+ loc_20A8 :                    2784 C |  loc_20B2 :                    278E C |
+ loc_20BC :                    2798 C |  loc_31343C :                  E8EE C |
+ loc_31343C.RMS_2 :            E8FC C |  loc_31343C.RMS_end :          E92C C |
+ loc_31343C.RMS_loop :         E922 C |  loc_33B6 :                    44AE C |
+ loc_33E4 :                    44DC C |  loc_3422 :                    451A C |
+ loc_37FC :                    4682 C |  loc_3BC8 :                    4A6C C |
+ loc_3F62 :                    4E0A C |  loc_3F6A :                    4E12 C |
+ loc_3F84 :                    4E2C C |  loc_3F9A :                    4E42 C |
+*loc_3FF30 :                   4320 C |  loc_3FF32 :                   4322 C |
+ loc_3FF48 :                   4338 C |  loc_3FF56 :                   4346 C |
+ loc_3FF78 :                   4368 C |  loc_3FF82 :                   4372 C |
+ loc_47D4 :                    572E C |  loc_47D4.length :             2000 - |
+ loc_47D4.load :               5798 C |  loc_47D4.noperfect :          582C C |
+ loc_48BE :                    58B8 C |  loc_48CC :                    58C6 C |
+ loc_48CE :                    58C8 C |  loc_48E2 :                    58DC C |
+ loc_48F2 :                    58EC C |  loc_491C :                    5916 C |
+ loc_4992 :                    598C C |  loc_49E8 :                    59E2 C |
+ loc_49F4 :                    59EE C |  loc_4A18 :                    5A12 C |
+ loc_4A2E :                    5A28 C |  loc_4BF6 :                    5C26 C |
+ loc_4C10 :                    5C40 C |  loc_4C26 :                    5C56 C |
+ loc_4C4E :                    5C7E C |  loc_4C64 :                    5C94 C |
+ loc_4C74 :                    5CA4 C |  loc_4C7E :                    5CAE C |
+ loc_4C9A :                    5CCA C |  loc_4CA4 :                    5CD4 C |
+ loc_4DF2 :                    5E26 C |  loc_5B78 :                    69C4 C |
+ loc_5B80 :                    69CC C |  loc_5B8C :                    69D8 C |
+ loc_5B96 :                    69E2 C |  loc_5BBA :                    6A04 C |
+ loc_6206 :                    6F12 C |  loc_6610 :                    7E08 C |
+ loc_664A :                    7E42 C |  loc_6656 :                    7E4E C |
+ loc_665C :                    7E54 C |  loc_666C :                    7E64 C |
+ loc_6684 :                    7E7C C |  loc_6696 :                    7E8E C |
+ loc_66A8 :                    7EA0 C |  loc_66AE :                    7EA6 C |
+ loc_66C0 :                    7EB8 C |  loc_66CC :                    7EC4 C |
+ loc_66F0 :                    7EE8 C |  loc_66F6 :                    7EEE C |
+ loc_6700 :                    7EF8 C |  loc_6720 :                    7F18 C |
+ loc_6724 :                    7F1C C |  loc_6724.return :             7F5E C |
+ loc_6724.scrollBottom :       7F58 C |  loc_6908 :                    815A C |
+ loc_6922 :                    8174 C |  loc_6938 :                    818A C |
+ loc_6972 :                    81C2 C |  loc_698E :                    81DC C |
+ loc_6DA0 :                    8892 C |  loc_6DAC :                    889E C |
+ loc_6DC4 :                    88B6 C |  loc_6E8E :                    8994 C |
+ loc_6E98 :                    899E C |  loc_6EB0 :                    89B6 C |
+ loc_6ED0 :                    89D4 C |  loc_6F28 :                    8A0C C |
+ loc_6F4A :                    8A50 C |  loc_6FBA :                    8AA6 C |
+ loc_6FEA :                    8AD6 C |  loc_6FF8 :                    8AE4 C |
+ loc_702E :                    8B18 C |  loc_703C :                    8B26 C |
+ loc_7050 :                    8B42 C |  loc_70D0 :                    8BE6 C |
+ loc_7144 :                    8C36 C |  loc_71EC :                    8CC0 C |
+ loc_72B0 :                    8D6E C |  loc_72C2 :                    8D80 C |
+ loc_74AE :                    93AA C |  loc_74DC :                    93D2 C |
+ loc_7512 :                    93F8 C |  loc_754A :                    9430 C |
+ loc_75E0 :                    948E C |  loc_7B9C :                    974E C |
+ loc_7BB6 :                    976C C |  loc_7BCE :                    9784 C |
+ loc_7EE0 :                    9A66 C |  loc_7F06 :                    9A88 C |
+ loc_82D0 :                    A068 C |  loc_82FC :                    A08E C |
+ loc_8402 :                    A190 C |  loc_842E :                    A1BC C |
+ loc_8458 :                    A1E0 C |  loc_846C :                    A1F4 C |
+ loc_847A :                    A200 C |  loc_8486 :                    A20A C |
+ loc_8486.cont :               A27C C |  loc_8486.endloop :            A2B2 C |
+ loc_8486.loop :               A26E C |  loc_854E :                    A30C C |
+ loc_899A :                    A4F6 C |  loc_8A7C :                    A560 C |
+ loc_8A82 :                    A566 C |  loc_8A92 :                    A572 C |
+ loc_8AA8 :                    A588 C |  loc_8AB6 :                    A590 C |
+ loc_8AC4 :                    A59E C |  loc_8B30 :                    A620 C |
+ loc_8B3C :                    A62C C |  loc_8B44 :                    A634 C |
+ loc_8B48 :                    A638 C |  loc_8CA4 :                    A79A C |
+ loc_90C0 :                    AAA2 C |  loc_911C :                    AAFE C |
+ loc_9184 :                    AB6E C |  loc_91AE :                    AB96 C |
+ loc_91C0 :                    ABAA C |  loc_91FC :                    ABE6 C |
+ loc_9212 :                    ABFC C |  loc_9224 :                    AC22 C |
+ loc_9240 :                    AC42 C |  loc_925C :                    AC5E C |
+ loc_9306 :                    AD0E C |  loc_93A0 :                    ADB0 C |
+ loc_93AA :                    ADBA C |  loc_93C4 :                    ADD6 C |
+ loc_93EC :                    ADFC C |  loc_9640 :                    AFAE C |
+ loc_9654 :                    AFCC C |  loc_966E :                    AFEE C |
+ loc_96A4 :                    B02A C |  loc_A20A :                    BA6C C |
+ loc_A220 :                    BA82 C |  loc_A230 :                    BA92 C |
+ loc_A236 :                    BA98 C |  loc_A246 :                    BAA4 C |
+ loc_A25C :                    BABA C |  loc_A25C.CheckSpeed :         BAC2 C |
+ loc_A4DC :                    BE4A C |  loc_A4E2 :                    BE50 C |
+ loc_A4E6 :                    BE54 C |  loc_A4EA :                    BE58 C |
+ loc_AD6A :                    C326 C |  loc_AD78 :                    C334 C |
+ loc_AD84 :                    C340 C |  loc_ADA4 :                    C35C C |
+ loc_AE40 :                    C3F6 C |  loc_AF8E :                    C4E0 C |
+ loc_AFF2 :                    C540 C |  loc_B010 :                    C560 C |
+ loc_B01C :                    C56C C |  loc_B07A :                    C5C6 C |
+ loc_B086 :                    C5D2 C |  loc_B0C6 :                    C612 C |
+*loc_B0E8 :                    C646 C |  loc_B0F4 :                    C652 C |
+ loc_B238 :                    C798 C |  loc_B2B0 :                    C80E C |
+ loc_B514 :                    C9B2 C |  loc_B526 :                    C9C4 C |
+ loc_B53E :                    C9DC C |  loc_B54E :                    C9EC C |
+ loc_B582 :                    CA20 C |  loc_B594 :                    CA32 C |
+ loc_B5A4 :                    CA42 C |  loc_B5AA :                    CA48 C |
+ loc_B5E0 :                    CA7E C |  loc_B5EA :                    CA88 C |
+ loc_B5EE :                    CA8C C |  loc_B6CE :                    CAEA C |
+ loc_B6E0 :                    CAFC C |  loc_B76A :                    CB84 C |
+ loc_B798 :                    CBB2 C |  loc_B798.chkdel :             CBF4 C |
+ loc_B7E2 :                    CC26 C |  loc_B7FE :                    CC42 C |
+ loc_B872 :                    CCC4 C |  loc_B892 :                    CCE2 C |
+ loc_B8A0 :                    CCEE C |  loc_B8A8 :                    CCF4 C |
+ loc_B902 :                    CD4A C |  loc_B91C :                    CD62 C |
+ loc_B938 :                    CD78 C |  loc_B98C :                    CDCA C |
+ loc_BA8E :                    CEC8 C |  loc_BAEC :                    CF2C C |
+ loc_BB08 :                    CF42 C |  loc_BB3C :                    CF74 C |
+ loc_BDB2 :                    CFFE C |  loc_BDBE :                    D00A C |
+ loc_BDC8 :                    D016 C |  loc_BDD6 :                    D022 C |
+ loc_BDDE :                    D02A C |  loc_BE4E :                    D0A2 C |
+ loc_BE5E :                    D0B2 C |  loc_BE80 :                    D0D4 C |
+ loc_BE84 :                    D0D8 C |  loc_BE9A :                    D0EE C |
+ loc_BE9E :                    D0F2 C |  loc_BF6E :                    D198 C |
+ loc_BFC6 :                    D1F0 C |  loc_C016 :                    D24E C |
+ loc_C02C :                    D260 C |  loc_C046 :                    D27A C |
+ loc_C056 :                    D28A C |  loc_C09E :                    D2D2 C |
+ loc_C0A0 :                    D2D4 C |  loc_C0BC :                    D2F0 C |
+ loc_C0D6 :                    D30A C |  loc_C0E6 :                    D31A C |
+ loc_C104 :                    D338 C |  loc_C186 :                    D3B8 C |
+ loc_C1A4 :                    D3D6 C |  loc_C1AA :                    D3DC C |
+ loc_C1F2 :                    D424 C |  loc_C218 :                    D44A C |
+ loc_C218.chkStand :           D45C C |  loc_C218.locret :             D45A C |
+ loc_C230 :                    D46C C |  loc_C230.locret :             D4A4 C |
+ loc_C268 :                    D4A6 C |  loc_C294 :                    D4D2 C |
+ loc_C2D8 :                    D512 C |  loc_C2E0 :                    D51A C |
+ loc_C5CA :                    D816 C |  loc_C5FE :                    D84E C |
+ loc_C610 :                    D860 C |  loc_C61A :                    D86A C |
+ loc_C6EA :                    D926 C |  loc_C766 :                    D9A4 C |
+ loc_C842 :                    DA8A C |  loc_C85A :                    DAA2 C |
+ loc_C86C :                    DAB4 C |  loc_C91A :                    DB4E C |
+ loc_CF20 :                    DD1A C |  loc_CFA4 :                    DDA2 C |
+ loc_CFC6 :                    DDC0 C |  loc_D24A :                   10624 C |
+ loc_D268 :                   10642 C |  loc_D2A4 :                   1067E C |
+ loc_D2AE :                   10688 C |  loc_D2C4 :                   1069E C |
+ loc_D2FA :                   106D2 C |  loc_D2FE :                   106D6 C |
+ loc_D308 :                   106E0 C |  loc_D348 :                    E056 C |
+ loc_D358 :                    E066 C |  loc_DB72 :                    EE4C C |
+ loc_DC0C :                    EEE8 C |  loc_DC56 :                    EF38 C |
+ loc_DCA4 :                    EF86 C |  loc_E0D2 :                    F28A C |
+ loc_E0F8 :                    F2B0 C |  loc_E41E :                    F584 C |
+ loc_E57A :                    F8E2 C |  loc_E888 :                    FA20 C |
+ loc_E8A8 :                    FA40 C |  loc_EC86 :                    FE48 C |
+ loc_EFDA :                   102B2 C |  loc_EFFA :                   10310 C |
+ loc_EFFC :                   10350 C |  loc_F026 :                   1037A C |
+ loc_F02E :                   10382 C |  loc_F04C :                   1039E C |
+ loc_F828 :                   10956 C |  loc_F82C :                   1095A C |
+ loc_F836 :                   10964 C |  loc_F8F0 :                    8F72 C |
+ loc_F8F0.return :             8F92 C |  loc_FAD0 :                   10A74 C |
+ loc_FAD0.short :             10AAC C |  loc_FAD0.skip :              10AB4 C |
+ loc_FB0E :                   10ACA C |  loc_FB0E.isbelow :           10B00 C |
+ loc_FB0E.isright :           10AF2 C |  loc_FE44 :                   10DA8 C |
+ loc_FE60 :                   10DC4 C |  loc_FF26 :                   10E9C C |
+ loc_FFE2 :                   10F58 C |  loc_gta :                       12 - |
+ loc_ppppp :                   D21E C |  locj_173E4 :                 191F2 C |
+ locj_6D56 :                   81F2 C |  locj_6D70 :                   820C C |
+ locj_6D88 :                   8224 C |  locj_6DD2 :                   826E C |
+ locj_6DF2 :                   828E C |  locj_6DF4 :                   8290 C |
+ locj_6E28 :                   82C4 C |  locj_6E5E :                   82FA C |
+ locj_6E72 :                   830E C |  locj_6E78 :                   8314 C |
+ locj_6E8C :                   8328 C |  locj_6ED0 :                   836C C |
+ locj_6EF0 :                   838C C |  locj_6EF2 :                   838E C |
+ locj_6F66 :                   8402 C |  locj_6F9A :                   8436 C |
+ locj_6FAE :                   844A C |  locj_6FB4 :                   8450 C |
+ locj_6FC8 :                   8464 C |  locj_6FE4 :                   8480 C |
+ locj_6FEC :                   8488 C |  locj_6FF4 :                   8490 C |
+ locj_701C :                   84B8 C |  locj_7224 :                   86A6 C |
+ locj_724a :                   86CC C |  locj_725E :                   86E0 C |
+ locj_728C :                   870E C |  locj_72B2 :                   8734 C |
+ locj_72Ba :                   873C C |  locj_72EE :                   8770 C |
+ locj_72da :                   875C C |  locj_76B8 :                   8B58 C |
+ locj_76CE :                   8B6E C |  locret_1002E :               10FA4 C |
+ locret_10CFA :               11B4A C |  locret_10FA0 :               11DE8 C |
+ locret_10FBE :               11E06 C |  locret_10FDE :               11E26 C |
+ locret_11038 :               11E80 C |  locret_11898 :               12564 C |
+ locret_11938 :               12606 C |  locret_121C0 :               12DBA C |
+ locret_1307C :               13E88 C |  locret_130E8 :               13F06 C |
+ locret_1314E :               13F7E C |  locret_132D2 :               1411E C |
+ locret_1348E :               142DA C |  locret_134C2 :               14308 C |
+ locret_134D2 :               14320 C |  locret_13502 :               147BA C |
+ locret_13508 :               147C0 C |  locret_13544 :               147FA C |
+ locret_135A2 :               14858 C |  locret_1367E :               14936 C |
+ locret_13860 :               14CD6 C |  locret_13914 :               14DA4 C |
+ locret_146BE :               16EAC C |  locret_147F0 :               16F6A C |
+ locret_14892 :               17006 C |  locret_14934 :               170A2 C |
+ locret_14DE6 :               17844 C |  locret_14E16 :               17866 C |
+ locret_14E4E :               178B8 C |  locret_14F06 :               17960 C |
+ locret_14FD4 :               17A20 C |  locret_15098 :               17AE0 C |
+ locret_15606 :               17DEE C |  locret_15622 :               17E0A C |
+ locret_16950 :               18ED0 C |  locret_16DA :                 196C C |
+ locret_170F6 :               195E2 C |  locret_178A2 :               1977E C |
+ locret_179AA :               19A26 C |  locret_17C66 :               19CDC C |
+ locret_17F8C :               1A9E0 C |  locret_1852A :               1A050 C |
+ locret_1887E :                F81E C |  locret_18A44 :               1ADEA C |
+ locret_18DC4 :               1B184 C |  locret_18EA8 :               1B266 C |
+ locret_19256 :               1A306 C |  locret_19588 :               1A63A C |
+ locret_1A01E :               1BB18 C |  locret_1A190 :               1BC88 C |
+ locret_1A80 :                 1ECC C |  locret_1AA1C :               1C32E C |
+ locret_1AC6 :                 1F12 C |  locret_1B4CE :               1CF10 C |
+ locret_1B530 :               1CF72 C |  locret_1B566 :               1CFA8 C |
+ locret_1B596 :               1CFDE C |  locret_1B5CC :               1D014 C |
+ locret_1B60C :               1D052 C |  locret_1B64 :                 1FAE C |
+ locret_1B640 :               1D086 C |  locret_1BBB4 :               1D5AA C |
+ locret_1BBDE :               1D5D4 C |  locret_1BEAC :               1D8A8 C |
+ locret_3F7A :                 4E22 C |  locret_3FBE :                 4E62 C |
+ locret_49E6 :                 59E0 C |  locret_5480 :                 6436 C |
+ locret_5CEC :                 9CFA C |  locret_6952 :                 81A4 C |
+ locret_69F2 :                 8240 C | *locret_6C1E :                 8610 C |
+ locret_6E96 :                 899C C |  locret_6F8C :                 8A92 C |
+ locret_6FE8 :                 8AD4 C |  locret_702C :                 8B16 C |
+ locret_704E :                 8B40 C |  locret_7072 :                 8B8E C |
+ locret_7088 :                 8BA4 C |  locret_70E8 :                 8BB2 C |
+ locret_7130 :                 8C22 C |  locret_71A2 :                 8C7C C |
+ locret_71CE :                 8CA2 C |  locret_71E48 :               DDE5E C |
+ locret_7200 :                 8CDE C |  locret_7242 :                 8D02 C |
+ locret_72714 :               DE816 C |  locret_727A :                 8D38 C |
+ locret_7298 :                 8D56 C |  locret_7298A :               DEA96 C |
+ locret_729B4 :               DEACE C |  locret_72AEA :               DEC04 C |
+ locret_72CAA :               DEDDA C |  locret_7322 :                 8DDE C |
+ locret_75F2 :                 94A0 C |  locret_7B62 :                 970E C |
+ locret_8308 :                 A098 C |  locret_843A :                 A1C6 C |
+ locret_856E :                 A32C C |  locret_8AC2 :                 A59C C |
+ locret_8AD8 :                 A5B0 C |  locret_93EA :                 ADFA C |
+ locret_9402 :                 AE12 C |  locret_96A2 :                 B028 C |
+ locret_96B6 :                 B03C C |  locret_ADF0 :                 C3A6 C |
+ locret_AE20 :                 C3D6 C |  locret_B09A :                 C5E6 C |
+ locret_B116 :                 C670 C |  locret_C044 :                 D278 C |
+ locret_C184 :                 D3B6 C |  locret_C1F0 :                 D422 C |
+ locret_C2E4 :                 D51E C |  locret_C3D8 :                 D5EA C |
+ locret_C412 :                 D624 C |  locret_C60E :                 D85E C |
+*locret_C692 :                 D8E2 C |  locret_C748 :                 D984 C |
+ locret_C86A :                 DAB2 C |  locret_C8EA :                 DB20 C |
+ locret_CFE6 :                 DDE0 C |  locret_DCAE :                 EF92 C |
+ locret_E052 :                 F210 C |  locret_E0F6 :                 F2AE C |
+ locret_E12E :                 F2E8 C |  locret_E150 :                 F30A C |
+ locret_E188 :                 F340 C |  locret_E430 :                 F596 C |
+ locret_E452 :                 F5B8 C |  locret_E474 :                 F5DA C |
+ locret_E498 :                 F5FE C |  locret_E4BC :                 F622 C |
+ locret_E8EE :                 FA86 C |  locret_F89E :                108BA C |
+ locret_FFA0 :                10F16 C | *long :                           3 - |
+ lwall_flag :                    36 - |  mainspr_childsprites :           F - |
+ mainspr_height :                14 - |  mainspr_mapframe :               B - |
+ mainspr_routine :                A - |  mainspr_width :                  E - |
+*mask2ndBShield :                20 - |  mask2ndChkElement :             70 - |
+ mask2ndChkShield :              71 - | *mask2ndFShield :                10 - |
+ mask2ndInvinc :                  2 - | *mask2ndLShield :                40 - |
  mask2ndRmvShield :                                        FFFFFFFFFFFFFF8E - |
  mask2ndShield :                  1 - | *mask2ndShoes :                   4 - |
  maskAir :                        2 - |  maskFacing :                     1 - |
@@ -134884,10 +134895,10 @@
  zYM2612_A0 :                  4000 - |  zeroOffsetOptimization :         1 - |
 *zoneanimdeclanonid :             0 - |
 
-  13781 symbols
+  13785 symbols
    1676 unused symbols
 
- AS V1.42 Beta [Bld 212] - Source File sonic.asm - Page 7 - 7/25/2025 14:5:37
+ AS V1.42 Beta [Bld 212] - Source File sonic.asm - Page 7 - 7/26/2025 12:28:54
 
 
   Defined Macros:
@@ -134975,7 +134986,7 @@ zoneanimstart                         | zonewarning
 
     158 macros
 
- AS V1.42 Beta [Bld 212] - Source File sonic.asm - Page 8 - 7/25/2025 14:5:37
+ AS V1.42 Beta [Bld 212] - Source File sonic.asm - Page 8 - 7/26/2025 12:28:54
 
 
   Defined Structures/Unions:
@@ -135601,7 +135612,7 @@ SMPS_Track
  24          LoopCounters
  30          GoSubStack
 3 structures
- AS V1.42 Beta [Bld 212] - Source File sonic.asm - Page 9 - 7/25/2025 14:5:37
+ AS V1.42 Beta [Bld 212] - Source File sonic.asm - Page 9 - 7/26/2025 12:28:54
 
 
   Defined Functions:
@@ -135623,7 +135634,7 @@ signextend                            | signmask
 setBit                                | bit                                  
 notZ80                                |
 
- AS V1.42 Beta [Bld 212] - Source File sonic.asm - Page 10 - 7/25/2025 14:5:37
+ AS V1.42 Beta [Bld 212] - Source File sonic.asm - Page 10 - 7/26/2025 12:28:54
 
 
   Code Pages:
@@ -135633,10 +135644,10 @@ STANDARD (0 changed characters)
 
 1 code page
 
-2.72 seconds assembly time
+15.61 seconds assembly time
 
-  76566 lines source file
- 212584 lines incl. macro expansions
+  76573 lines source file
+ 212591 lines incl. macro expansions
       3 passes
       0 errors
       0 warnings

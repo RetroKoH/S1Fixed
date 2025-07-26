@@ -241,10 +241,10 @@ BossMarble_DropFire:		; Tertiary Routine 2/6
 		bchg	#staFlipX,obStatus(a0)				; turn Eggman to face toward the center of the field
 		jsr		(FindFreeObj).l
 		bne.s	.countdown
+		move.b	#id_BossFire,obID(a1)				; load boss' fireball object
 		move.w	boss_bufferX(a0),obX(a1)
 		move.w	boss_bufferY(a0),obY(a1)
 		addi.w	#$18,obY(a1)
-		move.b	#id_BossFire,obID(a1)				; load boss' fireball object
 		move.b	#1,obSubtype(a1)
 
 	.countdown:
