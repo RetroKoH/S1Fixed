@@ -27,6 +27,8 @@ swing_center = objoff_34	; index of central subsprite of chain
 swing_origX = objoff_3A		; original x-axis position
 swing_origY = objoff_38		; original y-axis position
 
+; $3C, $3D, and $3E are occupied
+
 swing_angle = $10			; precise rotation angle (2 bytes)
 	; ^^^ We need this so that obShieldProp isn't overwritten, otherwise
 	; Insta-Shield negates its collision property. Upper byte written to obAngle.
@@ -100,7 +102,7 @@ Swing_Main:		; Routine 0
 
 		move.l	d1,d4							; copy the iterator
 		lsr.b	#1,d4							; divide by 2
-		move.b	d4,swing_center(a0)
+		move.b	d4,swing_center(a0)				; set center of the sprite piece
 		lea		subspr_data(a1),a2
 
 .loop:
@@ -119,6 +121,8 @@ Swing_Main:		; Routine 0
 		move.w	obY(a0),obY(a1)
 		bset	#6,obRender(a1)					; set multi-draw flag (we aren't drawing subsprites,
 												; but we won't need to run extra object code with this set.
+		move.b	#$20,mainspr_width(a1)
+		move.b	#$20,mainspr_height(a1)
 		move.w	a1,swing_anchor(a0)				; save anchor address
 		move.b	#2,mainspr_mapframe(a1)			; set frame for anchor
 		rts
@@ -144,14 +148,16 @@ Swing_ChkDel:
 ; ===========================================================================
 
 Swing_OffScreen:
+		movea.w	swing_anchor(a0),a1	; a1 = chain anchor
+		bsr.w	DeleteChild
+		movea.w	swing_chain(a0),a1	; a1 = chain
+		bsr.w	DeleteChild
 		move.w	obRespawnNo(a0),d0
 		beq.s	.delete
 		movea.w	d0,a2
 		bclr	#7,(a2)
 
 .delete
-		movea.w	swing_chain(a0),a1
-		bsr.w	DeleteChild
 		jmp		(DeleteObject).l
 ; ===========================================================================
 
