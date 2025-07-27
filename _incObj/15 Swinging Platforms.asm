@@ -74,9 +74,9 @@ Swing_Main:		; Routine 0
 		move.l	d1,obMap(a0)
 
 	; create chain
-		bsr.w	FindNextFreeObj
+		bsr.w	FindFreeObj
 		bne.w	Swing_OffScreen
-		move.b	(a0),(a1)						; load obj15
+		move.b	obID(a0),obID(a1)				; load obj15
 		move.l	obMap(a0),obMap(a1)
 		move.w	obGfx(a0),obGfx(a1)
 		move.b	obRender(a0),obRender(a1)
@@ -98,15 +98,28 @@ Swing_Main:		; Routine 0
 		subq.b	#1,d1							; loop iterator
 		blo.w	Swing_OffScreen
 
-		lea		sub2_x_pos(a1),a2
+		move.l	d1,d4							; copy the iterator
+		lsr.b	#1,d4							; divide by 2
+		move.b	d4,swing_center(a0)
+		lea		subspr_data(a1),a2
 
 .loop:
 		move.w	d2,(a2)+                        ; sub?_x_pos
 		move.w	d3,(a2)+                        ; sub?_y_pos
-		move.b	#1,1(a2)                        ; sub?_mapframe
-		addq.w	#2,a2							; skip mapping frame
+		move.w	#1,(a2)+                        ; sub?_mapframe
 		dbf		d1,.loop
 
+		bsr.w	FindFreeObj						; Optimize this step
+		bne.w	Swing_OffScreen
+		move.b	obID(a0),obID(a1)				; load obj15
+		move.l	obMap(a0),obMap(a1)
+		move.w	obGfx(a0),obGfx(a1)
+		move.b	obRender(a0),obRender(a1)
+		move.w	obX(a0),obX(a1)
+		move.w	obY(a0),obY(a1)
+		bset	#6,obRender(a1)					; set multi-draw flag (we aren't drawing subsprites,
+												; but we won't need to run extra object code with this set.
+		move.w	a1,swing_anchor(a0)				; save anchor address
 		move.b	#2,mainspr_mapframe(a1)			; set frame for anchor
 		rts
 ; ===========================================================================
@@ -124,14 +137,9 @@ Swing_Platform:		; Routine 2
 		bne.s	Swing_SpikeChkDel
 		
 Swing_ChkDel:
-		move.w	swing_origX(a0),d0				; get object position
-		andi.w	#$FF80,d0						; round down to nearest $80
-		move.w	(v_screenposx).w,d1				; get screen position
-		subi.w	#$80,d1
-		andi.w	#$FF80,d1
-		sub.w	d1,d0							; approx distance between object and screen
-		cmpi.w	#$280,d0
-		bhi.w	Swing_OffScreen
+		moveq	#-$80,d0
+		and.w	swing_origX(a0),d0				; round down object position to nearest $80
+		offscreen.s	Swing_OffScreen
 		bra.w	DisplaySprite
 ; ===========================================================================
 
@@ -151,14 +159,9 @@ Swing_SBZ:	; Routine 6
 		bsr.s	Swing_Move
 
 Swing_SpikeChkDel:
-		move.w	swing_origX(a0),d0				; get object position
-		andi.w	#$FF80,d0						; round down to nearest $80
-		move.w	(v_screenposx).w,d1				; get screen position
-		subi.w	#$80,d1
-		andi.w	#$FF80,d1
-		sub.w	d1,d0							; approx distance between object and screen
-		cmpi.w	#$280,d0
-		bhi.w	Swing_OffScreen
+		moveq	#-$80,d0
+		and.w	swing_origX(a0),d0				; round down object position to nearest $80
+		offscreen.s	Swing_OffScreen
 		bra.w	DisplayAndCollision
 ; ===========================================================================
 
@@ -219,6 +222,13 @@ Swing_Move:
 		add.w	d3,d5
 		move.w	d5,(a2)+						; x_pos
 		move.w	d4,(a2)+						; y_pos
+
+		cmp.b	swing_center(a0),d6
+		bne.s	.notcenter
+		move.w	d5,obX(a1)
+		move.w	d4,obY(a1)
+
+.notcenter:
 		movem.l	(sp)+,d4-d5
 		add.l	d0,d4
 		add.l	d1,d5
@@ -247,26 +257,28 @@ Swing_Move:
 
 
 Obj48_Move:
-		tst.b	$3D(a0)
+		tst.b	objoff_3D(a0)
 		bne.s	loc_7B9C
-		move.w	$3E(a0),d0
+		move.w	objoff_3E(a0),d0
 		addq.w	#8,d0
-		move.w	d0,$3E(a0)
-		add.w	d0,obAngle(a0)		
+		move.w	d0,objoff_3E(a0)
+		add.w	d0,swing_angle(a0)
+		move.b	swing_angle(a0),obAngle(a0)
 		cmpi.w	#$200,d0
 		bne.s	loc_7BB6
-		move.b	#1,$3D(a0)
+		move.b	#1,objoff_3D(a0)
 		bra.s	loc_7BB6
 ; ===========================================================================
 
 loc_7B9C:
-		move.w	$3E(a0),d0
+		move.w	objoff_3E(a0),d0
 		subq.w	#8,d0
-		move.w	d0,$3E(a0)
-		add.w	d0,obAngle(a0)
+		move.w	d0,objoff_3E(a0)
+		add.w	d0,swing_angle(a0)
+		move.b	swing_angle(a0),obAngle(a0)
 		cmpi.w	#-$200,d0
 		bne.s	loc_7BB6
-		clr.b	$3D(a0)
+		clr.b	objoff_3D(a0)
 
 loc_7BB6:
 		move.b	obAngle(a0),d0
@@ -278,7 +290,7 @@ loc_7BB6:
 
 
 Swing_Move2:
-		jsr	(CalcSine).w
+		jsr		(CalcSine).w
 		move.w	swing_origY(a0),d2
 		move.w	swing_origX(a0),d3
 		lea		obSubtype(a0),a2
@@ -292,7 +304,7 @@ loc_7BCE:
 		addi.l	#v_objspace&$FFFFFF,d4
 		movea.l	d4,a1
 		moveq	#0,d4
-		move.b	$3C(a1),d4
+		move.b	objoff_3C(a1),d4
 		move.l	d4,d5
 		muls.w	d0,d4
 		asr.l	#8,d4
