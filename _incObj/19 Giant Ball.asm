@@ -17,8 +17,7 @@ GHZBall_Index:	offsetTable
 ; ===========================================================================
 
 GHZBall_Main:
-		move.b	#$18,obHeight(a0)
-		move.b	#$C,obWidth(a0)
+		move.w	#$180C,obHeight(a0)			; Height and Width
 		bsr.w	ObjectFall
 		jsr		(ObjFloorDist).l
 		tst.w	d1

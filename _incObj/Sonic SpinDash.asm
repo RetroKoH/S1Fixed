@@ -43,15 +43,14 @@ Sonic_UpdateSpinDash:
 		bne.w	Sonic_ChargingSpinDash
 
 		; unleash the charged spin dash and start rolling quickly:
-		move.b	#$E,obHeight(a0)
-		move.b	#7,obWidth(a0)
+		move.w	#$E07,obHeight(a0)			; Height and Width
 		move.b	#aniID_Roll,obAnim(a0)
 		addq.w	#5,obY(a0)
 		clr.b	obSpinDashFlag(a0)
 		moveq	#0,d0
 		move.b	obSpinDashCounter(a0),d0
 		add.w	d0,d0
-		move.w	#1,obVelX(a0)	; force X speed to nonzero for camera lag's benefit
+		move.w	#1,obVelX(a0)				; force X speed to nonzero for camera lag's benefit
 		move.w	SpinDashSpeeds(pc,d0.w),obInertia(a0)
 	if SuperMod=1
 		btst	#sta2ndSuper,obStatus2nd(a0)

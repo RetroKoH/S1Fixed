@@ -13,8 +13,7 @@ Sonic_ResetOnFloor:
 		btst	#staSpin,obStatus(a0)			; is Sonic spinning?
 		beq.s	.ret							; if not, branch
 	; If Sonic is spinning upon landing
-		move.b	#$13,obHeight(a0)
-		move.b	#9,obWidth(a0)
+		move.w	#$1309,obHeight(a0)				; Height and Width
 		bclr	#staSpin,obStatus(a0)
 		subq.w	#5,obY(a0)						; move Sonic up 5 pixels so the increased height doesn't push him into the ground
 
@@ -106,8 +105,7 @@ BubbleShield_Bounce:
 		bclr	#staPush,obStatus(a0)
 		move.b	#1,obJumping(a0)
 		clr.b	obOnWheel(a0)
-		move.b	#$E,obHeight(a0)
-		move.b	#7,obWidth(a0)
+		move.w	#$E07,obHeight(a0)			; Height and Width
 		move.b	#aniID_Roll,obAnim(a0)
 		bset	#staSpin,obStatus(a0)
 		addq.w	#5,obY(a0)
@@ -203,8 +201,7 @@ DropDash_Release:
 
 		move.b	#$10,(v_cameralag).w
 		bsr.w	Reset_Sonic_Position_Array
-		move.b	#$E,obHeight(a0)
-		move.b	#7,obWidth(a0)
+		move.w	#$E07,obHeight(a0)			; Height and Width
 		move.b	#aniID_Roll,obAnim(a0)
 		bset	#staSpin,obStatus(a0)
 		addq.w	#5,obY(a0)					; add the difference between Sonic's rolling and standing heights

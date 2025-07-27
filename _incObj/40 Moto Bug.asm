@@ -27,8 +27,7 @@ Moto_Main:	; Routine 0
 		move.b	#$14,obActWid(a0)
 		tst.b	obAnim(a0)					; is object a smoke trail?
 		bne.s	.smoke						; if yes, branch
-		move.b	#$E,obHeight(a0)
-		move.b	#8,obWidth(a0)
+		move.w	#$E08,obHeight(a0)			; Height and Width
 		move.b	#(colEnemy|colSz_20x16),obColType(a0)
 		bsr.w	ObjectFall_YOnly
 		bsr.w	ObjFloorDist

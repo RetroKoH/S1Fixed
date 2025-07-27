@@ -21,8 +21,7 @@ bossfire_bufferY = objoff_38					; stored Y-position (2 bytes)
 ; ===========================================================================
 
 BossFire_Main:	; Routine 0
-		move.b	#8,obHeight(a0)
-		move.b	#8,obWidth(a0)
+		move.w	#$808,obHeight(a0)				; Height and Width
 		move.l	#Map_Fire,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Fireball,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)

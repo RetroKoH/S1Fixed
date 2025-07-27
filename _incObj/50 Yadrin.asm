@@ -16,14 +16,13 @@ Yad_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$14,obActWid(a0)
-		move.b	#$11,obHeight(a0)
-		move.b	#8,obWidth(a0)
+		move.w	#$1108,obHeight(a0)			; Height and Width
 		move.b	#(colSpecial|colSz_20x16),obColType(a0)
 		bsr.w	ObjectFall_YOnly
 		bsr.w	ObjFloorDist
 		tst.w	d1
 		bpl.s	locret_F89E
-		add.w	d1,obY(a0)	; match	object's position with the floor
+		add.w	d1,obY(a0)					; match	object's position with the floor
 		clr.w	obVelY(a0)
 		addq.b	#2,obRoutine(a0)
 		bchg	#staFlipX,obStatus(a0)

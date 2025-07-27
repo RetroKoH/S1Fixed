@@ -19,8 +19,7 @@ Newt_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$14,obActWid(a0)
-		move.b	#$10,obHeight(a0)
-		move.b	#8,obWidth(a0)
+		move.w	#$1008,obHeight(a0)			; Height and Width
 
 Newt_Action:	; Routine 2
 		moveq	#0,d0

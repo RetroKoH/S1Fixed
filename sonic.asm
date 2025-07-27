@@ -5660,8 +5660,7 @@ Sonic_Main:	; Routine 0
 		move.b	#$C,(v_top_solid_bit).w	; MJ: set collision to 1st
 		move.b	#$D,(v_lrb_solid_bit).w	; MJ: set collision to 1st
 		addq.b	#2,obRoutine(a0)
-		move.b	#$13,obHeight(a0)
-		move.b	#9,obWidth(a0)
+		move.w	#$1309,obHeight(a0)			; Height and Width
 		move.l	#Map_Sonic,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Sonic,0,0),obGfx(a0)
 		move.w	#priority2,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager

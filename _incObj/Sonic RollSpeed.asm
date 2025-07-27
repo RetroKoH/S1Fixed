@@ -58,8 +58,8 @@ loc_131A6:
 		move.w	d0,obInertia(a0)
 
 loc_131AA:
-		tst.w	obInertia(a0)		; is Sonic moving?
-		bne.s	loc_131CC			; if yes, branch
+		tst.w	obInertia(a0)			; is Sonic moving?
+		bne.s	loc_131CC				; if yes, branch
 
 	if SpinDashEnabled=1
 		tst.b	obSpinDashFlag(a0)
@@ -67,8 +67,7 @@ loc_131AA:
 	endif
 
 		bclr	#staSpin,obStatus(a0)
-		move.b	#$13,obHeight(a0)
-		move.b	#9,obWidth(a0)
+		move.w	#$1309,obHeight(a0)		; Height and Width
 		move.b	#aniID_Wait,obAnim(a0)	; use "standing" animation
 		subq.w	#5,obY(a0)
 
