@@ -1,5 +1,6 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Eggman (boss levels)
+; Mappings altered by Mercury so that his moustache isn't cut off (ReadySonic).
 ; ---------------------------------------------------------------------------
 Map_Eggman:	mappingsTable
 	mappingsTableEntry.w	.ship
@@ -18,7 +19,7 @@ Map_Eggman:	mappingsTable
 
 .ship:	spriteHeader
 	spritePiece	-$1C, -$14, 1, 2, $A, 0, 0, 0, 0
-	spritePiece	$C, -$14, 2, 2, $C, 0, 0, 0, 0
+	spritePiece	$14, -$14, 1, 2, $E, 0, 0, 0, 0	; Mercury altered mapping
 	spritePiece	-$1C, -4, 4, 3, $10, 0, 0, 1, 0
 	spritePiece	4, -4, 4, 3, $1C, 0, 0, 1, 0
 	spritePiece	-$14, $14, 4, 1, $28, 0, 0, 1, 0

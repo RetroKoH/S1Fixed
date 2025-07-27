@@ -36,7 +36,7 @@ HUD_Update:
 		bne.s	.chklives					; if yes, branch
 		lea		(v_time).w,a1
 
-	if HUDCentiseconds=1	; Mercury HUD Centiseconds
+	if HUDCentiseconds		; Mercury HUD Centiseconds
 		cmpi.l	#(9*$10000)+(59*$100)+59,(a1)+	; is the time 9:59:59?
 		beq.w	TimeOver						; if yes, branch
 
@@ -60,7 +60,7 @@ HUD_Update:
 	else
 
 		cmpi.l	#(9*$10000)+(59*$100)+59,(a1)+	; is the time 9:59:59?
-		beq.s	TimeOver						; if yes, branch
+		beq.w	TimeOver						; if yes, branch
 
 		addq.b	#1,-(a1)						; increment 1/60s counter
 		cmpi.b	#60,(a1)						; check if passed 60
@@ -87,7 +87,7 @@ HUD_Update:
 		move.b	(v_timesec).w,d1 			; load seconds
 		bsr.w	Hud_Secs
 
-	if HUDCentiseconds=1	; Mercury HUD Centiseconds
+	if HUDCentiseconds		; Mercury HUD Centiseconds
 .docent:
 		locVRAM	$F440,d0					; Temporary location
 		moveq	#0,d1
@@ -198,7 +198,7 @@ Hud_LoadZero:
 		bra.s	loc_1C83E
 ; End of function Hud_LoadZero
 
-	if HUDCentiseconds=1	;Mercury HUD Centiseconds
+	if HUDCentiseconds		; Mercury HUD Centiseconds
 ; ---------------------------------------------------------------------------
 ; Subroutine to	load " on the HUD
 ; ---------------------------------------------------------------------------
@@ -225,7 +225,7 @@ Hud_Base:
 		lea		(vdp_data_port).l,a6
 		bsr.w	Hud_Lives
 
-	if HUDCentiseconds=1	; Mercury HUD Centiseconds
+	if HUDCentiseconds		; Mercury HUD Centiseconds
 		bsr.s	Hud_LoadMarks
 	endif	; HUD Centiseconds End
 
@@ -262,7 +262,7 @@ loc_1C85E:
 ; End of function Hud_Base
 
 ; ===========================================================================
-	if HUDCentiseconds=1	;Mercury HUD Centiseconds
+	if HUDCentiseconds		; Mercury HUD Centiseconds
 Hud_TilesMarks:	dc.b $1A, 0, 0, 0
 Hud_TilesBase:	dc.b $16, $FF, $FF, $FF, $FF, $FF, $FF,	0, 0, $18, 0, 0
 	else
@@ -368,10 +368,12 @@ loc_1C8F4:
 		moveq	#1,d4					; Optimized from move.w
 
 loc_1C8FE:
-	if HUDHasLeadingZeroes=0	;Mercury HUD Has Leading Zeroes
+
+	if ~~HUDHasLeadingZeroes	; Mercury HUD Has Leading Zeroes
 		tst.w	d4
 		beq.s	loc_1C92C
 	endif	; HUD Has Leading Zeroes End
+
 		lsl.w	#6,d2
 		move.l	d0,4(a6)
 		lea		(a1,d2.w),a3
