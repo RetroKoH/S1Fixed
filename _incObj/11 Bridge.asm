@@ -301,11 +301,11 @@ Bri_Display:	; Routine 4
 ; ===========================================================================
 
 Bri_Delete:
-		movea.l	obBriChild1(a0),a1 ; a1=object
+		movea.l	obBriChild1(a0),a1	; a1=object
 		bsr.w	DeleteChild
 		cmpi.b	#8,obSubtype(a0)
-		bls.s	.delete2nd	; if bridge has more than 8 logs, delete second subsprite object
-		movea.l	obBriChild2(a0),a1 ; a1=object
+		bls.s	.delete2nd			; if bridge has more than 8 logs, delete second subsprite object
+		movea.l	obBriChild2(a0),a1	; a1=object
 		bsr.w	DeleteChild
 
 .delete2nd:
