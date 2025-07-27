@@ -318,7 +318,7 @@ Bri_Delete:
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to collide Sonic with the top of a bridge
-; Ported from Sonic 2 (Credit: DeltaWooloo)
+; Ported from Sonic 2 (Credit: DeltaW)
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||

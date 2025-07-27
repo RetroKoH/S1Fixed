@@ -200,8 +200,7 @@ Debug_ChgItem:
 		clr.w	obInertia(a1)
 		move.b	#maskAir,obStatus(a1)				; set Sonic into the air. all other bits clear.
 		move.b	#2,obRoutine(a1)
-		move.b	#$13,obHeight(a1)
-		move.b	#9,obWidth(a1)
+		move.w	#$1309,obHeight(a1)					; Height and Width
 
 	if SuperMod=1
 		btst	#sta2ndSuper,obStatus2nd(a1)		; is player in Super Form?

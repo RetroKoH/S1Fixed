@@ -21,8 +21,7 @@ SpCursor_Index:	offsetTable
 
 SpCursor_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
-		move.b	#$E,obHeight(a0)
-		move.b	#7,obWidth(a0)
+		move.w	#$E07,obHeight(a0)			; Height and Width
 		move.l	#Map_Cursor,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SS_Cursor,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)

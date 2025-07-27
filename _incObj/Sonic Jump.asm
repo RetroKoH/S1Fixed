@@ -49,8 +49,7 @@ loc_1341C:
 		btst	#staSpin,obStatus(a0)		; Is Sonic already in a ball?
 		bne.s	loc_13490
 	; If not already in a ball, convert Sonic into a ball
-		move.b	#$E,obHeight(a0)
-		move.b	#7,obWidth(a0)
+		move.w	#$E07,obHeight(a0)			; Height and Width
 		move.b	#aniID_Roll,obAnim(a0)		; use "jumping" animation
 		bset	#staSpin,obStatus(a0)
 		addq.w	#5,obY(a0)

@@ -50,12 +50,11 @@ Gar_MakeFire:	; Routine 2
 
 Gar_FireBall:	; Routine 4
 		addq.b	#2,obRoutine(a0)
-		move.b	#8,obHeight(a0)
-		move.b	#8,obWidth(a0)
+		move.w	#$808,obHeight(a0)				; Height and Width
 		move.l	#Map_Gar,obMap(a0)
 		move.w	#make_art_tile(ArtTile_LZ_Gargoyle,0,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
-		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
+		move.w	#priority4,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colHarmful|colSz_4x4),obColType(a0)
 
 		bset	#shPropFlame,obShieldProp(a0)	; Negated by Flame Shield

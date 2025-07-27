@@ -12,15 +12,14 @@ Burrobot:
 
 Burro_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
-		move.b	#$13,obHeight(a0)
-		move.b	#8,obWidth(a0)
+		move.w	#$1308,obHeight(a0)			; Height and Width
 		move.l	#Map_Burro,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Burrobot,0,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colEnemy|colSz_12x18),obColType(a0)
 		move.b	#$C,obActWid(a0)
-		addq.b	#6,ob2ndRout(a0) ; run "Burro_ChkSonic" routine
+		addq.b	#6,ob2ndRout(a0)			; run "Burro_ChkSonic" routine
 		move.b	#2,obAnim(a0)
 
 Burro_Action:	; Routine 2

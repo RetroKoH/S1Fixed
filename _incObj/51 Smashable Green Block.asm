@@ -44,8 +44,7 @@ Smab_Solid:	; Routine 2
 		bne.w	RememberState					; if not, branch
 		move.w	hitcount(a0),(v_itembonus).w
 		bset	#staSpin,obStatus(a1)
-		move.b	#$E,obHeight(a1)
-		move.b	#7,obWidth(a1)
+		move.w	#$E07,obHeight(a1)				; Height and Width
 		move.b	#aniID_Roll,obAnim(a1)			; make Sonic roll
 		move.w	#-$300,obVelY(a1)				; rebound Sonic
 		bset	#staAir,obStatus(a1)

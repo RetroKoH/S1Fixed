@@ -9,13 +9,12 @@ Roller:
 	; Object Routine Optimization End
 
 Roll_Main:	; Routine 0
-		move.b	#$E,obHeight(a0)
-		move.b	#8,obWidth(a0)
+		move.w	#$E08,obHeight(a0)			; Height and Width
 		bsr.w	ObjectFall_YOnly
 		jsr		(ObjFloorDist).l
 		tst.w	d1
 		bpl.s	locret_E052
-		add.w	d1,obY(a0)				; match	roller's position with the floor
+		add.w	d1,obY(a0)					; match	roller's position with the floor
 		clr.w	obVelY(a0)
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Roll,obMap(a0)

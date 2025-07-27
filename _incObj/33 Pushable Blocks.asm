@@ -20,9 +20,7 @@ PushB_Var:
 
 PushB_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
-		moveq	#$F,d0												; quick move to save cycles
-		move.b	d0,obHeight(a0)
-		move.b	d0,obWidth(a0)
+		move.w	#$F0F,obHeight(a0)			; Height and Width
 		move.l	#Map_Push,obMap(a0)
 		move.w	#make_art_tile(ArtTile_MZ_Block,2,0),obGfx(a0)		; MZ specific code
 		cmpi.b	#id_LZ,(v_zone).w
@@ -43,18 +41,18 @@ PushB_Main:	; Routine 0
 		move.b	(a2)+,obFrame(a0)
 		tst.b	obSubtype(a0)
 		beq.s	.chkgone
-		move.w	#make_art_tile(ArtTile_MZ_Block,2,1),obGfx(a0)	; MZ long block
+		move.w	#make_art_tile(ArtTile_MZ_Block,2,1),obGfx(a0)		; MZ long block
 		cmpi.b	#id_LZ,(v_zone).w
 		bne.s	.notLZ2
-		move.w	#make_art_tile(ArtTile_LZ_Push_Block,2,1),obGfx(a0) ; LZ specific code
+		move.w	#make_art_tile(ArtTile_LZ_Push_Block,2,1),obGfx(a0)	; LZ specific code
 
 .notLZ2:
 .chkgone:
 	; ProjectFM S3K Objects Manager
-		move.w	obRespawnNo(a0),d0	; get address in respawn table
-		beq.s	loc_BF6E			; if it's zero, don't remember object
-		movea.w	d0,a2				; load address into a2
-		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again
+		move.w	obRespawnNo(a0),d0		; get address in respawn table
+		beq.s	loc_BF6E				; if it's zero, don't remember object
+		movea.w	d0,a2					; load address into a2
+		bclr	#7,(a2)					; clear respawn table entry, so object can be loaded again
 		bset	#0,(a2)
 	; S3K Objects Manager End
 		bne.w	DeleteObject
