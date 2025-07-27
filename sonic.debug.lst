@@ -1,4 +1,4 @@
- AS V1.42 Beta [Bld 212] - Source File sonic.asm - Page 1 - 7/27/2025 10:50:31
+ AS V1.42 Beta [Bld 212] - Source File sonic.asm - Page 1 - 7/27/2025 12:44:32
 
 
        1/       0 :                     ;  =========================================================================
@@ -61,7 +61,7 @@
 (1)   41/       0 :                     ; Function: Adds 7th Special Stage, 7th Emerald and Super Sonic Form
 (1)   42/       0 : =$1                  SuperMod: = 1
 (1)   43/       0 :                     
- AS V1.42 Beta [Bld 212] - Source File sonic.asm(Mods.asm) - Page 2 - 7/27/2025 10:50:31
+ AS V1.42 Beta [Bld 212] - Source File sonic.asm(Mods.asm) - Page 2 - 7/27/2025 12:44:32
 
 
 (1)   44/       0 :                     ; ----- GAMEPLAY TWEAKS ----------------------------------------------------------
@@ -124,7 +124,7 @@
 (1)  101/       0 : =$1                  OrbinautAnimationTweak: = 1
 (1)  102/       0 : =$80                 	OrbinautAnimationTweakRange: = $80	; horizontal range in pixels at which Sonic is noticed by the Orbinaut
 (1)  103/       0 : =$8                  	OrbinautAnimationTweakSpeed: = $8	; animation speed of the Orbinaut's "getting angry" animation
- AS V1.42 Beta [Bld 212] - Source File sonic.asm(Mods.asm) - Page 3 - 7/27/2025 10:50:31
+ AS V1.42 Beta [Bld 212] - Source File sonic.asm(Mods.asm) - Page 3 - 7/27/2025 12:44:32
 
 
 (1)  104/       0 :                     	
@@ -187,7 +187,7 @@
 (1)  161/       0 : =$1                  ActiveDeathSequence: = 1				; if set to 1, active elements don't freeze on death a la Sonic CD
 (1)  162/       0 :                     
 (1)  163/       0 :                     ; Name: End-of-Level Music Fade
- AS V1.42 Beta [Bld 212] - Source File sonic.asm(Mods.asm) - Page 4 - 7/27/2025 10:50:31
+ AS V1.42 Beta [Bld 212] - Source File sonic.asm(Mods.asm) - Page 4 - 7/27/2025 12:44:32
 
 
 (1)  164/       0 :                     ; Credit: RetroKoH
@@ -250,7 +250,7 @@
 (1)  221/       0 : =$0                  	TimeLimitInSpecialStage: = 0		; if set, time counts down in the Special Stage from a specified time limit
 (1)  222/       0 : =$1E00               		SSTimeLimitPinch: = $00001E00	; "pinch" threshold that time must reach in order to trigger "TIME" to flash. Format: $000MSSCC
 (1)  223/       0 : =$10000              		SSTimeLimitStart: = $00010000	; time on the clock to start with when Special Stage is entered. Format: $000MSSCC
- AS V1.42 Beta [Bld 212] - Source File sonic.asm(Mods.asm) - Page 5 - 7/27/2025 10:50:31
+ AS V1.42 Beta [Bld 212] - Source File sonic.asm(Mods.asm) - Page 5 - 7/27/2025 12:44:32
 
 
 (1)  224/       0 :                     		; NOTE: SSTimeLimitStart must always end in 00
@@ -61848,35 +61848,37 @@
 (1)  368/   1E9B4 : 7801                		moveq	#1,d4					; Optimized from move.w
 (1)  369/   1E9B6 :                     
 (1)  370/   1E9B6 :                     loc_1C8FE:
-(1)  372/   1E9B6 : 4A44                		tst.w	d4
-(1)  373/   1E9B8 : 672A                		beq.s	loc_1C92C
-(1)  375/   1E9BA : ED4A                		lsl.w	#6,d2
-(1)  376/   1E9BC : 2D40 0004           		move.l	d0,4(a6)
-(1)  377/   1E9C0 : 47F1 2000           		lea		(a1,d2.w),a3
-(1)  378/   1E9C4 : 2C9B                		move.l	(a3)+,(a6)
-(1)  379/   1E9C6 : 2C9B                		move.l	(a3)+,(a6)
-(1)  380/   1E9C8 : 2C9B                		move.l	(a3)+,(a6)
-(1)  381/   1E9CA : 2C9B                		move.l	(a3)+,(a6)
-(1)  382/   1E9CC : 2C9B                		move.l	(a3)+,(a6)
-(1)  383/   1E9CE : 2C9B                		move.l	(a3)+,(a6)
-(1)  384/   1E9D0 : 2C9B                		move.l	(a3)+,(a6)
-(1)  385/   1E9D2 : 2C9B                		move.l	(a3)+,(a6)
-(1)  386/   1E9D4 : 2C9B                		move.l	(a3)+,(a6)
-(1)  387/   1E9D6 : 2C9B                		move.l	(a3)+,(a6)
-(1)  388/   1E9D8 : 2C9B                		move.l	(a3)+,(a6)
-(1)  389/   1E9DA : 2C9B                		move.l	(a3)+,(a6)
-(1)  390/   1E9DC : 2C9B                		move.l	(a3)+,(a6)
-(1)  391/   1E9DE : 2C9B                		move.l	(a3)+,(a6)
-(1)  392/   1E9E0 : 2C9B                		move.l	(a3)+,(a6)
-(1)  393/   1E9E2 : 2C9B                		move.l	(a3)+,(a6)
-(1)  394/   1E9E4 :                     
-(1)  395/   1E9E4 :                     loc_1C92C:
-(1)  396/   1E9E4 : 0680 0040 0000      		addi.l	#$400000,d0
-(1)  397/   1E9EA : 51CE FFB6           		dbf		d6,Hud_ScoreLoop
-(1)  398/   1E9EE :                     
-(1)  399/   1E9EE : 4E75                		rts	
-(1)  400/   1E9F0 :                     ; End of function Hud_Score
-(1)  401/   1E9F0 :                     
+(1)  371/   1E9B6 :                     
+(1)  373/   1E9B6 : 4A44                		tst.w	d4
+(1)  374/   1E9B8 : 672A                		beq.s	loc_1C92C
+(1)  376/   1E9BA :                     
+(1)  377/   1E9BA : ED4A                		lsl.w	#6,d2
+(1)  378/   1E9BC : 2D40 0004           		move.l	d0,4(a6)
+(1)  379/   1E9C0 : 47F1 2000           		lea		(a1,d2.w),a3
+(1)  380/   1E9C4 : 2C9B                		move.l	(a3)+,(a6)
+(1)  381/   1E9C6 : 2C9B                		move.l	(a3)+,(a6)
+(1)  382/   1E9C8 : 2C9B                		move.l	(a3)+,(a6)
+(1)  383/   1E9CA : 2C9B                		move.l	(a3)+,(a6)
+(1)  384/   1E9CC : 2C9B                		move.l	(a3)+,(a6)
+(1)  385/   1E9CE : 2C9B                		move.l	(a3)+,(a6)
+(1)  386/   1E9D0 : 2C9B                		move.l	(a3)+,(a6)
+(1)  387/   1E9D2 : 2C9B                		move.l	(a3)+,(a6)
+(1)  388/   1E9D4 : 2C9B                		move.l	(a3)+,(a6)
+(1)  389/   1E9D6 : 2C9B                		move.l	(a3)+,(a6)
+(1)  390/   1E9D8 : 2C9B                		move.l	(a3)+,(a6)
+(1)  391/   1E9DA : 2C9B                		move.l	(a3)+,(a6)
+(1)  392/   1E9DC : 2C9B                		move.l	(a3)+,(a6)
+(1)  393/   1E9DE : 2C9B                		move.l	(a3)+,(a6)
+(1)  394/   1E9E0 : 2C9B                		move.l	(a3)+,(a6)
+(1)  395/   1E9E2 : 2C9B                		move.l	(a3)+,(a6)
+(1)  396/   1E9E4 :                     
+(1)  397/   1E9E4 :                     loc_1C92C:
+(1)  398/   1E9E4 : 0680 0040 0000      		addi.l	#$400000,d0
+(1)  399/   1E9EA : 51CE FFB6           		dbf		d6,Hud_ScoreLoop
+(1)  400/   1E9EE :                     
+(1)  401/   1E9EE : 4E75                		rts	
+(1)  402/   1E9F0 :                     ; End of function Hud_Score
+(1)  403/   1E9F0 :                     
     7389/   1E9F0 :                     
     7391/   1E9F0 :                     		include	"_inc/HUD Update SS.asm"
 (1)    1/   1E9F0 :                     ; ---------------------------------------------------------------------------
@@ -87729,292 +87731,293 @@
     8359/   D2458 :                     		include	"_maps/Eggman.asm"
 (1)    1/   D2458 :                     ; ---------------------------------------------------------------------------
 (1)    2/   D2458 :                     ; Sprite mappings - Eggman (boss levels)
-(1)    3/   D2458 :                     ; ---------------------------------------------------------------------------
-(1)    4/   D2458 : (MACRO)              Map_Eggman:	mappingsTable
-(1)    4/   D2458 : =$D2458              Map_Eggman label *
-(1)    4/   D2458 : =$D2458              .current_mappings_table := Map_Eggman
-(1)    5/   D2458 : (MACRO)              	mappingsTableEntry.w	.ship
-(1)    5/   D2458 : 001A                        dc.w .ship-.current_mappings_table
-(1)    6/   D245A : (MACRO)              	mappingsTableEntry.w	.facenormal1
-(1)    6/   D245A : 004C                        dc.w .facenormal1-.current_mappings_table
-(1)    7/   D245C : (MACRO)              	mappingsTableEntry.w	.facenormal2
-(1)    7/   D245C : 0066                        dc.w .facenormal2-.current_mappings_table
-(1)    8/   D245E : (MACRO)              	mappingsTableEntry.w	.facelaugh1
-(1)    8/   D245E : 0080                        dc.w .facelaugh1-.current_mappings_table
-(1)    9/   D2460 : (MACRO)              	mappingsTableEntry.w	.facelaugh2
-(1)    9/   D2460 : 009A                        dc.w .facelaugh2-.current_mappings_table
-(1)   10/   D2462 : (MACRO)              	mappingsTableEntry.w	.facehit
-(1)   10/   D2462 : 00B4                        dc.w .facehit-.current_mappings_table
-(1)   11/   D2464 : (MACRO)              	mappingsTableEntry.w	.facepanic
-(1)   11/   D2464 : 00CE                        dc.w .facepanic-.current_mappings_table
-(1)   12/   D2466 : (MACRO)              	mappingsTableEntry.w	.facedefeat
-(1)   12/   D2466 : 00F0                        dc.w .facedefeat-.current_mappings_table
-(1)   13/   D2468 : (MACRO)              	mappingsTableEntry.w	.flame1
-(1)   13/   D2468 : 0112                        dc.w .flame1-.current_mappings_table
-(1)   14/   D246A : (MACRO)              	mappingsTableEntry.w	.flame2
-(1)   14/   D246A : 011C                        dc.w .flame2-.current_mappings_table
-(1)   15/   D246C : (MACRO)              	mappingsTableEntry.w	.blank
-(1)   15/   D246C : 0126                        dc.w .blank-.current_mappings_table
-(1)   16/   D246E : (MACRO)              	mappingsTableEntry.w	.escapeflame1
-(1)   16/   D246E : 0128                        dc.w .escapeflame1-.current_mappings_table
-(1)   17/   D2470 : (MACRO)              	mappingsTableEntry.w	.escapeflame2
-(1)   17/   D2470 : 013A                        dc.w .escapeflame2-.current_mappings_table
-(1)   18/   D2472 :                     
-(1)   19/   D2472 : (MACRO)              .ship:	spriteHeader
-(1)   19/   D2472 : =$D2472              .ship label *
-(1)   19/   D2472 : 0006                        dc.w ((.ship_End - .ship_Begin) / 8)
-(1)   19/   D2474 : =$D2474              .ship_Begin label *
-(1)   20/   D2474 : (MACRO)              	spritePiece	-$1C, -$14, 1, 2, $A, 0, 0, 0, 0
-(1)   20/   D2474 : EC01                        dc.w    ((-$14&$FF)<<8)|(((1-1)&3)<<2)|((2-1)&3)
-(1)   20/   D2476 : 000A                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($A)
-(1)   20/   D2478 : 0005                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($A)>>1)|(($A)&$8000))
-(1)   20/   D247A : FFE4                        dc.w    -$1C
-(1)   21/   D247C : (MACRO)              	spritePiece	$C, -$14, 2, 2, $C, 0, 0, 0, 0
-(1)   21/   D247C : EC05                        dc.w    ((-$14&$FF)<<8)|(((2-1)&3)<<2)|((2-1)&3)
-(1)   21/   D247E : 000C                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($C)
-(1)   21/   D2480 : 0006                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($C)>>1)|(($C)&$8000))
-(1)   21/   D2482 : 000C                        dc.w    $C
-(1)   22/   D2484 : (MACRO)              	spritePiece	-$1C, -4, 4, 3, $10, 0, 0, 1, 0
-(1)   22/   D2484 : FC0E                        dc.w    ((-4&$FF)<<8)|(((4-1)&3)<<2)|((3-1)&3)
-(1)   22/   D2486 : 2010                        dc.w    (((0&1)<<15)|((1&3)<<13)|((0&1)<<12)|((0&1)<<11))+($10)
-(1)   22/   D2488 : 2008                        dc.w    (((0&1)<<15)|((1&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($10)>>1)|(($10)&$8000))
-(1)   22/   D248A : FFE4                        dc.w    -$1C
-(1)   23/   D248C : (MACRO)              	spritePiece	4, -4, 4, 3, $1C, 0, 0, 1, 0
-(1)   23/   D248C : FC0E                        dc.w    ((-4&$FF)<<8)|(((4-1)&3)<<2)|((3-1)&3)
-(1)   23/   D248E : 201C                        dc.w    (((0&1)<<15)|((1&3)<<13)|((0&1)<<12)|((0&1)<<11))+($1C)
-(1)   23/   D2490 : 200E                        dc.w    (((0&1)<<15)|((1&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($1C)>>1)|(($1C)&$8000))
-(1)   23/   D2492 : 0004                        dc.w    4
-(1)   24/   D2494 : (MACRO)              	spritePiece	-$14, $14, 4, 1, $28, 0, 0, 1, 0
-(1)   24/   D2494 : 140C                        dc.w    (($14&$FF)<<8)|(((4-1)&3)<<2)|((1-1)&3)
-(1)   24/   D2496 : 2028                        dc.w    (((0&1)<<15)|((1&3)<<13)|((0&1)<<12)|((0&1)<<11))+($28)
-(1)   24/   D2498 : 2014                        dc.w    (((0&1)<<15)|((1&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($28)>>1)|(($28)&$8000))
-(1)   24/   D249A : FFEC                        dc.w    -$14
-(1)   25/   D249C : (MACRO)              	spritePiece	$C, $14, 1, 1, $2C, 0, 0, 1, 0
-(1)   25/   D249C : 1400                        dc.w    (($14&$FF)<<8)|(((1-1)&3)<<2)|((1-1)&3)
-(1)   25/   D249E : 202C                        dc.w    (((0&1)<<15)|((1&3)<<13)|((0&1)<<12)|((0&1)<<11))+($2C)
-(1)   25/   D24A0 : 2016                        dc.w    (((0&1)<<15)|((1&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($2C)>>1)|(($2C)&$8000))
-(1)   25/   D24A2 : 000C                        dc.w    $C
-(1)   26/   D24A4 :                     .ship_End
-(1)   27/   D24A4 :                     
-(1)   28/   D24A4 : (MACRO)              .facenormal1:	spriteHeader
-(1)   28/   D24A4 : =$D24A4              .facenormal1 label *
-(1)   28/   D24A4 : 0003                        dc.w ((.facenormal1_End - .facenormal1_Begin) / 8)
-(1)   28/   D24A6 : =$D24A6              .facenormal1_Begin label *
-(1)   29/   D24A6 : (MACRO)              	spritePiece	$C, -$14, 1, 2, $C, 0, 0, 0, 0	; Mercury additional mapping
-(1)   29/   D24A6 : EC01                        dc.w    ((-$14&$FF)<<8)|(((1-1)&3)<<2)|((2-1)&3)
-(1)   29/   D24A8 : 000C                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($C)
-(1)   29/   D24AA : 0006                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($C)>>1)|(($C)&$8000))
-(1)   29/   D24AC : 000C                        dc.w    $C
-(1)   30/   D24AE : (MACRO)              	spritePiece	-$C, -$1C, 2, 1, 0, 0, 0, 0, 0
-(1)   30/   D24AE : E404                        dc.w    ((-$1C&$FF)<<8)|(((2-1)&3)<<2)|((1-1)&3)
-(1)   30/   D24B0 : 0000                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+(0)
-(1)   30/   D24B2 : 0000                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+(((0)>>1)|((0)&$8000))
-(1)   30/   D24B4 : FFF4                        dc.w    -$C
-(1)   31/   D24B6 : (MACRO)              	spritePiece	-$14, -$14, 4, 2, 2, 0, 0, 0, 0
-(1)   31/   D24B6 : EC0D                        dc.w    ((-$14&$FF)<<8)|(((4-1)&3)<<2)|((2-1)&3)
-(1)   31/   D24B8 : 0002                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+(2)
-(1)   31/   D24BA : 0001                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+(((2)>>1)|((2)&$8000))
-(1)   31/   D24BC : FFEC                        dc.w    -$14
-(1)   32/   D24BE :                     .facenormal1_End
-(1)   33/   D24BE :                     
-(1)   34/   D24BE : (MACRO)              .facenormal2:	spriteHeader
-(1)   34/   D24BE : =$D24BE              .facenormal2 label *
-(1)   34/   D24BE : 0003                        dc.w ((.facenormal2_End - .facenormal2_Begin) / 8)
-(1)   34/   D24C0 : =$D24C0              .facenormal2_Begin label *
-(1)   35/   D24C0 : (MACRO)              	spritePiece	$C, -$14, 1, 2, $C, 0, 0, 0, 0	; Mercury additional mapping
-(1)   35/   D24C0 : EC01                        dc.w    ((-$14&$FF)<<8)|(((1-1)&3)<<2)|((2-1)&3)
-(1)   35/   D24C2 : 000C                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($C)
-(1)   35/   D24C4 : 0006                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($C)>>1)|(($C)&$8000))
-(1)   35/   D24C6 : 000C                        dc.w    $C
-(1)   36/   D24C8 : (MACRO)              	spritePiece	-$C, -$1C, 2, 1, 0, 0, 0, 0, 0
-(1)   36/   D24C8 : E404                        dc.w    ((-$1C&$FF)<<8)|(((2-1)&3)<<2)|((1-1)&3)
-(1)   36/   D24CA : 0000                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+(0)
-(1)   36/   D24CC : 0000                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+(((0)>>1)|((0)&$8000))
-(1)   36/   D24CE : FFF4                        dc.w    -$C
-(1)   37/   D24D0 : (MACRO)              	spritePiece	-$14, -$14, 4, 2, $35, 0, 0, 0, 0
-(1)   37/   D24D0 : EC0D                        dc.w    ((-$14&$FF)<<8)|(((4-1)&3)<<2)|((2-1)&3)
-(1)   37/   D24D2 : 0035                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($35)
-(1)   37/   D24D4 : 001A                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($35)>>1)|(($35)&$8000))
-(1)   37/   D24D6 : FFEC                        dc.w    -$14
-(1)   38/   D24D8 :                     .facenormal2_End
-(1)   39/   D24D8 :                     
-(1)   40/   D24D8 : (MACRO)              .facelaugh1:	spriteHeader
-(1)   40/   D24D8 : =$D24D8              .facelaugh1 label *
-(1)   40/   D24D8 : 0003                        dc.w ((.facelaugh1_End - .facelaugh1_Begin) / 8)
-(1)   40/   D24DA : =$D24DA              .facelaugh1_Begin label *
-(1)   41/   D24DA : (MACRO)              	spritePiece	-$C, -$1C, 3, 1, $3D, 0, 0, 0, 0
-(1)   41/   D24DA : E408                        dc.w    ((-$1C&$FF)<<8)|(((3-1)&3)<<2)|((1-1)&3)
-(1)   41/   D24DC : 003D                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($3D)
-(1)   41/   D24DE : 001E                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($3D)>>1)|(($3D)&$8000))
-(1)   41/   D24E0 : FFF4                        dc.w    -$C
-(1)   42/   D24E2 : (MACRO)              	spritePiece	-$14, -$14, 3, 2, $40, 0, 0, 0, 0
-(1)   42/   D24E2 : EC09                        dc.w    ((-$14&$FF)<<8)|(((3-1)&3)<<2)|((2-1)&3)
-(1)   42/   D24E4 : 0040                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($40)
-(1)   42/   D24E6 : 0020                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($40)>>1)|(($40)&$8000))
-(1)   42/   D24E8 : FFEC                        dc.w    -$14
-(1)   43/   D24EA : (MACRO)              	spritePiece	4, -$14, 2, 2, $46, 0, 0, 0, 0
-(1)   43/   D24EA : EC05                        dc.w    ((-$14&$FF)<<8)|(((2-1)&3)<<2)|((2-1)&3)
-(1)   43/   D24EC : 0046                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($46)
-(1)   43/   D24EE : 0023                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($46)>>1)|(($46)&$8000))
-(1)   43/   D24F0 : 0004                        dc.w    4
-(1)   44/   D24F2 :                     .facelaugh1_End
-(1)   45/   D24F2 :                     
-(1)   46/   D24F2 : (MACRO)              .facelaugh2:	spriteHeader
-(1)   46/   D24F2 : =$D24F2              .facelaugh2 label *
-(1)   46/   D24F2 : 0003                        dc.w ((.facelaugh2_End - .facelaugh2_Begin) / 8)
-(1)   46/   D24F4 : =$D24F4              .facelaugh2_Begin label *
-(1)   47/   D24F4 : (MACRO)              	spritePiece	-$C, -$1C, 3, 1, $4A, 0, 0, 0, 0
-(1)   47/   D24F4 : E408                        dc.w    ((-$1C&$FF)<<8)|(((3-1)&3)<<2)|((1-1)&3)
-(1)   47/   D24F6 : 004A                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($4A)
-(1)   47/   D24F8 : 0025                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($4A)>>1)|(($4A)&$8000))
-(1)   47/   D24FA : FFF4                        dc.w    -$C
-(1)   48/   D24FC : (MACRO)              	spritePiece	-$14, -$14, 3, 2, $4D, 0, 0, 0, 0
-(1)   48/   D24FC : EC09                        dc.w    ((-$14&$FF)<<8)|(((3-1)&3)<<2)|((2-1)&3)
-(1)   48/   D24FE : 004D                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($4D)
-(1)   48/   D2500 : 0026                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($4D)>>1)|(($4D)&$8000))
-(1)   48/   D2502 : FFEC                        dc.w    -$14
-(1)   49/   D2504 : (MACRO)              	spritePiece	4, -$14, 2, 2, $53, 0, 0, 0, 0
-(1)   49/   D2504 : EC05                        dc.w    ((-$14&$FF)<<8)|(((2-1)&3)<<2)|((2-1)&3)
-(1)   49/   D2506 : 0053                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($53)
-(1)   49/   D2508 : 0029                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($53)>>1)|(($53)&$8000))
-(1)   49/   D250A : 0004                        dc.w    4
-(1)   50/   D250C :                     .facelaugh2_End
-(1)   51/   D250C :                     
-(1)   52/   D250C : (MACRO)              .facehit:	spriteHeader
-(1)   52/   D250C : =$D250C              .facehit label *
-(1)   52/   D250C : 0003                        dc.w ((.facehit_End - .facehit_Begin) / 8)
-(1)   52/   D250E : =$D250E              .facehit_Begin label *
-(1)   53/   D250E : (MACRO)              	spritePiece	-$C, -$1C, 3, 1, $57, 0, 0, 0, 0
-(1)   53/   D250E : E408                        dc.w    ((-$1C&$FF)<<8)|(((3-1)&3)<<2)|((1-1)&3)
-(1)   53/   D2510 : 0057                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($57)
-(1)   53/   D2512 : 002B                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($57)>>1)|(($57)&$8000))
-(1)   53/   D2514 : FFF4                        dc.w    -$C
-(1)   54/   D2516 : (MACRO)              	spritePiece	-$14, -$14, 3, 2, $5A, 0, 0, 0, 0
-(1)   54/   D2516 : EC09                        dc.w    ((-$14&$FF)<<8)|(((3-1)&3)<<2)|((2-1)&3)
-(1)   54/   D2518 : 005A                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($5A)
-(1)   54/   D251A : 002D                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($5A)>>1)|(($5A)&$8000))
-(1)   54/   D251C : FFEC                        dc.w    -$14
-(1)   55/   D251E : (MACRO)              	spritePiece	4, -$14, 2, 2, $60, 0, 0, 0, 0
-(1)   55/   D251E : EC05                        dc.w    ((-$14&$FF)<<8)|(((2-1)&3)<<2)|((2-1)&3)
-(1)   55/   D2520 : 0060                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($60)
-(1)   55/   D2522 : 0030                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($60)>>1)|(($60)&$8000))
-(1)   55/   D2524 : 0004                        dc.w    4
-(1)   56/   D2526 :                     .facehit_End
-(1)   57/   D2526 :                     
-(1)   58/   D2526 : (MACRO)              .facepanic:	spriteHeader
-(1)   58/   D2526 : =$D2526              .facepanic label *
-(1)   58/   D2526 : 0004                        dc.w ((.facepanic_End - .facepanic_Begin) / 8)
-(1)   58/   D2528 : =$D2528              .facepanic_Begin label *
-(1)   59/   D2528 : (MACRO)              	spritePiece	$C, -$14, 1, 2, $C, 0, 0, 0, 0	; Mercury additional mapping
-(1)   59/   D2528 : EC01                        dc.w    ((-$14&$FF)<<8)|(((1-1)&3)<<2)|((2-1)&3)
-(1)   59/   D252A : 000C                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($C)
-(1)   59/   D252C : 0006                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($C)>>1)|(($C)&$8000))
-(1)   59/   D252E : 000C                        dc.w    $C
-(1)   60/   D2530 : (MACRO)              	spritePiece	4, -$1C, 2, 1, $64, 0, 0, 0, 0
-(1)   60/   D2530 : E404                        dc.w    ((-$1C&$FF)<<8)|(((2-1)&3)<<2)|((1-1)&3)
-(1)   60/   D2532 : 0064                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($64)
-(1)   60/   D2534 : 0032                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($64)>>1)|(($64)&$8000))
-(1)   60/   D2536 : 0004                        dc.w    4
-(1)   61/   D2538 : (MACRO)              	spritePiece	-$C, -$1C, 2, 1, 0, 0, 0, 0, 0
-(1)   61/   D2538 : E404                        dc.w    ((-$1C&$FF)<<8)|(((2-1)&3)<<2)|((1-1)&3)
-(1)   61/   D253A : 0000                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+(0)
-(1)   61/   D253C : 0000                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+(((0)>>1)|((0)&$8000))
-(1)   61/   D253E : FFF4                        dc.w    -$C
-(1)   62/   D2540 : (MACRO)              	spritePiece	-$14, -$14, 4, 2, $35, 0, 0, 0, 0
-(1)   62/   D2540 : EC0D                        dc.w    ((-$14&$FF)<<8)|(((4-1)&3)<<2)|((2-1)&3)
-(1)   62/   D2542 : 0035                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($35)
-(1)   62/   D2544 : 001A                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($35)>>1)|(($35)&$8000))
-(1)   62/   D2546 : FFEC                        dc.w    -$14
-(1)   63/   D2548 :                     .facepanic_End
-(1)   64/   D2548 :                     
-(1)   65/   D2548 : (MACRO)              .facedefeat:	spriteHeader
-(1)   65/   D2548 : =$D2548              .facedefeat label *
-(1)   65/   D2548 : 0004                        dc.w ((.facedefeat_End - .facedefeat_Begin) / 8)
-(1)   65/   D254A : =$D254A              .facedefeat_Begin label *
-(1)   66/   D254A : (MACRO)              	spritePiece	-$C, -$1C, 3, 2, $66, 0, 0, 0, 0
-(1)   66/   D254A : E409                        dc.w    ((-$1C&$FF)<<8)|(((3-1)&3)<<2)|((2-1)&3)
-(1)   66/   D254C : 0066                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($66)
-(1)   66/   D254E : 0033                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($66)>>1)|(($66)&$8000))
-(1)   66/   D2550 : FFF4                        dc.w    -$C
-(1)   67/   D2552 : (MACRO)              	spritePiece	-$C, -$1C, 3, 1, $57, 0, 0, 0, 0
-(1)   67/   D2552 : E408                        dc.w    ((-$1C&$FF)<<8)|(((3-1)&3)<<2)|((1-1)&3)
-(1)   67/   D2554 : 0057                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($57)
-(1)   67/   D2556 : 002B                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($57)>>1)|(($57)&$8000))
-(1)   67/   D2558 : FFF4                        dc.w    -$C
-(1)   68/   D255A : (MACRO)              	spritePiece	-$14, -$14, 3, 2, $5A, 0, 0, 0, 0
-(1)   68/   D255A : EC09                        dc.w    ((-$14&$FF)<<8)|(((3-1)&3)<<2)|((2-1)&3)
-(1)   68/   D255C : 005A                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($5A)
-(1)   68/   D255E : 002D                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($5A)>>1)|(($5A)&$8000))
-(1)   68/   D2560 : FFEC                        dc.w    -$14
-(1)   69/   D2562 : (MACRO)              	spritePiece	4, -$14, 2, 2, $60, 0, 0, 0, 0
-(1)   69/   D2562 : EC05                        dc.w    ((-$14&$FF)<<8)|(((2-1)&3)<<2)|((2-1)&3)
-(1)   69/   D2564 : 0060                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($60)
-(1)   69/   D2566 : 0030                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($60)>>1)|(($60)&$8000))
-(1)   69/   D2568 : 0004                        dc.w    4
-(1)   70/   D256A :                     .facedefeat_End
-(1)   71/   D256A :                     
-(1)   72/   D256A : (MACRO)              .flame1:	spriteHeader
-(1)   72/   D256A : =$D256A              .flame1 label *
-(1)   72/   D256A : 0001                        dc.w ((.flame1_End - .flame1_Begin) / 8)
-(1)   72/   D256C : =$D256C              .flame1_Begin label *
-(1)   73/   D256C : (MACRO)              	spritePiece	$22, 4, 2, 2, $2D, 0, 0, 0, 0
-(1)   73/   D256C : 0405                        dc.w    ((4&$FF)<<8)|(((2-1)&3)<<2)|((2-1)&3)
-(1)   73/   D256E : 002D                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($2D)
-(1)   73/   D2570 : 0016                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($2D)>>1)|(($2D)&$8000))
-(1)   73/   D2572 : 0022                        dc.w    $22
-(1)   74/   D2574 :                     .flame1_End
-(1)   75/   D2574 :                     
-(1)   76/   D2574 : (MACRO)              .flame2:	spriteHeader
-(1)   76/   D2574 : =$D2574              .flame2 label *
-(1)   76/   D2574 : 0001                        dc.w ((.flame2_End - .flame2_Begin) / 8)
-(1)   76/   D2576 : =$D2576              .flame2_Begin label *
-(1)   77/   D2576 : (MACRO)              	spritePiece	$22, 4, 2, 2, $31, 0, 0, 0, 0
-(1)   77/   D2576 : 0405                        dc.w    ((4&$FF)<<8)|(((2-1)&3)<<2)|((2-1)&3)
-(1)   77/   D2578 : 0031                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($31)
-(1)   77/   D257A : 0018                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($31)>>1)|(($31)&$8000))
-(1)   77/   D257C : 0022                        dc.w    $22
-(1)   78/   D257E :                     .flame2_End
-(1)   79/   D257E :                     
-(1)   80/   D257E : (MACRO)              .blank:	spriteHeader
-(1)   80/   D257E : =$D257E              .blank label *
-(1)   80/   D257E : 0000                        dc.w ((.blank_End - .blank_Begin) / 8)
-(1)   80/   D2580 : =$D2580              .blank_Begin label *
-(1)   81/   D2580 :                     .blank_End
-(1)   82/   D2580 :                     
-(1)   83/   D2580 : (MACRO)              .escapeflame1:	spriteHeader
-(1)   83/   D2580 : =$D2580              .escapeflame1 label *
-(1)   83/   D2580 : 0002                        dc.w ((.escapeflame1_End - .escapeflame1_Begin) / 8)
-(1)   83/   D2582 : =$D2582              .escapeflame1_Begin label *
-(1)   84/   D2582 : (MACRO)              	spritePiece	$22, 0, 3, 1, $12A, 0, 0, 0, 0
-(1)   84/   D2582 : 0008                        dc.w    ((0&$FF)<<8)|(((3-1)&3)<<2)|((1-1)&3)
-(1)   84/   D2584 : 012A                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($12A)
-(1)   84/   D2586 : 0095                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($12A)>>1)|(($12A)&$8000))
-(1)   84/   D2588 : 0022                        dc.w    $22
-(1)   85/   D258A : (MACRO)              	spritePiece	$22, 8, 3, 1, $12A, 0, 1, 0, 0
-(1)   85/   D258A : 0808                        dc.w    ((8&$FF)<<8)|(((3-1)&3)<<2)|((1-1)&3)
-(1)   85/   D258C : 112A                        dc.w    (((0&1)<<15)|((0&3)<<13)|((1&1)<<12)|((0&1)<<11))+($12A)
-(1)   85/   D258E : 1095                        dc.w    (((0&1)<<15)|((0&3)<<13)|((1&1)<<12)|((0&1)<<11))+((($12A)>>1)|(($12A)&$8000))
-(1)   85/   D2590 : 0022                        dc.w    $22
-(1)   86/   D2592 :                     .escapeflame1_End
-(1)   87/   D2592 :                     
-(1)   88/   D2592 : (MACRO)              .escapeflame2:	spriteHeader
-(1)   88/   D2592 : =$D2592              .escapeflame2 label *
-(1)   88/   D2592 : 0002                        dc.w ((.escapeflame2_End - .escapeflame2_Begin) / 8)
-(1)   88/   D2594 : =$D2594              .escapeflame2_Begin label *
-(1)   89/   D2594 : (MACRO)              	spritePiece	$22, -8, 3, 4, $12D, 0, 0, 0, 0
-(1)   89/   D2594 : F80B                        dc.w    ((-8&$FF)<<8)|(((3-1)&3)<<2)|((4-1)&3)
-(1)   89/   D2596 : 012D                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($12D)
-(1)   89/   D2598 : 0096                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($12D)>>1)|(($12D)&$8000))
-(1)   89/   D259A : 0022                        dc.w    $22
-(1)   90/   D259C : (MACRO)              	spritePiece	$3A, 0, 1, 2, $139, 0, 0, 0, 0
-(1)   90/   D259C : 0001                        dc.w    ((0&$FF)<<8)|(((1-1)&3)<<2)|((2-1)&3)
-(1)   90/   D259E : 0139                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($139)
-(1)   90/   D25A0 : 009C                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($139)>>1)|(($139)&$8000))
-(1)   90/   D25A2 : 003A                        dc.w    $3A
-(1)   91/   D25A4 :                     .escapeflame2_End
-(1)   92/   D25A4 :                     
-(1)   93/   D25A4 : (MACRO)              	even
-(1)   94/   D25A4 :                     
+(1)    3/   D2458 :                     ; Mappings altered by Mercury so that his moustache isn't cut off (ReadySonic).
+(1)    4/   D2458 :                     ; ---------------------------------------------------------------------------
+(1)    5/   D2458 : (MACRO)              Map_Eggman:	mappingsTable
+(1)    5/   D2458 : =$D2458              Map_Eggman label *
+(1)    5/   D2458 : =$D2458              .current_mappings_table := Map_Eggman
+(1)    6/   D2458 : (MACRO)              	mappingsTableEntry.w	.ship
+(1)    6/   D2458 : 001A                        dc.w .ship-.current_mappings_table
+(1)    7/   D245A : (MACRO)              	mappingsTableEntry.w	.facenormal1
+(1)    7/   D245A : 004C                        dc.w .facenormal1-.current_mappings_table
+(1)    8/   D245C : (MACRO)              	mappingsTableEntry.w	.facenormal2
+(1)    8/   D245C : 0066                        dc.w .facenormal2-.current_mappings_table
+(1)    9/   D245E : (MACRO)              	mappingsTableEntry.w	.facelaugh1
+(1)    9/   D245E : 0080                        dc.w .facelaugh1-.current_mappings_table
+(1)   10/   D2460 : (MACRO)              	mappingsTableEntry.w	.facelaugh2
+(1)   10/   D2460 : 009A                        dc.w .facelaugh2-.current_mappings_table
+(1)   11/   D2462 : (MACRO)              	mappingsTableEntry.w	.facehit
+(1)   11/   D2462 : 00B4                        dc.w .facehit-.current_mappings_table
+(1)   12/   D2464 : (MACRO)              	mappingsTableEntry.w	.facepanic
+(1)   12/   D2464 : 00CE                        dc.w .facepanic-.current_mappings_table
+(1)   13/   D2466 : (MACRO)              	mappingsTableEntry.w	.facedefeat
+(1)   13/   D2466 : 00F0                        dc.w .facedefeat-.current_mappings_table
+(1)   14/   D2468 : (MACRO)              	mappingsTableEntry.w	.flame1
+(1)   14/   D2468 : 0112                        dc.w .flame1-.current_mappings_table
+(1)   15/   D246A : (MACRO)              	mappingsTableEntry.w	.flame2
+(1)   15/   D246A : 011C                        dc.w .flame2-.current_mappings_table
+(1)   16/   D246C : (MACRO)              	mappingsTableEntry.w	.blank
+(1)   16/   D246C : 0126                        dc.w .blank-.current_mappings_table
+(1)   17/   D246E : (MACRO)              	mappingsTableEntry.w	.escapeflame1
+(1)   17/   D246E : 0128                        dc.w .escapeflame1-.current_mappings_table
+(1)   18/   D2470 : (MACRO)              	mappingsTableEntry.w	.escapeflame2
+(1)   18/   D2470 : 013A                        dc.w .escapeflame2-.current_mappings_table
+(1)   19/   D2472 :                     
+(1)   20/   D2472 : (MACRO)              .ship:	spriteHeader
+(1)   20/   D2472 : =$D2472              .ship label *
+(1)   20/   D2472 : 0006                        dc.w ((.ship_End - .ship_Begin) / 8)
+(1)   20/   D2474 : =$D2474              .ship_Begin label *
+(1)   21/   D2474 : (MACRO)              	spritePiece	-$1C, -$14, 1, 2, $A, 0, 0, 0, 0
+(1)   21/   D2474 : EC01                        dc.w    ((-$14&$FF)<<8)|(((1-1)&3)<<2)|((2-1)&3)
+(1)   21/   D2476 : 000A                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($A)
+(1)   21/   D2478 : 0005                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($A)>>1)|(($A)&$8000))
+(1)   21/   D247A : FFE4                        dc.w    -$1C
+(1)   22/   D247C : (MACRO)              	spritePiece	$14, -$14, 1, 2, $E, 0, 0, 0, 0	; Mercury altered mapping
+(1)   22/   D247C : EC01                        dc.w    ((-$14&$FF)<<8)|(((1-1)&3)<<2)|((2-1)&3)
+(1)   22/   D247E : 000E                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($E)
+(1)   22/   D2480 : 0007                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($E)>>1)|(($E)&$8000))
+(1)   22/   D2482 : 0014                        dc.w    $14
+(1)   23/   D2484 : (MACRO)              	spritePiece	-$1C, -4, 4, 3, $10, 0, 0, 1, 0
+(1)   23/   D2484 : FC0E                        dc.w    ((-4&$FF)<<8)|(((4-1)&3)<<2)|((3-1)&3)
+(1)   23/   D2486 : 2010                        dc.w    (((0&1)<<15)|((1&3)<<13)|((0&1)<<12)|((0&1)<<11))+($10)
+(1)   23/   D2488 : 2008                        dc.w    (((0&1)<<15)|((1&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($10)>>1)|(($10)&$8000))
+(1)   23/   D248A : FFE4                        dc.w    -$1C
+(1)   24/   D248C : (MACRO)              	spritePiece	4, -4, 4, 3, $1C, 0, 0, 1, 0
+(1)   24/   D248C : FC0E                        dc.w    ((-4&$FF)<<8)|(((4-1)&3)<<2)|((3-1)&3)
+(1)   24/   D248E : 201C                        dc.w    (((0&1)<<15)|((1&3)<<13)|((0&1)<<12)|((0&1)<<11))+($1C)
+(1)   24/   D2490 : 200E                        dc.w    (((0&1)<<15)|((1&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($1C)>>1)|(($1C)&$8000))
+(1)   24/   D2492 : 0004                        dc.w    4
+(1)   25/   D2494 : (MACRO)              	spritePiece	-$14, $14, 4, 1, $28, 0, 0, 1, 0
+(1)   25/   D2494 : 140C                        dc.w    (($14&$FF)<<8)|(((4-1)&3)<<2)|((1-1)&3)
+(1)   25/   D2496 : 2028                        dc.w    (((0&1)<<15)|((1&3)<<13)|((0&1)<<12)|((0&1)<<11))+($28)
+(1)   25/   D2498 : 2014                        dc.w    (((0&1)<<15)|((1&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($28)>>1)|(($28)&$8000))
+(1)   25/   D249A : FFEC                        dc.w    -$14
+(1)   26/   D249C : (MACRO)              	spritePiece	$C, $14, 1, 1, $2C, 0, 0, 1, 0
+(1)   26/   D249C : 1400                        dc.w    (($14&$FF)<<8)|(((1-1)&3)<<2)|((1-1)&3)
+(1)   26/   D249E : 202C                        dc.w    (((0&1)<<15)|((1&3)<<13)|((0&1)<<12)|((0&1)<<11))+($2C)
+(1)   26/   D24A0 : 2016                        dc.w    (((0&1)<<15)|((1&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($2C)>>1)|(($2C)&$8000))
+(1)   26/   D24A2 : 000C                        dc.w    $C
+(1)   27/   D24A4 :                     .ship_End
+(1)   28/   D24A4 :                     
+(1)   29/   D24A4 : (MACRO)              .facenormal1:	spriteHeader
+(1)   29/   D24A4 : =$D24A4              .facenormal1 label *
+(1)   29/   D24A4 : 0003                        dc.w ((.facenormal1_End - .facenormal1_Begin) / 8)
+(1)   29/   D24A6 : =$D24A6              .facenormal1_Begin label *
+(1)   30/   D24A6 : (MACRO)              	spritePiece	$C, -$14, 1, 2, $C, 0, 0, 0, 0	; Mercury additional mapping
+(1)   30/   D24A6 : EC01                        dc.w    ((-$14&$FF)<<8)|(((1-1)&3)<<2)|((2-1)&3)
+(1)   30/   D24A8 : 000C                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($C)
+(1)   30/   D24AA : 0006                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($C)>>1)|(($C)&$8000))
+(1)   30/   D24AC : 000C                        dc.w    $C
+(1)   31/   D24AE : (MACRO)              	spritePiece	-$C, -$1C, 2, 1, 0, 0, 0, 0, 0
+(1)   31/   D24AE : E404                        dc.w    ((-$1C&$FF)<<8)|(((2-1)&3)<<2)|((1-1)&3)
+(1)   31/   D24B0 : 0000                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+(0)
+(1)   31/   D24B2 : 0000                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+(((0)>>1)|((0)&$8000))
+(1)   31/   D24B4 : FFF4                        dc.w    -$C
+(1)   32/   D24B6 : (MACRO)              	spritePiece	-$14, -$14, 4, 2, 2, 0, 0, 0, 0
+(1)   32/   D24B6 : EC0D                        dc.w    ((-$14&$FF)<<8)|(((4-1)&3)<<2)|((2-1)&3)
+(1)   32/   D24B8 : 0002                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+(2)
+(1)   32/   D24BA : 0001                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+(((2)>>1)|((2)&$8000))
+(1)   32/   D24BC : FFEC                        dc.w    -$14
+(1)   33/   D24BE :                     .facenormal1_End
+(1)   34/   D24BE :                     
+(1)   35/   D24BE : (MACRO)              .facenormal2:	spriteHeader
+(1)   35/   D24BE : =$D24BE              .facenormal2 label *
+(1)   35/   D24BE : 0003                        dc.w ((.facenormal2_End - .facenormal2_Begin) / 8)
+(1)   35/   D24C0 : =$D24C0              .facenormal2_Begin label *
+(1)   36/   D24C0 : (MACRO)              	spritePiece	$C, -$14, 1, 2, $C, 0, 0, 0, 0	; Mercury additional mapping
+(1)   36/   D24C0 : EC01                        dc.w    ((-$14&$FF)<<8)|(((1-1)&3)<<2)|((2-1)&3)
+(1)   36/   D24C2 : 000C                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($C)
+(1)   36/   D24C4 : 0006                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($C)>>1)|(($C)&$8000))
+(1)   36/   D24C6 : 000C                        dc.w    $C
+(1)   37/   D24C8 : (MACRO)              	spritePiece	-$C, -$1C, 2, 1, 0, 0, 0, 0, 0
+(1)   37/   D24C8 : E404                        dc.w    ((-$1C&$FF)<<8)|(((2-1)&3)<<2)|((1-1)&3)
+(1)   37/   D24CA : 0000                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+(0)
+(1)   37/   D24CC : 0000                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+(((0)>>1)|((0)&$8000))
+(1)   37/   D24CE : FFF4                        dc.w    -$C
+(1)   38/   D24D0 : (MACRO)              	spritePiece	-$14, -$14, 4, 2, $35, 0, 0, 0, 0
+(1)   38/   D24D0 : EC0D                        dc.w    ((-$14&$FF)<<8)|(((4-1)&3)<<2)|((2-1)&3)
+(1)   38/   D24D2 : 0035                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($35)
+(1)   38/   D24D4 : 001A                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($35)>>1)|(($35)&$8000))
+(1)   38/   D24D6 : FFEC                        dc.w    -$14
+(1)   39/   D24D8 :                     .facenormal2_End
+(1)   40/   D24D8 :                     
+(1)   41/   D24D8 : (MACRO)              .facelaugh1:	spriteHeader
+(1)   41/   D24D8 : =$D24D8              .facelaugh1 label *
+(1)   41/   D24D8 : 0003                        dc.w ((.facelaugh1_End - .facelaugh1_Begin) / 8)
+(1)   41/   D24DA : =$D24DA              .facelaugh1_Begin label *
+(1)   42/   D24DA : (MACRO)              	spritePiece	-$C, -$1C, 3, 1, $3D, 0, 0, 0, 0
+(1)   42/   D24DA : E408                        dc.w    ((-$1C&$FF)<<8)|(((3-1)&3)<<2)|((1-1)&3)
+(1)   42/   D24DC : 003D                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($3D)
+(1)   42/   D24DE : 001E                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($3D)>>1)|(($3D)&$8000))
+(1)   42/   D24E0 : FFF4                        dc.w    -$C
+(1)   43/   D24E2 : (MACRO)              	spritePiece	-$14, -$14, 3, 2, $40, 0, 0, 0, 0
+(1)   43/   D24E2 : EC09                        dc.w    ((-$14&$FF)<<8)|(((3-1)&3)<<2)|((2-1)&3)
+(1)   43/   D24E4 : 0040                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($40)
+(1)   43/   D24E6 : 0020                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($40)>>1)|(($40)&$8000))
+(1)   43/   D24E8 : FFEC                        dc.w    -$14
+(1)   44/   D24EA : (MACRO)              	spritePiece	4, -$14, 2, 2, $46, 0, 0, 0, 0
+(1)   44/   D24EA : EC05                        dc.w    ((-$14&$FF)<<8)|(((2-1)&3)<<2)|((2-1)&3)
+(1)   44/   D24EC : 0046                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($46)
+(1)   44/   D24EE : 0023                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($46)>>1)|(($46)&$8000))
+(1)   44/   D24F0 : 0004                        dc.w    4
+(1)   45/   D24F2 :                     .facelaugh1_End
+(1)   46/   D24F2 :                     
+(1)   47/   D24F2 : (MACRO)              .facelaugh2:	spriteHeader
+(1)   47/   D24F2 : =$D24F2              .facelaugh2 label *
+(1)   47/   D24F2 : 0003                        dc.w ((.facelaugh2_End - .facelaugh2_Begin) / 8)
+(1)   47/   D24F4 : =$D24F4              .facelaugh2_Begin label *
+(1)   48/   D24F4 : (MACRO)              	spritePiece	-$C, -$1C, 3, 1, $4A, 0, 0, 0, 0
+(1)   48/   D24F4 : E408                        dc.w    ((-$1C&$FF)<<8)|(((3-1)&3)<<2)|((1-1)&3)
+(1)   48/   D24F6 : 004A                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($4A)
+(1)   48/   D24F8 : 0025                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($4A)>>1)|(($4A)&$8000))
+(1)   48/   D24FA : FFF4                        dc.w    -$C
+(1)   49/   D24FC : (MACRO)              	spritePiece	-$14, -$14, 3, 2, $4D, 0, 0, 0, 0
+(1)   49/   D24FC : EC09                        dc.w    ((-$14&$FF)<<8)|(((3-1)&3)<<2)|((2-1)&3)
+(1)   49/   D24FE : 004D                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($4D)
+(1)   49/   D2500 : 0026                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($4D)>>1)|(($4D)&$8000))
+(1)   49/   D2502 : FFEC                        dc.w    -$14
+(1)   50/   D2504 : (MACRO)              	spritePiece	4, -$14, 2, 2, $53, 0, 0, 0, 0
+(1)   50/   D2504 : EC05                        dc.w    ((-$14&$FF)<<8)|(((2-1)&3)<<2)|((2-1)&3)
+(1)   50/   D2506 : 0053                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($53)
+(1)   50/   D2508 : 0029                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($53)>>1)|(($53)&$8000))
+(1)   50/   D250A : 0004                        dc.w    4
+(1)   51/   D250C :                     .facelaugh2_End
+(1)   52/   D250C :                     
+(1)   53/   D250C : (MACRO)              .facehit:	spriteHeader
+(1)   53/   D250C : =$D250C              .facehit label *
+(1)   53/   D250C : 0003                        dc.w ((.facehit_End - .facehit_Begin) / 8)
+(1)   53/   D250E : =$D250E              .facehit_Begin label *
+(1)   54/   D250E : (MACRO)              	spritePiece	-$C, -$1C, 3, 1, $57, 0, 0, 0, 0
+(1)   54/   D250E : E408                        dc.w    ((-$1C&$FF)<<8)|(((3-1)&3)<<2)|((1-1)&3)
+(1)   54/   D2510 : 0057                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($57)
+(1)   54/   D2512 : 002B                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($57)>>1)|(($57)&$8000))
+(1)   54/   D2514 : FFF4                        dc.w    -$C
+(1)   55/   D2516 : (MACRO)              	spritePiece	-$14, -$14, 3, 2, $5A, 0, 0, 0, 0
+(1)   55/   D2516 : EC09                        dc.w    ((-$14&$FF)<<8)|(((3-1)&3)<<2)|((2-1)&3)
+(1)   55/   D2518 : 005A                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($5A)
+(1)   55/   D251A : 002D                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($5A)>>1)|(($5A)&$8000))
+(1)   55/   D251C : FFEC                        dc.w    -$14
+(1)   56/   D251E : (MACRO)              	spritePiece	4, -$14, 2, 2, $60, 0, 0, 0, 0
+(1)   56/   D251E : EC05                        dc.w    ((-$14&$FF)<<8)|(((2-1)&3)<<2)|((2-1)&3)
+(1)   56/   D2520 : 0060                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($60)
+(1)   56/   D2522 : 0030                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($60)>>1)|(($60)&$8000))
+(1)   56/   D2524 : 0004                        dc.w    4
+(1)   57/   D2526 :                     .facehit_End
+(1)   58/   D2526 :                     
+(1)   59/   D2526 : (MACRO)              .facepanic:	spriteHeader
+(1)   59/   D2526 : =$D2526              .facepanic label *
+(1)   59/   D2526 : 0004                        dc.w ((.facepanic_End - .facepanic_Begin) / 8)
+(1)   59/   D2528 : =$D2528              .facepanic_Begin label *
+(1)   60/   D2528 : (MACRO)              	spritePiece	$C, -$14, 1, 2, $C, 0, 0, 0, 0	; Mercury additional mapping
+(1)   60/   D2528 : EC01                        dc.w    ((-$14&$FF)<<8)|(((1-1)&3)<<2)|((2-1)&3)
+(1)   60/   D252A : 000C                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($C)
+(1)   60/   D252C : 0006                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($C)>>1)|(($C)&$8000))
+(1)   60/   D252E : 000C                        dc.w    $C
+(1)   61/   D2530 : (MACRO)              	spritePiece	4, -$1C, 2, 1, $64, 0, 0, 0, 0
+(1)   61/   D2530 : E404                        dc.w    ((-$1C&$FF)<<8)|(((2-1)&3)<<2)|((1-1)&3)
+(1)   61/   D2532 : 0064                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($64)
+(1)   61/   D2534 : 0032                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($64)>>1)|(($64)&$8000))
+(1)   61/   D2536 : 0004                        dc.w    4
+(1)   62/   D2538 : (MACRO)              	spritePiece	-$C, -$1C, 2, 1, 0, 0, 0, 0, 0
+(1)   62/   D2538 : E404                        dc.w    ((-$1C&$FF)<<8)|(((2-1)&3)<<2)|((1-1)&3)
+(1)   62/   D253A : 0000                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+(0)
+(1)   62/   D253C : 0000                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+(((0)>>1)|((0)&$8000))
+(1)   62/   D253E : FFF4                        dc.w    -$C
+(1)   63/   D2540 : (MACRO)              	spritePiece	-$14, -$14, 4, 2, $35, 0, 0, 0, 0
+(1)   63/   D2540 : EC0D                        dc.w    ((-$14&$FF)<<8)|(((4-1)&3)<<2)|((2-1)&3)
+(1)   63/   D2542 : 0035                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($35)
+(1)   63/   D2544 : 001A                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($35)>>1)|(($35)&$8000))
+(1)   63/   D2546 : FFEC                        dc.w    -$14
+(1)   64/   D2548 :                     .facepanic_End
+(1)   65/   D2548 :                     
+(1)   66/   D2548 : (MACRO)              .facedefeat:	spriteHeader
+(1)   66/   D2548 : =$D2548              .facedefeat label *
+(1)   66/   D2548 : 0004                        dc.w ((.facedefeat_End - .facedefeat_Begin) / 8)
+(1)   66/   D254A : =$D254A              .facedefeat_Begin label *
+(1)   67/   D254A : (MACRO)              	spritePiece	-$C, -$1C, 3, 2, $66, 0, 0, 0, 0
+(1)   67/   D254A : E409                        dc.w    ((-$1C&$FF)<<8)|(((3-1)&3)<<2)|((2-1)&3)
+(1)   67/   D254C : 0066                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($66)
+(1)   67/   D254E : 0033                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($66)>>1)|(($66)&$8000))
+(1)   67/   D2550 : FFF4                        dc.w    -$C
+(1)   68/   D2552 : (MACRO)              	spritePiece	-$C, -$1C, 3, 1, $57, 0, 0, 0, 0
+(1)   68/   D2552 : E408                        dc.w    ((-$1C&$FF)<<8)|(((3-1)&3)<<2)|((1-1)&3)
+(1)   68/   D2554 : 0057                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($57)
+(1)   68/   D2556 : 002B                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($57)>>1)|(($57)&$8000))
+(1)   68/   D2558 : FFF4                        dc.w    -$C
+(1)   69/   D255A : (MACRO)              	spritePiece	-$14, -$14, 3, 2, $5A, 0, 0, 0, 0
+(1)   69/   D255A : EC09                        dc.w    ((-$14&$FF)<<8)|(((3-1)&3)<<2)|((2-1)&3)
+(1)   69/   D255C : 005A                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($5A)
+(1)   69/   D255E : 002D                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($5A)>>1)|(($5A)&$8000))
+(1)   69/   D2560 : FFEC                        dc.w    -$14
+(1)   70/   D2562 : (MACRO)              	spritePiece	4, -$14, 2, 2, $60, 0, 0, 0, 0
+(1)   70/   D2562 : EC05                        dc.w    ((-$14&$FF)<<8)|(((2-1)&3)<<2)|((2-1)&3)
+(1)   70/   D2564 : 0060                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($60)
+(1)   70/   D2566 : 0030                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($60)>>1)|(($60)&$8000))
+(1)   70/   D2568 : 0004                        dc.w    4
+(1)   71/   D256A :                     .facedefeat_End
+(1)   72/   D256A :                     
+(1)   73/   D256A : (MACRO)              .flame1:	spriteHeader
+(1)   73/   D256A : =$D256A              .flame1 label *
+(1)   73/   D256A : 0001                        dc.w ((.flame1_End - .flame1_Begin) / 8)
+(1)   73/   D256C : =$D256C              .flame1_Begin label *
+(1)   74/   D256C : (MACRO)              	spritePiece	$22, 4, 2, 2, $2D, 0, 0, 0, 0
+(1)   74/   D256C : 0405                        dc.w    ((4&$FF)<<8)|(((2-1)&3)<<2)|((2-1)&3)
+(1)   74/   D256E : 002D                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($2D)
+(1)   74/   D2570 : 0016                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($2D)>>1)|(($2D)&$8000))
+(1)   74/   D2572 : 0022                        dc.w    $22
+(1)   75/   D2574 :                     .flame1_End
+(1)   76/   D2574 :                     
+(1)   77/   D2574 : (MACRO)              .flame2:	spriteHeader
+(1)   77/   D2574 : =$D2574              .flame2 label *
+(1)   77/   D2574 : 0001                        dc.w ((.flame2_End - .flame2_Begin) / 8)
+(1)   77/   D2576 : =$D2576              .flame2_Begin label *
+(1)   78/   D2576 : (MACRO)              	spritePiece	$22, 4, 2, 2, $31, 0, 0, 0, 0
+(1)   78/   D2576 : 0405                        dc.w    ((4&$FF)<<8)|(((2-1)&3)<<2)|((2-1)&3)
+(1)   78/   D2578 : 0031                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($31)
+(1)   78/   D257A : 0018                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($31)>>1)|(($31)&$8000))
+(1)   78/   D257C : 0022                        dc.w    $22
+(1)   79/   D257E :                     .flame2_End
+(1)   80/   D257E :                     
+(1)   81/   D257E : (MACRO)              .blank:	spriteHeader
+(1)   81/   D257E : =$D257E              .blank label *
+(1)   81/   D257E : 0000                        dc.w ((.blank_End - .blank_Begin) / 8)
+(1)   81/   D2580 : =$D2580              .blank_Begin label *
+(1)   82/   D2580 :                     .blank_End
+(1)   83/   D2580 :                     
+(1)   84/   D2580 : (MACRO)              .escapeflame1:	spriteHeader
+(1)   84/   D2580 : =$D2580              .escapeflame1 label *
+(1)   84/   D2580 : 0002                        dc.w ((.escapeflame1_End - .escapeflame1_Begin) / 8)
+(1)   84/   D2582 : =$D2582              .escapeflame1_Begin label *
+(1)   85/   D2582 : (MACRO)              	spritePiece	$22, 0, 3, 1, $12A, 0, 0, 0, 0
+(1)   85/   D2582 : 0008                        dc.w    ((0&$FF)<<8)|(((3-1)&3)<<2)|((1-1)&3)
+(1)   85/   D2584 : 012A                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($12A)
+(1)   85/   D2586 : 0095                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($12A)>>1)|(($12A)&$8000))
+(1)   85/   D2588 : 0022                        dc.w    $22
+(1)   86/   D258A : (MACRO)              	spritePiece	$22, 8, 3, 1, $12A, 0, 1, 0, 0
+(1)   86/   D258A : 0808                        dc.w    ((8&$FF)<<8)|(((3-1)&3)<<2)|((1-1)&3)
+(1)   86/   D258C : 112A                        dc.w    (((0&1)<<15)|((0&3)<<13)|((1&1)<<12)|((0&1)<<11))+($12A)
+(1)   86/   D258E : 1095                        dc.w    (((0&1)<<15)|((0&3)<<13)|((1&1)<<12)|((0&1)<<11))+((($12A)>>1)|(($12A)&$8000))
+(1)   86/   D2590 : 0022                        dc.w    $22
+(1)   87/   D2592 :                     .escapeflame1_End
+(1)   88/   D2592 :                     
+(1)   89/   D2592 : (MACRO)              .escapeflame2:	spriteHeader
+(1)   89/   D2592 : =$D2592              .escapeflame2 label *
+(1)   89/   D2592 : 0002                        dc.w ((.escapeflame2_End - .escapeflame2_Begin) / 8)
+(1)   89/   D2594 : =$D2594              .escapeflame2_Begin label *
+(1)   90/   D2594 : (MACRO)              	spritePiece	$22, -8, 3, 4, $12D, 0, 0, 0, 0
+(1)   90/   D2594 : F80B                        dc.w    ((-8&$FF)<<8)|(((3-1)&3)<<2)|((4-1)&3)
+(1)   90/   D2596 : 012D                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($12D)
+(1)   90/   D2598 : 0096                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($12D)>>1)|(($12D)&$8000))
+(1)   90/   D259A : 0022                        dc.w    $22
+(1)   91/   D259C : (MACRO)              	spritePiece	$3A, 0, 1, 2, $139, 0, 0, 0, 0
+(1)   91/   D259C : 0001                        dc.w    ((0&$FF)<<8)|(((1-1)&3)<<2)|((2-1)&3)
+(1)   91/   D259E : 0139                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+($139)
+(1)   91/   D25A0 : 009C                        dc.w    (((0&1)<<15)|((0&3)<<13)|((0&1)<<12)|((0&1)<<11))+((($139)>>1)|(($139)&$8000))
+(1)   91/   D25A2 : 003A                        dc.w    $3A
+(1)   92/   D25A4 :                     .escapeflame2_End
+(1)   93/   D25A4 :                     
+(1)   94/   D25A4 : (MACRO)              	even
+(1)   95/   D25A4 :                     
     8360/   D25A4 :                     		include	"_maps/Boss Items.asm"
 (1)    1/   D25A4 :                     ; ---------------------------------------------------------------------------
 (1)    2/   D25A4 :                     ; Sprite mappings - extra boss items (e.g. swinging ball on a chain in GHZ)
@@ -126986,7 +126989,7 @@
     8763/   EFA10 :                     EndOfRom:
     8764/   EFA10 :                     
     8765/   EFA10 :                     		END
- AS V1.42 Beta [Bld 212] - Source File sonic.asm - Page 6 - 7/27/2025 10:50:32
+ AS V1.42 Beta [Bld 212] - Source File sonic.asm - Page 6 - 7/27/2025 12:44:33
 
 
   Symbol Table (* = unused):
@@ -132409,7 +132412,7 @@
 *SyncEnd :                     518E C |  SynchroAnimate :              511E C |
 *TCha_Main :                   6930 C |  TCha_Main.chkemerald :        6986 C |
  TCha_Main.loc_5B42 :          698E C |  TCha_Main.makeemerald :       693C C |
- TCha_Move :                   69B2 C | *TIME :                  "10:50:28" - |
+ TCha_Move :                   69B2 C | *TIME :                  "12:44:30" - |
  TRUE :                           1 - |  TSonDPLC_0 :                  BF3E C |
  TSonDPLC_0_Begin :            BF40 C |  TSonDPLC_0_End :              BF4A C |
  TSonDPLC_1 :                  BF4A C |  TSonDPLC_1_Begin :            BF4C C |
@@ -134878,7 +134881,7 @@
   13787 symbols
    1678 unused symbols
 
- AS V1.42 Beta [Bld 212] - Source File sonic.asm - Page 7 - 7/27/2025 10:50:32
+ AS V1.42 Beta [Bld 212] - Source File sonic.asm - Page 7 - 7/27/2025 12:44:33
 
 
   Defined Macros:
@@ -134966,7 +134969,7 @@ zoneanimstart                         | zonewarning
 
     158 macros
 
- AS V1.42 Beta [Bld 212] - Source File sonic.asm - Page 8 - 7/27/2025 10:50:32
+ AS V1.42 Beta [Bld 212] - Source File sonic.asm - Page 8 - 7/27/2025 12:44:33
 
 
   Defined Structures/Unions:
@@ -135592,7 +135595,7 @@ SMPS_Track
  24          LoopCounters
  30          GoSubStack
 3 structures
- AS V1.42 Beta [Bld 212] - Source File sonic.asm - Page 9 - 7/27/2025 10:50:32
+ AS V1.42 Beta [Bld 212] - Source File sonic.asm - Page 9 - 7/27/2025 12:44:33
 
 
   Defined Functions:
@@ -135614,7 +135617,7 @@ signextend                            | signmask
 setBit                                | bit                                  
 notZ80                                |
 
- AS V1.42 Beta [Bld 212] - Source File sonic.asm - Page 10 - 7/27/2025 10:50:32
+ AS V1.42 Beta [Bld 212] - Source File sonic.asm - Page 10 - 7/27/2025 12:44:33
 
 
   Code Pages:
@@ -135624,10 +135627,10 @@ STANDARD (0 changed characters)
 
 1 code page
 
-3.42 seconds assembly time
+2.66 seconds assembly time
 
-  76547 lines source file
- 212580 lines incl. macro expansions
+  76550 lines source file
+ 212583 lines incl. macro expansions
       3 passes
       0 errors
       0 warnings
