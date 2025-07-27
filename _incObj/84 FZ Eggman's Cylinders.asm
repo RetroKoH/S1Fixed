@@ -38,10 +38,8 @@ EggmanCylinder_Main:	; Routine 0
 		move.w	(a1)+,obX(a0)
 		move.w	(a1),obY(a0)
 		move.w	(a1)+,objoff_38(a0)
-		move.b	#$20,obHeight(a0)
-		move.b	#$60,obWidth(a0)
+		move.w	#$6060,obHeight(a0)			; Height and Width (Height was set to $20, then to $60)
 		move.b	#$20,obActWid(a0)
-		move.b	#$60,obHeight(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		addq.b	#2,obRoutine(a0)
 

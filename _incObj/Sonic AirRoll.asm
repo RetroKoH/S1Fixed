@@ -15,8 +15,7 @@ Sonic_ChkAirRoll:
 		
 ; Air Roll
 		bset	#staSpin,obStatus(a0)	; set spin status
-		move.b	#$E,obHeight(a0)
-		move.b	#7,obWidth(a0)
+		move.w	#$E07,obHeight(a0)		; Height and Width
 		move.b	#aniID_Roll,obAnim(a0)	; enter rolling animation
 
 	if (S3KDoubleJump) | (AirRollIntoDropDash)

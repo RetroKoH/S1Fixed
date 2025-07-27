@@ -147,8 +147,7 @@ RLoss_Count:	; Routine 0
 	; Create the first instance, then loop create the others afterward.
 		move.b	#id_RingLoss,obID(a1) 	; load bouncing ring object
 		addq.b	#2,obRoutine(a1)
-		move.b	#8,obHeight(a1)
-		move.b	#8,obWidth(a1)
+		move.w	#$808,obHeight(a1)		; Height and Width
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.l	#Map_Ring,obMap(a1)
@@ -157,27 +156,26 @@ RLoss_Count:	; Routine 0
 		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colPowerup|colSz_6x6),obColType(a1)
 		move.b	#8,obActWid(a1)
-		move.w  (a3)+,obVelX(a1)	; move the data contained in the array to the x velocity and increment the address in a3
-		move.w  (a3)+,obVelY(a1)	; move the data contained in the array to the y velocity and increment the address in a3
-		subq	#1,d5				; decrement for the first ring created
-		bmi.s	.resetcounter		; if only one ring is needed, branch and skip EVERYTHING below altogether
+		move.w  (a3)+,obVelX(a1)		; move the data contained in the array to the x velocity and increment the address in a3
+		move.w  (a3)+,obVelY(a1)		; move the data contained in the array to the y velocity and increment the address in a3
+		subq	#1,d5					; decrement for the first ring created
+		bmi.s	.resetcounter			; if only one ring is needed, branch and skip EVERYTHING below altogether
 		; Here we begin what's replacing SingleObjLoad, in order to avoid resetting its d0 every time an object is created.
 		lea		(v_lvlobjspace).w,a1
 		move.w	#v_lvlobjcount,d0
 
 .loop:
 		; REMOVE FindFreeObj. It's the routine that causes such slowdown
-		tst.b	obID(a1)		; is object RAM	slot empty?
-		beq.s	.makerings		; Let's correct the branches. Here we can also skip the bne that was originally after bsr.w FindFreeObj because we already know there's a free object slot in memory.
+		tst.b	obID(a1)				; is object RAM	slot empty?
+		beq.s	.makerings				; Let's correct the branches. Here we can also skip the bne that was originally after bsr.w FindFreeObj because we already know there's a free object slot in memory.
 		lea		object_size(a1),a1
-		dbf		d0,.loop		; Branch correction again.
-		bne.s	.resetcounter	; We're moving this line here.
+		dbf		d0,.loop				; Branch correction again.
+		bne.s	.resetcounter			; We're moving this line here.
 
 .makerings:
 		_move.b	#id_RingLoss,obID(a1)	; load bouncing ring object
 		addq.b	#2,obRoutine(a1)
-		move.b	#8,obHeight(a1)
-		move.b	#8,obWidth(a1)
+		move.w	#$808,obHeight(a1)		; Height and Width
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.l	#Map_Ring,obMap(a1)
@@ -186,9 +184,9 @@ RLoss_Count:	; Routine 0
 		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colPowerup|colSz_6x6),obColType(a1)
 		move.b	#8,obActWid(a1)
-		move.w  (a3)+,obVelX(a1)	; move the data contained in the array to the x velocity and increment the address in a3
-		move.w  (a3)+,obVelY(a1)	; move the data contained in the array to the y velocity and increment the address in a3
-		dbf		d5,.loop			; repeat for number of rings (max 31)
+		move.w  (a3)+,obVelX(a1)		; move the data contained in the array to the x velocity and increment the address in a3
+		move.w  (a3)+,obVelY(a1)		; move the data contained in the array to the y velocity and increment the address in a3
+		dbf		d5,.loop				; repeat for number of rings (max 31)
 
 .resetcounter:
 	; Mass Object Load Optimization End
@@ -306,8 +304,7 @@ RAttract_Init:
 		move.w	#priority2,obPriority(a0)
 		move.b	#(colPowerup|colSz_6x6),obColType(a0)
 		move.b	#8,obActWid(a0)
-		move.b	#8,obHeight(a0)
-		move.b	#8,obWidth(a0)
+		move.w	#$808,obHeight(a0)		; Height and Width
 
 RAttract_Main:
 		bsr.s	AttractedRing_Move

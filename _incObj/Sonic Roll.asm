@@ -51,8 +51,7 @@ Sonic_ChkRoll:
 
 .roll:
 		bset	#staSpin,obStatus(a0)
-		move.b	#$E,obHeight(a0)
-		move.b	#7,obWidth(a0)
+		move.w	#$E07,obHeight(a0)			; Height and Width
 		move.b	#aniID_Roll,obAnim(a0)		; use "rolling" animation
 		move.b	#fr_SonRoll1,obFrame(a0)	; hard sets frame so no flicker when roll in tunnels - Mercury Roll Frame Fix
 		addq.w	#5,obY(a0)					; Add to y-pos the difference in height radius

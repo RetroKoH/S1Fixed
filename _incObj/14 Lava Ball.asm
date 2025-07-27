@@ -20,8 +20,7 @@ LavaBall:
 
 LBall_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
-		move.b	#8,obHeight(a0)
-		move.b	#8,obWidth(a0)
+		move.w	#$808,obHeight(a0)				; Height and Width
 		move.l	#Map_Fire,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Fireball,0,0),obGfx(a0)	; RetroKoH VRAM Overhaul
 		move.b	#4,obRender(a0)
