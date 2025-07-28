@@ -14,3 +14,5 @@ S1Fixed.bin
 S1Fixed.debug.bin
 S1Fixed.prev.bin
 S1Fixed.debug.prev.bin
+*.bin
+*.lst

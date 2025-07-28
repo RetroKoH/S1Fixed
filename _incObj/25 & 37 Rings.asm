@@ -1,5 +1,5 @@
 ; ---------------------------------------------------------------------------
-; Object 25 - rings
+; Object 25 - Rings (Only seen in Debug Mode)
 ; ---------------------------------------------------------------------------
 
 Rings:
@@ -97,7 +97,7 @@ CollectRing:
 
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
-; Object 37 - rings flying out of Sonic	when he's hit
+; Object 37 - Scattered Rings (Lost or Attracted)
 ; ---------------------------------------------------------------------------
 
 RingLoss:
@@ -123,6 +123,14 @@ RLoss_Index:		offsetTable
 ; ===========================================================================
 
 RLoss_Count:	; Routine 0
+
+	; RetroKoH/DeltaW Enemies Drop Rings Mod
+	if EnemiesDropRings
+		tst.b	$3E(a0)					; was this ring from a badnik?
+		bne.w	Ring_FromBadnik			; if yes, branch
+	endif
+	; Enemies Drop Rings Mod End
+
 		movea.l	a0,a1
 		moveq	#0,d5
 		move.w	(v_rings).w,d5			; check number of rings you have
@@ -134,13 +142,13 @@ RLoss_Count:	; Routine 0
 		beq.s   .abovewater				; if not, branch
 		lea		SpillRingData_Water,a3	; load the address of the array in a3
 
-.abovewater:
+	.abovewater:
 	; Ring Loss Speedup End
 		cmp.w	d0,d5					; do you have 32 or more?
 		blo.s	.belowmax				; if not, branch
 		move.w	d0,d5					; if yes, set d5 to 32
 
-.belowmax:
+	.belowmax:
 		subq.w	#1,d5					; decrease the counter the first time, as we are creating the first ring now.
 
 	; Spirituinsanum Mass Object Load Optimization
@@ -164,7 +172,7 @@ RLoss_Count:	; Routine 0
 		lea		(v_lvlobjspace).w,a1
 		move.w	#v_lvlobjcount,d0
 
-.loop:
+	.loop:
 		; REMOVE FindFreeObj. It's the routine that causes such slowdown
 		tst.b	obID(a1)				; is object RAM	slot empty?
 		beq.s	.makerings				; Let's correct the branches. Here we can also skip the bne that was originally after bsr.w FindFreeObj because we already know there's a free object slot in memory.
@@ -172,7 +180,7 @@ RLoss_Count:	; Routine 0
 		dbf		d0,.loop				; Branch correction again.
 		bne.s	.resetcounter			; We're moving this line here.
 
-.makerings:
+	.makerings:
 		_move.b	#id_RingLoss,obID(a1)	; load bouncing ring object
 		addq.b	#2,obRoutine(a1)
 		move.w	#$808,obHeight(a1)		; Height and Width
@@ -188,7 +196,7 @@ RLoss_Count:	; Routine 0
 		move.w  (a3)+,obVelY(a1)		; move the data contained in the array to the y velocity and increment the address in a3
 		dbf		d5,.loop				; repeat for number of rings (max 31)
 
-.resetcounter:
+	.resetcounter:
 	; Mass Object Load Optimization End
 		clr.w	(v_rings).w				; reset number of rings to zero
 		move.b	#$80,(f_ringcount).w	; update ring counter
@@ -201,19 +209,18 @@ RLoss_Count:	; Routine 0
 		move.w	#sfx_RingLoss,d0
 		jsr		(PlaySound_Special).w	; play ring loss sound
 
-
 RLoss_Bounce:	; Routine 2
 		bsr.w	SpeedToPos
 		addi.w	#$18,obVelY(a0)
 	; RHS Underwater Rings Physics Fix
-		tst.b	(f_water).w			; Does the level have water?
-		beq.s	.skipbounceslow		; If not, branch and skip underwater checks
-		move.w	(v_waterpos1).w,d6	; Move water level to d6
-		cmp.w	obY(a0),d6			; Is the ring object underneath the water level?
-		bgt.s	.skipbounceslow		; If not, branch and skip underwater commands
-		subi.w	#$E,obVelY(a0)		; Reduce gravity by $E ($18-$E=$A), giving the underwater effect
+		tst.b	(f_water).w				; Does the level have water?
+		beq.s	.skipbounceslow			; If not, branch and skip underwater checks
+		move.w	(v_waterpos1).w,d6		; Move water level to d6
+		cmp.w	obY(a0),d6				; Is the ring object underneath the water level?
+		bgt.s	.skipbounceslow			; If not, branch and skip underwater commands
+		subi.w	#$E,obVelY(a0)			; Reduce gravity by $E ($18-$E=$A), giving the underwater effect
 
-.skipbounceslow:
+	.skipbounceslow:
 	; Underwater Rings Physics Fix End
 		bmi.s	.chkdel
 		move.b	(v_vbla_byte).w,d0
@@ -229,9 +236,9 @@ RLoss_Bounce:	; Routine 2
 		sub.w	d0,obVelY(a0)
 		neg.w	obVelY(a0)
 
-.chkdel:
+	.chkdel:
 		; RHS Ring Timers Fix
-		subq.b	#1,obDelayAni(a0)		; Subtract 1
+		subq.b	#1,obDelayAni(a0)		; Decrement timer
 		beq.w	DeleteObject			; If 0, delete
 		; Ring Timers Fix End
 		; RHS Accidental Ring Deletion Fix
@@ -243,7 +250,38 @@ RLoss_Bounce:	; Routine 2
 		cmp.w	obY(a0),d0				; has object moved below level boundary?
 		blo.w	DeleteObject			; if yes, branch
 		; Mercury Ring Flashing Effect
-.chkflash:
+
+	; RetroKoH/DeltaW Enemies Drop Rings Mod
+	if EnemyRingsAttract
+		lea 	(v_player).w,a1
+		btst	#sta2ndLShield,obStatus2nd(a1)	; does the player have a lightning shield?
+		beq.s	.chkflash						; if not, branch
+		tst.b	obRender(a0)
+		bpl.s	.chkflash
+		
+		move.w	obX(a1),d0				; load Sonic's x-axis position
+		sub.w	obX(a0),d0
+		bpl.s	.a1
+		neg.w	d0
+		
+	.a1:
+		cmpi.w	#$A0,d0
+		bhi.s	.chkflash
+		
+		move.w	obY(a1),d0				; load Sonic's y-axis position
+		sub.w	obY(a0),d0
+		bpl.s	.a2
+		neg.w	d0
+
+	.a2:
+		cmpi.w	#$A0,d0
+		bhi.s	.chkflash
+
+		move.b	#$A,obRoutine(a0)		; Set routine to Attracted Ring
+	endif
+	; Enemies Drop Rings Mod End
+
+	.chkflash:
 	; S3K TouchResponse
 	; Add to collision response list directly, then choose whether or not to display.
 		lea		(v_col_response_list).w,a1
@@ -258,7 +296,8 @@ RLoss_Bounce:	; Routine 2
 		cmpi.b	#80,d0					; Rings will flash during last 80 steps of their life.
 		bhi.w	DisplaySprite			; If the timer is higher than 80, obviously the rings will STAY visible.
 		rts								; Skip Displaying if there is no room in the collision table.
-.full:
+
+	.full:
 		bra.w	DisplaySprite
 		; Ring Flashing Effect End
 ; ===========================================================================
@@ -295,6 +334,26 @@ SpillRingData_Water:
                 even
 ; ===========================================================================
 
+	if EnemiesDropRings
+Ring_FromBadnik:
+		addq.b	#2,obRoutine(a0)
+		move.w	#$808,obHeight(a0)		; Height and Width
+		move.w	obX(a0),obX(a0)
+		move.w	obY(a0),obY(a0)
+		move.l	#Map_Ring,obMap(a0)
+		move.w	#make_art_tile(ArtTile_LostRing,1,0),obGfx(a0)
+		move.b	#4,obRender(a0)
+		move.w	#priority3,obPriority(a0)
+		move.b	#(colPowerup|colSz_6x6),obColType(a0)
+		move.b	#8,obActWid(a0)
+		move.w	#-$380,obVelY(a0)
+        moveq   #-1,d0                  ; Move #-1 to d0
+        move.b  d0,obDelayAni(a0)       ; Move d0 to new timer
+        move.b  d0,(v_ani3_time).w      ; Move d0 to old timer (for animated purposes)
+		bra.w	RLoss_Bounce
+; ===========================================================================
+	endif
+
 	if ShieldsMode
 RAttract_Init:
 		addq.b	#2,obRoutine(a0)
@@ -318,13 +377,13 @@ RAttract_Main:
 .hasshield:
 		; Fix accidental deletion of scattered rings - REV C EDIT
 		cmpi.w  #$FF00,(v_limittop2).w	; is vertical wrapping enabled?
-		beq.s   .display       	; if so, branch
+		beq.s   .display				; if so, branch
 		; End of fix
 
 		move.w	(v_limitbtm2).w,d0
 		addi.w	#$E0,d0
-		cmp.w	obY(a0),d0		; has object moved below level boundary?
-		bcs.w	DeleteObject	; if yes, branch
+		cmp.w	obY(a0),d0				; has object moved below level boundary?
+		bcs.w	DeleteObject			; if yes, branch
 
 .display:	
 		jmp		(DisplayAndCollision).l	; S3K TouchResponse

@@ -22,12 +22,12 @@ MDis_Main:	; Routine 0
 		jsr		(PlaySound_Special).w		; play sound
 
 MDis_Animate:	; Routine 2
-		subq.b	#1,obTimeFrame(a0) ; subtract 1 from frame duration
+		subq.b	#1,obTimeFrame(a0)			; subtract 1 from frame duration
 		bpl.s	.display
-		move.b	#9,obTimeFrame(a0) ; set frame duration to 9 frames
-		addq.b	#1,obFrame(a0)	; next frame
-		cmpi.b	#4,obFrame(a0)	; has animation completed?
-		beq.w	DeleteObject	; if yes, branch
+		move.b	#9,obTimeFrame(a0)			; set frame duration to 9 frames
+		addq.b	#1,obFrame(a0)				; next frame
+		cmpi.b	#4,obFrame(a0)				; has animation completed?
+		beq.w	DeleteObject				; if yes, branch
 
 .display:
 		bra.w	DisplaySprite
@@ -51,10 +51,20 @@ ExItem_Animal:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		bsr.w	FindFreeObj
 		bne.s	ExItem_Main
-		_move.b	#id_Animals,obID(a1)	; load animal object
+
+	; RetroKoH/DeltaW Enemies Drop Rings Mod
+	if EnemiesDropRings
+		_move.b	#id_RingLoss,obID(a1)		; load ring object
+		move.w	obX(a0),obX(a1)
+		move.w	obY(a0),obY(a1)
+		move.b	#1,$3E(a1)					; set flag to tell the game we don't want mass spawning of rings here
+	else
+		_move.b	#id_Animals,obID(a1)		; load animal object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.w	objoff_3E(a0),objoff_3E(a1)
+	endif
+	; Enemies Drop Rings Mod End
 
 ExItem_Main:	; Routine 2
 		addq.b	#2,obRoutine(a0)
@@ -64,18 +74,18 @@ ExItem_Main:	; Routine 2
 		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		clr.b	obColType(a0)
 		move.b	#$C,obActWid(a0)
-		move.b	#7,obTimeFrame(a0)		; set frame duration to 7 frames
+		move.b	#7,obTimeFrame(a0)			; set frame duration to 7 frames
 		clr.b	obFrame(a0)
 		move.w	#sfx_BreakItem,d0
-		jsr		(PlaySound_Special).w	; play breaking enemy sound
+		jsr		(PlaySound_Special).w		; play breaking enemy sound
 
 ExItem_Animate:	; Routine 4 (2 for ExplosionBomb)
-		subq.b	#1,obTimeFrame(a0)		; subtract 1 from frame duration
+		subq.b	#1,obTimeFrame(a0)			; subtract 1 from frame duration
 		bpl.s	.display
-		move.b	#7,obTimeFrame(a0)		; set frame duration to 7 frames
-		addq.b	#1,obFrame(a0)			; next frame
-		cmpi.b	#5,obFrame(a0)			; is the final frame (05) displayed?
-		beq.w	DeleteObject			; if yes, branch
+		move.b	#7,obTimeFrame(a0)			; set frame duration to 7 frames
+		addq.b	#1,obFrame(a0)				; next frame
+		cmpi.b	#5,obFrame(a0)				; is the final frame (05) displayed?
+		beq.w	DeleteObject				; if yes, branch
 
 .display:
 		bra.w	DisplaySprite
@@ -101,5 +111,5 @@ ExBom_Main:	; Routine 0
 		move.b	#7,obTimeFrame(a0)
 		clr.b	obFrame(a0)
 		move.w	#sfx_Bomb,d0
-		jmp		(PlaySound_Special).w	; play exploding bomb sound
+		jmp		(PlaySound_Special).w		; play exploding bomb sound
 ; ===========================================================================
