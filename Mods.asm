@@ -133,6 +133,12 @@ ExtraBonuses: = CoolBonusEnabled+PerfectBonusEnabled	; if either bonus is enable
 	PerfectScore: = 5000	; Score awarded for Perfect Bonus / 10.
 ; If both are enabled, the Got Through Card has a 4th tally mapping
 
+; Name: Enemies Drop Rings
+; Credit: RetroKoH, DeltaW
+; Function: Enemies drop rings instead of animals
+EnemiesDropRings: = 1
+	EnemyRingsAttract: = 1*ShieldsMode	; if set, the Lightning Shield will attract these rings
+
 ; ----- FLAIR MODS ---------------------------------------------------------------
 
 ; Name: Fade-In SEGA Screen
