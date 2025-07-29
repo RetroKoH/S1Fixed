@@ -190,7 +190,7 @@ Debug_ChgItem:
 		lea		(v_player).w,a1
 
 		move.l	#Map_Sonic,obMap(a1)
-		move.w	#ArtTile_Sonic,obGfx(a1)			; Also resets high priority bit in case of drowning
+		move.w	#make_art_tile(ArtTile_Sonic,0,0),obGfx(a1)	; Also resets high priority bit in case of drowning
 		move.b	#aniID_Walk,obAnim(a1)
 		clr.w	obX+2(a1)
 		clr.w	obY+2(a1)
@@ -205,6 +205,7 @@ Debug_ChgItem:
 	if SuperMod=1
 		btst	#sta2ndSuper,obStatus2nd(a1)		; is player in Super Form?
 		beq.s	.notSuper							; if not, branch
+		move.l	#Map_SuperSonic,obMap(a1)			; set Super mappings
 		bset	#sta2ndInvinc,obStatus2nd(a1)		; set invincibility again (in case we spawn after death)
 .notSuper:
 	endif
