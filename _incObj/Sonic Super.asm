@@ -41,5 +41,6 @@ Sonic_RevertToNormal:
 		bclr	#sta2ndSuper,obStatus2nd(a0)
 		move.b	#aniID_Run,obPrevAni(a0)	; Change animation back to normal
 		clr.b	obInvinc(a0)				; Remove invincibility
+		move.l	#Map_Sonic,obMap(a0)		; load Sonic's normal mappings
 		lea     (v_sonspeedmax).w,a2    	; Load Sonic_top_speed into a2
 		bra.w   ApplySpeedSettings			; Fetch Speed settings

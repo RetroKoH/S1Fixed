@@ -5846,11 +5846,20 @@ loc_12EA6:
 		include	"_incObj/Sonic Loops.asm"
 		include	"_incObj/Sonic Animate.asm"
 		include	"_anim/Sonic.asm"
+	if SuperMod
+		include	"_anim/Super Sonic.asm"
+	endif
 		include	"_incObj/Sonic LoadGfx.asm"
 
 dplcTiles := Art_Sonic			; MainMemory 128k Boundary Check for DPLCs
 		include	"_maps/Sonic - DPLCs.asm"
 dplcTiles := 0					; 128k Boundary Check for DPLCs End
+
+	if SuperMod
+dplcTiles := Art_SuperSonic		; MainMemory 128k Boundary Check for DPLCs
+		include	"_maps/Super Sonic - DPLCs.asm"
+dplcTiles := 0					; 128k Boundary Check for DPLCs End
+	endif
 
 		include "_incObj/sub ApplySpeedSettings.asm"
 
@@ -7513,97 +7522,7 @@ Nem_LevSelIcons:	binclude	"artnem/S2 Level Select Icons.nem"
 		even
 	endif
 
-; ---------------------------------------------------------------------------
-; Uncompressed graphics	- Sonic
-; ---------------------------------------------------------------------------
-Art_Sonic:		binclude	"artunc/Sonic.bin"					; Sonic
-		even
-Art_Shield:		binclude	"artunc/Shield - Blue.bin"			; Blue Shield -- RetroKoH VRAM Overhaul
-		even
-Art_Stars:		binclude	"artunc/Invincibility Stars.bin"	; Invincibility Stars -- RetroKoH VRAM Overhaul
-		even
-Art_Goggles:	binclude	"artunc/Goggles.bin"				; Goggles
-		even
-
-	if InstashieldEnabled
-Art_Insta:		binclude	"artunc/Shield - Insta.bin"
-		even
-	endif
-
-	if ShieldsMode
-Art_Shield_F:	binclude	"artunc/Shield - Flame.bin"
-		even
-Art_Shield_B:	binclude	"artunc/Shield - Bubble.bin"
-		even
-Art_Shield_L:	binclude	"artunc/Shield - Lightning.bin"
-		even
-Art_Shield_L2:	binclude	"artunc/Shield - Lightning Sparks.bin"
-		even
-	endif
-
-	if SuperMod
-Art_SuperStars:	binclude	"artunc/Super Sonic Stars.bin"
-Art_SuperStars_End:	even
-	endif
-
-	switch UpdatedSignposts
-	case 2
-Art_Signpost:	binclude	"artunc/Signpost - Hybrid.bin"	; End-of-level Signpost -- RetroKoH VRAM Overhaul
-	case 1
-Art_Signpost:	binclude	"artunc/Signpost - CD.bin"		; End-of-level Signpost -- RetroKoH VRAM Overhaul
-	elsecase
-Art_Signpost:	binclude	"artunc/Signpost.bin"			; End-of-level Signpost -- RetroKoH VRAM Overhaul
-	endcase
-		even
-
-Art_BigRing:	binclude	"artunc/Giant Ring.bin"				; Giant Ring -- RetroKoH VRAM Overhaul
-		even
-
-	if (SpinDashEnabled|SkidDustEnabled)=1
-Art_Effects:	binclude	"artunc/Dust Effects.bin"			; Spindash/Skid Dust
-		even
-				include "_maps/Effects.asm"
-	endif
-
-	if RandomMonitors
-Art_Mon_Rand:	binclude	"artunc/Monitors - Random.bin"		; Monitor Art Mod
-		even
-	endif
-
-	if OptimalTitleCardArt
-	; RetroKoH Optimal Title Cards for VRAM/SpritePiece Reduction
-	
-	include "artunc/Title and End Cards/Art Includes.asm"
-	
-	else
-
-; AURORA☆FIELDS Title Card Optimization
-	if CoolBonusEnabled
-Art_TitleCard:	binclude	"artunc/Title Cards - COOL.bin"		; Title Card patterns
-	else
-Art_TitleCard:	binclude	"artunc/Title Cards.bin"			; Title Card patterns
-	endif
-Art_TitleCard_End:	even
-
-	endif
-
-; RetroKoH Perfect Bonus Mod
-	if PerfectBonusEnabled
-Art_Perfect:	binclude	"artunc/Perfect Text.bin"			; Result Perfect Bonus Text
-Art_Perfect_End:
-	endif
-	
-
-Art_TimeOver:	binclude	"artunc/Time Over.bin"				; time over (TI) -- RetroKoH VRAM Overhaul
-Art_TimeOver_End:	even
-
-
-; We only need to add an 'align $20000' at any point where art that is used by DPLCs crosses a 128k boundary
-	align $20000
-Art_TitleSonic:	binclude	"artunc/Title Screen Sonic.bin"		; Title Sonic -- RetroKoH VRAM Overhaul
-		even
-
-				include	"_maps/SS Walls.asm"	; Now includes dynamic mappings -- Mercury Dynamic Special Stage Walls
+			include	"_maps/SS Walls.asm"	; Now includes dynamic mappings -- Mercury Dynamic Special Stage Walls
 
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - special stage
@@ -8163,6 +8082,10 @@ Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.bin"
 ; ---------------------------------------------------------------------------
 		include	"_maps/Sonic.asm"
 
+	if SuperMod
+		include	"_maps/Super Sonic.asm"
+	endif
+
 		include	"_maps/Ending Sequence Sonic.asm"
 		include	"_maps/Ending Sequence Emeralds.asm"
 		include	"_maps/Ending Sequence STH.asm"
@@ -8384,6 +8307,103 @@ Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.bin"
 		include	"_maps/SS DOWN Block.asm"
 		include	"_maps/SS Chaos Emeralds.asm"
 		include "_maps/SS Cursor.asm"				; Also used for the Delete Block
+
+; ---------------------------------------------------------------------------
+; Uncompressed graphics
+; ---------------------------------------------------------------------------
+; We only need to add an 'align $20000' at any point where art that is used by DPLCs crosses a 128k boundary
+	align $20000
+
+Art_Sonic:		binclude	"artunc/Sonic.bin"					; Sonic
+		even
+Art_Shield:		binclude	"artunc/Shield - Blue.bin"			; Blue Shield -- RetroKoH VRAM Overhaul
+		even
+Art_Stars:		binclude	"artunc/Invincibility Stars.bin"	; Invincibility Stars -- RetroKoH VRAM Overhaul
+		even
+Art_Goggles:	binclude	"artunc/Goggles.bin"				; Goggles
+		even
+
+	if InstashieldEnabled
+Art_Insta:		binclude	"artunc/Shield - Insta.bin"
+		even
+	endif
+
+	if ShieldsMode
+Art_Shield_F:	binclude	"artunc/Shield - Flame.bin"
+		even
+Art_Shield_B:	binclude	"artunc/Shield - Bubble.bin"
+		even
+Art_Shield_L:	binclude	"artunc/Shield - Lightning.bin"
+		even
+Art_Shield_L2:	binclude	"artunc/Shield - Lightning Sparks.bin"
+		even
+	endif
+
+	switch UpdatedSignposts
+	case 2
+Art_Signpost:	binclude	"artunc/Signpost - Hybrid.bin"		; End-of-level Signpost -- RetroKoH VRAM Overhaul
+	case 1
+Art_Signpost:	binclude	"artunc/Signpost - CD.bin"			; End-of-level Signpost -- RetroKoH VRAM Overhaul
+	elsecase
+Art_Signpost:	binclude	"artunc/Signpost.bin"				; End-of-level Signpost -- RetroKoH VRAM Overhaul
+	endcase
+		even
+
+Art_BigRing:	binclude	"artunc/Giant Ring.bin"				; Giant Ring -- RetroKoH VRAM Overhaul
+		even
+
+	if (SpinDashEnabled|SkidDustEnabled)=1
+Art_Effects:	binclude	"artunc/Dust Effects.bin"			; Spindash/Skid Dust
+		even
+				include "_maps/Effects.asm"
+	endif
+
+	if RandomMonitors
+Art_Mon_Rand:	binclude	"artunc/Monitors - Random.bin"		; Monitor Art Mod
+		even
+	endif
+
+	if OptimalTitleCardArt
+	; RetroKoH Optimal Title Cards for VRAM/SpritePiece Reduction
+	
+	include "artunc/Title and End Cards/Art Includes.asm"
+	
+	else
+
+; AURORA☆FIELDS Title Card Optimization
+	if CoolBonusEnabled
+Art_TitleCard:	binclude	"artunc/Title Cards - COOL.bin"		; Title Card patterns
+	else
+Art_TitleCard:	binclude	"artunc/Title Cards.bin"			; Title Card patterns
+	endif
+Art_TitleCard_End:	even
+
+	endif
+
+; RetroKoH Perfect Bonus Mod
+	if PerfectBonusEnabled
+Art_Perfect:	binclude	"artunc/Perfect Text.bin"			; Result Perfect Bonus Text
+Art_Perfect_End:
+	endif
+	
+
+Art_TimeOver:	binclude	"artunc/Time Over.bin"				; time over (TI) -- RetroKoH VRAM Overhaul
+Art_TimeOver_End:	even
+
+
+; We only need to add an 'align $20000' at any point where art that is used by DPLCs crosses a 128k boundary
+	align $20000
+	if SuperMod
+Art_SuperSonic:		binclude	"artunc/Super Sonic.bin"		; Sonic
+		even
+
+Art_SuperStars:	binclude	"artunc/Super Sonic Stars.bin"
+Art_SuperStars_End:	even
+	endif
+
+
+Art_TitleSonic:	binclude	"artunc/Title Screen Sonic.bin"		; Title Sonic -- RetroKoH VRAM Overhaul
+		even
 
 ; ---------------------------------------------------------------------------
 ; Level	layout index -- MJ: unused data and BG data have been stripped out

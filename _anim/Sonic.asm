@@ -111,40 +111,5 @@ SonAni_DropDash:
 SonAni_Transform:
 		dc.b	2, fr_SonTransform1, fr_SonTransform1, fr_SonTransform2, fr_SonTransform2, fr_SonTransform3
 		dc.b	fr_SonTransform4, fr_SonTransform5, fr_SonTransform4, fr_SonTransform5, fr_SonTransform4
-		dc.b	fr_SonTransform5, fr_SonTransform4, fr_SonTransform5, $FD,  aniID_Walk
+		dc.b	fr_SonTransform5, fr_SonTransform4, fr_SonTransform5, afChange, aniID_Walk
 		even
-
-;Ani_SuperSonic:
-;		dc.w SonAni_Null-Ani_Sonic
-;		dc.w SonAni_Walk-Ani_Sonic
-;		dc.w SonAni_Run-Ani_Sonic
-;		dc.w SonAni_Dash-Ani_Sonic
-;		dc.w SonAni_Roll-Ani_Sonic
-;		dc.w SonAni_Roll2-Ani_Sonic
-;		dc.w SonAni_Push-Ani_Sonic
-;		dc.w SonAni_Wait-Ani_Sonic
-;		dc.w SonAni_Balance-Ani_Sonic
-;		dc.w SonAni_BalanceForward-Ani_Sonic
-;		dc.w SonAni_BalanceBack-Ani_Sonic
-;		dc.w SonAni_LookUp-Ani_Sonic
-;		dc.w SonAni_Duck-Ani_Sonic
-;		dc.w SonAni_Spindash-Ani_Sonic
-;		dc.w SonAni_Stop-Ani_Sonic
-;		dc.w SonAni_Float1-Ani_Sonic
-;		dc.w SonAni_Float2-Ani_Sonic
-;		dc.w SonAni_Float3-Ani_Sonic
-;		dc.w SonAni_Float4-Ani_Sonic
-;		dc.w SonAni_Spring-Ani_Sonic
-;		dc.w SonAni_Hang-Ani_Sonic
-;		dc.w SonAni_Null-Ani_Sonic ; FALL
-;		dc.w SonAni_GetAir-Ani_Sonic
-;		dc.w SonAni_GetAirStand-Ani_Sonic
-;		dc.w SonAni_Death-Ani_Sonic
-;		dc.w SonAni_Drown-Ani_Sonic
-;		dc.w SonAni_Shrink-Ani_Sonic
-;		dc.w SonAni_Hurt-Ani_Sonic
-;		dc.w SonAni_WaterSlide-Ani_Sonic
-;		dc.w SupSonAni_Transform-Ani_SuperSonic
-;		dc.w SonAni_Peelout-Ani_Sonic
-
-;SupSonAni_Transform:	dc.b   2,$6D,$6D,$6E,$6E,$6F,$70,$71,$70,$71,$70,$71,$70,$71,$FD,  0

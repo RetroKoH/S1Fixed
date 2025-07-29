@@ -7,6 +7,11 @@
 
 Sonic_Animate:
 		lea		Ani_Sonic(pc),a1
+		btst	#sta2ndSuper,obStatus2nd(a0)	; is Sonic super?
+		beq.s	.notsuper
+		lea		Ani_SuperSonic(pc),a1
+
+	.notsuper:
 		moveq	#0,d0
 		move.b	obAnim(a0),d0
 		cmp.b	obPrevAni(a0),d0		; has animation changed?
@@ -16,7 +21,7 @@ Sonic_Animate:
 		clr.b	obTimeFrame(a0)			; reset frame duration
 		bclr	#staPush,obStatus(a0)	; clear pushing flag -- Mercury Pushing While Walking Fix
 
-.do:
+	.do:
 		add.w	d0,d0
 		adda.w	(a1,d0.w),a1			; jump to appropriate animation	script
 		move.b	(a1),d0
@@ -29,7 +34,7 @@ Sonic_Animate:
 		bpl.s	.delay					; if time remains, branch
 		move.b	d0,obTimeFrame(a0)		; load frame duration
 
-.loadframe:
+	.loadframe:
 		moveq	#0,d1
 		move.b	obAniFrame(a0),d1		; load current frame number
 		move.b	1(a1,d1.w),d0			; read sprite number from script
@@ -41,11 +46,11 @@ Sonic_Animate:
 		move.b	d0,obFrame(a0)			; load sprite number
 		addq.b	#1,obAniFrame(a0)		; next frame number
 
-.delay:
+	.delay:
 		rts	
 ; ===========================================================================
 
-.end_FF:
+	.end_FF:
 		addq.b	#1,d0					; is the end flag = $FF	?
 		bne.s	.end_FE					; if not, branch
 		clr.b	obAniFrame(a0)			; restart the animation
@@ -54,7 +59,7 @@ Sonic_Animate:
 		rts
 ; ===========================================================================
 
-.end_FE:
+	.end_FE:
 		addq.b	#1,d0					; is the end flag = $FE	?
 		bne.s	.end_FD					; if not, branch
 		move.b	2(a1,d1.w),d0			; read the next	byte in	the script
@@ -65,16 +70,16 @@ Sonic_Animate:
 		rts
 ; ===========================================================================
 
-.end_FD:
+	.end_FD:
 		addq.b	#1,d0					; is the end flag = $FD	?
 		bne.s	.end					; if not, branch
 		move.b	2(a1,d1.w),obAnim(a0)	; read next byte, run that animation
 
-.end:
+	.end:
 		rts	
 ; ===========================================================================
 
-.walkrunroll:
+	.walkrunroll:
 		subq.b	#1,obTimeFrame(a0)		; subtract 1 from frame duration
 		bpl.s	.delay					; if time remains, branch
 		addq.b	#1,d0					; is animation walking/running?
@@ -86,19 +91,19 @@ Sonic_Animate:
 		beq.s	.ble
 		subq.b	#1,d0
 
-.ble:
+	.ble:
 	; Better handling of angles end
 		moveq	#maskFacing,d2
 		and.b	obStatus(a0),d2			; is Sonic mirrored horizontally?
 		bne.s	.flip					; if yes, branch
 		not.b	d0						; reverse angle
 
-.flip:
+	.flip:
 		addi.b	#$10,d0					; add $10 to angle
 		bpl.s	.noinvert				; if angle is $0-$7F, branch
 		moveq	#3,d1
 
-.noinvert:
+	.noinvert:
 		andi.b	#$FC,obRender(a0)
 		eor.b	d1,d2
 		or.b	d2,obRender(a0)
@@ -110,28 +115,43 @@ Sonic_Animate:
 		bpl.s	.nomodspeed
 		neg.w	d2						; modulus speed
 
-.nomodspeed:
-	if PeeloutEnabled=1
-		lea		SonAni_Dash(pc),a1	; use Dashing animation
-		cmpi.w	#$A00,d2			; is Sonic at Dashing speed?
-		bhs.s	.running			; if yes, branch
+	.nomodspeed:
+
+	if SuperMod
+		btst	#sta2ndSuper,obStatus2nd(a0)	; is Sonic super?
+		beq.s	.nomodnotsuper
+		
+		lea		SupSonAni_Run(pc),a1	; use running animation
+		cmpi.w	#$800,d2				; is Sonic at running speed?
+		bhs.s	.running				; if yes, branch
+
+		lea		SonAni_Walk(pc),a1		; use walking animation
+		bra.s	.walking
+
+	.nomodnotsuper:
 	endif
 
-		lea		SonAni_Run(pc),a1	; use running animation
-		cmpi.w	#$600,d2			; is Sonic at running speed?
-		bhs.s	.running			; if yes, branch
+	if PeeloutEnabled
+		lea		SonAni_Dash(pc),a1		; use Dashing animation
+		cmpi.w	#$A00,d2				; is Sonic at Dashing speed?
+		bhs.s	.running				; if yes, branch
+	endif
 
-		lea		SonAni_Walk(pc),a1	; use walking animation
+		lea		SonAni_Run(pc),a1		; use running animation
+		cmpi.w	#$600,d2				; is Sonic at running speed?
+		bhs.s	.running				; if yes, branch
+
+		lea		SonAni_Walk(pc),a1		; use walking animation
 
 ; Get correct walking frame.
 	;	move.b	d0,d1
 	;	lsr.b	#1,d1
 	;	add.b	d1,d0				; Angle 0 = 0; Angle 2 = 3 (+6 frames); Angle 4 = 6 (+12 frames); Angle 6 = 9 (+18 frames).
-.walking:
+	.walking:
 		; Sonic 2 method for 8 frames
 		add.b	d0,d0				; Angle 0 = 0; Angle 2 = 4 (+8 frames); Angle 4 = 8 (+16 frames); Angle 6 = 12 (+24 frames).
 
-.running:
+	.running:
 		add.b	d0,d0				; Angle 0 = 0; Angle 2 = +4 frames; Angle 4 = (+8 frames); Angle 6 = (+12 frames).
 		move.b	d0,d3
 		neg.w	d2
@@ -139,7 +159,7 @@ Sonic_Animate:
 		bpl.s	.belowmax
 		moveq	#0,d2				; max animation speed
 
-.belowmax:
+	.belowmax:
 		lsr.w	#8,d2
 		move.b	d2,obTimeFrame(a0)	; modify frame duration
 		bsr.w	.loadframe
@@ -147,26 +167,26 @@ Sonic_Animate:
 		rts
 ; ===========================================================================
 
-.rolljump:
+	.rolljump:
 		addq.b	#1,d0				; is animation rolling/jumping?
 		bne.s	.push				; if not, branch
 		move.w	obInertia(a0),d2	; get Sonic's speed
 		bpl.s	.nomodspeed2
 		neg.w	d2
 
-.nomodspeed2:
+	.nomodspeed2:
 		lea		SonAni_Roll2(pc),a1	; use fast animation
 		cmpi.w	#$600,d2			; is Sonic moving fast?
 		bhs.s	.rollfast			; if yes, branch
 		lea		SonAni_Roll(pc),a1	; use slower animation
 
-.rollfast:
+	.rollfast:
 		neg.w	d2
 		addi.w	#$400,d2
 		bpl.s	.belowmax2
 		moveq	#0,d2
 
-.belowmax2:
+	.belowmax2:
 		lsr.w	#8,d2
 		move.b	d2,obTimeFrame(a0)	; modify frame duration
 		moveq	#maskFacing,d1
@@ -176,22 +196,31 @@ Sonic_Animate:
 		bra.w	.loadframe
 ; ===========================================================================
 
-.push:
+	.push:
 		subq.b	#1,obTimeFrame(a0)	; subtract 1 from frame duration
 		bpl.w	.delay				; if time remains, branch
 		move.w	obInertia(a0),d2	; get Sonic's speed
 		bmi.s	.negspeed
 		neg.w	d2
 
-.negspeed:
+	.negspeed:
 		addi.w	#$800,d2
 		bpl.s	.belowmax3	
 		moveq	#0,d2
 
-.belowmax3:
+	.belowmax3:
 		lsr.w	#6,d2
 		move.b	d2,obTimeFrame(a0)	; modify frame duration
 		lea		SonAni_Push(pc),a1
+
+	if SuperMod
+		btst	#sta2ndSuper,obStatus2nd(a0)	; is Sonic super?
+		beq.s	.notsuperpush
+		lea		SupSonAni_Push(pc),a1
+
+	.notsuperpush:
+	endif
+
 		moveq	#maskFacing,d1
 		and.b	obStatus(a0),d1
 		andi.b	#$FC,obRender(a0)

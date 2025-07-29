@@ -106,7 +106,7 @@ Sto_Action:	; Routine 2
 		move.b	obHeight(a0),d2
 		move.w	d2,d3
 		addq.w	#1,d3
-		bsr.w	SolidObject
+		jsr		(SolidObject).l
 
 .chkdel:
 		offscreen.s	.chkgone,sto_origX(a0)
