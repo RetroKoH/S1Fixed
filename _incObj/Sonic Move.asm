@@ -38,7 +38,7 @@ Sonic_Move:
 		adda.l	#v_ram_start,a1			; a1 = object being stood upon
 	; obPlatform SST mod end
 		tst.b	obStatus(a1)
-		bmi.s	Sonic_LookUp
+		bmi.w	Sonic_LookUp
 		moveq	#0,d1
 		move.b	obActWid(a1),d1
 		move.w	d1,d2
@@ -46,19 +46,41 @@ Sonic_Move:
 		subq.w	#4,d2
 		add.w	obX(a0),d1
 		sub.w	obX(a1),d1
+
+	if SuperMod
+		btst	#sta2ndSuper,obStatus2nd(a0)	; is Sonic super?
+		beq.w	SuperSonic_Balance
+	endif
+
 		cmpi.w	#4,d1
 
-	if CDBalancing=1
+	if CDBalancing
 		blt.s	Sonic_BalanceLeft
 		cmp.w	d2,d1
 		bge.s	Sonic_BalanceRight
-		bra.s	Sonic_LookUp
+		bra.w	Sonic_LookUp
 ; ===========================================================================
+
+	if SuperMod
+SuperSonic_Balance:
+		cmpi.w	#4,d1
+		blt.w	SuperSonic_BalanceOnObjLeft
+		cmp.w	d2,d1
+		bge.w	SuperSonic_BalanceOnObjRight
+		bra.w	Sonic_LookUp
+; ===========================================================================
+	endif
 
 Sonic_Balance:
 		jsr		(ObjFloorDist).l
 		cmpi.w	#$C,d1
 		blt.s	Sonic_LookUp
+
+	if SuperMod
+		btst	#sta2ndSuper,obStatus2nd(a0)	; is Sonic super?
+		beq.w	SuperSonic_Balance2
+	endif
+
 		cmpi.b	#3,obFrontAngle(a0)
 		beq.s	Sonic_BalanceRight
 		cmpi.b	#3,obRearAngle(a0)
@@ -71,27 +93,43 @@ Sonic_BalanceLeft:
 		bra.w	Sonic_ResetScr				; branch
 
 Sonic_BalanceRight:
-		btst	#staFacing,obStatus(a0)	; is Sonic facing left?	;Mercury Constants
-		bne.s	Sonic_BalanceBackward	; if so, balance backward
-		move.b	#aniID_Balance2,obAnim(a0) ; use forward balancing animation
-		bra.w	Sonic_ResetScr	; branch
+		btst	#staFacing,obStatus(a0)		; is Sonic facing left?	;Mercury Constants
+		bne.s	Sonic_BalanceBackward		; if so, balance backward
+		move.b	#aniID_Balance2,obAnim(a0)	; use forward balancing animation
+		bra.w	Sonic_ResetScr				; branch
 
 Sonic_BalanceBackward:
-		move.b	#aniID_Balance3,obAnim(a0) ; use backward balancing animation
+		move.b	#aniID_Balance3,obAnim(a0)	; use backward balancing animation
 		bra.w	Sonic_ResetScr
 
 	else
 
-		blt.s	Sonic_BalanceOnObjLeft	;loc_12F6A
+		blt.s	Sonic_BalanceOnObjLeft
 		cmp.w	d2,d1
-		bge.s	Sonic_BalanceOnObjRight	;loc_12F5A
+		bge.s	Sonic_BalanceOnObjRight
 		bra.s	Sonic_LookUp
 ; ===========================================================================
+
+	if SuperMod
+SuperSonic_Balance:
+		cmpi.w	#4,d1
+		blt.w	SuperSonic_BalanceOnObjLeft
+		cmp.w	d2,d1
+		bge.w	SuperSonic_BalanceOnObjRight
+		bra.w	Sonic_Lookup
+; ===========================================================================
+	endif
 
 Sonic_Balance:
 		jsr		(ObjFloorDist).l
 		cmpi.w	#$C,d1
 		blt.s	Sonic_LookUp
+
+	if SuperMod
+		btst	#sta2ndSuper,obStatus2nd(a0)	; is Sonic super?
+		beq.w	SuperSonic_Balance2
+	endif
+
 ;Sonic_BalanceRight:
 		cmpi.b	#3,obFrontAngle(a0)
 		bne.s	Sonic_BalanceLeft
@@ -111,6 +149,28 @@ Sonic_BalanceOnObjLeft: ;loc_12F6A
 Sonic_BalanceSetAnim:
 		move.b	#aniID_Balance,obAnim(a0)	; use "balancing" animation
 		bra.w	Sonic_ResetScr
+; ===========================================================================
+	endif
+
+	if SuperMod
+SuperSonic_Balance2:
+	cmpi.b	#3,obFrontAngle(a0)
+	bne.s	SuperSonic_BalanceChkRear
+
+SuperSonic_BalanceOnObjRight:
+	bclr	#staFacing,obStatus(a0)
+	bra		SuperSonic_BalanceSetAnim
+; ===========================================================================
+SuperSonic_BalanceChkRear:
+	cmpi.b	#3,obRearAngle(a0)
+	bne.s	Sonic_LookUp
+
+SuperSonic_BalanceOnObjLeft:
+	bset	#staFacing,obStatus(a0)
+
+SuperSonic_BalanceSetAnim:
+	move.b	#aniID_Balance,obAnim(a0)
+	bra		Sonic_ResetScr
 ; ===========================================================================
 	endif
 

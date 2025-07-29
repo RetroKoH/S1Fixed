@@ -9,7 +9,7 @@ Sonic_TurnSuper: ;loc_11A16:
 		move.b	#$F,(v_palette_timer).w
 		bset	#sta2ndSuper,obStatus2nd(a0)
 		move.b	#60,(v_supersonic_frame).w		; set timer
-		;move.l	#Map_SuperSonic,obMap(a0)
+		move.l	#Map_SuperSonic,obMap(a0)		; change mappings
 		move.b	#$81,obCtrlLock(a0)
 		move.b	#aniID_Transform,obAnim(a0)
 		move.b	#id_SuperStars,(v_sstarsobj).w	; load super sonic stars object
