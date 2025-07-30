@@ -38,7 +38,7 @@ aniID_DropDash:			ds.b 1		; Drop Dash
 aniID_Transform:		ds.b 1		; Transform
 	dephase
 
-; Mapping Frame IDs
+; Sonic Mapping Frame IDs
 	phase 0
 fr_SonNull:				ds.b 1
 fr_SonStand:			ds.b 1
@@ -174,3 +174,120 @@ fr_SonTransform3:		ds.b 1
 fr_SonTransform4:		ds.b 1
 fr_SonTransform5:		ds.b 1
 	dephase
+
+	if SuperMod
+; Sonic Mapping Frame IDs
+	phase 0
+fr_SupSonNull:				ds.b 1
+fr_SupSonStand1:			ds.b 1
+fr_SupSonStand2:			ds.b 1
+fr_SupSonStand3:			ds.b 1
+fr_SupSonLookUp1:			ds.b 1
+fr_SupSonLookUp2:			ds.b 1
+fr_SupSonLookUp3:			ds.b 1
+fr_SupSonLookUp4:			ds.b 1
+fr_SupSonWalk11:			ds.b 1
+fr_SupSonWalk12:			ds.b 1
+fr_SupSonWalk13:			ds.b 1
+fr_SupSonWalk14:			ds.b 1
+fr_SupSonWalk15:			ds.b 1
+fr_SupSonWalk16:			ds.b 1
+fr_SupSonWalk17:			ds.b 1
+fr_SupSonWalk18:			ds.b 1
+fr_SupSonWalk21:			ds.b 1
+fr_SupSonWalk22:			ds.b 1
+fr_SupSonWalk23:			ds.b 1
+fr_SupSonWalk24:			ds.b 1
+fr_SupSonWalk25:			ds.b 1
+fr_SupSonWalk26:			ds.b 1
+fr_SupSonWalk27:			ds.b 1
+fr_SupSonWalk28:			ds.b 1
+fr_SupSonWalk31:			ds.b 1
+fr_SupSonWalk32:			ds.b 1
+fr_SupSonWalk33:			ds.b 1
+fr_SupSonWalk34:			ds.b 1
+fr_SupSonWalk35:			ds.b 1
+fr_SupSonWalk36:			ds.b 1
+fr_SupSonWalk37:			ds.b 1
+fr_SupSonWalk38:			ds.b 1
+fr_SupSonWalk41:			ds.b 1
+fr_SupSonWalk42:			ds.b 1
+fr_SupSonWalk43:			ds.b 1
+fr_SupSonWalk44:			ds.b 1
+fr_SupSonWalk45:			ds.b 1
+fr_SupSonWalk46:			ds.b 1
+fr_SupSonWalk47:			ds.b 1
+fr_SupSonWalk48:			ds.b 1
+fr_SupSonRun11:				ds.b 1
+fr_SupSonRun12:				ds.b 1
+fr_SupSonRun13:				ds.b 1
+fr_SupSonRun14:				ds.b 1
+fr_SupSonRun21:				ds.b 1
+fr_SupSonRun22:				ds.b 1
+fr_SupSonRun23:				ds.b 1
+fr_SupSonRun24:				ds.b 1
+fr_SupSonRun31:				ds.b 1
+fr_SupSonRun32:				ds.b 1
+fr_SupSonRun33:				ds.b 1
+fr_SupSonRun34:				ds.b 1
+fr_SupSonRun41:				ds.b 1
+fr_SupSonRun42:				ds.b 1
+fr_SupSonRun43:				ds.b 1
+fr_SupSonRun44:				ds.b 1
+fr_SupSonRoll1:				ds.b 1
+fr_SupSonRoll2:				ds.b 1
+fr_SupSonRoll3:				ds.b 1
+fr_SupSonRoll4:				ds.b 1
+fr_SupSonRoll5:				ds.b 1
+fr_SupSonSpindash1:			ds.b 1
+fr_SupSonSpindash2:			ds.b 1
+fr_SupSonSpindash3:			ds.b 1
+fr_SupSonSpindash4:			ds.b 1
+fr_SupSonSpindash5:			ds.b 1
+fr_SupSonSpindash6:			ds.b 1
+fr_SupSonStop1:				ds.b 1
+fr_SupSonStop2:				ds.b 1
+fr_SupSonDuck1:				ds.b 1
+fr_SupSonBalance1:			ds.b 1
+fr_SupSonBalance2:			ds.b 1
+fr_SupSonBalance3:			ds.b 1
+fr_SupSonBalance4:			ds.b 1
+fr_SupSonFloat1:			ds.b 1
+fr_SupSonFloat2:			ds.b 1
+fr_SupSonFloat3:			ds.b 1
+fr_SupSonFloat4:			ds.b 1
+fr_SupSonFloat5:			ds.b 1
+fr_SupSonFloat6:			ds.b 1
+fr_SupSonSpring:			ds.b 1
+fr_SupSonHang1:				ds.b 1
+fr_SupSonHang2:				ds.b 1
+fr_SupSonPush1:				ds.b 1
+fr_SupSonPush2:				ds.b 1
+fr_SupSonPush3:				ds.b 1
+fr_SupSonPush4:				ds.b 1
+fr_SupSonBubStand:			ds.b 1
+fr_SupSonDeath:				ds.b 1
+fr_SupSonDrown:				ds.b 1
+fr_SupSonShrink1:			ds.b 1
+fr_SupSonShrink2:			ds.b 1
+fr_SupSonShrink3:			ds.b 1
+fr_SupSonShrink4:			ds.b 1
+fr_SupSonShrink5:			ds.b 1
+fr_SupSonHurt:				ds.b 1
+fr_SupSonGetAir:			ds.b 1
+fr_SupSonWaterSlide:		ds.b 1
+fr_SupSonDropDash1:			ds.b 1
+fr_SupSonDropDash2:			ds.b 1
+fr_SupSonDropDash3:			ds.b 1
+fr_SupSonDropDash4:			ds.b 1
+fr_SupSonDropDash5:			ds.b 1
+fr_SupSonDropDash6:			ds.b 1
+fr_SupSonDropDash7:			ds.b 1
+fr_SupSonDropDash8:			ds.b 1
+fr_SupSonTransform1:		ds.b 1
+fr_SupSonTransform2:		ds.b 1
+fr_SupSonTransform3:		ds.b 1
+fr_SupSonTransform4:		ds.b 1
+fr_SupSonTransform5:		ds.b 1
+	dephase
+	endif
