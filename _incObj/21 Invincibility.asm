@@ -32,7 +32,7 @@ Stars_Main:	; Routine 0
 
 
 Stars_Next:	; Routine 2
-	if SuperMod=1
+	if SuperMod
 		btst	#sta2ndSuper,(v_player+obStatus2nd).w	; is Sonic Super?
 		bne.s	Stars_Delete							; if yes, destroy stars
 	endif
@@ -76,7 +76,7 @@ Stars_Next:	; Routine 2
 		move.b	obStatus(a0),d0
 		move.w	#$A,d1
 
-	if CDBalancing=1
+	if CDBalancing
 		cmpi.b	#aniID_Balance2,d5
 		beq.s	.shift
 		cmpi.b	#aniID_Balance3,d5

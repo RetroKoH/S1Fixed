@@ -57,10 +57,12 @@ Smash_Solid:	; Routine 2
 ; ===========================================================================
 
 .chkroll:
-	if SuperMod=1
+
+	if SuperMod
 		btst	#sta2ndSuper,obStatus2nd(a1)	; is Sonic Super?
 		bne.s	.cont							; if yes, break wall
 	endif
+
 		cmpi.b	#aniID_Roll,obAnim(a1)			; is Sonic rolling?
 		bne.s	.donothing						; if not, branch
 		move.w	d6,d0							; load Sonic's stored speed

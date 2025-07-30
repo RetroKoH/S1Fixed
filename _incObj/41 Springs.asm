@@ -84,7 +84,7 @@ Spring_BounceUp:
 		clr.b	obJumping(a1)
 		; Clear the spin flag?
 
-	if SpinDashEnabled=1
+	if SpinDashEnabled
 		clr.b	obSpinDashFlag(a1)			; clear spin dash flag
 	endif
 
@@ -144,7 +144,7 @@ loc_DC56:
 		bclr	#staSonicPush,obStatus(a0)
 		bclr	#staPush,obStatus(a1)
 
-	if SpinDashEnabled=1
+	if SpinDashEnabled
 		clr.b	(v_cameralag).w 	; clear camera lag
 	endif
 

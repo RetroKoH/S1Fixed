@@ -8,7 +8,7 @@ Map_SSRC:	mappingsTable
 	mappingsTableEntry.w	SSRC_4
 	mappingsTableEntry.w	SSRC_5
 	mappingsTableEntry.w	SSRC_6
-	if SuperMod=1
+	if SuperMod
 	mappingsTableEntry.w	SSRC_7
 	endif
 	mappingsTableEntry.w	SSRC_Blank
@@ -38,7 +38,7 @@ SSRC_6:	spriteHeader
 	spritePiece	-8, -8, 2, 2, $C, 0, 0, 1, 0
 SSRC_6_End
 
-	if SuperMod=1
+	if SuperMod
 SSRC_7:	spriteHeader
 	spritePiece	-8, -8, 2, 2, 0, 0, 0, 2, 0
 SSRC_7_End

@@ -61,7 +61,7 @@ loc_131AA:
 		tst.w	obInertia(a0)			; is Sonic moving?
 		bne.s	loc_131CC				; if yes, branch
 
-	if SpinDashEnabled=1
+	if SpinDashEnabled
 		tst.b	obSpinDashFlag(a0)
 		bne.s	Sonic_KeepRolling
 	endif
@@ -71,7 +71,7 @@ loc_131AA:
 		move.b	#aniID_Wait,obAnim(a0)	; use "standing" animation
 		subq.w	#5,obY(a0)
 
-	if SpinDashEnabled=1
+	if SpinDashEnabled
 		bra.s	loc_131CC
 
 ; ---------------------------------------------------------------------------
@@ -103,7 +103,7 @@ loc_131CC:
 		move.w  obInertia(a0),d2
 		muls.w  d2,d0
 		asr.l   #8,d0
-	if RollSpeedCapEnabled=1 ; RetroKoH Disable Rolling Speed Cap
+	if RollSpeedCapEnabled ; RetroKoH Disable Rolling Speed Cap
 		cmpi.w  #$1000,d0
 		ble.s   .checkNegY
 		move.w  #$1000,d0
@@ -120,7 +120,7 @@ loc_131CC:
 		muls.w  d2,d1
 		asr.l   #8,d1
 	
-	if RollSpeedCapEnabled=1 ; RetroKoH Disable Rolling Speed Cap
+	if RollSpeedCapEnabled ; RetroKoH Disable Rolling Speed Cap
 		cmpi.w  #$1000,d1
 		ble.s   .checkNegX
 		move.w  #$1000,d1

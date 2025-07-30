@@ -26,7 +26,7 @@ locret_134C2:
 ; ===========================================================================
 
 loc_134C4:
-	if SpinDashEnabled=1
+	if SpinDashEnabled
 		tst.b	obSpinDashFlag(a0)	; is Sonic charging his spin dash?
 		bne.w	locret_134D2		; if yes, branch
 	endif
@@ -41,29 +41,33 @@ locret_134D2:
 
 ; Files for Double Jump Techniques
 		
-	if S3KDoubleJump=0
-		include "_incObj/Sonic DoubleJump - NoShield.asm"	; Use if there are NO elemental shields or instashield
+	if S3KDoubleJump
+		include "_player/Sonic DoubleJump - Shields.asm"	; Use if elemental shields and/or the Instashield are enabled
 	else
-		include "_incObj/Sonic DoubleJump - Shields.asm"	; Use when in S3K mode (Shields and Insta)
+		include "_player/Sonic DoubleJump - NoShield.asm"	; Use if elemental shields or the Instashield are disabled
 	endif
 
 	if DropDashEnabled
-		include "_incObj/Sonic DropDash.asm"
+		include "_player/Sonic DropDash.asm"
 	endif
 	
 	if SuperMod
-		include "_incObj/Sonic TurnSuper.asm"
+		include "_player/Sonic TurnSuper.asm"
 	endif
 
+	if (ShieldsMode|DropDashEnabled)
 ; Added for S3K Shields and Drop Dash
 Reset_Sonic_Position_Array:
+		move.w	obX(a0),d1
+		swap	d1						; move obX to the upper word -- RetroKoH optimization
+		move.w	obY(a0),d1				; move obY to the lower word -- RetroKoH optimization
 		lea		(v_tracksonic).w,a1
 		move.w	#$3F,d0
 
 loc_10DEC:
-		move.w	obX(a0),(a1)+
-		move.w	obY(a0),(a1)+
+		move.l	d1,(a1)+				; move obX and obY to v_tracksonic -- RetroKoH optimization
 		dbf		d0,loc_10DEC
 		clr.w	(v_trackpos).w
 		rts
 ; End of function Reset_Sonic_Position_Array
+	endif

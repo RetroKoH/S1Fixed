@@ -19,7 +19,7 @@ Sonic_ChkSpinDash:
 		addq.l	#4,sp
 		bset	#0,obSpinDashFlag(a0)
 
-	if SpinDashCancel=1	; Mercury Spin Dash Cancel
+	if SpinDashCancel	; Mercury Spin Dash Cancel
 		move.w	#$80,obSpinDashCounter(a0)
 	else
 		clr.w	obSpinDashCounter(a0)
@@ -52,12 +52,14 @@ Sonic_UpdateSpinDash:
 		add.w	d0,d0
 		move.w	#1,obVelX(a0)				; force X speed to nonzero for camera lag's benefit
 		move.w	SpinDashSpeeds(pc,d0.w),obInertia(a0)
-	if SuperMod=1
+
+	if SuperMod
 		btst	#sta2ndSuper,obStatus2nd(a0)
 		beq.s	.notSuper
 		move.w	SpindashSpeedsSuper(pc,d0.w),obInertia(a0)
 .notSuper:
 	endif
+
 	; Use inertia to set camera lag effect
 		move.b	obInertia(a0),d0
 		subq.b	#$8,d0
@@ -99,7 +101,8 @@ SpinDashSpeeds:
 		dc.w  $B80		; 7
 		dc.w  $C00		; 8
 ; ---------------------------------------------------------------------------
-	if SuperMod=1
+
+	if SuperMod
 SpindashSpeedsSuper:
 		dc.w  $B00		; 0
 		dc.w  $B80		; 1
@@ -117,7 +120,7 @@ Sonic_ChargingSpinDash:				; If still charging the dash...
 		tst.w	obSpinDashCounter(a0)
 		beq.s	loc_1AD48
 		
-	if SpinDashNoRevDown=1 ; Mercury Spin Dash No Rev Down
+	if SpinDashNoRevDown ; Mercury Spin Dash No Rev Down
 		move.b	(v_jpadhold2).w,d0
 		andi.b	#btnABC,d0
 		bne.s	loc_1AD48	
@@ -127,7 +130,7 @@ Sonic_ChargingSpinDash:				; If still charging the dash...
 		lsr.w	#5,d0
 		sub.w	d0,obSpinDashCounter(a0)	; SpinDash rev down effect applied
 		
-	if SpinDashCancel=1	; Mercury Spin Dash Cancel
+	if SpinDashCancel	; Mercury Spin Dash Cancel
 		cmpi.w	#$1F,obSpinDashCounter(a0)
 		bne.s	.skip
 		clr.w	obSpinDashCounter(a0)		; clear SpinDash Counter

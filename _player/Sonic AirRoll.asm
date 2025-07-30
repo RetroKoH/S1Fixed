@@ -5,10 +5,12 @@
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 Sonic_ChkAirRoll:
-	if SpinDashEnabled=1
+
+	if SpinDashEnabled
 		tst.b	obSpinDashFlag(a0)		; is Sonic charging his spin dash?
 		bne.w	.end					; if yes, branch
 	endif
+
 		move.b	(v_jpadpress2).w,d0
 		andi.b	#btnABC,d0				; are buttons A, B, or C being pressed?
 		beq.s	.noAirRoll				; if not, branch
@@ -18,12 +20,13 @@ Sonic_ChkAirRoll:
 		move.w	#$E07,obHeight(a0)		; Height and Width
 		move.b	#aniID_Roll,obAnim(a0)	; enter rolling animation
 
-	if (S3KDoubleJump) | (AirRollIntoDropDash)
+	if (S3KDoubleJump|AirRollIntoDropDash)
 		move.b	#2,obDoubleJumpFlag(a0)	; disable shield abilities and/or enable Drop Dash transition
-	endif
 
 	if AirRollIntoDropDash
 		move.b	#1,obJumping(a0)		; enable this for potential drop dash transition
+	endif
+
 	endif
 
 		move.w	#sfx_Roll,d0

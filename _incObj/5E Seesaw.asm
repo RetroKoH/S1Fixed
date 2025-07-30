@@ -251,7 +251,7 @@ See_Spring:
 		move.b	#2,obRoutine(a1)
 		lea		(v_player).w,a2
 		
-	if SpinDashEnabled=1
+	if SpinDashEnabled
 		clr.b	obSpinDashFlag(a2)
 	endif
 

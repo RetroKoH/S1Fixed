@@ -16,12 +16,14 @@ Sonic_Jump:
 		cmpi.w	#6,d1					; does Sonic have enough room to jump?
 		blt.w	locret_1348E			; if not, branch
 		move.w	#$680,d2
-	if SuperMod=1
+
+	if SuperMod
 		btst	#sta2ndSuper,obStatus2nd(a0)
 		beq.s	.notSuper
 		move.w	#$800,d2				; set higher jump speed if super
 .notSuper:
 	endif
+
 		btst	#staWater,obStatus(a0)
 		beq.s	loc_1341C
 		move.w	#$380,d2
@@ -59,8 +61,10 @@ locret_1348E:
 ; ===========================================================================
 
 loc_13490:
-	if RollJumpLockActive<>0	; Mercury Rolling Jump Lock Toggle
+
+	if RollJumpLockActive	; Mercury Rolling Jump Lock Toggle
 		bset	#staRollJump,obStatus(a0)	; set the roll jump lock.
 	endif
+
 		rts	
 ; End of function Sonic_Jump

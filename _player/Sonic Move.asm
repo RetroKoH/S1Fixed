@@ -179,7 +179,7 @@ Sonic_LookUp:
 		beq.s	Sonic_Duck					; if not, branch
 		move.b	#aniID_LookUp,obAnim(a0)	; use "looking up" animation
 
-	if SpinDashEnabled=1	; S2 Scroll Delay -- Spin Dash Enabled
+	if SpinDashEnabled		; S2 Scroll Delay -- Spin Dash Enabled
 		addq.b	#1,(v_scrolldelay).w		; add 1 to the scroll timer
 		cmpi.b	#120,(v_scrolldelay).w		; is it equal to or greater than the scroll delay?
 		bcs.s	Sonic_LookReset				; if not, skip ahead without looking up
@@ -207,7 +207,7 @@ Sonic_Duck:
 		beq.s	Sonic_ResetScr			; if not, branch
 		move.b	#aniID_Duck,obAnim(a0)		; use "ducking" animation
 
-	if SpinDashEnabled=1	; S2 Scroll Delay -- Spin Dash Enabled
+	if SpinDashEnabled		; S2 Scroll Delay -- Spin Dash Enabled
 		addq.b	#1,(v_scrolldelay).w		; add 1 to the scroll timer
 		cmpi.b	#120,(v_scrolldelay).w		; is it equal to or greater than the scroll delay?
 		bcs.s	Sonic_LookReset				; if not, skip ahead without looking down
@@ -231,7 +231,7 @@ Sonic_Duck:
 ; ===========================================================================
 
 Sonic_ResetScr:
-	if SpinDashEnabled=1	; S2 Scroll Delay -- Spin Dash Enabled
+	if SpinDashEnabled		; S2 Scroll Delay -- Spin Dash Enabled
 		move.b	#0,(v_scrolldelay).w	; clear the scroll timer, because up/down are not being held
 
 Sonic_LookReset:	; added branch point that the new scroll delay code skips ahead to
@@ -273,10 +273,12 @@ loc_12FEA:
 
 ; increase or decrease speed on the ground
 Sonic_Traction: ;loc_12FEE:
-	if SpinDashEnabled=1
+
+	if SpinDashEnabled
 		tst.b	obSpinDashFlag(a0) 	
 		bne.s	loc_1300C
 	endif
+
 		move.b	obAngle(a0),d0
 		jsr		(CalcSine).w
 		muls.w	obInertia(a0),d1
@@ -360,7 +362,7 @@ loc_1309A:
 		cmp.w	d1,d0
 		bgt.s	loc_130A6
 
-	if GroundSpeedCapEnabled=0 ; Mercury Disable Ground Speed Cap
+	if ~~GroundSpeedCapEnabled ; Mercury Disable Ground Speed Cap
 		add.w	d5,d0
 		cmp.w	d1,d0
 		ble.s	loc_130A6
@@ -391,7 +393,8 @@ loc_130BA:
 		bclr	#staFacing,obStatus(a0)
 		move.w	#sfx_Skid,d0
 		jsr		(PlaySound_Special).w	; play stopping sound
-	if SkidDustEnabled=1
+
+	if SkidDustEnabled
 		cmpi.b	#$C,(v_air)
 		bcs.s	locret_130E8			; if he's drowning, branch to not make dust
 		move.b	#6,(v_playerdust+obRoutine).w
@@ -418,7 +421,7 @@ loc_13104:
 		cmp.w	d6,d0
 		blt.s	loc_1310C
 
-	if GroundSpeedCapEnabled=0 ; Mercury Disable Ground Speed Cap
+	if ~~GroundSpeedCapEnabled ; Mercury Disable Ground Speed Cap
 		sub.w	d5,d0
 		cmp.w	d6,d0
 		bge.s	loc_1310C
@@ -449,7 +452,8 @@ loc_13120:
 		bset	#staFacing,obStatus(a0)
 		move.w	#sfx_Skid,d0
 		jsr		(PlaySound_Special).w	; play stopping sound
-	if SkidDustEnabled=1
+
+	if SkidDustEnabled
 		cmpi.b	#$C,(v_air)
 		bcs.s	locret_1314E			; if he's drowning, branch to not make dust
 		move.b	#6,(v_playerdust+obRoutine).w

@@ -129,7 +129,7 @@ LevelSelect_Ending:
 ; Level	select - level pointers
 ; ---------------------------------------------------------------------------
 LevSel_Ptrs:
-	if BetaLevelOrder=1
+	if BetaLevelOrder
 		dc.b id_GHZ, 0
 		dc.b id_GHZ, 1
 		dc.b id_GHZ, 2

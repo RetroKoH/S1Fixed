@@ -16,20 +16,20 @@ Sonic_Floor:
 	; Avoiding CalcAngle When Performing Collision in the Air
 		move.w	obVelX(a0),d0
 		move.w	obVelY(a0),d1
-		bpl.s	.airCol_PositiveY			; If it's positive, branch
-		cmp.w	d0,d1						; Are we moving towards the left?
-		bgt.w	Sonic_AirMode_LeftWall		; If so, branch
-		neg.w	d0							; Are we moving towards the right?
+		bpl.s	.airCol_PositiveY						; If it's positive, branch
+		cmp.w	d0,d1									; Are we moving towards the left?
+		bgt.w	Sonic_AirMode_LeftWall					; If so, branch
+		neg.w	d0										; Are we moving towards the right?
 		cmp.w	d0,d1
-		bge.w	Sonic_AirMode_RightWall		; If so, branch
-		bra.w	Sonic_AirMode_Ceiling		; We are moving upwards
+		bge.w	Sonic_AirMode_RightWall					; If so, branch
+		bra.w	Sonic_AirMode_Ceiling					; We are moving upwards
  
 .airCol_PositiveY:
-		cmp.w	d0,d1						; Are we moving towards the right?
-		blt.w	Sonic_AirMode_RightWall		; If so, branch
+		cmp.w	d0,d1									; Are we moving towards the right?
+		blt.w	Sonic_AirMode_RightWall					; If so, branch
 		neg.w	d0
-		cmp.w	d0,d1						; Are we moving towards the left?
-		ble.w	Sonic_AirMode_LeftWall		; If so, branch
+		cmp.w	d0,d1									; Are we moving towards the left?
+		ble.w	Sonic_AirMode_LeftWall					; If so, branch
 		; fallthrough if moving downward
 	; Air Collision Improvement End
 
@@ -65,7 +65,7 @@ Sonic_Floor:
 loc_1361E:
 		add.w	d1,obY(a0)
 		move.b	d3,obAngle(a0)
-		;bsr.w	Sonic_ResetOnFloor		; Moved to loc_1364E -- Fix Bubble Bounce
+		;bsr.w	Sonic_ResetOnFloor			; Moved to loc_1364E -- Fix Bubble Bounce
 		move.b	#aniID_Walk,obAnim(a0)
 		move.b	d3,d0
 		addi.b	#$20,d0
@@ -82,7 +82,7 @@ loc_1361E:
 loc_1364E:
 		clr.w	obVelY(a0)
 		move.w	obVelX(a0),obInertia(a0)
-		bra.w	Sonic_ResetOnFloor		; Moved from loc_1361E -- Fix Bubble Bounce
+		bra.w	Sonic_ResetOnFloor			; Moved from loc_1361E -- Fix Bubble Bounce
 ; ===========================================================================
 
 loc_1365C:

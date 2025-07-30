@@ -187,11 +187,11 @@ obLRLock:		equ $3D			; flag for preventing left and right input
 obPlatformAddr:	equ $3E			; ost slot of the object Sonic's on top of (Convert to 2 bytes and swap with obLRLock)
 							; $3F obPlatformAddr
 
-;	if (SpinDashEnabled|PeeloutEnabled)=1
+;	if (SpinDashEnabled|PeeloutEnabled)
 obSpinDashFlag:		equ $2A				; spin dash/peelout flag - if toggled off, this is unused.
 obSpinDashCounter:	equ obRestartTimer	; Counter used for the Spin Dash and/or Peelout (2 bytes) - if toggled off, this is unused.
 ;	endif
-;	if ShieldsMode>0|DropDashEnabled=1
+;	if (ShieldsMode|DropDashEnabled)
 obDoubleJumpFlag:	equ	$2F				; Flag noting double jump status. 0 - not triggered. 1 - triggered. 2 - post-instashield (Begin Drop Dash revving). 3 - Drop Dash Cancelled.
 obDoubleJumpProp:	equ $25				; Counter for Sonic's Drop Dash (if enabled). Can also be utilized for remaining frames of flight / 2 for Tails, gliding-related for Knuckles.
 ;	endif
@@ -630,7 +630,7 @@ SSBlock_Emld4:					equ $3E
 SSBlock_Emld5:					equ $3F
 SSBlock_Emld6:					equ $40
 
-	if SuperMod=1
+	if SuperMod
 
 SSBlock_Emld7:					equ $41
 SSBlock_EmldLast:				equ SSBlock_Emld7

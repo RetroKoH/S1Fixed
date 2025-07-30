@@ -115,7 +115,7 @@ Pow_Shoes:
 		bset	#sta2ndShoes,(v_player+obStatus2nd).w	; speed up the BG music
 		move.b	#$96,(v_player+obShoes).w				; time limit for the power-up -- RetroKoH Sonic SST Compaction
 
-	if AfterImagesOn=1	; Hitaxas S3K afterimage
+	if AfterImagesOn	; Hitaxas S3K afterimage
 		move.b	#id_AfterImages,(v_trails).w
 		move.w	#v_player,(v_trails+obParent).w	
 		move.b	#id_AfterImages,(v_trails2).w
@@ -143,7 +143,7 @@ Pow_Shield:
 ; ===========================================================================
 
 Pow_Invinc:
-	if SuperMod=1
+	if SuperMod
 		btst	#sta2ndSuper,(v_player+obStatus2nd).w	; is Sonic super?
 		bne.s	.nomusic								; if yes, branch
 	endif
@@ -194,7 +194,7 @@ Pow_S:
 
 .skipcap:
 
-	if SuperMod=0
+	if ~~SuperMod
 		bsr.w	Pow_Invinc
 		bsr.w	Pow_Shoes
 
@@ -212,7 +212,7 @@ Pow_S:
 		move.w	#sfx_GiantRing,d0
 		jmp		(PlaySound_Special).w					; play giant ring sound
 	else
-		if AfterImagesOn=1	; Hitaxas S3K afterimage
+		if AfterImagesOn	; Hitaxas S3K afterimage
 			move.b	#id_AfterImages,(v_trails).w
 			move.w	#v_player,(v_trails+obParent).w	
 			move.b	#id_AfterImages,(v_trails2).w

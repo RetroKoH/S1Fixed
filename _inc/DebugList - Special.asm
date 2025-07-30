@@ -40,7 +40,7 @@ DebugList_Special:
 	sdbug	Map_SS_Chaos1,	SSBlock_Emld5,			0,		make_art_tile(ArtTile_SS_Emerald,0,0)			; Emerald 5 (Red)
 	sdbug	Map_SS_Chaos2,	SSBlock_Emld6,			0,		make_art_tile(ArtTile_SS_Emerald,0,0)			; Emerald 6 (Gray)
 
-	if SuperMod=1
+	if SuperMod
 	sdbug	Map_SS_Chaos2,	SSBlock_Emld7,			0,		make_art_tile(ArtTile_SS_Emerald,1,0)			; Emerald 7 (Cyan)
 	endif
 

@@ -294,7 +294,7 @@ React_Enemy:
 		cmp.w	obY(a1),d0
 		bhs.s	.bounceup
 		neg.w	obVelY(a0)
-	if ReboundMod=1	; Mercury Rebound Mod
+	if ReboundMod	; Mercury Rebound Mod
 		tst.b	obJumping(a0)
 		bne.s	.isjumping
 		move.b	#1,obJumping(a0)
