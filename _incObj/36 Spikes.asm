@@ -80,10 +80,12 @@ Spik_Upright:
 Spik_Hurt:
 		btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; is Sonic invincible?
 		bne.s	Spik_Display							; if yes, branch
-	if SpikeBugFix=1	; Mercury Spike Bug Fix
+
+	if SpikeBugFix		; Mercury Spike Bug Fix
 		tst.b	(v_player+obInvuln).w					; is Sonic invulnerable? -- RetroKoH Sonic SST Compaction
 		bne.s	Spik_Display							; if yes, branch
 	endif	; Spike Bug Fix End
+
 		move.l	a0,-(sp)
 		movea.l	a0,a2
 		lea		(v_player).w,a0

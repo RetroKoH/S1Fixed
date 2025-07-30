@@ -50,10 +50,12 @@ AfterImages_Main:
 .skip:
 		tst.b	(v_debuguse).w
 		bne.s	.norender						; don't display in Debug Mode
-	if SuperMod=1
+
+	if SuperMod
 		btst	#sta2ndSuper,(v_player+obStatus2nd).w
 		bne.s	.render							; always render if Super
 	endif
+
 		tst.b	(v_player+obShoes).w			; check	time remaining
 		beq.s	.delete							; don't render if not Super or no shoes
 

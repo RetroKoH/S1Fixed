@@ -8,7 +8,7 @@
 		binclude	"startpos/ss4.bin"
 		binclude	"startpos/ss5.bin"
 		binclude	"startpos/ss6.bin"
-	if SuperMod=1
+	if SuperMod
 		binclude	"startpos/ss7.bin"
 	endif
 		even

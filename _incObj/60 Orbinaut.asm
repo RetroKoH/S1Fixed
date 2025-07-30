@@ -14,7 +14,7 @@ Orb_Index:	offsetTable
 		offsetTableEntry.w Orb_Display
 		offsetTableEntry.w Orb_MoveOrb
 		offsetTableEntry.w Orb_ChkDel2
-	if SLZOrbinautBehaviourMod=1	; Mercury SLZ Orbinaut Behaviour Mod
+	if SLZOrbinautBehaviourMod	; Mercury SLZ Orbinaut Behaviour Mod
 		offsetTableEntry.w Orb_Pause
 		offsetTableEntry.w Orb_MoveOut
 
@@ -32,7 +32,7 @@ Orb_Main:	; Routine 0
 		bset	#5,obGfx(a0)									; Set to the next palette line -- RetroKoH VRAM Overhaul
 
 .notSLZ:
-	if SLZOrbinautBehaviourMod=1	; Mercury SLZ Orbinaut Behaviour Mod
+	if SLZOrbinautBehaviourMod	; Mercury SLZ Orbinaut Behaviour Mod
 		move.b	#4,orb_distance(a0)
 	endif	; SLZ Orbinaut Behaviour Mod
 		ori.b	#4,obRender(a0)
@@ -85,7 +85,7 @@ Orb_Main:	; Routine 0
 .fail:
 		moveq	#1,d0
 
-	if SLZOrbinautBehaviourMod=1	;Mercury SLZ Orbinaut Behaviour Mod
+	if SLZOrbinautBehaviourMod	;Mercury SLZ Orbinaut Behaviour Mod
 		cmpi.b	#2,obSubtype(a0)
 		bne.s	.add
 		neg.w	d0
@@ -99,7 +99,7 @@ Orb_Main:	; Routine 0
 .noflip:
 		move.b	d0,objoff_36(a0)
 
-	if SLZOrbinautBehaviourMod=0	;Mercury SLZ Orbinaut Behaviour Mod
+	if ~~SLZOrbinautBehaviourMod	;Mercury SLZ Orbinaut Behaviour Mod
 		move.b	obSubtype(a0),obRoutine(a0) ; if type is 02, skip Orb_ChkSonic
 	endif	;end SLZ Orbinaut Behaviour Mod
 
@@ -120,7 +120,7 @@ Orb_ChkSonic:	; Routine 2
 		neg.w	d0
 
 .isright:
-	if OrbinautAnimationTweak=1	; Mercury Orbinaut Animation Tweak
+	if OrbinautAnimationTweak	; Mercury Orbinaut Animation Tweak
 		cmpi.w	#OrbinautAnimationTweakRange,d0
 	else
 		cmpi.w	#$A0,d0			; is Sonic within $A0 pixels of	orbinaut?
@@ -184,7 +184,7 @@ Orb_MoveOrb:	; Routine 6
 		cmpi.b	#2,obFrame(a1)			; is orbinaut angry?
 		bne.w	.circle					; if not, branch
 
-	if SLZOrbinautBehaviourMod=1	;Mercury SLZ Orbinaut Behaviour Mod
+	if SLZOrbinautBehaviourMod	;Mercury SLZ Orbinaut Behaviour Mod
 		cmpi.b	#2,obSubtype(a1)
 		beq.s	.fire2
 	endif	;end SLZ Orbinaut Behaviour Mod
@@ -202,7 +202,7 @@ Orb_MoveOrb:	; Routine 6
 		beq.s	.noflip
 		neg.w	obVelX(a0)
 
-	if SLZOrbinautBehaviourMod=1	;Mercury SLZ Orbinaut Behaviour Mod
+	if SLZOrbinautBehaviourMod	;Mercury SLZ Orbinaut Behaviour Mod
 		bra.s	.noflip
 
 	.fire2:
@@ -235,14 +235,14 @@ Orb_MoveOrb:	; Routine 6
 ; ===========================================================================
 
 .circle:
-	if SLZOrbinautBehaviourMod=1	;Mercury SLZ Orbinaut Behaviour Mod
+	if SLZOrbinautBehaviourMod	;Mercury SLZ Orbinaut Behaviour Mod
 		move.b	orb_distance(a1),d2	; put orb distance into d2
 	endif	;end SLZ Orbinaut Behaviour Mod
 
 		move.b	obAngle(a0),d0
 		jsr		(CalcSine).w
 
-	if SLZOrbinautBehaviourMod=1	;Mercury SLZ Orbinaut Behaviour Mod
+	if SLZOrbinautBehaviourMod	;Mercury SLZ Orbinaut Behaviour Mod
 		asr.w	d2,d1
 	else
 		asr.w	#4,d1
@@ -251,7 +251,7 @@ Orb_MoveOrb:	; Routine 6
 		add.w	obX(a1),d1
 		move.w	d1,obX(a0)
 
-	if SLZOrbinautBehaviourMod=1	;Mercury SLZ Orbinaut Behaviour Mod
+	if SLZOrbinautBehaviourMod	;Mercury SLZ Orbinaut Behaviour Mod
 		asr.w	d2,d0
 	else
 		asr.w	#4,d0
@@ -264,7 +264,7 @@ Orb_MoveOrb:	; Routine 6
 		bra.w	DisplayAndCollision	; S3K TouchResponse
 ; ===========================================================================
 
-	if SLZOrbinautBehaviourMod=1	;Mercury SLZ Orbinaut Behaviour Mod
+	if SLZOrbinautBehaviourMod	;Mercury SLZ Orbinaut Behaviour Mod
 Orb_Pause:	; Routine 10
 		subq.b	#1,objoff_2E(a0)	; decrease timer
 		bne.s	Orb_ChkDel2Skip		; if it hasn't run out, branch
@@ -280,7 +280,7 @@ Orb_MoveOut:	; Routine 12
 Orb_ChkDel2:	; Routine 8
 		bsr.w	SpeedToPos
 		
-	if SLZOrbinautBehaviourMod=1	;Mercury SLZ Orbinaut Behaviour Mod
+	if SLZOrbinautBehaviourMod	;Mercury SLZ Orbinaut Behaviour Mod
 Orb_ChkDel2Skip:
 	endif	;end SLZ Orbinaut Behaviour Mod
 

@@ -1,5 +1,6 @@
 ; ================================================================================
 ; Toggleable Mods (Sorted by Context)
+; Press Ctrl+Shift+F (Notepad++) and search a toggle name to find all instances in all files
 ; ================================================================================
 
 ; ----- PLAYER ABILITIES ---------------------------------------------------------

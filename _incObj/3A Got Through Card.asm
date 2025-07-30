@@ -2,7 +2,7 @@
 ; Object 3A - "SONIC GOT THROUGH" title	card
 ; ---------------------------------------------------------------------------
 
-	if (CoolBonusEnabled=0)&(PerfectBonusEnabled=1)
+	if (~~CoolBonusEnabled)&(PerfectBonusEnabled)
 got_pieces = 5
 	else
 got_pieces = 6	
@@ -298,7 +298,7 @@ Got_Display2:
 ; Level	order array
 ; ---------------------------------------------------------------------------
 LevelOrder:
-	if BetaLevelOrder=1
+	if BetaLevelOrder
 		; Green Hill Zone
 		dc.b id_GHZ, 1	; Act 1
 		dc.b id_GHZ, 2	; Act 2
@@ -428,7 +428,7 @@ Got_Config:
 		dc.b 				2,	got_pieces
 
 ; ---------------------------------------------------------------------------
-	if ExtraBonuses=0
+	if ~~ExtraBonuses
 	
 		dc.w $520,	$120,	$EC			; score
 		dc.b 				2,	2

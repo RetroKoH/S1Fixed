@@ -8,7 +8,7 @@ ptr_Obj04:				dc.l NullObject
 ptr_Obj05:				dc.l NullObject
 ptr_SpecialCursor:		dc.l SpecialCursor
 
-	if (SpinDashEnabled|SkidDustEnabled)=1
+	if (SpinDashEnabled|SkidDustEnabled)
 ptr_Effects:			dc.l Effects
 	else
 ptr_Obj07:				dc.l NullObject
@@ -167,7 +167,7 @@ id_Obj04:				equ ((ptr_Obj04-Obj_Index)/4)+1
 id_Obj05:				equ ((ptr_Obj05-Obj_Index)/4)+1
 id_SpecialCursor:		equ ((ptr_SpecialCursor-Obj_Index)/4)+1
 
-	if (SpinDashEnabled|SkidDustEnabled)=1
+	if (SpinDashEnabled|SkidDustEnabled)
 id_Effects:				equ ((ptr_Effects-Obj_Index)/4)+1
 	else
 id_Obj07:				equ ((ptr_Obj07-Obj_Index)/4)+1

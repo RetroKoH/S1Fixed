@@ -40,7 +40,7 @@ Effects_DisplayModes:	offsetTable
 		offsetTableEntry.w 	Effects_MdDisplay		; 6: DropDash Dust
 ; ===========================================================================
 Effects_MdSpindashDust:
-	if SpinDashEnabled=1
+	if SpinDashEnabled
 		cmpi.b	#4,obRoutine(a2)
 		bhs.s	Effects_ResetDisplayMode
 		tst.b	obSpinDashFlag(a2)
@@ -69,7 +69,7 @@ Effects_Delete:	; Routine 4
 ; ===========================================================================
 
 Effects_ChkSkid:
-	if SkidDustEnabled=0
+	if ~~SkidDustEnabled
 		rts
 	else
 		lea		(v_player).w,a2

@@ -1452,7 +1452,7 @@ PalLoad:
 		rts	
 ; End of function PalLoad
 
-	if SuperMod=1
+	if SuperMod
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 ; Used to load in proper flower colors to overwrite the cyan emerald colors.
 
@@ -1573,7 +1573,7 @@ Pal_SBZ3SonWat:	bincludePalette	"palette/Sonic - SBZ3 Underwater.bin"
 Pal_SSResult:	bincludePalette	"palette/Special Stage Results.bin"
 Pal_Continue:	bincludePalette	"palette/Special Stage Continue Bonus.bin"
 
-	if SuperMod=1
+	if SuperMod
 Pal_Ending:		bincludePalette	"palette/Ending - SuperMod.bin"
 Pal_EndFlowers:	bincludePalette	"palette/Ending - SuperMod - Flowers.bin"
 	else
@@ -3610,9 +3610,11 @@ End_SlowFade:
 		bsr.w	DrawChunks
 		moveq	#palid_Ending,d0
 		bsr.w	PalLoad_Fade					; load ending palette
-	if SuperMod=1
+
+	if SuperMod
 		bsr.w	PalLoad_EndFlowers
 	endif
+
 		bsr.w	PaletteWhiteIn
 		bra.w	End_MainLoop
 
@@ -4985,7 +4987,8 @@ MvSonic2:
 		move.w	d2,d3				; copy x-pos to d3 for later
 		move.w	#$A,d1
 		move.b	obStatus(a2),d4		; copy shield's status bit
-	if CDBalancing=1
+
+	if CDBalancing
 		cmpi.b	#aniID_Balance2,obAnim(a1)
 		beq.s	.shift
 		cmpi.b	#aniID_Balance3,obAnim(a1)
@@ -4996,6 +4999,7 @@ MvSonic2:
 		cmpi.b	#aniID_Balance,obAnim(a1)
 		bne.s	.noshift
 	endif
+
 	.shift:
 		sub.w	d1,d2
 		btst	#staFlipX,d4	; X-Flip sprite bit
@@ -5011,7 +5015,7 @@ MvSonic2:
 	; Move Shields with Sonic End
 	
 .noShield:
-	if (SpinDashEnabled|SkidDustEnabled)=1
+	if (SpinDashEnabled|SkidDustEnabled)
 	; RetroKoH Move Spindash dust with Sonic
 		lea		(v_playerdust).w,a2
 		cmpi.b	#1,obAnim(a2)
@@ -5019,7 +5023,6 @@ MvSonic2:
 		move.w	d2,obX(a2)
 		move.w	d0,obY(a2)
 	endif
-
 
 locret_7B62:
 		rts	
@@ -5251,7 +5254,7 @@ Obj44_SolidWall2:
 		move.w	obY(a1),d3
 
 	; Mercury Ducking Size Fix	
-	if SpinDashEnabled=1
+	if SpinDashEnabled
 		cmpi.b	#aniID_SpinDash,obAnim(a1)
 		beq.s	.short
 	endif
@@ -5627,7 +5630,7 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 		include "_incObj/8D Super Sonic Stars.asm"
 	endif
 
-	if (SpinDashEnabled|SkidDustEnabled)=1
+	if (SpinDashEnabled|SkidDustEnabled)
 		include "_incObj/07 Effects.asm"	; Skid Dust and/or Spindash Dust
 
 dplcTiles := Art_Effects		; MainMemory 128k Boundary Check for DPLCs
@@ -5637,232 +5640,45 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 		include "_anim/Effects.asm"
 	endif
 
-; ===========================================================================
-; ---------------------------------------------------------------------------
-; Object 01 - Sonic
-; ---------------------------------------------------------------------------
+		include "_player/Sonic.asm"
 
-SonicPlayer:
-		tst.w	(v_debuguse).w	; is debug mode	being used?
-		beq.s	Sonic_Normal	; if not, branch
-		jmp		(DebugMode).l
-; ===========================================================================
-
-Sonic_Normal:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Sonic_Index(pc,d0.w),d1
-		jsr		Sonic_Index(pc,d1.w)
-		clr.w	(v_col_response_list).w		; reset collsion response list
-		rts
-; ===========================================================================
-Sonic_Index:	offsetTable
-		offsetTableEntry.w	Sonic_Main
-		offsetTableEntry.w	Sonic_Control
-		offsetTableEntry.w	Sonic_Hurt
-		offsetTableEntry.w	Sonic_Death
-		offsetTableEntry.w	Sonic_ResetLevel
-		offsetTableEntry.w	Sonic_Drowned		; RHS Drowning Fix
-; ===========================================================================
-
-Sonic_Main:	; Routine 0
-		move.b	#$C,(v_top_solid_bit).w	; MJ: set collision to 1st
-		move.b	#$D,(v_lrb_solid_bit).w	; MJ: set collision to 1st
-		addq.b	#2,obRoutine(a0)
-		move.w	#$1309,obHeight(a0)			; Height and Width
-		move.l	#Map_Sonic,obMap(a0)
-		move.w	#make_art_tile(ArtTile_Sonic,0,0),obGfx(a0)
-		move.w	#priority2,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$18,obActWid(a0)
-		move.b	#4,obRender(a0)
-		lea     (v_sonspeedmax).w,a2		; Load Sonic_top_speed into a2
-		bsr.w   ApplySpeedSettings			; Fetch Speed settings
-
-	if (SpinDashEnabled|SkidDustEnabled)=1
-		move.b	#id_Effects,(v_playerdust).w
-	endif
-
-Sonic_Control:	; Routine 2
-	if CDCamera=1
-		bsr.w	Sonic_PanCamera
-	endif
-		tst.w	(f_debugmode).w			; is debug cheat enabled?
-		beq.s	loc_12C58				; if not, branch
-		btst	#bitB,(v_jpadpress1).w	; is button B pressed?
-		beq.s	loc_12C58				; if not, branch
-		move.w	#1,(v_debuguse).w		; change Sonic into a ring/item
-		clr.b	(f_lockctrl).w
-		rts	
-; ===========================================================================
-
-loc_12C58:
-		tst.b	(f_lockctrl).w					; are controls locked?
-		bne.s	loc_12C64						; if yes, branch
-		move.w	(v_jpadhold1).w,(v_jpadhold2).w	; enable joypad control
-
-loc_12C64:
-		btst	#0,obCtrlLock(a0)				; are controls locked somehow?
-		bne.s	loc_12C7E						; if yes, branch
-		moveq	#0,d0
-		move.b	obStatus(a0),d0
-		andi.w	#(maskAir+maskSpin),d0			; Use current air and spin states to determine Control Mode
-		move.w	Sonic_Modes(pc,d0.w),d1
-		jsr		Sonic_Modes(pc,d1.w)
-
-loc_12C7E:
-	if SuperMod=1
-		bsr.w	Sonic_Display
-		bsr.s	Sonic_Super
-	else
-		bsr.s	Sonic_Display
-	endif
-		bsr.w	Sonic_RecordPosition
-		bsr.w	Sonic_Water
-		move.b	(v_anglebuffer).w,obFrontAngle(a0)
-		move.b	(v_anglebuffer2).w,obRearAngle(a0)
-		tst.b	(f_wtunnelmode).w
-		beq.s	loc_12CA6
-		cmpi.b	#aniID_Walk,obAnim(a0)			; changed instruction because Walk is no longer #0
-		bne.s	loc_12CA6
-		move.b	obPrevAni(a0),obAnim(a0)
-
-loc_12CA6:
-		bsr.w	Sonic_Animate
-		tst.b	obCtrlLock(a0)
-		bmi.s	loc_12CB6
-		jsr		(ReactToItem).l
-
-loc_12CB6:
-		bsr.w	Sonic_Loops
-		bra.w	Sonic_LoadGfx	
-; ===========================================================================
-Sonic_Modes:
-		dc.w Sonic_MdNormal-Sonic_Modes
-		dc.w Sonic_MdAir-Sonic_Modes
-		dc.w Sonic_MdRoll-Sonic_Modes
-		dc.w Sonic_MdJump-Sonic_Modes
-
-	if SuperMod=1
-		include	"_incObj/Sonic Super.asm"
-	endif
-		include	"_incObj/Sonic Display.asm"
-		include	"_incObj/Sonic RecordPosition.asm"
-		include	"_incObj/Sonic Water.asm"
-
-; ===========================================================================
-; ---------------------------------------------------------------------------
-; Modes	for controlling	Sonic
-; ---------------------------------------------------------------------------
-
-Sonic_MdNormal:
-	; Neither in air or rolling
-	if PeeloutEnabled=1
-		bsr.w	Sonic_ChkPeelout
-	endif
-	
-	if SpinDashEnabled=1
-		bsr.w	Sonic_ChkSpinDash
-	endif
-
-		bsr.w	Sonic_Jump
-		bsr.w	Sonic_SlopeResist
-		bsr.w	Sonic_Move
-		bsr.w	Sonic_Roll
-		bsr.w	Sonic_LevelBound
-		jsr		(SpeedToPos).l
-		bsr.w	Sonic_AnglePos
-		bra.w	Sonic_SlopeRepel
-; ===========================================================================
-
-Sonic_MdAir:
-	; in the air, not in a ball (thus, not jumping)
-	if AirRollEnabled=1
-		bsr.w	Sonic_ChkAirRoll		; Contains truncated JumpHeight code
-	else
-		bsr.w	Sonic_JumpHeight
-	endif
-		bsr.w	Sonic_JumpDirection
-		bsr.w	Sonic_LevelBound
-		jsr		(ObjectFall).l
-		btst	#staWater,obStatus(a0)
-		beq.s	loc_12E5C
-		subi.w	#$28,obVelY(a0)
-
-loc_12E5C:
-		bsr.w	Sonic_JumpAngle
-		bra.w	Sonic_Floor
-; ===========================================================================
-
-Sonic_MdRoll:
-	; in a ball, not in the air
-	if SpinDashEnabled=1
-		tst.b	obSpinDashFlag(a0)
-		bne.s	.skip
-		bsr.w	Sonic_Jump
-
-.skip:
-	else
-		bsr.w	Sonic_Jump
-	endif
-		bsr.w	Sonic_RollRepel
-		bsr.w	Sonic_RollSpeed
-		bsr.w	Sonic_LevelBound
-		jsr		(SpeedToPos).l
-		bsr.w	Sonic_AnglePos
-		bra.w	Sonic_SlopeRepel
-; ===========================================================================
-
-Sonic_MdJump:
-	; in the air, in a ball (jumping or falling mid-roll)
-		bsr.w	Sonic_JumpHeight
-		bsr.w	Sonic_JumpDirection
-		bsr.w	Sonic_LevelBound
-		jsr		(ObjectFall).l
-		btst	#staWater,obStatus(a0)
-		beq.s	loc_12EA6
-		subi.w	#$28,obVelY(a0)
-
-loc_12EA6:
-		bsr.w	Sonic_JumpAngle
-		bra.w	Sonic_Floor
-
-		include	"_incObj/Sonic Move.asm"
-		include	"_incObj/Sonic RollSpeed.asm"
-		include	"_incObj/Sonic JumpDirection.asm"
-		include	"_incObj/Sonic LevelBound.asm"
-		include	"_incObj/Sonic Roll.asm"
-		include	"_incObj/Sonic Jump.asm"
-		include	"_incObj/Sonic JumpHeight.asm"
+		include	"_player/Sonic Move.asm"
+		include	"_player/Sonic RollSpeed.asm"
+		include	"_player/Sonic JumpDirection.asm"
+		include	"_player/Sonic LevelBound.asm"
+		include	"_player/Sonic Roll.asm"
+		include	"_player/Sonic Jump.asm"
+		include	"_player/Sonic JumpHeight.asm"
 		
-	if AirRollEnabled=1
-		include "_incObj/Sonic AirRoll.asm"
+	if AirRollEnabled
+		include "_player/Sonic AirRoll.asm"
 	endif
 	
-	if PeeloutEnabled=1
-		include	"_incObj/Sonic Peelout.asm"
+	if PeeloutEnabled
+		include	"_player/Sonic Peelout.asm"
 	endif
 	
-	if SpinDashEnabled=1
-		include	"_incObj/Sonic SpinDash.asm"
+	if SpinDashEnabled
+		include	"_player/Sonic SpinDash.asm"
 	endif
 
-		include	"_incObj/Sonic SlopeResist.asm"
-		include	"_incObj/Sonic RollRepel.asm"
-		include	"_incObj/Sonic SlopeRepel.asm"
-		include	"_incObj/Sonic JumpAngle.asm"
-		include	"_incObj/Sonic Floor.asm"
-	if CDCamera=1
-		include	"_incObj/Sonic PanCamera.asm"
+		include	"_player/Sonic SlopeResist.asm"
+		include	"_player/Sonic RollRepel.asm"
+		include	"_player/Sonic SlopeRepel.asm"
+		include	"_player/Sonic JumpAngle.asm"
+		include	"_player/Sonic Floor.asm"
+	if CDCamera
+		include	"_player/Sonic PanCamera.asm"
 	endif
-		include	"_incObj/Sonic ResetOnFloor.asm"
-		include	"_incObj/Sonic (part 2).asm"
-		include	"_incObj/Sonic Loops.asm"
-		include	"_incObj/Sonic Animate.asm"
+		include	"_player/Sonic ResetOnFloor.asm"
+		include	"_player/Sonic (part 2).asm"
+		include	"_player/Sonic Loops.asm"
+		include	"_player/Sonic Animate.asm"
 		include	"_anim/Sonic.asm"
 	if SuperMod
 		include	"_anim/Super Sonic.asm"
 	endif
-		include	"_incObj/Sonic LoadGfx.asm"
+		include	"_player/Sonic LoadGfx.asm"
 
 dplcTiles := Art_Sonic			; MainMemory 128k Boundary Check for DPLCs
 		include	"_maps/Sonic - DPLCs.asm"
@@ -5896,7 +5712,7 @@ ResumeMusic:
 		move.w	#bgm_SBZ,d0					; play SBZ music
 
 .notsbz:
-	if SuperMod=1
+	if SuperMod
 		btst	#sta2ndSuper,(v_player+obStatus2nd).w	; is player in Super Form?
 		bne.s	.playinvinc								; if yes, branch
 	endif
@@ -5966,7 +5782,7 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 		include	"_incObj/4A Special Stage Entry (Unused).asm"
 		include	"_anim/Special Stage Entry (Unused).asm"
 
-		include	"_incObj/Sonic AnglePos.asm"
+		include	"_player/Sonic AnglePos.asm"
 
 		include	"_incObj/sub FindNearestTile.asm"
 		include	"_incObj/sub FindFloor.asm"
@@ -6847,7 +6663,7 @@ loc_1B2E4:
 		move.b	d0,$1F0(a1)
 		move.b	d0,$1F8(a1)
 		move.b	d0,$200(a1)
-	if SuperMod=1
+	if SuperMod
 		move.b	d0,$208(a1)
 	endif
 		subq.b	#1,(v_ani3_time).w
@@ -7192,7 +7008,7 @@ SS_LayoutIndex:
 		dc.l SS_4
 		dc.l SS_5
 		dc.l SS_6
-	if SuperMod=1
+	if SuperMod
 		dc.l SS_7
 	endif
 		even
@@ -7208,7 +7024,7 @@ SS_StartLoc:	include	"_inc/Start Location Array - Special Stages.asm"
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
-	if SuperMod=1
+	if SuperMod
 emldCount: = 7
 	else
 emldCount: = 6
@@ -7756,7 +7572,7 @@ Nem_Splats:	binclude	"artnem/Enemy Splats.nem"
 Nem_Bomb:	binclude	"artnem/Enemy Bomb.nem"
 		even
 
-	if SLZOrbinautBehaviourMod=1	;Mercury SLZ Orbinaut Behaviour Mod
+	if SLZOrbinautBehaviourMod	;Mercury SLZ Orbinaut Behaviour Mod
 Nem_Orbinaut_SLZ:	binclude	"artnem/Enemy Orbinaut (SLZ).nem"
 		even
 
@@ -8037,7 +7853,7 @@ Col_SBZ_2:	binclude	"collide/SBZ2.kos"	; SBZ index 2
 ; ---------------------------------------------------------------------------
 ; Special Stage layouts
 ; ---------------------------------------------------------------------------
-	if SuperMod=1
+	if SuperMod
 SS_1:		binclude	"sslayout/Super Mod/1.eni"
 		even
 SS_2:		binclude	"sslayout/Super Mod/2.eni"
@@ -8365,7 +8181,7 @@ Art_Signpost:	binclude	"artunc/Signpost.bin"				; End-of-level Signpost -- Retro
 Art_BigRing:	binclude	"artunc/Giant Ring.bin"				; Giant Ring -- RetroKoH VRAM Overhaul
 		even
 
-	if (SpinDashEnabled|SkidDustEnabled)=1
+	if (SpinDashEnabled|SkidDustEnabled)
 Art_Effects:	binclude	"artunc/Dust Effects.bin"			; Spindash/Skid Dust
 		even
 				include "_maps/Effects.asm"

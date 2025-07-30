@@ -754,6 +754,7 @@ ScrollHoriz:
 
 
 MoveScreenHoriz:
+
 	if SpinDashEnabled	; Spin Dash Enabled
 		move.b	(v_cameralag).w,d1
 		beq.s	.cont1
@@ -781,6 +782,7 @@ MoveScreenHoriz:
 	else
 		move.w	(v_player+obX).w,d0
 	endif	; Spin Dash Enabled End
+
 		sub.w	(v_screenposx).w,d0		; Sonic's distance from left edge of screen
 		
 	if CDCamera

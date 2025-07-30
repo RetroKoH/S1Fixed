@@ -22,7 +22,7 @@ ApplySpeedSettings:
 		addi.b  #$10,d0
 
 .nowater:
-	if SuperMod=1
+	if SuperMod
 		btst	#sta2ndSuper,obStatus2nd(a0)		; Is character Super?
 		beq.s   .nosuper							; If not, branch
 		addi.b  #$20,d0
@@ -46,7 +46,8 @@ SpeedSettings:
         dc.w	$0,     $C00,           $18,            $80             ; $08   ; Normal Speedshoes
         dc.w	$0,     $300,           $6,             $40             ; $10   ; Normal Underwater
         dc.w	$0,     $600,           $C,             $40             ; $18   ; Normal Underwater Speedshoes
-	if SuperMod=1
+
+	if SuperMod
         dc.w	$0,     $A00,           $30,            $100            ; $20   ; Super
         dc.w	$0,     $C00,           $30,            $100            ; $28   ; Super Speedshoes
         dc.w	$0,     $500,           $18,            $80             ; $30   ; Super Underwater

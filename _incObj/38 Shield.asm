@@ -65,7 +65,7 @@ Shi_Main:	; Routine 0
 		move.b	#$10,obActWid(a0)
 		move.w	#make_art_tile(ArtTile_Shield,0,0),obGfx(a0)
 
-	if (S3KDoubleJump=0)
+	if ~~S3KDoubleJump
 		addq.b	#2,obRoutine(a0)
 		clr.b	obAnim(a0)					; Blue Shield Animation
 		move.l	#Map_Shield,obMap(a0)
@@ -604,16 +604,18 @@ Stars_LoadGfx:
 .nochange:
 		rts
 	
-	if (ShieldsMode | InstashieldEnabled)
+	if S3KDoubleJump
 ; ===========================================================================
 ; Shield variables
 ; ===========================================================================
 ShieldVars:
 				; anim					; map				; artLoc		; dplcLoc
 		dc.l	aniID_BlueShield,		Map_Shield,			Art_Shield,		ShieldDynPLC		; $00 - Blue Shield
+
 	if InstashieldEnabled
 		dc.l	aniID_InstaIdle,		Map_InstaShield,	Art_Insta,		DPLC_InstaShield	; $10 - InstaShield
 	endif
+
 	if ShieldsMode
 		dc.l	aniID_FlameShield,		Map_FlameShield,	Art_Shield_F,	DPLC_FlameShield	; $20 - Flame
 		dc.l	aniID_BubbleShield,		Map_BubbleShield,	Art_Shield_B,	DPLC_BubbleShield	; $30 - Bubble

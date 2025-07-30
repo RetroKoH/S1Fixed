@@ -202,7 +202,7 @@ Debug_ChgItem:
 		move.b	#2,obRoutine(a1)
 		move.w	#$1309,obHeight(a1)					; Height and Width
 
-	if SuperMod=1
+	if SuperMod
 		btst	#sta2ndSuper,obStatus2nd(a1)		; is player in Super Form?
 		beq.s	.notSuper							; if not, branch
 		move.l	#Map_SuperSonic,obMap(a1)			; set Super mappings
@@ -255,7 +255,7 @@ Debug_RestartMusic:
 		lea		(MusicList).l,a1
 		move.b	(a1,d0.w),d0
 
-	if SuperMod=1
+	if SuperMod
 		btst	#sta2ndSuper,(v_player+obStatus2nd).w	; is player in Super Form?
 		bne.s	.playinvinc								; if yes, branch
 	endif

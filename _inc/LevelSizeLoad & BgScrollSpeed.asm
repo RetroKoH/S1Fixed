@@ -34,7 +34,7 @@ LevelSizeLoad:
 		move.w	(a0)+,d0
 		move.w	d0,(v_lookshift).w
 	
-	if CDCamera=1
+	if CDCamera
 		move.w	#160,(v_camera_pan).w		; reset the horizontal camera pan value to 160 pixels
 	endif
 
@@ -129,17 +129,19 @@ LevSz_SonicPos:
 		move.w	#$3B0,d0				; MJ: ''
 		move.w	d1,(v_player+obX).w		; MJ: save to object 1 so title screen follows
 		move.w	d0,(v_player+obY).w		; MJ: ''
+		move.w	d1,d3
+		swap	d3
+		move.w	d0,d3
 
 SetScreen:
 LevSz_SkipStartPos:
-	if SpinDashEnabled=1	; Spin Dash Enabled
+	if SpinDashEnabled		; Spin Dash Enabled
 		clr.b	(v_cameralag).w
 		clr.w	(v_trackpos).w			; reset Sonic's position tracking index
 		lea		(v_tracksonic).w,a2		; load the tracking array into a2
 		moveq	#63,d2					; begin a 64-step loop
 	.looppoint:
-		move.w	d1,(a2)+				; fill in X
-		move.w	d0,(a2)+				; fill in Y
+		move.l	d3,(a2)+				; fill in X and Y -- RetroKoH optimization
 		dbf		d2,.looppoint			; loop
 	endif					; Spin Dash Enabled End
 
@@ -154,10 +156,10 @@ SetScr_WithinLeft:
 		move.w	d2,d1
 
 SetScr_WithinRight:
-		move.w	d1,(v_screenposx).w ; set horizontal screen position
+		move.w	d1,(v_screenposx).w 	; set horizontal screen position
 
-		subi.w	#96,d0		; is Sonic within 96px of upper edge?
-		bcc.s	SetScr_WithinTop ; if yes, branch
+		subi.w	#96,d0					; is Sonic within 96px of upper edge?
+		bcc.s	SetScr_WithinTop		; if yes, branch
 		moveq	#0,d0
 
 SetScr_WithinTop:

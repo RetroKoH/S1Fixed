@@ -14,7 +14,8 @@ Sonic_PanCamera:
 		neg.w	d0						; otherwise, we negate it to get the absolute value
 
 	.abs_inertia:
-	if SpinDashEnabled=1
+
+	if SpinDashEnabled
 		tst.b	obSpinDashFlag(a0)		; is sonic charging up a spin dash?
 		beq.s	.skip					; if not, branch
 		btst	#0,obStatus(a0)			; check the direction that sonic is facing
@@ -23,6 +24,7 @@ Sonic_PanCamera:
 
 	.skip:
 	endif
+
 		cmpi.w	#$600,d0				; is sonic's inertia greater than $600
 		bcs.s	.reset_pan				; if not, recenter the screen (if needed)
 		tst.w	obInertia(a0)			; otherwise, check the direction of inertia (by subtracting it from 0)
