@@ -2804,7 +2804,7 @@ SS_MainLoop:
 
 		bsr.w	MoveSonicInDemo
 		move.w	(v_jpadhold1).w,(v_jpadhold2).w
-		jsr		(ExecuteObjects).l
+		jsr		(SpecialObjects).l
 
 		bsr.w	LoadSSRingFrame
 
@@ -2853,7 +2853,7 @@ SS_FinLoop:
 		bsr.w	WaitForVBla
 		bsr.w	MoveSonicInDemo
 		move.w	(v_jpadhold1).w,(v_jpadhold2).w
-		jsr		(ExecuteObjects).l
+		jsr		(SpecialObjects).l
 		jsr		(BuildSprites).l
 		jsr		(SS_ShowLayout).l
 		bsr.w	SS_BGAnimate
@@ -5426,19 +5426,27 @@ ExecuteObjects:
 		bhs.s	ObjectsDisplayOnly			; if yes, branch
 	endif
 
-loc_D348:
+RunObject:
 		move.b	obID(a0),d0					; load object number from RAM
-		beq.s	loc_D358
+		beq.s	.noObject
 		add.w	d0,d0
 		add.w	d0,d0
 		movea.l	Obj_Index-4(pc,d0.w),a1
 		jsr		(a1)						; run the object's code
 		moveq	#0,d0
 
-loc_D358:
+	.noObject:
 		lea		object_size(a0),a0			; next object
-		dbf		d7,loc_D348
+		dbf		d7,RunObject
 		rts	
+; ===========================================================================
+
+; Special section for Special Stage (since we only ever use two objects here)
+SpecialObjects:
+		moveq	#0,d0
+		moveq	#1,d7						; only running the first two objects
+		lea		(v_player).w,a0				; start with Sonic
+		bra.s	RunObject					; we will follow up with the debug object
 ; ===========================================================================
 
 ; The following only runs if objects are meant to freeze when Sonic dies.
@@ -5446,10 +5454,10 @@ loc_D358:
 ObjectsDisplayOnly:
 	; RHS Drowning Fix
 		cmpi.b	#$A,(v_player+obRoutine).w	; Has Sonic drowned?
-		beq.s	loc_D348					; If so, run objects a little longer
+		beq.s	RunObject					; If so, run objects a little longer
 	; Drowning Fix End
 		moveq	#v_rsvobjcount,d7			; Run through reserved obj space (before level objects)
-		bsr.s	loc_D348
+		bsr.s	RunObject
 		moveq	#v_lvlobjcount,d7			; Run through level obj space
 
 loc_D368:
