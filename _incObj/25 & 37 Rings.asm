@@ -350,9 +350,17 @@ Ring_FromBadnik:
 		move.b	#(colPowerup|colSz_6x6),obColType(a0)
 		move.b	#8,obActWid(a0)
 		move.w	#-$380,obVelY(a0)
-        moveq   #-1,d0                  ; Move #-1 to d0
-        move.b  d0,obDelayAni(a0)       ; Move d0 to new timer
-        move.b  d0,(v_ani3_time).w      ; Move d0 to old timer (for animated purposes)
+		tst.b   (f_water).w				; Does the level have water?
+		beq.s   .notunderwater			; If not, branch and skip underwater checks
+		move.w  (v_waterpos1).w,d6		; Move water level to d6
+		cmp.w   obY(a0),d6				; Is the ring object underneath the water level?
+		bgt.s   .notunderwater			; If not, branch and skip underwater commands
+		move.w	#-$1C0,obVelY(a0)		; halve speed underwater
+
+	.notunderwater:
+		moveq	#-1,d0					; Move #-1 to d0
+		move.b	d0,obDelayAni(a0)		; Move d0 to new timer
+		move.b	d0,(v_ani3_time).w		; Move d0 to old timer (for animated purposes)
 		bra.w	RLoss_Bounce
 ; ===========================================================================
 	endif
