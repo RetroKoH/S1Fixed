@@ -119,16 +119,16 @@ Sonic_Animate:
 
 	if SuperMod
 		btst	#sta2ndSuper,obStatus2nd(a0)	; is Sonic super?
-		beq.s	.nomodnotsuper
+		beq.s	.walknotsuper
 		
 		lea		SupSonAni_Run(pc),a1	; use running animation
 		cmpi.w	#$800,d2				; is Sonic at running speed?
 		bhs.s	.running				; if yes, branch
 
-		lea		SonAni_Walk(pc),a1		; use walking animation
+		lea		SupSonAni_Walk(pc),a1	; use walking animation
 		bra.s	.walking
 
-	.nomodnotsuper:
+	.walknotsuper:
 	endif
 
 	if PeeloutEnabled
@@ -175,12 +175,26 @@ Sonic_Animate:
 		neg.w	d2
 
 	.nomodspeed2:
+
+	if SuperMod
+		btst	#sta2ndSuper,obStatus2nd(a0)	; is Sonic super?
+		beq.s	.rollnotsuper
+
+		lea		SupSonAni_Roll2(pc),a1	; use fast animation
+		cmpi.w	#$600,d2				; is Sonic moving fast?
+		bhs.s	.rolling				; if yes, branch
+		lea		SupSonAni_Roll(pc),a1	; use slower animation
+		bra.s	.rolling
+	
+	.rollnotsuper:
+	endif
+
 		lea		SonAni_Roll2(pc),a1	; use fast animation
 		cmpi.w	#$600,d2			; is Sonic moving fast?
-		bhs.s	.rollfast			; if yes, branch
+		bhs.s	.rolling			; if yes, branch
 		lea		SonAni_Roll(pc),a1	; use slower animation
 
-	.rollfast:
+	.rolling:
 		neg.w	d2
 		addi.w	#$400,d2
 		bpl.s	.belowmax2
