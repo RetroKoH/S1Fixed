@@ -6,14 +6,14 @@ Ani_SuperSonic:
 		dc.w SupSonAni_Walk-Ani_SuperSonic
 		dc.w SupSonAni_Run-Ani_SuperSonic
 		dc.w SupSonAni_Run-Ani_SuperSonic		; Dash
-		dc.w SonAni_Roll-Ani_SuperSonic
-		dc.w SonAni_Roll2-Ani_SuperSonic
+		dc.w SupSonAni_Roll-Ani_SuperSonic
+		dc.w SupSonAni_Roll2-Ani_SuperSonic
 		dc.w SupSonAni_Push-Ani_SuperSonic
 		dc.w SupSonAni_Wait-Ani_SuperSonic
 		dc.w SupSonAni_Balance-Ani_SuperSonic
 		dc.w SupSonAni_Balance-Ani_SuperSonic
 		dc.w SupSonAni_Balance-Ani_SuperSonic
-		dc.w SonAni_LookUp-Ani_SuperSonic
+		dc.w SupSonAni_LookUp-Ani_SuperSonic
 		dc.w SupSonAni_Duck-Ani_SuperSonic
 		dc.w SupSonAni_Spindash-Ani_SuperSonic
 		dc.w SupSonAni_Stop-Ani_SuperSonic
@@ -28,62 +28,92 @@ Ani_SuperSonic:
 		dc.w SupSonAni_GetAir-Ani_SuperSonic	; Get Air Standing
 		dc.w SupSonAni_Death-Ani_SuperSonic
 		dc.w SupSonAni_Drown-Ani_SuperSonic
-		dc.w SonAni_Shrink-Ani_SuperSonic
+		dc.w SonAni_Null-Ani_SuperSonic			; Shrink
 		dc.w SupSonAni_Hurt-Ani_SuperSonic
 		dc.w SupSonAni_WaterSlide-Ani_SuperSonic
 		dc.w SupSonAni_Peelout-Ani_SuperSonic
 		dc.w SupSonAni_DropDash-Ani_SuperSonic
 		dc.w SupSonAni_Transform-Ani_SuperSonic
 
-SupSonAni_Walk: dc.b $FF, $A, $B, $C, $D, $E, 7, 8, 9, afEnd
+SupSonAni_Walk:
+		dc.b	$FF, fr_SupSonWalk14, fr_SupSonWalk15, fr_SupSonWalk16, fr_SupSonWalk17, fr_SupSonWalk18, fr_SupSonWalk11, fr_SupSonWalk12, fr_SupSonWalk13, afEnd
 		even
-SupSonAni_Run: dc.b $FF, $27, $27, $28, $28, $29, $29, $2A, $2A, afEnd
+SupSonAni_Run:
+		dc.b	$FF, fr_SupSonRun11, fr_SupSonRun12, fr_SupSonRun13, fr_SupSonRun14, afEnd, afEnd, afEnd, afEnd, afEnd
 		even
-SupSonAni_Push: dc.b $FD, $4E, $4F, $50, $51, afEnd, afEnd, afEnd, afEnd, afEnd
+SupSonAni_Roll:
+		dc.b	$FE, fr_SupSonRoll1, fr_SupSonRoll2, fr_SupSonRoll3, fr_SupSonRoll4, fr_SupSonRoll5, afEnd, afEnd
 		even
-SupSonAni_Wait:	dc.b 7, $67, $68, $69, $68, afEnd
+SupSonAni_Roll2:
+		dc.b	$FE, fr_SupSonRoll1, fr_SupSonRoll2, fr_SupSonRoll5, fr_SupSonRoll3, fr_SupSonRoll4, fr_SupSonRoll5, afEnd
 		even
-SupSonAni_Balance: dc.b 9, $6B, $6C, $6B, $6D, $6B, $6E, afEnd
+SupSonAni_Push:
+		dc.b	$FD, fr_SupSonPush1, fr_SupSonPush2, fr_SupSonPush3, fr_SupSonPush4, afEnd, afEnd, afEnd, afEnd, afEnd
 		even
-SupSonAni_Duck:	dc.b $3F, $6A, $6A, afEnd, 0
+SupSonAni_Wait:
+		dc.b	7, fr_SupSonStand1, fr_SupSonStand2, fr_SupSonStand3, fr_SupSonStand2, afEnd
+		even
+SupSonAni_Balance:
+		dc.b	9, fr_SupSonBalance1, fr_SupSonBalance2, fr_SupSonBalance3, fr_SupSonBalance4, afEnd
+		even
+SupSonAni_LookUp:
+		dc.b	1, fr_SupSonLookUp1, fr_SupSonLookUp2, fr_SupSonLookUp2, fr_SupSonLookUp2, fr_SupSonLookUp2
+		dc.b	fr_SupSonLookUp3, fr_SupSonLookUp3, fr_SupSonLookUp3, fr_SupSonLookUp3
+		dc.b	fr_SupSonLookUp4, fr_SupSonLookUp4, fr_SupSonLookUp4, fr_SupSonLookUp4
+		dc.b	fr_SupSonLookUp3, fr_SupSonLookUp3, fr_SupSonLookUp3, fr_SupSonLookUp3, afBack, 16
+		even
+SupSonAni_Duck:
+		dc.b	$3F, fr_SupSonDuck1, afEnd
 		even
 SupSonAni_Spindash:
-		dc.b 0, $61, $62, $61, $63, $61, $64, $61, $65, $61, $66, afEnd
+		dc.b	0, fr_SupSonSpindash1, fr_SupSonSpindash2, fr_SupSonSpindash1, fr_SupSonSpindash3, fr_SupSonSpindash1, fr_SupSonSpindash4, fr_SupSonSpindash1, fr_SupSonSpindash5, fr_SupSonSpindash1, fr_SupSonSpindash6, afEnd
 		even
-SupSonAni_Stop:	dc.b 5,	$40, $41, $40, $41, afChange, aniID_Walk
+SupSonAni_Stop:
+		dc.b	5, fr_SupSonStop1, fr_SupSonStop2, fr_SupSonStop1, fr_SupSonStop2, afChange, aniID_Walk
 		even
-SupSonAni_Float1:	dc.b 7,	$45, $48, afEnd
+SupSonAni_Float1:
+		dc.b	7, fr_SupSonFloat1, fr_SupSonFloat4, afEnd
 		even
-SupSonAni_Float2:	dc.b 7,	$45, $46, $5C, $47, $5D, afEnd
+SupSonAni_Float2:
+		dc.b	7, fr_SupSonFloat1, fr_SupSonFloat2, fr_SupSonFloat5, fr_SupSonFloat3, fr_SupSonFloat6, afEnd
 		even
-SupSonAni_Float3:	dc.b 3,	$45, $46, $5C, $47, $5D, afEnd
+SupSonAni_Float3:
+		dc.b	3, fr_SupSonFloat1, fr_SupSonFloat2, fr_SupSonFloat5, fr_SupSonFloat3, fr_SupSonFloat6, afEnd
 		even
-SupSonAni_Float4:	dc.b 3,	$45, afChange, aniID_Walk
+SupSonAni_Float4:
+		dc.b	3, fr_SupSonFloat1, afChange, aniID_Walk
 		even
-SupSonAni_Spring: dc.b $2F, $49, afChange, aniID_Walk
+SupSonAni_Spring:
+		dc.b	$2F, fr_SupSonSpring, afChange, aniID_Walk
 		even
-SupSonAni_Hang:	dc.b 4,	$4A, $4B, afEnd
+SupSonAni_Hang:
+		dc.b	4, fr_SupSonHang1, fr_SupSonHang2, afEnd
 		even
-SupSonAni_GetAir: dc.b $B, $5F, $5F, $B, $C, afChange, aniID_Walk
+SupSonAni_GetAir:
+		dc.b	$B, fr_SupSonGetAir, fr_SupSonGetAir, fr_SupSonWalk15, fr_SupSonWalk16, afChange, aniID_Walk
 		even
-SupSonAni_Death: dc.b 3, $56, afEnd
+SupSonAni_Death:
+		dc.b	3, fr_SupSonDeath, afEnd
 		even
-SupSonAni_Drown: dc.b $2F, $55, afEnd
+SupSonAni_Drown:
+		dc.b	$2F, fr_SupSonDrown, afEnd
 		even
-SupSonAni_Hurt:	dc.b 3,	$5E, afEnd
+SupSonAni_Hurt:
+		dc.b	3, fr_SupSonHurt, afEnd
 		even
 SupSonAni_WaterSlide:
-		dc.b 7, $5E, $60, afEnd
+		dc.b	7, fr_SupSonHurt, fr_SupSonWaterSlide, afEnd
 		even
 SupSonAni_Peelout:
-		dc.b	0, $A, $A, $A, $A, $A, $A, $A, $A
-		dc.b	$B, $B, $B, $B, $C, $C, $2A, $2A
-		dc.b	$27, $28, $29, $2A, $27, $28, $29, $2A
-		dc.b	$27, $28, $29, $2A, afBack, 4
+		dc.b	0, fr_SupSonWalk14, fr_SupSonWalk14, fr_SupSonWalk14, fr_SupSonWalk14, fr_SupSonWalk14, fr_SupSonWalk14, fr_SupSonWalk14, fr_SupSonWalk14
+		dc.b	fr_SupSonWalk15, fr_SupSonWalk15, fr_SupSonWalk15, fr_SupSonWalk15, fr_SupSonWalk16, fr_SupSonWalk16, fr_SupSonWalk17, fr_SupSonWalk17
+		dc.b	fr_SupSonRun11, fr_SupSonRun12, fr_SupSonRun13, fr_SupSonRun14, fr_SupSonRun11, fr_SupSonRun12, fr_SupSonRun13, fr_SupSonRun14
+		dc.b	fr_SupSonRun11, fr_SupSonRun12, fr_SupSonRun13, fr_SupSonRun14, afBack, 4
 		even
-SupSonAni_DropDash:	dc.b $0, $77, fr_SonRoll5, $78, fr_SonRoll5, $79, fr_SonRoll5, $7A, fr_SonRoll5
-		dc.b	$7B, fr_SonRoll5, $7C, fr_SonRoll5, $7D, fr_SonRoll5, $7E, fr_SonRoll5, afEnd
+SupSonAni_DropDash:
+		dc.b	$0, fr_SupSonDropDash1, fr_SupSonRoll5, fr_SupSonDropDash2, fr_SupSonRoll5, fr_SupSonDropDash3, fr_SupSonRoll5, fr_SupSonDropDash4, fr_SupSonRoll5
+		dc.b	fr_SupSonDropDash5, fr_SupSonRoll5, fr_SupSonDropDash6, fr_SupSonRoll5, fr_SupSonDropDash7, fr_SupSonRoll5, fr_SupSonDropDash8, fr_SupSonRoll5, afEnd
 		even
 SupSonAni_Transform:
-		dc.b	2, $6F, $6F, $70, $70, $71, $72, $73, $72, $73, $72, $73, $72, $73, afChange, aniID_Walk
+		dc.b	2, fr_SupSonTransform1, fr_SupSonTransform1, fr_SupSonTransform2, fr_SupSonTransform2, fr_SupSonTransform3, fr_SupSonTransform4, fr_SupSonTransform5, fr_SupSonTransform4, fr_SupSonTransform5, fr_SupSonTransform4, fr_SupSonTransform5, fr_SupSonTransform4, fr_SupSonTransform5, afChange, aniID_Walk
 		even
