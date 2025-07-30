@@ -754,7 +754,7 @@ ScrollHoriz:
 
 
 MoveScreenHoriz:
-	if SpinDashEnabled=1	; Spin Dash Enabled
+	if SpinDashEnabled	; Spin Dash Enabled
 		move.b	(v_cameralag).w,d1
 		beq.s	.cont1
 		tst.w	(v_player+obVelX).w		; is Sonic moving horizontally?
@@ -783,20 +783,30 @@ MoveScreenHoriz:
 	endif	; Spin Dash Enabled End
 		sub.w	(v_screenposx).w,d0		; Sonic's distance from left edge of screen
 		
-	if CDCamera=1
+	if CDCamera
 		sub.w	(v_camera_pan).w,d0		; Horizontal camera pan value
 		beq.s	SH_ProperlyFramed		; if zero, branch
 		bcs.s	SH_BehindMid			; if less than, branch
 		bra.s	SH_AheadOfMid			; branch
+	else
+
+		; Centered Camera is only possible when CDCamera is disabled
+		if CenteredCamera
+			subi.w	#320/2,d0				; is distance less than 144px?
+			bmi.s	SH_BehindMid			; if yes, branch			<---- cs to mi (for negative)
+		else
+			subi.w	#144,d0					; is distance less than 144px?
+			bmi.s	SH_BehindMid			; if yes, branch	<---- cs to mi (for negative) MarkeyJester Horizontal Screen Scrolling Fix
+			subi.w	#16,d0					; is distance more than 160px?
+		endif
+	
 	endif
-		
-		subi.w	#144,d0					; is distance less than 144px?
-		bmi.s	SH_BehindMid			; if yes, branch	<---- cs to mi (for negative) MarkeyJester Horizontal Screen Scrolling Fix
-		subi.w	#16,d0					; is distance more than 160px?
+
 		bpl.s	SH_AheadOfMid			; if yes, branch	<---- cc to pl (for negative) MarkeyJester Horizontal Screen Scrolling Fix
 		clr.w	(v_scrshiftx).w
 		rts
-	if CDCamera=1
+
+	if CDCamera
 ; ===========================================================================
 
 SH_ProperlyFramed:

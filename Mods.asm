@@ -80,6 +80,11 @@ CDBalancing: = 1
 ; Function: Applies a panning effect to the screen when moving quickly, a la Sonic CD
 CDCamera: = 0							; if set to 1, screen will pan forward, a la Sonic CD
 
+; Name: Centralized Camera
+; Credit: TomatoWave_0
+; Function: Centralizes the standard camera
+CenteredCamera: = 1*(CDCamera==0)		; if set to 1, screen will be tighter, locking Sonic in the center
+
 ; Name: S3K AfterImages (Incomplete: Add for Super Sonic)
 ; Credit: Hitaxas (Wooloo Engine)
 ; Function: Applies After-Image effects to the Speed Shoes
