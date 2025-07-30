@@ -68,7 +68,7 @@ Sign_Touch:	; Routine 2
 		jsr		(PlaySound).w						; play signpost sound
 
 ; RetroKoH Floating Signpost Mechanic
-	if FloatingSignposts=1
+	if FloatingSignposts
 		moveq	#0,d0
 		move.b	obInertia(a1),d0					; ground speed if on the ground
 		btst	#staAir,obStatus(a1)				; is Sonic in the air?
@@ -110,7 +110,7 @@ Sign_Touch:	; Routine 2
 Sign_Spin:	; Routine 4
 
 ; RetroKoH Floating Signpost Mechanic
-	if FloatingSignposts=1
+	if FloatingSignposts
 		tst.b	ob2ndRout(a0)
 		bne.s	.onground
 		bsr.w	SpeedToPos_YOnly
@@ -197,7 +197,7 @@ Sign_SonicRun:	; Routine 6
 		tst.w	(v_debuguse).w	; is debug mode	on?
 		bne.s	Sign_Exit		; if yes, branch
 
-	if SignpostControlLockFix=1
+	if SignpostControlLockFix
 	; Signpost Routine Fix
 	; This function's checks are a mess, creating an edgecase where it's
 	; possible for the player to avoid having their controls locked by

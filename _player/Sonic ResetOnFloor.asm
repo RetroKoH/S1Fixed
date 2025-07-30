@@ -17,9 +17,9 @@ Sonic_ResetOnFloor:
 		bclr	#staSpin,obStatus(a0)
 		subq.w	#5,obY(a0)						; move Sonic up 5 pixels so the increased height doesn't push him into the ground
 
-	if ShieldsMode=0
+	if ~~ShieldsMode
 
-		if DropDashEnabled=1
+		if DropDashEnabled
 			tst.b	obDoubleJumpFlag(a0)
 			beq.s	.ret
 			cmpi.b	#$14,obDoubleJumpProp(a0)	; is it fully revved up?
@@ -46,7 +46,8 @@ Sonic_ResetOnFloor:
 		bra.s	BubbleShield_Bounce
 
 		.nobubble:
-		if DropDashEnabled=1
+
+		if DropDashEnabled
 			btst	#sta2ndInvinc,d0			; is Sonic invincible OR Super?
 			bne.s	.skipshieldcheck			; if yes, enable Drop Dash
 			andi.b	#mask2ndChkElement,d0		; Check for any elemental shields
@@ -116,7 +117,7 @@ BubbleShield_Bounce:
 ; End of function BubbleShield_Bounce
 	endif
 
-	if DropDashEnabled=1
+	if DropDashEnabled
 ; ---------------------------------------------------------------------------
 ; Subroutine to	allow Sonic to perform the Drop Dash
 ; Modified (possibly fixed) thanks to Giovanni

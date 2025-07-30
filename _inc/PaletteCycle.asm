@@ -6,7 +6,7 @@
 
 
 PaletteCycle:
-	if SuperMod=1
+	if SuperMod
 		bsr.w	PalCycle_SuperSonic
 	endif
 		moveq	#0,d2
@@ -271,7 +271,7 @@ locret_1B64:
 		rts	
 ; End of function PalCycle_SBZ
 
-	if SuperMod=1
+	if SuperMod
 ; ---------------------------------------------------------------------------
 ; Palette cycling routine loading subroutine for Super Sonic
 ; ---------------------------------------------------------------------------

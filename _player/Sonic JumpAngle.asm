@@ -8,9 +8,9 @@
 Sonic_JumpAngle:
 		move.b	obAngle(a0),d0	; get Sonic's angle
 		beq.s	locret_135A2	; if already 0,	branch
-		bpl.s	loc_13598	; if higher than 0, branch
+		bpl.s	loc_13598		; if higher than 0, branch
 
-		addq.b	#2,d0		; increase angle
+		addq.b	#2,d0			; increase angle
 		bcc.s	loc_13596
 		moveq	#0,d0
 
@@ -19,7 +19,7 @@ loc_13596:
 ; ===========================================================================
 
 loc_13598:
-		subq.b	#2,d0		; decrease angle
+		subq.b	#2,d0			; decrease angle
 		bcc.s	loc_1359E
 		moveq	#0,d0
 

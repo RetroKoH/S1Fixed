@@ -112,7 +112,7 @@ Mon_Solid:	; Routine 2
 		cmpi.b	#aniID_Roll,obAnim(a1)	; is Sonic rolling?
 		beq.s	loc_A25C				; if yes, branch
 
-	if DropDashEnabled=1	; RetroKoH Drop Dash
+	if DropDashEnabled	; RetroKoH Drop Dash
 		cmpi.b	#aniID_DropDash,obAnim(a1)	; is Sonic Drop Dashing? -- Fix to allow rebounding
 		beq.s	loc_A25C					; if yes, branch
 	endif	; Drop Dash End
@@ -153,7 +153,7 @@ loc_A246:
 ; ===========================================================================
 
 loc_A25C:
-	if SpinDashEnabled=1		; Sonic Jam: Fix not being able to break monitor after spindashing next to it
+	if SpinDashEnabled			; Sonic Jam: Fix not being able to break monitor after spindashing next to it
 		move.w	obInertia(a1),d0
 		bpl.s	.CheckSpeed
 		neg.w	d0				; Get absolute inertia

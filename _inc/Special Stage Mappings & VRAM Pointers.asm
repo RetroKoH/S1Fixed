@@ -71,7 +71,7 @@ specialStageData: macro frame,mappings,palette,vram
 		specialStageData	0, Map_SS_Chaos1, 0, ArtTile_SS_Emerald
 		specialStageData	0, Map_SS_Chaos2, 0, ArtTile_SS_Emerald
 
-	if SuperMod=1
+	if SuperMod
 		specialStageData	0, Map_SS_Chaos2, 1, ArtTile_SS_Emerald
 	endif
 

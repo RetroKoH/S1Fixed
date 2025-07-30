@@ -129,7 +129,7 @@ loc_FAD0:
 		move.w	obY(a1),d3
 
 	; Mercury Ducking Size Fix
-	if SpinDashEnabled=1	; Mercury Spin Dash
+	if SpinDashEnabled		; Mercury Spin Dash
 		cmpi.b	#aniID_SpinDash,obAnim(a1)
 		beq.s	.short
 	endif	; Spin Dash End

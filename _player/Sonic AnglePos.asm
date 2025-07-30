@@ -73,7 +73,7 @@ loc_14630:
 		lea		(v_anglebuffer).w,a4
 		movea.w	#$10,a3
 		clr.w	d6
-		bsr.w	FindFloor	; MJ: check solidity
+		bsr.w	FindFloor					; MJ: check solidity
 		move.w	d1,-(sp)
 		move.w	obY(a0),d2
 		move.w	obX(a0),d3
@@ -88,7 +88,7 @@ loc_14630:
 		lea		(v_anglebuffer2).w,a4
 		movea.w	#$10,a3
 		clr.w	d6
-		bsr.w	FindFloor	; MJ: check solidity
+		bsr.w	FindFloor					; MJ: check solidity
 		move.w	(sp)+,d0
 		bsr.w	Sonic_Angle
 		tst.w	d1
@@ -116,7 +116,7 @@ loc_146CC:
 		bne.s	loc_146C6
 		bset	#staAir,obStatus(a0)
 		bclr	#staPush,obStatus(a0)
-		move.b	#aniID_Run,obPrevAni(a0) ; restart Sonic's animation
+		move.b	#aniID_Run,obPrevAni(a0)	; restart Sonic's animation
 		rts	
 ; ===========================================================================
 ; End of function Sonic_AnglePos
@@ -171,7 +171,7 @@ Sonic_WalkVertR:
 		lea		(v_anglebuffer).w,a4
 		movea.w	#$10,a3
 		clr.w	d6
-		bsr.w	FindWall	; MJ: check solidity
+		bsr.w	FindWall					; MJ: check solidity
 		move.w	d1,-(sp)
 		move.w	obY(a0),d2
 		move.w	obX(a0),d3
@@ -185,7 +185,7 @@ Sonic_WalkVertR:
 		lea		(v_anglebuffer2).w,a4
 		movea.w	#$10,a3
 		clr.w	d6
-		bsr.w	FindWall	; MJ: check solidity
+		bsr.w	FindWall					; MJ: check solidity
 		move.w	(sp)+,d0
 		bsr.w	Sonic_Angle
 		tst.w	d1
@@ -213,7 +213,7 @@ loc_147FE:
 		bne.s	loc_147F8
 		bset	#staAir,obStatus(a0)
 		bclr	#staPush,obStatus(a0)
-		move.b	#aniID_Run,obPrevAni(a0) ; restart Sonic's animation
+		move.b	#aniID_Run,obPrevAni(a0)	; restart Sonic's animation
 		rts	
 ; End of function Sonic_WalkVertR
 
@@ -237,8 +237,8 @@ Sonic_WalkCeiling:
 		add.w	d0,d3
 		lea		(v_anglebuffer).w,a4
 		movea.w	#-$10,a3
-		move.w	#$800,d6	; MJ: $1000/2
-		bsr.w	FindFloor	; MJ: check solidity
+		move.w	#$800,d6					; MJ: $1000/2
+		bsr.w	FindFloor					; MJ: check solidity
 		move.w	d1,-(sp)
 		move.w	obY(a0),d2
 		move.w	obX(a0),d3
@@ -252,8 +252,8 @@ Sonic_WalkCeiling:
 		sub.w	d0,d3
 		lea		(v_anglebuffer2).w,a4
 		movea.w	#-$10,a3
-		move.w	#$800,d6	; MJ: $1000/2
-		bsr.w	FindFloor	; MJ: check solidity
+		move.w	#$800,d6					; MJ: $1000/2
+		bsr.w	FindFloor					; MJ: check solidity
 		move.w	(sp)+,d0
 		bsr.w	Sonic_Angle
 		tst.w	d1
@@ -281,7 +281,7 @@ loc_148A0:
 		bne.s	loc_1489A
 		bset	#staAir,obStatus(a0)
 		bclr	#staPush,obStatus(a0)
-		move.b	#aniID_Run,obPrevAni(a0) ; restart Sonic's animation
+		move.b	#aniID_Run,obPrevAni(a0)	; restart Sonic's animation
 		rts	
 ; End of function Sonic_WalkCeiling
 
@@ -293,20 +293,20 @@ loc_148A0:
 
 
 Sonic_WalkVertL:
-		move.w	obY(a0),d2		; MJ: Load Y position
-		move.w	obX(a0),d3		; MJ: Load X position
-		moveq	#0,d0			; MJ: clear d0
-		move.b	obWidth(a0),d0		; MJ: load height
-		ext.w	d0			; MJ: set left byte pos or neg
-		sub.w	d0,d2			; MJ: subtract from Y position
-		move.b	obHeight(a0),d0		; MJ: load width
-		ext.w	d0			; MJ: set left byte pos or neg
-		sub.w	d0,d3			; MJ: subtract from X position
+		move.w	obY(a0),d2					; MJ: Load Y position
+		move.w	obX(a0),d3					; MJ: Load X position
+		moveq	#0,d0						; MJ: clear d0
+		move.b	obWidth(a0),d0				; MJ: load height
+		ext.w	d0							; MJ: set left byte pos or neg
+		sub.w	d0,d2						; MJ: subtract from Y position
+		move.b	obHeight(a0),d0				; MJ: load width
+		ext.w	d0							; MJ: set left byte pos or neg
+		sub.w	d0,d3						; MJ: subtract from X position
 		eori.w	#$F,d3
-		lea		(v_anglebuffer).w,a4	; MJ: load address of the angle value set
+		lea		(v_anglebuffer).w,a4		; MJ: load address of the angle value set
 		movea.w	#-$10,a3
-		move.w	#$400,d6		; MJ: $800/2
-		bsr.w	FindWall		; MJ: check solidity
+		move.w	#$400,d6					; MJ: $800/2
+		bsr.w	FindWall					; MJ: check solidity
 		move.w	d1,-(sp)
 		move.w	obY(a0),d2
 		move.w	obX(a0),d3
@@ -320,8 +320,8 @@ Sonic_WalkVertL:
 		eori.w	#$F,d3
 		lea		(v_anglebuffer2).w,a4
 		movea.w	#-$10,a3
-		move.w	#$400,d6	; MJ: $800/2
-		bsr.w	FindWall	; MJ: check solidity
+		move.w	#$400,d6					; MJ: $800/2
+		bsr.w	FindWall					; MJ: check solidity
 		move.w	(sp)+,d0
 		bsr.w	Sonic_Angle
 		tst.w	d1
@@ -349,6 +349,6 @@ loc_14942:
 		bne.s	loc_1493C
 		bset	#staAir,obStatus(a0)
 		bclr	#staPush,obStatus(a0)
-		move.b	#aniID_Run,obPrevAni(a0) ; restart Sonic's animation
+		move.b	#aniID_Run,obPrevAni(a0)	; restart Sonic's animation
 		rts	
 ; End of function Sonic_WalkVertL

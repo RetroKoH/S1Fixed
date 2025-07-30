@@ -14,16 +14,18 @@ Sonic_Display:
 		lsr.w	#3,d0
 		bcc.s	.chkinvincible
 
-.display:
+	.display:
 		jsr		(DisplaySprite).l
 
-.chkinvincible:
+	.chkinvincible:
 		btst	#sta2ndInvinc,obStatus2nd(a0)	; does Sonic have invincibility?
 		beq.s	.chkshoes						; if not, branch
-	if SuperMod=1
+
+	if SuperMod
 		btst	#sta2ndSuper,obStatus2nd(a0)	; is Sonic Super?
 		bne.s	.chkshoes						; if yes, don't check to remove invincibility
 	endif
+
 		tst.b	obInvinc(a0)					; check	time remaining for invinciblity -- RetroKoH Sonic SST Compaction
 		beq.s	.chkremoveinvinc				; if we have the powerup but no time remains, remove the powerup (RetroKoH Bugfix)
 		
@@ -35,7 +37,7 @@ Sonic_Display:
 		
 		bne.s	.chkshoes						; if time still remains, branch
 
-.chkremoveinvinc:
+	.chkremoveinvinc:
 		tst.b	(f_lockscreen).w
 		bne.s	.removeinvincible
 		cmpi.b	#$C,(v_air).w
@@ -46,12 +48,12 @@ Sonic_Display:
 		bne.s	.notSBZ3
 		move.b	#id_SBZ,d0						; play SBZ music instead
 
-.notSBZ3:
+	.notSBZ3:
 		cmpi.w	#(id_SBZ<<8)+2,(v_zone).w		; check if level is FZ
 		bne.s	.music
 		move.b	#6,d0							; play FZ music instead
 
-.music:
+	.music:
 		lea		(MusicList).l,a1
 		move.b	(a1,d0.w),d0
 		cmp.b	(v_lastbgmplayed).w,d0
@@ -59,10 +61,10 @@ Sonic_Display:
 		jsr		(PlaySound).w					; play normal music
 		move.b	d0,(v_lastbgmplayed).w			; store last played music
 
-.removeinvincible:
+	.removeinvincible:
 		bclr	#sta2ndInvinc,obStatus2nd(a0)	; cancel invincibility
 
-.chkshoes:
+	.chkshoes:
 		btst	#sta2ndShoes,obStatus2nd(a0)	; does Sonic have speed	shoes?
 		beq.s	.exit							; if not, branch
 		tst.b	obShoes(a0)						; check	time remaining for speed shoes -- RetroKoH Sonic SST Compaction
@@ -76,12 +78,12 @@ Sonic_Display:
 		
 		bne.s	.exit							; if time still remains, branch
 
-.removeshoes:
+	.removeshoes:
 		lea     (v_sonspeedmax).w,a2			; Load Sonic_top_speed into a2
 		bsr.w   ApplySpeedSettings				; Fetch Speed settings
 		bclr	#sta2ndShoes,obStatus2nd(a0)	; cancel speed shoes
 		move.w	#bgm_Slowdown,d0
 		jmp		(PlaySound).w					; run music at normal speed
 
-.exit:
+	.exit:
 		rts	

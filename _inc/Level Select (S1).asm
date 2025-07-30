@@ -74,7 +74,7 @@ LevSel_Credits:
 ; Level	select - level pointers
 ; ---------------------------------------------------------------------------
 LevSel_Ptrs:
-	if BetaLevelOrder=1
+	if BetaLevelOrder
 		dc.b id_GHZ, 0
 		dc.b id_GHZ, 1
 		dc.b id_GHZ, 2
@@ -295,7 +295,7 @@ LevSel_DrawSnd:
 ; Level	select menu text -- Soulless Sentinel Level Select ASCII Mod
 ; ---------------------------------------------------------------------------
 LevelMenuText:
-	if BetaLevelOrder=1
+	if BetaLevelOrder
 		dc.b    "GREEN HILL ZONE  STAGE 1"
 		dc.b    "                 STAGE 2"
 		dc.b    "                 STAGE 3"

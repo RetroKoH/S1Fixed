@@ -23,10 +23,12 @@ Sonic_DoubleJump:
 ; Unlike w/ S3K, we will only branch IF we meet the conditions.
 		moveq	#0,d0
 		move.b	(v_player+obStatus2nd).w,d0
+
 	if SuperMod
 		btst	#sta2ndSuper,d0					; is Sonic currently in his Super form?
 		bne.s	Sonic_SetDoubleJumpFlag			; if yes, branch towards the exit
 	endif
+
 		btst	#sta2ndInvinc,d0				; first, does Sonic have invincibility?
 		bne.s	Sonic_SetDoubleJumpFlag			; if so, no shield ability is uaable.
 
