@@ -342,18 +342,17 @@ BossSpikeball_Loop:
 		move.w	#make_art_tile(ArtTile_SLZ_Shrapnel,0,0),obGfx(a1)	; RetroKoH VRAM Overhaul	
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		move.w	(a2)+,obVelX(a1)
-		move.w	(a2)+,obVelY(a1)
+		move.l	(a2)+,obVelX(a1)					; move the data contained in the array to obVelX and obVelY, and increment the address in a2
 		move.b	#(colHarmful|colSz_4x4),obColType(a1)
 
-		bset	#shPropReflect,obShieldProp(a1)	; Reflected by Elemental Shields
+		bset	#shPropReflect,obShieldProp(a1)		; Reflected by Elemental Shields
 
 		ori.b	#4,obRender(a1)
 		bset	#7,obRender(a1)
 		move.b	#$C,obActWid(a1)
 
 loc_1909A:
-		dbf		d1,BossSpikeball_Loop	; repeat sequence 3 more times
+		dbf		d1,BossSpikeball_Loop				; repeat sequence 3 more times
 
 		rts	
 ; ===========================================================================

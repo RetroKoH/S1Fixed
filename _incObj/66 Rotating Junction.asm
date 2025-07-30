@@ -99,10 +99,10 @@ Jun_Display:	; Routine 4
 
 Jun_Release:	; Routine 6
 		move.b	obFrame(a0),d0
-		cmpi.b	#4,d0				; is gap pointing down?
-		beq.s	.release			; if yes, branch
-		cmpi.b	#7,d0				; is gap pointing right?
-		bne.s	.dontrelease		; if not, branch
+		cmpi.b	#4,d0					; is gap pointing down?
+		beq.s	.release				; if yes, branch
+		cmpi.b	#7,d0					; is gap pointing right?
+		bne.s	.dontrelease			; if not, branch
 
 .release:
 		cmp.b	objoff_32(a0),d0
@@ -112,11 +112,10 @@ Jun_Release:	; Routine 6
 		move.w	#$800,obVelY(a1)
 		cmpi.b	#4,d0
 		beq.s	.isdown
-		move.w	#$800,obVelX(a1)
-		move.w	#$800,obVelY(a1)
+		move.l	#$08000800,obVelX(a1)	; set both obVelX and obVelY
 
 .isdown:
-		clr.b	obCtrlLock(a1)		; unlock controls
+		clr.b	obCtrlLock(a1)			; unlock controls
 		subq.b	#4,obRoutine(a0)
 
 .dontrelease:
@@ -128,7 +127,7 @@ Jun_Release:	; Routine 6
 
 
 Jun_ChkSwitch:
-		lea	(f_switch).w,a2
+		lea		(f_switch).w,a2
 		moveq	#0,d0
 		move.b	jun_switch(a0),d0
 		btst	#0,(a2,d0.w)	; is switch pressed?

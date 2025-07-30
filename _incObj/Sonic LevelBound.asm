@@ -49,24 +49,25 @@ Sonic_LevelBound:
 ; ===========================================================================
 
 .bottom:
-		cmpi.w	#(id_SBZ<<8)+1,(v_zone).w ; is level SBZ2 ?
-		bne.s	.killsonic	; if not, kill Sonic	; MJ: Fix out-of-range branch
+		cmpi.w	#(id_SBZ<<8)+1,(v_zone).w	; is level SBZ2 ?
+		bne.s	.killsonic					; if not, kill Sonic	; MJ: Fix out-of-range branch
 		cmpi.w	#$2000,(v_player+obX).w
-		bcs.s	.killsonic				; MJ: Fix out-of-range branch
-		clr.b	(v_lastlamp).w	; clear	lamppost counter
-		move.b	#1,(f_restart).w ; restart the level
-		move.w	#(id_LZ<<8)+3,(v_zone).w ; set level to SBZ3 (LZ4)
+		bcs.s	.killsonic					; MJ: Fix out-of-range branch
+		clr.b	(v_lastlamp).w				; clear	lamppost counter
+		move.b	#1,(f_restart).w			; restart the level
+		move.w	#(id_LZ<<8)+3,(v_zone).w	; set level to SBZ3 (LZ4)
 		rts	
 ; ===========================================================================
 
 .sides:
 		move.w	d0,obX(a0)
-		clr.w	obX+2(a0)		; clear subpixel (for alignment)
-		clr.w	obVelX(a0)		; stop Sonic moving
-		clr.w	obInertia(a0)	; clear ground inertia
+		moveq	#0,d3
+		move.w	d3,obX+2(a0)				; clear subpixel (for alignment)
+		move.w	d3,obVelX(a0)				; stop Sonic moving
+		move.w	d3,obInertia(a0)			; clear ground inertia
 		bra.s	.chkbottom
 ; ===========================================================================
 
 .killsonic:
-		jmp	(KillSonic).l	; MJ: Fix out-of-range branch
+		jmp		(KillSonic).l
 ; End of function Sonic_LevelBound

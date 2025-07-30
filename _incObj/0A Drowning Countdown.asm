@@ -247,9 +247,9 @@ Drown_Countdown:; Routine $A
 		move.b	#aniID_Drown,obAnim(a0)	; use Sonic's drowning animation
 		bset	#staAir,obStatus(a0)
 		bset	#7,obGfx(a0)			; set high priority bit
-		clr.w	obVelY(a0)
-		clr.w	obVelX(a0)
-		clr.w	obInertia(a0)
+		moveq	#0,d0
+		move.l	d0,obVelX(a0)			; stop all movement (obVelX and obVelY)
+		move.w	d0,obInertia(a0)
 		move.b	#$A,obRoutine(a0)		; Force the character to drown -- RHS Drowning Fix
 		move.b	#1,(f_nobgscroll).w
 		movea.l	(sp)+,a0				; restore a0 = obj0A

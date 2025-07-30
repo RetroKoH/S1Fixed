@@ -53,7 +53,7 @@ Buzz_Action:	; Routine 2
 		bne.w	.animate
 		_move.b	#id_Missile,obID(a1)	; load missile object
 
-		move.l	#$02000200,obVelX(a1)	; move missile downwards, to the right
+		move.l	#$02000200,obVelX(a1)	; move missile downwards (obVelX), to the right (obVelY)
 
 		moveq	#28,d0
 		add.w	obY(a0),d0
