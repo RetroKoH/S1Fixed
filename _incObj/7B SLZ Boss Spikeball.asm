@@ -332,9 +332,20 @@ BossSpikeball_MakeFrag:
 		moveq	#3,d1
 		lea		BossSpikeball_FragSpeed(pc),a2
 
-BossSpikeball_Loop:
-		jsr		(FindFreeObj).l
-		bne.s	loc_1909A
+	; RetroKoH Object Load Optimization -- Based on Spirituinsanum Guides
+	; Here we begin what's replacing FindFreeObj/SingleObjLoad. It'll be quicker to loop through here.
+		lea		(v_lvlobjspace).w,a1
+		move.w	#v_lvlobjcount,d0
+
+	.loop:
+		; REMOVE FindFreeObj. It's the routine that causes such slowdown
+		tst.b	obID(a1)							; is object RAM	slot empty?
+		beq.s	.makeshrapnel						; Let's correct the branches. Here we can also skip the bne that was originally after bsr.w FindFreeObj because we already know there's a free object slot in memory.
+		lea		object_size(a1),a1
+		dbf		d0,.loop							; Branch correction again.
+		bne.s	.end
+
+	.makeshrapnel:
 		move.b	#id_BossSpikeball,obID(a1)			; load shrapnel object
 		move.b	#$A,obRoutine(a1)
 		move.l	#Map_BSBall,obMap(a1)
@@ -350,10 +361,9 @@ BossSpikeball_Loop:
 		ori.b	#4,obRender(a1)
 		bset	#7,obRender(a1)
 		move.b	#$C,obActWid(a1)
+		dbf		d1,.loop							; repeat sequence 3 more times
 
-loc_1909A:
-		dbf		d1,BossSpikeball_Loop				; repeat sequence 3 more times
-
+	.end:
 		rts	
 ; ===========================================================================
 BossSpikeball_FragSpeed:

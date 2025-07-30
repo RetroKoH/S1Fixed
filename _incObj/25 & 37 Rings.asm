@@ -49,7 +49,7 @@ Ring_Collect:	; Routine 4
 		clr.b	obColType(a0)
 		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.w	#make_art_tile(ArtTile_RingSparkles,1,0),obGfx(a0)
-		bsr.w	CollectRing
+		bsr.s	CollectRing
 		; Code Removed -- ProjectFM S3K Objects Manager
 
 Ring_Sparkle:	; fallthrough / Routine 6
@@ -60,6 +60,8 @@ Ring_Sparkle:	; fallthrough / Routine 6
 
 Ring_Delete:	; Routine 8
 		bra.w	DeleteObject
+; ===========================================================================
+
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
@@ -151,10 +153,11 @@ RLoss_Count:	; Routine 0
 
 	.belowmax:
 		subq.w	#1,d5					; decrease the counter the first time, as we are creating the first ring now.
+		_move.b	obID(a0),d4				; quick load obID to d4
 
 	; Spirituinsanum Mass Object Load Optimization
 	; Create the first instance, then loop create the others afterward.
-		move.b	#id_RingLoss,obID(a1) 	; load bouncing ring object
+		_move.b	d4,obID(a1) 			; load bouncing ring object
 		addq.b	#2,obRoutine(a1)
 		move.w	#$808,obHeight(a1)		; Height and Width
 		move.w	obX(a0),obX(a1)
@@ -168,7 +171,9 @@ RLoss_Count:	; Routine 0
 		move.l  (a3)+,obVelX(a1)		; move the data contained in the array to obVelX and obVelY, and increment the address in a3
 		subq	#1,d5					; decrement for the first ring created
 		bmi.s	.resetcounter			; if only one ring is needed, branch and skip EVERYTHING below altogether
-		; Here we begin what's replacing SingleObjLoad, in order to avoid resetting its d0 every time an object is created.
+
+		; Here we begin what's replacing FindFreeObj/SingleObjLoad,
+		;in order to avoid resetting its d0 every time an object is created.
 		lea		(v_lvlobjspace).w,a1
 		move.w	#v_lvlobjcount,d0
 
@@ -181,7 +186,7 @@ RLoss_Count:	; Routine 0
 		bne.s	.resetcounter			; We're moving this line here.
 
 	.makerings:
-		_move.b	#id_RingLoss,obID(a1)	; load bouncing ring object
+		_move.b	d4,obID(a1)				; load bouncing ring object
 		addq.b	#2,obRoutine(a1)
 		move.w	#$808,obHeight(a1)		; Height and Width
 		move.w	obX(a0),obX(a1)

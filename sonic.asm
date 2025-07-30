@@ -5,6 +5,7 @@
 ;
 ; Updated disassembly for AS by Clownacy and MarkeyJester
 ; Mods by RetroKoH, DeltaW, Hitaxas, Redhotsonic, and Mercury
+; Additional Changes by RobiWanKenobi, Malachi, TomatoWave_0, et al.
 ; Flamedriver by flamewing
 ; Sound Driver implementation by TheBlad768
 ; Additional Credits listed in README.md
