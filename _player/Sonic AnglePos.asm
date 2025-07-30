@@ -54,6 +54,9 @@ loc_1462C:
 		addi.b	#$1F,d0
 
 loc_14630:
+		move.w	obY(a0),d2					; Preload Y position
+		move.w	obX(a0),d3					; Preload X position
+
 		andi.b	#$C0,d0
 		cmpi.b	#$40,d0
 		beq.w	Sonic_WalkVertL
@@ -61,8 +64,8 @@ loc_14630:
 		beq.w	Sonic_WalkCeiling
 		cmpi.b	#$C0,d0
 		beq.w	Sonic_WalkVertR
-		move.w	obY(a0),d2
-		move.w	obX(a0),d3
+
+; WalkFloor
 		moveq	#0,d0
 		move.b	obHeight(a0),d0
 		ext.w	d0
@@ -158,8 +161,6 @@ loc_1476A:
 
 
 Sonic_WalkVertR:
-		move.w	obY(a0),d2
-		move.w	obX(a0),d3
 		moveq	#0,d0
 		move.b	obWidth(a0),d0
 		ext.w	d0
@@ -225,8 +226,6 @@ loc_147FE:
 
 
 Sonic_WalkCeiling:
-		move.w	obY(a0),d2
-		move.w	obX(a0),d3
 		moveq	#0,d0
 		move.b	obHeight(a0),d0
 		ext.w	d0
@@ -293,8 +292,6 @@ loc_148A0:
 
 
 Sonic_WalkVertL:
-		move.w	obY(a0),d2					; MJ: Load Y position
-		move.w	obX(a0),d3					; MJ: Load X position
 		moveq	#0,d0						; MJ: clear d0
 		move.b	obWidth(a0),d0				; MJ: load height
 		ext.w	d0							; MJ: set left byte pos or neg
