@@ -127,15 +127,14 @@ loc_197AA:
 		move.l	(a2)+,(a3)+
 		dbf		d3,loc_197AA
 
-		move.w	(a4)+,obVelX(a1)
-		move.w	(a4)+,obVelY(a1)
+		move.l	(a4)+,obVelX(a1)		; move the data contained in the array to obVelX and obVelY, and increment the address in a4
 		move.w	(a5)+,d3
 		add.w	d3,obX(a1)
 		move.w	(a5)+,d3
 		add.w	d3,obY(a1)
 		move.b	d4,obFrame(a1)
 		addq.w	#1,d4
-		dbf		d1,BossBlock_LoopFrag ; repeat sequence 3 more times
+		dbf		d1,BossBlock_LoopFrag	; repeat sequence 3 more times
 
 loc_197D4:
 		move.w	#sfx_WallSmash,d0

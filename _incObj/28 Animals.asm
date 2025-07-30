@@ -97,10 +97,9 @@ Anml_Main:	; Routine 0
 		add.w	d0,d0
 		move.l	Anml_EndMap(pc,d0.w),obMap(a0)
 		lea		Anml_EndSpeed(pc),a1
-		move.w	(a1,d0.w),objoff_32(a0)		; load horizontal speed
-		move.w	(a1,d0.w),obVelX(a0)
-		move.w	2(a1,d0.w),objoff_34(a0)	; load vertical speed
-		move.w	2(a1,d0.w),obVelY(a0)
+		move.l	(a1,d0.w),d1
+		move.l	d1,objoff_32(a0)			; load horizontal speed (objoff_32 and objoff_34)
+		move.l	d1,obVelX(a0) 				; (obVelX and obVelY)
 		move.b	#$C,obHeight(a0)
 		move.b	#4,obRender(a0)
 		bset	#0,obRender(a0)
@@ -118,18 +117,17 @@ Anml_FromEnemy:
 		move.b	(v_zone).w,d1
 		add.w	d1,d1
 		add.w	d0,d1
-		lea	Anml_VarIndex(pc),a1
+		lea		Anml_VarIndex(pc),a1
 		move.b	(a1,d1.w),d0
 		move.b	d0,objoff_30(a0)
 		lsl.w	#3,d0
 		lea	Anml_Variables(pc),a1
 		adda.w	d0,a1
-		move.w	(a1)+,objoff_32(a0)	; load horizontal speed
-		move.w	(a1)+,objoff_34(a0)	; load vertical	speed
-		move.l	(a1)+,obMap(a0)	; load mappings
+		move.l	(a1)+,objoff_32(a0)								; load horizontal and vertical speeds (objoff_32 and objoff_34)
+		move.l	(a1)+,obMap(a0)									; load mappings
 		move.w	#make_art_tile(ArtTile_Animal_1,0,0),obGfx(a0)	; VRAM setting for 1st animal
-		btst	#0,objoff_30(a0)	; is 1st animal	used?
-		beq.s	loc_90C0	; if yes, branch
+		btst	#0,objoff_30(a0)								; is 1st animal	used?
+		beq.s	loc_90C0										; if yes, branch
 		move.w	#make_art_tile(ArtTile_Animal_2,0,0),obGfx(a0)	; VRAM setting for 2nd animal
 
 loc_90C0:

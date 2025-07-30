@@ -332,8 +332,7 @@ LZWindTunnels:
 
 .movesonic:
 		addq.w	#4,obX(a1)
-		move.w	#$400,obVelX(a1)			; move Sonic to the right
-		clr.w	obVelY(a1)
+		move.l	#$4000000,obVelX(a1)		; move Sonic to the right and stop vertical movement
 		move.b	#aniID_Float2,obAnim(a1)	; use floating animation
 		bset	#staAir,obStatus(a1)
 		btst	#bitUp,(v_jpadhold2).w		; is up pressed?

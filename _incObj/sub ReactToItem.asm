@@ -444,11 +444,11 @@ HurtSonic:
 		move.b	#4,obRoutine(a0)
 		jsr		(Sonic_ResetOnFloor).l
 		bset	#staAir,obStatus(a0)
-		move.l	#$FE00FC00,obVelX(a0)			; bounce player away (xspd = -$200, yspd = -$400)
+		move.l	#$FE00FC00,obVelX(a0)			; bounce player away (obVelX = -$200, obVelY = -$400)
 		btst	#staWater,obStatus(a0)			; is Sonic underwater?
 		beq.s	.isdry							; if not, branch
 
-		move.l	#$FF00FE00,obVelX(a0)			; bounce player away (xspd = -$100, yspd = -$200)
+		move.l	#$FF00FE00,obVelX(a0)			; bounce player away (obVelX = -$100, obVelY = -$200)
 
 .isdry:
 		move.w	obX(a0),d0

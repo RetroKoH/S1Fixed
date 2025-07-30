@@ -491,8 +491,7 @@ Lightning_CreateSpark:
 		move.b	#4,obRender(a1)
 		move.b	#8,obActWid(a1)
 		move.b	#aniID_LightningSpark,obAnim(a1)
-		move.w	(a2)+,obVelX(a1)
-		move.w	(a2)+,obVelY(a1)
+		move.l	(a2)+,obVelX(a1)		; move the data contained in the array to obVelX and obVelY, and increment the address in a2
 		lea		object_size(a1),a1
 		dbf		d1,.loop
 
