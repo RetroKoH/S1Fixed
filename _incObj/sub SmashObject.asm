@@ -37,8 +37,7 @@ SmashObject:
 		move.w	obGfx(a0),obGfx(a1)
 		move.w	obPriority(a0),obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	obActWid(a0),obActWid(a1)
-		move.w	(a4)+,obVelX(a1)
-		move.w	(a4)+,obVelY(a1)
+		move.l	(a4)+,obVelX(a1)				; move the data contained in the array to obVelX and obVelY, and increment the address in a4
 		cmpa.l	a0,a1
 		bhs.s	.loc_D268
 		move.l	a0,-(sp)

@@ -52,13 +52,12 @@ Hog_Action:	; Routine 2
 		_move.b	#id_Cannonball,obID(a1) ; load cannonball object ($20)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		move.w	#-$100,obVelX(a1) ; cannonball bounces to the left
-		clr.w	obVelY(a1)
+		move.l	#$FF000000,obVelX(a1)	; cannonball bounces to the left (-$100) and clear obYVel
 		moveq	#-4,d0
 		btst	#staFlipX,obStatus(a0)	; is Ball Hog facing right?
-		beq.s	.noflip		; if not, branch
+		beq.s	.noflip					; if not, branch
 		neg.w	d0
-		neg.w	obVelX(a1)	; cannonball bounces to	the right
+		neg.w	obVelX(a1)				; cannonball bounces to	the right
 
 .noflip:
 		add.w	d0,obX(a1)

@@ -85,8 +85,7 @@ BossFire_Drop:		; Secondary Routine 0
 BossFire_MakeFlame:	; Secondary Routine 2
 		subq.w	#2,obY(a0)						; upon landing, nudge the ball up by 2 pixels
 		bset	#7,obGfx(a0)
-		move.w	#$A0,obVelX(a0)					; set X-speed to 0.625
-		clr.w	obVelY(a0)						; clear Y-speed
+		move.l	#$00A00000,obVelX(a0)			; set X-speed to 0.625 and clear obVelY
 		move.w	obX(a0),bossfire_bufferX(a0)	; store X and Y positions on the ground
 		move.w	obY(a0),bossfire_bufferY(a0)
 		move.b	#3,bossfire_delaytimer(a0)

@@ -63,12 +63,11 @@ Gird_Action:	; Routine 2
 Gird_ChgMove:
 		move.b	gird_set(a0),d0
 		andi.w	#$18,d0
-		lea	(.settings).l,a1
-		lea	(a1,d0.w),a1
-		move.w	(a1)+,obVelX(a0)
-		move.w	(a1)+,obVelY(a0)
+		lea		(.settings).l,a1
+		lea		(a1,d0.w),a1
+		move.l	(a1)+,obVelX(a0)	; move the data contained in the array to obVelX and obVelY, and increment the address in a1
 		move.w	(a1)+,gird_time(a0)
-		addq.b	#8,gird_set(a0)	; use next settings
+		addq.b	#8,gird_set(a0)		; use next settings
 		move.w	#7,gird_delay(a0)
 		rts	
 ; ===========================================================================

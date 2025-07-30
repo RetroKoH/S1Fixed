@@ -158,7 +158,7 @@ loc_11B7C:
 		move.w	bom_origY(a0),obY(a0)
 		moveq	#3,d1
 		movea.l	a0,a1
-		lea		(Bom_ShrSpeed).l,a2 ; load shrapnel speed data
+		lea		(Bom_ShrSpeed).l,a2				; load shrapnel speed data
 		bra.s	.makeshrapnel
 ; ===========================================================================
 
@@ -167,13 +167,12 @@ loc_11B7C:
 		bne.s	.fail
 
 .makeshrapnel:
-		_move.b	#id_Bomb,obID(a1)	; load shrapnel	object
+		_move.b	#id_Bomb,obID(a1)				; load shrapnel	object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.b	#6,obSubtype(a1)
 		move.b	#4,obAnim(a1)
-		move.w	(a2)+,obVelX(a1)
-		move.w	(a2)+,obVelY(a1)
+		move.l	(a2)+,obVelX(a1)				; move the data contained in the array to obVelX and obVelY, and increment the address in a2
 		move.b	#(colHarmful|colSz_4x4),obColType(a1)
 
 		bset	#shPropReflect,obShieldProp(a1)	; Reflected by Elemental Shields
@@ -181,7 +180,7 @@ loc_11B7C:
 		bset	#7,obRender(a1)
 
 .fail:
-		dbf		d1,.loop	; repeat 3 more	times
+		dbf		d1,.loop						; repeat 3 more	times
 
 		move.b	#6,obRoutine(a0)
 

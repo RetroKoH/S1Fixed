@@ -87,8 +87,7 @@ Pole_Action:	; Routine 2
 		clr.b	obColProp(a0)
 		cmpi.b	#4,obRoutine(a1)
 		bhs.w	RememberState
-		clr.w	obVelX(a1)				; stop Sonic moving
-		clr.w	obVelY(a1)				; stop Sonic moving
+		clr.l	obVelX(a1)				; stop all movement (obVelX and obVelY)
 		move.w	obX(a0),d0
 		addi.w	#$14,d0
 		move.w	d0,obX(a1)

@@ -164,8 +164,7 @@ RLoss_Count:	; Routine 0
 		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colPowerup|colSz_6x6),obColType(a1)
 		move.b	#8,obActWid(a1)
-		move.w  (a3)+,obVelX(a1)		; move the data contained in the array to the x velocity and increment the address in a3
-		move.w  (a3)+,obVelY(a1)		; move the data contained in the array to the y velocity and increment the address in a3
+		move.l  (a3)+,obVelX(a1)		; move the data contained in the array to obVelX and obVelY, and increment the address in a3
 		subq	#1,d5					; decrement for the first ring created
 		bmi.s	.resetcounter			; if only one ring is needed, branch and skip EVERYTHING below altogether
 		; Here we begin what's replacing SingleObjLoad, in order to avoid resetting its d0 every time an object is created.
@@ -192,8 +191,7 @@ RLoss_Count:	; Routine 0
 		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colPowerup|colSz_6x6),obColType(a1)
 		move.b	#8,obActWid(a1)
-		move.w  (a3)+,obVelX(a1)		; move the data contained in the array to the x velocity and increment the address in a3
-		move.w  (a3)+,obVelY(a1)		; move the data contained in the array to the y velocity and increment the address in a3
+		move.l  (a3)+,obVelX(a1)		; move the data contained in the array to obVelX and obVelY, and increment the address in a3
 		dbf		d5,.loop				; repeat for number of rings (max 31)
 
 	.resetcounter:
