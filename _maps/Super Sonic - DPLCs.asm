@@ -110,6 +110,10 @@ SuperSonicDynPLC: mappingsTable
 	mappingsTableEntry.w	SuperSonicDynPLC_108
 	mappingsTableEntry.w	SuperSonicDynPLC_109
 	mappingsTableEntry.w	SuperSonicDynPLC_110
+	mappingsTableEntry.w	SuperSonicDynPLC_111
+	mappingsTableEntry.w	SuperSonicDynPLC_112
+	mappingsTableEntry.w	SuperSonicDynPLC_113
+	mappingsTableEntry.w	SuperSonicDynPLC_114
 
 SuperSonicDynPLC_0:	dplcHeader
 SuperSonicDynPLC_0_End
@@ -598,226 +602,243 @@ SuperSonicDynPLC_68:	dplcHeader
 SuperSonicDynPLC_68_End
 
 SuperSonicDynPLC_69:	dplcHeader
- dplcEntry $C, $422
- dplcEntry 3, $42E
+ dplcEntry $10, $422
+ dplcEntry 3, $432
 SuperSonicDynPLC_69_End
 
 SuperSonicDynPLC_70:	dplcHeader
- dplcEntry 3, $12
- dplcEntry 3, $15
- dplcEntry 3, $18
- dplcEntry 3, $431
- dplcEntry 4, $434
+ dplcEntry $C, $435
+ dplcEntry 3, $441
 SuperSonicDynPLC_70_End
 
 SuperSonicDynPLC_71:	dplcHeader
- dplcEntry 9, $1B
- dplcEntry 3, $431
- dplcEntry 4, $434
+ dplcEntry $C, $444
+ dplcEntry 3, $450
 SuperSonicDynPLC_71_End
 
 SuperSonicDynPLC_72:	dplcHeader
- dplcEntry 3, $12
- dplcEntry 3, $15
- dplcEntry 3, $18
- dplcEntry 3, $431
- dplcEntry 4, $438
+ dplcEntry $C, $453
+ dplcEntry 3, $45F
 SuperSonicDynPLC_72_End
 
 SuperSonicDynPLC_73:	dplcHeader
- dplcEntry 9, $1B
- dplcEntry 3, $431
- dplcEntry 4, $438
+ dplcEntry 3, $12
+ dplcEntry 3, $15
+ dplcEntry 3, $18
+ dplcEntry 3, $462
+ dplcEntry 4, $465
 SuperSonicDynPLC_73_End
 
 SuperSonicDynPLC_74:	dplcHeader
- dplcEntry $10, $43C
- dplcEntry 2, $44C
+ dplcEntry 9, $1B
+ dplcEntry 3, $462
+ dplcEntry 4, $465
 SuperSonicDynPLC_74_End
 
 SuperSonicDynPLC_75:	dplcHeader
- dplcEntry $10, $44E
- dplcEntry 1, $45E
+ dplcEntry 3, $12
+ dplcEntry 3, $15
+ dplcEntry 3, $18
+ dplcEntry 3, $462
+ dplcEntry 4, $469
 SuperSonicDynPLC_75_End
 
 SuperSonicDynPLC_76:	dplcHeader
- dplcEntry $10, $45F
+ dplcEntry 9, $1B
+ dplcEntry 3, $462
+ dplcEntry 4, $469
 SuperSonicDynPLC_76_End
 
 SuperSonicDynPLC_77:	dplcHeader
- dplcEntry 8, $46F
- dplcEntry 4, $477
- dplcEntry 3, $47B
+ dplcEntry $10, $46D
+ dplcEntry 2, $47D
 SuperSonicDynPLC_77_End
 
 SuperSonicDynPLC_78:	dplcHeader
- dplcEntry 8, $47E
- dplcEntry 4, $486
- dplcEntry 3, $48A
+ dplcEntry $10, $47F
+ dplcEntry 1, $48F
 SuperSonicDynPLC_78_End
 
 SuperSonicDynPLC_79:	dplcHeader
- dplcEntry 8, $48D
- dplcEntry 1, $495
- dplcEntry 4, $496
+ dplcEntry $10, $490
 SuperSonicDynPLC_79_End
 
 SuperSonicDynPLC_80:	dplcHeader
- dplcEntry $10, $49A
- dplcEntry 1, $4AA
+ dplcEntry 8, $4A0
+ dplcEntry 4, $4A8
+ dplcEntry 3, $4AC
 SuperSonicDynPLC_80_End
 
 SuperSonicDynPLC_81:	dplcHeader
- dplcEntry $10, $4AB
- dplcEntry 3, $4BB
+ dplcEntry $10, $46D
+ dplcEntry 2, $47D
 SuperSonicDynPLC_81_End
 
 SuperSonicDynPLC_82:	dplcHeader
- dplcEntry $10, $4BE
- dplcEntry 4, $4CE
+ dplcEntry $10, $490
 SuperSonicDynPLC_82_End
 
 SuperSonicDynPLC_83:	dplcHeader
- dplcEntry $10, $4D2
- dplcEntry 5, $4E2
+ dplcEntry $10, $4AF
+ dplcEntry 3, $4BF
 SuperSonicDynPLC_83_End
 
 SuperSonicDynPLC_84:	dplcHeader
- dplcEntry $10, $4E7
- dplcEntry 4, $4F7
+ dplcEntry $10, $4C2
+ dplcEntry 3, $4D2
 SuperSonicDynPLC_84_End
 
 SuperSonicDynPLC_85:	dplcHeader
- dplcEntry $10, $4FB
- dplcEntry 3, $50B
+ dplcEntry $10, $4D5
+ dplcEntry 3, $4E5
 SuperSonicDynPLC_85_End
 
 SuperSonicDynPLC_86:	dplcHeader
- dplcEntry $10, $50E
- dplcEntry 3, $51E
+ dplcEntry $10, $4E8
+ dplcEntry 4, $4F8
 SuperSonicDynPLC_86_End
 
 SuperSonicDynPLC_87:	dplcHeader
- dplcEntry 9, $521
- dplcEntry 4, $52A
- dplcEntry 1, $52E
+ dplcEntry $10, $4FC
+ dplcEntry 5, $50C
 SuperSonicDynPLC_87_End
 
 SuperSonicDynPLC_88:	dplcHeader
- dplcEntry 8, $52F
- dplcEntry 2, $537
- dplcEntry 6, $539
- dplcEntry 4, $53F
- dplcEntry 1, $543
+ dplcEntry $10, $511
+ dplcEntry 4, $521
 SuperSonicDynPLC_88_End
 
 SuperSonicDynPLC_89:	dplcHeader
- dplcEntry 8, $544
- dplcEntry 2, $537
- dplcEntry 6, $54C
- dplcEntry 4, $53F
- dplcEntry 1, $543
+ dplcEntry $10, $525
+ dplcEntry 3, $535
 SuperSonicDynPLC_89_End
 
 SuperSonicDynPLC_90:	dplcHeader
- dplcEntry 3, $552
- dplcEntry $10, $555
+ dplcEntry $10, $538
+ dplcEntry 3, $548
 SuperSonicDynPLC_90_End
 
 SuperSonicDynPLC_91:	dplcHeader
- dplcEntry 3, $565
- dplcEntry $C, $568
- dplcEntry 3, $574
+ dplcEntry 9, $54B
+ dplcEntry 4, $554
+ dplcEntry 1, $558
 SuperSonicDynPLC_91_End
 
 SuperSonicDynPLC_92:	dplcHeader
- dplcEntry $C, $577
+ dplcEntry 8, $559
+ dplcEntry 2, $561
+ dplcEntry 6, $563
+ dplcEntry 4, $569
+ dplcEntry 1, $56D
 SuperSonicDynPLC_92_End
 
 SuperSonicDynPLC_93:	dplcHeader
- dplcEntry 6, $583
+ dplcEntry 8, $56E
+ dplcEntry 2, $561
+ dplcEntry 6, $576
+ dplcEntry 4, $569
+ dplcEntry 1, $56D
 SuperSonicDynPLC_93_End
 
 SuperSonicDynPLC_94:	dplcHeader
- dplcEntry 2, $589
+ dplcEntry 3, $57C
+ dplcEntry $10, $57F
 SuperSonicDynPLC_94_End
 
 SuperSonicDynPLC_95:	dplcHeader
- dplcEntry $10, $58B
- dplcEntry 4, $59B
+ dplcEntry 3, $58F
+ dplcEntry $C, $592
+ dplcEntry 3, $59E
 SuperSonicDynPLC_95_End
 
 SuperSonicDynPLC_96:	dplcHeader
- dplcEntry $10, $59F
- dplcEntry 4, $5AF
+ dplcEntry $C, $5A1
 SuperSonicDynPLC_96_End
 
 SuperSonicDynPLC_97:	dplcHeader
- dplcEntry $10, $5B3
- dplcEntry 3, $5C3
+ dplcEntry 6, $5AD
 SuperSonicDynPLC_97_End
 
 SuperSonicDynPLC_98:	dplcHeader
- dplcEntry $10, $5C6
+ dplcEntry 2, $5B3
 SuperSonicDynPLC_98_End
 
 SuperSonicDynPLC_99:	dplcHeader
- dplcEntry $10, $5D6
+ dplcEntry $10, $5B5
+ dplcEntry 4, $5C5
 SuperSonicDynPLC_99_End
 
 SuperSonicDynPLC_100:	dplcHeader
- dplcEntry $10, $5E6
+ dplcEntry $10, $5C9
+ dplcEntry 4, $5D9
 SuperSonicDynPLC_100_End
 
 SuperSonicDynPLC_101:	dplcHeader
- dplcEntry $10, $5F6
+ dplcEntry $10, $5DD
+ dplcEntry 3, $5ED
 SuperSonicDynPLC_101_End
 
 SuperSonicDynPLC_102:	dplcHeader
- dplcEntry $10, $606
+ dplcEntry $10, $5F0
 SuperSonicDynPLC_102_End
 
 SuperSonicDynPLC_103:	dplcHeader
- dplcEntry $10, $616
+ dplcEntry $10, $600
 SuperSonicDynPLC_103_End
 
 SuperSonicDynPLC_104:	dplcHeader
- dplcEntry $10, $626
+ dplcEntry $10, $610
 SuperSonicDynPLC_104_End
 
 SuperSonicDynPLC_105:	dplcHeader
- dplcEntry $10, $636
+ dplcEntry $10, $620
 SuperSonicDynPLC_105_End
 
 SuperSonicDynPLC_106:	dplcHeader
- dplcEntry $C, $646
+ dplcEntry $10, $630
 SuperSonicDynPLC_106_End
 
 SuperSonicDynPLC_107:	dplcHeader
- dplcEntry $C, $652
- dplcEntry 2, $65E
- dplcEntry 6, $660
+ dplcEntry $10, $640
 SuperSonicDynPLC_107_End
 
 SuperSonicDynPLC_108:	dplcHeader
- dplcEntry 9, $666
- dplcEntry 9, $66F
- dplcEntry 1, $678
+ dplcEntry $10, $650
 SuperSonicDynPLC_108_End
 
 SuperSonicDynPLC_109:	dplcHeader
- dplcEntry 3, $679
- dplcEntry 6, $67C
- dplcEntry 9, $682
- dplcEntry 1, $68B
+ dplcEntry $10, $660
 SuperSonicDynPLC_109_End
 
 SuperSonicDynPLC_110:	dplcHeader
- dplcEntry 3, $68C
- dplcEntry 2, $68F
- dplcEntry 4, $67E
- dplcEntry 9, $682
- dplcEntry 1, $68B
+ dplcEntry $C, $670
 SuperSonicDynPLC_110_End
+
+SuperSonicDynPLC_111:	dplcHeader
+ dplcEntry $C, $67C
+ dplcEntry 2, $688
+ dplcEntry 6, $68A
+SuperSonicDynPLC_111_End
+
+SuperSonicDynPLC_112:	dplcHeader
+ dplcEntry 9, $690
+ dplcEntry 9, $699
+ dplcEntry 1, $6A2
+SuperSonicDynPLC_112_End
+
+SuperSonicDynPLC_113:	dplcHeader
+ dplcEntry 3, $6A3
+ dplcEntry 6, $6A6
+ dplcEntry 9, $6AC
+ dplcEntry 1, $6B5
+SuperSonicDynPLC_113_End
+
+SuperSonicDynPLC_114:	dplcHeader
+ dplcEntry 3, $6B6
+ dplcEntry 2, $6B9
+ dplcEntry 4, $6A8
+ dplcEntry 9, $6AC
+ dplcEntry 1, $6B5
+SuperSonicDynPLC_114_End
 
 	even
