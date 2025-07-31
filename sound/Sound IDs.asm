@@ -8,12 +8,39 @@ idstart :=	1
 ; $00 is reserved for silence
 
 bgm__First = idstart
+
+	if DynamicBGMs
+; -----------------------------------------------------------------------
+bgm_GHZ1 =			SMPS_id(ptr_mus01)
+bgm_GHZ2 =			SMPS_id(ptr_mus01)
+bgm_GHZ3 =			SMPS_id(ptr_mus01)
+bgm_LZ1 =			SMPS_id(ptr_mus02)
+bgm_LZ2 =			SMPS_id(ptr_mus02)
+bgm_LZ3 =			SMPS_id(ptr_mus02)
+bgm_MZ1 =			SMPS_id(ptr_mus03)
+bgm_MZ2 =			SMPS_id(ptr_mus03)
+bgm_MZ3 =			SMPS_id(ptr_mus03)
+bgm_SLZ1 =			SMPS_id(ptr_mus04)
+bgm_SLZ2 =			SMPS_id(ptr_mus04)
+bgm_SLZ3 =			SMPS_id(ptr_mus04)
+bgm_SYZ1 =			SMPS_id(ptr_mus05)
+bgm_SYZ2 =			SMPS_id(ptr_mus05)
+bgm_SYZ3 =			SMPS_id(ptr_mus05)
+bgm_SBZ1 =			SMPS_id(ptr_mus06)
+bgm_SBZ2 =			SMPS_id(ptr_mus06)
+bgm_SBZ3 =			SMPS_id(ptr_mus06)
+; -----------------------------------------------------------------------
+	else
+; -----------------------------------------------------------------------
 bgm_GHZ =			SMPS_id(ptr_mus01)
 bgm_LZ =			SMPS_id(ptr_mus02)
 bgm_MZ =			SMPS_id(ptr_mus03)
 bgm_SLZ =			SMPS_id(ptr_mus04)
 bgm_SYZ =			SMPS_id(ptr_mus05)
 bgm_SBZ =			SMPS_id(ptr_mus06)
+; ------------------------------------------------------------------------
+	endif
+
 bgm_Invincible =	SMPS_id(ptr_mus07)
 bgm_ExtraLife =		SMPS_id(ptr_mus08)
 bgm_SS =			SMPS_id(ptr_mus09)

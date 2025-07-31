@@ -222,7 +222,13 @@ BossGreenHill_ShipDestroyed:	; Secondary Routine $A
 
 	.resetmusic:
 		clr.w	obVelY(a0)
+
+	if DynamicBGMs
+		move.w	#bgm_GHZ3,d0
+	else
 		move.w	#bgm_GHZ,d0
+	endif
+
 		jsr		(PlaySound).w			; play GHZ music
 		move.b	d0,(v_lastbgmplayed).w	; store last played music
 

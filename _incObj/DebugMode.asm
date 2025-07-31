@@ -246,6 +246,18 @@ Debug_RestartMusic:
 		cmpi.b	#id_Level,(v_gamemode).w
 		bne.s	.dontrestart					; don't restart music outside of levels (Ending or Special Stage)
 
+	if DynamicBGMs
+; -----------------------------------------------------------------------
+		moveq	#0,d0
+		move.b	(v_zone).w,d0
+		add.b	d0,d0
+		add.b	d0,d0							; multiply by 4
+		add.b	(v_act).w,d0					; add the act value
+		lea		(MusicList).l,a1
+		move.b	(a1,d0.w),d0
+; -----------------------------------------------------------------------
+	else
+; -----------------------------------------------------------------------
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
 		cmpi.w	#(id_LZ<<8)+3,(v_zone).w		; check if level is SBZ3
@@ -254,6 +266,8 @@ Debug_RestartMusic:
 .music:
 		lea		(MusicList).l,a1
 		move.b	(a1,d0.w),d0
+; ------------------------------------------------------------------------
+	endif
 
 	if SuperMod
 		btst	#sta2ndSuper,(v_player+obStatus2nd).w	; is player in Super Form?
