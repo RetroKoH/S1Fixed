@@ -125,103 +125,110 @@ RLoss_Index:		offsetTable
 ; ===========================================================================
 
 RLoss_Count:	; Routine 0
+	; RetroKoH Ring Optimization; Built off of Spirituinsanum's Mass Object Load Optimization
+	; Init the first ring right away (which is already created)
+		move.l	#Map_Ring,d2			; doing this purely to save cycles
+		move.w	#$808,d3
+		addq.b	#2,obRoutine(a0)
+		move.w	d3,obHeight(a0)
+		move.l	d2,obMap(a0)
+		move.w	#make_art_tile(ArtTile_LostRing,1,0),obGfx(a0)
+		move.b	#4,obRender(a0)
+		move.w	#priority3,obPriority(a0)
+		move.b	#(colPowerup|colSz_6x6),obColType(a0)
+		move.b	d3,obActWid(a0)
 
 	; RetroKoH/DeltaW Enemies Drop Rings Mod
 	if EnemiesDropRings
 		tst.b	$3E(a0)					; was this ring from a badnik?
-		bne.w	Ring_FromBadnik			; if yes, branch
+		beq.w	.lostrings				; if not, branch
+
+		move.w	#-$380,obVelY(a0)
+		tst.b   (f_water).w				; Does the level have water?
+		beq.w   .setanim				; If not, branch and skip underwater checks
+		move.w  (v_waterpos1).w,d6		; Move water level to d6
+		cmp.w   obY(a0),d6				; Is the ring object underneath the water level?
+		bgt.w   .setanim				; If not, branch and skip underwater commands
+		move.w	#-$1C0,obVelY(a0)		; halve speed underwater
+		bra.w	.setanim
 	endif
 	; Enemies Drop Rings Mod End
 
-		movea.l	a0,a1
+	; Lost rings code continues here; Here is where things are optimized, per SpirituInsanum's original guide
+	.lostrings:
 		moveq	#0,d5
-		move.w	(v_rings).w,d5			; check number of rings you have
+		move.w	(v_rings).w,d5				; check number of rings you have
 		moveq	#32,d0
 	; RHS Ring Loss Speedup
-		lea		SpillRingData,a3		; load the address of the array in a3
-		lea     (v_player).w,a2			; a2=character
-		btst    #staWater,obStatus(a2)	; is Sonic underwater?
-		beq.s   .abovewater				; if not, branch
-		lea		SpillRingData_Water,a3	; load the address of the array in a3
+		lea		SpillRingData,a3			; load the address of the array in a3
+		lea     (v_player).w,a2				; a2=character
+		btst    #staWater,obStatus(a2)		; is Sonic underwater?
+		beq.s   .abovewater					; if not, branch
+		lea		SpillRingData_Water,a3		; load the address of the array in a3
 
 	.abovewater:
 	; Ring Loss Speedup End
-		cmp.w	d0,d5					; do you have 32 or more?
-		blo.s	.belowmax				; if not, branch
-		move.w	d0,d5					; if yes, set d5 to 32
+		cmp.w	d0,d5						; do you have 32 or more?
+		blo.s	.belowmax					; if not, branch
+		move.w	d0,d5						; if yes, set d5 to 32
 
 	.belowmax:
-		subq.w	#1,d5					; decrease the counter the first time, as we are creating the first ring now.
-		_move.b	obID(a0),d4				; quick load obID to d4
+		move.l  (a3)+,obVelX(a0)			; move the data contained in the array to obVelX and obVelY, and increment the address in a3
+		subq.w	#2,d5						; set iterator based on ring count, and decrement for the first ring created
+		bmi.s	.resetcounter				; if only one ring is needed, branch and skip EVERYTHING below altogether
 
-	; Spirituinsanum Mass Object Load Optimization
-	; Create the first instance, then loop create the others afterward.
-		_move.b	d4,obID(a1) 			; load bouncing ring object
-		addq.b	#2,obRoutine(a1)
-		move.w	#$808,obHeight(a1)		; Height and Width
-		move.w	obX(a0),obX(a1)
-		move.w	obY(a0),obY(a1)
-		move.l	#Map_Ring,obMap(a1)
-		move.w	#make_art_tile(ArtTile_LostRing,1,0),obGfx(a1)
-		move.b	#4,obRender(a1)
-		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#(colPowerup|colSz_6x6),obColType(a1)
-		move.b	#8,obActWid(a1)
-		move.l  (a3)+,obVelX(a1)		; move the data contained in the array to obVelX and obVelY, and increment the address in a3
-		subq	#1,d5					; decrement for the first ring created
-		bmi.s	.resetcounter			; if only one ring is needed, branch and skip EVERYTHING below altogether
-
-		; Here we begin what's replacing FindFreeObj/SingleObjLoad,
-		;in order to avoid resetting its d0 every time an object is created.
+	; Here we begin what's replacing FindFreeObj/SingleObjLoad,
 		lea		(v_lvlobjspace).w,a1
 		move.w	#v_lvlobjcount,d0
 
 	.loop:
-		; REMOVE FindFreeObj. It's the routine that causes such slowdown
-		tst.b	obID(a1)				; is object RAM	slot empty?
-		beq.s	.makerings				; Let's correct the branches. Here we can also skip the bne that was originally after bsr.w FindFreeObj because we already know there's a free object slot in memory.
+	; REMOVE FindFreeObj. It's the routine that causes such slowdown
+		tst.b	obID(a1)					; is object RAM	slot empty?
+		beq.s	.makerings					; Let's correct the branches. Here we can also skip the bne that was originally after bsr.w FindFreeObj because we already know there's a free object slot in memory.
 		lea		object_size(a1),a1
-		dbf		d0,.loop				; Branch correction again.
-		bne.s	.resetcounter			; We're moving this line here.
+		dbf		d0,.loop					; Branch correction again.
+		bne.s	.resetcounter				; We're moving this line here.
 
 	.makerings:
-		_move.b	d4,obID(a1)				; load bouncing ring object
+		_move.b	#id_RingLoss,obID(a1)		; load bouncing ring object
 		addq.b	#2,obRoutine(a1)
-		move.w	#$808,obHeight(a1)		; Height and Width
+		move.w	d3,obHeight(a1)				; Height and Width
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		move.l	#Map_Ring,obMap(a1)
+		move.l	d2,obMap(a1)
 		move.w	#make_art_tile(ArtTile_LostRing,1,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colPowerup|colSz_6x6),obColType(a1)
-		move.b	#8,obActWid(a1)
-		move.l  (a3)+,obVelX(a1)		; move the data contained in the array to obVelX and obVelY, and increment the address in a3
-		dbf		d5,.loop				; repeat for number of rings (max 31)
+		move.b	d3,obActWid(a1)
+		move.l  (a3)+,obVelX(a1)			; move the data contained in the array to obVelX and obVelY, and increment the address in a3
+		dbf		d5,.loop					; repeat for number of rings (max 31)
 
 	.resetcounter:
-	; Mass Object Load Optimization End
-		clr.w	(v_rings).w				; reset number of rings to zero
-		move.b	#$80,(f_ringcount).w	; update ring counter
+		clr.w	(v_rings).w					; reset number of rings to zero
+		move.b	#$80,(f_ringcount).w		; update ring counter
 		clr.b	(v_lifecount).w
-		; RHS Ring Timers Fix
-		moveq   #-1,d0					; Move #-1 to d0
-		move.b  d0,obDelayAni(a0)		; Move d0 to new timer
-		move.b  d0,(v_ani3_time).w		; Move d0 to old timer (for animated purposes)
-		; Ring Timers Fix End
+	; Moved sfx above anim timer code to accomodate potential badnik ring branch
 		move.w	#sfx_RingLoss,d0
-		jsr		(PlaySound_Special).w	; play ring loss sound
+		jsr		(PlaySound_Special).w		; play ring loss sound
+
+	; RHS Ring Timers Fix
+	.setanim:
+		moveq   #-1,d0						; Move #-1 to d0
+		move.b  d0,obDelayAni(a0)			; Move d0 to new timer
+		move.b  d0,(v_ani3_time).w			; Move d0 to old timer (for animated purposes)
+	; Ring Timers Fix End
 
 RLoss_Bounce:	; Routine 2
 		bsr.w	SpeedToPos
 		addi.w	#$18,obVelY(a0)
 	; RHS Underwater Rings Physics Fix
-		tst.b	(f_water).w				; Does the level have water?
-		beq.s	.skipbounceslow			; If not, branch and skip underwater checks
-		move.w	(v_waterpos1).w,d6		; Move water level to d6
-		cmp.w	obY(a0),d6				; Is the ring object underneath the water level?
-		bgt.s	.skipbounceslow			; If not, branch and skip underwater commands
-		subi.w	#$E,obVelY(a0)			; Reduce gravity by $E ($18-$E=$A), giving the underwater effect
+		tst.b	(f_water).w					; Does the level have water?
+		beq.s	.skipbounceslow				; If not, branch and skip underwater checks
+		move.w	(v_waterpos1).w,d6			; Move water level to d6
+		cmp.w	obY(a0),d6					; Is the ring object underneath the water level?
+		bgt.s	.skipbounceslow				; If not, branch and skip underwater commands
+		subi.w	#$E,obVelY(a0)				; Reduce gravity by $E ($18-$E=$A), giving the underwater effect
 
 	.skipbounceslow:
 	; Underwater Rings Physics Fix End
@@ -241,17 +248,17 @@ RLoss_Bounce:	; Routine 2
 
 	.chkdel:
 		; RHS Ring Timers Fix
-		subq.b	#1,obDelayAni(a0)		; Decrement timer
-		beq.w	DeleteObject			; If 0, delete
+		subq.b	#1,obDelayAni(a0)			; Decrement timer
+		beq.w	DeleteObject				; If 0, delete
 		; Ring Timers Fix End
 		; RHS Accidental Ring Deletion Fix
-		cmpi.w	#$FF00,(v_limittop2).w	; is vertical wrapping enabled?
-		beq.w	.chkflash				; if so, branch
+		cmpi.w	#$FF00,(v_limittop2).w		; is vertical wrapping enabled?
+		beq.w	.chkflash					; if so, branch
 		; Accidental Ring Deletion Fix End
 		move.w	(v_limitbtm2).w,d0
 		addi.w	#$E0,d0
-		cmp.w	obY(a0),d0				; has object moved below level boundary?
-		blo.w	DeleteObject			; if yes, branch
+		cmp.w	obY(a0),d0					; has object moved below level boundary?
+		blo.w	DeleteObject				; if yes, branch
 		; Mercury Ring Flashing Effect
 
 	; RetroKoH/DeltaW Enemies Drop Rings Mod
@@ -336,34 +343,6 @@ SpillRingData_Water:
                 dc.w    $FF72,$00D4, $008E,$00D4, $FFCE,$00FA, $0032,$00FA ; 32
                 even
 ; ===========================================================================
-
-	if EnemiesDropRings
-Ring_FromBadnik:
-		addq.b	#2,obRoutine(a0)
-		move.w	#$808,obHeight(a0)		; Height and Width
-		move.w	obX(a0),obX(a0)
-		move.w	obY(a0),obY(a0)
-		move.l	#Map_Ring,obMap(a0)
-		move.w	#make_art_tile(ArtTile_LostRing,1,0),obGfx(a0)
-		move.b	#4,obRender(a0)
-		move.w	#priority3,obPriority(a0)
-		move.b	#(colPowerup|colSz_6x6),obColType(a0)
-		move.b	#8,obActWid(a0)
-		move.w	#-$380,obVelY(a0)
-		tst.b   (f_water).w				; Does the level have water?
-		beq.s   .notunderwater			; If not, branch and skip underwater checks
-		move.w  (v_waterpos1).w,d6		; Move water level to d6
-		cmp.w   obY(a0),d6				; Is the ring object underneath the water level?
-		bgt.s   .notunderwater			; If not, branch and skip underwater commands
-		move.w	#-$1C0,obVelY(a0)		; halve speed underwater
-
-	.notunderwater:
-		moveq	#-1,d0					; Move #-1 to d0
-		move.b	d0,obDelayAni(a0)		; Move d0 to new timer
-		move.b	d0,(v_ani3_time).w		; Move d0 to old timer (for animated purposes)
-		bra.w	RLoss_Bounce
-; ===========================================================================
-	endif
 
 	if ShieldsMode
 RAttract_Init:
