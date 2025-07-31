@@ -110,6 +110,10 @@ Map_SuperSonic: mappingsTable
 	mappingsTableEntry.w	Map_SuperSonic_108
 	mappingsTableEntry.w	Map_SuperSonic_109
 	mappingsTableEntry.w	Map_SuperSonic_110
+	mappingsTableEntry.w	Map_SuperSonic_111
+	mappingsTableEntry.w	Map_SuperSonic_112
+	mappingsTableEntry.w	Map_SuperSonic_113
+	mappingsTableEntry.w	Map_SuperSonic_114
 
 Map_SuperSonic_0:	spriteHeader
 Map_SuperSonic_0_End
@@ -607,205 +611,210 @@ Map_SuperSonic_68:	spriteHeader
 Map_SuperSonic_68_End
 
 Map_SuperSonic_69:	spriteHeader
- spritePiece -$F, -$C, 3, 4, 0, 0, 0, 0, 0
- spritePiece -$17, -4, 1, 3, $C, 0, 0, 0, 0
+ spritePiece -$13, 3, 4, 1, 0, 0, 0, 0, 0
+ spritePiece -$B, -$15, 3, 3, 4, 0, 0, 0, 0
+ spritePiece -$B, $B, 3, 2, $D, 0, 0, 0, 0
 Map_SuperSonic_69_End
 
 Map_SuperSonic_70:	spriteHeader
+ spritePiece -8, -$C, 3, 4, 0, 0, 0, 0, 0
+ spritePiece -$10, -4, 1, 3, $C, 0, 0, 0, 0
+Map_SuperSonic_70_End
+
+Map_SuperSonic_71:	spriteHeader
+ spritePiece -8, -$C, 3, 4, 0, 0, 0, 0, 0
+ spritePiece -$10, -4, 1, 3, $C, 0, 0, 0, 0
+Map_SuperSonic_71_End
+
+Map_SuperSonic_72:	spriteHeader
+ spritePiece -8, -$C, 3, 4, 0, 0, 0, 0, 0
+ spritePiece -$10, -4, 1, 3, $C, 0, 0, 0, 0
+Map_SuperSonic_72_End
+
+Map_SuperSonic_73:	spriteHeader
  spritePiece -$13, -$1C, 3, 1, 0, 0, 0, 0, 0
  spritePiece -$13, -$14, 3, 1, 3, 0, 0, 0, 0
  spritePiece -$13, -$C, 3, 1, 6, 0, 0, 0, 0
  spritePiece -$13, -4, 3, 1, 9, 0, 0, 0, 0
  spritePiece -$E, 4, 2, 2, $C, 0, 0, 0, 0
-Map_SuperSonic_70_End
+Map_SuperSonic_73_End
 
-Map_SuperSonic_71:	spriteHeader
+Map_SuperSonic_74:	spriteHeader
  spritePiece -$13, -$1C, 3, 3, 0, 0, 0, 0, 0
  spritePiece -$13, -4, 3, 1, 9, 0, 0, 0, 0
  spritePiece -$E, 4, 2, 2, $C, 0, 0, 0, 0
-Map_SuperSonic_71_End
+Map_SuperSonic_74_End
 
-Map_SuperSonic_72:	spriteHeader
+Map_SuperSonic_75:	spriteHeader
  spritePiece -$12, -$1B, 3, 1, 0, 0, 0, 0, 0
  spritePiece -$12, -$13, 3, 1, 3, 0, 0, 0, 0
  spritePiece -$12, -$B, 3, 1, 6, 0, 0, 0, 0
  spritePiece -$12, -3, 3, 1, 9, 0, 0, 0, 0
  spritePiece -$E, 5, 2, 2, $C, 0, 0, 0, 0
-Map_SuperSonic_72_End
+Map_SuperSonic_75_End
 
-Map_SuperSonic_73:	spriteHeader
+Map_SuperSonic_76:	spriteHeader
  spritePiece -$12, -$1B, 3, 3, 0, 0, 0, 0, 0
  spritePiece -$12, -3, 3, 1, 9, 0, 0, 0, 0
  spritePiece -$E, 5, 2, 2, $C, 0, 0, 0, 0
-Map_SuperSonic_73_End
+Map_SuperSonic_76_End
 
-Map_SuperSonic_74:	spriteHeader
+Map_SuperSonic_77:	spriteHeader
  spritePiece -4, -$14, 3, 4, 0, 0, 0, 0, 0
  spritePiece $14, -$C, 1, 2, $C, 0, 0, 0, 0
  spritePiece -$14, -4, 2, 2, $E, 0, 0, 0, 0
-Map_SuperSonic_74_End
+Map_SuperSonic_77_End
 
-Map_SuperSonic_75:	spriteHeader
+Map_SuperSonic_78:	spriteHeader
  spritePiece -$16, -7, 4, 2, 0, 0, 0, 0, 0
  spritePiece -$E, -$F, 4, 1, 8, 0, 0, 0, 0
  spritePiece -6, -$17, 1, 1, $C, 0, 0, 0, 0
  spritePiece -6, 9, 1, 1, $D, 0, 0, 0, 0
  spritePiece $A, -7, 2, 1, $E, 0, 0, 0, 0
  spritePiece $A, 1, 1, 1, $10, 0, 0, 0, 0
-Map_SuperSonic_75_End
-
-Map_SuperSonic_76:	spriteHeader
- spritePiece -$14, -$10, 4, 3, 0, 0, 0, 0, 0
- spritePiece -$1C, -8, 1, 1, $C, 0, 0, 0, 0
- spritePiece -$C, 8, 3, 1, $D, 0, 0, 0, 0
-Map_SuperSonic_76_End
-
-Map_SuperSonic_77:	spriteHeader
- spritePiece -4, -$C, 4, 2, 0, 0, 0, 0, 0
- spritePiece -$14, -4, 2, 2, 8, 0, 0, 0, 0
- spritePiece -4, 4, 3, 1, $C, 0, 0, 0, 0
-Map_SuperSonic_77_End
-
-Map_SuperSonic_78:	spriteHeader
- spritePiece -$1C, -$C, 4, 2, 0, 1, 0, 0, 0
- spritePiece 4, -4, 2, 2, 8, 1, 0, 0, 0
- spritePiece -$14, 4, 3, 1, $C, 1, 0, 0, 0
 Map_SuperSonic_78_End
 
 Map_SuperSonic_79:	spriteHeader
- spritePiece -4, -$C, 4, 2, 0, 1, 0, 0, 0
- spritePiece -$C, -4, 1, 1, 8, 1, 0, 0, 0
- spritePiece -$C, 4, 4, 1, 9, 1, 0, 0, 0
+ spritePiece -$14, -$10, 4, 3, 0, 0, 0, 0, 0
+ spritePiece -$1C, -8, 1, 1, $C, 0, 0, 0, 0
+ spritePiece -$C, 8, 3, 1, $D, 0, 0, 0, 0
 Map_SuperSonic_79_End
 
 Map_SuperSonic_80:	spriteHeader
- spritePiece -$F, -$1B, 2, 4, 0, 0, 0, 0, 0
- spritePiece -$17, -$13, 1, 2, 8, 0, 0, 0, 0
- spritePiece 1, -$13, 1, 4, $A, 0, 0, 0, 0
- spritePiece -7, 5, 1, 3, $E, 0, 0, 0, 0
+ spritePiece -4, -$C, 4, 2, 0, 0, 0, 0, 0
+ spritePiece -$14, -4, 2, 2, 8, 0, 0, 0, 0
+ spritePiece -4, 4, 3, 1, $C, 0, 0, 0, 0
 Map_SuperSonic_80_End
 
 Map_SuperSonic_81:	spriteHeader
+ spritePiece -$14, -$14, 3, 4, 0, 1, 0, 0, 0
+ spritePiece -$1C, -$C, 1, 2, $C, 1, 0, 0, 0
+ spritePiece 4, -4, 2, 2, $E, 1, 0, 0, 0
+Map_SuperSonic_81_End
+
+Map_SuperSonic_82:	spriteHeader
+ spritePiece -$C, -$10, 4, 3, 0, 1, 0, 0, 0
+ spritePiece $14, -8, 1, 1, $C, 1, 0, 0, 0
+ spritePiece -$C, 8, 3, 1, $D, 1, 0, 0, 0
+Map_SuperSonic_82_End
+
+Map_SuperSonic_83:	spriteHeader
+ spritePiece -$16, -$18, 4, 4, 0, 0, 0, 0, 0
+ spritePiece -$E, 8, 2, 1, $10, 0, 0, 0, 0
+ spritePiece -6, $10, 1, 1, $12, 0, 0, 0, 0
+Map_SuperSonic_83_End
+
+Map_SuperSonic_84:	spriteHeader
+ spritePiece -$18, -$11, 4, 3, 0, 0, 0, 0, 0
+ spritePiece -$10, -$19, 3, 1, $C, 0, 0, 0, 0
+ spritePiece -8, 7, 2, 2, $F, 0, 0, 0, 0
+Map_SuperSonic_84_End
+
+Map_SuperSonic_85:	spriteHeader
  spritePiece -$17, -9, 4, 3, 0, 0, 0, 0, 0
  spritePiece -7, -$11, 2, 1, $C, 0, 0, 0, 0
  spritePiece 9, -9, 1, 3, $E, 0, 0, 0, 0
  spritePiece $11, -1, 1, 2, $11, 0, 0, 0, 0
-Map_SuperSonic_81_End
+Map_SuperSonic_85_End
 
-Map_SuperSonic_82:	spriteHeader
+Map_SuperSonic_86:	spriteHeader
  spritePiece -$18, -8, 4, 3, 0, 0, 0, 0, 0
  spritePiece -8, -$10, 2, 1, $C, 0, 0, 0, 0
  spritePiece 8, -8, 2, 3, $E, 0, 0, 0, 0
-Map_SuperSonic_82_End
+Map_SuperSonic_86_End
 
-Map_SuperSonic_83:	spriteHeader
+Map_SuperSonic_87:	spriteHeader
  spritePiece -$1A, 4, 4, 2, 0, 0, 0, 0, 0
  spritePiece -$12, -$1C, 2, 4, 8, 0, 0, 0, 0
  spritePiece -2, -$14, 1, 3, $10, 0, 0, 0, 0
  spritePiece 6, -4, 1, 2, $13, 0, 0, 0, 0
-Map_SuperSonic_83_End
+Map_SuperSonic_87_End
 
-Map_SuperSonic_84:	spriteHeader
+Map_SuperSonic_88:	spriteHeader
  spritePiece -$13, -$19, 3, 4, 0, 0, 0, 0, 0
  spritePiece -$13, 7, 3, 2, $C, 0, 0, 0, 0
  spritePiece 5, -9, 1, 2, $12, 0, 0, 0, 0
-Map_SuperSonic_84_End
+Map_SuperSonic_88_End
 
-Map_SuperSonic_85:	spriteHeader
+Map_SuperSonic_89:	spriteHeader
  spritePiece -$12, -$1C, 2, 4, 0, 0, 0, 0, 0
  spritePiece -$12, 4, 3, 2, 8, 0, 0, 0, 0
  spritePiece -2, -$14, 1, 3, $E, 0, 0, 0, 0
  spritePiece 6, -4, 1, 2, $11, 0, 0, 0, 0
-Map_SuperSonic_85_End
-
-Map_SuperSonic_86:	spriteHeader
- spritePiece -$15, -$18, 3, 4, 0, 0, 0, 0, 0
- spritePiece -$D, 8, 2, 2, $C, 0, 0, 0, 0
- spritePiece 3, -$10, 1, 3, $10, 0, 0, 0, 0
-Map_SuperSonic_86_End
-
-Map_SuperSonic_87:	spriteHeader
- spritePiece -$10, -$14, 3, 3, 0, 0, 0, 0, 0
- spritePiece -8, 4, 2, 2, 9, 0, 0, 0, 0
- spritePiece -8, -$1C, 1, 1, $D, 0, 0, 0, 0
-Map_SuperSonic_87_End
-
-Map_SuperSonic_88:	spriteHeader
- spritePiece -$14, -$18, 4, 2, 0, 0, 0, 0, 0
- spritePiece $C, -$18, 1, 2, 8, 0, 0, 0, 0
- spritePiece -$C, -8, 3, 2, $A, 0, 0, 0, 0
- spritePiece -$C, 8, 4, 1, $10, 0, 0, 0, 0
- spritePiece -$C, $10, 1, 1, $14, 0, 0, 0, 0
-Map_SuperSonic_88_End
-
-Map_SuperSonic_89:	spriteHeader
- spritePiece -$14, -$18, 4, 2, 0, 0, 0, 0, 0
- spritePiece $C, -$18, 1, 2, 8, 0, 0, 0, 0
- spritePiece -$C, -8, 3, 2, $A, 0, 0, 0, 0
- spritePiece -$C, 8, 4, 1, $10, 0, 0, 0, 0
- spritePiece -$C, $10, 1, 1, $14, 0, 0, 0, 0
 Map_SuperSonic_89_End
 
 Map_SuperSonic_90:	spriteHeader
- spritePiece -$10, -$14, 3, 1, 0, 0, 0, 0, 0
- spritePiece -$10, -$C, 4, 4, 3, 0, 0, 0, 0
+ spritePiece -$15, -$18, 3, 4, 0, 0, 0, 0, 0
+ spritePiece -$D, 8, 2, 2, $C, 0, 0, 0, 0
+ spritePiece 3, -$10, 1, 3, $10, 0, 0, 0, 0
 Map_SuperSonic_90_End
 
 Map_SuperSonic_91:	spriteHeader
- spritePiece -$10, -$14, 3, 1, 0, 0, 0, 0, 0
- spritePiece -$10, -$C, 4, 3, 3, 0, 0, 0, 0
- spritePiece -8, $C, 3, 1, $F, 0, 0, 0, 0
+ spritePiece -$10, -$14, 3, 3, 0, 0, 0, 0, 0
+ spritePiece -8, 4, 2, 2, 9, 0, 0, 0, 0
+ spritePiece -8, -$1C, 1, 1, $D, 0, 0, 0, 0
 Map_SuperSonic_91_End
 
 Map_SuperSonic_92:	spriteHeader
- spritePiece -$C, -$10, 3, 4, 0, 0, 0, 0, 0
+ spritePiece -$14, -$18, 4, 2, 0, 0, 0, 0, 0
+ spritePiece $C, -$18, 1, 2, 8, 0, 0, 0, 0
+ spritePiece -$C, -8, 3, 2, $A, 0, 0, 0, 0
+ spritePiece -$C, 8, 4, 1, $10, 0, 0, 0, 0
+ spritePiece -$C, $10, 1, 1, $14, 0, 0, 0, 0
 Map_SuperSonic_92_End
 
 Map_SuperSonic_93:	spriteHeader
- spritePiece -8, -$C, 2, 3, 0, 0, 0, 0, 0
+ spritePiece -$14, -$18, 4, 2, 0, 0, 0, 0, 0
+ spritePiece $C, -$18, 1, 2, 8, 0, 0, 0, 0
+ spritePiece -$C, -8, 3, 2, $A, 0, 0, 0, 0
+ spritePiece -$C, 8, 4, 1, $10, 0, 0, 0, 0
+ spritePiece -$C, $10, 1, 1, $14, 0, 0, 0, 0
 Map_SuperSonic_93_End
 
 Map_SuperSonic_94:	spriteHeader
- spritePiece -4, -8, 1, 2, 0, 0, 0, 0, 0
+ spritePiece -$10, -$14, 3, 1, 0, 0, 0, 0, 0
+ spritePiece -$10, -$C, 4, 4, 3, 0, 0, 0, 0
 Map_SuperSonic_94_End
 
 Map_SuperSonic_95:	spriteHeader
+ spritePiece -$10, -$14, 3, 1, 0, 0, 0, 0, 0
+ spritePiece -$10, -$C, 4, 3, 3, 0, 0, 0, 0
+ spritePiece -8, $C, 3, 1, $F, 0, 0, 0, 0
+Map_SuperSonic_95_End
+
+Map_SuperSonic_96:	spriteHeader
+ spritePiece -$C, -$10, 3, 4, 0, 0, 0, 0, 0
+Map_SuperSonic_96_End
+
+Map_SuperSonic_97:	spriteHeader
+ spritePiece -8, -$C, 2, 3, 0, 0, 0, 0, 0
+Map_SuperSonic_97_End
+
+Map_SuperSonic_98:	spriteHeader
+ spritePiece -4, -8, 1, 2, 0, 0, 0, 0, 0
+Map_SuperSonic_98_End
+
+Map_SuperSonic_99:	spriteHeader
  spritePiece -$1C, -$E, 4, 2, 0, 0, 0, 0, 0
  spritePiece -$14, 2, 4, 1, 8, 0, 0, 0, 0
  spritePiece -$C, $A, 4, 1, $C, 0, 0, 0, 0
  spritePiece 4, -$E, 1, 2, $10, 0, 0, 0, 0
  spritePiece $C, -6, 1, 2, $12, 0, 0, 0, 0
-Map_SuperSonic_95_End
+Map_SuperSonic_99_End
 
-Map_SuperSonic_96:	spriteHeader
+Map_SuperSonic_100:	spriteHeader
  spritePiece -$12, -$15, 4, 4, 0, 0, 0, 0, 0
  spritePiece -$12, $B, 2, 1, $10, 0, 0, 0, 0
  spritePiece 6, $B, 1, 1, $12, 0, 0, 0, 0
  spritePiece $E, 3, 1, 1, $13, 0, 0, 0, 0
-Map_SuperSonic_96_End
+Map_SuperSonic_100_End
 
-Map_SuperSonic_97:	spriteHeader
+Map_SuperSonic_101:	spriteHeader
  spritePiece -$1D, -$11, 4, 1, 0, 0, 0, 0, 0
  spritePiece -$15, -9, 4, 2, 4, 0, 0, 0, 0
  spritePiece -$D, 7, 4, 1, $C, 0, 0, 0, 0
  spritePiece 3, -$11, 1, 1, $10, 0, 0, 0, 0
  spritePiece $B, -9, 1, 2, $11, 0, 0, 0, 0
-Map_SuperSonic_97_End
-
-Map_SuperSonic_98:	spriteHeader
- spritePiece -$F, -$F, 4, 4, 0, 0, 0, 0, 0
-Map_SuperSonic_98_End
-
-Map_SuperSonic_99:	spriteHeader
- spritePiece -$F, -$F, 4, 4, 0, 0, 0, 0, 0
-Map_SuperSonic_99_End
-
-Map_SuperSonic_100:	spriteHeader
- spritePiece -$F, -$F, 4, 4, 0, 0, 0, 0, 0
-Map_SuperSonic_100_End
-
-Map_SuperSonic_101:	spriteHeader
- spritePiece -$F, -$E, 4, 4, 0, 0, 0, 0, 0
 Map_SuperSonic_101_End
 
 Map_SuperSonic_102:	spriteHeader
@@ -821,38 +830,54 @@ Map_SuperSonic_104:	spriteHeader
 Map_SuperSonic_104_End
 
 Map_SuperSonic_105:	spriteHeader
- spritePiece -$F, -$F, 4, 4, 0, 0, 0, 0, 0
+ spritePiece -$F, -$E, 4, 4, 0, 0, 0, 0, 0
 Map_SuperSonic_105_End
 
 Map_SuperSonic_106:	spriteHeader
- spritePiece -$A, -$F, 3, 4, 0, 0, 0, 0, 0
+ spritePiece -$F, -$F, 4, 4, 0, 0, 0, 0, 0
 Map_SuperSonic_106_End
 
 Map_SuperSonic_107:	spriteHeader
- spritePiece -$F, -$19, 3, 4, 0, 0, 0, 0, 0
- spritePiece 9, -$11, 1, 2, $C, 0, 0, 0, 0
- spritePiece -$F, 7, 3, 2, $E, 0, 0, 0, 0
+ spritePiece -$F, -$F, 4, 4, 0, 0, 0, 0, 0
 Map_SuperSonic_107_End
 
 Map_SuperSonic_108:	spriteHeader
- spritePiece -$F, -$1B, 3, 3, 0, 0, 0, 0, 0
- spritePiece -$F, -3, 3, 3, 9, 0, 0, 0, 0
- spritePiece 9, -2, 1, 1, $12, 0, 0, 0, 0
+ spritePiece -$F, -$F, 4, 4, 0, 0, 0, 0, 0
 Map_SuperSonic_108_End
 
 Map_SuperSonic_109:	spriteHeader
+ spritePiece -$F, -$F, 4, 4, 0, 0, 0, 0, 0
+Map_SuperSonic_109_End
+
+Map_SuperSonic_110:	spriteHeader
+ spritePiece -$A, -$F, 3, 4, 0, 0, 0, 0, 0
+Map_SuperSonic_110_End
+
+Map_SuperSonic_111:	spriteHeader
+ spritePiece -$F, -$19, 3, 4, 0, 0, 0, 0, 0
+ spritePiece 9, -$11, 1, 2, $C, 0, 0, 0, 0
+ spritePiece -$F, 7, 3, 2, $E, 0, 0, 0, 0
+Map_SuperSonic_111_End
+
+Map_SuperSonic_112:	spriteHeader
+ spritePiece -$F, -$1B, 3, 3, 0, 0, 0, 0, 0
+ spritePiece -$F, -3, 3, 3, 9, 0, 0, 0, 0
+ spritePiece 9, -2, 1, 1, $12, 0, 0, 0, 0
+Map_SuperSonic_112_End
+
+Map_SuperSonic_113:	spriteHeader
  spritePiece -$F, -$1B, 3, 1, 0, 0, 0, 0, 0
  spritePiece -$F, -$13, 3, 2, 3, 0, 0, 0, 0
  spritePiece -$F, -3, 3, 3, 9, 0, 0, 0, 0
  spritePiece 9, -2, 1, 1, $12, 0, 0, 0, 0
-Map_SuperSonic_109_End
+Map_SuperSonic_113_End
 
-Map_SuperSonic_110:	spriteHeader
+Map_SuperSonic_114:	spriteHeader
  spritePiece -$F, -$1B, 3, 1, 0, 0, 0, 0, 0
  spritePiece -$F, -$13, 1, 2, 3, 0, 0, 0, 0
  spritePiece -7, -$13, 2, 2, 5, 0, 0, 0, 0
  spritePiece -$F, -3, 3, 3, 9, 0, 0, 0, 0
  spritePiece 9, -2, 1, 1, $12, 0, 0, 0, 0
-Map_SuperSonic_110_End
+Map_SuperSonic_114_End
 
 	even

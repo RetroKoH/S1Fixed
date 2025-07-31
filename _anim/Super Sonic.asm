@@ -63,7 +63,11 @@ SupSonAni_LookUp:
 		dc.b	fr_SupSonLookUp3, fr_SupSonLookUp3, fr_SupSonLookUp3, fr_SupSonLookUp3, afBack, 16
 		even
 SupSonAni_Duck:
-		dc.b	$3F, fr_SupSonDuck1, afEnd
+		dc.b	1, fr_SupSonDuck1
+		dc.b	fr_SupSonDuck2, fr_SupSonDuck2, fr_SupSonDuck2, fr_SupSonDuck2
+		dc.b	fr_SupSonDuck3, fr_SupSonDuck3, fr_SupSonDuck3, fr_SupSonDuck3
+		dc.b	fr_SupSonDuck4, fr_SupSonDuck4, fr_SupSonDuck4, fr_SupSonDuck4
+		dc.b	fr_SupSonDuck3, fr_SupSonDuck3, fr_SupSonDuck3, fr_SupSonDuck3, afBack, 16
 		even
 SupSonAni_Spindash:
 		dc.b	0, fr_SupSonSpindash1, fr_SupSonSpindash2, fr_SupSonSpindash1, fr_SupSonSpindash3, fr_SupSonSpindash1, fr_SupSonSpindash4, fr_SupSonSpindash1, fr_SupSonSpindash5, fr_SupSonSpindash1, fr_SupSonSpindash6, afEnd
@@ -84,7 +88,9 @@ SupSonAni_Float4:
 		dc.b	3, fr_SupSonFloat1, afChange, aniID_Walk
 		even
 SupSonAni_Spring:
-		dc.b	$2F, fr_SupSonSpring, afChange, aniID_Walk
+		dc.b	3, fr_SupSonSpring1, fr_SupSonSpring2, fr_SupSonSpring1, fr_SupSonSpring2
+		dc.b	fr_SupSonSpring1, fr_SupSonSpring2, fr_SupSonSpring1, fr_SupSonSpring2
+		dc.b	fr_SupSonSpring1, fr_SupSonSpring2, fr_SupSonSpring1, fr_SupSonSpring2, afChange, aniID_Walk
 		even
 SupSonAni_Hang:
 		dc.b	4, fr_SupSonHang1, fr_SupSonHang2, afEnd

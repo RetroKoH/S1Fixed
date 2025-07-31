@@ -248,6 +248,9 @@ fr_SupSonSpindash6:			ds.b 1
 fr_SupSonStop1:				ds.b 1
 fr_SupSonStop2:				ds.b 1
 fr_SupSonDuck1:				ds.b 1
+fr_SupSonDuck2:				ds.b 1
+fr_SupSonDuck3:				ds.b 1
+fr_SupSonDuck4:				ds.b 1
 fr_SupSonBalance1:			ds.b 1
 fr_SupSonBalance2:			ds.b 1
 fr_SupSonBalance3:			ds.b 1
@@ -258,7 +261,8 @@ fr_SupSonFloat3:			ds.b 1
 fr_SupSonFloat4:			ds.b 1
 fr_SupSonFloat5:			ds.b 1
 fr_SupSonFloat6:			ds.b 1
-fr_SupSonSpring:			ds.b 1
+fr_SupSonSpring1:			ds.b 1
+fr_SupSonSpring2:			ds.b 1
 fr_SupSonHang1:				ds.b 1
 fr_SupSonHang2:				ds.b 1
 fr_SupSonPush1:				ds.b 1
