@@ -351,12 +351,39 @@ af2ndRoutine:	equ $FA	; increment 2nd routine counter
 
 ; Background music
 bgm__First:		equ $81
+
+	if DynamicBGMs
+; -----------------------------------------------------------------------
+bgm_GHZ1:		equ ((ptr_mus81-MusicIndex)/4)+bgm__First
+bgm_GHZ2:		equ ((ptr_mus81-MusicIndex)/4)+bgm__First
+bgm_GHZ3:		equ ((ptr_mus81-MusicIndex)/4)+bgm__First
+bgm_LZ1:		equ ((ptr_mus82-MusicIndex)/4)+bgm__First
+bgm_LZ2:		equ ((ptr_mus82-MusicIndex)/4)+bgm__First
+bgm_LZ3:		equ ((ptr_mus82-MusicIndex)/4)+bgm__First
+bgm_MZ1:		equ ((ptr_mus83-MusicIndex)/4)+bgm__First
+bgm_MZ2:		equ ((ptr_mus83-MusicIndex)/4)+bgm__First
+bgm_MZ3:		equ ((ptr_mus83-MusicIndex)/4)+bgm__First
+bgm_SLZ1:		equ ((ptr_mus84-MusicIndex)/4)+bgm__First
+bgm_SLZ2:		equ ((ptr_mus84-MusicIndex)/4)+bgm__First
+bgm_SLZ3:		equ ((ptr_mus84-MusicIndex)/4)+bgm__First
+bgm_SYZ1:		equ ((ptr_mus85-MusicIndex)/4)+bgm__First
+bgm_SYZ2:		equ ((ptr_mus85-MusicIndex)/4)+bgm__First
+bgm_SYZ3:		equ ((ptr_mus85-MusicIndex)/4)+bgm__First
+bgm_SBZ1:		equ ((ptr_mus86-MusicIndex)/4)+bgm__First
+bgm_SBZ2:		equ ((ptr_mus86-MusicIndex)/4)+bgm__First
+bgm_SBZ3:		equ ((ptr_mus86-MusicIndex)/4)+bgm__First
+; -----------------------------------------------------------------------
+	else
+; -----------------------------------------------------------------------
 bgm_GHZ:		equ ((ptr_mus81-MusicIndex)/4)+bgm__First
 bgm_LZ:			equ ((ptr_mus82-MusicIndex)/4)+bgm__First
 bgm_MZ:			equ ((ptr_mus83-MusicIndex)/4)+bgm__First
 bgm_SLZ:		equ ((ptr_mus84-MusicIndex)/4)+bgm__First
 bgm_SYZ:		equ ((ptr_mus85-MusicIndex)/4)+bgm__First
 bgm_SBZ:		equ ((ptr_mus86-MusicIndex)/4)+bgm__First
+; ------------------------------------------------------------------------
+	endif
+
 bgm_Invincible:	equ ((ptr_mus87-MusicIndex)/4)+bgm__First
 bgm_ExtraLife:	equ ((ptr_mus88-MusicIndex)/4)+bgm__First
 bgm_SS:			equ ((ptr_mus89-MusicIndex)/4)+bgm__First
