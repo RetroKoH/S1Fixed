@@ -257,7 +257,13 @@ BossLabyrinth_ShipWaitAtEnd:
 		move.b	#$32,boss_delaytime(a0)
 
 loc_18112:
+
+	if DynamicBGMs
+		move.w	#bgm_LZ3,d0
+	else
 		move.w	#bgm_LZ,d0
+	endif
+
 		jsr		(PlaySound).w			; play LZ music
 		move.b	d0,(v_lastbgmplayed).w	; store last played music
 		clr.b	(f_lockscreen).w

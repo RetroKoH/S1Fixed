@@ -42,6 +42,23 @@ Sonic_Display:
 		bne.s	.removeinvincible
 		cmpi.b	#$C,(v_air).w
 		blo.s	.removeinvincible
+
+	if DynamicBGMs
+; -----------------------------------------------------------------------
+		moveq	#0,d0
+		move.b	(v_zone).w,d0
+		add.b	d0,d0
+		add.b	d0,d0							; multiply by 4
+		add.b	(v_act).w,d0					; add the act value
+		lea		(MusicList).l,a1
+		move.b	(a1,d0.w),d0
+		cmp.b	(v_lastbgmplayed).w,d0
+		beq.s	.removeinvincible
+		jsr		(PlaySound).w					; play normal music
+		move.b	d0,(v_lastbgmplayed).w			; store last played music
+; -----------------------------------------------------------------------
+	else
+; -----------------------------------------------------------------------
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
 		cmpi.w	#(id_LZ<<8)+3,(v_zone).w		; check if level is SBZ3
@@ -60,6 +77,8 @@ Sonic_Display:
 		beq.s	.removeinvincible
 		jsr		(PlaySound).w					; play normal music
 		move.b	d0,(v_lastbgmplayed).w			; store last played music
+; ------------------------------------------------------------------------
+	endif
 
 	.removeinvincible:
 		bclr	#sta2ndInvinc,obStatus2nd(a0)	; cancel invincibility

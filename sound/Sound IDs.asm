@@ -26,32 +26,57 @@ bgm_SEGA =				$FF			; $FF - Play SEGA sound
 bgm__First =				*		; ID of the first music
 
 ; Levels
+	if DynamicBGMs
+; -----------------------------------------------------------------------
+bgm_GHZ1				ds.b 1		; $01
+bgm_GHZ2				ds.b 1		; $02
+bgm_GHZ3				ds.b 1		; $03
+bgm_MZ1					ds.b 1		; $04
+bgm_MZ2					ds.b 1		; $05
+bgm_MZ3					ds.b 1		; $06
+bgm_SYZ1				ds.b 1		; $07
+bgm_SYZ2				ds.b 1		; $08
+bgm_SYZ3				ds.b 1		; $09
+bgm_LZ1					ds.b 1		; $0A
+bgm_LZ2					ds.b 1		; $0B
+bgm_LZ3					ds.b 1		; $0C
+bgm_SLZ1				ds.b 1		; $0D
+bgm_SLZ2				ds.b 1		; $0E
+bgm_SLZ3				ds.b 1		; $0F
+bgm_SBZ1				ds.b 1		; $10
+bgm_SBZ2				ds.b 1		; $11
+bgm_SBZ3				ds.b 1		; $12
+; -----------------------------------------------------------------------
+	else
+; -----------------------------------------------------------------------
 bgm_GHZ					ds.b 1		; $01
 bgm_MZ					ds.b 1		; $02
 bgm_SYZ					ds.b 1		; $03
 bgm_LZ					ds.b 1		; $04
 bgm_SLZ					ds.b 1		; $05
 bgm_SBZ					ds.b 1		; $06
+; ------------------------------------------------------------------------
+	endif
 
 ; Main
-bgm_Invincible			ds.b 1		; $07
-bgm_ExtraLife			ds.b 1		; $08
-bgm_SpecialStage		ds.b 1		; $09
-bgm_Title				ds.b 1		; $0A
-bgm_Ending				ds.b 1		; $0B
+bgm_Invincible			ds.b 1		; $07/13
+bgm_ExtraLife			ds.b 1		; $08/14
+bgm_SpecialStage		ds.b 1		; $09/15
+bgm_Title				ds.b 1		; $0A/16
+bgm_Ending				ds.b 1		; $0B/17
 
 ; Bosses
-bgm_Boss				ds.b 1		; $0C
-bgm_FZ					ds.b 1		; $0D
+bgm_Boss				ds.b 1		; $0C/18
+bgm_FZ					ds.b 1		; $0D/19
 
 ; End
-bgm_GotThrough			ds.b 1		; $0E
-bgm_GameOver			ds.b 1		; $0F
-bgm_Continue			ds.b 1		; $10
-bgm_Credits				ds.b 1		; $11
-bgm_Drowning			ds.b 1		; $12
-bgm_Emerald				ds.b 1		; $13
-bgm_Options				ds.b 1		; $14
+bgm_GotThrough			ds.b 1		; $0E/1A
+bgm_GameOver			ds.b 1		; $0F/1B
+bgm_Continue			ds.b 1		; $10/1C
+bgm_Credits				ds.b 1		; $11/1D
+bgm_Drowning			ds.b 1		; $12/1E
+bgm_Emerald				ds.b 1		; $13/1F
+bgm_Options				ds.b 1		; $14/20
 
 bgm__End =				*			; next ID after last music
 

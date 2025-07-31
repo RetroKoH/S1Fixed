@@ -2033,6 +2033,22 @@ Demo_Level:
 Demo_Levels:	binclude	"misc/Demo Level Order - Intro.bin"
 		even
 
+	if DynamicBGMs
+; ---------------------------------------------------------------------------
+; Music	playlist
+; ---------------------------------------------------------------------------
+MusicList:
+		dc.b bgm_GHZ1, bgm_GHZ2, bgm_GHZ3, bgm_GHZ1	; GHZ
+		dc.b bgm_LZ1, bgm_LZ2, bgm_LZ3, bgm_SBZ3	; LZ	(SBZ3 is actually LZ4)
+		dc.b bgm_MZ1, bgm_MZ2, bgm_MZ3, bgm_MZ1		; MZ
+		dc.b bgm_SLZ1, bgm_SLZ2, bgm_SLZ3, bgm_SLZ1	; SLZ
+		dc.b bgm_SYZ1, bgm_SYZ2, bgm_SYZ3, bgm_SYZ1	; SYZ
+		dc.b bgm_SBZ1, bgm_SBZ2, bgm_FZ, bgm_SBZ1	; SBZ	(FZ is actually SBZ3)
+		zonewarning MusicList,4
+		dc.b bgm_FZ, bgm_FZ, bgm_FZ, bgm_FZ			; Final Zone (Never used w/ Ending)
+		even
+; ===========================================================================
+	else
 ; ---------------------------------------------------------------------------
 ; Music	playlist
 ; ---------------------------------------------------------------------------
@@ -2047,6 +2063,7 @@ MusicList:
 		dc.b bgm_FZ		; Final Zone (Never used w/ Ending)
 		even
 ; ===========================================================================
+	endif
 
 ; ---------------------------------------------------------------------------
 ; Level
@@ -2231,6 +2248,21 @@ Level_WaterPal:
 Level_GetBgm:
 		tst.w	(f_demo).w
 		bmi.s	Level_SkipTtlCard
+
+	if DynamicBGMs
+; -----------------------------------------------------------------------
+		moveq	#0,d0
+		move.b	(v_zone).w,d0
+		add.b	d0,d0
+		add.b	d0,d0							; multiply by 4
+		add.b	(v_act).w,d0					; add the act value
+		lea		(MusicList).l,a1				; load music playlist
+		move.b	(a1,d0.w),d0
+		bsr.w	PlaySound						; play music
+		move.b	d0,(v_lastbgmplayed).w			; store last played music
+; -----------------------------------------------------------------------
+	else
+; -----------------------------------------------------------------------
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
 		cmpi.w	#(id_LZ<<8)+3,(v_zone).w		; is level SBZ3?
@@ -2247,6 +2279,9 @@ Level_PlayBgm:
 		move.b	(a1,d0.w),d0
 		bsr.w	PlaySound						; play music
 		move.b	d0,(v_lastbgmplayed).w			; store last played music
+; ------------------------------------------------------------------------
+	endif
+
 		move.b	#id_TitleCard,(v_titlecard).w	; load title card object
 
 		move.b  #3,(v_carddelay).w				; set the delay timer -- Fixes bug w/ HUD elements not appearing
@@ -5702,10 +5737,21 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 ResumeMusic:
 		cmpi.b	#12,(v_air).w				; more than 12 seconds of air left?
 		bhi.s	.over12						; if yes, branch
+
+
+	if DynamicBGMs
+		move.w	#bgm_LZ1,d0
+		add.b	(v_act).w,d0
+		cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; check if level is 0103 (SBZ3)
+		bne.s	.notsbz
+		move.w	#bgm_SBZ3,d0				; play SBZ3 music
+	else
 		move.w	#bgm_LZ,d0					; play LZ music
 		cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; check if level is 0103 (SBZ3)
 		bne.s	.notsbz
 		move.w	#bgm_SBZ,d0					; play SBZ music
+	endif
+
 
 .notsbz:
 	if SuperMod

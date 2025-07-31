@@ -4756,12 +4756,37 @@ VolEnv_33:	db	0Eh, 0Dh, 0Ch, 0Bh, 0Ah,   9,   8,   7,   6,   5,   4,   3,   2,  
 z80_MusicBanks:
 
 	; Levels
+	if DynamicBGMs
+; -----------------------------------------------------------------------
+	db zmake68kBank(MusData_GHZ1)
+	db zmake68kBank(MusData_GHZ2)
+	db zmake68kBank(MusData_GHZ3)
+	db zmake68kBank(MusData_MZ1)
+	db zmake68kBank(MusData_MZ2)
+	db zmake68kBank(MusData_MZ3)
+	db zmake68kBank(MusData_SYZ1)
+	db zmake68kBank(MusData_SYZ2)
+	db zmake68kBank(MusData_SYZ3)
+	db zmake68kBank(MusData_LZ1)
+	db zmake68kBank(MusData_LZ2)
+	db zmake68kBank(MusData_LZ3)
+	db zmake68kBank(MusData_SLZ1)
+	db zmake68kBank(MusData_SLZ2)
+	db zmake68kBank(MusData_SLZ3)
+	db zmake68kBank(MusData_SBZ1)
+	db zmake68kBank(MusData_SBZ2)
+	db zmake68kBank(MusData_SBZ3)
+; -----------------------------------------------------------------------
+	else
+; -----------------------------------------------------------------------
 	db zmake68kBank(MusData_GHZ)
 	db zmake68kBank(MusData_MZ)
 	db zmake68kBank(MusData_SYZ)
 	db zmake68kBank(MusData_LZ)
 	db zmake68kBank(MusData_SLZ)
 	db zmake68kBank(MusData_SBZ)
+; ------------------------------------------------------------------------
+	endif
 
 	; Main
 	db zmake68kBank(MusData_Invin)
@@ -4968,12 +4993,37 @@ MusicPointers label *
 	endif
 
 	; Levels
+	if DynamicBGMs
+; -----------------------------------------------------------------------
+	declsong MusData_GHZ1
+	declsong MusData_GHZ2
+	declsong MusData_GHZ3
+	declsong MusData_MZ1
+	declsong MusData_MZ2
+	declsong MusData_MZ3
+	declsong MusData_SYZ1
+	declsong MusData_SYZ2
+	declsong MusData_SYZ3
+	declsong MusData_LZ1
+	declsong MusData_LZ2
+	declsong MusData_LZ3
+	declsong MusData_SLZ1
+	declsong MusData_SLZ2
+	declsong MusData_SLZ3
+	declsong MusData_SBZ1
+	declsong MusData_SBZ2
+	declsong MusData_SBZ3
+; -----------------------------------------------------------------------
+	else
+; -----------------------------------------------------------------------
 	declsong MusData_GHZ
 	declsong MusData_MZ
 	declsong MusData_SYZ
 	declsong MusData_LZ
 	declsong MusData_SLZ
 	declsong MusData_SBZ
+; ------------------------------------------------------------------------
+	endif
 
 	; Main
 	declsong MusData_Invin
@@ -5295,12 +5345,39 @@ Sound_C01:	include "sound/sfx/Continuous/Snd - Waterfall.asm"
 ; ---------------------------------------------------------------------------
 bgm_Bank1_Start:	startBank
 	Music_Master_Table
+
+	if DynamicBGMs
+; -----------------------------------------------------------------------
+MusData_GHZ1:
+MusData_GHZ2:
+MusData_GHZ3:			include "sound/music/Mus01 - GHZ.asm"
+MusData_LZ1:
+MusData_LZ2:
+MusData_LZ3:			include "sound/music/Mus02 - LZ.asm"
+MusData_MZ1:
+MusData_MZ2:
+MusData_MZ3:			include "sound/music/Mus03 - MZ.asm"
+MusData_SLZ1:
+MusData_SLZ2:
+MusData_SLZ3:			include "sound/music/Mus04 - SLZ.asm"
+MusData_SYZ1:
+MusData_SYZ2:
+MusData_SYZ3:			include "sound/music/Mus05 - SYZ.asm"
+MusData_SBZ1:
+MusData_SBZ2:
+MusData_SBZ3:			include "sound/music/Mus06 - SBZ.asm"
+; -----------------------------------------------------------------------
+	else
+; -----------------------------------------------------------------------
 MusData_GHZ:			include "sound/music/Mus01 - GHZ.asm"
 MusData_LZ:				include "sound/music/Mus02 - LZ.asm"
 MusData_MZ:				include "sound/music/Mus03 - MZ.asm"
 MusData_SLZ:			include "sound/music/Mus04 - SLZ.asm"
 MusData_SYZ:			include "sound/music/Mus05 - SYZ.asm"
 MusData_SBZ:			include "sound/music/Mus06 - SBZ.asm"
+; ------------------------------------------------------------------------
+	endif
+
 MusData_Invin:			include "sound/music/Mus07 - Invincibility.asm"
 MusData_ExtraLife:		include "sound/music/Mus08 - Extra Life.asm"
 MusData_SpecialStage:	include "sound/music/Mus09 - Special Stage.asm"

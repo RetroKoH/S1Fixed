@@ -307,8 +307,8 @@ LZWindTunnels:
 		bhs.s	.chknext			; branch if Sonic is too far down
 		move.w	d0,d1				; FixBugs
 		move.b	(v_vbla_byte).w,d0
-		andi.b	#$3F,d0				; does VInt counter fall on 0, $40, $80 or $C0?
-		bne.s	.skipsound			; if not, branch
+;		andi.b	#$3F,d0				; does VInt counter fall on 0, $40, $80 or $C0?
+;		bne.s	.skipsound			; if not, branch
 ;		move.w	#sfx_Waterfall,d0
 ;		jsr		(PlaySound_Special).w	; play rushing water sound (only every $40 frames)
 
@@ -428,8 +428,8 @@ loc_3F9A:
 		move.b	#aniID_WaterSlide,obAnim(a1)	; use Sonic's "sliding" animation
 		move.b	#1,(f_slidemode).w				; set water slide flag
 		moveq	#$1F,d0
-		and.b	(v_vbla_byte).w,d0				; reversed instructions to save cycles (Filter)
-		bne.s	locret_3FBE
+;		and.b	(v_vbla_byte).w,d0				; reversed instructions to save cycles (Filter)
+;		bne.s	locret_3FBE
 ;		move.w	#sfx_Waterfall,d0
 ;		jmp		(PlaySound_Special).w			; play water sound (broken)
 
