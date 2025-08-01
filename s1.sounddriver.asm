@@ -330,10 +330,19 @@ DACUpdateTrack:
 ; Also, $8C-$8D are so slow you may want to skip them.
 ; byte_71CC4:
 DAC_sample_rate:
+
+; Proto Percussion (OrionNavattan)
+	if ProtoPercussion
+		dc.b dpcmLoopCounter(8320)
+		dc.b dpcmLoopCounter(7630)
+		dc.b dpcmLoopCounter(6390)
+		dc.b dpcmLoopCounter(6240)
+	else
 		dc.b dpcmLoopCounter(9750)
 		dc.b dpcmLoopCounter(8750)
 		dc.b dpcmLoopCounter(7150)
 		dc.b dpcmLoopCounter(7000)
+	endif
 		dc.b $FF, $FF
 		even
 

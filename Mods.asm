@@ -167,6 +167,11 @@ GHZForeverPal: = 1						; if set to 1, GHZ is set to Sonic 1 Forever's palette
 ; Function: Gives Sonic his prototype palette found in the Tom Payne archives. Also seen in Crackers and Sonic CD.
 ProtoSonicPalette: = 1
 
+; Name: Proto Percussion
+; Credit: OrionNavattan
+; Function: Gives the percussion the sound style as heard in earlier prototype versions of the game.
+ProtoPercussion: = 0
+
 ; Name: Active Death Sequences
 ; Credit: RetroKoH
 ; Function: Active elements will not freeze when the player dies.

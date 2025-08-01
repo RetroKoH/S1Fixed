@@ -213,12 +213,26 @@ zPCMMetadata macro label,sampleRate
 	dw	0				; Padding
     endm
 
+
 ; DPCM metadata
 zPCM_Table:
+; Proto Percussion (OrionNavattan)
+	if ProtoPercussion
+
+	zPCMMetadata zDAC_Kick,7800
+	zPCMMetadata zDAC_Snare,17100
+zTimpani_Pitch = $+4
+	zPCMMetadata zDAC_Timpani,6500
+
+	else
+
 	zPCMMetadata zDAC_Kick,8250
 	zPCMMetadata zDAC_Snare,24000
 zTimpani_Pitch = $+4
 	zPCMMetadata zDAC_Timpani,7250
+
+	endif
+; Proto Percussion End
 
 ; DPCM data
 zDAC_Kick:
