@@ -170,7 +170,7 @@ ProtoSonicPalette: = 1
 ; Name: Proto Percussion
 ; Credit: OrionNavattan
 ; Function: Gives the percussion the sound style as heard in earlier prototype versions of the game.
-ProtoPercussion: = 0
+ProtoPercussion: = 1
 
 ; Name: Active Death Sequences
 ; Credit: RetroKoH

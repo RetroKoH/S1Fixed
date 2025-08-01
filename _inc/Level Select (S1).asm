@@ -42,8 +42,7 @@ LevelSelect:
 		move.w	(v_levselitem).w,d0
 		cmpi.w	#$14,d0								; have you selected item $14 (sound test)?
 		bne.s	LevSel_Level						; if not, go to	Level/SS subroutine
-		move.w	(v_levselsound).w,d0
-		addi.w	#$80,d0
+		move.w	(v_levselsound).w,d0				; Expanded Sound Index (don't add $80)
 		tst.b	(f_creditscheat).w					; is Japanese Credits cheat on?
 		beq.s	LevSel_PlaySnd						; if not, branch
 		cmpi.w	#$9F,d0								; is sound $9F being played?
@@ -201,16 +200,18 @@ LevSel_SndTest:
 		btst	#bitL,d1				; is left pressed?
 		beq.s	LevSel_Right			; if not, branch
 		subq.w	#1,d0					; subtract 1 from sound	test
-		bhs.s	LevSel_Right
-		moveq	#$4F,d0					; if sound test	moves below 0, set to $4F
+; Expanded Sound Index -- I'll change this to cap at a value, depending on the number of sounds a user has in the ROM
+;		bhs.s	LevSel_Right
+;		moveq	#$4F,d0					; if sound test	moves below 0, set to $4F
 
 LevSel_Right:
 		btst	#bitR,d1				; is right pressed?
 		beq.s	LevSel_Refresh2			; if not, branch
 		addq.w	#1,d0					; add 1	to sound test
-		cmpi.w	#$50,d0
-		blo.s	LevSel_Refresh2
-		moveq	#0,d0					; if sound test	moves above $4F, set to	0
+; Expanded Sound Index -- I'll change this to cap at a value, depending on the number of sounds a user has in the ROM
+;		cmpi.w	#$50,d0
+;		blo.s	LevSel_Refresh2
+;		moveq	#0,d0					; if sound test	moves above $4F, set to	0
 
 LevSel_Refresh2:
 		move.w	d0,(v_levselsound).w	; set sound test number
@@ -219,6 +220,8 @@ LevSel_Refresh2:
 LevSel_NoMove:
 		rts	
 ; End of function LevSelControls
+; ===========================================================================
+
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to load level select text
@@ -240,9 +243,9 @@ textpos:	= ($40000000+(($E210&$3FFF)<<16)+(($E210&$C000)>>14))
 
 LevSel_DrawAll:
 		move.l	d4,4(a6)
-		moveq	#23,d2				; number of characters per line - 1
-		bsr.w	ASCText_RenderLine	; draw line of text
-		addi.l	#$800000,d4			; jump to next line
+		moveq	#23,d2					; number of characters per line - 1
+		bsr.w	ASCText_RenderLine		; draw line of text
+		addi.l	#$800000,d4				; jump to next line
 		dbf		d1,LevSel_DrawAll
 
 		moveq	#0,d0
@@ -258,10 +261,10 @@ LevSel_DrawAll:
 		add.w	d1,d1
 		add.w	d0,d1
 		adda.w	d1,a1
-		move.w	#$C680,d3			; VRAM setting (3rd palette, $680th tile)
+		move.w	#$C680,d3				; VRAM setting (3rd palette, $680th tile)
 		move.l	d4,4(a6)
-		moveq	#23,d2				; number of characters per line - 1
-		bsr.w	ASCText_RenderLine	; recolour selected line
+		moveq	#23,d2					; number of characters per line - 1
+		bsr.w	ASCText_RenderLine		; recolour selected line
 		move.w	#$E680,d3
 		cmpi.w	#$14,(v_levselitem).w
 		bne.s	LevSel_DrawSnd
@@ -269,22 +272,21 @@ LevSel_DrawAll:
 
 LevSel_DrawSnd:
 		locVRAM	vram_bg+$C30			; sound test position on screen
-		move.w	(v_levselsound).w,d0
-		addi.w	#$80,d0
+		move.w	(v_levselsound).w,d0	; Expanded Sound Index (don't add $80)
 		move.b	d0,d2
 		lsr.b	#4,d0
-		bsr.s	.drawdigit	; draw 1st digit
+		bsr.s	.drawdigit				; draw 1st digit
 		move.b	d2,d0
-							; fallthrough -- draw 2nd digit
+	; fallthrough -- draw 2nd digit
 
 .drawdigit:
 		andi.w	#$F,d0
-		cmpi.b	#$A,d0		; is digit $A-$F?
-		blo.s	.number		; if not, branch
-		addq.b	#7,d0		; use alpha characters -- ASCII font mod
+		cmpi.b	#$A,d0					; is digit $A-$F?
+		blo.s	.number					; if not, branch
+		addq.b	#7,d0					; use alpha characters -- ASCII font mod
 
 .number:
-		addi.b	#$F,d0		; ASCII font offset (brings us to digits)
+		addi.b	#$F,d0					; ASCII font offset (brings us to digits)
 		add.w	d3,d0
 		move.w	d0,(a6)
 		rts	

@@ -232,42 +232,32 @@ LevSelControls_CheckLR:
 		btst	#bitL,d1
 		beq.s	.chkright
 		subq.b	#1,d0
-		bcc.s	.chkright
-		moveq	#$7F,d0
+; Expanded Sound Index -- I'll change this to cap at a value, depending on the number of sounds a user has in the ROM
+;		bcc.s	.chkright
+;		moveq	#$7F,d0
 
 	.chkright:
 		btst	#bitR,d1
 		beq.s	.chkA
 		addq.b	#1,d0
-		cmpi.w	#$80,d0
-		blo.s	.chkA
-		moveq	#0,d0
+; Expanded Sound Index -- I'll change this to cap at a value, depending on the number of sounds a user has in the ROM
+;		cmpi.w	#$80,d0
+;		blo.s	.chkA
+;		moveq	#0,d0
 
 	.chkA:
 		btst	#bitA,d1
 		beq.s	.changesound
 		addi.b	#$10,d0
-		andi.b	#$7F,d0
+; Expanded Sound Index -- I'll change this to cap at a value, depending on the number of sounds a user has in the ROM
+;		andi.b	#$7F,d0
 
 	.changesound:
 		move.w	d0,(v_levselsound).w
 		andi.w	#btnBC,d1
-		beq.s	.rts	; rts
+		beq.s	.rts
 		move.w	(v_levselsound).w,d0
-		; temp. bandaid fix for crashes when playing these sounds in particular.
-        	cmpi.w  #$5E,d0
-        	beq.s   .rts
-        	cmpi.w  #$5F,d0
-      		beq.s   .rts
-		addi.w	#$80,d0
 		bra.w	PlaySound
-		addi.w	#$80,d0
-		bra.w	PlaySound
-		;lea	(debug_cheat).l,a0
-		;lea	(super_sonic_cheat).l,a2
-		;lea	(Night_mode_flag).w,a1
-		;moveq	#1,d2	; flag to tell the routine to enable the Super Sonic cheat
-		;bsr.w	CheckCheats
 
 	.rts:
 		rts
@@ -372,23 +362,24 @@ LevelSelect_MarkFields:
 	.rts:
 		rts
 ; ===========================================================================
+
 LevelSelect_DrawSoundNumber:
 		move.l	#$49C40003,(vdp_control_port).l
-		move.w	(v_levselsound).w,d0
+		move.w	(v_levselsound).w,d0	; Expanded Sound Index (don't add $80)
 		move.b	d0,d2
 		lsr.b	#4,d0
-		bsr.s	.drawdigit	; draw 1st digit
+		bsr.s	.drawdigit				; draw 1st digit
 		move.b	d2,d0
-							; fallthrough -- draw 2nd digit
+	; fallthrough -- draw 2nd digit
 
 	.drawdigit:
 		andi.w	#$F,d0
-		cmpi.b	#$A,d0		; is digit $A-$F?
-		blo.s	.number		; if not, branch
-		addq.b	#7,d0		; use alpha characters -- ASCII font mod
+		cmpi.b	#$A,d0					; is digit $A-$F?
+		blo.s	.number					; if not, branch
+		addq.b	#7,d0					; use alpha characters -- ASCII font mod
 
 	.number:
-		addi.b	#$1F,d0		; ASCII font offset (brings us to digits)
+		addi.b	#$1F,d0					; ASCII font offset (brings us to digits)
 		add.w	d3,d0
 		move.w	d0,(a6)
 		rts

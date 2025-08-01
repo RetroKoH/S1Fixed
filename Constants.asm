@@ -350,7 +350,7 @@ afReset:		equ $FB	; reset animation and 2nd object routine counter
 af2ndRoutine:	equ $FA	; increment 2nd routine counter
 
 ; Background music
-bgm__First:		equ $81
+bgm__First:		equ $01	; Expanded Sound Index
 
 	if DynamicBGMs
 ; -----------------------------------------------------------------------
@@ -474,12 +474,12 @@ sfx_DropDash:	equ ((ptr_sndDC-SoundIndex)/4)+sfx__First
 sfx_Perfect:	equ ((ptr_sndDD-SoundIndex)/4)+sfx__First
 spec__Last:		equ ((ptr_specend-SpecSoundIndex-4)/4)+spec__First
 
-flg__First:		equ $E0
-bgm_Fade:		equ ((ptr_flgE0-Sound_ExIndex)/4)+flg__First
-sfx_Sega:		equ ((ptr_flgE1-Sound_ExIndex)/4)+flg__First
-bgm_Speedup:	equ ((ptr_flgE2-Sound_ExIndex)/4)+flg__First
-bgm_Slowdown:	equ ((ptr_flgE3-Sound_ExIndex)/4)+flg__First
-bgm_Stop:		equ ((ptr_flgE4-Sound_ExIndex)/4)+flg__First
+flg__First:		equ $FB	; Expanded Sound Index
+bgm_Fade:		equ ((ptr_flgFB-Sound_ExIndex)/4)+flg__First
+sfx_Sega:		equ ((ptr_flgFC-Sound_ExIndex)/4)+flg__First
+bgm_Speedup:	equ ((ptr_flgFD-Sound_ExIndex)/4)+flg__First
+bgm_Slowdown:	equ ((ptr_flgFE-Sound_ExIndex)/4)+flg__First
+bgm_Stop:		equ ((ptr_flgFF-Sound_ExIndex)/4)+flg__First
 flg__Last:		equ ((ptr_flgend-Sound_ExIndex-4)/4)+flg__First
 
 		include "_maps/Sonic Sprite Constants.asm"
