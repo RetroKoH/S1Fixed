@@ -719,8 +719,10 @@ PlaySoundID:
 		blo.s	.locret				; Return if yes
 
 	; Special SFX
+		cmpi.b	#sfx_Waterfall,d7	; Is this special sfx?
+		beq.w	Sound_PlaySpecial	; Branch and play if yes; Changed Branch -- Expanded Sound Index
 		cmpi.b	#spec__Last,d7		; Is this special sfx?
-		bls.w	Sound_PlaySpecial	; Branch and play if yes; Changed Branch -- Expanded Sound Index
+		bls.w	Sound_PlaySFX		; Branch and play if yes; Changed Branch -- Expanded Sound Index
 		cmpi.b	#flg__First,d7		; Is this other new special sfx?
 		blo.s	.locret				; Return if yes; Changed Branch -- Expanded Sound Index
 

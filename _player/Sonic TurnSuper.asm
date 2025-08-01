@@ -1,10 +1,10 @@
 ; ---------------------------------------------------------------------------
-; Subroutine for Sonic when he's underwater
+; Subroutine for Sonic to transform in Super Sonic
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
-Sonic_TurnSuper: ;loc_11A16:
+Sonic_TurnSuper:
 		move.b	#1,(f_super_palette).w
 		move.b	#$F,(v_palette_timer).w
 		bset	#sta2ndSuper,obStatus2nd(a0)
@@ -18,9 +18,9 @@ Sonic_TurnSuper: ;loc_11A16:
 		clr.b	obInvinc(a0)
 		bset	#sta2ndInvinc,obStatus2nd(a0)	; make Sonic invincible
 		move.w	#sfx_GiantRing,d0
-		jsr		(PlaySound_Special).w
+		jsr		(PlaySound).w
 		move.w	#bgm_Invincible,d0
 		move.b	d0,(v_lastbgmplayed).w			; store last played music
-		jmp		(PlaySound).w
-; End of function Sonic_Water
+		jmp		(PlaySound_Special).w
+; End of function Sonic_TurnSuper
 ; ===========================================================================
