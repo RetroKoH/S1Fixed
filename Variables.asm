@@ -133,7 +133,7 @@ v_watersurface1	= v_objspace+object_size*30	; ($D780) object variable space for 
 v_watersurface2	= v_objspace+object_size*31	; ($D7C0) object variable space for the water surface #1 ($40 bytes)
 
 v_lvlobjspace	= v_objspace+object_size*32	; level object variable space ($60 objects, $1800 bytes)
-v_lvlobjend		= v_lvlobjspace+object_size*96
+v_lvlobjend		= v_lvlobjspace+object_size*96 ; ($F000) end of obj RAM
 v_objspace_end	= v_lvlobjend
 
 v_rsvobjcount	= (v_lvlobjspace-v_objspace)/object_size-1
