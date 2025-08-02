@@ -106,7 +106,21 @@ locret_146BE:
 ; ===========================================================================
 
 loc_146C0:
-		cmpi.w	#$E,d1
+	; Mercury Quarterloop Fix
+		move.b	obVelX(a0),d0
+		bpl.s	.next1
+		neg.b	d0
+
+	.next1:
+		addq.b	#5,d0			; ++ SpirituInsanum (4 -> 5)
+		cmpi.b	#$E,d0
+		bcs.s	.next2
+		move.b	#$E,d0
+
+	.next2:
+		cmp.b	d0,d1
+	; Quarterloop Fix End
+
 		bgt.s	loc_146CC
 
 loc_146C6:
@@ -141,6 +155,36 @@ Sonic_Angle:
 loc_1475E:
 		btst	#0,d2
 		bne.s	loc_1476A
+
+	; Mercury Quarterloop Fix
+		tst.b	obOnWheel(a0)
+		bne.s	.onwheel
+		move.w	obVelY(a0),d6	; ++ SpirituInsanum
+		bpl.s	.yVelPositive	; ++ SpirituInsanum
+		neg.w	d6				; ++ SpirituInsanum
+
+	.yVelPositive:				; ++ SpirituInsanum
+		cmpi.w	#$80,d6			; ++ SpirituInsanum
+		bcc.s	.onwheel		; ++ SpirituInsanum
+		move.b	obAngle(a0),d6	; ++ SpirituInsanum
+		bpl.s	.fixpositive	; ++ SpirituInsanum
+		neg.b	d6				; ++ SpirituInsanum
+
+	.fixpositive:				; ++ SpirituInsanum
+		cmpi.b	#$30,d6			; ++ SpirituInsanum
+		bcc.s	.onwheel		; ++ SpirituInsanum
+		move.b	d2,d0
+		sub.b	obAngle(a0),d0
+		bpl.s	.positive
+		neg.b	d0
+
+	.positive:
+		cmpi.b	#$21,d0			; ++ SpirituInsanum ($20 -> $21)
+		bcc.s	loc_1476A
+
+	.onwheel:
+	; Quarterloop Fix End
+
 		move.b	d2,obAngle(a0)
 		rts	
 ; ===========================================================================
@@ -201,7 +245,21 @@ locret_147F0:
 ; ===========================================================================
 
 loc_147F2:
-		cmpi.w	#$E,d1
+	; Mercury Quarterloop Fix
+		move.b	obVelY(a0),d0
+		bpl.s	.next1
+		neg.b	d0
+
+	.next1:
+		addq.b	#5,d0			; ++ SpirituInsanum (4 -> 5)
+		cmpi.b	#$E,d0
+		bcs.s	.next2
+		move.b	#$E,d0
+
+	.next2:
+		cmp.b	d0,d1
+	; Quarterloop Fix End
+
 		bgt.s	loc_147FE
 
 loc_147F8:
@@ -267,7 +325,21 @@ locret_14892:
 ; ===========================================================================
 
 loc_14894:
-		cmpi.w	#$E,d1
+	; Mercury Quarterloop Fix
+		move.b	obVelX(a0),d0
+		bpl.s	.next1
+		neg.b	d0
+
+	.next1:	
+		addq.b	#5,d0			; ++ SpirituInsanum (4 -> 5)
+		cmpi.b	#$E,d0
+		bcs.s	.next2
+		move.b	#$E,d0
+
+	.next2:
+		cmp.b	d0,d1
+	; Quarterloop Fix End
+
 		bgt.s	loc_148A0
 
 loc_1489A:
@@ -333,7 +405,21 @@ locret_14934:
 ; ===========================================================================
 
 loc_14936:
-		cmpi.w	#$E,d1
+	; Mercury Quarterloop Fix
+		move.b	obVelY(a0),d0
+		bpl.s	.next1
+		neg.b	d0
+
+	.next1:
+		addq.b	#5,d0			; ++ SpirituInsanum (4 -> 5)
+		cmpi.b	#$E,d0
+		bcs.s	.next2
+		move.b	#$E,d0
+
+	.next2:
+		cmp.b	d0,d1
+	; Quarterloop Fix End
+
 		bgt.s	loc_14942
 
 loc_1493C:

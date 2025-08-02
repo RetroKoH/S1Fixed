@@ -125,7 +125,7 @@ BossPlasma_MakeBalls:; Routine 4
 		move.w	d0,plasma_targetX(a1)				; randomly generate a target position for this ball
 		addq.w	#1,plasma_count(a0)
 		dbf		d2,.loop							; repeat sequence 3 more times
-		move.w	plasma_count(a0),plasma_count2(a0)
+		move.w	plasma_count(a0),plasma_count2(a0)	; call once when finished, instead of 4 times
 
 	.fail:
 		tst.w	plasma_count(a0)
