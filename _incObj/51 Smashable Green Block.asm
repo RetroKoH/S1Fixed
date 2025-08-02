@@ -53,11 +53,22 @@ Smab_Solid:	; Routine 2
 		bclr	#staSonicOnObj,obStatus(a0)		; removed obSolid
 		move.b	#1,obFrame(a0)
 		lea		(Smab_Speeds).l,a4				; load broken fragment speed data
-		moveq	#3,d1							; set number of	fragments to 4
-		move.w	#$38,d2
-		bsr.w	SmashObject
-		bsr.w	FindFreeObj
-		bne.s	Smab_Points
+		move.w	#$38,d2							; set initial gravity speed
+		bsr.w	SmashObject						; break object into fragments
+
+	; REMOVE FindFreeObj. We can pick up with a1 and d3 where we left
+		tst.b	d3								; have we already checked all object RAM?
+		ble.s	Smab_Points						; if yes, skip making points
+		lea		object_size(a1),a1				; go to the next object space
+
+.loop:
+		tst.b	obID(a1)						; is object RAM	slot empty?
+		beq.s	.loadpts						; Let's correct the branches. Here we can also skip the bne that was originally after bsr.w FindFreeObj because we already know there's a free object slot in memory.
+		lea		object_size(a1),a1
+		dbf		d3,.loop						; Branch correction again.
+		bne.s	Smab_Points						; We're moving this line here.
+
+.loadpts:
 		_move.b	#id_Points,obID(a1)				; load points object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
@@ -89,7 +100,8 @@ Smab_Points:	; Routine 4
 		bra.w	RememberState
 
 ; ===========================================================================
-Smab_Speeds:	dc.w -$200, -$200	; x-speed, y-speed
+Smab_Speeds:
+		dc.w -$200, -$200	; x-speed, y-speed
 		dc.w -$100, -$100
 		dc.w $200, -$200
 		dc.w $100, -$100
