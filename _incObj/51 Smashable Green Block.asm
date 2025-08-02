@@ -56,7 +56,7 @@ Smab_Solid:	; Routine 2
 		move.w	#$38,d2							; set initial gravity speed
 		bsr.w	SmashObject						; break object into fragments
 
-	; REMOVE FindFreeObj. We can pick up with a1 and d3 where we left
+	; REMOVE FindFreeObj. We can pick up with a1 and d3 where we left off
 		tst.b	d3								; have we already checked all object RAM?
 		ble.s	Smab_Points						; if yes, skip making points
 		lea		object_size(a1),a1				; go to the next object space
