@@ -183,21 +183,31 @@ Mon_BreakOpen:	; Routine 4
 		addq.b	#2,obRoutine(a0)
 		clr.b	obColType(a0)
 		bsr.w	FindFreeObj
-		bne.s	Mon_Explode
-		_move.b	#id_PowerUp,obID(a1) ; load monitor contents object
+		bne.s	.fail						; if we can't load a powerup, skip trying to load an explosion
+		_move.b	#id_PowerUp,obID(a1)		; load monitor contents object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.b	obAnim(a0),obAnim(a1)
 
-Mon_Explode:
-		bsr.w	FindFreeObj
-		bne.s	.fail
+	; REMOVE FindFreeObj. We can pick up with a1 and d0 where we left off
+		tst.b	d0							; have we already checked all object RAM?
+		ble.s	.fail						; if yes, skip making an explosion
+		lea		object_size(a1),a1			; go to the next object space
+
+	.loop:
+		tst.b	obID(a1)					; is object RAM	slot empty?
+		beq.s	.explode					; Let's correct the branches. Here we can also skip the bne that was originally after bsr.w FindFreeObj because we already know there's a free object slot in memory.
+		lea		object_size(a1),a1
+		dbf		d0,.loop					; Branch correction again.
+		bne.s	.fail						; We're moving this line here.
+
+	.explode:
 		_move.b	#id_ExplosionItem,obID(a1)	; load explosion object
 		addq.b	#2,obRoutine(a1)			; don't create an animal
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 
-.fail:
+	.fail:
 	; ProjectFM S3K Objects Manager
 		move.w	obRespawnNo(a0),d0			; get address in respawn table
 		movea.w	d0,a2						; load address into a2
