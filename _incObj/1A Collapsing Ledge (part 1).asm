@@ -16,7 +16,7 @@ Ledge_Index:	offsetTable
 		offsetTableEntry.w	Ledge_Delete
 		offsetTableEntry.w	Ledge_WalkOff
 
-ledge_timedelay = objoff_38		; time between touching the ledge and it collapsing
+ledge_timedelay = objoff_38			; time between touching the ledge and it collapsing
 ledge_collapse_flag = objoff_3A		; collapse flag
 ; ===========================================================================
 
@@ -104,3 +104,22 @@ Ledge_TimeZero:
 
 Ledge_Delete:	; Routine 8
 		bra.w	DeleteObject	
+; ===========================================================================
+
+; ---------------------------------------------------------------------------
+; Disintegration data for collapsing ledges
+; ---------------------------------------------------------------------------
+Ledge_CollapseData:
+		dc.b $1C, $18, $14, $10, $1A, $16, $12,	$E, $A,	6, $18,	$14, $10, $C, 8, 4
+		dc.b $16, $12, $E, $A, 6, 2, $14, $10, $C, 0
+; ===========================================================================
+
+Ledge_Fragment:
+		clr.b	ledge_collapse_flag(a0)
+
+loc_847A:
+		lea		Ledge_CollapseData(pc),a4
+		moveq	#$18,d1
+		addq.b	#2,obFrame(a0)
+		bra.w	CollapseObject
+; ===========================================================================

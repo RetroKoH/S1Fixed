@@ -124,16 +124,25 @@ CFlo_Delete:	; Routine 8
 		bra.w	DeleteObject
 ; ===========================================================================
 
+; ---------------------------------------------------------------------------
+; Disintegration data for collapsing ledges (MZ, SLZ, SBZ)
+; ---------------------------------------------------------------------------
+CFlo_Data1:
+		dc.b $1E, $16, $E, 6, $1A, $12,	$A, 2
+CFlo_Data2:
+		dc.b $16, $1E, $1A, $12, 6, $E,	$A, 2
+; ===========================================================================
+
 CFlo_Fragment:
 		clr.b	cflo_collapse_flag(a0)
 
 loc_8458:
-		lea		(CFlo_Data2).l,a4
+		lea		CFlo_Data1(pc),a4
 		btst	#0,obSubtype(a0)
-		beq.s	loc_846C
-		lea		(CFlo_Data3).l,a4
+		beq.s	loc_846C				; branch if bit 0 is clear
+		lea		CFlo_Data2(pc),a4		; I can't find an instance where this is used
 
 loc_846C:
 		moveq	#7,d1
 		addq.b	#1,obFrame(a0)
-		bra.s	loc_8486
+; fallthrough to CollapseObject

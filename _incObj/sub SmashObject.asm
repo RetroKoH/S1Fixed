@@ -24,10 +24,10 @@ SmashObject:
 	; RetroKoH Optimization; Built off of Spirituinsanum's Mass Object Load Optimization
 	; Init the first ring right away (which is already created)
 		move.b	#4,obRoutine(a0)
-		move.l	a3,obMap(a0)
+		move.l	a3,obMap(a0)					; Set appropriate mapping
 		move.l	(a4)+,obVelX(a0)				; move the data contained in the array to obVelX and obVelY, and increment the address in a4
 
-	; Here we begin what's replacing FindFreeObj/SingleObjLoad,
+	; Here we begin what's replacing FindFreeObj/SingleObjLoad.
 		moveq	#0,d3
 		lea		(v_lvlobjspace).w,a1
 		move.w	#v_lvlobjcount,d3
@@ -38,15 +38,15 @@ SmashObject:
 		beq.s	.loadfrag						; Let's correct the branches. Here we can also skip the bne that was originally after bsr.w FindFreeObj because we already know there's a free object slot in memory.
 		lea		object_size(a1),a1
 		dbf		d3,.loop						; Branch correction again.
-		bne.s	.playsnd						; We're moving this line here.
+		bne.s	.endloop						; We're moving this line here.
 
 .loadfrag:
 		move.b	#4,obRoutine(a1)
-		_move.b	d4,obID(a1)
+		_move.b	d4,obID(a1)						; Obj3C or Obj51
 		addq.w	#8,a3							; S2 BuildSprites Change: 5 > 8
-		move.l	a3,obMap(a1)
-		move.b	d5,obRender(a1)
-		move.w	obX(a0),obX(a1)
+		move.l	a3,obMap(a1)					; Set appropriate mapping
+		move.b	d5,obRender(a1)					; Set render flags accordingly
+		move.w	obX(a0),obX(a1)					; match position
 		move.w	obY(a0),obY(a1)
 		move.w	obGfx(a0),obGfx(a1)
 		move.w	obPriority(a0),obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
@@ -64,9 +64,9 @@ SmashObject:
 		bsr.w	DisplaySprite1
 
 .loc_D268:
-		dbf		d1,.loop
+		dbf		d1,.loop						; repeat for number of fragments (space permitting)
 
-.playsnd:
+.endloop:
 		move.w	#sfx_WallSmash,d0
 		jmp		(PlaySound_Special).w ; play smashing sound
 
