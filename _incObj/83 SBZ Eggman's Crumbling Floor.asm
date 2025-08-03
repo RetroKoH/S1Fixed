@@ -11,51 +11,66 @@ FalseFloor:
 FFloor_Index:	offsetTable
 		offsetTableEntry.w FFloor_Main
 		offsetTableEntry.w FFloor_ChkBreak
-		offsetTableEntry.w loc_19C36
-		offsetTableEntry.w loc_19C62
-		offsetTableEntry.w loc_19C72
-		offsetTableEntry.w loc_19C80
+		offsetTableEntry.w FFloor_SetBreak
+		offsetTableEntry.w FFloor_DestroyAll
+		offsetTableEntry.w FFloorPanel_Wait
+		offsetTableEntry.w FFloorPanel_Collapse
 ; ===========================================================================
 
 FFloor_Main:	; Routine 0
-		move.w	#boss_sbz2_x+$30,obX(a0)
-		move.w	#boss_sbz2_y+$C0,obY(a0)
+		move.w	#boss_sbz2_x+$30,obX(a0)	; $2080
+		move.w	#boss_sbz2_y+$C0,obY(a0)	; $5D0
 		move.b	#$80,obActWid(a0)
-		move.b	#$10,obHeight(a0)
-		move.b	#4,obRender(a0)
-		bset	#7,obRender(a0)
-		moveq	#0,d4
-		move.w	#boss_sbz2_x-$40,d5
-		moveq	#7,d6
-		lea		objoff_30(a0),a2
+		move.b	#$84,obRender(a0)			; render_flags = 4; bit 7 also set
 
-FFloor_MakeBlock:
-		jsr		(FindFreeObj).l
-		bne.s	FFloor_ExitMake
-		move.w	a1,(a2)+
-		move.b	#id_FalseFloor,obID(a1)		; load block object
-		move.l	#Map_FFloor,obMap(a1)
-		move.w	#make_art_tile(ArtTile_Eggman_Trap_Floor,2,0),obGfx(a1)
+	; store values for faster looping
+		lea		objoff_30(a0),a2
+		_move.b	#id_FalseFloor,d1
+		move.l	#Map_FFloor,d2
+		move.w	#make_art_tile(ArtTile_Eggman_Trap_Floor,2,0),d3
+		moveq	#$10,d4
+		move.b	d4,obHeight(a0)				; might as well set it here
+		move.w	#boss_sbz2_x-$40,d5
+		moveq	#7,d6						; iterator
+
+	; RetroKoH Optimization; Built off of Spirituinsanum's Mass Object Load Optimization
+	; Here we begin what's replacing FindFreeObj/SingleObjLoad
+		lea		(v_lvlobjspace).w,a1
+		move.w	#v_lvlobjcount,d0
+
+	.loop:
+	; REMOVE FindFreeObj. It's the routine that causes such slowdown
+		tst.b	obID(a1)					; is object RAM	slot empty?
+		beq.s	.makefloor					; Let's correct the branches. Here we can also skip the bne that was originally after bsr.w FindFreeObj because we already know there's a free object slot in memory.
+		lea		object_size(a1),a1
+		dbf		d0,.loop					; Branch correction again.
+		bne.s	.endloop					; We're moving this line here.
+
+	.makefloor:
+		move.w	a1,(a2)+					; store the new object's address in the controller's memory (objoff_30(a0) onward)
+		_move.b	d1,obID(a1)					; load block object
+		move.l	d2,obMap(a1)
+		move.w	d3,obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.b	#$10,obActWid(a1)
-		move.b	#$10,obHeight(a1)
+		move.b	d4,obActWid(a1)
+		move.b	d4,obHeight(a1)
 		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.w	d5,obX(a1)					; set X	position
 		move.w	#boss_sbz2_y+$C0,obY(a1)
 		addi.w	#$20,d5						; add $20 for next X position
-		move.b	#8,obRoutine(a1)
-		dbf		d6,FFloor_MakeBlock			; repeat sequence 7 more times
+		move.b	#8,obRoutine(a1)			; set floor panel's routine (wait to break)
+		dbf		d6,.loop					; repeat sequence 7 more times
 
-FFloor_ExitMake:
-		addq.b	#2,obRoutine(a0)
+	.endloop:
+		addq.b	#2,obRoutine(a0)			; advance the main object's routine
 		rts	
 ; ===========================================================================
 
-FFloor_ChkBreak:; Routine 2
-		cmpi.w	#"GO",obSubtype(a0) ; is object set to disintegrate?
-		bne.s	FFloor_Solid	; if not, branch
+FFloor_ChkBreak:	; Routine 2
+		cmpi.w	#"GO",obSubtype(a0)			; is object set to disintegrate?
+		bne.s	FFloor_Solid				; if not, branch
 		clr.b	obFrame(a0)
-		addq.b	#2,obRoutine(a0) ; next subroutine
+		addq.b	#2,obRoutine(a0)			; next subroutine
 
 FFloor_Solid:
 		moveq	#0,d0
@@ -75,7 +90,7 @@ FFloor_Solid:
 		jmp		(SolidObject).l
 ; ===========================================================================
 
-loc_19C36:	; Routine 4
+FFloor_SetBreak:	; Routine 4
 		subi.b	#$E,obTimeFrame(a0)
 		bcc.s	FFloor_Solid
 		moveq	#-1,d0
@@ -84,34 +99,33 @@ loc_19C36:	; Routine 4
 		add.w	d0,d0
 		move.w	objoff_30(a0,d0.w),d0
 		movea.l	d0,a1
-		move.w	#"GO",obSubtype(a1)
-		addq.b	#1,obFrame(a0)
-		cmpi.b	#8,obFrame(a0)
-		beq.s	loc_19C62
-		bra.s	FFloor_Solid
+		move.w	#"GO",obSubtype(a1)			; set object to disintegrate
+		addq.b	#1,obFrame(a0)				; increment counter
+		cmpi.b	#8,obFrame(a0)				; have all 8 floor panels been set to break?
+		beq.s	FFloor_DestroyAll			; if yes, branch
+		bra.s	FFloor_Solid				; otherwise, branch to solidity routine
 ; ===========================================================================
 
-FFloor_Delete:
-		jmp	(DeleteObject).l	; Moved here to optimize two branches below
-; ===========================================================================
-
-loc_19C62:	; Routine 6
+FFloor_DestroyAll:		; Routine 6
 		bclr	#staSonicOnObj,obStatus(a0)
 		bclr	#staOnObj,(v_player+obStatus).w
-		bra.s	FFloor_Delete
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
-loc_19C72:	; Routine 8
-		cmpi.w	#"GO",obSubtype(a0) ; is object set to disintegrate?
-		beq.s	FFloor_Break	; if yes, branch
+FFloorPanel_Wait:		; Routine 8
+		cmpi.w	#"GO",obSubtype(a0)			; is object set to disintegrate?
+		beq.s	FFloor_Break				; if yes, branch
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 
-loc_19C80:	; Routine $A
+FFloorPanel_Collapse:	; Routine $A
 		tst.b	obRender(a0)
-		bpl.s	FFloor_Delete
+		bpl.s	.delete
 		jsr		(ObjectFall_YOnly).l
 		jmp		(DisplaySprite).l
+
+	.delete:
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 FFloor_Break:
@@ -120,28 +134,39 @@ FFloor_Break:
 		moveq	#1,d4
 		moveq	#3,d1
 		moveq	#$38,d2
-		addq.b	#2,obRoutine(a0)
-		move.b	#8,obActWid(a0)
-		move.b	#8,obHeight(a0)
-		lea		(a0),a1
-		bra.s	FFloor_MakeFrag
-; ===========================================================================
+		addq.b	#2,obRoutine(a0)			; advance floor panel to routine $A
+		moveq	#8,d0
+		move.b	d0,obActWid(a0)
+		move.b	d0,obHeight(a0)
 
-FFloor_LoopFrag:
-		jsr		(FindNextFreeObj).l
-		bne.s	FFloor_BreakSnd
+	; RetroKoH Object Load Optimization -- Based on Spirituinsanum Guides
+	; Here we begin what's replacing FindNextFreeObj. It'll be quicker to loop through here.
+		movea.l	a0,a1
+		move.w	#v_lvlobjend&$FFFF,d0
+		sub.w	a0,d0
+		lsr.w	#6,d0
+		subq.w	#1,d0
+		bcs.s	.endloop
+		bra.s	.makefrags					; start fragmentation
 
-FFloor_MakeFrag:
-		lea		(a0),a2
-		lea		(a1),a3
-		moveq	#3,d3
+	.findfreeobj:
+		tst.b	obID(a1)					; is object RAM	slot empty?
+		beq.s	.makefrags					; if so, create object piece
+		lea		object_size(a1),a1
+		dbf		d0,.findfreeobj				; loop through object RAM
+		bne.s	.endloop					; We're moving this line here.
 
-loc_19CC4:
+	.makefrags:
+		lea		(a0),a2						; a2 = new object
+		lea		(a1),a3						; a3 = THIS object
+		moveq	#3,d3						; run the loop 4 times for $40 bytes
+
+	.loop:									; Copy all data to the new object
 		move.l	(a2)+,(a3)+
 		move.l	(a2)+,(a3)+
 		move.l	(a2)+,(a3)+
 		move.l	(a2)+,(a3)+
-		dbf		d3,loc_19CC4
+		dbf		d3,.loop
 
 		move.w	(a4)+,obVelY(a1)
 		move.w	(a5)+,d3
@@ -150,13 +175,14 @@ loc_19CC4:
 		add.w	d3,obY(a1)
 		move.b	d4,obFrame(a1)
 		addq.w	#1,d4
-		dbf		d1,FFloor_LoopFrag ; repeat sequence 3 more times
+		dbf		d1,.findfreeobj				; repeat sequence 3 more times
 
-FFloor_BreakSnd:
+	.endloop:
 		move.w	#sfx_WallSmash,d0
-		jsr		(PlaySound_Special).w	; play smashing sound
+		jsr		(PlaySound_Special).w		; play smashing sound
 		jmp		(DisplaySprite).l
 ; ===========================================================================
+
 FFloor_FragSpeed:
 		dc.w $80, 0
 		dc.w $120, $C0
@@ -165,3 +191,4 @@ FFloor_FragPos:
 		dc.w $10, 0
 		dc.w 0,	$10
 		dc.w $10, $10
+; ===========================================================================

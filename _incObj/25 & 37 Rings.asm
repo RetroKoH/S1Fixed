@@ -177,7 +177,7 @@ RLoss_Count:	; Routine 0
 		subq.w	#2,d5						; set iterator based on ring count, and decrement for the first ring created
 		bmi.s	.resetcounter				; if only one ring is needed, branch and skip EVERYTHING below altogether
 
-	; Here we begin what's replacing FindFreeObj/SingleObjLoad,
+	; Here we begin what's replacing FindFreeObj/SingleObjLoad
 		lea		(v_lvlobjspace).w,a1
 		move.w	#v_lvlobjcount,d0
 
