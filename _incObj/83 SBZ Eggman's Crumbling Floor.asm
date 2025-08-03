@@ -1,5 +1,5 @@
 ; ---------------------------------------------------------------------------
-; Object 83 - blocks that disintegrate Eggman	presses	a switch (SBZ2)
+; Object 83 - blocks that disintegrate when Eggman presses a switch (SBZ2)
 ; ---------------------------------------------------------------------------
 
 FalseFloor:
