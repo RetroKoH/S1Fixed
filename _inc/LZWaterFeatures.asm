@@ -185,15 +185,15 @@ DynWater_LZ3:
 		subq.b	#1,d2
 		bne.s	.routine3
 		move.w	#$4C8,d1
-		cmpi.w	#$770,d0
+		cmpi.w	#$760,d0				; has screen reached next position? (Tweaked to fix a minor water level bug)
 		blo.s	.setwater2
 		move.w	#$308,d1
 		cmpi.w	#$1400,d0
 		blo.s	.setwater2
 		cmpi.w	#$508,(v_waterpos3).w
 		beq.s	.sonicislow
-		cmpi.w	#$600,(v_player+obY).w ; is Sonic below $600 y-axis?
-		bhs.s	.sonicislow	; if yes, branch
+		cmpi.w	#$600,(v_player+obY).w	; is Sonic below $600 y-axis?
+		bhs.s	.sonicislow				; if yes, branch
 		cmpi.w	#$280,(v_player+obY).w
 		bhs.s	.setwater2
 
