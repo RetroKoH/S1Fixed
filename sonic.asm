@@ -5073,92 +5073,72 @@ locret_7B62:
 		include	"_incObj/1A Collapsing Ledge (part 1).asm"
 		include	"_incObj/53 Collapsing Floors.asm"
 
-; ===========================================================================
+; ---------------------------------------------------------------------------
+; Subroutine to	make a platform collapse (GHZ ledge [Obj1A] and floors [Obj53])
+; ---------------------------------------------------------------------------
 
-; Obj1A calls this
-Ledge_Fragment:
-		clr.b	ledge_collapse_flag(a0)
+; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
-loc_847A:
-		lea		CFlo_Data1(pc),a4
-		moveq	#$18,d1
-		addq.b	#2,obFrame(a0)
 
-; Used by Obj1A and Obj53
-loc_8486:
+CollapseObject:
 		moveq	#0,d0
 		move.b	obFrame(a0),d0
 		add.w	d0,d0
 		movea.l	obMap(a0),a3
 		adda.w	(a3,d0.w),a3
 		; S2 BuildSprites
-		move.w	(a3)+,d1
-		subq.w	#1,d1
+; This is actually where we set the number of fragments to be created.
+; The original game set it in the object code itself.
+		move.w	(a3)+,d1						; amount of pieces the frame consists of
+		subq.w	#2,d1							; set iterator based on piece count, and decrement for the first part created
 		; S2 BuildSprites end
 		bset	#5,obRender(a0)
-		_move.b	obID(a0),d2			; Wooloo change
-		move.b	obRender(a0),d3		; Wooloo change
-		move.w	obGfx(a0),d4		; Wooloo addition
-		move.w	obPriority(a0),d5	; Wooloo addition
-		move.b	obActWid(a0),d6		; Wooloo addition
-		movea.l	a0,a1
-	; Spirituinsanum Mass Object Load Optimization
-	; Create the first instance, then loop create the others afterward.
-		move.b	#6,obRoutine(a1)
-		_move.b	d2,obID(a1)			; Obj1A or Obj53
-		move.l	a3,obMap(a1)		; Set appropriate mapping
-		move.b	d3,obRender(a1)		; Set render flags accordingly
-		move.w	obX(a0),obX(a1)
-		move.w	obY(a0),obY(a1)
-		move.w	d4,obGfx(a1)
-		move.w	d5,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	d6,obActWid(a1)
-		move.b	(a4)+,ledge_timedelay(a1)
-		subq.w	#1,d1				; decrement for the first ring created
-	; Here we begin what's replacing SingleObjLoad, in order to avoid resetting its d0 every time an object is created.
+		_move.b	obID(a0),d2						; ++DeltaW change
+		move.b	obRender(a0),d3					; ++DeltaW change
+		move.w	obGfx(a0),d4					; ++DeltaW addition
+		move.w	obPriority(a0),d5				; ++DeltaW addition
+		move.b	obActWid(a0),d6					; ++DeltaW addition
+
+	; RetroKoH Optimization; Built off of Spirituinsanum's Mass Object Load Optimization
+	; Init the first ring right away (which is already created)
+		move.b	#6,obRoutine(a0)
+		move.l	a3,obMap(a0)					; Set appropriate mapping
+		move.b	(a4)+,ledge_timedelay(a0)
+
+	; Here we begin what's replacing SingleObjLoad.
 		lea		(v_lvlobjspace).w,a1
 		move.w	#v_lvlobjcount,d0
 
-	; REMOVE FindFreeObj. It's the routine that causes such slowdown
 .loop:
-		tst.b	obID(a1)	; is object RAM	slot empty?
-		beq.s	.cont		; Let's correct the branches. Here we can also skip the bne that was originally after bsr.w SingleObjLoad because we already know there's a free object slot in memory.
+	; REMOVE FindFreeObj. It's the routine that causes such slowdown
+		tst.b	obID(a1)						; is object RAM	slot empty?
+		beq.s	.loadfrag						; Let's correct the branches. Here we can also skip the bne that was originally after bsr.w SingleObjLoad because we already know there's a free object slot in memory.
 		lea		object_size(a1),a1
-		dbf		d0,.loop	; Branch correction again.
-		bne.s	.endloop	; We're moving this line here.
+		dbf		d0,.loop						; Branch correction again.
+		bne.s	.endloop						; We're moving this line here.
 
-.cont:
-		addq.w	#8,a3				; Set to next mapping. ; S2 BuildSprites Change 5 -> 8
+.loadfrag:
 	; Create fragment object
 		move.b	#6,obRoutine(a1)
-		_move.b	d2,obID(a1)			; Obj1A or Obj53
-		move.l	a3,obMap(a1)		; Set appropriate mapping
-		move.b	d3,obRender(a1)		; Set render flags accordingly
-		move.w	obX(a0),obX(a1)
+		_move.b	d2,obID(a1)						; Obj1A or Obj53
+		addq.w	#8,a3							; Set to next mapping. ; S2 BuildSprites Change 5 -> 8
+		move.l	a3,obMap(a1)					; Set appropriate mapping
+		move.b	d3,obRender(a1)					; Set render flags accordingly
+		move.w	obX(a0),obX(a1)					; match position
 		move.w	obY(a0),obY(a1)
 		move.w	d4,obGfx(a1)
-		move.w	d5,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
+		move.w	d5,obPriority(a1)				; RetroKoH/Devon S3K+ Priority Manager
 		move.b	d6,obActWid(a1)
 		move.b	(a4)+,ledge_timedelay(a1)
 		bsr.w	DisplaySprite1
-		dbf		d1,.loop	; repeat for number of fragments (space permitting)
+		dbf		d1,.loop						; repeat for number of fragments (space permitting)
 
 .endloop:
 	; Mass Object Load Optimization End
 		bsr.w	DisplaySprite
 		move.w	#sfx_Collapse,d0
-		jmp		(PlaySound_Special).w	; play collapsing sound
+		jmp		(PlaySound_Special).w			; play collapsing sound
 ; ===========================================================================
-; ---------------------------------------------------------------------------
-; Disintegration data for collapsing ledges (MZ, SLZ, SBZ)
-; ---------------------------------------------------------------------------
-CFlo_Data1:
-		dc.b $1C, $18, $14, $10, $1A, $16, $12,	$E, $A,	6, $18,	$14, $10, $C, 8, 4
-		dc.b $16, $12, $E, $A, 6, 2, $14, $10, $C, 0
-CFlo_Data2:
-		dc.b $1E, $16, $E, 6, $1A, $12,	$A, 2
-CFlo_Data3:
-		dc.b $16, $1E, $1A, $12, 6, $E,	$A, 2
 
 ; ---------------------------------------------------------------------------
 ; Sloped platform subroutine (GHZ collapsing ledges and	MZ platforms)
