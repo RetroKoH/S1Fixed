@@ -79,26 +79,53 @@ SpeedUpIndex:
 ; Music	Pointers
 ; ---------------------------------------------------------------------------
 MusicIndex:
-ptr_mus81:	dc.l Music81
-ptr_mus82:	dc.l Music82
-ptr_mus83:	dc.l Music83
-ptr_mus84:	dc.l Music84
-ptr_mus85:	dc.l Music85
-ptr_mus86:	dc.l Music86
-ptr_mus87:	dc.l Music87
-ptr_mus88:	dc.l Music88
-ptr_mus89:	dc.l Music89
-ptr_mus8A:	dc.l Music8A
-ptr_mus8B:	dc.l Music8B
-ptr_mus8C:	dc.l Music8C
-ptr_mus8D:	dc.l Music8D
-ptr_mus8E:	dc.l Music8E
-ptr_mus8F:	dc.l Music8F
-ptr_mus90:	dc.l Music90
-ptr_mus91:	dc.l Music91
-ptr_mus92:	dc.l Music92
-ptr_mus93:	dc.l Music93
-ptr_mus94:	dc.l Music94
+
+	if DynamicBGMs
+; -----------------------------------------------------------------------
+ptr_mus01:	dc.l Music01
+ptr_mus01b:	dc.l Music01b
+ptr_mus01c:	dc.l Music01c
+ptr_mus02:	dc.l Music02
+ptr_mus02b:	dc.l Music02b
+ptr_mus02c:	dc.l Music02c
+ptr_mus03:	dc.l Music03
+ptr_mus03b:	dc.l Music03b
+ptr_mus03c:	dc.l Music03c
+ptr_mus04:	dc.l Music04
+ptr_mus04b:	dc.l Music04b
+ptr_mus04c:	dc.l Music04c
+ptr_mus05:	dc.l Music05
+ptr_mus05b:	dc.l Music05b
+ptr_mus05c:	dc.l Music05c
+ptr_mus06:	dc.l Music06
+ptr_mus06b:	dc.l Music06b
+ptr_mus06c:	dc.l Music06c
+; ------------------------------------------------------------------------
+	else
+; ------------------------------------------------------------------------
+ptr_mus01:	dc.l Music01
+ptr_mus02:	dc.l Music02
+ptr_mus03:	dc.l Music03
+ptr_mus04:	dc.l Music04
+ptr_mus05:	dc.l Music05
+ptr_mus06:	dc.l Music06
+; ------------------------------------------------------------------------
+	endif
+
+ptr_mus07:	dc.l Music07
+ptr_mus08:	dc.l Music08
+ptr_mus09:	dc.l Music09
+ptr_mus0A:	dc.l Music0A
+ptr_mus0B:	dc.l Music0B
+ptr_mus0C:	dc.l Music0C
+ptr_mus0D:	dc.l Music0D
+ptr_mus0E:	dc.l Music0E
+ptr_mus0F:	dc.l Music0F
+ptr_mus10:	dc.l Music10
+ptr_mus11:	dc.l Music11
+ptr_mus12:	dc.l Music12
+ptr_mus13:	dc.l Music13
+ptr_mus14:	dc.l Music14
 ptr_musend
 ; ---------------------------------------------------------------------------
 ; Priority of sound. New music or SFX must have a priority higher than or equal
@@ -2699,48 +2726,68 @@ SonicDriverVer = 1 ; Tell SMPS2ASM that we're using Sonic 1's driver.
 		include "sound/_smps2asm_inc.asm"
 
 ; ---------------------------------------------------------------------------
-; Music data
+; Music data (Includes pointers for DynamicBGMs toggle)
 ; ---------------------------------------------------------------------------
-Music81:	include	"sound/music/Mus01 - GHZ.asm"
+Music01:
+Music01b:
+Music01c:
+		include	"sound/music/Mus01 - GHZ.asm"
 		even
-Music82:	include	"sound/music/Mus02 - LZ.asm"
+Music02:
+Music02b:
+Music02c:
+		include	"sound/music/Mus02 - LZ.asm"
 		even
-Music83:	include	"sound/music/Mus03 - MZ.asm"
+Music03:
+Music03b:
+Music03c:
+		include	"sound/music/Mus03 - MZ.asm"
 		even
-Music84:	include	"sound/music/Mus04 - SLZ.asm"
+Music04:
+Music04b:
+Music04c:
+		include	"sound/music/Mus04 - SLZ.asm"
 		even
-Music85:	include	"sound/music/Mus05 - SYZ.asm"
+Music05:
+Music05b:
+Music05c:
+		include	"sound/music/Mus05 - SYZ.asm"
 		even
-Music86:	include	"sound/music/Mus06 - SBZ.asm"
+Music06:
+Music06b:
+Music06c:
+		include	"sound/music/Mus06 - SBZ.asm"
 		even
-Music87:	include	"sound/music/Mus07 - Invincibility.asm"
+
+Music07:	include	"sound/music/Mus07 - Invincibility.asm"
 		even
-Music88:	include	"sound/music/Mus08 - Extra Life.asm"
+Music08:	include	"sound/music/Mus08 - Extra Life.asm"
 		even
-Music89:	include	"sound/music/Mus09 - Special Stage.asm"
+Music09:	include	"sound/music/Mus09 - Special Stage.asm"
 		even
-Music8A:	include	"sound/music/Mus0A - Title Screen.asm"
+Music0A:	include	"sound/music/Mus0A - Title Screen.asm"
 		even
-Music8B:	include	"sound/music/Mus0B - Ending.asm"
+Music0B:	include	"sound/music/Mus0B - Ending.asm"
 		even
-Music8C:	include	"sound/music/Mus0C - Boss.asm"
+Music0C:	include	"sound/music/Mus0C - Boss.asm"
 		even
-Music8D:	include	"sound/music/Mus0D - FZ.asm"
+Music0D:	include	"sound/music/Mus0D - FZ.asm"
 		even
-Music8E:	include	"sound/music/Mus0E - Sonic Got Through.asm"
+Music0E:	include	"sound/music/Mus0E - Sonic Got Through.asm"
 		even
-Music8F:	include	"sound/music/Mus0F - Game Over.asm"
+Music0F:	include	"sound/music/Mus0F - Game Over.asm"
 		even
-Music90:	include	"sound/music/Mus10 - Continue Screen.asm"
+Music10:	include	"sound/music/Mus10 - Continue Screen.asm"
 		even
-Music91:	include	"sound/music/Mus11 - Credits.asm"
+Music11:	include	"sound/music/Mus11 - Credits.asm"
 		even
-Music92:	include	"sound/music/Mus12 - Drowning.asm"
+Music12:	include	"sound/music/Mus12 - Drowning.asm"
 		even
-Music93:	include	"sound/music/Mus13 - Get Emerald.asm"
+Music13:	include	"sound/music/Mus13 - Get Emerald.asm"
 		even
-Music94:	include	"sound/music/Mus14 - Options.asm"
+Music14:	include	"sound/music/Mus14 - Options.asm"
 		even
+
 ; ---------------------------------------------------------------------------
 ; Sound	effect pointers
 ; ---------------------------------------------------------------------------
@@ -2946,6 +2993,7 @@ SoundDC:	include	"sound/sfx/SndDC - Drop Dash.asm"
 		even
 SoundDD:	include	"sound/sfx/SndDD - Perfect.asm"
 		even
+
 ; ---------------------------------------------------------------------------
 ; 'Sega' chant PCM sample
 ; ---------------------------------------------------------------------------

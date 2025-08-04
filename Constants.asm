@@ -354,53 +354,53 @@ bgm__First:		equ $01	; Expanded Sound Index
 
 	if DynamicBGMs
 ; -----------------------------------------------------------------------
-bgm_GHZ1:		equ ((ptr_mus81-MusicIndex)/4)+bgm__First
-bgm_GHZ2:		equ ((ptr_mus81-MusicIndex)/4)+bgm__First
-bgm_GHZ3:		equ ((ptr_mus81-MusicIndex)/4)+bgm__First
-bgm_LZ1:		equ ((ptr_mus82-MusicIndex)/4)+bgm__First
-bgm_LZ2:		equ ((ptr_mus82-MusicIndex)/4)+bgm__First
-bgm_LZ3:		equ ((ptr_mus82-MusicIndex)/4)+bgm__First
-bgm_MZ1:		equ ((ptr_mus83-MusicIndex)/4)+bgm__First
-bgm_MZ2:		equ ((ptr_mus83-MusicIndex)/4)+bgm__First
-bgm_MZ3:		equ ((ptr_mus83-MusicIndex)/4)+bgm__First
-bgm_SLZ1:		equ ((ptr_mus84-MusicIndex)/4)+bgm__First
-bgm_SLZ2:		equ ((ptr_mus84-MusicIndex)/4)+bgm__First
-bgm_SLZ3:		equ ((ptr_mus84-MusicIndex)/4)+bgm__First
-bgm_SYZ1:		equ ((ptr_mus85-MusicIndex)/4)+bgm__First
-bgm_SYZ2:		equ ((ptr_mus85-MusicIndex)/4)+bgm__First
-bgm_SYZ3:		equ ((ptr_mus85-MusicIndex)/4)+bgm__First
-bgm_SBZ1:		equ ((ptr_mus86-MusicIndex)/4)+bgm__First
-bgm_SBZ2:		equ ((ptr_mus86-MusicIndex)/4)+bgm__First
-bgm_SBZ3:		equ ((ptr_mus86-MusicIndex)/4)+bgm__First
+bgm_GHZ1:		equ ((ptr_mus01-MusicIndex)/4)+bgm__First
+bgm_GHZ2:		equ ((ptr_mus01b-MusicIndex)/4)+bgm__First
+bgm_GHZ3:		equ ((ptr_mus01c-MusicIndex)/4)+bgm__First
+bgm_LZ1:		equ ((ptr_mus02-MusicIndex)/4)+bgm__First
+bgm_LZ2:		equ ((ptr_mus02b-MusicIndex)/4)+bgm__First
+bgm_LZ3:		equ ((ptr_mus02c-MusicIndex)/4)+bgm__First
+bgm_MZ1:		equ ((ptr_mus03-MusicIndex)/4)+bgm__First
+bgm_MZ2:		equ ((ptr_mus03b-MusicIndex)/4)+bgm__First
+bgm_MZ3:		equ ((ptr_mus03c-MusicIndex)/4)+bgm__First
+bgm_SLZ1:		equ ((ptr_mus04-MusicIndex)/4)+bgm__First
+bgm_SLZ2:		equ ((ptr_mus04b-MusicIndex)/4)+bgm__First
+bgm_SLZ3:		equ ((ptr_mus04c-MusicIndex)/4)+bgm__First
+bgm_SYZ1:		equ ((ptr_mus05-MusicIndex)/4)+bgm__First
+bgm_SYZ2:		equ ((ptr_mus05b-MusicIndex)/4)+bgm__First
+bgm_SYZ3:		equ ((ptr_mus05c-MusicIndex)/4)+bgm__First
+bgm_SBZ1:		equ ((ptr_mus06-MusicIndex)/4)+bgm__First
+bgm_SBZ2:		equ ((ptr_mus06b-MusicIndex)/4)+bgm__First
+bgm_SBZ3:		equ ((ptr_mus06c-MusicIndex)/4)+bgm__First
 ; -----------------------------------------------------------------------
 	else
 ; -----------------------------------------------------------------------
-bgm_GHZ:		equ ((ptr_mus81-MusicIndex)/4)+bgm__First
-bgm_LZ:			equ ((ptr_mus82-MusicIndex)/4)+bgm__First
-bgm_MZ:			equ ((ptr_mus83-MusicIndex)/4)+bgm__First
-bgm_SLZ:		equ ((ptr_mus84-MusicIndex)/4)+bgm__First
-bgm_SYZ:		equ ((ptr_mus85-MusicIndex)/4)+bgm__First
-bgm_SBZ:		equ ((ptr_mus86-MusicIndex)/4)+bgm__First
+bgm_GHZ:		equ ((ptr_mus01-MusicIndex)/4)+bgm__First
+bgm_LZ:			equ ((ptr_mus02-MusicIndex)/4)+bgm__First
+bgm_MZ:			equ ((ptr_mus03-MusicIndex)/4)+bgm__First
+bgm_SLZ:		equ ((ptr_mus04-MusicIndex)/4)+bgm__First
+bgm_SYZ:		equ ((ptr_mus05-MusicIndex)/4)+bgm__First
+bgm_SBZ:		equ ((ptr_mus06-MusicIndex)/4)+bgm__First
 ; ------------------------------------------------------------------------
 	endif
 
-bgm_Invincible:	equ ((ptr_mus87-MusicIndex)/4)+bgm__First
-bgm_ExtraLife:	equ ((ptr_mus88-MusicIndex)/4)+bgm__First
-bgm_SS:			equ ((ptr_mus89-MusicIndex)/4)+bgm__First
-bgm_Title:		equ ((ptr_mus8A-MusicIndex)/4)+bgm__First
-bgm_Ending:		equ ((ptr_mus8B-MusicIndex)/4)+bgm__First
-bgm_Boss:		equ ((ptr_mus8C-MusicIndex)/4)+bgm__First
-bgm_FZ:			equ ((ptr_mus8D-MusicIndex)/4)+bgm__First
-bgm_GotThrough:	equ ((ptr_mus8E-MusicIndex)/4)+bgm__First
-bgm_GameOver:	equ ((ptr_mus8F-MusicIndex)/4)+bgm__First
-bgm_Continue:	equ ((ptr_mus90-MusicIndex)/4)+bgm__First
-bgm_Credits:	equ ((ptr_mus91-MusicIndex)/4)+bgm__First
-bgm_Drowning:	equ ((ptr_mus92-MusicIndex)/4)+bgm__First
-bgm_Emerald:	equ ((ptr_mus93-MusicIndex)/4)+bgm__First
-bgm_Options:	equ ((ptr_mus94-MusicIndex)/4)+bgm__First
+bgm_Invincible:	equ ((ptr_mus07-MusicIndex)/4)+bgm__First
+bgm_ExtraLife:	equ ((ptr_mus08-MusicIndex)/4)+bgm__First
+bgm_SS:			equ ((ptr_mus09-MusicIndex)/4)+bgm__First
+bgm_Title:		equ ((ptr_mus0A-MusicIndex)/4)+bgm__First
+bgm_Ending:		equ ((ptr_mus0B-MusicIndex)/4)+bgm__First
+bgm_Boss:		equ ((ptr_mus0C-MusicIndex)/4)+bgm__First
+bgm_FZ:			equ ((ptr_mus0D-MusicIndex)/4)+bgm__First
+bgm_GotThrough:	equ ((ptr_mus0E-MusicIndex)/4)+bgm__First
+bgm_GameOver:	equ ((ptr_mus0F-MusicIndex)/4)+bgm__First
+bgm_Continue:	equ ((ptr_mus10-MusicIndex)/4)+bgm__First
+bgm_Credits:	equ ((ptr_mus11-MusicIndex)/4)+bgm__First
+bgm_Drowning:	equ ((ptr_mus12-MusicIndex)/4)+bgm__First
+bgm_Emerald:	equ ((ptr_mus13-MusicIndex)/4)+bgm__First
+bgm_Options:	equ ((ptr_mus14-MusicIndex)/4)+bgm__First
 bgm__Last:		equ ((ptr_musend-MusicIndex-4)/4)+bgm__First
 
-; $94-9F Unused
+; Remaining BGM Slots Unused
 
 ; Sound effects
 sfx__First:		equ $A0
