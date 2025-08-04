@@ -200,16 +200,18 @@ LevSel_SndTest:
 		btst	#bitL,d1				; is left pressed?
 		beq.s	LevSel_Right			; if not, branch
 		subq.w	#1,d0					; subtract 1 from sound	test
-		bhs.s	LevSel_Right
-		moveq	#$4F,d0					; if sound test	moves below 0, set to $4F
+; Expanded Sound Index -- I'll change this to cap at a value, depending on the number of sounds a user has in the ROM
+;		bhs.s	LevSel_Right
+;		moveq	#$4F,d0					; if sound test	moves below 0, set to $4F
 
 LevSel_Right:
 		btst	#bitR,d1				; is right pressed?
 		beq.s	LevSel_Refresh2			; if not, branch
 		addq.w	#1,d0					; add 1	to sound test
-		cmpi.w	#$50,d0
-		blo.s	LevSel_Refresh2
-		moveq	#0,d0					; if sound test	moves above $4F, set to	0
+; Expanded Sound Index -- I'll change this to cap at a value, depending on the number of sounds a user has in the ROM
+;		cmpi.w	#$50,d0
+;		blo.s	LevSel_Refresh2
+;		moveq	#0,d0					; if sound test	moves above $4F, set to	0
 
 LevSel_Refresh2:
 		move.w	d0,(v_levselsound).w	; set sound test number

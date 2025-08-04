@@ -12,23 +12,23 @@ bgm__First = idstart
 	if DynamicBGMs
 ; -----------------------------------------------------------------------
 bgm_GHZ1 =			SMPS_id(ptr_mus01)
-bgm_GHZ2 =			SMPS_id(ptr_mus01)
-bgm_GHZ3 =			SMPS_id(ptr_mus01)
+bgm_GHZ2 =			SMPS_id(ptr_mus01b)
+bgm_GHZ3 =			SMPS_id(ptr_mus01c)
 bgm_LZ1 =			SMPS_id(ptr_mus02)
-bgm_LZ2 =			SMPS_id(ptr_mus02)
-bgm_LZ3 =			SMPS_id(ptr_mus02)
+bgm_LZ2 =			SMPS_id(ptr_mus02b)
+bgm_LZ3 =			SMPS_id(ptr_mus02c)
 bgm_MZ1 =			SMPS_id(ptr_mus03)
-bgm_MZ2 =			SMPS_id(ptr_mus03)
-bgm_MZ3 =			SMPS_id(ptr_mus03)
+bgm_MZ2 =			SMPS_id(ptr_mus03b)
+bgm_MZ3 =			SMPS_id(ptr_mus03c)
 bgm_SLZ1 =			SMPS_id(ptr_mus04)
-bgm_SLZ2 =			SMPS_id(ptr_mus04)
-bgm_SLZ3 =			SMPS_id(ptr_mus04)
+bgm_SLZ2 =			SMPS_id(ptr_mus04b)
+bgm_SLZ3 =			SMPS_id(ptr_mus04c)
 bgm_SYZ1 =			SMPS_id(ptr_mus05)
-bgm_SYZ2 =			SMPS_id(ptr_mus05)
-bgm_SYZ3 =			SMPS_id(ptr_mus05)
+bgm_SYZ2 =			SMPS_id(ptr_mus05b)
+bgm_SYZ3 =			SMPS_id(ptr_mus05c)
 bgm_SBZ1 =			SMPS_id(ptr_mus06)
-bgm_SBZ2 =			SMPS_id(ptr_mus06)
-bgm_SBZ3 =			SMPS_id(ptr_mus06)
+bgm_SBZ2 =			SMPS_id(ptr_mus06b)
+bgm_SBZ3 =			SMPS_id(ptr_mus06c)
 ; -----------------------------------------------------------------------
 	else
 ; -----------------------------------------------------------------------
@@ -62,7 +62,7 @@ bgm__Last =			SMPS_id(ptr_musend)-1
 ; Sound effects
 offset :=	SoundIndex
 ptrsize :=	4
-idstart :=	$20
+idstart :=	$A0
 
 sfx__First = idstart
 sfx_Jump =			SMPS_id(ptr_sndA0)
@@ -113,7 +113,7 @@ sfx_Spring =		SMPS_id(ptr_sndCC)
 sfx_Switch =		SMPS_id(ptr_sndCD)
 sfx_RingLeft =		SMPS_id(ptr_sndCE)
 sfx_Signpost =		SMPS_id(ptr_sndCF)
-; Waterfall
+sfx_D0 =			SMPS_id(ptr_sndD0); Waterfall
 sfx_SpinDash =		SMPS_id(ptr_sndD1)
 sfx_Charge =		SMPS_id(ptr_sndD2)
 sfx_Release =		SMPS_id(ptr_sndD3)
@@ -126,13 +126,14 @@ sfx_BShieldAtk =	SMPS_id(ptr_sndD9)
 sfx_LShield =		SMPS_id(ptr_sndDA)
 sfx_LShieldAtk =	SMPS_id(ptr_sndDB)
 sfx_DropDash =		SMPS_id(ptr_sndDC)
+sfx_Perfect =		SMPS_id(ptr_sndDD)
 sfx__Last =			SMPS_id(ptr_sndend)-1
 
 
 ; Special sound effects
 offset :=	SpecSoundIndex
 ptrsize :=	4
-idstart :=	sfx__Last+1
+idstart :=	$D0
 
 spec__First = idstart
 sfx_Waterfall =		SMPS_id(ptr_sndD0)

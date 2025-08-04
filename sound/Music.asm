@@ -3,12 +3,39 @@
 ; ---------------------------------------------------------------------------
 ; byte_71A94: SpeedUpIndex:
 MusicIndex:
+
+	if DynamicBGMs
+; ------------------------------------------------------------------------
+ptr_mus01:	SMPS_MUSIC_METADATA	Music01, s1TempotoS3($07), 0	; GHZ1
+ptr_mus01b:	SMPS_MUSIC_METADATA	Music01, s1TempotoS3($07), 0	; GHZ2
+ptr_mus01c:	SMPS_MUSIC_METADATA	Music01, s1TempotoS3($07), 0	; GHZ3
+ptr_mus02:	SMPS_MUSIC_METADATA	Music02, s1TempotoS3($72), 0	; LZ1
+ptr_mus02b:	SMPS_MUSIC_METADATA	Music02, s1TempotoS3($72), 0	; LZ2
+ptr_mus02c:	SMPS_MUSIC_METADATA	Music02, s1TempotoS3($72), 0	; LZ3
+ptr_mus03:	SMPS_MUSIC_METADATA	Music03, s1TempotoS3($73), 0	; MZ1
+ptr_mus03b:	SMPS_MUSIC_METADATA	Music03, s1TempotoS3($73), 0	; MZ2
+ptr_mus03c:	SMPS_MUSIC_METADATA	Music03, s1TempotoS3($73), 0	; MZ3
+ptr_mus04:	SMPS_MUSIC_METADATA	Music04, s1TempotoS3($26), 0	; SLZ1
+ptr_mus04b:	SMPS_MUSIC_METADATA	Music04, s1TempotoS3($26), 0	; SLZ2
+ptr_mus04c:	SMPS_MUSIC_METADATA	Music04, s1TempotoS3($26), 0	; SLZ3
+ptr_mus05:	SMPS_MUSIC_METADATA	Music05, s1TempotoS3($15), 0	; SYZ1
+ptr_mus05b:	SMPS_MUSIC_METADATA	Music05, s1TempotoS3($15), 0	; SYZ2
+ptr_mus05c:	SMPS_MUSIC_METADATA	Music05, s1TempotoS3($15), 0	; SYZ3
+ptr_mus06:	SMPS_MUSIC_METADATA	Music06, s1TempotoS3($08), 0	; SBZ1
+ptr_mus06b:	SMPS_MUSIC_METADATA	Music06, s1TempotoS3($08), 0	; SBZ2
+ptr_mus06c:	SMPS_MUSIC_METADATA	Music06, s1TempotoS3($08), 0	; SBZ3
+; ------------------------------------------------------------------------
+	else
+; ------------------------------------------------------------------------
 ptr_mus01:	SMPS_MUSIC_METADATA	Music01, s1TempotoS3($07), 0	; GHZ
 ptr_mus02:	SMPS_MUSIC_METADATA	Music02, s1TempotoS3($72), 0	; LZ
 ptr_mus03:	SMPS_MUSIC_METADATA	Music03, s1TempotoS3($73), 0	; MZ
 ptr_mus04:	SMPS_MUSIC_METADATA	Music04, s1TempotoS3($26), 0	; SLZ
 ptr_mus05:	SMPS_MUSIC_METADATA	Music05, s1TempotoS3($15), 0	; SYZ
 ptr_mus06:	SMPS_MUSIC_METADATA	Music06, s1TempotoS3($08), 0	; SBZ
+; ------------------------------------------------------------------------
+	endif
+
 ptr_mus07:	SMPS_MUSIC_METADATA	Music07, s1TempotoS3($FF), 0	; Invincible
 ptr_mus08:	SMPS_MUSIC_METADATA	Music08, s1TempotoS3($05), 0	; Extra Life
 ptr_mus09:	SMPS_MUSIC_METADATA	Music09, s1TempotoS3($08), 0	; Special Stage

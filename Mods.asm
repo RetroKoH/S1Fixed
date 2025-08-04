@@ -268,7 +268,7 @@ SaveProgressMod: = EnableSRAM*1
 ; Name: S2 Level Select
 ; Credit: RetroKoH
 ; Function: Replaces the Sonic 1 Level Select with a Sonic 2-inspired Level Select
-NewLevelSelect:	= 1
+NewLevelSelect:	= 0
 
 ; Name: Chunks In ROM
 ; Credit: Mercury/FraGag
@@ -286,7 +286,7 @@ DynamicPalettes: = 0					; if set to 1, there will be a separate palette for eac
 ; Credit: RetroKoH
 ; Plays a different BGM track for each act (Scrap Brain is unaffected, as it has dynamic palettes by default)
 ; (By default, they are identical to the original. It'll be up to you to add music if you use this mod)
-DynamicBGMs: = 0						; if set to 1, there will be a separate BGM track for each act
+DynamicBGMs: = 1						; if set to 1, there will be a separate BGM track for each act
 
 ; Name: Optimal Title Card Art
 ; Credit: RetroKoH

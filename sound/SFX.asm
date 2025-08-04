@@ -61,7 +61,7 @@ ptr_sndCC:	SMPS_SFX_METADATA	SoundCC, $70, 0
 ptr_sndCD:	SMPS_SFX_METADATA	SoundCD, $70, 0
 ptr_sndCE:	SMPS_SFX_METADATA	SoundCE, $70, 0
 ptr_sndCF:	SMPS_SFX_METADATA	SoundCF, $70, 0
-
+ptr_sndD0_2:	SMPS_SFX_METADATA	SoundWaterfall, $70, 0	; sloppy fix to get the Waterfall sfx back. I'll fix this later.
 ptr_sndD1:	SMPS_SFX_METADATA	SoundD1, $70, 0
 ptr_sndD2:	SMPS_SFX_METADATA	SoundD2, $70, 0
 ptr_sndD3:	SMPS_SFX_METADATA	SoundD3, $70, 0
