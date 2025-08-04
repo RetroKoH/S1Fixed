@@ -550,6 +550,14 @@ Obj09_GetCont:
 		jsr		(PlaySound_Special).w		; play extra continue sound
 
 Obj09_NoCont:
+	if PerfectBonusEnabled
+		tst.w	(v_perfectringsleft).w		; Have we achieved a PERFECT?
+		bne.s	Obj09_NoPerfect				; if not, branch
+		move.w	#sfx_Perfect,d0
+		jsr		(PlaySound_Special).w		; play extra continue sound
+
+Obj09_NoPerfect:
+	endif
 		moveq	#0,d4
 		rts	
 ; ===========================================================================
