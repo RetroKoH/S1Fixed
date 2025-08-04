@@ -15,37 +15,51 @@
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
+Ring_FindFloor:
+		bsr.w	FindNearestTile
+		move.w	(a1),d0				; get value for solidness, orientation and 16x16 tile number
+		move.w	d0,d4
+		andi.w	#$3FF,d0			; MJ: ($800/2)-1
+		beq.s	.isblank			; branch if tile is blank
+		btst	d5,d4				; is the tile solid?
+		bne.s	FindFloor.issolid	; if yes, branch to the main routine
+
+	.isblank:
+	; We won't do an extra check below for rings
+		move.w	#$10,d1				; return distance to floor
+		rts
+; ===========================================================================
 
 FindFloor:
 		bsr.w	FindNearestTile
-		move.w	(a1),d0		; get value for solidness, orientation and 16x16 tile number
+		move.w	(a1),d0				; get value for solidness, orientation and 16x16 tile number
 		move.w	d0,d4
-		andi.w	#$3FF,d0	; MJ: ($800/2)-1
-		beq.s	.isblank	; branch if tile is blank
-		btst	d5,d4		; is the tile solid?
-		bne.s	.issolid	; if yes, branch
+		andi.w	#$3FF,d0			; MJ: ($800/2)-1
+		beq.s	.isblank			; branch if tile is blank
+		btst	d5,d4				; is the tile solid?
+		bne.s	.issolid			; if yes, branch
 
-.isblank:
+	.isblank:
 		add.w	a3,d2
-		bsr.w	FindFloor2	; try tile below the nearest
+		bsr.w	FindFloor2			; try tile below the nearest
 		sub.w	a3,d2
-		addi.w	#$10,d1		; return distance to floor
+		addi.w	#$10,d1				; return distance to floor
 		rts	
 ; ===========================================================================
 
 .issolid:
 		movea.l	(v_collindex).w,a2	; MJ: load collision index address
 		move.b	(a2,d0.w),d0		; MJ: load correct Collision ID based on the Block ID
-		andi.w	#$FF,d0			; MJ: clear the left byte
-		beq.s	.isblank		; MJ: if collision ID is 00, branch
+		andi.w	#$FF,d0				; MJ: clear the left byte
+		beq.s	.isblank			; MJ: if collision ID is 00, branch
 		lea		(AngleMap).l,a2		; MJ: load angle map data to a2
 		move.b	(a2,d0.w),(a4)		; MJ: collect correct angle based on the collision ID
-		lsl.w	#4,d0			; MJ: multiply collision ID by 10
-		move.w	d3,d1			; MJ: load X position
-		btst	#$A,d4			; MJ: is the block mirrored?
-		beq.s	.noflip			; MJ: if not, branch
-		not.w	d1			; MJ: reverse bits of the X position
-		neg.b	(a4)			; MJ: reverse the angle ID
+		lsl.w	#4,d0				; MJ: multiply collision ID by 10
+		move.w	d3,d1				; MJ: load X position
+		btst	#$A,d4				; MJ: is the block mirrored?
+		beq.s	.noflip				; MJ: if not, branch
+		not.w	d1					; MJ: reverse bits of the X position
+		neg.b	(a4)				; MJ: reverse the angle ID
 
 .noflip:
 		btst	#$B,d4			; MJ: is the block flipped?
@@ -166,3 +180,4 @@ FindFloor2:
 		not.w	d1
 		rts	
 ; End of function FindFloor2
+; ===========================================================================

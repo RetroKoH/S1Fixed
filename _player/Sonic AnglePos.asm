@@ -33,8 +33,8 @@ loc_14602:
 		moveq	#3,d0
 		move.b	d0,(v_anglebuffer).w
 		move.b	d0,(v_anglebuffer2).w
-		move.b	obAngle(a0),d0
-		addi.b	#$20,d0
+		moveq	#$20,d0
+		add.b	obAngle(a0),d0
 		bpl.s	loc_14624
 		move.b	obAngle(a0),d0
 		bpl.s	loc_1461E
@@ -75,7 +75,7 @@ loc_14630:
 		add.w	d0,d3
 		lea		(v_anglebuffer).w,a4
 		movea.w	#$10,a3
-		clr.w	d6
+		moveq	#0,d6
 		bsr.w	FindFloor					; MJ: check solidity
 		move.w	d1,-(sp)
 		move.w	obY(a0),d2
@@ -90,7 +90,7 @@ loc_14630:
 		add.w	d0,d3
 		lea		(v_anglebuffer2).w,a4
 		movea.w	#$10,a3
-		clr.w	d6
+		moveq	#0,d6
 		bsr.w	FindFloor					; MJ: check solidity
 		move.w	(sp)+,d0
 		bsr.w	Sonic_Angle
@@ -107,6 +107,8 @@ locret_146BE:
 
 loc_146C0:
 	; Mercury Quarterloop Fix
+		tst.b	obOnWheel(a0)	; ++ S1 SCE -- Moved from loc_146CC
+		bne.s	loc_146C6		; ++ S1 SCE -- Moved from loc_146CC
 		move.b	obVelX(a0),d0
 		bpl.s	.next1
 		neg.b	d0
@@ -114,7 +116,7 @@ loc_146C0:
 	.next1:
 		addq.b	#5,d0			; ++ SpirituInsanum (4 -> 5)
 		cmpi.b	#$E,d0
-		bcs.s	.next2
+		blo.s	.next2
 		move.b	#$E,d0
 
 	.next2:
@@ -129,8 +131,6 @@ loc_146C6:
 ; ===========================================================================
 
 loc_146CC:
-		tst.b	obOnWheel(a0)
-		bne.s	loc_146C6
 		bset	#staAir,obStatus(a0)
 		bclr	#staPush,obStatus(a0)
 		move.b	#aniID_Run,obPrevAni(a0)	; restart Sonic's animation
@@ -190,8 +190,8 @@ loc_1475E:
 ; ===========================================================================
 
 loc_1476A:
-		move.b	obAngle(a0),d2
-		addi.b	#$20,d2
+		moveq	#$20,d2
+		add.b	obAngle(a0),d2
 		andi.b	#$C0,d2
 		move.b	d2,obAngle(a0)
 		rts	
@@ -215,7 +215,7 @@ Sonic_WalkVertR:
 		add.w	d0,d3
 		lea		(v_anglebuffer).w,a4
 		movea.w	#$10,a3
-		clr.w	d6
+		moveq	#0,d6
 		bsr.w	FindWall					; MJ: check solidity
 		move.w	d1,-(sp)
 		move.w	obY(a0),d2
@@ -229,7 +229,7 @@ Sonic_WalkVertR:
 		add.w	d0,d3
 		lea		(v_anglebuffer2).w,a4
 		movea.w	#$10,a3
-		clr.w	d6
+		moveq	#0,d6
 		bsr.w	FindWall					; MJ: check solidity
 		move.w	(sp)+,d0
 		bsr.w	Sonic_Angle
@@ -246,6 +246,8 @@ locret_147F0:
 
 loc_147F2:
 	; Mercury Quarterloop Fix
+		tst.b	obOnWheel(a0)	; ++ S1 SCE -- Moved from loc_147FE
+		bne.s	loc_147F8		; ++ S1 SCE -- Moved from loc_147FE
 		move.b	obVelY(a0),d0
 		bpl.s	.next1
 		neg.b	d0
@@ -268,8 +270,6 @@ loc_147F8:
 ; ===========================================================================
 
 loc_147FE:
-		tst.b	obOnWheel(a0)
-		bne.s	loc_147F8
 		bset	#staAir,obStatus(a0)
 		bclr	#staPush,obStatus(a0)
 		move.b	#aniID_Run,obPrevAni(a0)	; restart Sonic's animation
@@ -326,6 +326,8 @@ locret_14892:
 
 loc_14894:
 	; Mercury Quarterloop Fix
+		tst.b	obOnWheel(a0)	; ++ S1 SCE -- Moved from loc_148A0
+		bne.s	loc_1489A		; ++ S1 SCE -- Moved from loc_148A0
 		move.b	obVelX(a0),d0
 		bpl.s	.next1
 		neg.b	d0
@@ -348,8 +350,6 @@ loc_1489A:
 ; ===========================================================================
 
 loc_148A0:
-		tst.b	obOnWheel(a0)
-		bne.s	loc_1489A
 		bset	#staAir,obStatus(a0)
 		bclr	#staPush,obStatus(a0)
 		move.b	#aniID_Run,obPrevAni(a0)	; restart Sonic's animation
@@ -406,6 +406,8 @@ locret_14934:
 
 loc_14936:
 	; Mercury Quarterloop Fix
+		tst.b	obOnWheel(a0)	; ++ S1 SCE -- Moved from loc_14942
+		bne.s	loc_1493C		; ++ S1 SCE -- Moved from loc_14942
 		move.b	obVelY(a0),d0
 		bpl.s	.next1
 		neg.b	d0
@@ -428,8 +430,6 @@ loc_1493C:
 ; ===========================================================================
 
 loc_14942:
-		tst.b	obOnWheel(a0)
-		bne.s	loc_1493C
 		bset	#staAir,obStatus(a0)
 		bclr	#staPush,obStatus(a0)
 		move.b	#aniID_Run,obPrevAni(a0)	; restart Sonic's animation
