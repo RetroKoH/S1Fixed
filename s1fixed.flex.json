@@ -1,7 +1,7 @@
 {
     "Flex": 2,
     "name": "S1 Fixed",
-    "node": "1bd26e75-be0c-4608-807f-fd9e06f7de2e",
+    "node": "8f969c7c-78ce-4e72-a599-e8cb46e4f3a8",
     "objects": [
         {
             "name": "Common",
@@ -29,14 +29,15 @@
                         "path": "_maps\\Sonic - DPLCs.asm",
                         "label": "SonicDynPLC"
                     },
-                    "uuid": "da472ab9-f363-45e6-8ee3-a83fd70d6d9c"
+                    "uuid": "da472ab9-f363-45e6-8ee3-a83fd70d6d9c",
+                    "expanded": true
                 },
                 {
                     "format": "Sonic 2.js",
                     "name": "Super Sonic",
                     "palettes": [
                         {
-                            "path": "palette\\Sonic - Proto.bin",
+                            "path": "palette\\Sonic.bin",
                             "length": 1
                         }
                     ],
@@ -112,8 +113,8 @@
                         }
                     ],
                     "art": {
-                        "path": "artnem\\Rings.nem",
-                        "compression": "Nemesis",
+                        "path": "artunc\\Rings.bin",
+                        "compression": "Uncompressed",
                         "offset": 0
                     },
                     "mappings": {
@@ -410,11 +411,12 @@
                         "label": "GogglesDynPLC"
                     },
                     "isAbsolute": true,
-                    "uuid": "fab54975-391a-4552-8fa0-fc5e729aa671"
+                    "uuid": "fab54975-391a-4552-8fa0-fc5e729aa671",
+                    "expanded": true
                 }
             ],
             "isDirectory": true,
-            "expanded": true,
+            "expanded": false,
             "uuid": "14da472a-b9f3-4355-a6ce-e3a83fd70d6d"
         },
         {
@@ -443,7 +445,8 @@
                         "path": "_maps\\Shield and Invincibility - DPLCs.asm",
                         "label": ""
                     },
-                    "uuid": "a5b498d4-7e75-4f2f-ab88-c4fb207d19cc"
+                    "uuid": "a5b498d4-7e75-4f2f-ab88-c4fb207d19cc",
+                    "expanded": true
                 },
                 {
                     "format": "Sonic 2.js",
@@ -468,7 +471,8 @@
                         "path": "_maps\\Shield and Invincibility - DPLCs.asm",
                         "label": ""
                     },
-                    "uuid": "d47e75af-2f2b-48c4-bb20-7d19cccb1927"
+                    "uuid": "d47e75af-2f2b-48c4-bb20-7d19cccb1927",
+                    "expanded": true
                 },
                 {
                     "format": "Sonic 2.js",
@@ -493,7 +497,8 @@
                         "path": "_maps\\Shield - Insta - DPLCs.asm",
                         "label": ""
                     },
-                    "uuid": "bb059eaf-540b-41eb-bc84-70067f89688b"
+                    "uuid": "bb059eaf-540b-41eb-bc84-70067f89688b",
+                    "expanded": true
                 },
                 {
                     "format": "Sonic 2.js",
@@ -518,7 +523,8 @@
                         "path": "_maps\\Shield - Flame - DPLCs.asm",
                         "label": ""
                     },
-                    "uuid": "bebe7cbb-059e-4f54-8b01-eb3c8470067f"
+                    "uuid": "bebe7cbb-059e-4f54-8b01-eb3c8470067f",
+                    "expanded": true
                 },
                 {
                     "format": "Sonic 2.js",
@@ -543,7 +549,8 @@
                         "path": "_maps\\Shield - Lightning - DPLCs.asm",
                         "label": ""
                     },
-                    "uuid": "be7cbb05-9eaf-440b-81eb-3c8470067f89"
+                    "uuid": "be7cbb05-9eaf-440b-81eb-3c8470067f89",
+                    "expanded": true
                 },
                 {
                     "format": "Sonic 2.js",
@@ -568,7 +575,8 @@
                         "path": "_maps\\Shield - Bubble - DPLCs.asm",
                         "label": ""
                     },
-                    "uuid": "7cbb059e-af54-4b01-ab3c-8470067f8968"
+                    "uuid": "7cbb059e-af54-4b01-ab3c-8470067f8968",
+                    "expanded": true
                 }
             ],
             "isDirectory": true,
@@ -3397,6 +3405,664 @@
             "isDirectory": true,
             "expanded": false,
             "uuid": "5f715b7a-974a-49b0-864a-69ffcdbf739d"
+        },
+        {
+            "name": "Special Stage",
+            "children": [
+                {
+                    "format": "Sonic 2.js",
+                    "name": "Walls",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special Walls.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS Walls.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "0aa22634-491f-4167-8d5d-fffa3268478f"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "Walls (Dynamic)",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artunc\\Special Walls (dynamic).bin",
+                        "compression": "Uncompressed",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS Walls - Dynamic.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "aa48370a-a226-4449-9f21-678d5dfffa32"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "SS Bumper",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\SYZ Bumper.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\Bumper.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "370aa226-3449-4f21-a78d-5dfffa326847"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "W Block",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special W.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS R Block.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "a2263449-1f21-478d-9dff-fa3268478f96"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "GOAL Block",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special GOAL.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS R Block.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "2634491f-2167-4d5d-bffa-3268478f969c"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "1-Up Block",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special 1UP.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS R Block.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "1f21678d-5dff-4a32-a847-8f969c7c78ce"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "UP Block",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special UP-DOWN.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS UP Block.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "491f2167-8d5d-4ffa-b268-478f969c7c78"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "DOWN Block",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special UP-DOWN.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS DOWN Block.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "48370aa2-2634-491f-a167-8d5dfffa3268"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "R Block",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special R.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS R Block.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "8d5dfffa-3268-478f-969c-7c78ce7e7225"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "Red/White Block",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special Red-White.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS Glass Block.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "678d5dff-fa32-4847-8f96-9c7c78ce7e72"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "Glass Block",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special Glass.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS Glass Block.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "34491f21-678d-4dff-ba32-68478f969c7c"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "ZONE 1 Block",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special ZONE1.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS R Block.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "969c7c78-ce7e-4225-99e8-cb46e4f3a829"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "ZONE 2 Block",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special ZONE2.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS R Block.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "fffa3268-478f-469c-bc78-ce7e722599e8"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "ZONE 3 Block",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special ZONE3.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS R Block.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "fa326847-8f96-4c7c-b8ce-7e722599e8cb"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "ZONE 4 Block",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special ZONE4.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS R Block.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "3268478f-969c-4c78-8e7e-722599e8cb46"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "ZONE 5 Block",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special ZONE5.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS R Block.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "68478f96-9c7c-48ce-be72-2599e8cb46e4"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "ZONE 6 Block",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special ZONE6.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS R Block.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "478f969c-7c78-4e7e-b225-99e8cb46e4f3"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "ZONE 7 Block",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special ZONE7.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS R Block.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "21678d5d-fffa-4268-878f-969c7c78ce7e"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "SS Ring",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artunc\\Rings.bin",
+                        "compression": "Uncompressed",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\Rings.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "8f969c7c-78ce-4e72-a599-e8cb46e4f3a8"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "Emerald 1",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special Emeralds.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS Chaos Emerald 1.asm",
+                        "label": "Map_SS_Chaos1"
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "9c7c78ce-7e72-4599-a8cb-46e4f3a82901"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "Emerald 2",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special Emeralds.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS Chaos Emerald 2.asm",
+                        "label": "Map_SS_Chaos2"
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "7c78ce7e-7225-49e8-8b46-e4f3a8290137"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "Emerald 3",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special Emeralds.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS Chaos Emerald 3.asm",
+                        "label": "Map_SS_Chaos3"
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "78ce7e72-2599-48cb-86e4-f3a82901377b"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "Emerald 4",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special Emeralds.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS Chaos Emerald 4.asm",
+                        "label": "Map_SS_Chaos4"
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "ce7e7225-99e8-4b46-a4f3-a82901377bdb"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "Emerald 5",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special Emeralds.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS Chaos Emerald 5.asm",
+                        "label": "Map_SS_Chaos5"
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "7e722599-e8cb-46e4-b3a8-2901377bdb15"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "Emerald 6",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special Emeralds.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS Chaos Emerald 6.asm",
+                        "label": "Map_SS_Chaos6"
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "722599e8-cb46-44f3-a829-01377bdb15ee"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "Emerald 7",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special Emeralds.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS Chaos Emerald 7.asm",
+                        "label": "Map_SS_Chaos7"
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "5dfffa32-6847-4f96-9c7c-78ce7e722599"
+                }
+            ],
+            "isDirectory": true,
+            "expanded": true,
+            "uuid": "9444b20c-979f-44ed-a2b1-17d990c4156c"
         },
         {
             "name": "Misc",
