@@ -551,8 +551,8 @@ Obj09_GetCont:
 
 Obj09_NoCont:
 	if PerfectBonusEnabled
-		tst.b	(v_perfectringsleft).w
-		beq.s	Obj09_NoPerfect
+		tst.w	(v_perfectringsleft).w		; Have we achieved a PERFECT?
+		bne.s	Obj09_NoPerfect				; if not, branch
 		move.w	#sfx_Perfect,d0
 		jsr		(PlaySound_Special).w		; play extra continue sound
 
