@@ -5339,7 +5339,11 @@ Nem_LevSelIcons:	binclude	"artnem/S2 Level Select Icons.nem"
 		even
 	endif
 
-			include	"_maps/SS Walls.asm"	; Now includes dynamic mappings -- Mercury Dynamic Special Stage Walls
+	if DynamicSpecialStageWalls
+			include	"_maps/SS Walls - Dynamic.asm"	; Mercury Dynamic Special Stage Walls
+	else
+			include	"_maps/SS Walls.asm"
+	endif
 
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - special stage
@@ -6122,7 +6126,17 @@ Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.bin"
 		include	"_maps/SS Glass Block.asm"
 		include	"_maps/SS UP Block.asm"
 		include	"_maps/SS DOWN Block.asm"
-		include	"_maps/SS Chaos Emeralds.asm"
+		include	"_maps/SS Chaos Emerald 1.asm"
+		include	"_maps/SS Chaos Emerald 2.asm"
+		include	"_maps/SS Chaos Emerald 3.asm"
+		include	"_maps/SS Chaos Emerald 4.asm"
+		include	"_maps/SS Chaos Emerald 5.asm"
+		include	"_maps/SS Chaos Emerald 6.asm"
+	
+	if SuperMod
+		include	"_maps/SS Chaos Emerald 7.asm"
+	endif
+
 		include "_maps/SS Cursor.asm"				; Also used for the Delete Block
 
 ; ---------------------------------------------------------------------------

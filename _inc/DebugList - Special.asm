@@ -33,15 +33,15 @@ DebugList_Special:
 	sdbug	Map_SS_Glass,	SSBlock_Glass4,			0,		make_art_tile(ArtTile_SS_Glass,2,0)				; Glass #4
 ; Zone Block Spaces Unused
 	sdbug	Map_Ring,		SSBlock_Ring,			0,		make_art_tile(ArtTile_SS_Ring,1,0)				; Ring
-	sdbug	Map_SS_Chaos3,	SSBlock_Emld1,			0,		make_art_tile(ArtTile_SS_Emerald,0,0)			; Emerald 1 (Blue)
-	sdbug	Map_SS_Chaos3,	SSBlock_Emld2,			0,		make_art_tile(ArtTile_SS_Emerald,1,0)			; Emerald 2 (Yellow)
-	sdbug	Map_SS_Chaos3,	SSBlock_Emld3,			0,		make_art_tile(ArtTile_SS_Emerald,2,0)			; Emerald 3 (Pink)
-	sdbug	Map_SS_Chaos3,	SSBlock_Emld4,			0,		make_art_tile(ArtTile_SS_Emerald,3,0)			; Emerald 4 (Green)
-	sdbug	Map_SS_Chaos1,	SSBlock_Emld5,			0,		make_art_tile(ArtTile_SS_Emerald,0,0)			; Emerald 5 (Red)
-	sdbug	Map_SS_Chaos2,	SSBlock_Emld6,			0,		make_art_tile(ArtTile_SS_Emerald,0,0)			; Emerald 6 (Gray)
+	sdbug	Map_SS_Chaos1,	SSBlock_Emld1,			0,		make_art_tile(ArtTile_SS_Emerald,0,0)			; Emerald 1 (Blue)
+	sdbug	Map_SS_Chaos2,	SSBlock_Emld2,			0,		make_art_tile(ArtTile_SS_Emerald,0,0)			; Emerald 2 (Yellow)
+	sdbug	Map_SS_Chaos3,	SSBlock_Emld3,			0,		make_art_tile(ArtTile_SS_Emerald,0,0)			; Emerald 3 (Pink)
+	sdbug	Map_SS_Chaos4,	SSBlock_Emld4,			0,		make_art_tile(ArtTile_SS_Emerald,0,0)			; Emerald 4 (Green)
+	sdbug	Map_SS_Chaos5,	SSBlock_Emld5,			0,		make_art_tile(ArtTile_SS_Emerald,0,0)			; Emerald 5 (Red)
+	sdbug	Map_SS_Chaos6,	SSBlock_Emld6,			0,		make_art_tile(ArtTile_SS_Emerald,0,0)			; Emerald 6 (Gray)
 
 	if SuperMod
-	sdbug	Map_SS_Chaos2,	SSBlock_Emld7,			0,		make_art_tile(ArtTile_SS_Emerald,1,0)			; Emerald 7 (Cyan)
+	sdbug	Map_SS_Chaos7,	SSBlock_Emld7,			0,		make_art_tile(ArtTile_SS_Emerald,0,0)			; Emerald 7 (Cyan)
 	endif
 
 	sdbug	Map_SS_R,		SSBlock_GhostSolid,		0,		make_art_tile(ArtTile_SS_Ghost_Block,0,0)		; Ghost Block (Peppermint)
