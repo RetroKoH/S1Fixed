@@ -543,13 +543,21 @@ Obj09_GetCont:
 		addq.b	#1,(v_continues).w			; add 1 to number of continues
 
 	if SpecialStagesWithAllEmeralds	; Mercury Special Stages Still Appear With All Emeralds
-		bset	#7,(v_continues).w	; set "got continue" flag bit
+		bset	#7,(v_continues).w			; set "got continue" flag bit
 	endif	; Special Stages Still Appear With All Emeralds	End
 
 		move.w	#sfx_Continue,d0
 		jsr		(PlaySound).w				; play extra continue sound
 
 Obj09_NoCont:
+	if PerfectBonusEnabled
+		tst.b	(v_perfectringsleft).w
+		beq.s	Obj09_NoPerfect
+		move.w	#sfx_Perfect,d0
+		jsr		(PlaySound_Special).w		; play extra continue sound
+
+Obj09_NoPerfect:
+	endif
 		moveq	#0,d4
 		rts	
 ; ===========================================================================
