@@ -15,10 +15,10 @@ GM_Special:
 		move.w	(v_vdp_buffer1).w,d0
 		andi.b	#$BF,d0
 		move.w	d0,(vdp_control_port).l
+		bsr.w	ClearScreen
 		
 		ResetDMAQueue		; Flamewing Ultra DMA Queue
-		
-		bsr.w	ClearScreen
+
 		enable_ints
 		fillVRAM	0, ArtTile_SS_Plane_1*tile_size+plane_size_64x32, ArtTile_SS_Plane_5*tile_size
 		bsr.w	SS_BGLoad
@@ -32,58 +32,61 @@ GM_Special:
 		clearRAM v_timingvariables
 		clearRAM v_ngfx_buffer
 
-		clr.b	(f_wtr_state).w
-		clr.b	(f_restart).w
+		moveq	#0,d0
+		move.b	d0,(f_wtr_state).w
+		move.b	d0,(f_restart).w
 		moveq	#palid_Special,d0
-		bsr.w	PalLoad_Fade					; load special stage palette
-		jsr		(SS_Load).l						; load SS layout data
-		clr.l	(v_screenposx).w
-		clr.l	(v_screenposy).w
+		bsr.w	PalLoad_Fade						; load special stage palette
+		jsr		(SS_Load).l							; load SS layout data
+		moveq	#0,d0
+		move.l	d0,(v_screenposx).w
+		move.l	d0,(v_screenposy).w
 		move.b	#id_SonicSpecial,(v_player).w		; load special stage Sonic object
 		move.b	#id_SpecialCursor,(v_playerdust).w	; load new debug cursor object (RetroKoH)
 
 	if DynamicSpecialStageWalls=1	; Mercury Dynamic Special Stage Walls
-		move.b	#$FF,(v_ssangleprev).w			; fill previous angle with obviously false value to force an update
+		move.b	#$FF,(v_ssangleprev).w				; fill previous angle with obviously false value to force an update
 
 	if HUDInSpecialStage=1	; Mercury HUD in Special Stage
-		move.b	#1,(f_timecount).w				; update time counter
-		move.b	#1,(f_scorecount).w				; update score counter
-		clr.l	(v_time).w						; reset time
+		move.b	#1,(f_timecount).w					; update time counter
+		move.b	#1,(f_scorecount).w					; update score counter
+		move.l	d0,(v_time).w						; reset time
 
 	if TimeLimitInSpecialStage=1	; Mercury Time Limit In Special Stage
-		move.b	#1,(v_timemin).w				; start with 1:00 on the clock
+		move.b	#1,(v_timemin).w					; start with 1:00 on the clock
 	endif	; Time Limit In Special Stage End
 
-		jsr		(Hud_Base_SS).l					; load basic HUD gfx
+		jsr		(Hud_Base_SS).l						; load basic HUD gfx
 	endif	; HUD in Special Stage End
 
 	endif	; Dynamic Special Stage Walls End
 
 		bsr.w	PalCycle_SS
-		clr.w	(v_ssangle).w					; set stage angle to "upright"
 	if S4SpecialStages=0
-		move.w	#$40,(v_ssrotate).w				; set stage rotation speed
+		move.w	#$40,(v_ssrotate).w					; set stage rotation speed
 	else
-		move.w	#$100,(v_ssrotate).w			; set stage rotation speed
+		move.w	#$100,(v_ssrotate).w				; set stage rotation speed
 	endif
-		move.w	#bgm_SS,d0
-		bsr.w	PlaySound						; play special stage BG	music
-		clr.w	(v_btnpushtime1).w
+		moveq	#bgm_SS,d0
+		bsr.w	PlaySound							; play special stage BG	music
 		lea		DemoDataPtr(pc),a1
 		moveq	#6,d0
-		lsl.w	#2,d0
-		movea.l	(a1,d0.w),a1
+		add.w	d0,d0								; Filter: *2 instead of *4
+		movea.w	(a1,d0.w),a1						; Filter: Changed from .l to .w
 		move.b	1(a1),(v_btnpushtime2).w
 		subq.b	#1,(v_btnpushtime2).w
-		clr.w	(v_rings).w
-		clr.b	(v_lifecount).w
-		clr.w	(v_debuguse).w
+		moveq	#0,d0
+		move.w	d0,(v_ssangle).w					; set stage angle to "upright"
+		move.w	d0,(v_btnpushtime1).w
+		move.w	d0,(v_rings).w
+		move.b	d0,(v_lifecount).w
+		move.w	d0,(v_debuguse).w
 		move.w	#1800,(v_demolength).w
-;		tst.b	(f_debugcheat).w				; has debug cheat been entered?
-;		beq.s	SS_NoDebug						; if not, branch
-;		btst	#bitA,(v_jpadhold1).w			; is A button pressed?
-;		beq.s	SS_NoDebug						; if not, branch
-		move.b	#1,(f_debugmode).w				; enable debug mode
+;		tst.b	(f_debugcheat).w					; has debug cheat been entered?
+;		beq.s	SS_NoDebug							; if not, branch
+;		btst	#bitA,(v_jpadhold1).w				; is A button pressed?
+;		beq.s	SS_NoDebug							; if not, branch
+		move.b	#1,(f_debugmode).w					; enable debug mode
 
 SS_NoDebug:
 		move.w	(v_vdp_buffer1).w,d0
@@ -91,7 +94,7 @@ SS_NoDebug:
 		move.w	d0,(vdp_control_port).l
 		bsr.w	PaletteWhiteIn
 	if HUDInSpecialStage=1
-		move.b	#2,(f_levelstarted).w			; Mercury HUD In Special Stage
+		move.b	#2,(f_levelstarted).w				; Mercury HUD In Special Stage
 	endif
 
 ; ---------------------------------------------------------------------------
