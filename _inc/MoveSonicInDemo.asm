@@ -19,7 +19,6 @@ MDemo_On:
 		move.b	#id_Title,(v_gamemode).w	; go to title screen
 
 .dontquit:
-		lea		(DemoDataPtr).l,a1
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
 		cmpi.b	#id_Special,(v_gamemode).w	; is this a special stage?
@@ -27,15 +26,14 @@ MDemo_On:
 		moveq	#6,d0						; use demo #6
 
 .notspecial:
-		lsl.w	#2,d0
-		movea.l	(a1,d0.w),a1				; fetch address for demo data
+		add.w	d0,d0
+		movea.w	DemoDataPtr(pc,d0.w),a1		; fetch address for demo data -- Filter Optimization
 		tst.w	(f_demo).w					; is this an ending sequence demo?
 		bpl.s	.notcredits					; if not, branch
-		lea		(DemoEndDataPtr).l,a1
 		move.w	(v_creditsnum).w,d0
 		subq.w	#1,d0
-		lsl.w	#2,d0
-		movea.l	(a1,d0.w),a1				; fetch address for credits demo
+		add.w	d0,d0
+		movea.w	DemoEndDataPtr(pc,d0.w),a1	; fetch address for credits demo data -- Filter Optimization
 
 .notcredits:
 		move.w	(v_btnpushtime1).w,d0
@@ -62,24 +60,24 @@ MDemo_On:
 ; Demo sequence	pointers
 ; ---------------------------------------------------------------------------
 DemoDataPtr:
-		dc.l Demo_GHZ		; demos run after the title screen
-		dc.l Demo_GHZ
-		dc.l Demo_MZ
-		dc.l Demo_MZ
-		dc.l Demo_SYZ
-		dc.l Demo_SYZ
-		dc.l Demo_SS
-		dc.l Demo_SS
+		dc.w Demo_GHZ		; demos run after the title screen
+		dc.w Demo_GHZ
+		dc.w Demo_MZ
+		dc.w Demo_MZ
+		dc.w Demo_SYZ
+		dc.w Demo_SYZ
+		dc.w Demo_SS
+		dc.w Demo_SS
 
 DemoEndDataPtr:
-		dc.l Demo_EndGHZ1	; demos run during the credits
-		dc.l Demo_EndMZ
-		dc.l Demo_EndSYZ
-		dc.l Demo_EndLZ
-		dc.l Demo_EndSLZ
-		dc.l Demo_EndSBZ1
-		dc.l Demo_EndSBZ2
-		dc.l Demo_EndGHZ2
+		dc.w Demo_EndGHZ1	; demos run during the credits
+		dc.w Demo_EndMZ
+		dc.w Demo_EndSYZ
+		dc.w Demo_EndLZ
+		dc.w Demo_EndSLZ
+		dc.w Demo_EndSBZ1
+		dc.w Demo_EndSBZ2
+		dc.w Demo_EndGHZ2
 
 		dc.b 0,	$8B, 8,	$37, 0,	$42, 8,	$5C, 0,	$6A, 8,	$5F, 0,	$2F, 8,	$2C
 		dc.b 0,	$21, 8,	3, $28,	$30, 8,	8, 0, $2E, 8, $15, 0, $F, 8, $46
