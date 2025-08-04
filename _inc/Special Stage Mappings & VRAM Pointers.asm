@@ -64,15 +64,15 @@ specialStageData: macro frame,mappings,palette,vram
 		specialStageData	0, Map_SS_R,      0, ArtTile_SS_Zone_1 ;5
 		specialStageData	0, Map_SS_R,      0, ArtTile_SS_Zone_1 ;6
 		specialStageData	0, Map_Ring,      1, ArtTile_SS_Ring	; RetroKoH VRAM Overhaul
-		specialStageData	0, Map_SS_Chaos3, 0, ArtTile_SS_Emerald
-		specialStageData	0, Map_SS_Chaos3, 1, ArtTile_SS_Emerald
-		specialStageData	0, Map_SS_Chaos3, 2, ArtTile_SS_Emerald
-		specialStageData	0, Map_SS_Chaos3, 3, ArtTile_SS_Emerald
 		specialStageData	0, Map_SS_Chaos1, 0, ArtTile_SS_Emerald
 		specialStageData	0, Map_SS_Chaos2, 0, ArtTile_SS_Emerald
+		specialStageData	0, Map_SS_Chaos3, 0, ArtTile_SS_Emerald
+		specialStageData	0, Map_SS_Chaos4, 0, ArtTile_SS_Emerald
+		specialStageData	0, Map_SS_Chaos5, 0, ArtTile_SS_Emerald
+		specialStageData	0, Map_SS_Chaos6, 0, ArtTile_SS_Emerald
 
 	if SuperMod
-		specialStageData	0, Map_SS_Chaos2, 1, ArtTile_SS_Emerald
+		specialStageData	0, Map_SS_Chaos7, 0, ArtTile_SS_Emerald
 	endif
 
 		specialStageData	0, Map_SS_R,      0, ArtTile_SS_Ghost_Block
