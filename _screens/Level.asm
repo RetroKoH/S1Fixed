@@ -307,19 +307,19 @@ Level_SkipClr:
 		lea		DemoDataPtr(pc),a1		; load demo data
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
-		lsl.w	#2,d0
-		movea.l	(a1,d0.w),a1
-		tst.w	(f_demo).w				; is demo mode on?
-		bpl.s	Level_Demo				; if yes, branch
+		add.w	d0,d0					; Filter: *2 instead of *4
+		movea.w	(a1,d0.w),a1			; Filter: Changed from .l to .w
+		tst.w	(f_demo).w				; is this an ending sequence demo?
+		bpl.s	Level_Demo				; if not, branch
 		lea		DemoEndDataPtr(pc),a1	; load ending demo data
 		move.w	(v_creditsnum).w,d0
 		subq.w	#1,d0
-		lsl.w	#2,d0
-		movea.l	(a1,d0.w),a1
+		add.w	d0,d0					; Filter: *2 instead of *4
+		movea.w	(a1,d0.w),a1			; Filter: Changed from .l to .w
 
 Level_Demo:
-		move.b	1(a1),(v_btnpushtime2).w ; load key press duration
-		subq.b	#1,(v_btnpushtime2).w ; subtract 1 from duration
+		move.b	1(a1),(v_btnpushtime2).w	; load key press duration
+		subq.b	#1,(v_btnpushtime2).w		; subtract 1 from duration
 		move.w	#1800,(v_demolength).w
 		tst.w	(f_demo).w
 		bpl.s	Level_ChkWaterPal
