@@ -123,7 +123,7 @@ RomEndLoc:
 EndOfHeader:
 
 ; ===========================================================================
-; Crash/Freeze the 68000. Unlike Sonic 2, Sonic 1 uses the 68000 for playing music, so it stops too
+; (Unused) Crash/Freeze the 68000. Unlike Sonic 2, Sonic 1 uses the 68000 for playing music, so it stops too
 
 ErrorTrap:
 		nop	
@@ -241,43 +241,43 @@ SetupValues:	dc.w $8000		; VDP register start number
 		dc.l $40000080		; VRAM address 0
 
 	; Z80 instructions (not the sound driver; that gets loaded later)
-    if (*)+$26 < $10000
-    save
-    CPU Z80 ; start assembling Z80 code
-    phase 0 ; pretend we're at address 0
-	xor	a	; clear a to 0
-	ld	bc,((z80_ram_end-z80_ram)-zStartupCodeEndLoc)-1 ; prepare to loop this many times
-	ld	de,zStartupCodeEndLoc+1	; initial destination address
-	ld	hl,zStartupCodeEndLoc	; initial source address
-	ld	sp,hl	; set the address the stack starts at
-	ld	(hl),a	; set first byte of the stack to 0
-	ldir		; loop to fill the stack (entire remaining available Z80 RAM) with 0
-	pop	ix	; clear ix
-	pop	iy	; clear iy
-	ld	i,a	; clear i
-	ld	r,a	; clear r
-	pop	de	; clear de
-	pop	hl	; clear hl
-	pop	af	; clear af
-	ex	af,af'	; swap af with af'
-	exx		; swap bc/de/hl with their shadow registers too
-	pop	bc	; clear bc
-	pop	de	; clear de
-	pop	hl	; clear hl
-	pop	af	; clear af
-	ld	sp,hl	; clear sp
-	di		; clear iff1 (for interrupt handler)
-	im	1	; interrupt handling mode = 1
-	ld	(hl),0E9h ; replace the first instruction with a jump to itself
-	jp	(hl)	  ; jump to the first instruction (to stay there forever)
+		if (*)+$26 < $10000
+		save
+		CPU Z80 ; start assembling Z80 code
+		phase 0 ; pretend we're at address 0
+		xor	a	; clear a to 0
+		ld	bc,((z80_ram_end-z80_ram)-zStartupCodeEndLoc)-1 ; prepare to loop this many times
+		ld	de,zStartupCodeEndLoc+1	; initial destination address
+		ld	hl,zStartupCodeEndLoc	; initial source address
+		ld	sp,hl	; set the address the stack starts at
+		ld	(hl),a	; set first byte of the stack to 0
+		ldir		; loop to fill the stack (entire remaining available Z80 RAM) with 0
+		pop	ix	; clear ix
+		pop	iy	; clear iy
+		ld	i,a	; clear i
+		ld	r,a	; clear r
+		pop	de	; clear de
+		pop	hl	; clear hl
+		pop	af	; clear af
+		ex	af,af'	; swap af with af'
+		exx		; swap bc/de/hl with their shadow registers too
+		pop	bc	; clear bc
+		pop	de	; clear de
+		pop	hl	; clear hl
+		pop	af	; clear af
+		ld	sp,hl	; clear sp
+		di		; clear iff1 (for interrupt handler)
+		im	1	; interrupt handling mode = 1
+		ld	(hl),0E9h ; replace the first instruction with a jump to itself
+		jp	(hl)	  ; jump to the first instruction (to stay there forever)
 zStartupCodeEndLoc:
-    dephase ; stop pretending
-	restore
-    padding off ; unfortunately our flags got reset so we have to set them again...
-    else ; due to an address range limitation I could work around but don't think is worth doing so:
-	message "Warning: using pre-assembled Z80 startup code."
-	dc.w $AF01,$D91F,$1127,$0021,$2600,$F977,$EDB0,$DDE1,$FDE1,$ED47,$ED4F,$D1E1,$F108,$D9C1,$D1E1,$F1F9,$F3ED,$5636,$E9E9
-    endif
+		dephase ; stop pretending
+		restore
+		padding off ; unfortunately our flags got reset so we have to set them again...
+		else ; due to an address range limitation I could work around but don't think is worth doing so:
+		message "Warning: using pre-assembled Z80 startup code."
+		dc.w $AF01,$D91F,$1127,$0021,$2600,$F977,$EDB0,$DDE1,$FDE1,$ED47,$ED4F,$D1E1,$F108,$D9C1,$D1E1,$F1F9,$F3ED,$5636,$E9E9
+		endif
 
 		dc.w $8104		; VDP display mode
 		dc.w $8F02		; VDP increment
@@ -538,8 +538,8 @@ VBla_00:
 
 .notPAL:
 		move.w	#1,(f_hbla_pal).w ; set HBlank flag
-		stopZ80		; removed Z80 macro
-		waitZ80		; removed Z80 macro
+		stopZ80
+		waitZ80
 		tst.b	(f_wtr_state).w	; is water above top of screen?
 		bne.s	.waterabove 	; if yes, branch
 
@@ -551,7 +551,7 @@ VBla_00:
 
 .waterbelow:
 		move.w	(v_hbla_hreg).w,(a5)
-		startZ80	; removed Z80 macro
+		startZ80
 		; instead of branching back to VBla_Exit, call directly.
 		addq.l	#1,(v_vbla_count).w
 		movem.l	(sp)+,d0-a6
@@ -592,8 +592,8 @@ VBla_10:
 		beq.w	VBla_0A		; if yes, branch
 
 VBla_08:
-		stopZ80		; removed Z80 macro
-		waitZ80		; removed Z80 macro
+		stopZ80
+		waitZ80
 		bsr.w	ReadJoypads
 		tst.b	(f_wtr_state).w
 		bne.s	.waterabove
@@ -612,7 +612,7 @@ VBla_08:
 
 		bsr.w		ProcessDMAQueue	; Mercury Use DMA Queue
 
-		startZ80	; removed Z80 macro
+		startZ80
 		movem.l	(v_screenposx).w,d0-d7
 		movem.l	d0-d7,(v_screenposx_dup).w
 		movem.l	(v_fg_scroll_flags).w,d0-d1
@@ -620,8 +620,7 @@ VBla_08:
 		cmpi.b	#96,(v_hbla_line).w
 		bhs.s	Demo_Time
 		move.b	#1,(f_doupdatesinhblank).w
-		addq.l	#4,sp
-		bra.w	VBla_Exit
+		rts
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	run a demo for an amount of time
@@ -646,13 +645,13 @@ Demo_Time:
 ; ===========================================================================
 
 VBla_0A:
-		stopZ80		; removed Z80 macro
-		waitZ80		; removed Z80 macro
+		stopZ80
+		waitZ80
 		bsr.w	ReadJoypads
 		writeCRAM	v_palette,0
 		writeVRAM	v_spritetablebuffer,vram_sprites
 		writeVRAM	v_hscrolltablebuffer,vram_hscroll
-		startZ80	; removed Z80 macro
+		startZ80
 		bsr.w	PalCycle_SS
 		
 		bsr.w	ProcessDMAQueue	; Mercury Use DMA Queue
@@ -679,8 +678,8 @@ VBla_0A:
 ; ===========================================================================
 
 VBla_0C:
-		stopZ80		; removed Z80 macro
-		waitZ80		; removed Z80 macro
+		stopZ80
+		waitZ80
 		bsr.w	ReadJoypads
 		tst.b	(f_wtr_state).w
 		bne.s	.waterabove
@@ -698,7 +697,7 @@ VBla_0C:
 		
 		bsr.w	ProcessDMAQueue	; Mercury Use DMA Queue
 
-		startZ80	; removed Z80 macro
+		startZ80
 		movem.l	(v_screenposx).w,d0-d7
 		movem.l	d0-d7,(v_screenposx_dup).w
 		movem.l	(v_fg_scroll_flags).w,d0-d1
@@ -723,13 +722,13 @@ VBla_12:
 ; ===========================================================================
 
 VBla_16:
-		stopZ80		; removed Z80 macro
-		waitZ80		; removed Z80 macro
+		stopZ80
+		waitZ80
 		bsr.w	ReadJoypads
 		writeCRAM	v_palette,0
 		writeVRAM	v_spritetablebuffer,vram_sprites
 		writeVRAM	v_hscrolltablebuffer,vram_hscroll
-		startZ80	; removed Z80 macro
+		startZ80
 
 		bsr.w	ProcessDMAQueue	; Mercury Use DMA Queue
 
@@ -756,8 +755,8 @@ VBla_16:
 
 
 sub_106E:
-		stopZ80		; removed Z80 macro
-		waitZ80		; removed Z80 macro
+		stopZ80
+		waitZ80
 		bsr.w	ReadJoypads
 		tst.b	(f_wtr_state).w ; is water above top of screen?
 		bne.s	.waterabove	; if yes, branch
@@ -770,7 +769,7 @@ sub_106E:
 .waterbelow:
 		writeVRAM	v_spritetablebuffer,vram_sprites
 		writeVRAM	v_hscrolltablebuffer,vram_hscroll
-		startZ80	; removed Z80 macro
+		startZ80
 		
 		bra.w		ProcessDMAQueue	; Mercury Use DMA Queue
 		
@@ -823,13 +822,13 @@ loc_119E:
 
 
 JoypadInit:
-		stopZ80		; removed Z80 macro
-		waitZ80		; removed Z80 macro
+		stopZ80
+		waitZ80
 		moveq	#$40,d0
 		move.b	d0,(z80_port_1_control+1).l		; init port 1 (joypad 1)
 		move.b	d0,(z80_port_2_control+1).l		; init port 2 (joypad 2)
 		move.b	d0,(z80_expansion_control+1).l	; init port 3 (expansion/extra)
-		startZ80	; removed Z80 macro
+		startZ80
 		rts	
 ; End of function JoypadInit
 
@@ -944,7 +943,7 @@ ClearScreen:
 ; Flamedriver - Functions Subroutine
 ; ---------------------------------------------------------------------------
 
-		include "Sound/Functions.asm"
+		include "sound/Functions.asm"
 
 ; ---------------------------------------------------------------------------
 

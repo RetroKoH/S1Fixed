@@ -166,8 +166,8 @@ sfx_GiantRing			ds.b 1		; $46
 sfx_Charge = sfx_SpinDash
 sfx_Release = sfx_Teleport
 sfx_Stop = sfx_Switch
-;
-sfx_DropDash			ds.b 1		;
+; Drop Dash sfx
+sfx_DropDash = sfx_BossZoom		;
 
 ; Continuous
 sfx__FirstContinuous =	*			; ID of the first continuous sound effect

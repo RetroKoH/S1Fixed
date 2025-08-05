@@ -43,7 +43,6 @@ LevelSelect:
 		cmpi.w	#$14,d0								; have you selected item $14 (sound test)?
 		bne.w	LevSel_Level						; if not, go to	Level/SS subroutine
 		move.w	(v_levselsound).w,d0
-		addi.w	#$80,d0
 		tst.b	(f_creditscheat).w					; is Japanese Credits cheat on?
 		beq.s	LevSel_PlaySnd						; if not, branch
 		cmpi.w	#$9F,d0								; is sound $9F being played?
@@ -59,13 +58,13 @@ LevSel_PlaySnd:
 		blo.s	LevelSelect					; if yes, branch
 
 .playmus:
-		lea	(PlaySound).w,a1				; play music
+		lea		(PlaySound).w,a1			; play music
 
 		cmpi.w	#bgm__End,d0				; is sfx being played?
 		blo.s	.play						; if not, branch
 		subi.w	#(bgm__End-bgm__First),d0
 
-		lea	(PlaySound_Special).w,a1		; play sfx
+		lea		(PlaySound_Special).w,a1	; play sfx
 
 .play:
 		jsr		(a1)
@@ -80,10 +79,9 @@ LevSel_Ending:
 
 LevSel_Credits:
 		move.b	#id_Credits,(v_gamemode).w	; set screen mode to $1C (Credits)
-		move.b	#bgm_Credits,d0
-		bsr.w	PlaySound 					; play credits music
 		clr.w	(v_creditsnum).w
-		rts	
+		move.b	#bgm_Credits,d0
+		bra.w	PlaySound 					; play credits music	
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Level	select - level pointers
@@ -287,7 +285,6 @@ LevSel_DrawAll:
 LevSel_DrawSnd:
 		locVRAM	vram_bg+$C30			; sound test position on screen
 		move.w	(v_levselsound).w,d0
-		addi.w	#$80,d0
 		move.b	d0,d2
 		lsr.b	#4,d0
 		bsr.s	.drawdigit	; draw 1st digit
