@@ -213,7 +213,11 @@ UpdateMusic:
 		jsr	CycleSoundQueue(pc)
 ; loc_71BBC:
 .nosndinput:
-	; Code removed -- Expanded Sound Index
+		cmpi.b	#$00,SMPS_RAM.v_sound_id(a6)	; is song queue set for silence (empty)?
+		beq.s	.nonewsound		; If yes, branch
+		jsr	PlaySoundID(pc)
+; loc_71BC8:
+.nonewsound:
 	if SpinDashEnabled=1
 	; Spin Dash SFX
 		tst.b	(v_spindashsfx2).w
@@ -704,7 +708,13 @@ CycleSoundQueue:
 		clr.b	(a1)+							; Clear entry
 		subi.b	#bgm__First,d0					; Make it into 0-based index
 		bcs.s	.nextinput						; If negative (i.e., it was $80 or lower), branch
-	; Code removed -- Expanded Sound Index
+		cmpi.b	#$00,SMPS_RAM.v_sound_id(a6)	; Is SMPS_RAM.v_sound_id a $80 (silence/empty)?
+		beq.s	.havesound						; If yes, branch
+		move.b	d1,SMPS_RAM.v_soundqueue0(a6)	; Put sound into SMPS_RAM.v_soundqueue0
+		bra.s	.nextinput
+; ===========================================================================
+; loc_71F2C:
+.havesound:		
 		andi.w	#$7F,d0						; Clear high byte and sign bit
 		move.b	(a0,d0.w),d2				; Get sound type
 		cmp.b	d3,d2						; Is it a lower priority sound?
@@ -716,12 +726,13 @@ CycleSoundQueue:
 		dbf	d4,.inputloop
 
 		tst.b	d3							; We don't want to change sound priority if it is negative
-		bmi.s	PlaySoundID					; Moved branch -- Expanded Sound Index
+		bmi.s	.locret
 		_move.b	d3,SMPS_RAM.v_sndprio(a6)	; Set new sound priority
 
-; Code removed -- Expanded Sound Index
+; locret_71F4A:
+.locret:
+		rts
 ; End of function CycleSoundQueue
-; fallthrough
 
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -730,31 +741,31 @@ CycleSoundQueue:
 PlaySoundID:
 		moveq	#0,d7
 		move.b	SMPS_RAM.v_sound_id(a6),d7
-	; Code removed -- Expanded Sound Index
-		move.b	#$80,SMPS_RAM.v_sound_id(a6)	; reset	music flag
+		beq.w	StopAllSound					; if 0, stop all sounds
+		move.b	#$00,SMPS_RAM.v_sound_id(a6)	; reset	music flag
 
 	; Music
-		cmpi.b	#bgm__Last,d7		; Is this music ($81-$93)? -- Sound driver bugfixes: Playing sounds $94-$9F will cause a crash!
-		bls.w	Sound_PlayBGM		; Branch and play if yes
-		cmpi.b	#sfx__First,d7		; Is this after music but before sfx? ($94-$9F)
-		blo.s	.locret				; Return if yes. Playing sounds $94-$9F will cause a crash!
+		cmpi.b	#bgm__Last,d7		; Is this music?
+		bls.w	Sound_PlayBGM		; Branch if yes
+		cmpi.b	#sfx__First,d7		; Is this after music but before sfx?
+		blo.w	.locret				; Return if yes
 
 	; SFX
-		cmpi.b	#sfx__Last,d7		; Is this sfx? ($A0-$CF)?
-		bls.w	Sound_PlaySFX		; Branch and play if yes
+		cmpi.b	#sfx__Last,d7		; Is this sfx?
+		bls.w	Sound_PlaySFX		; Branch if yes
 		cmpi.b	#spec__First,d7		; Is this after sfx but before special sfx?
-		blo.s	.locret				; Return if yes
+		blo.w	.locret				; Return if yes
 
 	; Special SFX
 		cmpi.b	#sfx_Waterfall,d7	; Is this special sfx?
-		beq.w	Sound_PlaySpecial	; Branch and play if yes; Changed Branch -- Expanded Sound Index
+		beq.w	Sound_PlaySpecial	; Branch and play if yes
 		cmpi.b	#spec__Last,d7		; Is this special sfx?
-		bls.w	Sound_PlaySFX		; Branch and play if yes; Changed Branch -- Expanded Sound Index
-		cmpi.b	#flg__First,d7		; Is this other new special sfx?
-		blo.s	.locret				; Return if yes; Changed Branch -- Expanded Sound Index
+		bls.w	Sound_PlaySFX		; Branch if yes
+		cmpi.b	#flg__First,d7		; Is this after special sfx but before the commands?
+		blo.w	.locret				; Return if yes
 
 	; Sound Commands
-		cmpi.b	#flg__Last,d7		; Is this a command flag?
+		cmpi.b	#flg__Last,d7		; Is this sound commands?
 		bls.s	Sound_Commands		; Branch if yes
 		
 ; locret_71F8C:

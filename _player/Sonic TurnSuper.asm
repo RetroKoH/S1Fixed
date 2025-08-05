@@ -18,9 +18,9 @@ Sonic_TurnSuper:
 		clr.b	obInvinc(a0)
 		bset	#sta2ndInvinc,obStatus2nd(a0)	; make Sonic invincible
 		move.w	#sfx_GiantRing,d0
-		jsr		(PlaySound).w
+		jsr		(PlaySound_Special).w
 		move.w	#bgm_Invincible,d0
 		move.b	d0,(v_lastbgmplayed).w			; store last played music
-		jmp		(PlaySound_Special).w
+		jmp		(PlaySound).w
 ; End of function Sonic_TurnSuper
 ; ===========================================================================
