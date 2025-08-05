@@ -178,7 +178,7 @@ FFloor_Break:
 		dbf		d1,.findfreeobj				; repeat sequence 3 more times
 
 	.endloop:
-		move.w	#sfx_WallSmash,d0
+		move.w	#sfx_Collapse,d0			; Should be sfx_WallSmash, but the sound is different
 		jsr		(PlaySound_Special).w		; play smashing sound
 		jmp		(DisplaySprite).l
 ; ===========================================================================

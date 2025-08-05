@@ -91,17 +91,58 @@ bgm__End =				*			; next ID after last music
 	phase $01
 sfx__First =				*		; ID of the first sound effect
 
-sfx_Ring				ds.b 1		; $01 (panning right)
-sfx_RingRight = sfx_Ring
-sfx_RingLeft			ds.b 1		; $02
-sfx_RingLoss			ds.b 1		; $03
-sfx_Jump				ds.b 1		; $04
-sfx_Roll				ds.b 1		; $05
-sfx_Skid				ds.b 1		; $06
-sfx_Death				ds.b 1		; $07
-sfx_SpinDash			ds.b 1		; $08
-sfx_Splash				ds.b 1		; $09
-sfx_Shield				ds.b 1		; $0A Blue Shield
+sfx_Jump				ds.b 1		; $01
+sfx_Lamppost			ds.b 1		; $02
+sfx_A2					ds.b 1		; $03
+sfx_Death				ds.b 1		; $04
+sfx_Skid				ds.b 1		; $05
+sfx_A5					ds.b 1		; $06
+sfx_HitSpikes			ds.b 1		; $07
+sfx_Push				ds.b 1		; $08
+sfx_SSGoal				ds.b 1		; $09
+sfx_SSItem				ds.b 1		; $0A
+sfx_Splash				ds.b 1		; $0B
+sfx_AB					ds.b 1		; $0C
+sfx_HitBoss				ds.b 1		; $0D
+sfx_Bubble				ds.b 1		; $0E
+sfx_Fireball			ds.b 1		; $0F
+sfx_Shield				ds.b 1		; $10
+sfx_Saw					ds.b 1		; $11
+sfx_Electric			ds.b 1		; $12
+sfx_Drown				ds.b 1		; $13
+sfx_Flamethrower		ds.b 1		; $14
+sfx_Bumper				ds.b 1		; $15
+sfx_Ring				ds.b 1		; $16 (panning right)
+sfx_SpikesMove			ds.b 1		; $17
+sfx_Rumbling			ds.b 1		; $18
+sfx_B8					ds.b 1		; $19
+sfx_Collapse			ds.b 1		; $1A
+sfx_SSGlass				ds.b 1		; $1B
+sfx_Door				ds.b 1		; $1C
+sfx_Teleport			ds.b 1		; $1D sfx_Dash
+sfx_ChainStomp			ds.b 1		; $1E
+sfx_Roll				ds.b 1		; $1F
+sfx_Continue			ds.b 1		; $20
+sfx_Basaran				ds.b 1		; $21
+sfx_BreakItem			ds.b 1		; $22 sfx_Break
+sfx_Warning				ds.b 1		; $23
+sfx_GiantRing			ds.b 1		; $24
+sfx_Bomb				ds.b 1		; $25 Explode
+sfx_Cash				ds.b 1		; $26
+sfx_RingLoss			ds.b 1		; $27
+sfx_ChainRise			ds.b 1		; $28
+sfx_Burning				ds.b 1		; $29
+sfx_Bonus				ds.b 1		; $2A (Hidden Bonuses)
+sfx_EnterSS				ds.b 1		; $2B
+sfx_WallSmash			ds.b 1		; $2C for now, use sfx_Collapse (Temporary Fix)
+sfx_Spring				ds.b 1		; $2D
+sfx_Switch				ds.b 1		; $2E
+sfx_RingLeft			ds.b 1		; $2F
+sfx_Signpost			ds.b 1		; $30
+sfx_SpinDash			ds.b 1		; $31
+sfx_Charge				ds.b 1		; Placeholder- Peelout sfx
+sfx_Release				ds.b 1		; Placeholder- Peelout sfx
+sfx_Stop				ds.b 1		; Placeholder- Peelout sfx
 sfx_InstaAttack			ds.b 1		; $0B
 sfx_FShield				ds.b 1		; $0C sfx_FireShield
 sfx_BShield				ds.b 1		; $0D sfx_BubbleShield
@@ -109,65 +150,10 @@ sfx_LShield				ds.b 1		; $0E sfx_LightningShield
 sfx_FShieldAtk			ds.b 1		; $0F sfx_FireAttack
 sfx_BShieldAtk			ds.b 1		; $10 sfx_BubbleAttack
 sfx_LShieldAtk			ds.b 1		; $11 sfx_ElectricAttack
-sfx_HitSpikes			ds.b 1		; $12
-sfx_SpikesMove			ds.b 1		; $13
-sfx_Drown				ds.b 1		; $14
-sfx_Lamppost			ds.b 1		; $15
-sfx_Spring				ds.b 1		; $16
-sfx_Teleport			ds.b 1		; $17 sfx_Dash
-sfx_BreakItem			ds.b 1		; $18 sfx_Break
-sfx_HitBoss				ds.b 1		; $19
-sfx_Warning				ds.b 1		; $1A
-sfx_Bubble				ds.b 1		; $1B
-sfx_Bomb				ds.b 1		; $1C Explode
-sfx_SignpostFloat		ds.b 1		; $1D S3K Signpost (Not used here)
-sfx_Switch				ds.b 1		; $1E
-sfx_Cash				ds.b 1		; $1F
-sfx_Projectile			ds.b 1		; $20
-sfx_WallSmash			ds.b 1		; $21 sfx_Collapse
-sfx_Collapse			ds.b 1		; $22 sfx_BridgeCollapse
-sfx_Bumper				ds.b 1		; $23
-sfx_Fireball			ds.b 1		; $24
-sfx_Basaran				ds.b 1		; $25
-sfx_Burning				ds.b 1		; $26
-sfx_BossMagma			ds.b 1		; $27
-sfx_ChainRise			ds.b 1		; $28
-sfx_ChainStomp			ds.b 1		; $29
-sfx_Push				ds.b 1		; $2A ; Push Block
-sfx_BossZoom			ds.b 1		; $2B (Not used here)
-sfx_Grab				ds.b 1		; $2C (Goggles)
-sfx_Flying				ds.b 1		; $2D (Extended)
-sfx_FlyTired			ds.b 1		; $2E (Extended)
-sfx_GlideLand			ds.b 1		; $2F (Extended)
-sfx_GroundSlide			ds.b 1		; $30 (Extended)
-sfx_Laser				ds.b 1		; $31 (Not used here)
-sfx_Continue			ds.b 1		; $32
-sfx_EnterSS				ds.b 1		; $33
-sfx_SSGlass				ds.b 1		; $34
-sfx_SSItem				ds.b 1		; $35
-sfx_SSGoal				ds.b 1		; $36
+sfx_DropDash			ds.b 1		; Placeholder- Dropdash sfx
 sfx_Perfect				ds.b 1		; $37 (Might use for Perfect Bonus mod)
-sfx_BossHitFloor		ds.b 1		; $38 (Not used here)
-sfx_Rumbling			ds.b 1		; $39
-sfx_Door				ds.b 1		; $3A
-sfx_MissileThrow		ds.b 1		; $3B (Not used here)
-sfx_BossProjectile		ds.b 1		; $3C (Not used here)
-sfx_Electric			ds.b 1		; $3D
-sfx_Harpoon				ds.b 1		; $3E
-sfx_Flamethrower		ds.b 1		; $3F
-sfx_Saw					ds.b 1		; $40
-sfx_SuperEmerald		ds.b 1		; $41 (Not used here)
-sfx_SuperTransform		ds.b 1		; $42 (Not used here)
-sfx_MechaTransform		ds.b 1		; $43 (Not used here)
-sfx_Signpost			ds.b 1		; $44
-sfx_Bonus				ds.b 1		; $45 (Hidden Bonuses)
-sfx_GiantRing			ds.b 1		; $46
-; Peelout sfx
-sfx_Charge = sfx_SpinDash
-sfx_Release = sfx_Teleport
-sfx_Stop = sfx_Switch
-; Drop Dash sfx
-sfx_DropDash = sfx_BossZoom		;
+
+sfx_RingRight = sfx_Ring
 
 ; Continuous
 sfx__FirstContinuous =	*			; ID of the first continuous sound effect

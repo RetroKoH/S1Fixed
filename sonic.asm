@@ -3081,7 +3081,7 @@ CollapseObject:
 .endloop:
 	; Mass Object Load Optimization End
 		bsr.w	DisplaySprite
-		move.w	#sfx_WallSmash,d0		; Compare to sfx_Collapse (replace later)
+		move.w	#sfx_Collapse,d0
 		jmp		(PlaySound_Special).w	; play collapsing sound
 ; ===========================================================================
 

@@ -137,7 +137,7 @@ loc_197AA:
 		dbf		d1,BossBlock_LoopFrag	; repeat sequence 3 more times
 
 loc_197D4:
-		move.w	#sfx_WallSmash,d0
+		move.w	#sfx_Collapse,d0		; Should be sfx_WallSmash, but the sound is different
 		jmp		(PlaySound_Special).w	; play smashing sound
 ; End of function BossBlock_Break
 

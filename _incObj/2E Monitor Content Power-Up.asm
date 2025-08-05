@@ -248,7 +248,7 @@ Pow_S:
 Pow_Goggles:
 		bset	#sta2ndGoggles,(v_player+obStatus2nd).w		; give Sonic goggles
 		move.b	#id_GogglesItem,(v_gogglesobj).w			; load goggles object ($8F)
-		move.w	#sfx_Grab,d0
+		move.w	#sfx_A2,d0;#sfx_Grab,d0
 		jmp		(PlaySound_Special).w						; play sound
 ; ===========================================================================
 
