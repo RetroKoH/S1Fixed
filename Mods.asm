@@ -298,3 +298,10 @@ DynamicBGMs: = 1						; if set to 1, there will be a separate BGM track for each
 ; Loads only necessary tiles for various cards. The benefit is less VRAM taken up by cards.
 ; The drawback is that they may be harder to edit for new users, and ROM size is slightly larger.
 OptimalTitleCardArt: = 1				; if set to 1, new art and mappings are used, reducing VRAM footprint and sprite piece count
+
+; Name: Dynamic Art
+; Credit: RetroKoH
+; Plays a different BGM track for each act (Scrap Brain is unaffected, as it has dynamic palettes by default)
+; (By default, they are identical to the original. It'll be up to you to add music if you use this mod)
+DynamicArt: = 0							; if set to 1, there will be separate art loaded for each act
+; LevelHeaders is expanded by this mod. In some respects, this might make DynamicPalettes seem redundant as a solo mod.
