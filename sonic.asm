@@ -5647,96 +5647,57 @@ Nem_FlapDoor_SBZ3:	binclude	"artnem/SBZ3 Flapping Door.nem"
 ; ---------------------------------------------------------------------------
 ; Block mappings
 ; ---------------------------------------------------------------------------
-	if BlocksInROM=1	;Mercury Blocks In ROM
-Blk16_GHZ:	binclude	"map16_u/GHZ.bin"
-		even
-Blk16_LZ:	binclude	"map16_u/LZ.bin"
-		even
-Blk16_MZ:	binclude	"map16_u/MZ.bin"
-		even
-Blk16_SLZ:	binclude	"map16_u/SLZ.bin"
-		even
-Blk16_SYZ:	binclude	"map16_u/SYZ.bin"
-		even
-Blk16_SBZ:	binclude	"map16_u/SBZ.bin"
-		even
 
-	if NewSBZ3LevelArt
-Blk16_SBZ3:	binclude	"map16_u/SBZ3.bin"
-		even
-	endif
-
-	else
-
-Blk16_GHZ:	binclude	"map16/GHZ.eni"
-		even
-Blk16_LZ:	binclude	"map16/LZ.eni"
-		even
-Blk16_MZ:	binclude	"map16/MZ.eni"
-		even
-Blk16_SLZ:	binclude	"map16/SLZ.eni"
-		even
-Blk16_SYZ:	binclude	"map16/SYZ.eni"
-		even
-Blk16_SBZ:	binclude	"map16/SBZ.eni"
-		even
-
-	if NewSBZ3LevelArt
-Blk16_SBZ3:	binclude	"map16/SBZ3.eni"
-		even
-	endif
-
-	endif	;end Blocks In ROM
+		include		"map16/Block Data.asm"
 
 ; ---------------------------------------------------------------------------
 ; Chunk data
 ; ---------------------------------------------------------------------------
-	if ChunksInROM=1	;Mercury Chunks In ROM
-Blk128_GHZ:	binclude	"map128_u/GHZ.bin"
-		even
-Blk128_LZ:	binclude	"map128_u/LZ.bin"
-		even
-Blk128_MZ:	binclude	"map128_u/MZ.bin"
-		even
-Blk128_SLZ:	binclude	"map128_u/SLZ.bin"
-		even
-Blk128_SYZ:	binclude	"map128_u/SYZ.bin"
-		even
-Blk128_SBZ:	binclude	"map128_u/SBZ.bin"
-		even
 
-	if NewSBZ3LevelArt
-Blk128_SBZ3:	binclude	"map128_u/SBZ3.bin"
-		even
-	endif
-
-	else
-
-Blk128_GHZ:	binclude	"map128/GHZ.kos"
-		even
-Blk128_LZ:	binclude	"map128/LZ.kos"
-		even
-Blk128_MZ:	binclude	"map128/MZ.kos"
-		even
-Blk128_SLZ:	binclude	"map128/SLZ.kos"
-		even
-Blk128_SYZ:	binclude	"map128/SYZ.kos"
-		even
-Blk128_SBZ:	binclude	"map128/SBZ.kos"
-		even
-
-	if NewSBZ3LevelArt
-Blk128_SBZ3:	binclude	"map128/SBZ3.kos"
-		even
-	endif
-
-	endif	;end Chunks In ROM
+		include		"map128/Chunk Data.asm"
 
 ; ---------------------------------------------------------------------------
 ; Compressed level graphics
 ; ---------------------------------------------------------------------------
 Nem_Title:		binclude	"artnem/8x8 - Title.nem"	; Title Screen GHZ patterns -- Clownacy S2 Level Art Loading
 		even
+
+	if DynamicArt
+; -----------------------------------------------------------------------
+
+ArtKos_GHZ:
+ArtKos_GHZ2:
+ArtKos_GHZ3:	binclude	"artkos/8x8 - GHZ.kos"		; GHZ patterns -- Clownacy S2 Level Art Loading
+		even
+ArtKos_LZ:
+ArtKos_LZ2:
+ArtKos_LZ3:		binclude	"artkos/8x8 - LZ.kos"		; LZ primary patterns -- Clownacy S2 Level Art Loading
+		even
+ArtKos_MZ:
+ArtKos_MZ2:
+ArtKos_MZ3:		binclude	"artkos/8x8 - MZ.kos"		; MZ primary patterns -- Clownacy S2 Level Art Loading
+		even
+ArtKos_SLZ:
+ArtKos_SLZ2:
+ArtKos_SLZ3:	binclude	"artkos/8x8 - SLZ.kos"		; SLZ primary patterns -- Clownacy S2 Level Art Loading
+		even
+ArtKos_SYZ:
+ArtKos_SYZ2:
+ArtKos_SYZ3:	binclude	"artkos/8x8 - SYZ.kos"		; SYZ primary patterns -- Clownacy S2 Level Art Loading
+		even
+ArtKos_SBZ:
+ArtKos_SBZ2:	
+ArtKos_FZ:		binclude	"artkos/8x8 - SBZ.kos"		; SBZ primary patterns -- Clownacy S2 Level Art Loading
+		even
+
+; This mod forces the new SBZ3 art since every level has different art anyways
+ArtKos_SBZ3:	binclude	"artkos/8x8 - SBZ3.kos"		; SBZ3 primary patterns -- Clownacy S2 Level Art Loading
+		even
+
+; -----------------------------------------------------------------------
+	else
+; -----------------------------------------------------------------------
+
 ArtKos_GHZ:		binclude	"artkos/8x8 - GHZ.kos"		; GHZ patterns -- Clownacy S2 Level Art Loading
 		even
 ArtKos_LZ:		binclude	"artkos/8x8 - LZ.kos"		; LZ primary patterns -- Clownacy S2 Level Art Loading
@@ -5750,9 +5711,13 @@ ArtKos_SYZ:		binclude	"artkos/8x8 - SYZ.kos"		; SYZ primary patterns -- Clownacy
 ArtKos_SBZ:		binclude	"artkos/8x8 - SBZ.kos"		; SBZ primary patterns -- Clownacy S2 Level Art Loading
 		even
 
+; Without the mod, the new SBZ3 art is optional
 	if NewSBZ3LevelArt
 ArtKos_SBZ3:	binclude	"artkos/8x8 - SBZ3.kos"		; SBZ3 primary patterns -- Clownacy S2 Level Art Loading
 		even
+	endif
+
+; -----------------------------------------------------------------------
 	endif
 
 ; ---------------------------------------------------------------------------
