@@ -179,7 +179,8 @@ v_jpadhold2:		ds.b	1		; joypad input - held, duplicate
 v_jpadpress2:		ds.b	1		; joypad input - pressed, duplicate
 v_jpadhold1:		ds.b	1		; joypad input - held
 v_jpadpress1:		ds.b	1		; joypad input - pressed
-				ds.b	6		; unused
+				ds.b	4		; unused
+v_levelheader_id:	ds.w	1		; ID of the Level Header (2 bytes)
 v_vdp_buffer1:		ds.w	1		; VDP instruction buffer
 v_sram_errorcode:	ds.l	1		; SRAM error code
 				ds.b	2		; unused
