@@ -93,22 +93,47 @@ Level_NoMusicFade:
 	; Title Card Optimization End
 	endif
 
-		enable_ints
-		moveq	#0,d0
-		move.b	(v_zone).w,d0
+	if DynamicArt
+; -----------------------------------------------------------------------
 
-	if NewSBZ3LevelArt
-		cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; is level SBZ3 (LZ4) ?
-		bne.s	.notSBZ3					; if not, branch
-		moveq	#SBZ3_Art,d0				; use SBZ3 art
+			enable_ints
+			moveq	#0,d0
+			move.b	(v_zone).w,d0				; load zone to d0
+			move.l	d0,d1						; copy to d1
+			add.b	d0,d0
+			add.b	d0,d0						; multiply by 4
+			sub.b	d1,d0						; the result is zone*3
+			add.b	(v_act).w,d0				; add act
 
-.notSBZ3:
+			cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; is level SBZ3 (LZ4) ?
+			bne.s	.notSBZ3					; if not, branch
+			moveq	#SBZ3_Art,d0				; use SBZ3 art
+
+	.notSBZ3:
+
+; -----------------------------------------------------------------------
+	else
+; -----------------------------------------------------------------------
+
+			enable_ints
+			moveq	#0,d0
+			move.b	(v_zone).w,d0				; load zone to d0
+
+		if NewSBZ3LevelArt
+			cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; is level SBZ3 (LZ4) ?
+			bne.s	.notSBZ3					; if not, branch
+			moveq	#SBZ3_Art,d0				; use SBZ3 art
+
+	.notSBZ3:
+		endif
+
+; -----------------------------------------------------------------------
 	endif
 
 		lsl.w	#4,d0
-		move.w	d0,(v_levelheader_id).w
-		lea		(LevelHeaders).l,a2	; a2 = LevelHeaders address
-		lea		(a2,d0.w),a2		; a2 = LevelHeaders + zone offset
+		move.w	d0,(v_levelheader_id).w			; store level header ID (reduce calculations w/ Level Loading -- RetroKoH)
+		lea		(LevelHeaders).l,a2				; a2 = LevelHeaders address
+		lea		(a2,d0.w),a2					; a2 = LevelHeaders + zone offset
 		moveq	#0,d0
 		move.b	(a2),d0
 		beq.s	loc_37FC
