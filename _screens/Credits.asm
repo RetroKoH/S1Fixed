@@ -32,9 +32,7 @@ GM_Credits:
 		jsr		(BuildSprites).l
 		bsr.w	EndingDemoLoad
 		moveq	#0,d0
-		move.b	(v_zone).w,d0
-		lsl.w	#4,d0
-		move.w	d0,(v_levelheader_id).w
+		move.w	(v_levelheader_id).w,d0
 		lea		(LevelHeaders).l,a2		; a2 = LevelHeaders address
 		lea		(a2,d0.w),a2			; a2 = LevelHeaders + zone offset
 		moveq	#0,d0
@@ -61,6 +59,11 @@ Cred_WaitLoop:
 		rts	
 
 ; ---------------------------------------------------------------------------
+; Levels used in the end sequence demos
+; ---------------------------------------------------------------------------
+EndDemo_Levels:	binclude	"misc/Demo Level Order - Ending.bin"
+
+; ---------------------------------------------------------------------------
 ; Ending sequence demo loading subroutine
 ; ---------------------------------------------------------------------------
 
@@ -68,11 +71,37 @@ Cred_WaitLoop:
 
 
 EndingDemoLoad:
+		moveq	#0,d0
 		move.w	(v_creditsnum).w,d0
 		andi.w	#$F,d0
 		add.w	d0,d0
 		move.w	EndDemo_Levels(pc,d0.w),d0	; load level array
 		move.w	d0,(v_zone).w				; set level from level array
+
+	if DynamicArt
+; -----------------------------------------------------------------------
+
+		moveq	#0,d0
+		move.b	(v_zone).w,d0				; load zone to d0
+		move.l	d0,d1						; copy to d1
+		add.b	d0,d0
+		add.b	d0,d0						; multiply by 4
+		sub.b	d1,d0						; the result is zone*3
+		add.b	(v_act).w,d0				; add act
+
+; -----------------------------------------------------------------------
+	else
+; -----------------------------------------------------------------------
+
+		moveq	#0,d0
+		move.b	(v_zone).w,d0				; load zone to d0
+
+; -----------------------------------------------------------------------
+	endif
+
+		lsl.w	#4,d0
+		move.w	d0,(v_levelheader_id).w		; store level header ID (reduce calculations w/ Level Loading -- RetroKoH)
+
 		addq.w	#1,(v_creditsnum).w
 		cmpi.w	#9,(v_creditsnum).w			; have credits finished?
 		bhs.s	EndDemo_Exit				; if yes, branch
@@ -86,7 +115,7 @@ EndingDemoLoad:
 		move.b	d0,(v_lastlamp).w			; clear lamppost counter
 		cmpi.w	#4,(v_creditsnum).w			; is SLZ demo running?
 		bne.s	EndDemo_Exit				; if not, branch
-		lea		(EndDemo_LampVar).l,a1		; load lamppost variables
+		lea		EndDemo_LampVar(pc),a1		; load lamppost variables
 		lea		(v_lastlamp).w,a2
 		moveq	#8,d0
 
@@ -99,11 +128,6 @@ EndDemo_Exit:
 ; End of function EndingDemoLoad
 
 ; ===========================================================================
-; ---------------------------------------------------------------------------
-; Levels used in the end sequence demos
-; ---------------------------------------------------------------------------
-EndDemo_Levels:	binclude	"misc/Demo Level Order - Ending.bin"
-
 ; ---------------------------------------------------------------------------
 ; Lamppost variables in the end sequence demo (Star Light Zone)
 ; ---------------------------------------------------------------------------
