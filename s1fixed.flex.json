@@ -1,7 +1,7 @@
 {
     "Flex": 2,
     "name": "S1 Fixed",
-    "node": "8f969c7c-78ce-4e72-a599-e8cb46e4f3a8",
+    "node": "1c5e353f-76bf-4a7a-8362-77ed8c24799d",
     "objects": [
         {
             "name": "Common",
@@ -4061,7 +4061,7 @@
                 }
             ],
             "isDirectory": true,
-            "expanded": true,
+            "expanded": false,
             "uuid": "9444b20c-979f-44ed-a2b1-17d990c4156c"
         },
         {
@@ -4111,10 +4111,35 @@
                         "label": ""
                     },
                     "uuid": "abf68e71-637d-43fa-9ab2-4579a55a89ff"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "Ending Sonic",
+                    "palettes": [
+                        {
+                            "path": "palette\\Sonic.bin",
+                            "length": 1
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Ending - Sonic.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\Ending Sequence Sonic.asm",
+                        "label": "Map_ESon"
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "1c5e353f-76bf-4a7a-8362-77ed8c24799d"
                 }
             ],
             "isDirectory": true,
-            "expanded": false,
+            "expanded": true,
             "uuid": "f55ff5d9-a798-4791-b8ad-16c3137528bb"
         }
     ]

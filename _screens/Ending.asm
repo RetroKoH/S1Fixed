@@ -40,7 +40,7 @@ End_LoadData:
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformLayers
 		bset	#2,(v_fg_scroll_flags).w
-		clr.w	(v_levelheader_id).w				; clear the level header ID (set to the first GHZ header)
+		move.w	#End_Header,(v_levelheader_id).w	; hardset Ending header
 		bsr.w	LevelDataLoad						; load level art -- Clownacy Level Art Loading + load block mappings and palettes
 		bsr.w	LoadTilesFromStart
 		lea		(Col_GHZ_1).l,a0					; MJ: Set first collision for ending
