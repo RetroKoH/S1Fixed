@@ -2625,18 +2625,8 @@ locj_72EE:
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 LevelDataLoad:
-		moveq	#0,d0						; Clear d0
-		move.b	(v_zone).w,d0				; d0 = zone ID
-
-	if NewSBZ3LevelArt
-		cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; is level SBZ3 (LZ4) ?
-		bne.s	.notSBZ3Art					; if not, branch
-		moveq	#SBZ3_Art,d0				; use SBZ3 art
-
-.notSBZ3Art:
-	endif
-
-		lsl.w	#4,d0						; Multiply by $10, converting the zone ID into an offset
+		moveq	#0,d0
+		move.w	(v_levelheader_id).w,d0		; load previously stored level header ID -- RetroKoH
 		lea		(LevelHeaders).l,a2			; a2 = LevelHeaders address
 		lea		(a2,d0.w),a2				; a2 = LevelHeaders + zone offset
 		move.l	a2,-(sp)					; store LevelHeader location for future use (Data Load)
@@ -2672,7 +2662,7 @@ LevelDataLoad:
 		dbf		d7,.loop					; Loop for each $1000 bytes the decompressed art is
 
 ;LevelDataLoad:
-	if BlocksInROM=1	;Mercury Blocks In ROM
+	if BlocksInROM	;Mercury Blocks In ROM
 		move.l	(a2)+,(v_16x16).l			; store the ROM address for the block mappings
 		andi.l	#$FFFFFF,(v_16x16).l
 	else
