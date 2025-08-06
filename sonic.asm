@@ -1578,12 +1578,28 @@ Pal_SBZ3SonWat:	bincludePalette	"palette/Sonic - SBZ3 Underwater.bin"
 Pal_SSResult:	bincludePalette	"palette/Special Stage Results.bin"
 Pal_Continue:	bincludePalette	"palette/Special Stage Continue Bonus.bin"
 
+
+; Ending palettes
+
 	if SuperMod
-Pal_Ending:		bincludePalette	"palette/Ending - SuperMod.bin"
-Pal_EndFlowers:	bincludePalette	"palette/Ending - SuperMod - Flowers.bin"
+; ---------------------------------------------------------------------------
+	if GHZForeverPal
+Pal_Ending:		bincludePalette	"palette/Ending - SuperMod - Forever.bin"
 	else
-Pal_Ending:		bincludePalette	"palette/Ending.bin"
+Pal_Ending:		bincludePalette	"palette/Ending - SuperMod - Original.bin"
 	endif
+Pal_EndFlowers:	bincludePalette	"palette/Ending - SuperMod - Flowers.bin"
+; ---------------------------------------------------------------------------
+	else
+; ---------------------------------------------------------------------------
+	if GHZForeverPal
+Pal_Ending:		bincludePalette	"palette/Ending - Forever.bin"
+	else
+Pal_Ending:		bincludePalette	"palette/Ending - Original.bin"
+	endif
+; ---------------------------------------------------------------------------
+	endif
+
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	wait for VBlank routines to complete
