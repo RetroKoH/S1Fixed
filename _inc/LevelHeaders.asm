@@ -15,7 +15,8 @@ lhead:	macro plc1,lvlgfx,plc2,sixteen,chunks,pal
 	if DynamicArt
 ; -----------------------------------------------------------------------
 
-SBZ3_Art:		equ $12		; We need this, because SBZ3 is technically LZ Act 4
+End_Header:		equ $120
+SBZ3_Art:		equ $13		; We need this, because SBZ3 is technically LZ Act 4
 
 ; Clownacy Level Art Loading
 ; 1st PLC, level gfx, 2nd PLC, 16x16 data, 128x128 data, palette
@@ -42,13 +43,15 @@ SBZ3_Art:		equ $12		; We need this, because SBZ3 is technically LZ Act 4
 	lhead	plcid_SBZ,	ArtKos_SBZ2,	plcid_SBZ2,	Blk16_SBZ2,	Blk128_SBZ2,	palid_SBZ2		; Scrap Brain 2 ($10)
 	lhead	plcid_SBZ,	ArtKos_FZ,		plcid_SBZ2,	Blk16_FZ,	Blk128_FZ,		palid_SBZ2		; Final ($11)			; Technically this is internally SBZ3
 	zonewarning LevelHeaders,$30
-	lhead	plcid_LZ,	ArtKos_SBZ3,	plcid_LZ2,	Blk16_SBZ3,	Blk128_SBZ3,	palid_SBZ3		; Scrap Brain 3 ($12)	; This still needs to be placed after standard levels
-	lhead	0,			ArtKos_GHZ,		0,			Blk16_GHZ,	Blk128_GHZ,		palid_Ending	; Ending ($13)
+	lhead	0,			ArtKos_GHZ,		0,			Blk16_GHZ,	Blk128_GHZ,		palid_Ending	; Ending ($12)
+	lhead	plcid_LZ,	ArtKos_SBZ3,	plcid_LZ2,	Blk16_SBZ3,	Blk128_SBZ3,	palid_SBZ3		; Scrap Brain 3 ($13)	; This still needs to be placed after standard levels
+
 
 ; -----------------------------------------------------------------------
 	else
 ; -----------------------------------------------------------------------
 
+End_Header:		equ $60
 SBZ3_Art:		equ 7		; We need this, because SBZ3 is technically LZ Act 4
 
 ; Clownacy Level Art Loading
