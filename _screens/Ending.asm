@@ -43,10 +43,10 @@ End_LoadData:
 		move.w	#End_Header,(v_levelheader_id).w	; hardset Ending header
 		bsr.w	LevelDataLoad						; load level art -- Clownacy Level Art Loading + load block mappings and palettes
 		bsr.w	LoadTilesFromStart
-		lea		(Col_GHZ_1).l,a0					; MJ: Set first collision for ending
+		lea		(Col_End_1).l,a0					; MJ: Set first collision for ending
 		lea		(v_collision1).w,a1
 		bsr.w	KosDec
-		lea		(Col_GHZ_2).l,a0					; MJ: Set second collision for ending
+		lea		(Col_End_2).l,a0					; MJ: Set second collision for ending
 		lea		(v_collision2).w,a1
 		bsr.w	KosDec
 		enable_ints
