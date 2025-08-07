@@ -1656,51 +1656,8 @@ MusicList:
 		include	"_inc/LZWaterFeatures.asm"
 		include	"_inc/MoveSonicInDemo.asm"
 
-; ---------------------------------------------------------------------------
-; Collision index pointer loading subroutine
-; ---------------------------------------------------------------------------
+		include "_inc/Collision Loading.asm"
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
-ColIndexLoad:
-		moveq	#0,d0
-		move.b	(v_zone).w,d0
-		lsl.w	#3,d0				; MJ: multiply by 8 not 4
-		move.l	#v_collision1&$FFFFFF,(v_collindex).w
-		move.w	d0,-(sp)
-		movea.l	ColPointers(pc,d0.w),a0		; MJ: get first collision set
-		lea	(v_collision1).w,a1
-		bsr.w	KosDec
-		move.w	(sp)+,d0
-		movea.l	ColPointers+4(pc,d0.w),a0	; MJ: get second collision set
-		lea	(v_collision2).w,a1
-		bra.w	KosDec
-; End of function ColIndexLoad
-
-; ===========================================================================
-; ---------------------------------------------------------------------------
-; Collision index pointers
-; ---------------------------------------------------------------------------
-ColPointers:
-		dc.l Col_GHZ_1	; MJ: each zone now has two entries
-		dc.l Col_GHZ_2
-		dc.l Col_LZ_1
-		dc.l Col_LZ_2
-		dc.l Col_MZ_1
-		dc.l Col_MZ_2
-		dc.l Col_SLZ_1
-		dc.l Col_SLZ_2
-		dc.l Col_SYZ_1
-		dc.l Col_SYZ_2
-		dc.l Col_SBZ_1
-		dc.l Col_SBZ_2
-		zonewarning ColPointers,8
-;		dc.l Col_GHZ_1 ; Pointers for Ending are missing by default.
-;		dc.l Col_GHZ_2
-; ===========================================================================
-
-; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Queue ring frame graphics loading
 ; ---------------------------------------------------------------------------
@@ -5784,9 +5741,81 @@ CollArray1:	binclude	"collide/Collision Array (Normal).bin"
 		even
 CollArray2:	binclude	"collide/Collision Array (Rotated).bin"
 		even
-Col_GHZ_1:	binclude	"collide/GHZ1.kos"	; GHZ index 1
+
+	if DynamicCollision
+
+Col_GHZ1_1:
+Col_GHZ2_1:
+Col_GHZ3_1:
+Col_End_1:
+		binclude	"collide/GHZ1.kos"	; GHZ index 1
 		even
-Col_GHZ_2:	binclude	"collide/GHZ2.kos"	; GHZ index 2
+Col_GHZ1_2:
+Col_GHZ2_2:
+Col_GHZ3_2:
+Col_End_2:
+		binclude	"collide/GHZ2.kos"	; GHZ index 2
+		even
+Col_LZ1_1:
+Col_LZ2_1:
+Col_LZ3_1:
+Col_SBZ3_1:
+		binclude	"collide/LZ1.kos"	; LZ index 1
+		even
+Col_LZ1_2:
+Col_LZ2_2:
+Col_LZ3_2:
+Col_SBZ3_2:
+		binclude	"collide/LZ2.kos"	; LZ index 2
+		even
+Col_MZ1_1:
+Col_MZ2_1:
+Col_MZ3_1:
+		binclude	"collide/MZ1.kos"	; MZ index 1
+		even
+Col_MZ1_2:
+Col_MZ2_2:
+Col_MZ3_2:
+		binclude	"collide/MZ2.kos"	; MZ index 2
+		even
+Col_SLZ1_1:
+Col_SLZ2_1:
+Col_SLZ3_1:
+		binclude	"collide/SLZ1.kos"	; SLZ index 1
+		even
+Col_SLZ1_2:
+Col_SLZ2_2:
+Col_SLZ3_2:
+		binclude	"collide/SLZ2.kos"	; SLZ index 2
+		even
+Col_SYZ1_1:
+Col_SYZ2_1:
+Col_SYZ3_1:
+		binclude	"collide/SYZ1.kos"	; SYZ index 1
+		even
+Col_SYZ1_2:
+Col_SYZ2_2:
+Col_SYZ3_2:
+		binclude	"collide/SYZ2.kos"	; SYZ index 2
+		even
+Col_SBZ1_1:
+Col_SBZ2_1:
+Col_FZ_1:
+		binclude	"collide/SBZ1.kos"	; SBZ index 1
+		even
+Col_SBZ1_2:
+Col_SBZ2_2:
+Col_FZ_2:
+		binclude	"collide/SBZ2.kos"	; SBZ index 2
+		even
+
+	else
+
+Col_GHZ_1:
+Col_End_1:	binclude	"collide/GHZ1.kos"	; GHZ index 1
+		even
+Col_GHZ_2:
+Col_End_2:	binclude	"collide/GHZ2.kos"	; GHZ index 2
 		even
 Col_LZ_1:	binclude	"collide/LZ1.kos"	; LZ index 1
 		even
@@ -5808,6 +5837,9 @@ Col_SBZ_1:	binclude	"collide/SBZ1.kos"	; SBZ index 1
 		even
 Col_SBZ_2:	binclude	"collide/SBZ2.kos"	; SBZ index 2
 		even
+
+	endif
+
 ; ---------------------------------------------------------------------------
 ; Special Stage layouts
 ; ---------------------------------------------------------------------------
