@@ -301,7 +301,14 @@ OptimalTitleCardArt: = 1				; if set to 1, new art and mappings are used, reduci
 
 ; Name: Dynamic Art
 ; Credit: RetroKoH
-; Plays a different BGM track for each act (Scrap Brain is unaffected, as it has dynamic palettes by default)
+; Plays a different BGM track for each act
 ; (By default, they are identical to the original. It'll be up to you to add music if you use this mod)
 DynamicArt: = 1							; if set to 1, there will be separate art loaded for each act
-; LevelHeaders is expanded by this mod. In some respects, this might make DynamicPalettes seem redundant as a solo mod.
+; LevelHeaders is expanded by this mod. In some respects, this might make DynamicPalettes and NewSBZ3LevelArt seem redundant as solo mods.
+
+; Name: Dynamic Collision
+; Credit: RetroKoH
+; Plays a different BGM track for each act (Scrap Brain is unaffected, as it has dynamic palettes by default)
+; (By default, they are identical to the original. It'll be up to you to add collision data if you use this mod)
+DynamicCollision: = 1*(DynamicArt)		; if set to 1, there will be separate collision loaded for each act
+; This mod is dependant on the DynamicArt mod, if only because there is little reason to have this one, without the other one.
