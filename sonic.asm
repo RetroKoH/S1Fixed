@@ -17,7 +17,7 @@
 ZoneCount	  = 6	; discrete zones are: GHZ, MZ, SYZ, LZ, SLZ, and SBZ
 zeroOffsetOptimization = 1	; if 1, makes a handful of zero-offset instructions smaller
 
-	include "Mods.asm"			; S1Fixed Mod Variables (Sorted by Context)
+	include "Mods.asm"					; S1Fixed Mod Variables (Sorted by Context)
 
 	include "MacroSetup.asm"
 	include	"Constants.asm"
@@ -5031,12 +5031,13 @@ loc_1B6F6:
 loc_1B6F8:
 	; Real-time layout altering and handling
 	if AlteredSpecialStages
-		move.b	(a0)+,d0				; load the layout item into d0
+		move.b	(a0)+,d0						; load the layout item into d0
 		
 		if PerfectBonusEnabled
 			cmpi.b	#SSBlock_Ring,d0			; is this item a ring?
 			bne.s	.notring					; if not, branch
 			addq.w	#1,(v_perfectringsleft).w	; increment perfect rings counter
+			bra.s	.loaditem					; if the next mod is disabled, this will become a nop instead
 	
 	.notring:
 		endif
@@ -5295,7 +5296,7 @@ Nem_LevSelIcons:	binclude	"artnem/S2 Level Select Icons.nem"
 ; Compressed graphics - special stage
 ; ---------------------------------------------------------------------------
 
-	if DynamicSpecialStageWalls=1	; Mercury Dynamic Special Stage Walls
+	if DynamicSpecialStageWalls	; Mercury Dynamic Special Stage Walls
 Nem_SSWalls:	binclude	"artunc/Special Walls (dynamic).bin"
 	else
 Nem_SSWalls:	binclude	"artnem/Special Walls.nem"
@@ -5336,6 +5337,12 @@ Nem_SSDelete:	binclude	"artnem/Special Delete.nem" ; special stage debug delete 
 		even
 Nem_ResultEm:	binclude	"artnem/Special Result Emeralds.nem" ; chaos emeralds on special stage results screen
 		even
+
+	if S4SSRingBarriers
+Nem_SSRingBarrier:	binclude	"artnem/Special Ring Barrier.nem" ; special stage ring barrier
+		even
+	endif
+
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - GHZ stuff
 ; ---------------------------------------------------------------------------
@@ -6124,6 +6131,10 @@ Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.bin"
 	endif
 
 		include "_maps/SS Cursor.asm"				; Also used for the Delete Block
+
+	if S4SSRingBarriers
+		include	"_maps/SS Ring Barrier.asm"
+	endif
 
 ; ---------------------------------------------------------------------------
 ; Uncompressed graphics

@@ -1,7 +1,7 @@
 {
     "Flex": 2,
     "name": "S1 Fixed",
-    "node": "1c5e353f-76bf-4a7a-8362-77ed8c24799d",
+    "node": "dc5be3a3-e368-4bdd-a984-43c4e79e685f",
     "objects": [
         {
             "name": "Common",
@@ -4058,10 +4058,35 @@
                         "label": ""
                     },
                     "uuid": "5dfffa32-6847-4f96-9c7c-78ce7e722599"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "Ring Barrier",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special Ring Barrier.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS Ring Barrier.asm",
+                        "label": "Map_RingBar"
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "dc5be3a3-e368-4bdd-a984-43c4e79e685f"
                 }
             ],
             "isDirectory": true,
-            "expanded": false,
+            "expanded": true,
             "uuid": "9444b20c-979f-44ed-a2b1-17d990c4156c"
         },
         {
