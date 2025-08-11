@@ -4950,11 +4950,19 @@ DACPointers label *
 		DAC_Setup $0B,DAC_B4_C1_C2_C3_C4_Data
 	endif
 	if (use_s2_samples<>0)
+	if ProtoPercussion
+		DAC_Setup $19,DAC_C5_Data
+		DAC_Setup $06,DAC_C6_Data
+		DAC_Setup $06,DAC_C7_Data
+		DAC_Setup $08,DAC_C8_Data
+		DAC_Setup $20,DAC_C9_CC_CD_CE_CF_Data
+	else
 		DAC_Setup $17,DAC_C5_Data
 		DAC_Setup $01,DAC_C6_Data
 		DAC_Setup $06,DAC_C7_Data
 		DAC_Setup $08,DAC_C8_Data
 		DAC_Setup $1B,DAC_C9_CC_CD_CE_CF_Data
+	endif
 		DAC_Setup $0A,DAC_CA_D0_D1_D2_Data
 		DAC_Setup $1B,DAC_CB_D3_D4_D5_Data
 		DAC_Setup $12,DAC_C9_CC_CD_CE_CF_Data
