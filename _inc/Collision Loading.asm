@@ -9,14 +9,11 @@
 
 
 ColIndexLoad:
-	; This first part can be optimized, surely
 		moveq	#0,d0
-		move.b	(v_zone).w,d0
-		lsl.w	#5,d0
-		move.b	(v_act).w,d1
-		add.b	d1,d1
-		add.b	d1,d1
-		add.b	d1,d0
+		move.w	(v_zone).w,d0
+		ror.b	#2,d0						; lsl.b	#6,d0 > Filter Optimized Shifting
+		lsr.w	#4,d0
+		add.w	d0,d0						; multiply by two, since each level has two collision files
 		move.l	#v_collision1&$FFFFFF,(v_collindex).w
 		move.w	d0,-(sp)
 		movea.l	ColPointers(pc,d0.w),a0		; MJ: get first collision set
