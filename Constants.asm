@@ -4,6 +4,7 @@
 
 Size_of_SegaPCM:			equ $6978
 Size_of_DAC_driver_guess:	equ $1760
+
 ; Clocks
 Master_Clock:				equ 53693175
 M68000_Clock:				equ Master_Clock/7
@@ -598,76 +599,64 @@ ArtTile_Sonic_Team_Font:		equ $0A6
 ArtTile_Credits_Font:			equ $58C				; ✓
 
 ; Special Stage Block IDs (Used in _incObj/09 Sonic in Special Stage.asm -- Obj09_ChkItems:)
-; I could consolidate the ZONE blocks into one block ID and dynamically load art in.
-; Possibly use the W block to warp Sonic.
-SSBlock_BlueWall:				equ $01
-SSBlock_YellowWall:				equ $0A
-SSBlock_PinkWall:				equ $13
-SSBlock_GreenWall:				equ $1C
-; Everything prior is standard wall
-SSBlock_Bumper:					equ $25
-; $26 is unused W block
-SSBlock_GOAL:					equ $27
-SSBlock_1Up:					equ $28
-SSBlock_UP:						equ $29
-SSBlock_DOWN:					equ $2A
-SSBlock_R:						equ $2B
-SSBlock_GhostSolid:				equ $2C
-SSBlock_Glass1:					equ $2D
-SSBlock_Glass2:					equ $2E
-SSBlock_Glass3:					equ $2F
-SSBlock_Glass4:					equ $30
-SSBlock_R2:						equ $31		; not used in initial layouts (Only used in real-time for animation)
-SSBlock_BumperHit1:				equ $32		; not used in initial layouts (Only used in real-time for animation)
-SSBlock_BumperHit2:				equ $33		; not used in initial layouts (Only used in real-time for animation)
-; $34-39 are unused ZONE Blocks
-SSBlock_Ring:					equ $3A
-SSBlock_Emld1:					equ $3B
-SSBlock_Emld2:					equ $3C
-SSBlock_Emld3:					equ $3D
-SSBlock_Emld4:					equ $3E
-SSBlock_Emld5:					equ $3F
-SSBlock_Emld6:					equ $40
+	phase $01
+
+; Standard Wall Blocks
+SSBlock_BlueWall:				ds.b 9	; $01-09
+SSBlock_YellowWall:				ds.b 9	; $0A-12
+SSBlock_PinkWall:				ds.b 9	; $13-1B
+SSBlock_GreenWall:				ds.b 9	; $1C-24
+
+; Solid Non-Wall Blocks
+SSBlock_Bumper:					ds.b 1	; $25
+SSBlock_W:						ds.b 1	; $26 (Unused)
+SSBlock_GOAL:					ds.b 1	; $27
+SSBlock_1Up:					ds.b 1	; $28
+SSBlock_UP:						ds.b 1	; $29
+SSBlock_DOWN:					ds.b 1	; $2A
+SSBlock_R:						ds.b 1	; $2B
+SSBlock_GhostSolid:				ds.b 1	; $2C
+SSBlock_Glass1:					ds.b 1	; $2D
+SSBlock_Glass2:					ds.b 1	; $2E
+SSBlock_Glass3:					ds.b 1	; $2F
+SSBlock_Glass4:					ds.b 1	; $30
+SSBlock_R2:						ds.b 1	; $31 (not used in initial layouts; Only used in real-time for animation)
+SSBlock_BumperHit1:				ds.b 1	; $32 (not used in initial layouts; Only used in real-time for animation)
+SSBlock_BumperHit2:				ds.b 1	; $33 (not used in initial layouts; Only used in real-time for animation)
+SSBlock_ZoneBlocks:				ds.b 6	; $34-39 (Unused)
+
+; Non-Solid Blocks (Tokens)
+SSBlock_Ring:					ds.b 1	; $3A
+SSBlock_Emld1:					ds.b 1	; $3B
+SSBlock_Emld2:					ds.b 1	; $3C
+SSBlock_Emld3:					ds.b 1	; $3D
+SSBlock_Emld4:					ds.b 1	; $3E
+SSBlock_Emld5:					ds.b 1	; $3F
+SSBlock_Emld6:					ds.b 1	; $40
 
 	if SuperMod
-
-SSBlock_Emld7:					equ $41
+SSBlock_Emld7:					ds.b 1	; $41
 SSBlock_EmldLast:				equ SSBlock_Emld7
-SSBlock_Ghost:					equ $42
-SSBlock_RingSparkle1:			equ $43		; not used in initial layouts (Only used in real-time for animation)
-SSBlock_RingSparkle2:			equ $44		; not used in initial layouts (Only used in real-time for animation)
-SSBlock_RingSparkle3:			equ $45		; not used in initial layouts (Only used in real-time for animation)
-SSBlock_RingSparkle4:			equ $46		; not used in initial layouts (Only used in real-time for animation)
-SSBlock_ItemSparkle1:			equ $47		; not used in initial layouts (Only used in real-time for animation)
-SSBlock_ItemSparkle2:			equ $48		; not used in initial layouts (Only used in real-time for animation)
-SSBlock_ItemSparkle3:			equ $49		; not used in initial layouts (Only used in real-time for animation)
-SSBlock_ItemSparkle4:			equ $4A		; not used in initial layouts (Only used in real-time for animation)
-SSBlock_GhostSwitch:			equ $4B		; used in initial layouts, not placeable in Debug Mode
-SSBlock_GlassAni1:				equ $4C		; not used in initial layouts (Only used in real-time for animation)
-SSBlock_GlassAni2:				equ $4D		; not used in initial layouts (Only used in real-time for animation)
-SSBlock_GlassAni3:				equ $4E		; not used in initial layouts (Only used in real-time for animation)
-SSBlock_GlassAni4:				equ $4F		; not used in initial layouts (Only used in real-time for animation)
-
 	else
-
-SSBlock_EmldLast:				equ SSBlock_Emld6
-SSBlock_Ghost:					equ $41
-SSBlock_RingSparkle1:			equ $42		; not used in initial layouts (Only used in real-time for animation)
-SSBlock_RingSparkle2:			equ $43		; not used in initial layouts (Only used in real-time for animation)
-SSBlock_RingSparkle3:			equ $44		; not used in initial layouts (Only used in real-time for animation)
-SSBlock_RingSparkle4:			equ $45		; not used in initial layouts (Only used in real-time for animation)
-SSBlock_ItemSparkle1:			equ $46		; not used in initial layouts (Only used in real-time for animation)
-SSBlock_ItemSparkle2:			equ $47		; not used in initial layouts (Only used in real-time for animation)
-SSBlock_ItemSparkle3:			equ $48		; not used in initial layouts (Only used in real-time for animation)
-SSBlock_ItemSparkle4:			equ $49		; not used in initial layouts (Only used in real-time for animation)
-SSBlock_GhostSwitch:			equ $4A		; used in initial layouts, not placeable in Debug Mode
-SSBlock_GlassAni1:				equ $4B		; not used in initial layouts (Only used in real-time for animation)
-SSBlock_GlassAni2:				equ $4C		; not used in initial layouts (Only used in real-time for animation)
-SSBlock_GlassAni3:				equ $4D		; not used in initial layouts (Only used in real-time for animation)
-SSBlock_GlassAni4:				equ $4E		; not used in initial layouts (Only used in real-time for animation)
-
+SSBlock_EmldLast:				equ SSBlock_Emld6	
 	endif
-	
+
+SSBlock_Ghost:					ds.b 1
+SSBlock_RingSparkle1:			ds.b 1		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_RingSparkle2:			ds.b 1		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_RingSparkle3:			ds.b 1		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_RingSparkle4:			ds.b 1		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_ItemSparkle1:			ds.b 1		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_ItemSparkle2:			ds.b 1		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_ItemSparkle3:			ds.b 1		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_ItemSparkle4:			ds.b 1		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_GhostSwitch:			ds.b 1		; used in initial layouts, not placeable in Debug Mode
+SSBlock_GlassAni1:				ds.b 1		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_GlassAni2:				ds.b 1		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_GlassAni3:				ds.b 1		; not used in initial layouts (Only used in real-time for animation)
+SSBlock_GlassAni4:				ds.b 1		; not used in initial layouts (Only used in real-time for animation)
+	dephase
+
 ; obColType constants (See _incObj/sub ReactToItem.asm)
 ; collision flags
 colEnemy:						equ $00
