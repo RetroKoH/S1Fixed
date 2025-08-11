@@ -251,8 +251,14 @@ S4SpecialStages: = 1	; (Removes UP/DOWN, and R Blocks)
 ; Function: Makes the Special Stages still accessible even once all emeralds are collected.
 SpecialStagesWithAllEmeralds: = 1		; (Replaces Emeralds w/ 1-Ups if Emeralds are obtained)
 
+; Name: Ring Barriers in Special Stages
+; Credit: RetroKoH
+; Function: Adds the ring barriers from Sonic 4 (Ep 1)'s Special Stages
+S4SSRingBarriers: = 1					; Replaces Ghost Blocks with Ring Barriers and removes ghost block triggers.
+	SSRingQuota: = 25					; For now, each ring barrier requires 25 rings to pass.
+
 ; Perfect Bonuses are included here because it helps keep SS_Load efficient.
-AlteredSpecialStages: = (S4SpecialStages+SpecialStagesWithAllEmeralds+PerfectBonusEnabled)
+AlteredSpecialStages: = (S4SpecialStages+SpecialStagesWithAllEmeralds+S4SSRingBarriers+PerfectBonusEnabled)
 
 ; ----- UNDER-THE-HOOD -----------------------------------------------------------
 
