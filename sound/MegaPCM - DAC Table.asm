@@ -6,9 +6,16 @@ MegaPCM_DAC_Table:
 	if SMPS_S1DACSamples||SMPS_S2DACSamples
 		; Sonic 1 & 2
 						; type	pointer	Hz
+	if ProtoPercussion
+ptr_dac81:	dcSample	TYPE_PCM, Kick, 7800					; $81	- Kick
+ptr_dac82:	dcSample	TYPE_PCM, Snare, 17100					; $82	- Snare
+ptr_dac85:	dcSample	TYPE_PCM, Timpani, 6500					; $85	- Timpani
+	else
 ptr_dac81:	dcSample	TYPE_PCM, Kick, 8201					; $81	- Kick
 ptr_dac82:	dcSample	TYPE_PCM, Snare, 23784					; $82	- Snare
 ptr_dac85:	dcSample	TYPE_PCM, Timpani, 7328					; $85	- Timpani
+	endif
+
 ptr_dac88:	dcSample	TYPE_PCM, Timpani, 9635					; $88	- Hi-Timpani
 ptr_dac89:	dcSample	TYPE_PCM, Timpani, 8720					; $89	- Mid-Timpani
 ptr_dac8A:	dcSample	TYPE_PCM, Timpani, 7138					; $8A	- Low-Timpani
