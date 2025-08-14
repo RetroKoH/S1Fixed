@@ -6,13 +6,11 @@ pole_time = objoff_30		; time between grabbing the pole & breaking
 pole_grabbed = objoff_32		; flag set when Sonic grabs the pole
 
 Pole:
-	; LavaGaming Object Routine Optimization
+	; RetroKoH/LavaGaming Object Routine Optimization
 		move.b	obRoutine(a0),d0
-		cmpi.b	#2,d0
+		subq.b	#2,d0
 		beq.s	Pole_Action
-		
-		tst.b	d0
-		bne.w	RememberState
+		bpl.w	RememberState
 	; Object Routine Optimization End
 
 Pole_Main:	; Routine 0

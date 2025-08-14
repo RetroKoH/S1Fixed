@@ -6,13 +6,11 @@ sonicAniFrame = objoff_32		; Sonic's current animation number
 hitcount = objoff_34		; number of blocks hit + previous stuff
 
 SmashBlock:
-	; LavaGaming Object Routine Optimization
+	; RetroKoH/LavaGaming Object Routine Optimization
 		move.b	obRoutine(a0),d0
-		cmpi.b	#2,d0
+		subq.b	#2,d0
 		beq.s	Smab_Solid
-		
-		tst.b	d0
-		bne.w	Smab_Points
+		bpl.w	Smab_Points
 	; Object Routine Optimization End
 
 Smab_Main:	; Routine 0
@@ -98,8 +96,8 @@ Smab_Points:	; Routine 4
 		bpl.w	DeleteObject
 		bsr.w	DisplaySprite	; Clownacy DisplaySprite Fix
 		bra.w	RememberState
-
 ; ===========================================================================
+
 Smab_Speeds:
 		dc.w -$200, -$200	; x-speed, y-speed
 		dc.w -$100, -$100

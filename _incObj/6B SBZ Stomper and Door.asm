@@ -90,12 +90,14 @@ Sto_Main:	; Routine 0
 
 Sto_Action:	; Routine 2
 		move.w	obX(a0),-(sp)
-		moveq	#0,d0
-		move.b	obSubtype(a0),d0
-		andi.w	#$F,d0
+		moveq	#$F,d0				; get last digit of subtype
+		and.b	obSubtype(a0),d0	; SCE optimization
+		beq.s	.type00				; skip if subtype 00
 		add.w	d0,d0
-		move.w	Sto_SubtypeIndex(pc,d0.w),d1
-		jsr		Sto_SubtypeIndex(pc,d1.w)
+		move.w	Sto_Index-2(pc,d0.w),d1
+		jsr		Sto_Index(pc,d1.w)
+
+.type00:
 		move.w	(sp)+,d4
 		tst.b	obRender(a0)
 		bpl.s	.chkdel
@@ -124,16 +126,15 @@ Sto_Action:	; Routine 2
 .delete:
 		jmp	(DeleteObject).l
 ; ===========================================================================
-Sto_SubtypeIndex:	offsetTable
-		offsetTableEntry.w .type00
-		offsetTableEntry.w .type01
-		offsetTableEntry.w .type02
-		offsetTableEntry.w .type03
-		offsetTableEntry.w .type04
-		offsetTableEntry.w .type05
+Sto_Index:	offsetTable
+		offsetTableEntry.w Sto_Type01
+		offsetTableEntry.w Sto_Type02
+		offsetTableEntry.w Sto_Type03
+		offsetTableEntry.w Sto_Type04
+		offsetTableEntry.w Sto_Type05
 ; ===========================================================================
 
-.type01:
+Sto_Type01:
 		tst.b	sto_active(a0)
 		bne.s	.isactive01
 		lea	(f_switch).w,a2
@@ -160,8 +161,6 @@ Sto_SubtypeIndex:	offsetTable
 		move.w	sto_origX(a0),d1
 		sub.w	d0,d1
 		move.w	d1,obX(a0)
-
-.type00:
 		rts	
 ; ===========================================================================
 
@@ -176,7 +175,7 @@ Sto_SubtypeIndex:	offsetTable
 		bra.s	.loc_15DC2
 ; ===========================================================================
 
-.type02:
+Sto_Type02:
 		tst.b	sto_active(a0)
 		bne.s	.isactive02
 		subq.w	#1,objoff_36(a0)
@@ -212,7 +211,7 @@ Sto_SubtypeIndex:	offsetTable
 		bra.s	.loc_15E1E
 ; ===========================================================================
 
-.type03:
+Sto_Type03:
 		tst.b	sto_active(a0)
 		bne.s	.isactive03
 		tst.w	objoff_3A(a0)
@@ -248,7 +247,7 @@ Sto_SubtypeIndex:	offsetTable
 		rts	
 ; ===========================================================================
 
-.type04:
+Sto_Type04:
 		tst.b	sto_active(a0)
 		bne.s	.isactive04
 		tst.w	objoff_3A(a0)
@@ -291,7 +290,7 @@ Sto_SubtypeIndex:	offsetTable
 		rts	
 ; ===========================================================================
 
-.type05:
+Sto_Type05:
 		tst.b	sto_active(a0)
 		bne.s	.loc_15F3E
 		lea		(f_switch).w,a2

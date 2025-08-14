@@ -24,12 +24,13 @@ Brick_Main:	; Routine 0
 Brick_Action:	; Routine 2
 		tst.b	obRender(a0)
 		bpl.s	.chkdel
-		moveq	#0,d0
-		move.b	obSubtype(a0),d0 ; get object type
-		andi.w	#7,d0		; read only the	1st digit
+		moveq	#7,d0						; get last digit of subtype (sans bit 3)
+		and.b	obSubtype(a0),d0			; SCE optimization
+		beq.s	.solid						; skip if subtype 00
 		add.w	d0,d0
-		move.w	Brick_TypeIndex(pc,d0.w),d1
-		jsr		Brick_TypeIndex(pc,d1.w)
+		jsr		Brick_Index-2(pc,d0.w)	; SCE optimization
+
+.solid:
 		move.w	#$1B,d1
 		move.w	#$10,d2
 		move.w	#$11,d3
@@ -40,12 +41,19 @@ Brick_Action:	; Routine 2
 		offscreen.w	DeleteObject	; ProjectFM S3K Object Manager
 		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix
 ; ===========================================================================
-Brick_TypeIndex:
-		dc.w Brick_Type00-Brick_TypeIndex
-		dc.w Brick_Type01-Brick_TypeIndex
-		dc.w Brick_Type02-Brick_TypeIndex
-		dc.w Brick_Type03-Brick_TypeIndex
-		dc.w Brick_Type04-Brick_TypeIndex
+Brick_Index:
+		bra.s	Brick_Type01
+		bra.s	Brick_Type02
+		bra.s	Brick_Type03
+
+Brick_Type04:
+		moveq	#0,d0
+		move.b	(v_oscillate+$12).w,d0
+		lsr.w	#3,d0
+		move.w	brick_origY(a0),d1
+		sub.w	d0,d1
+		move.w	d1,obY(a0)			; make the block wobble
+		rts	
 ; ===========================================================================
 
 Brick_Type02:
@@ -55,9 +63,9 @@ Brick_Type02:
 		neg.w	d0
 
 loc_E888:
-		cmpi.w	#$90,d0		; is Sonic within $90 pixels of	the block?
-		bhs.s	Brick_Type01	; if not, resume wobbling
-		move.b	#3,obSubtype(a0)	; if yes, make the block fall
+		cmpi.w	#$90,d0					; is Sonic within $90 pixels of	the block?
+		bhs.s	Brick_Type01			; if not, resume wobbling
+		move.b	#3,obSubtype(a0)		; if yes, make the block fall
 
 Brick_Type01:
 		moveq	#0,d0
@@ -70,37 +78,26 @@ Brick_Type01:
 loc_E8A8:
 		move.w	brick_origY(a0),d1
 		sub.w	d0,d1
-		move.w	d1,obY(a0)	; update the block's position to make it wobble
-
-Brick_Type00:
+		move.w	d1,obY(a0)				; update the block's position to make it wobble
 		rts	
 ; ===========================================================================
 
 Brick_Type03:
 		bsr.w	SpeedToPos_YOnly
-		addi.w	#$18,obVelY(a0)	; increase falling speed
+		addi.w	#$18,obVelY(a0)			; increase falling speed
 		jsr		(ObjFloorDist).l
-		tst.w	d1		; has the block	hit the	floor?
-		bpl.w	locret_E8EE	; if not, branch
+		tst.w	d1						; has the block	hit the	floor?
+		bpl.w	locret_E8EE				; if not, branch
 		add.w	d1,obY(a0)
-		clr.w	obVelY(a0)	; stop the block falling
+		clr.w	obVelY(a0)				; stop the block falling
 		move.w	obY(a0),brick_origY(a0)
 		move.b	#4,obSubtype(a0)
 		move.w	(a1),d0
 		andi.w	#$3FF,d0
-		cmpi.w	#$16A,d0		; REV 01 Change
+		cmpi.w	#$16A,d0				; REV 01 Change
 		bcc.s	locret_E8EE
 		clr.b	obSubtype(a0)
 
 locret_E8EE:
 		rts	
 ; ===========================================================================
-
-Brick_Type04:
-		moveq	#0,d0
-		move.b	(v_oscillate+$12).w,d0
-		lsr.w	#3,d0
-		move.w	brick_origY(a0),d1
-		sub.w	d0,d1
-		move.w	d1,obY(a0)	; make the block wobble
-		rts	

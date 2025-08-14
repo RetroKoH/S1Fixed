@@ -108,7 +108,7 @@ Burro_Jump:
 		move.b	#1,obAnim(a0)
 		move.w	#255,burro_timedelay(a0)
 		subq.b	#2,ob2ndRout(a0)
-		bsr.w	Burro_ChkSonic2
+		bra.w	Burro_ChkSonic2
 
 locret_ADF0:
 		rts	

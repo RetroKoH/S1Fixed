@@ -47,12 +47,15 @@ LBlk_Main:	; Routine 0
 
 LBlk_Action:	; Routine 2
 		move.w	obX(a0),-(sp)
-		moveq	#0,d0
-		move.b	obSubtype(a0),d0
-		andi.w	#$F,d0						; read only the 2nd digit (it does this EVERY frame. Let's optimize this)
+	;(it does this next part EVERY frame. Can we optimize this?)
+		moveq	#$F,d0				; get last digit of subtype
+		and.b	obSubtype(a0),d0	; SCE optimization
+		beq.s	.type00				; skip if subtype 00
 		add.w	d0,d0
-		move.w	.index(pc,d0.w),d1
-		jsr		.index(pc,d1.w)
+		move.w	LBlk_Index-2(pc,d0.w),d1
+		jsr		LBlk_Index(pc,d1.w)
+
+.type00:
 		move.w	(sp)+,d4
 		tst.b	obRender(a0)
 		bpl.s	.chkdel
@@ -68,18 +71,21 @@ LBlk_Action:	; Routine 2
 		bsr.w	loc_12180
 
 .chkdel:
-		offscreen.w	DeleteObject,lblk_origX(a0)	; PFM S3K OBJ
+		offscreen.w	DeleteObject,lblk_origX(a0)	; ProjectFM S3K Object Manager
 		bra.w	DisplaySprite
 ; ===========================================================================
-.index:
-		dc.w .type00-.index, .type01-.index
-		dc.w .type02-.index, .type03-.index
-		dc.w .type04-.index, .type05-.index
-		dc.w .type06-.index, .type07-.index
+LBlk_Index:	offsetTable
+		offsetTableEntry.w	LBlk_Type01
+		offsetTableEntry.w	LBlk_Type02
+		offsetTableEntry.w	LBlk_Type03
+		offsetTableEntry.w	LBlk_Type04
+		offsetTableEntry.w	LBlk_Type05
+		offsetTableEntry.w	LBlk_Type06
+		offsetTableEntry.w	LBlk_Type07
 ; ===========================================================================
 
-.type01:
-.type03:
+LBlk_Type01:
+LBlk_Type03:
 		tst.w	lblk_time(a0)				; does time remain?
 		bne.s	.wait01						; if yes, branch
 		btst	#staSonicOnObj,obStatus(a0)	; is Sonic standing on the object?
@@ -87,20 +93,19 @@ LBlk_Action:	; Routine 2
 		move.w	#30,lblk_time(a0)			; wait for half second
 
 .donothing01:
-.type00:
 		rts	
 ; ===========================================================================
 
 .wait01:
 		subq.w	#1,lblk_time(a0)	; decrement waiting time
 		bne.s	.donothing01		; if time remains, branch
-		addq.b	#1,obSubtype(a0)	; goto .type02 or .type04
+		addq.b	#1,obSubtype(a0)	; goto LBlk_Type02 or LBlk_Type04
 		clr.b	lblk_untouched(a0)	; flag block as touched
 		rts	
 ; ===========================================================================
 
-.type02:
-.type06:
+LBlk_Type02:
+LBlk_Type06:
 		bsr.w	SpeedToPos_YOnly
 		addq.w	#8,obVelY(a0)	; make block fall
 		bsr.w	ObjFloorDist
@@ -115,8 +120,8 @@ LBlk_Action:	; Routine 2
 		rts	
 ; ===========================================================================
 
-.type04:
-	; Devon Note: Placing this object within Fully Solid tiles breaks this
+LBlk_Type04:
+	; !!! Devon Note: Placing this object within Fully Solid tiles breaks this
 	; object. See SBZ3 Lower right section after the water tunnel.
 	; Make sure to place within Top-Solid tiles if placing in the ground as
 	; a trap. Consult Clownacy to see if the Top-Solid tiles were a One-28 error.
@@ -143,17 +148,17 @@ LBlk_Action:	; Routine 2
 		rts	
 ; ===========================================================================
 
-.type05:
+LBlk_Type05:
 		cmpi.b	#1,objoff_3F(a0)	; is Sonic touching the	block?
 		bne.s	.notouch05			; if not, branch
-		addq.b	#1,obSubtype(a0)	; goto .type06
+		addq.b	#1,obSubtype(a0)	; goto LBlk_Type06
 		clr.b	lblk_untouched(a0)
 
 .notouch05:
 		rts	
 ; ===========================================================================
 
-.type07:
+LBlk_Type07:
 		move.w	(v_waterpos1).w,d0
 		sub.w	obY(a0),d0	; is block level with water?
 		beq.s	.stop07		; if yes, branch

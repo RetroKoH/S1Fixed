@@ -36,11 +36,9 @@ Chop_ChgSpeed:	; Routine 2
 		move.b	#1,obAnim(a0)	; use fast animation
 		subi.w	#$C0,d0
 		cmp.w	obY(a0),d0
-		bhs.s	.nochg
+		bhs.w	RememberState
 		clr.b	obAnim(a0)		; use slow animation
 		tst.w	obVelY(a0)		; is Chopper at	its highest point?
-		bmi.s	.nochg			; if not, branch
+		bmi.w	RememberState	; if not, branch
 		move.b	#2,obAnim(a0)	; use stationary animation
-
-.nochg:
 		bra.w	RememberState	; LavaGaming Object Routine Optimization

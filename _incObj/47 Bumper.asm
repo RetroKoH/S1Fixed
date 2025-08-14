@@ -44,7 +44,7 @@ Bump_Hit:	; Routine 2
 		move.w	obRespawnNo(a0),d0		; get address in respawn table
 		beq.s	.addscore				; if it's zero, don't remember object
 		movea.w	d0,a2					; load address into a2
-		cmpi.b	#$8A,(a2)				; has bumper been hit $8A times?
+		cmpi.b	#$8A,(a2)				; has bumper been hit 10 times?
 		bhs.s	.display				; if yes, Sonic	gets no	points
 		addq.b	#1,(a2)
 

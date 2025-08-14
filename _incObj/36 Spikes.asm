@@ -2,10 +2,10 @@
 ; Object 36 - spikes
 ; ---------------------------------------------------------------------------
 
-; ===========================================================================
 spik_origX = objoff_30		; start X position
 spik_origY = objoff_32		; start Y position
 
+; ===========================================================================
 Spik_Var:
 		dc.b 0,	$14		; frame	number,	object width
 		dc.b 1,	$10
@@ -114,7 +114,8 @@ Spik_Type0x:
 		subq.b	#1,d0
 		tst.b	d0
 		beq.s	Spik_Type01
-		bgt.s	Spik_Type02
+		bpl.s	Spik_Type02
+
 Spik_Type00:
 		rts					; don't move the object
 	; Object Routine Optimization End
@@ -146,8 +147,7 @@ Spik_Wait:
 		tst.b	obRender(a0)
 		bpl.s	locret_CFE6
 		move.w	#sfx_SpikesMove,d0
-		jsr		(PlaySound_Special).w	; play "spikes moving" sound
-		bra.s	locret_CFE6
+		jmp		(PlaySound_Special).w	; play "spikes moving" sound
 ; ===========================================================================
 
 loc_CFA4:
@@ -155,10 +155,9 @@ loc_CFA4:
 		beq.s	loc_CFC6
 		subi.w	#$800,objoff_34(a0)
 		bcc.s	locret_CFE6
-		clr.w	objoff_34(a0)
-		clr.w	objoff_36(a0)
+		clr.l	objoff_34(a0)		; clear 34-37
 		move.w	#60,objoff_38(a0)	; set time delay to 1 second
-		bra.s	locret_CFE6
+		rts
 ; ===========================================================================
 
 loc_CFC6:

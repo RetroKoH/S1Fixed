@@ -9,13 +9,11 @@ LBall_Speeds:
 ; ===========================================================================
 
 LavaBall:
-	; LavaGaming Object Routine Optimization
+	; RetroKoH/LavaGaming Object Routine Optimization
 		move.b	obRoutine(a0),d0
-		cmpi.b	#2,d0
+		subq.b	#2,d0
 		beq.w	LBall_Action
-		
-		tst.b	d0
-		bne.w	DeleteObject
+		bpl.w	DeleteObject
 	; Object Routine Optimization End
 
 LBall_Main:	; Routine 0
