@@ -2,8 +2,8 @@
 ; Object 6A - ground saws and pizza cutters (SBZ)
 ; ---------------------------------------------------------------------------
 
-saw_origX = objoff_3A		; original x-axis position
 saw_origY = objoff_38		; original y-axis position
+saw_origX = objoff_3A		; original x-axis position
 saw_here = objoff_3D		; flag set when the ground saw appears
 
 Saws:
@@ -26,27 +26,30 @@ Saw_Main:	; Routine 0
 		move.b	#(colHarmful|colSz_24x24_2),obColType(a0)
 
 Saw_Action:	; Routine 2
-		moveq	#0,d0
-		move.b	obSubtype(a0),d0
-		andi.w	#7,d0
+		moveq	#7,d0						; get last digit of subtype (sans bit 3)
+		and.b	obSubtype(a0),d0			; SCE optimization
+		beq.s	.type00						; skip if subtype 00
 		add.w	d0,d0
-		move.w	.index(pc,d0.w),d1
-		jsr		.index(pc,d1.w)
+		move.w	Saw_Index-2(pc,d0.w),d1
+		jsr		Saw_Index(pc,d1.w)
+
+.type00:
 		offscreen.s	.delete,saw_origX(a0)	; PFM S3K OBJ
 		jmp		(DisplayAndCollision).l		; S3K TouchResponse
 
 .delete:
 		jmp	(DeleteObject).l
 ; ===========================================================================
-.index:		dc.w .type00-.index, .type01-.index, .type02-.index ; pizza cutters
-		dc.w .type03-.index, .type04-.index ; ground saws
+Saw_Index:		offsetTable
+	; pizza cutters
+		offsetTableEntry.w	Saw_Type01
+		offsetTableEntry.w	Saw_Type02
+	; ground saws
+		offsetTableEntry.w	Saw_Type03
+		offsetTableEntry.w	Saw_Type04
 ; ===========================================================================
 
-.type00:
-		rts			; doesn't move
-; ===========================================================================
-
-.type01:
+Saw_Type01:
 		move.w	#$60,d1
 		moveq	#0,d0
 		move.b	(v_oscillate+$E).w,d0
@@ -78,7 +81,7 @@ Saw_Action:	; Routine 2
 		rts	
 ; ===========================================================================
 
-.type02:
+Saw_Type02:
 		move.w	#$30,d1
 		moveq	#0,d0
 		move.b	(v_oscillate+6).w,d0
@@ -109,7 +112,7 @@ Saw_Action:	; Routine 2
 		rts	
 ; ===========================================================================
 
-.type03:
+Saw_Type03:
 		tst.b	saw_here(a0)				; has the saw appeared already?
 		bne.s	.here03						; if yes, branch
 
@@ -151,7 +154,7 @@ Saw_Action:	; Routine 2
 		rts	
 ; ===========================================================================
 
-.type04:
+Saw_Type04:
 		tst.b	saw_here(a0)
 		bne.s	.here04
 		move.w	(v_player+obX).w,d0

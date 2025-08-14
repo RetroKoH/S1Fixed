@@ -3,13 +3,11 @@
 ; ---------------------------------------------------------------------------
 
 Splash:
-	; LavaGaming Object Routine Optimization
+	; RetroKoH/LavaGaming Object Routine Optimization
 		move.b	obRoutine(a0),d0
-		cmpi.b	#2,d0
+		subq.b	#2,d0
 		beq.s	Spla_Display
-		
-		tst.b	d0
-		bne.w	Spla_Delete
+		bpl.s	Spla_Delete
 	; Object Routine Optimization End
 
 Spla_Main:	; Routine 0

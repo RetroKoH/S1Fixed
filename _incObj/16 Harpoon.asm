@@ -2,18 +2,15 @@
 ; Object 16 - harpoon (LZ)
 ; ---------------------------------------------------------------------------
 
-Harpoon:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		jmp		Harp_Index(pc,d0.w)	; RetroKoH Object Routine Optimization
-; ===========================================================================
-Harp_Index:
-		bra.s	Harp_Main
-		bra.s	Harp_Move
-		bra.s	Harp_Wait
-
 harp_time = objoff_30		; time between stabbing/retracting
-; ===========================================================================
+
+Harpoon:
+	; RetroKoH/LavaGaming Object Routine Optimization
+		move.b	obRoutine(a0),d0
+		subq.b	#2,d0
+		beq.s	Harp_Move
+		bpl.s	Harp_Wait
+	; Object Routine Optimization End
 
 Harp_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)

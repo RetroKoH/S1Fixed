@@ -192,12 +192,7 @@ Geyser_Main:	; Routine 0
 		jsr		(PlaySound_Special).w	; play flame sound
 
 Geyser_Action:	; Routine 2
-	; LavaGaming Object Routine Optimization
-		tst.b	obSubtype(a0)
-		bne.s	Geyser_Type01
-	; Object Routine Optimization End
-
-Geyser_Type00:
+	; RetroKoH Object Routine Optimization
 		addi.w	#$18,obVelY(a0)		; increase object's falling speed
 		move.w	objoff_30(a0),d0
 		cmp.w	obY(a0),d0
@@ -205,6 +200,9 @@ Geyser_Type00:
 		addq.b	#4,obRoutine(a0)
 		movea.l	objoff_3C(a0),a1
 		move.b	#3,obAnim(a1)
+		tst.b	obSubtype(a0)
+		beq.s	loc_EFDA
+		move.b	#1,obAnim(a1)
 
 loc_EFDA:
 		bsr.w	SpeedToPos_YOnly
@@ -212,23 +210,6 @@ loc_EFDA:
 		jsr		(AnimateSprite).w
 		offscreen.w	DeleteObject			; ProjectFM S3k OBject Manager
 		jmp		(DisplayAndCollision).l		; FixBugs - Moved to prevent a delete-and-display bug.
-; ===========================================================================
-
-Geyser_Type01:
-		addi.w	#$18,obVelY(a0)		; increase object's falling speed
-		move.w	objoff_30(a0),d0
-		cmp.w	obY(a0),d0
-		bhs.s	loc_EFFA
-		addq.b	#4,obRoutine(a0)
-		movea.l	objoff_3C(a0),a1
-		move.b	#1,obAnim(a1)
-
-loc_EFFA:
-		bsr.w	SpeedToPos_YOnly
-		lea		Ani_Geyser(pc),a1
-		jsr		(AnimateSprite).w
-		offscreen.w	DeleteObject			; ProjectFM S3k OBject Manager
-		jmp		(DisplayAndCollision).l		; FixBugs - Moved to prevent a delete-and-display bug.	
 ; ===========================================================================
 
 loc_EFFC:	; Routine 4

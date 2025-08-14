@@ -8,14 +8,11 @@ buzz_buzzstatus = objoff_34
 buzz_parent = objoff_3C
 
 BuzzBomber:
-	; LavaGaming Object Routine Optimization
-		moveq	#0,d0				; 4
-		move.b	obRoutine(a0),d0	; C
-		cmpi.b	#2,d0				; 8
-		beq.s	Buzz_Action			; 8/A - Most common routine, and closest branch for fewer cycles = $22
-		
-		tst.b	d0					; 4
-		bne.w	DeleteObject		; C/E ($30 on init, $32 on Destroy)
+	; RetroKoH/LavaGaming Object Routine Optimization
+		move.b	obRoutine(a0),d0
+		subq.b	#2,d0
+		beq.s	Buzz_Action
+		bpl.w	DeleteObject
 	; Object Routine Optimization End
 
 Buzz_Main:		; Routine 0

@@ -6,7 +6,8 @@ lgrass_origX = objoff_2A
 lgrass_origY = objoff_2C
 
 ; ===========================================================================
-LGrass_Data:	dc.w LGrass_Data1-LGrass_Data 	; collision angle data
+LGrass_Data:
+		dc.w LGrass_Data1-LGrass_Data 	; collision angle data
 		dc.b 0,	$40			; frame	number,	platform width
 		dc.w LGrass_Data3-LGrass_Data
 		dc.b 1,	$40
