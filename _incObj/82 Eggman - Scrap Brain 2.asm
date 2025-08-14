@@ -25,13 +25,12 @@ SEgg_Main:	; Routine 0
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.l	#Map_SEgg,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
-		move.b	#4,obRender(a0)
-		bset	#7,obRender(a0)
+		move.b	#$84,obRender(a0)
 		move.b	#$20,obActWid(a0)
 		jsr		(FindNextFreeObj).l
 		bne.s	SEgg_Eggman
 		move.l	a0,objoff_34(a1)
-		move.b	#id_ScrapEggman,obID(a1)	; load switch object
+		_move.b	#id_ScrapEggman,obID(a1)	; load switch object
 		move.w	#boss_sbz2_x+$E0,obX(a1)
 		move.w	#boss_sbz2_y+$AC,obY(a1)
 		clr.b	ob2ndRout(a1)
@@ -39,8 +38,7 @@ SEgg_Main:	; Routine 0
 		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.l	#Map_But,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman_Button,0,0),obGfx(a1)
-		move.b	#4,obRender(a1)
-		bset	#7,obRender(a1)
+		move.b	#$84,obRender(a1)
 		move.b	#$10,obActWid(a1)
 		clr.b	obFrame(a1)
 

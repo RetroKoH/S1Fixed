@@ -227,6 +227,7 @@ SpinC_Data:		offsetTable
 		offsetTableEntry.w	word_164EE
 		offsetTableEntry.w	word_16502
 		offsetTableEntry.w	word_16516
+; ===========================================================================
 
 word_164B2:
 		dc.w	$10, $E80

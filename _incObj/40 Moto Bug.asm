@@ -15,7 +15,7 @@ Moto_Index:
 		bra.s	Moto_Main
 		bra.s	Moto_Action
 		bra.s	Moto_Animate
-		bra.s	Moto_Delete
+		bra.w	DeleteObject
 	; Object Routine Optimization End
 ; ===========================================================================
 
@@ -49,10 +49,6 @@ Moto_Animate:	; Routine 4
 		lea		Ani_Moto(pc),a1
 		jsr		(AnimateSprite).w
 		bra.w	DisplaySprite
-; ===========================================================================
-
-Moto_Delete:	; Routine 6
-		bra.w	DeleteObject
 ; ===========================================================================
 
 Moto_Action:	; Routine 2

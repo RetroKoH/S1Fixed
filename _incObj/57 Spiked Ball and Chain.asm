@@ -14,13 +14,11 @@ sball_angle = objoff_36		; precise rotation angle (2 bytes)
 	; Insta-Shield negates its collision property. Upper byte written to obAngle.
 
 SpikeBall:
-	; LavaGaming Object Routine Optimization
+	; RetroKoH LavaGaming Object Routine Optimization
 		move.b	obRoutine(a0),d0
-		cmpi.b	#4,d0
-		beq.w	SBall_Display
-		
-		tst.b	d0
-		bne.w	SBall_Move
+		subq.b	#2,d0
+		beq.w	SBall_Move
+		bpl.w	SBall_Display
 	; Object Routine Optimization End
 
 SBall_Main:	; Routine 0

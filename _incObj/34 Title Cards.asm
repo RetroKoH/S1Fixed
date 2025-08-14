@@ -8,11 +8,9 @@ card_finalX = objoff_32		; position for card to finish on
 TitleCard:
 	; RetroKoH/LavaGaming Object Routine Optimization
 		move.b	obRoutine(a0),d0
-		cmpi.b	#2,d0
-		bgt.w	Card_Wait		; Routines 4/6
-		
-		tst.b	d0
-		bne.w	Card_ChkPos
+		subq.b	#2,d0
+		beq.w	Card_ChkPos
+		bpl.w	Card_Wait		; Routines 4/6
 	; Object Routine Optimization End
 
 Card_CheckSBZ3:	; Routine 0

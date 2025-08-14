@@ -46,14 +46,12 @@ ADoor_Animate:
 		lea		Ani_ADoor(pc),a1
 		bsr.w	AnimateSprite
 		tst.b	obFrame(a0)	; is the door open?
-		bne.s	.remember	; if yes, branch
+		bne.w	RememberState	; if yes, branch
 		move.w	#$11,d1
 		move.w	#$20,d2
 		move.w	d2,d3
 		addq.w	#1,d3
 		move.w	obX(a0),d4
 		bsr.w	SolidObject
-
-.remember:
 		bra.w	RememberState
 ; ===========================================================================

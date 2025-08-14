@@ -3,13 +3,11 @@
 ; ---------------------------------------------------------------------------
 
 Newtron:
-	; LavaGaming Object Routine Optimization
+	; RetroKoH/LavaGaming Object Routine Optimization
 		move.b	obRoutine(a0),d0
-		cmpi.b	#2,d0
+		subq.b	#2,d0
 		beq.s	Newt_Action
-
-		tst.b	d0
-		bne.w	DeleteObject
+		bpl.w	DeleteObject
 	; Object Routine Optimization End
 
 Newt_Main:	; Routine 0

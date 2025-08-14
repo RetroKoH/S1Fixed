@@ -3,13 +3,11 @@
 ; ---------------------------------------------------------------------------
 
 EdgeWalls:
-	; LavaGaming Object Routine Optimization
+	; RetroKoH/LavaGaming Object Routine Optimization
 		move.b	obRoutine(a0),d0
-		cmpi.b	#4,d0
-		beq.s	Edge_Display
-		
-		tst.b	d0
-		bne.s	Edge_Solid
+		subq.b	#2,d0
+		beq.s	Edge_Solid
+		bpl.w	Edge_Display
 	; Object Routine Optimization End
 
 Edge_Main:	; Routine 0

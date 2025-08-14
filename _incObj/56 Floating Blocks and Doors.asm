@@ -108,12 +108,14 @@ FBlock_Main:	; Routine 0
 
 FBlock_Action:	; Routine 2
 		move.w	obX(a0),-(sp)
-		moveq	#0,d0
-		move.b	obSubtype(a0),d0	; get object subtype
-		andi.w	#$F,d0				; read only the	2nd digit
+		moveq	#$F,d0				; get last digit of subtype
+		and.b	obSubtype(a0),d0	; SCE optimization
+		beq.s	.type00				; skip if subtype 00 (doesn't move)
 		add.w	d0,d0
-		move.w	.index(pc,d0.w),d1
-		jsr		.index(pc,d1.w)		; move block subroutines
+		move.w	FBlock_Index-2(pc,d0.w),d1
+		jsr		FBlock_Index(pc,d1.w)		; move block subroutines
+
+.type00:
 		move.w	(sp)+,d4
 		tst.b	obRender(a0)
 		bpl.s	.chkdel
@@ -141,25 +143,31 @@ FBlock_Action:	; Routine 2
 .delete:
 		jmp	(DeleteObject).l
 ; ===========================================================================
-.index:
-		dc.w .type00-.index, .type01-.index
-		dc.w .type02-.index, .type03-.index
-		dc.w .type04-.index, .type05-.index
-		dc.w .type06-.index, .type07-.index
-		dc.w .type08-.index, .type09-.index
-		dc.w .type0A-.index, .type0B-.index
-		dc.w .type0C-.index, .type0D-.index
+FBlock_Index:	offsetTable
+		offsetTableEntry.w	FBlock_Type01
+		offsetTableEntry.w	FBlock_Type02
+		offsetTableEntry.w	FBlock_Type03
+		offsetTableEntry.w	FBlock_Type04
+		offsetTableEntry.w	FBlock_Type05
+		offsetTableEntry.w	FBlock_Type06
+		offsetTableEntry.w	FBlock_Type07
+		offsetTableEntry.w	FBlock_Type08
+		offsetTableEntry.w	FBlock_Type09
+		offsetTableEntry.w	FBlock_Type0A
+		offsetTableEntry.w	FBlock_Type0B
+		offsetTableEntry.w	FBlock_Type0C
+		offsetTableEntry.w	FBlock_Type0D
 ; ===========================================================================
 
-.type01:
+FBlock_Type01:
 ; moves side-to-side
 		move.w	#$40,d1		; set move distance
 		moveq	#0,d0
 		move.b	(v_oscillate+$A).w,d0
-		bra.s	.moveLR
+		bra.s	FBlock_Type02.moveLR
 ; ===========================================================================
 
-.type02:
+FBlock_Type02:
 ; moves side-to-side
 		move.w	#$80,d1		; set move distance
 		moveq	#0,d0
@@ -175,20 +183,18 @@ FBlock_Action:	; Routine 2
 		move.w	fb_origX(a0),d1
 		sub.w	d0,d1
 		move.w	d1,obX(a0)	; move object horizontally
-.type00:
-; doesn't move
 		rts		
 ; ===========================================================================
 
-.type03:
+FBlock_Type03:
 ; moves up/down
 		move.w	#$40,d1		; set move distance
 		moveq	#0,d0
 		move.b	(v_oscillate+$A).w,d0
-		bra.s	.moveUD
+		bra.s	FBlock_Type04.moveUD
 ; ===========================================================================
 
-.type04:
+FBlock_Type04:
 ; moves up/down
 		move.w	#$80,d1		; set move distance
 		moveq	#0,d0
@@ -207,7 +213,7 @@ FBlock_Action:	; Routine 2
 		rts	
 ; ===========================================================================
 
-.type05:
+FBlock_Type05:
 ; moves up when a switch is pressed
 		tst.b	objoff_38(a0)
 		bne.s	.loc_104A4
@@ -266,7 +272,7 @@ FBlock_Action:	; Routine 2
 		bra.s	.loc_104AE
 ; ===========================================================================
 
-.type06:
+FBlock_Type06:
 		tst.b	objoff_38(a0)
 		bne.s	.loc_10500
 		lea	(f_switch).w,a2
@@ -309,7 +315,7 @@ FBlock_Action:	; Routine 2
 		bra.s	.loc_10512
 ; ===========================================================================
 
-.type07:
+FBlock_Type07:
 		tst.b	objoff_38(a0)
 		bne.s	.loc_1055E
 		tst.b	(f_switch+$F).w	; has switch number $F been pressed?
@@ -331,7 +337,7 @@ FBlock_Action:	; Routine 2
 		rts	
 ; ===========================================================================
 
-.type0C:
+FBlock_Type0C:
 		tst.b	objoff_38(a0)
 		bne.s	.loc_10598
 		lea	(f_switch).w,a2
@@ -372,7 +378,7 @@ FBlock_Action:	; Routine 2
 		bra.s	.loc_105A2
 ; ===========================================================================
 
-.type0D:
+FBlock_Type0D:
 		tst.b	objoff_38(a0)
 		bne.s	.loc_105F8
 		lea		(f_switch).w,a2
@@ -414,32 +420,32 @@ FBlock_Action:	; Routine 2
 		bra.s	.wtf
 ; ===========================================================================
 
-.type08:
+FBlock_Type08:
 		move.w	#$10,d1
 		moveq	#0,d0
 		move.b	(v_oscillate+$2A).w,d0
 		lsr.w	#1,d0
 		move.w	(v_oscillate+$2C).w,d3
-		bra.s	.square
+		bra.s	FBlock_Type0B.square
 ; ===========================================================================
 
-.type09:
+FBlock_Type09:
 		move.w	#$30,d1
 		moveq	#0,d0
 		move.b	(v_oscillate+$2E).w,d0
 		move.w	(v_oscillate+$30).w,d3
-		bra.s	.square
+		bra.s	FBlock_Type0B.square
 ; ===========================================================================
 
-.type0A:
+FBlock_Type0A:
 		move.w	#$50,d1
 		moveq	#0,d0
 		move.b	(v_oscillate+$32).w,d0
 		move.w	(v_oscillate+$34).w,d3
-		bra.s	.square
+		bra.s	FBlock_Type0B.square
 ; ===========================================================================
 
-.type0B:
+FBlock_Type0B:
 		move.w	#$70,d1
 		moveq	#0,d0
 		move.b	(v_oscillate+$36).w,d0
