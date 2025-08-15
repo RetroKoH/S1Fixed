@@ -33,9 +33,10 @@ aniID_Drown:			ds.b 1		; Drown animation
 aniID_Shrink:			ds.b 1		; Shrink animation
 aniID_Hurt:				ds.b 1		; Hurt animation
 aniID_WaterSlide:		ds.b 1		; Water Slide animation
-aniID_Peelout:			ds.b 1		; Peelout
-aniID_DropDash:			ds.b 1		; Drop Dash
-aniID_Transform:		ds.b 1		; Transform
+aniID_VictoryLeap:		ds.b 1		; Victory Leap animation (Enabled via toggle)
+aniID_Peelout:			ds.b 1		; Peelout animation (Enabled via toggle)
+aniID_DropDash:			ds.b 1		; Drop Dash animation (Enabled via toggle)
+aniID_Transform:		ds.b 1		; Transform animation (Enabled via toggle)
 	dephase
 
 ; Sonic Mapping Frame IDs
@@ -144,6 +145,8 @@ fr_SonShrink5:			ds.b 1
 fr_SonHurt:				ds.b 1
 fr_SonGetAir:			ds.b 1
 fr_SonWaterSlide:		ds.b 1
+fr_SonVictoryLeap1:		ds.b 1
+fr_SonVictoryLeap2:		ds.b 1
 fr_SonDash11:			ds.b 1
 fr_SonDash12:			ds.b 1
 fr_SonDash13:			ds.b 1

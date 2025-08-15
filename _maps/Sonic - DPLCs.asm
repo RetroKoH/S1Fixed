@@ -103,6 +103,8 @@ SonicDynPLC: mappingsTable
 		mappingsTableEntry.w	SonDPLC_Hurt
 		mappingsTableEntry.w	SonDPLC_GetAir
 		mappingsTableEntry.w	SonDPLC_WaterSlide
+		mappingsTableEntry.w	SonDPLC_Victory1
+		mappingsTableEntry.w	SonDPLC_Victory2
 		mappingsTableEntry.w	SonDPLC_Dash11
 		mappingsTableEntry.w	SonDPLC_Dash12
 		mappingsTableEntry.w	SonDPLC_Dash13
@@ -659,6 +661,16 @@ SonDPLC_WaterSlide:	dplcHeader
  dplcEntry $10, $60C
  dplcEntry 3, $61C
 SonDPLC_WaterSlide_End
+
+SonDPLC_Victory1:	dplcHeader
+	 dplcEntry $10, $831
+	 dplcEntry 5, $841
+SonDPLC_Victory1_End
+
+SonDPLC_Victory2:	dplcHeader
+	 dplcEntry $10, $846
+	 dplcEntry 4, $856
+SonDPLC_Victory2_End
 
 SonDPLC_Dash11:	dplcHeader
  dplcEntry 3, $61F

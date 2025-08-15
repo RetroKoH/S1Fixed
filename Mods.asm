@@ -270,8 +270,14 @@ ProtoPercussion: = 1
 
 ; Name: Proto Zone Names
 ; Credit: RetroKoH
-; Function: Changes the names of Spring Yard and Scrap Brain to Sparkling and Clock Work, respectively
+; Function: Changes the names of Spring Yard and Scrap Brain to Sparkling and Clock Work, respectively.
 ProtoZoneNames: = 1
+
+; Name: Proto Victory Leap
+; Credit: RetroKoH
+; Function: Restores the victory leap Sonic performs at the end of a level.
+ProtoVictoryLeap: = 1
+; Unlike the actual prototype, this triggers as soon as Sonic hits a Signpost.
 
 ; ----- UNDER-THE-HOOD -----------------------------------------------------------
 
