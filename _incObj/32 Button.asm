@@ -13,14 +13,14 @@ But_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_But,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Button,0,0),obGfx(a0)
-		cmpi.b	#id_MZ,(v_zone).w								; is level Marble Zone?
-		bne.s	But_NotMZ										; if not, branch
-		bset	#6,obGfx(a0)									; if MZ, set to pal line 2 -- RetroKoH VRAM Overhaul
+		cmpi.b	#id_MZ,(v_zone).w				; is level Marble Zone?
+		bne.s	But_NotMZ						; if not, branch
+		bset	#gfxPalUpper,obGfx(a0)			; if MZ, set to pal line 2 -- RetroKoH VRAM Overhaul
 
 But_NotMZ:
 		move.b	#4,obRender(a0)
 		move.b	#$10,obActWid(a0)
-		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
+		move.w	#priority4,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		addq.w	#3,obY(a0)
 
 But_Pressed:	; Routine 2
@@ -31,7 +31,7 @@ But_Pressed:	; Routine 2
 		move.w	#5,d3
 		move.w	obX(a0),d4
 		bsr.w	SolidObject
-		bclr	#0,obFrame(a0)	; use "unpressed" frame
+		bclr	#0,obFrame(a0)					; use "unpressed" frame
 		move.b	obSubtype(a0),d0
 		andi.w	#$F,d0
 		lea		(f_switch).w,a3

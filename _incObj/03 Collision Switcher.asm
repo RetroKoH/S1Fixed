@@ -1,7 +1,7 @@
 ; ----------------------------------------------------------------------------
 ; Object 03 - Collision plane/layer switcher
 ; ----------------------------------------------------------------------------
-; Sprite_1FCDC:
+
 PathSwapper:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
@@ -26,13 +26,13 @@ PathSwapper:
 .delete:
 		jmp		(DeleteObject).l
 ; ===========================================================================
-; off_1FCF0:
+
 PSwapper_Index:		offsetTable
 		offsetTableEntry.w	PSwapper_Init	; 0
 		offsetTableEntry.w	PSwapper_MainX	; 2
 		offsetTableEntry.w	PSwapper_MainY	; 4
 ; ===========================================================================
-; loc_1FCF6:
+
 PSwapper_Init:
 		addq.b	#2,obRoutine(a0) ; => PSwapper_MainX
 		move.l	#Map_PathSwapper,obMap(a0)
@@ -58,12 +58,12 @@ PSwapper_Init:
 		bra.w	PSwapper_MainY
 ; ===========================================================================
 word_1FD68:
-	dc.w   $20
-	dc.w   $40	; 1
-	dc.w   $80	; 2
-	dc.w  $100	; 3
+		dc.w   $20
+		dc.w   $40	; 1
+		dc.w   $80	; 2
+		dc.w  $100	; 3
 ; ===========================================================================
-; loc_1FD70:
+
 PSwapper_Init_CheckX:
 		andi.w	#3,d0
 		move.b	d0,obFrame(a0)
@@ -102,6 +102,7 @@ PSwapper_MainX:
 		bpl.s	.jump
 		btst	#staAir,obStatus(a1)
 		bne.s	.locret
+
 .jump:
 		btst	#0,obRender(a0)
 		bne.s	.jump2
@@ -111,11 +112,13 @@ PSwapper_MainX:
 		beq.s	.jump2
 		move.b	#$E,(v_top_solid_bit).w	; MJ: set collision to 2nd
 		move.b	#$F,(v_lrb_solid_bit).w	; MJ: set collision to 2nd
+
 .jump2:
-		andi.w	#$7FFF,obGfx(a1)
+		andi.w	#maskDrawing,obGfx(a1)
 		btst	#5,d0
 		beq.s	.jump3
-		ori.w	#(1<<15),obGfx(a1)
+		ori.w	#maskHighPriority,obGfx(a1)
+
 .jump3:
 	if DebugPathSwappers
 		tst.b	(f_debugcheat).w
@@ -123,6 +126,7 @@ PSwapper_MainX:
 		move.b	#sfx_Lamppost,d0
 		jmp		(PlaySound_Special).w
 	endif
+
 .locret:
 		rts
 ; ===========================================================================
@@ -145,6 +149,7 @@ PSwapper_MainX_Alt:
 		bpl.s	.jump
 		btst	#staAir,obStatus(a1)
 		bne.s	.locret
+
 .jump:
 		btst	#0,obRender(a0)
 		bne.s	.jump2
@@ -154,11 +159,13 @@ PSwapper_MainX_Alt:
 		beq.s	.jump2
 		move.b	#$E,(v_top_solid_bit).w	; MJ: set collision to 2nd
 		move.b	#$F,(v_lrb_solid_bit).w	; MJ: set collision to 2nd
+
 .jump2:
-		andi.w	#$7FFF,obGfx(a1)
+		andi.w	#maskDrawing,obGfx(a1)
 		btst	#6,d0
 		beq.s	.jump3
-		ori.w	#(1<<15),obGfx(a1)
+		ori.w	#maskHighPriority,obGfx(a1)
+
 .jump3:
 	if DebugPathSwappers
 		tst.b	(f_debugcheat).w
@@ -166,6 +173,7 @@ PSwapper_MainX_Alt:
 		move.b	#sfx_Lamppost,d0
 		jmp		(PlaySound_Special).w
 	endif
+
 .locret:
 		rts
 ; ===========================================================================
@@ -195,6 +203,7 @@ PSwapper_MainY:
 		bpl.s	.jump
 		btst	#staAir,obStatus(a1)
 		bne.s	.locret
+
 .jump:
 		btst	#0,obRender(a0)
 		bne.s	.jump2
@@ -204,11 +213,13 @@ PSwapper_MainY:
 		beq.s	.jump2
 		move.b	#$E,(v_top_solid_bit).w	; MJ: set collision to 2nd
 		move.b	#$F,(v_lrb_solid_bit).w	; MJ: set collision to 2nd
+
 .jump2:
-		andi.w	#$7FFF,obGfx(a1)
+		andi.w	#maskDrawing,obGfx(a1)
 		btst	#5,d0
 		beq.s	.jump3
-		ori.w	#(1<<15),obGfx(a1)
+		ori.w	#maskHighPriority,obGfx(a1)
+
 .jump3:
 	if DebugPathSwappers
 		tst.b	(f_debugcheat).w
@@ -216,10 +227,11 @@ PSwapper_MainY:
 		move.b	#sfx_Lamppost,d0
 		jmp		(PlaySound_Special).w
 	endif
+
 .locret:
 		rts
 ; ===========================================================================
-; loc_1FF42:
+
 PSwapper_MainY_Alt:
 		cmp.w	obY(a1),d1
 		bls.s	.locret
@@ -238,6 +250,7 @@ PSwapper_MainY_Alt:
 		bpl.s	.jump
 		btst	#staAir,obStatus(a1)
 		bne.s	.locret
+
 .jump:
 		btst	#0,obRender(a0)
 		bne.s	.jump2
@@ -247,11 +260,13 @@ PSwapper_MainY_Alt:
 		beq.s	.jump2
 		move.b	#$E,(v_top_solid_bit).w	; MJ: set collision to 2nd
 		move.b	#$F,(v_lrb_solid_bit).w	; MJ: set collision to 2nd
+
 .jump2:
-		andi.w	#$7FFF,obGfx(a1)
+		andi.w	#maskDrawing,obGfx(a1)
 		btst	#6,d0
 		beq.s	.jump3
-		ori.w	#(1<<15),obGfx(a1)
+		ori.w	#maskHighPriority,obGfx(a1)
+
 .jump3:
 	if DebugPathSwappers
 		tst.b	(f_debugcheat).w
@@ -259,5 +274,6 @@ PSwapper_MainY_Alt:
 		move.b	#sfx_Lamppost,d0
 		jmp		(PlaySound_Special).w
 	endif
+
 .locret:
 		rts
