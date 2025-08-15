@@ -93,6 +93,15 @@ Bub_ChkWater:	; Routine 4
 		clr.w	obVelY(a1)
 		clr.w	obInertia(a1)				; stop Sonic
 		move.b	#aniID_GetAir,obAnim(a1)	; use bubble-collecting animation
+
+		; Mercury Standing Bubble Animation
+		btst	#staAir,obStatus(a1)			; is Sonic in the air?
+		bne.s	.in_air							; if yes, branch
+		move.b	#aniID_GetAirStand,obAnim(a1)	; use bubble-collecting while standing animation
+
+	.in_air:
+		; Standing Bubble Animation End
+
 		move.b	#$23,obLRLock(a1)
 		clr.b	obJumping(a1)
 		andi.b	#~(maskRollJump+maskPush),obStatus(a1)	; Clear RollJump and Push flags ($CF)
