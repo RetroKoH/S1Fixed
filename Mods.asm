@@ -145,6 +145,12 @@ ExtraBonuses: = CoolBonusEnabled+PerfectBonusEnabled	; if either bonus is enable
 EnemiesDropRings: = 1
 	EnemyRingsAttract: = 1*ShieldsMode	; if set, the Lightning Shield will attract these rings
 
+; Name: Invincibility Buffer
+; Credit: RetroKoH
+; Function: Gives Sonic a second of invulnerability frames after Invincibility expires
+InvincBuffer: = 1
+; I saw this in a Sonic 3 AIR Superstars mod. Not sure if that existed in Superstars, but I implemented it here.
+
 ; ----- FLAIR MODS ---------------------------------------------------------------
 
 ; Name: Fade-In SEGA Screen

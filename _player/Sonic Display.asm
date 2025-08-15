@@ -4,13 +4,13 @@
 
 Sonic_Display:
 	; Check for 8th frame 
-		move.b	(v_framebyte).w,d1	; RetroKoH Sonic_Display Optimization
-		andi.b	#7,d1				; if d1 == 0, we will decrement shoes/invinc on this frame
+		move.b	(v_framebyte).w,d1				; RetroKoH Sonic_Display Optimization
+		andi.b	#7,d1							; if d1 == 0, we will decrement shoes/invinc on this frame
 
 	; Check hurt frames
-		move.b	obInvuln(a0),d0		; RetroKoH Sonic SST Compaction
+		move.b	obInvuln(a0),d0					; RetroKoH Sonic SST Compaction
 		beq.s	.display
-		subq.b	#1,obInvuln(a0)		; RetroKoH Sonic SST Compaction
+		subq.b	#1,obInvuln(a0)					; RetroKoH Sonic SST Compaction
 		lsr.w	#3,d0
 		bcc.s	.chkinvincible
 
@@ -82,6 +82,11 @@ Sonic_Display:
 
 	.removeinvincible:
 		bclr	#sta2ndInvinc,obStatus2nd(a0)	; cancel invincibility
+		
+	if InvincBuffer
+	; Set invulnerability briefly after stars expire
+		move.b	#$3C,obInvuln(a0)				; RetroKoH Sonic SST Compaction
+	endif
 
 	.chkshoes:
 		btst	#sta2ndShoes,obStatus2nd(a0)	; does Sonic have speed	shoes?
