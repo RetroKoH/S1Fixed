@@ -31,6 +31,7 @@ Ani_SuperSonic:
 		dc.w SonAni_Null-Ani_SuperSonic			; Shrink
 		dc.w SupSonAni_Hurt-Ani_SuperSonic
 		dc.w SupSonAni_WaterSlide-Ani_SuperSonic
+		dc.w SonAni_Null-Ani_SuperSonic			; Victory Leap
 		dc.w SupSonAni_Peelout-Ani_SuperSonic
 		dc.w SupSonAni_DropDash-Ani_SuperSonic
 		dc.w SupSonAni_Transform-Ani_SuperSonic

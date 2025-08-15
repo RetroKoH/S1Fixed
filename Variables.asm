@@ -273,7 +273,7 @@ f_nobgscroll:		ds.b	1		; flag set to cancel background scrolling
 v_unused9:		ds.b	1		; unused
 			ds.b	1		; unused
 v_unused10:		ds.b	1		; unused
-			ds.b	1		; unused
+f_victory:			ds.b	1		; flag noting whether Sonic should leap for victory at the end of a level (ProtoVictoryLeap mod).
 v_fg_xblock:		ds.b	1		; foreground x-block parity (for redraw)
 v_fg_yblock:		ds.b	1		; foreground y-block parity (for redraw)
 v_bg1_xblock:		ds.b	1		; background x-block parity (for redraw)
