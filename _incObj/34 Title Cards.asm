@@ -155,7 +155,14 @@ Card_ConData:
 		TitleCardMap 	$3C	;0,	$120, $FEF4, $134, $40C, $14C, $20C, $14C ; LZ
 		TitleCardMap 	$28	;0,	$120, $FEE0, $120, $3F8, $138, $1F8, $138 ; MZ
 		TitleCardMap 	$44	;0,	$120, $FEFC, $13C, $414, $154, $214, $154 ; SLZ
+
+	if ProtoZoneNames
+		TitleCardMap 	$3C	;0,	$120, $FF04, $144, $41C, $15C, $21C, $15C ; SZ (Sparkling)
+		TitleCardMap 	$44	;0,	$120, $FF04, $144, $41C, $15C, $21C, $15C ; CWZ (Clock Work)
+	else
 		TitleCardMap 	$4C	;0,	$120, $FF04, $144, $41C, $15C, $21C, $15C ; SYZ
 		TitleCardMap 	$4C	;0,	$120, $FF04, $144, $41C, $15C, $21C, $15C ; SBZ
+	endif
+
 		dc.w	0,	$120, $FEE4, $124, $3EC, $3EC, $1EC, $12C ;TitleCardMap 	$18 (Unused, this causes issues)
 ; ===========================================================================

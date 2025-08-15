@@ -298,7 +298,7 @@ Got_Display2:
 ; Level	order array
 ; ---------------------------------------------------------------------------
 LevelOrder:
-	if BetaLevelOrder
+	if OriginalLevelOrder
 		; Green Hill Zone
 		dc.b id_GHZ, 1	; Act 1
 		dc.b id_GHZ, 2	; Act 2

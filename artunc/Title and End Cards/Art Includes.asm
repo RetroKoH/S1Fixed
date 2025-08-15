@@ -27,11 +27,19 @@ Art_TitCardSLZ:
 Art_TitCardSLZ_End:	even
 
 Art_TitCardSYZ:
+	if ProtoZoneNames
+	binclude	"artunc/Title and End Cards/Sparkling.bin"
+	else
 	binclude	"artunc/Title and End Cards/Spring Yard.bin"
+	endif
 Art_TitCardSYZ_End:	even
 
 Art_TitCardSBZ:
+	if ProtoZoneNames
+	binclude	"artunc/Title and End Cards/Clock Work.bin"
+	else
 	binclude	"artunc/Title and End Cards/Scrap Brain.bin"
+	endif
 Art_TitCardSBZ_End:	even
 
 Art_TitCardFZ:

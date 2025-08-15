@@ -73,7 +73,7 @@ LevSel_Credits:
 ; Level	select - level pointers
 ; ---------------------------------------------------------------------------
 LevSel_Ptrs:
-	if BetaLevelOrder
+	if OriginalLevelOrder
 		dc.b id_GHZ, 0
 		dc.b id_GHZ, 1
 		dc.b id_GHZ, 2
@@ -293,11 +293,27 @@ LevSel_DrawSnd:
 ; End of function LevSelTextLoad
 ; ===========================================================================
 
+S1LevSel_SYZName:	macro
+		if ProtoZoneNames
+		dc.b    "SPARKLING ZONE   STAGE 1"
+		else
+		dc.b    "SPRING YARD ZONE STAGE 1"
+		endif
+		endm
+
+S1LevSel_SBZName:	macro
+		if ProtoZoneNames
+		dc.b    "CLOCK WORK ZONE  STAGE 1"
+		else
+		dc.b    "SCRAP BRAIN ZONE STAGE 1"
+		endif
+		endm
+
 ; ---------------------------------------------------------------------------
 ; Level	select menu text -- Soulless Sentinel Level Select ASCII Mod
 ; ---------------------------------------------------------------------------
 LevelMenuText:
-	if BetaLevelOrder
+	if OriginalLevelOrder
 		dc.b    "GREEN HILL ZONE  STAGE 1"
 		dc.b    "                 STAGE 2"
 		dc.b    "                 STAGE 3"
@@ -310,10 +326,10 @@ LevelMenuText:
 		dc.b    "STAR LIGHT ZONE  STAGE 1"
 		dc.b    "                 STAGE 2"
 		dc.b    "                 STAGE 3"
-		dc.b    "SPRING YARD ZONE STAGE 1"
+		S1LevSel_SYZName
 		dc.b    "                 STAGE 2"
 		dc.b    "                 STAGE 3"
-		dc.b    "SCRAP BRAIN ZONE STAGE 1"
+		S1LevSel_SBZName
 		dc.b    "                 STAGE 2"
 		dc.b    "                 STAGE 3"
 		dc.b    "FINAL ZONE              "
@@ -327,7 +343,7 @@ LevelMenuText:
 		dc.b    "MARBLE ZONE      STAGE 1"
 		dc.b    "                 STAGE 2"
 		dc.b    "                 STAGE 3"
-		dc.b    "SPRING YARD ZONE STAGE 1"
+		S1LevSel_SYZName
 		dc.b    "                 STAGE 2"
 		dc.b    "                 STAGE 3"
 		dc.b    "LABYRINTH ZONE   STAGE 1"
@@ -336,7 +352,7 @@ LevelMenuText:
 		dc.b    "STAR LIGHT ZONE  STAGE 1"
 		dc.b    "                 STAGE 2"
 		dc.b    "                 STAGE 3"
-		dc.b    "SCRAP BRAIN ZONE STAGE 1"
+		S1LevSel_SBZName
 		dc.b    "                 STAGE 2"
 		dc.b    "                 STAGE 3"
 		dc.b    "FINAL ZONE              "

@@ -129,7 +129,7 @@ LevelSelect_Ending:
 ; Level	select - level pointers
 ; ---------------------------------------------------------------------------
 LevSel_Ptrs:
-	if BetaLevelOrder
+	if OriginalLevelOrder
 		dc.b id_GHZ, 0
 		dc.b id_GHZ, 1
 		dc.b id_GHZ, 2
@@ -418,7 +418,7 @@ LevelSelect_DrawIcon:
 ; ===========================================================================
 LevSel_IconTable:
 		dc.b	0,0,0	;	GHZ
-	if BetaLevelOrder
+	if OriginalLevelOrder
 		dc.b	1,1,1	;	LZ
 		dc.b	2,2,2	;	MZ
 		dc.b	3,3,3	;	SLZ
