@@ -25,7 +25,7 @@ WFall_Main:	; Routine 0
 		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	obSubtype(a0),d0			; get object type
 		bpl.s	.under80					; branch if $00-$7F
-		bset	#7,obGfx(a0)
+		bset	#gfxPriority,obGfx(a0)
 
 .under80:
 		andi.b	#$F,d0						; read only the	2nd digit
@@ -63,10 +63,10 @@ WFall_OnWater:	; Routine 6
 ; ===========================================================================
 
 loc_12B36:	; Routine 8
-		bclr	#7,obGfx(a0)
+		bclr	#gfxPriority,obGfx(a0)
 		cmpi.w	#$1718,(v_lvllayout+$50C).w
 		bne.s	.animate
-		bset	#7,obGfx(a0)
+		bset	#gfxPriority,obGfx(a0)
 
 .animate:
 		lea		Ani_WFall(pc),a1

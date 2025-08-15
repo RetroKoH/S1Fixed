@@ -29,7 +29,7 @@ Orb_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Orbinaut,0,0),obGfx(a0)	; RetroKoH VRAM Overhaul
 		cmpi.b	#id_SLZ,(v_zone).w								; check if level is SLZ
 		bne.s	.notSLZ
-		bset	#5,obGfx(a0)									; Set to the next palette line -- RetroKoH VRAM Overhaul
+		bset	#gfxPalLower,obGfx(a0)							; Set to the next palette line -- RetroKoH VRAM Overhaul
 
 .notSLZ:
 	if SLZOrbinautBehaviourMod	; Mercury SLZ Orbinaut Behaviour Mod

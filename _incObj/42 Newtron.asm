@@ -82,20 +82,20 @@ Newt_Action:	; Routine 2
 .loc_DE42:
 		bsr.w	ObjectFall_YOnly
 		jsr		(ObjFloorDist).l
-		tst.w	d1				; has newtron hit the floor?
-		bpl.s	.keepfalling	; if not, branch
+		tst.w	d1					; has newtron hit the floor?
+		bpl.s	.keepfalling		; if not, branch
 
 		add.w	d1,obY(a0)
-		clr.w	obVelY(a0)	; stop newtron falling
+		clr.w	obVelY(a0)			; stop newtron falling
 		addq.b	#2,ob2ndRout(a0)
 		move.b	#2,obAnim(a0)
-		btst	#5,obGfx(a0)
+		btst	#gfxPalLower,obGfx(a0)
 		beq.s	.pppppppp
 		addq.b	#1,obAnim(a0)
 
 .pppppppp:
 		move.b	#(colEnemy|colSz_20x8),obColType(a0)
-		move.w	#$200,obVelX(a0) ; move newtron horizontally
+		move.w	#$200,obVelX(a0)	; move newtron horizontally
 		btst	#staFlipX,obStatus(a0)
 		bne.s	.keepfalling
 		neg.w	obVelX(a0)

@@ -102,7 +102,7 @@ Swing_Main:	; Routine 0
 		_move.b	d4,obID(a1)				; load swinging	object
 		move.l	obMap(a0),obMap(a1)
 		move.w	obGfx(a0),obGfx(a1)
-		bclr	#6,obGfx(a1)
+		bclr	#gfxPalUpper,obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.w	#priority4,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#8,obActWid(a1)
@@ -112,7 +112,7 @@ Swing_Main:	; Routine 0
 		bcc.s	.notanchor
 		move.b	#2,obFrame(a1)
 		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		bset	#6,obGfx(a1)
+		bset	#gfxPalUpper,obGfx(a1)
 
 .notanchor:
 		dbf		d1,.makechain			; repeat d1 times (chain length)

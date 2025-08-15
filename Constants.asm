@@ -196,7 +196,7 @@ obDoubleJumpFlag:	equ	$2F				; Flag noting double jump status. 0 - not triggered
 obDoubleJumpProp:	equ $25				; Counter for Sonic's Drop Dash (if enabled). Can also be utilized for remaining frames of flight / 2 for Tails, gliding-related for Knuckles.
 ;	endif
 ; ---------------------------------------------------------------------------
-; obStatus bitfield variables
+; obStatus bitfield constants
 ;
 ; Sonic's status bits (status)
 staFacing:		equ 0 ; status Facing is cleared when facing right, and set when facing left.
@@ -230,9 +230,9 @@ maskSonicOnObj:	equ 1<<staSonicOnObj	; $08
 maskSonicPush:	equ 1<<staSonicPush		; $20
 	; $40
 ; ---------------------------------------------------------------------------
-; status_secondary bitfield variables
-;
-; status_secondary variable bit numbers
+; status_secondary bitfield constants
+
+; status_secondary bit numbers
 sta2ndShield:		equ	0
 sta2ndInvinc:		equ	1
 sta2ndShoes:		equ	2
@@ -249,7 +249,7 @@ shPropBubble:		equ sta2ndBShield
 shPropLightning:	equ sta2ndLShield
 shPropReflect:		equ 7
 
-; status_secondary variable masks
+; status_secondary masks
 mask2ndShield:		equ	1<<sta2ndShield		; $01
 mask2ndInvinc:		equ	1<<sta2ndInvinc		; $02
 mask2ndShoes:		equ	1<<sta2ndShoes		; $04
@@ -262,7 +262,17 @@ mask2ndChkElement:	equ $70					; Elemental Shield bits checked
 mask2ndChkShield:	equ $71					; Every shield bit checked
 mask2ndRmvShield:	equ	~mask2ndChkShield	; ~$71
 ; ---------------------------------------------------------------------------
-; priority address variables -- RetroKoH/Devon S3K+ Priority Manager
+; obGfx constants
+gfxFlipX:			equ 3					; if set, sprites will be flipped horizontally.
+gfxFlipY:			equ 4					; if set, sprites will be flipped vertically.
+gfxPalLower:		equ 5					; upper bit; sets base palette line to 1
+gfxPalUpper:		equ 6					; upper bit; sets base palette line to 2 or 3
+gfxPriority:		equ 7					; used on the upper byte
+
+maskDrawing:		equ $7FFF
+maskHighPriority:	equ $8000
+; ---------------------------------------------------------------------------
+; priority address constants -- RetroKoH/Devon S3K+ Priority Manager
 priority0:	equ	v_spritequeue
 priority1:	equ	v_spritequeue+$80
 priority2:	equ	v_spritequeue+$100
@@ -303,7 +313,7 @@ objoff_3F:	equ $3F
 object_size_bits:		equ 6
 object_size:			equ 1<<object_size_bits
 
-; Devon Subsprite SSTs -- Subsprite properties set DO override some standard object SSTs.
+; Devon Subsprite OSTs -- Subsprite properties set DO override some standard object SSTs.
 ; What is overridden really depends on the amount of sub sprites you have set to display.
 mainspr_routine:		equ $A	; added by RetroKoH
 mainspr_mapframe:		equ $B	; last byte of obX (2nd byte of obScreenY)
