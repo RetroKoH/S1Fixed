@@ -161,12 +161,12 @@ Tit_LoadText:
 		move.w	d0,(vdp_control_port).l
 		bsr.w	PaletteFadeIn
 
-		include	"_inc/Title Screen Loop.asm"
+		include	"_screens/Title Screen Loop.asm"
 
-	if NewLevelSelect=1
-		include "_inc/Level Select (S2).asm"
+	if NewLevelSelect
+		include "_screens/Level Select (S2).asm"
 	else
-		include "_inc/Level Select (S1).asm"
+		include "_screens/Level Select (S1).asm"
 	endif
 
 		include "_inc/ASCII Render Text.asm"
