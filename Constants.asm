@@ -638,9 +638,12 @@ ArtTile_Title_Card:				equ $568				; ✓ - Make letters uncompressed?
 ArtTile_Animal_1:				equ $568				; ✓
 ArtTile_Animal_2:				equ $57A				; ✓
 ArtTile_Explosion:				equ $58C				; ✓
-ArtTile_Ring:					equ $5EC				; ✓
-ArtTile_LostRing:				equ $5F0				; ✓
-ArtTile_RingSparkles:			equ $5F4				; ✓
+
+; Test w/ Optimal and Normal Title cards
+ArtTile_Ring:					equ $5F4				; ✓
+ArtTile_LostRing:				equ $5F8				; ✓
+ArtTile_RingSparkles:			equ $5FC				; ✓
+
 ArtTile_Monitor:				equ $680				; ✓ - Optimized by removing life icon (Use HUD life icon)
 ArtTile_HUD:					equ $6CA				; ✓ - Optimized by removing 1 R
 ArtTile_Sonic:					equ $780				; ✓ - Player 1
@@ -664,7 +667,7 @@ ArtTile_Warp:					equ $541				; Currently unused. Can overwrite Shield art if us
 ArtTile_Mini_Sonic:				equ ArtTile_Monitor		; ✓
 ArtTile_Signpost:				equ $680				; ✓
 ArtTile_Bonuses:				equ $6B0				; ✓ - Moved to overwrite some monitor art.
-ArtTile_Perfect:				equ $5F0				; Test special stage (or give new location there)
+ArtTile_Perfect:				equ $7B0				; Zone/Special Stage Results
 
 ; Sega Screen
 ArtTile_Sega_Tiles:				equ $000

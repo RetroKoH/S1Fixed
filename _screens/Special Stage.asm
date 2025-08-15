@@ -209,7 +209,7 @@ loc_47D4:
 		jsr		(LoadUncArt).w
 	
 	if PerfectBonusEnabled
-		locVRAM	$670*tile_size
+		locVRAM ArtTile_Perfect*tile_size
 		lea		Art_Perfect,a0									; load title card patterns
 		move.l	#((Art_Perfect_End-Art_Perfect)/tile_size)-1,d0	; # of tiles
 		jsr		(LoadUncArt).w									; load uncompressed art
@@ -222,7 +222,7 @@ loc_47D4:
 		jsr		(LoadUncArt).w
 		
 	if PerfectBonusEnabled
-		locVRAM	$670*tile_size
+		locVRAM	ArtTile_Perfect*tile_size
 		lea		Art_Perfect,a0									; load title card patterns
 		move.l	#((Art_Perfect_End-Art_Perfect)/tile_size)-1,d0	; # of tiles
 		jsr		(LoadUncArt).w									; load uncompressed art
