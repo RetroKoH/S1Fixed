@@ -84,7 +84,7 @@ BossFire_Drop:		; Secondary Routine 0
 
 BossFire_MakeFlame:	; Secondary Routine 2
 		subq.w	#2,obY(a0)						; upon landing, nudge the ball up by 2 pixels
-		bset	#7,obGfx(a0)
+		bset	#gfxPriority,obGfx(a0)
 		move.l	#$00A00000,obVelX(a0)			; set X-speed to 0.625 and clear obVelY
 		move.w	obX(a0),bossfire_bufferX(a0)	; store X and Y positions on the ground
 		move.w	obY(a0),bossfire_bufferY(a0)
@@ -170,7 +170,7 @@ BossFire_FallEdge:	; Secondary Routine 6
 loc_1884A:
 		cmpi.w	#$12,d0
 		bne.s	loc_18856
-		bclr	#7,obGfx(a0)
+		bclr	#gfxPriority,obGfx(a0)
 
 loc_18856:
 		jsr		(ObjFloorDist).l
@@ -181,7 +181,7 @@ loc_18856:
 		clr.w	obVelY(a0)
 		move.w	bossfire_bufferX2(a0),obX(a0)
 		move.w	bossfire_bufferY(a0),obY(a0)
-		bset	#7,obGfx(a0)
+		bset	#gfxPriority,obGfx(a0)
 		subq.b	#2,ob2ndRout(a0)
 
 locret_1887E:
@@ -198,7 +198,7 @@ BossFire_Delete2:	; Routine 6
 ; ===========================================================================
 
 BossFire_OffScreenRight:			; Routine 4
-		bset	#7,obGfx(a0)
+		bset	#gfxPriority,obGfx(a0)
 		subq.b	#1,bossfire_delaytimer(a0)
 		bne.s	.animate
 		move.b	#1,obAnim(a0)

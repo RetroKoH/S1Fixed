@@ -246,7 +246,7 @@ Drown_Countdown:; Routine $A
 		bsr.w	Sonic_ResetOnFloor
 		move.b	#aniID_Drown,obAnim(a0)	; use Sonic's drowning animation
 		bset	#staAir,obStatus(a0)
-		bset	#7,obGfx(a0)			; set high priority bit
+		bset	#gfxPriority,obGfx(a0)	; set high priority bit
 		moveq	#0,d0
 		move.l	d0,obVelX(a0)			; stop all movement (obVelX and obVelY)
 		move.w	d0,obInertia(a0)

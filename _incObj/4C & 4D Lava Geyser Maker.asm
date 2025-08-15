@@ -180,7 +180,7 @@ Geyser_Main:	; Routine 0
 		moveq	#0,d1
 		bsr.w	.loop
 		addq.b	#2,obRoutine(a1)
-		bset	#4,obGfx(a1)
+		bset	#gfxFlipY,obGfx(a1)				; flip sprite vertically
 		addi.w	#$100,obY(a1)
 		move.w	#priority0,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
 		move.w	objoff_30(a0),objoff_30(a1)
@@ -189,11 +189,11 @@ Geyser_Main:	; Routine 0
 
 .sound:
 		move.w	#sfx_Burning,d0
-		jsr		(PlaySound_Special).w	; play flame sound
+		jsr		(PlaySound_Special).w			; play flame sound
 
 Geyser_Action:	; Routine 2
 	; RetroKoH Object Routine Optimization
-		addi.w	#$18,obVelY(a0)		; increase object's falling speed
+		addi.w	#$18,obVelY(a0)					; increase object's falling speed
 		move.w	objoff_30(a0),d0
 		cmp.w	obY(a0),d0
 		bhs.s	loc_EFDA

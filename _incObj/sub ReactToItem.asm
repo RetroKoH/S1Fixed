@@ -520,7 +520,7 @@ KillSonic:
 		
 		bset	#staAir,obStatus(a0)
 		move.b	#aniID_Shrink,obAnim(a0)
-		bset	#7,obGfx(a0)
+		bset	#gfxPriority,obGfx(a0)
 		move.w	#sfx_Death,d0					; play normal death sound
 		jsr		(PlaySound_Special).w
 		moveq	#-1,d0
@@ -541,7 +541,7 @@ KillSonic:
 		clr.w	obVelX(a0)
 		clr.w	obInertia(a0)
 		move.b	#aniID_Death,obAnim(a0)
-		bset	#7,obGfx(a0)
+		bset	#gfxPriority,obGfx(a0)
 	; Mercury Spike SFX Fix
 		move.w	#sfx_HitSpikes,d0		; play spikes death sound
 		cmpi.b	#id_Spikes,obID(a2)		; check	if you were killed by spikes
