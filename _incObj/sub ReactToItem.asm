@@ -193,13 +193,19 @@ Touch_ChkValue:
 ; ===========================================================================
 
 React_Monitor:
-		tst.w	obVelY(a0)	; is Sonic moving upwards?
-		bpl.s	.movingdown	; if not, branch
+		tst.w	obVelY(a0)			; is Sonic moving upwards?
+		bpl.s	.movingdown			; if not, branch
 
+	; If the center of Sonic is not under the bottom of the monitor, then
+	; return. This is a way of checking if Sonic is jumping into the
+	; bottom of the monitor, or just the side of it.
 		moveq	#-16,d0
 		add.w	obY(a0),d0			; get player's y_pos - monitor height
 		cmp.w	obY(a1),d0
-		blo.s	.donothing			; if new value is lower than monitor's y_pos, return
+		blo.s	.movingdown			; branch instead of return to fix a touch collision issue (RHS)
+
+	; If we've gotten this far, then Sonic has just jumped into the
+	; bottom of this monitor: knock it down.
 		neg.w	obVelY(a0)			; reverse Sonic's vertical speed
 		move.w	#-$180,obVelY(a1)
 		tst.b	ob2ndRout(a1)
@@ -214,11 +220,19 @@ React_Monitor:
 		beq.s	.spinning					; if yes, branch
 	endif	; Drop Dash End
 
-		cmpi.b	#aniID_Roll,obAnim(a0)	; is Sonic rolling/jumping?
-		bne.s	.donothing				; if not, branch
+		cmpi.b	#aniID_Roll,obAnim(a0)		; is Sonic rolling/jumping?
+		bne.s	.donothing					; if not, branch
 
 .spinning:
-		neg.w	obVelY(a0)				; reverse Sonic's y-motion
+        tst.w   obVelY(a0)					; is Sonic moving upwards?
+	
+	; RHS momentum fix (Fixes a minor issue resulting from RHS's earlier bugfix)
+        blt.s   .movingup					; if so, branch, we want Sonic to carry on moving up.
+		neg.w	obVelY(a0)					; reverse Sonic's y-motion
+
+.movingup:
+	; momentum fix end
+
 	if ReboundMod	; Mercury Rebound Mod
 		tst.b	obJumping(a0)
 		bne.s	.isjumping
