@@ -44,11 +44,6 @@ SuperMod: = 1
 
 ; ----- GAMEPLAY TWEAKS ----------------------------------------------------------
 
-; Name: Beta Level Order
-; Credit: RetroKoH
-; Function: Toggles level order between Beta and Final
-BetaLevelOrder: = 0						; if set to 1, Level Order is that seen in the beta level select
-
 ; Name: Disable Speed Caps
 ; Credit: Mercury (Ground/Air), RetroKoH (Applied to Devon's Rolling Speed Cap Fix)
 ; Function: Toggles the speed caps (The original game has all 3 caps active by default)
@@ -168,16 +163,6 @@ PaletteFadeSetting: = 6					; 0 - Blue (Original), 1 - Green, 2 - Red, 3 - Cyan 
 ; Function: Toggles GHZ palette between original and Sonic 1 Forever's altered bg water.
 GHZForeverPal: = 1						; if set to 1, GHZ is set to Sonic 1 Forever's palette
 
-; Name: Proto Sonic Palette Mod
-; Credit: Ikey Ilex
-; Function: Gives Sonic his prototype palette found in the Tom Payne archives. Also seen in Crackers and Sonic CD.
-ProtoSonicPalette: = 1
-
-; Name: Proto Percussion
-; Credit: OrionNavattan, RetroKoH
-; Function: Gives the percussion the sound style as heard in earlier prototype versions of the game.
-ProtoPercussion: = 1
-
 ; Name: Active Death Sequences
 ; Credit: RetroKoH
 ; Function: Active elements will not freeze when the player dies.
@@ -266,6 +251,28 @@ S4SSRingBarriers: = 1					; Replaces Ghost Blocks with Ring Barriers and removes
 ; Perfect Bonuses are included here because it helps keep SS_Load efficient.
 AlteredSpecialStages: = (S4SpecialStages+SpecialStagesWithAllEmeralds+S4SSRingBarriers+PerfectBonusEnabled)
 
+; ----- PROTO ELEMENTS -----------------------------------------------------------
+
+; Name: Original Level Order
+; Credit: RetroKoH
+; Function: Toggles level order between Original and Final
+OriginalLevelOrder: = 1						; if set to 1, Level Order is that seen in the original level select screen
+
+; Name: Proto Sonic Palette Mod
+; Credit: Ikey Ilex
+; Function: Gives Sonic his prototype palette found in the Tom Payne archives. Also seen in Crackers and Sonic CD.
+ProtoSonicPalette: = 1
+
+; Name: Proto Percussion
+; Credit: OrionNavattan
+; Function: Gives the percussion the sound style as heard in earlier prototype versions of the game.
+ProtoPercussion: = 1
+
+; Name: Proto Zone Names
+; Credit: RetroKoH
+; Function: Changes the names of Spring Yard and Scrap Brain to Sparkling and Clock Work, respectively
+ProtoZoneNames: = 1
+
 ; ----- UNDER-THE-HOOD -----------------------------------------------------------
 
 ; Name: Debug Path Swappers
@@ -309,7 +316,7 @@ DynamicBGMs: = 1						; if set to 1, there will be a separate BGM track for each
 ; Credit: RetroKoH
 ; Loads only necessary tiles for various cards. The benefit is less VRAM taken up by cards.
 ; The drawback is that they may be harder to edit for new users, and ROM size is slightly larger.
-OptimalTitleCardArt: = 1				; if set to 1, new art and mappings are used, reducing VRAM footprint and sprite piece count
+OptimalTitleCardArt: = 0				; if set to 1, new art and mappings are used, reducing VRAM footprint and sprite piece count
 
 ; Name: Dynamic Art
 ; Credit: RetroKoH

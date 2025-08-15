@@ -5276,6 +5276,10 @@ Nem_JapNames:	binclude	"artnem/Hidden Japanese Credits.nem"
 		even
 
 	if NewLevelSelect
+; ---------------------------------------------------------------------------
+; New Level Select Elements
+; ---------------------------------------------------------------------------
+
 Eni_MenuBack:		binclude	"tilemaps/SONIC MILES background.eni"
 		even
 Art_MenuBack:		binclude	"artunc/SONIC MILES background art.bin"
@@ -5283,12 +5287,35 @@ Art_MenuBack:		binclude	"artunc/SONIC MILES background art.bin"
 Nem_MenuStuff:		binclude	"artnem/S2 Level Select Font.nem"
 		even
 
-	if BetaLevelOrder
+; To-Do: Remove this and use ASCII
+	if OriginalLevelOrder
+; ===========================================================================
+		if ProtoZoneNames
+	; ---------------------------------------------------------------------------
+Eni_LevSel:			binclude	"tilemaps/S2 Proto Level Select (Beta Order).eni"
+		even
+	; ---------------------------------------------------------------------------
+		else
+	; ---------------------------------------------------------------------------
 Eni_LevSel:			binclude	"tilemaps/S2 Level Select (Beta Order).eni"
 		even
+	; ---------------------------------------------------------------------------
+		endif
+; ===========================================================================
 	else
+; ===========================================================================
+		if ProtoZoneNames
+	; ---------------------------------------------------------------------------
+Eni_LevSel:			binclude	"tilemaps/S2 Proto Level Select.eni"
+		even
+	; ---------------------------------------------------------------------------
+		else
+	; ---------------------------------------------------------------------------
 Eni_LevSel:			binclude	"tilemaps/S2 Level Select.eni"
 		even
+	; ---------------------------------------------------------------------------
+		endif
+; ===========================================================================
 	endif
 
 
@@ -5298,22 +5325,26 @@ Nem_LevSelIcons:	binclude	"artnem/S2 Level Select Icons.nem"
 		even
 	endif
 
-	if DynamicSpecialStageWalls
-			include	"_maps/SS Walls - Dynamic.asm"	; Mercury Dynamic Special Stage Walls
-	else
-			include	"_maps/SS Walls.asm"
-	endif
-
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - special stage
 ; ---------------------------------------------------------------------------
 
 	if DynamicSpecialStageWalls	; Mercury Dynamic Special Stage Walls
+
 Nem_SSWalls:	binclude	"artunc/Special Walls (dynamic).bin"
-	else
-Nem_SSWalls:	binclude	"artnem/Special Walls.nem"
-	endif	; Dynamic Special Stage Walls End
 		even
+
+				include	"_maps/SS Walls - Dynamic.asm"	; Mercury Dynamic Special Stage Walls
+
+	else
+
+Nem_SSWalls:	binclude	"artnem/Special Walls.nem"
+		even
+
+				include	"_maps/SS Walls.asm"
+
+	endif	; Dynamic Special Stage Walls End
+
 
 Eni_SSBg1:	binclude	"tilemaps/SS Background 1.eni" ; special stage background (mappings)
 		even

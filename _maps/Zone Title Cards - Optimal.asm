@@ -51,6 +51,29 @@ M_Card_SLZ:	spriteHeader		; STAR LIGHT
 M_Card_SLZ_End
 	even
 
+	if ProtoZoneNames
+
+M_Card_SYZ:	spriteHeader		; SPARKLING
+	spritePiece	-$44, -8, 4, 2, 0, 0, 0, 0, 0		; SP
+	spritePiece	-$24, -8, 4, 2, 8, 0, 0, 0, 0		; AR
+	spritePiece	-4, -8, 4, 2, $10, 0, 0, 0, 0		; KL
+	spritePiece	$1C, -8, 3, 2, $18, 0, 0, 0, 0		; IN
+	spritePiece	$34, -8, 2, 2, $1E, 0, 0, 0, 0		; G
+M_Card_SYZ_End
+	even
+
+M_Card_SBZ:	spriteHeader		; CLOCK WORK
+	spritePiece	-$54, -8, 4, 2, 8, 0, 0, 0, 0		; CL
+	spritePiece	-$34, -8, 4, 2, 4, 0, 0, 0, 0		; OC
+	spritePiece	-$14, -8, 2, 2, $14, 0, 0, 0, 0		; K
+
+	spritePiece	$C, -8, 4, 2, 0, 0, 0, 0, 0			; WO
+	spritePiece	$2C, -8, 4, 2, $10, 0, 0, 0, 0		; RK
+M_Card_SBZ_End
+	even
+
+	else
+	
 M_Card_SYZ:	spriteHeader		; SPRING YARD
 	spritePiece	-$54, -8, 4, 2, 0, 0, 0, 0, 0		; SP
 	spritePiece	-$34, -8, 2, 2, $1A, 0, 0, 0, 0		; R
@@ -72,6 +95,8 @@ M_Card_SBZ:	spriteHeader		; SCRAP BRAIN
 	spritePiece	$3C, -8, 3, 2, $18, 0, 0, 0, 0		; IN
 M_Card_SBZ_End
 	even
+
+	endif
 
 M_Card_Zone:	spriteHeader		; ZONE (starts at $22)
 	spritePiece	-$20, -8, 4, 2, $22, 0, 0, 0, 0
