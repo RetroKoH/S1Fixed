@@ -42,6 +42,10 @@ Ring_Animate:	; Routine 2
 
 RAttract_Collect:
 	if PerfectBonusEnabled
+		if EnemiesDropRings
+			tst.b	$3E(a0)						; Attracted rings from enemies don't decrement Perfect Count
+			bne.s	Ring_Collect
+		endif
 		subq.w	#1,(v_perfectringsleft).w
 	endif
 Ring_Collect:	; Routine 4
