@@ -67,18 +67,25 @@ Jun_Action:	; Routine 2
 		lea		(v_player).w,a1
 		moveq	#$E,d1
 		move.w	obX(a1),d0
-		cmp.w	obX(a0),d0	; is Sonic to the left of the disc?
-		blo.s	.isleft		; if yes, branch
+		cmp.w	obX(a0),d0					; is Sonic to the left of the disc?
+		blo.s	.isleft						; if yes, branch
 		moveq	#7,d1		
 
 .isleft:
-		cmp.b	obFrame(a0),d1	; is the gap next to Sonic?
-		bne.s	Jun_Display		; if not, branch
+		cmp.b	obFrame(a0),d1				; is the gap next to Sonic?
+		bne.s	Jun_Display					; if not, branch
 
 		move.b	d1,objoff_32(a0)
-		addq.b	#4,obRoutine(a0)		; goto Jun_Release next
-		move.b	#1,obCtrlLock(a1)		; lock controls
-		move.b	#aniID_Roll,obAnim(a1)	; make Sonic use "rolling" animation
+		addq.b	#4,obRoutine(a0)			; goto Jun_Release next
+		move.b	#1,obCtrlLock(a1)			; lock controls
+		move.b	#aniID_Roll,obAnim(a1)		; make Sonic use "rolling" animation
+
+	if SpinDashEnabled
+		clr.b	obSpinDashFlag(a1)
+		clr.w	obSpinDashCounter(a1)
+		clr.b	(v_playerdust+obAnim).w
+	endif
+
 		move.w	#$800,obInertia(a1)
 		clr.w	obVelX(a1)
 		clr.w	obVelY(a1)
