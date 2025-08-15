@@ -102,8 +102,8 @@ M_SSR_GotAll:	spriteHeader		; "SONIC GOT THEM ALL"
 M_SSR_GotAll_End
 
 M_SSR_Perfect:	spriteHeader
-	spritePiece	-$50, -8, 4, 2, $108, 0, 0, 0, 0	; PERF
-	spritePiece	-$30, -8, 3, 2, $110, 0, 0, 0, 0	; ECT
+	spritePiece	-$50, -8, 4, 2, $248, 0, 0, 0, 0	; PERF
+	spritePiece	-$30, -8, 3, 2, $250, 0, 0, 0, 0	; ECT
 	spritePiece	-$24, -9, 2, 1, $6E, 0, 0, 0, 0		; Small oval
 	spritePiece	-$24, -1, 2, 1, $6E, 1, 1, 0, 0		; Small oval
 	spritePiece	$28, -8, 4, 2, $140, 0, 0, 0, 0		; PERFECT BONUS VALUE

@@ -282,7 +282,7 @@ GotThroughAct:
 		jsr		(LoadUncArt).w										; load uncompressed art
 
 	if PerfectBonusEnabled
-		locVRAM	$69A*tile_size
+		locVRAM	ArtTile_Perfect*tile_size
 		lea		Art_Perfect,a0									; load title card patterns
 		move.l	#((Art_Perfect_End-Art_Perfect)/tile_size)-1,d0	; # of tiles
 		jsr		(LoadUncArt).w									; load uncompressed art
