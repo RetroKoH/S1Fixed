@@ -25,15 +25,16 @@ Ani_Sonic:
 		dc.w SonAni_Hang-Ani_Sonic
 		dc.w SonAni_Null-Ani_Sonic			; FALL
 		dc.w SonAni_GetAir-Ani_Sonic
-		dc.w SonAni_GetAirStand-Ani_Sonic	; Toggleable
+		dc.w SonAni_GetAirStand-Ani_Sonic
 		dc.w SonAni_Death-Ani_Sonic
 		dc.w SonAni_Drown-Ani_Sonic
 		dc.w SonAni_Shrink-Ani_Sonic		; Special Stage (Toggle)
 		dc.w SonAni_Hurt-Ani_Sonic
 		dc.w SonAni_WaterSlide-Ani_Sonic
-		dc.w SonAni_Peelout-Ani_Sonic
-		dc.w SonAni_DropDash-Ani_Sonic
-		dc.w SonAni_Transform-Ani_Sonic
+		dc.w SonAni_VictoryLeap-Ani_Sonic	; End-of-Level (Toggle)
+		dc.w SonAni_Peelout-Ani_Sonic		; (Toggle)
+		dc.w SonAni_DropDash-Ani_Sonic		; (Toggle)
+		dc.w SonAni_Transform-Ani_Sonic		; (Toggle)
 
 SonAni_Null:	dc.b $77, fr_SonNull, afChange, aniID_Walk
 		even
@@ -97,6 +98,9 @@ SonAni_Hurt:	dc.b 3,	fr_SonHurt, afEnd
 		even
 SonAni_WaterSlide:
 		dc.b	7, fr_SonHurt, fr_SonWaterSlide, afEnd
+		even
+SonAni_VictoryLeap:
+		dc.b	3, fr_SonVictoryLeap1, fr_SonVictoryLeap2, afBack, 1
 		even
 SonAni_Peelout:
 		dc.b	0, fr_SonWalk14, fr_SonWalk14, fr_SonWalk14, fr_SonWalk14, fr_SonWalk14, fr_SonWalk14, fr_SonWalk14, fr_SonWalk14

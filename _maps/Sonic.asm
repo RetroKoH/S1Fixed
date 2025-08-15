@@ -103,6 +103,8 @@ Map_Sonic:	mappingsTable
 		mappingsTableEntry.w	SonMap_Hurt
 		mappingsTableEntry.w	SonMap_GetAir
 		mappingsTableEntry.w	SonMap_WaterSlide
+		mappingsTableEntry.w	SonMap_Victory1
+		mappingsTableEntry.w	SonMap_Victory2		
 		mappingsTableEntry.w	SonMap_Dash11
 		mappingsTableEntry.w	SonMap_Dash12
 		mappingsTableEntry.w	SonMap_Dash13
@@ -611,6 +613,20 @@ SonMap_WaterSlide:	spriteHeader
 	spritePiece	-$14, -$10, 4, 4, 0, 0, 0, 0, 0
 	spritePiece	$C, -8, 1, 3, $10, 0, 0, 0, 0
 SonMap_WaterSlide_End
+
+SonMap_Victory1:	spriteHeader
+	 spritePiece -$14, 0, 4, 2, 0, 0, 0, 0, 0
+	 spritePiece -$C, -$18, 3, 3, 8, 0, 0, 0, 0
+	 spritePiece -$C, $10, 2, 1, $11, 0, 0, 0, 0
+	 spritePiece $C, -$10, 1, 2, $13, 0, 0, 0, 0
+SonMap_Victory1_End
+
+SonMap_Victory2:	spriteHeader
+	 spritePiece -$C, -$16, 4, 2, 0, 0, 0, 0, 0
+	 spritePiece -$C, -6, 3, 3, 8, 0, 0, 0, 0
+	 spritePiece -$14, 2, 1, 1, $11, 0, 0, 0, 0
+	 spritePiece -$C, $12, 2, 1, $12, 0, 0, 0, 0
+SonMap_Victory2_End
 
 SonMap_Dash11:	spriteHeader
 	spritePiece	-$14, -2, 1, 3, 0, 0, 0, 0, 0

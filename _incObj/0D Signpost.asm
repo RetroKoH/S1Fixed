@@ -64,6 +64,11 @@ Sign_Touch:	; Routine 2
 		bcs.s	.notouch
 		cmpi.w	#$20,d0								; is Sonic within $20 pixels of	the signpost?
 		bhs.s	.notouch							; if not, branch
+
+	if ProtoVictoryLeap
+		st.b	(f_victory).w						; set victory leap flag
+	endif
+
 		move.b	#sfx_Signpost,d0
 		jsr		(PlaySound).w						; play signpost sound
 
