@@ -13,7 +13,39 @@ RingsManager:
 
 RM_Main:
 		addq.b	#2,(v_ringsroutine).w		; => RingsManager_Main
-		bsr.w	RM_Setup					; perform initial setup
+
+; perform initial setup
+		clearRAM	v_ringpos				; clear positions table
+		clearRAM	v_ringconsumedata,v_ringconsumedata+$40		; clear consumption table
+
+		moveq	#0,d0
+
+		move.w	(v_zone).w,d0
+		ror.b	#2,d0					; lsl.b	#6,d0 > Filter Optimized Shifting
+		lsr.w	#4,d0
+		lea		(RingPos_Index).l,a1
+		movea.l	(a1,d0.w),a1			; Table read optimization - RetroKoH
+; If RingPos_Index table entries need to be word-length instead of long-length,
+; replace the above line with this code... it's actually faster than the original code:
+;		move.w	(a1,d0.w),d0
+;		adda.w	d0,a1					; Table read optimization - Vladikcomper
+		move.l	a1,(v_ringstart_addr_ROM).w
+		addq.w	#4,a1
+		moveq	#0,d5
+		move.w	#(Max_Rings-1),d0
+
+	.setuploop:
+		tst.l	(a1)+
+		bmi.s	.setupend
+		addq.w	#1,d5
+		dbf		d0,.setuploop
+
+	.setupend:
+	if PerfectBonusEnabled
+		move.w	d5,(v_perfectringsleft).w
+	endif
+; initial setup end
+
 		movea.l	(v_ringstart_addr_ROM).w,a1	; starting address in ROM
 		lea		(v_ringpos).w,a2			; ring status table to a2
 		move.w	(v_screenposx).w,d4			; left-most pixel displayed
@@ -124,76 +156,75 @@ RM_Next:
 ; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
 
 Touch_Rings:
-		cmpi.b	#90,obInvuln(a0)			; is Sonic too early in invuln frames to collect rings? -- RetroKoH Sonic SST Compaction
-		bhs.w	Touch_Rings_Done			; if so, return
-		movea.l	(v_ringstart_addr_ROM).w,a1
+		cmpi.b	#90,obInvuln(a0)				; is Sonic too early in invuln frames to collect rings? -- RetroKoH Sonic SST Compaction
+		bhs.w	Touch_Rings_Done				; if so, return
+		movea.l	(v_ringstart_addr_ROM).w,a1		; load start and end addresses
 		movea.l	(v_ringend_addr_ROM).w,a2
-		cmpa.l	a1,a2						; are there rings in this area?
-		beq.w	Touch_Rings_Done			; if not, return
-		movea.w	(v_ringstart_addr_RAM).w,a4
+		cmpa.l	a1,a2							; are there rings in this area?
+		beq.w	Touch_Rings_Done				; if not, return
+		movea.w	(v_ringstart_addr_RAM).w,a4		; load start address
 
 	if ShieldsMode
 		btst	#sta2ndLShield,obStatus2nd(a0)	; does the player have a lightning shield?
 		beq.s	Touch_Rings_NoAttraction		; if not, branch
-		move.w	obX(a0),d2
+		move.w	obX(a0),d2						; get character's position
 		move.w	obY(a0),d3
-		subi.w	#$40,d2							; lightning shield has a magnetic range of $40 pixels in each direction.
-		subi.w	#$40,d3
-		move.w	#6,d1
-		move.w	#12,d6
-		move.w	#$80,d4
-		move.w	#$80,d5
+		subi.w	#RingMagnetRange,d2				; lightning shield's magnetic range in each direction
+		subi.w	#RingMagnetRange,d3
+		move.w	#6,d1							; set ring radius
+		move.w	#12,d6							; set ring diameter
+		move.w	#$80,d4							; set Sonic's X diameter
+		move.w	#$80,d5							; set Y diameter
 		bra.s	Touch_Rings_Loop
 ; ---------------------------------------------------------------------------
 	endif
 
 Touch_Rings_NoAttraction:
-		move.w	obX(a0),d2
+		move.w	obX(a0),d2						; get character's position
 		move.w	obY(a0),d3
-		subi.w	#8,d2			; assume X radius to be 8
+		subi.w	#8,d2							; assume X radius to be 8
 		moveq	#0,d5
 		move.b	obHeight(a0),d5
 		subq.b	#3,d5
-		sub.w	d5,d3			; subtract (Y radius - 3) from Y pos
+		sub.w	d5,d3							; subtract (Y radius - 3) from Y pos
 		cmpi.b	#aniID_Duck,obAnim(a0)
-		bne.s	.TR_2			; if you're not ducking, branch
+		bne.s	.TR_2							; if you're not ducking, branch
 		addi.w	#$C,d3
 		moveq	#$A,d5
 
 .TR_2:
-		move.w	#6,d1			; set ring radius
-		move.w	#12,d6			; set ring diameter
-		move.w	#16,d4			; set Sonic's X diameter
-		add.w	d5,d5			; set Y diameter
+		move.w	#6,d1							; set ring radius
+		move.w	#12,d6							; set ring diameter
+		move.w	#16,d4							; set Sonic's X diameter
+		add.w	d5,d5							; set Y diameter
 
-; loc_17112:
 Touch_Rings_Loop:
-		tst.w	(a4)			; has this ring already been collided with?
-		bne.s	Touch_NextRing	; if it has, branch
-		move.w	(a1),d0			; get ring X pos
-		sub.w	d1,d0			; get ring left edge X pos
-		sub.w	d2,d0			; subtract Sonic's left edge X pos
-		bcc.s	.TRL_2			; if Sonic's to the left of the ring, branch
-		add.w	d6,d0			; add ring diameter
-		bcs.s	.TRL_3			; if Sonic's colliding, branch
-		bra.s	Touch_NextRing	; otherwise, test next ring
+		tst.w	(a4)							; has this ring already been collided with?
+		bne.s	Touch_NextRing					; if it has, branch
+		move.w	(a1),d0							; get ring X pos
+		sub.w	d1,d0							; get ring left edge X pos
+		sub.w	d2,d0							; subtract Sonic's left edge X pos
+		bcc.s	.TRL_2							; if Sonic's to the left of the ring, branch
+		add.w	d6,d0							; add ring diameter
+		bcs.s	.TRL_3							; if Sonic's colliding, branch
+		bra.s	Touch_NextRing					; otherwise, test next ring
 
 .TRL_2:
-		cmp.w	d4,d0			; has Sonic crossed the ring?
-		bhi.s	Touch_NextRing	; if he has, branch
+		cmp.w	d4,d0							; has Sonic crossed the ring?
+		bhi.s	Touch_NextRing					; if he has, branch
 
 .TRL_3:
-		move.w	2(a1),d0		; get ring Y pos
-		sub.w	d1,d0			; get ring top edge pos
-		sub.w	d3,d0			; subtract Sonic's top edge pos
-		bcc.s	.TRL_4			; if Sonic's above the ring, branch
-		add.w	d6,d0			; add ring diameter
-		bcs.s	.chkshield		; if Sonic's colliding, branch
-		bra.s	Touch_NextRing	; otherwise, test next ring
+		move.w	2(a1),d0						; get ring Y pos
+		sub.w	d1,d0							; get ring top edge pos
+		sub.w	d3,d0							; subtract Sonic's top edge pos
+		bcc.s	.TRL_4							; if Sonic's above the ring, branch
+		add.w	d6,d0							; add ring diameter
+		bcs.s	.chkshield						; if Sonic's colliding, branch
+		bra.s	Touch_NextRing					; otherwise, test next ring
 
 .TRL_4:
-		cmp.w	d5,d0			; has Sonic crossed the ring?
-		bhi.s	Touch_NextRing	; if he has, branch
+		cmp.w	d5,d0							; has Sonic crossed the ring?
+		bhi.s	Touch_NextRing					; if he has, branch
 
 .chkshield:
 	if ShieldsMode
@@ -321,56 +352,4 @@ CMap_Ring:
 .sparkle3:	dc.w make_art_tile(ArtTile_Ring,1,0)+$0808
 .sparkle4:	dc.w make_art_tile(ArtTile_Ring,1,0)+$1008
 .blank:		dc.w 0, 0
-; ===========================================================================
-
-; ---------------------------------------------------------------------------
-; Subroutine to perform initial rings manager setup
-; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
-
-; loc_172A4:
-RM_Setup:
-		lea		(v_ringpos).w,a1
-		moveq	#0,d0
-		move.w	#Rings_Space/4-1,d1		; Thank you ProjectFM
-
-loc_31343C:					  ; Clear positions table
-		move.l	d0,(a1)+
-		dbf		d1,loc_31343C
-	
-	; d0 = 0
-		lea		(v_ringconsumedata).w,a1
-		move.w	#$F,d1
-.RMS_2:
-		move.l	d0,(a1)+
-		dbf		d1,.RMS_2
-
-		moveq	#0,d0
-
-		move.w	(v_zone).w,d0
-		ror.b	#2,d0					; lsl.b	#6,d0 > Filter Optimized Shifting
-		lsr.w	#4,d0
-		lea		(RingPos_Index).l,a1
-		movea.l	(a1,d0.w),a1			; Table read optimization - RetroKoH
-; If RingPos_Index table entries need to be word-length instead of long-length,
-; replace the above line with this code... it's actually faster than the original code:
-;		move.w	(a1,d0.w),d0
-;		adda.w	d0,a1					; Table read optimization - Vladikcomper
-		move.l	a1,(v_ringstart_addr_ROM).w
-		addq.w	#4,a1
-		moveq	#0,d5
-		move.w	#(Max_Rings-1),d0
-
-.RMS_loop:
-		tst.l	(a1)+
-		bmi.s	.RMS_end
-		addq.w	#1,d5
-		dbf		d0,.RMS_loop
-
-.RMS_end:
-	if PerfectBonusEnabled
-		move.w	d5,(v_perfectringsleft).w
-	endif
-		rts
 ; ===========================================================================
