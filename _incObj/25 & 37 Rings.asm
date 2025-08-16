@@ -279,7 +279,7 @@ RLoss_Bounce:	; Routine 2
 		neg.w	d0
 		
 	.a1:
-		cmpi.w	#$A0,d0
+		cmpi.w	#RingMagnetRange,d0
 		bhi.s	.chkflash
 		
 		move.w	obY(a1),d0				; load Sonic's y-axis position
@@ -288,7 +288,7 @@ RLoss_Bounce:	; Routine 2
 		neg.w	d0
 
 	.a2:
-		cmpi.w	#$A0,d0
+		cmpi.w	#RingMagnetRange,d0
 		bhi.s	.chkflash
 
 		move.b	#$A,obRoutine(a0)		; Set routine to Attracted Ring
