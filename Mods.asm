@@ -36,6 +36,7 @@ DropDashEnabled: = 1
 InstashieldEnabled: = 0					; if set to 1, instashield is now enabled (Now split from Elemental Shields toggle).
 ShieldsMode: = 2						; 0 - Blue Shield only, 1 - Blue + Elementals, 2 - Elementals only.
 S3KDoubleJump: = (InstashieldEnabled|ShieldsMode)>0
+	RingMagnetRange: = $40				; The range of the lightning shield's ring magnetism
 
 ; Name: 7th Emerald and Super Sonic (Incomplete: Minor Bugfixes)
 ; Credit: RetroKoH (Palette Credit: Clownacy)

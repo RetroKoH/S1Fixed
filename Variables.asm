@@ -31,7 +31,7 @@ v_collision2:			ds.b	$300
 ; RetroKoH/Shobiz S3K Rings Manager RAM Variables
 v_ringspace:
 v_ringpos:				ds.b	Rings_Space		; $9600 (Ring_status_table) one word per ring = $400 bytes
-v_ringposend:
+v_ringpos_end:
 v_ringstart_addr_ROM:	ds.l	1				; $9A00 (Ring_start_addr_ROM) address in the ring layout of the first ring whose X position is >= camera X position - 8
 v_ringend_addr_ROM:		ds.l	1				; $9A04 (Ring_end_addr_ROM) address in the ring layout of the first ring whose X position is >= camera X position + 328
 v_ringstart_addr_RAM:	ds.w	1				; $9A08 (Ring_start_addr_RAM) address in the ring status table of the first ring whose X position is >= camera X position - 8
@@ -39,6 +39,7 @@ v_ringstart_addr_RAM:	ds.w	1				; $9A08 (Ring_start_addr_RAM) address in the rin
 v_ringconsumedata:								; $9A0A (Ring_consumption_table) ; stores the addresses of all rings currently being consumed
 v_ringconsumecount:		ds.w	1				; the number of rings being consumed currently
 v_ringconsumelist:		ds.w	$3F				; the remaining part of the ring consumption table
+
 v_ringsroutine:			ds.b	1				; $9A8A (Rings_manager_routine)
 v_ringspace_end:								; using this to clearRAM seemingly doesn't work correctly.
 ; S3K Rings Manager End
