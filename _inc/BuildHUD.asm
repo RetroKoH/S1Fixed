@@ -15,7 +15,7 @@ BuildHUD:
 		addq.w	#1,d1						; set mapping frame for ring count blink
 
 .chktime:
-	if TimeLimitInSpecialStage=1
+	if TimeLimitInSpecialStage
 		cmpi.b	#id_Special,(v_gamemode).w	; is this the Special Stage?
 		bne.s	.countup					; if no, behave like normal
 
@@ -37,7 +37,7 @@ BuildHUD:
 		addq.w	#2,d1						; set mapping frame time counter blink
 
 .goahead:
-	if HUDScrolling=1
+	if HUDScrolling
 		moveq	#0,d3
 		move.b	(v_hudscrollpos).w,d3		; set X pos. Will scroll to $90.
 	else
@@ -48,7 +48,7 @@ BuildHUD:
 		lea		(Map_HUD).l,a1
 		movea.w	#make_art_tile(ArtTile_HUD,0,0),a3	; set art tile and flags
 	
-	if HUDInSpecialStage=1	; Mercury HUD in Special Stage
+	if HUDInSpecialStage	; Mercury HUD in Special Stage
 		cmpi.b	#2,(f_levelstarted).w		; are we building the Sp. Stage HUD?
 		bne.s	.notSS						; if not, branch ahead
 		lea		(Map_HUD_SS).l,a1

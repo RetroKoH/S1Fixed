@@ -440,12 +440,12 @@ Debug_SpecialControl:
 		addi.w	#$50,d2
 		divu.w	#$18,d2
 		mulu.w	#$80,d2
-		adda.l	d2,a1
+		adda.l	d2,a1						; use y-position to get address
 		moveq	#0,d2
 		move.w	obX(a0),d2
-		addi.w	#$14,d2
+		addi.w	#$20,d2
 		divu.w	#$18,d2
-		adda.w	d2,a1
+		adda.w	d2,a1						; use x-position to get address
 
 	; If last entry, instead set (a1) to 00
 		move.b	(a2,d0.w),(a1)				; Place block
@@ -462,11 +462,13 @@ Debug_SpecialControl:
 		lea		(v_player).w,a1
 
 		clr.w	(v_ssangle).w
-	if S4SpecialStages=0
-		move.w	#$40,(v_ssrotate).w					; set new stage rotation speed
-	else
+
+	if S4SpecialStages
 		move.w	#$100,(v_ssrotate).w				; set new stage rotation speed
+	else
+		move.w	#$40,(v_ssrotate).w					; set new stage rotation speed
 	endif
+
 		move.l	#Map_Sonic,obMap(a1)
 		move.w	#ArtTile_Sonic,obGfx(a1)
 		move.b	#aniID_Roll,obAnim(a1)
@@ -478,7 +480,7 @@ Debug_SpecialControl:
 		move.w	d0,obVelY(a1)
 		move.w	d0,obInertia(a1)
 
-	if HUDInSpecialStage=1
+	if HUDInSpecialStage
 		jsr		(Hud_Base_SS).l						; reload basic HUD gfx	-- RetroKoH Debug Mode Improvement
 		move.b	#1,(f_ringcount).w					; update ring counter
 		move.b	#1,(f_scorecount).w					; update score counter
