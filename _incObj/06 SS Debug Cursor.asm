@@ -9,15 +9,8 @@ SpecialCursor:
 ; ===========================================================================
 
 SpCursor_Normal:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	SpCursor_Index(pc,d0.w),d1
-		jmp		SpCursor_Index(pc,d1.w)
-; ===========================================================================
-SpCursor_Index:	offsetTable
-		offsetTableEntry.w	SpCursor_Main
-		offsetTableEntry.w	SpCursor_Action
-; ===========================================================================
+		tst.b	obRoutine(a0)
+		bne.s	SpCursor_Action
 
 SpCursor_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -29,16 +22,20 @@ SpCursor_Main:	; Routine 0
 
 SpCursor_Action:	; Routine 2
 		lea		(v_player).w,a1
+
+; set y-position (seems correct)
 		moveq	#0,d2
 		move.w	obY(a1),d2
-;		subi.w	#$50,d2
+		addq.w	#8,d2
 		divu.w	#$18,d2
 		mulu.w	#$18,d2
 		addq.w	#4,d2
 		move.w	d2,obY(a0)
+
+; set y-position (seems correct)
 		moveq	#0,d2
 		move.w	obX(a1),d2
-;		addi.w	#$1A,d2
+		addq.w	#8,d2
 		divu.w	#$18,d2
 		mulu.w	#$18,d2
 		addq.w	#4,d2

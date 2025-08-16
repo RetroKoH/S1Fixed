@@ -4444,7 +4444,7 @@ SS_ShowLayout:
 		lea		(v_ssbuffer3&$FFFFFF).l,a1
 		move.b	(v_ssangle).w,d0
 
-	if SmoothSpecialStages=0	; Cinossu Smooth Special Stages
+	if ~~SmoothSpecialStages	; Cinossu Smooth Special Stages
 		andi.b	#$FC,d0
 	endif						; Smooth Special Stages End
 
@@ -4511,58 +4511,65 @@ loc_1B1C0:
 		lea		(v_ssbuffer3&$FFFFFF).l,a4
 		move.w	#$10-1,d7
 
-loc_1B20C:
+	.layoutloop:
 		move.w	#$F,d6
 
-loc_1B210:
+	.rowloop:
 		moveq	#0,d0
-		move.b	(a0)+,d0
-		beq.s	loc_1B268
+		move.b	(a0)+,d0				; load block to d0
+		beq.s	.nextblock				; if there is no block here, branch
 		cmpi.b	#SSBlock_GlassAni4,d0	; is the block ID higher than the last valid ID?
-		bhi.s	loc_1B268				; if yes, branch
-		move.w	(a4),d3
+		bhi.s	.nextblock				; if yes, branch
+		move.w	(a4),d3					; d3 = block's x-position
 		addi.w	#$120,d3
-		cmpi.w	#$70,d3
-		blo.s	loc_1B268
-		cmpi.w	#$1D0,d3
-		bhs.s	loc_1B268
-		move.w	2(a4),d2
+		cmpi.w	#$70,d3					; is the block to the left of the screen?
+		blo.s	.nextblock				; if it is, branch
+		cmpi.w	#$1D0,d3				; is the block to the right of the screen?
+		bhs.s	.nextblock				; if it is, branch
+		move.w	2(a4),d2				; d3 = block's y-position
 		addi.w	#$F0,d2
 		cmpi.w	#$70,d2
-		blo.s	loc_1B268
+		blo.s	.nextblock				; if the block is above the screen, branch
 		cmpi.w	#$170,d2
-		bhs.s	loc_1B268
+		bhs.s	.nextblock				; if the block is below the screen, branch
+
+; .drawBlock:
 		lea		(v_ssblocktypes&$FFFFFF).l,a5
 		lsl.w	#3,d0
 		lea		(a5,d0.w),a5
-		movea.l	(a5)+,a1
-		move.w	(a5)+,d1
+		movea.l	(a5)+,a1				; load mappings (the block's equivalent of an object's obMap)
+		move.w	(a5)+,d1				; get mapping frame (the block's equivalent of an object's obFrame)
 		add.w	d1,d1
-		adda.w	(a1,d1.w),a1
+		adda.w	(a1,d1.w),a1			; get mappings frame address
 		movea.w	(a5)+,a3
 		; S2 BuildSprites Change
-		move.w	(a1)+,d1
-		subq.w	#1,d1
+		move.w	(a1)+,d1				; number of sprite pieces (S2 BuildSprites: loading .w, so no need to clear d1)
+		subq.w	#1,d1					; S2 BuildSprites Change .b > .w.
 		; S2 BuildSprites End
-		bmi.s	loc_1B268
-		jsr	(BuildSpr_Normal).l
+		bmi.s	.nextblock				; if there are 0 pieces, branch
+		jsr		(BuildSpr_Normal).l
 
-loc_1B268:
-		addq.w	#4,a4
-		dbf		d6,loc_1B210
+	.nextblock:
+		addq.w	#4,a4					; advance to the next block in the row
+		dbf		d6,.rowloop				; repeat
 
-		lea		$70(a0),a0
-		dbf		d7,loc_1B20C
+		lea		$70(a0),a0				; advance to the next row in the layout
+		dbf		d7,.layoutloop			; repeat
 
 		move.b	d5,(v_spritecount).w
-		cmpi.b	#$50,d5
-		beq.s	loc_1B288
-		clr.l	(a2)
+	; If the sprite list is full, then set the link field of the last
+	; entry to 0. Otherwise, push the next sprite offscreen and set its
+	; link field to 0. You might be thinking why this doesn't just do the
+	; first one no matter what. Well, think about what if the sprite list
+	; was empty: then it would access data before the start of the list.
+		cmpi.b	#80,d5					; has the sprite limit been reached?
+		beq.s	.spriteLimit			; if yes, branch
+		clr.l	(a2)					; set link field to 0
 		rts	
 ; ===========================================================================
 
-loc_1B288:
-		clr.b	-5(a2)
+	.spriteLimit:
+		clr.b	-5(a2)					; set last sprite link
 		rts	
 ; End of function SS_ShowLayout
 
@@ -4574,7 +4581,7 @@ loc_1B288:
 
 
 SS_AniWallsRings:
-	if DynamicSpecialStageWalls=0	; Mercury Dynamic Special Stage Walls
+	if ~~DynamicSpecialStageWalls	; Mercury Dynamic Special Stage Walls
 		lea		((v_ssblocktypes+$C)&$FFFFFF).l,a1
 		moveq	#0,d0
 		move.b	(v_ssangle).w,d0
@@ -4706,7 +4713,7 @@ SS_LoadWalls:
 		lsr.b	#2,d0					; modify so it can be used as a frame ID
 		andi.w	#$F,d0
 		cmp.b	(v_ssangleprev).w,d0	; does the modified angle match the recorded value?
-		beq.s	.return					; if so, branch
+		beq.s	.spriteLimit					; if so, branch
 	
 		lea		(vdp_data_port).l,a6
 		lea		(Nem_SSWalls).l,a1		; load wall art
@@ -4721,7 +4728,7 @@ SS_LoadWalls:
 		bsr.s	LoadTiles
 		move.b	d0,(v_ssangleprev).w	; record the modified angle for comparison
 		
-.return:
+.spriteLimit:
 		rts
 
 ; ---------------------------------------------------------------------------
