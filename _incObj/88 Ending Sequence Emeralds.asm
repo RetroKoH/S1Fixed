@@ -16,7 +16,6 @@ EndChaos:
 ECha_Main:	; Routine 0
 		cmpi.b	#2,(v_player+obFrame).w ; Note: `v_player` is Object 88, which has its own frames
 		beq.s	ECha_CreateEms
-		addq.l	#4,sp
 		jmp		(DisplaySprite).l	
 ; ===========================================================================
 
