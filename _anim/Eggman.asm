@@ -40,7 +40,7 @@ Ani_Eggman:
 .escapeflame:	dc.b 2,	9, 8, $B, $C, $B, $C, 9, 8, afBack, 2
 		even
 
-; Sonic Animation IDs
+; Eggman Animation IDs
 	phase 0
 aniID_Ship:				ds.b 1		; 0 - Ship
 aniID_NormalFace1:		ds.b 1		; 1 - Face 1
