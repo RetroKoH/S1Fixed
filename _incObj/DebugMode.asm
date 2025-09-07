@@ -299,7 +299,7 @@ Debug_RestartMusic:
 		cmp.b	(v_lastbgmplayed).w,d0			; was this music already playing?
 		beq.s	.dontrestart
 		move.b	d0,(v_lastbgmplayed).w			; store last played music
-		jmp		(PlaySound).w					; restart last played music
+		jmp		(QueueSound1).w					; restart last played music
 
 .dontrestart:
 		rts

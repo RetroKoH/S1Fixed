@@ -113,7 +113,7 @@ BubbleShield_Bounce:
 		move.b	#aniID_BubbleBounceUp,(v_shieldobj+obAnim).w
 		clr.b	obDoubleJumpFlag(a0)
 		move.w	#sfx_BShieldAtk,d0
-		jmp		(PlaySound_Special).w
+		jmp		(QueueSound2).w
 ; End of function BubbleShield_Bounce
 	endif
 
@@ -227,7 +227,7 @@ DropDash_Release:
 		movea.l	a0,a1
 
 		move.w	#sfx_Teleport,d0
-		jmp		(PlaySound_Special).w		; play spindash release sfx
+		jmp		(QueueSound2).w		; play spindash release sfx
 
 .noDust:
 		movea.l	a0,a1

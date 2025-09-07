@@ -58,7 +58,7 @@ loc_BDC8:
 		tst.b	(a3)						; is this switch on?
 		bne.s	loc_BDD6					; if yes, branch
 		move.w	#sfx_Switch,d0
-		jsr		(PlaySound_Special).w		; play switch sound
+		jsr		(QueueSound2).w		; play switch sound
 
 loc_BDD6:
 		bset	d3,(a3)						; set switch byte

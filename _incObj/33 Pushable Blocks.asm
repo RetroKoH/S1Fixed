@@ -352,7 +352,7 @@ loc_C294:
 		clr.w	obVelX(a1)
 		move.w	d0,-(sp)
 		move.w	#sfx_Push,d0
-		jsr		(PlaySound_Special).w	 ; play pushing sound
+		jsr		(QueueSound2).w	 ; play pushing sound
 		move.w	(sp)+,d0
 		tst.b	obSubtype(a0)
 		bmi.s	locret_C2E4

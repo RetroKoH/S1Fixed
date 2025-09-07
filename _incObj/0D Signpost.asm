@@ -70,7 +70,7 @@ Sign_Touch:	; Routine 2
 	endif
 
 		move.b	#sfx_Signpost,d0
-		jsr		(PlaySound).w						; play signpost sound
+		jsr		(QueueSound1).w						; play signpost sound
 
 ; RetroKoH Floating Signpost Mechanic
 	if FloatingSignposts
@@ -153,7 +153,7 @@ Sign_Spin:	; Routine 4
 		bne.s	.chksparkle						; if not, branch
 	if EndLevelFadeMusic=1
 		move.b	#bgm_Fade,d0
-		jsr		(PlaySound_Special).w			; fade out music (RetroKoH)
+		jsr		(QueueSound2).w			; fade out music (RetroKoH)
 	endif
 		addq.b	#2,obRoutine(a0)
 
@@ -341,7 +341,7 @@ GotThroughAct:
 	endif
 
 		move.b	#bgm_GotThrough,d0
-		jmp		(PlaySound_Special).w					; play "Sonic got through" music
+		jmp		(QueueSound2).w					; play "Sonic got through" music
 ; End of function GotThroughAct
 
 ; ===========================================================================

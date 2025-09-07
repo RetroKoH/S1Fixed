@@ -52,7 +52,7 @@ Tit_EnterCheat:
 Tit_PlayRing:
 		move.b	#1,(a0,d1.w)				; activate cheat
 		move.b	#sfx_Ring,d0
-		bsr.w	PlaySound_Special			; play ring sound when code is entered
+		bsr.w	QueueSound2			; play ring sound when code is entered
 		bra.s	Tit_CountC
 ; ===========================================================================
 
@@ -141,7 +141,7 @@ Tit_EnterCheat:
 Tit_PlayRing:
 		move.b	#1,(a0,d1.w)				; activate cheat
 		move.b	#sfx_Ring,d0
-		bsr.w	PlaySound_Special			; play ring sound when code is entered
+		bsr.w	QueueSound2			; play ring sound when code is entered
 		bra.s	Tit_CountC
 ; ===========================================================================
 
@@ -183,7 +183,7 @@ Tit_NoLevSel:
 		move.b	#4,(v_pressstart+obRoutine).w	; activate NEW/CONTINUE menu
 		move.b	#4,(v_pressstart+obFrame).w
 		move.b	#sfx_Lamppost,d0
-		jsr		(PlaySound_Special).l			; play sfx
+		bsr.w	QueueSound2						; play sfx
 		bra.w	Tit_MainLoop
 
 Tit_MenuChoice:

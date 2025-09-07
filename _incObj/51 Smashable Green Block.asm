@@ -32,8 +32,6 @@ Smab_Solid:	; Routine 2
 		bsr.w	SolidObject
 		btst	#staSonicOnObj,obStatus(a0)	; has Sonic landed on the block?
 		bne.s	.smash						; if yes, branch
-
-.notspinning:
 		bra.w	RememberState	
 ; ===========================================================================
 

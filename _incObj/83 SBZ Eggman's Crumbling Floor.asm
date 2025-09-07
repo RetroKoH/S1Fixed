@@ -179,7 +179,7 @@ FFloor_Break:
 
 	.endloop:
 		move.w	#sfx_WallSmash,d0
-		jsr		(PlaySound_Special).w		; play smashing sound
+		jsr		(QueueSound2).w		; play smashing sound
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 

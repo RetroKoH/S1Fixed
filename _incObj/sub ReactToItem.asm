@@ -489,7 +489,7 @@ HurtSonic:
 		move.w	#sfx_HitSpikes,d0		; load spikes damage sound
 
 .sound:
-		jsr		(PlaySound_Special).w
+		jsr		(QueueSound2).w
 		moveq	#-1,d0
 		rts	
 ; ===========================================================================
@@ -522,7 +522,7 @@ KillSonic:
 		move.b	#aniID_Shrink,obAnim(a0)
 		bset	#gfxPriority,obGfx(a0)
 		move.w	#sfx_Death,d0					; play normal death sound
-		jsr		(PlaySound_Special).w
+		jsr		(QueueSound2).w
 		moveq	#-1,d0
 		rts	
 
@@ -552,7 +552,7 @@ KillSonic:
 	; Spike SFX Fix End
 
 .sound:
-		jsr		(PlaySound_Special).w
+		jsr		(QueueSound2).w
 
 .dontdie:
 		moveq	#-1,d0

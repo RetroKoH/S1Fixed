@@ -76,7 +76,7 @@ Lamp_Blue:	; Routine 2
 		bhs.s	.donothing
 
 		move.w	#sfx_Lamppost,d0
-		jsr		(PlaySound_Special).w	; play lamppost sound
+		jsr		(QueueSound2).w	; play lamppost sound
 		addq.b	#2,obRoutine(a0)
 		jsr		(FindFreeObj).l
 		bne.s	.fail

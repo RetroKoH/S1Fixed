@@ -54,7 +54,7 @@ Sonic_Display:
 		move.b	(a1,d0.w),d0
 		cmp.b	(v_lastbgmplayed).w,d0
 		beq.s	.removeinvincible
-		jsr		(PlaySound).w					; play normal music
+		jsr		(QueueSound1).w					; play normal music
 		move.b	d0,(v_lastbgmplayed).w			; store last played music
 ; -----------------------------------------------------------------------
 	else
@@ -75,7 +75,7 @@ Sonic_Display:
 		move.b	(a1,d0.w),d0
 		cmp.b	(v_lastbgmplayed).w,d0
 		beq.s	.removeinvincible
-		jsr		(PlaySound).w					; play normal music
+		jsr		(QueueSound1).w					; play normal music
 		move.b	d0,(v_lastbgmplayed).w			; store last played music
 ; ------------------------------------------------------------------------
 	endif
@@ -107,7 +107,7 @@ Sonic_Display:
 		bsr.w   ApplySpeedSettings				; Fetch Speed settings
 		bclr	#sta2ndShoes,obStatus2nd(a0)	; cancel speed shoes
 		move.w	#bgm_Slowdown,d0
-		jmp		(PlaySound).w					; run music at normal speed
+		jmp		(QueueSound1).w					; run music at normal speed
 
 	.exit:
 		rts	

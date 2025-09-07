@@ -175,7 +175,7 @@ v_snddriver_ram:	ds.b	$5C0		; sound driver state
 SegaCD_Mode	= v_snddriver_ram+$580
 
 v_gamemode:			ds.b	1		; game mode (00=Sega; 04=Title; 08=Demo; 0C=Level; 10=SS; 14=Cont; 18=End; 1C=Credit; +8C=PreLevel)
-v_lastbgmplayed:	ds.b	1		; last bgm played by PlaySound (Used by RestartMusic)
+v_lastbgmplayed:	ds.b	1		; last bgm played (Used by RestartMusic)
 v_jpadhold2:		ds.b	1		; joypad input - held, duplicate
 v_jpadpress2:		ds.b	1		; joypad input - pressed, duplicate
 v_jpadhold1:		ds.b	1		; joypad input - held

@@ -27,6 +27,7 @@ SEgg_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
 		move.b	#$84,obRender(a0)
 		move.b	#$20,obActWid(a0)
+
 		jsr		(FindNextFreeObj).l
 		bne.s	SEgg_Eggman
 		move.l	a0,objoff_34(a1)

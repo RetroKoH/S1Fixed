@@ -245,7 +245,7 @@ Obj09_Jump:
 		bset	#staAir,obStatus(a0)
 		bset	#staSSJump,obStatus(a0)	; set "Sonic has jumped" flag -- Mercury Fixed SS Jumping Physics
 		move.w	#sfx_Jump,d0
-		jmp		(PlaySound_Special).w	; play jumping sound
+		jmp		(QueueSound2).w	; play jumping sound
 
 Obj09_NoJump:
 		rts	
@@ -547,14 +547,14 @@ Obj09_GetCont:
 	endif	; Special Stages Still Appear With All Emeralds	End
 
 		move.w	#sfx_Continue,d0
-		jsr		(PlaySound).w				; play extra continue sound
+		jsr		(QueueSound1).w				; play extra continue sound
 
 Obj09_NoCont:
 	if PerfectBonusEnabled
 		tst.w	(v_perfectringsleft).w		; Have we achieved a PERFECT?
 		bne.s	Obj09_NoPerfect				; if not, branch
 		move.w	#sfx_Perfect,d0
-		jsr		(PlaySound_Special).w		; play extra continue sound
+		jsr		(QueueSound2).w		; play extra continue sound
 
 Obj09_NoPerfect:
 	endif
@@ -593,7 +593,7 @@ Obj09_Get1Up:
 .playbgm:
 	; Lives Over/Underflow Fix End
 		move.w	#bgm_ExtraLife,d0
-		jsr		(PlaySound).w				; play extra life music
+		jsr		(QueueSound1).w				; play extra life music
 
 		moveq	#0,d4
 		rts	
@@ -626,7 +626,7 @@ Obj09_GetEmer:
 
 Obj09_NoEmer:
 		move.w	#bgm_Emerald,d0
-		jsr		(PlaySound_Special).w		; play emerald music
+		jsr		(QueueSound2).w		; play emerald music
 		moveq	#0,d4
 		rts	
 ; ===========================================================================
@@ -728,7 +728,7 @@ Obj09_ChkBumper:
 
 Obj09_BumpSnd:
 		move.w	#sfx_Bumper,d0
-		jmp		(PlaySound_Special).w		; play bumper sound
+		jmp		(QueueSound2).w		; play bumper sound
 ; ===========================================================================
 
 Obj09_GOAL:
@@ -741,7 +741,7 @@ Obj09_GOAL:
 	endIF	; HUD in Special Stage End
 
 		move.w	#sfx_SSGoal,d0
-		jmp		(PlaySound_Special).w		; play "GOAL" sound
+		jmp		(QueueSound2).w		; play "GOAL" sound
 ; ===========================================================================
 
 Obj09_UPblock:
@@ -759,7 +759,7 @@ Obj09_UPblock:
 
 Obj09_UPsnd:
 		move.w	#sfx_SSItem,d0
-		jmp		(PlaySound_Special).w		; play up/down sound
+		jmp		(QueueSound2).w		; play up/down sound
 ; ===========================================================================
 
 Obj09_DOWNblock:
@@ -777,7 +777,7 @@ Obj09_DOWNblock:
 
 Obj09_DOWNsnd:
 		move.w	#sfx_SSItem,d0
-		jmp		(PlaySound_Special).w		; play up/down sound
+		jmp		(QueueSound2).w		; play up/down sound
 ; ===========================================================================
 
 Obj09_Rblock:
@@ -796,7 +796,7 @@ Obj09_Rblock:
 Obj09_RevStage:
 		neg.w	(v_ssrotate).w				; reverse stage rotation
 		move.w	#sfx_SSItem,d0
-		jmp		(PlaySound_Special).w		; play sound
+		jmp		(QueueSound2).w		; play sound
 ; ===========================================================================
 
 Obj09_ChkGlass:
@@ -824,7 +824,7 @@ Obj09_GlassUpdate:
 
 Obj09_GlassSnd:
 		move.w	#sfx_SSGlass,d0
-		jmp		(PlaySound_Special).w	; play glass block sound
+		jmp		(QueueSound2).w	; play glass block sound
 ; ===========================================================================
 
 Obj09_NoGlass:

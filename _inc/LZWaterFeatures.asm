@@ -173,7 +173,7 @@ DynWater_LZ3:
 		move.w	#$F8F9,(v_lvllayout+$50C).w ; update level layout
 		move.b	#1,(v_wtr_routine).w ; use second routine next
 		move.w	#sfx_Rumbling,d0
-		bsr.w	PlaySound_Special ; play sound $B7 (rumbling)
+		bsr.w	QueueSound2 ; play sound $B7 (rumbling)
 
 .setwaterlz3:
 		move.w	d1,(v_waterpos3).w
@@ -310,7 +310,7 @@ LZWindTunnels:
 		andi.b	#$3F,d0				; does VInt counter fall on 0, $40, $80 or $C0?
 		bne.s	.skipsound			; if not, branch
 		move.w	#sfx_Waterfall,d0
-		jsr		(PlaySound_Special).w	; play rushing water sound (only every $40 frames)
+		jsr		(QueueSound2).w	; play rushing water sound (only every $40 frames)
 
 .skipsound:
 		tst.b	(f_wtunnelallow).w		; are wind tunnels disabled?
@@ -431,7 +431,7 @@ loc_3F9A:
 		and.b	(v_vbla_byte).w,d0				; reversed instructions to save cycles (Filter)
 		bne.s	locret_3FBE
 		move.w	#sfx_Waterfall,d0
-		jmp		(PlaySound_Special).w			; play water sound
+		jmp		(QueueSound2).w			; play water sound
 
 locret_3FBE:
 		rts	

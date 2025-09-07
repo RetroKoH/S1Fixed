@@ -43,7 +43,7 @@ GM_Continue:
 		moveq	#palid_Continue,d0
 		bsr.w	PalLoad_Fade								; load continue	screen palette
 		move.b	#bgm_Continue,d0
-		bsr.w	PlaySound									; play continue	music
+		bsr.w	QueueSound1									; play continue	music
 		move.w	#659,(v_demolength).w						; set time delay to 11 seconds
 		clr.l	(v_screenposx).w
 		move.l	#$1000000,(v_screenposy).w

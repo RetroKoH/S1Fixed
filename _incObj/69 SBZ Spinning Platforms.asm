@@ -67,7 +67,7 @@ Spin_Trapdoor:	; Routine 2
 		tst.b	obRender(a0)
 		bpl.s	.animate
 		move.w	#sfx_Door,d0
-		jsr		(PlaySound_Special).w	; play door sound
+		jsr		(QueueSound2).w	; play door sound
 
 .animate:
 		lea		Ani_Spin(pc),a1

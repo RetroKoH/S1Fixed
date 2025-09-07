@@ -92,7 +92,7 @@ Spring_BounceUp:
 		move.b	#2,obRoutine(a1)
 		bclr	#staSonicOnObj,obStatus(a0)	; removed obSolid
 		move.w	#sfx_Spring,d0
-		jsr		(PlaySound_Special).w		; play spring sound
+		jsr		(QueueSound2).w		; play spring sound
 
 Spring_AniUp:	; Routine 4
 		lea		Ani_Spring(pc),a1
@@ -149,7 +149,7 @@ loc_DC56:
 	endif
 
 		move.w	#sfx_Spring,d0
-		jsr		(PlaySound_Special).w	; play spring sound
+		jsr		(QueueSound2).w	; play spring sound
 
 Spring_AniLR:	; Routine $A
 		lea		Ani_Spring(pc),a1
@@ -192,7 +192,7 @@ Spring_BounceDwn:
 		move.b	#2,obRoutine(a1)
 		bclr	#staSonicOnObj,obStatus(a0)	; removed obSolid
 		move.w	#sfx_Spring,d0
-		jsr		(PlaySound_Special).w		; play spring sound
+		jsr		(QueueSound2).w		; play spring sound
 
 Spring_AniDwn:	; Routine $10
 		lea		Ani_Spring(pc),a1

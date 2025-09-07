@@ -5,7 +5,7 @@
 
 GM_SRAMError:
 		move.b	#bgm_Stop,d0
-		bsr.w	PlaySound_Special ; stop music
+		bsr.w	QueueSound2 ; stop music
 		bsr.w	ClearPLC
 		bsr.w	PaletteFadeOut
 		lea		(vdp_control_port).l,a6

@@ -52,7 +52,7 @@ LevelSelect:
 
 ; Error check removed following bugfix
 LevSel_PlaySnd:
-		bsr.w	PlaySound_Special
+		bsr.w	QueueSound2
 		bra.s	LevelSelect
 ; ===========================================================================
 
@@ -65,7 +65,7 @@ LevSel_Ending:
 LevSel_Credits:
 		move.b	#id_Credits,(v_gamemode).w ; set screen mode to $1C (Credits)
 		move.b	#bgm_Credits,d0
-		bsr.w	PlaySound_Special ; play credits music
+		bsr.w	QueueSound2 ; play credits music
 		clr.w	(v_creditsnum).w
 		rts	
 ; ===========================================================================

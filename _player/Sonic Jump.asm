@@ -46,7 +46,7 @@ Sonic_Jump:
 		clr.b	obOnWheel(a0)
 		clr.b	obLRLock(a0)				; Mercury Clear Control Lock When Jump
 		move.w	#sfx_Jump,d0
-		jsr		(PlaySound_Special).w		; play jumping sound
+		jsr		(QueueSound2).w		; play jumping sound
 	; Removed code expanding Sonic's radius -- RetroKoH Rolling Jump Fix
 		tst.b	(f_victory).w				; has the victory animation flag been set?
 		bne.s	.victoryleap				; if yes, branch
