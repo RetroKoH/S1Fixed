@@ -40,7 +40,7 @@ Bump_Hit:	; Routine 2
 		clr.b	obJumping(a1)
 		move.b	#1,obAnim(a0)			; use "hit" animation
 		move.w	#sfx_Bumper,d0
-		jsr		(PlaySound_Special).w	; play bumper sound
+		jsr		(QueueSound2).w	; play bumper sound
 		move.w	obRespawnNo(a0),d0		; get address in respawn table
 		beq.s	.addscore				; if it's zero, don't remember object
 		movea.w	d0,a2					; load address into a2

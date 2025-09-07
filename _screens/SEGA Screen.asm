@@ -4,7 +4,7 @@
 
 GM_Sega:
 		move.b	#bgm_Stop,d0
-		bsr.w	PlaySound 					; stop music
+		bsr.w	QueueSound1 				; stop music
 		bsr.w	ClearPLC
 		bsr.w	PaletteFadeOut
 		lea		(vdp_control_port).l,a6
@@ -67,10 +67,10 @@ Sega_WaitPal:
 		bne.s	Sega_WaitPal
 
 		move.b	#bgm_SEGA,d0
-		jsr		(Play_Music).w						; play "SEGA" sound
+		jsr		(Play_Music).w					; play "SEGA" sound
 		move.b	#$14,(v_vbla_routine).w
 		bsr.w	WaitForVBla
-		move.w	#3*60,(v_demolength).w	; 3 seconds
+		move.w	#3*60,(v_demolength).w			; 3 seconds
 
 Sega_WaitEnd:
 		move.b	#$14,(v_vbla_routine).w

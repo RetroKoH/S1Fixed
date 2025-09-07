@@ -82,7 +82,7 @@ Tele_ChkSonic:	; Routine 2
 		move.w	obY(a0),obY(a1)
 		clr.b	tele_delaytime(a0)			; clear delay timer
 		move.w	#sfx_Roll,d0
-		jsr		(PlaySound_Special).w		; play Sonic rolling sound
+		jsr		(QueueSound2).w		; play Sonic rolling sound
 
 .dontTeleport:
 		rts	
@@ -102,7 +102,7 @@ Tele_WaitToMove:	; Routine 4
 		bsr.w	Tele_SetMovementTimer		; set movement timer to first coordinates pair
 		addq.b	#2,obRoutine(a0)
 		move.w	#sfx_Teleport,d0
-		jsr		(PlaySound_Special).w		; play teleport sound
+		jsr		(QueueSound2).w		; play teleport sound
 
 .wait:
 		rts	

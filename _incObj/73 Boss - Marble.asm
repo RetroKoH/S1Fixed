@@ -115,7 +115,7 @@ BossMarble_ChkHit:
 		bne.w	BossFlash							; if yes, branch and flash
 		move.b	#$28,boss_flashframes(a0)			; set number of	times for ship to flash
 		move.w	#sfx_HitBoss,d0
-		jsr		(PlaySound_Special).w				; play boss damage sound
+		jsr		(QueueSound2).w				; play boss damage sound
 		bra.w	BossFlash							; apply flash effect
 
 	.end:
@@ -318,7 +318,7 @@ loc_1856C:
 		move.w	#bgm_MZ,d0
 	endif
 
-		jsr		(PlaySound).w						; play MZ music
+		jsr		(QueueSound1).w						; play MZ music
 		move.b	d0,(v_lastbgmplayed).w				; store last played music
 
 loc_1857A:

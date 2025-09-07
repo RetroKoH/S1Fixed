@@ -117,7 +117,7 @@ BossSpringYard_ChkHit:
 		bne.w	BossFlash
 		move.b	#$20,boss_flashframes(a0)	; set number of	times for ship to flash
 		move.w	#sfx_HitBoss,d0
-		jsr		(PlaySound_Special).w		; play boss damage sound
+		jsr		(QueueSound2).w		; play boss damage sound
 		bra.w	BossFlash
 
 locret_19256:
@@ -416,7 +416,7 @@ loc_194E0:
 		move.w	#bgm_SYZ,d0
 	endif
 
-		jsr		(PlaySound).w			; play SYZ music
+		jsr		(QueueSound1).w			; play SYZ music
 		move.b	d0,(v_lastbgmplayed).w	; store last played music
 		bra.w	BossSpringYard_ApplyMovement
 ; ===========================================================================

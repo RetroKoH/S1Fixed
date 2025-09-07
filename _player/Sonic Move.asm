@@ -392,7 +392,7 @@ loc_130BA:
 		move.b	#aniID_Stop,obAnim(a0)	; use "stopping" animation
 		bclr	#staFacing,obStatus(a0)
 		move.w	#sfx_Skid,d0
-		jsr		(PlaySound_Special).w	; play stopping sound
+		jsr		(QueueSound2).w	; play stopping sound
 
 	if SkidDustEnabled
 		cmpi.b	#$C,(v_air)
@@ -451,7 +451,7 @@ loc_13120:
 		move.b	#aniID_Stop,obAnim(a0) ; use "stopping" animation
 		bset	#staFacing,obStatus(a0)
 		move.w	#sfx_Skid,d0
-		jsr		(PlaySound_Special).w	; play stopping sound
+		jsr		(QueueSound2).w	; play stopping sound
 
 	if SkidDustEnabled
 		cmpi.b	#$C,(v_air)

@@ -66,7 +66,7 @@ Sonic_ChkRoll:
 	endif
 		addq.w	#5,obY(a0)						; Add to y-pos the difference in height radius
 		move.w	#sfx_Roll,d0
-		jsr		(PlaySound_Special).w			; play rolling sound
+		jsr		(QueueSound2).w			; play rolling sound
 		tst.w	obInertia(a0)
 		bne.s	.ismoving
 		move.w	#$200,obInertia(a0) 			; set inertia if 0

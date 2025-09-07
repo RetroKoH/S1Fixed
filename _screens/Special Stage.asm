@@ -4,7 +4,7 @@
 
 GM_Special:
 		move.w	#sfx_EnterSS,d0
-		bsr.w	PlaySound_Special	; play special stage entry sound
+		bsr.w	QueueSound2			; play special stage entry sound
 		bsr.w	PaletteWhiteOut
 		disable_ints
 		lea		(vdp_control_port).l,a6
@@ -67,8 +67,9 @@ GM_Special:
 	else
 		move.w	#$100,(v_ssrotate).w				; set stage rotation speed
 	endif
+
 		move.w	#bgm_SpecialStage,d0
-		bsr.w	PlaySound							; play special stage BG	music
+		bsr.w	QueueSound1							; play special stage BG	music
 		lea		DemoDataPtr(pc),a1
 		moveq	#6,d0
 		add.w	d0,d0								; Filter: *2 instead of *4
@@ -261,7 +262,7 @@ loc_47D4:
 	endif
 		
 		move.w	#bgm_GotThrough,d0
-		jsr		(PlaySound).w					; play end-of-level music
+		jsr		(QueueSound1).w					; play end-of-level music
 
 		clearRAM v_objspace
 
@@ -283,7 +284,7 @@ SS_NormalExit:
 		tst.l	(v_plc_buffer).w
 		bne.s	SS_NormalExit
 		move.w	#sfx_EnterSS,d0
-		bsr.w	PlaySound_Special ; play special stage exit sound
+		bsr.w	QueueSound2 ; play special stage exit sound
 		bra.w	PaletteWhiteOut
 ; ===========================================================================
 

@@ -95,11 +95,11 @@ CollectRing:
 .playbgm:
 	; Lives Over/Underflow Fix End
 		move.w	#bgm_ExtraLife,d0	; play extra life music
-		jmp	(PlaySound).w
+		jmp		(QueueSound1).w
 
 .playsnd:
 		move.w	#sfx_Ring,d0	 	; play ring sound
-		jmp	(PlaySound_Special).l
+		jmp		(QueueSound2).w
 ; End of function CollectRing
 
 ; ===========================================================================
@@ -215,7 +215,7 @@ RLoss_Count:	; Routine 0
 		clr.b	(v_lifecount).w
 	; Moved sfx above anim timer code to accomodate potential badnik ring branch
 		move.w	#sfx_RingLoss,d0
-		jsr		(PlaySound_Special).w		; play ring loss sound
+		jsr		(QueueSound2).w				; play ring loss sound
 
 	; RHS Ring Timers Fix
 	.setanim:

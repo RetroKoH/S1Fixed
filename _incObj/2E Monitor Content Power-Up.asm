@@ -108,7 +108,7 @@ ExtraLife:
 .playbgm:
 	; Lives Over/Underflow Fix End
 		move.w	#bgm_ExtraLife,d0
-		jmp		(PlaySound).w		; play extra life music
+		jmp		(QueueSound1).w		; play extra life music
 ; ===========================================================================
 
 Pow_Shoes:
@@ -139,7 +139,7 @@ Pow_Shield:
 		clr.b	(v_shieldobj+obRoutine).w
 		clr.b	(v_shieldobj+obSubtype).w
 		move.w	#sfx_Shield,d0
-		jmp		(PlaySound_Special).w						; play shield sound
+		jmp		(QueueSound2).w								; play shield sound
 ; ===========================================================================
 
 Pow_Invinc:
@@ -157,7 +157,7 @@ Pow_Invinc:
 		bls.s	.nomusic
 		move.w	#bgm_Invincible,d0
 		move.b	d0,(v_lastbgmplayed).w					; store last played music
-		jmp		(PlaySound).w							; play invincibility music
+		jmp		(QueueSound1).w							; play invincibility music
 ; ===========================================================================
 
 .nomusic:
@@ -183,7 +183,7 @@ Pow_Rings:
 
 Pow_RingSound:
 		move.w	#sfx_Ring,d0
-		jmp		(PlaySound_Special).w	; play ring sound
+		jmp		(QueueSound2).w		; play ring sound
 ; ===========================================================================
 
 Pow_S:
@@ -210,7 +210,7 @@ Pow_S:
 		
 .sRingSound:
 		move.w	#sfx_GiantRing,d0
-		jmp		(PlaySound_Special).w					; play giant ring sound
+		jmp		(QueueSound2).w					; play giant ring sound
 	else
 		if AfterImagesOn	; Hitaxas S3K afterimage
 			move.b	#id_AfterImages,(v_trails).w
@@ -249,7 +249,7 @@ Pow_Goggles:
 		bset	#sta2ndGoggles,(v_player+obStatus2nd).w		; give Sonic goggles
 		move.b	#id_GogglesItem,(v_gogglesobj).w			; load goggles object ($8F)
 		move.w	#sfx_A2,d0;#sfx_Grab,d0
-		jmp		(PlaySound_Special).w						; play sound
+		jmp		(QueueSound2).w								; play sound
 ; ===========================================================================
 
 	if ShieldsMode
@@ -261,7 +261,7 @@ Pow_FShield:
 		clr.b	(v_shieldobj+obRoutine).w
 		move.b	#shTypeFlame,(v_shieldobj+obSubtype).w
 		move.w	#sfx_FShield,d0
-		jmp		(PlaySound_Special).w						; play shield sound
+		jmp		(QueueSound2).w								; play shield sound
 ; ===========================================================================
 
 Pow_BShield:
@@ -272,7 +272,7 @@ Pow_BShield:
 		clr.b	(v_shieldobj+obRoutine).w
 		move.b	#shtypeBubble,(v_shieldobj+obSubtype).w
 		move.w	#sfx_BShield,d0
-		jmp		(PlaySound_Special).w						; play shield sound
+		jmp		(QueueSound2).w								; play shield sound
 ; ===========================================================================
 
 Pow_LShield:
@@ -283,6 +283,6 @@ Pow_LShield:
 		clr.b	(v_shieldobj+obRoutine).w
 		move.b	#shTypeLtning,(v_shieldobj+obSubtype).w
 		move.w	#sfx_LShield,d0
-		jmp		(PlaySound_Special).w						; play shield sound
+		jmp		(QueueSound2).w								; play shield sound
 ; ===========================================================================
 	endif

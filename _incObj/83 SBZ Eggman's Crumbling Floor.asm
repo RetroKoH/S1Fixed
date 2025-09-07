@@ -179,7 +179,7 @@ FFloor_Break:
 
 	.endloop:
 		move.w	#sfx_Collapse,d0			; Should be sfx_WallSmash, but the sound is different
-		jsr		(PlaySound_Special).w		; play smashing sound
+		jsr		(QueueSound2).w				; play smashing sound
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 

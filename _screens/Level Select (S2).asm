@@ -67,7 +67,7 @@ GM_MenuScreen:
 		dbf		d1,.loop
 
 		move.b	#bgm_Options,d0
-		bsr.w	PlaySound				; play Level Select Menu sound
+		bsr.w	QueueSound1				; play Level Select Menu sound
 		move.b	#$16,(v_vbla_routine).w
 		bsr.w	WaitForVBla
 		move.w	(v_vdp_buffer1).w,d0
@@ -257,7 +257,7 @@ LevSelControls_CheckLR:
 		andi.w	#btnBC,d1
 		beq.s	.rts	; rts
 		move.w	(v_levselsound).w,d0
-		bra.w	PlaySound
+		bra.w	QueueSound1
 
 	.rts:
 		rts

@@ -138,7 +138,7 @@ loc_197AA:
 
 loc_197D4:
 		move.w	#sfx_Collapse,d0		; Should be sfx_WallSmash, but the sound is different
-		jmp		(PlaySound_Special).w	; play smashing sound
+		jmp		(QueueSound2).w			; play smashing sound
 ; End of function BossBlock_Break
 
 ; ===========================================================================

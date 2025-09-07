@@ -42,7 +42,7 @@ BossFire_Main:	; Routine 0
 loc_1870A:
 		move.b	#30,bossfire_delaytimer(a0)		; set delay timer to drop from the tube to half a second
 		move.w	#sfx_Fireball,d0
-		jsr		(PlaySound_Special).w			; play lava sound
+		jsr		(QueueSound2).w			; play lava sound
 
 BossFire_Action:	; Routine 2
 		moveq	#0,d0

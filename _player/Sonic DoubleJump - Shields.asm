@@ -72,7 +72,7 @@ Sonic_InstaShieldAttack:
 		addq.b	#1,(v_shieldobj+obAnim).w				; Set animation to aniID_InstaActive
 		move.b	#1,obDoubleJumpFlag(a0)					; Set to 1. Will be set to 2 when finished.
 		move.w	#sfx_InstaAtk,d0
-		jmp		(PlaySound_Special).w
+		jmp		(QueueSound2).w
 
 ; ===========================================================================
 	endif
@@ -93,7 +93,7 @@ Sonic_FlameShieldAttack:
 		move.w	d0,obInertia(a0)
 		clr.w	obVelY(a0)
 		move.w	#sfx_FShieldAtk,d0
-		jmp		(PlaySound_Special).w
+		jmp		(QueueSound2).w
 ; ===========================================================================
 
 Sonic_BubbleShieldAttack:
@@ -103,7 +103,7 @@ Sonic_BubbleShieldAttack:
 		clr.w	obInertia(a0)
 		move.w	#$800,obVelY(a0)						; send Sonic straight down, to bounce himself up
 		move.w	#sfx_BShieldAtk,d0
-		jmp		(PlaySound_Special).w
+		jmp		(QueueSound2).w
 ; ===========================================================================
 
 Sonic_LightningShieldAttack:
@@ -112,6 +112,6 @@ Sonic_LightningShieldAttack:
 		move.w	#-$580,obVelY(a0)						; y speed set to -5.5, to spring him further upward
 		clr.b	obJumping(a0)
 		move.w	#sfx_LShieldAtk,d0
-		jmp		(PlaySound_Special).w
+		jmp		(QueueSound2).w
 ; ===========================================================================
 	endif

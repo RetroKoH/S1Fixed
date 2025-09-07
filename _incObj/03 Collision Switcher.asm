@@ -124,7 +124,7 @@ PSwapper_MainX:
 		tst.b	(f_debugcheat).w
 		beq.s	.locret
 		move.b	#sfx_Lamppost,d0
-		jmp		(PlaySound_Special).w
+		jmp		(QueueSound2).w
 	endif
 
 .locret:
@@ -171,7 +171,7 @@ PSwapper_MainX_Alt:
 		tst.b	(f_debugcheat).w
 		beq.s	.locret
 		move.b	#sfx_Lamppost,d0
-		jmp		(PlaySound_Special).w
+		jmp		(QueueSound2).w
 	endif
 
 .locret:
@@ -225,7 +225,7 @@ PSwapper_MainY:
 		tst.b	(f_debugcheat).w
 		beq.s	.locret
 		move.b	#sfx_Lamppost,d0
-		jmp		(PlaySound_Special).w
+		jmp		(QueueSound2).w
 	endif
 
 .locret:
@@ -272,7 +272,7 @@ PSwapper_MainY_Alt:
 		tst.b	(f_debugcheat).w
 		beq.s	.locret
 		move.b	#sfx_Lamppost,d0
-		jmp		(PlaySound_Special).w
+		jmp		(QueueSound2).w
 	endif
 
 .locret:

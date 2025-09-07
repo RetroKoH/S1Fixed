@@ -67,7 +67,7 @@ SmashObject:
 		dbf		d1,.loop						; repeat for number of fragments (space permitting)
 
 .endloop:
-		move.w	#sfx_Collapse,d0		; Should be sfx_WallSmash, but the sound is different
-		jmp		(PlaySound_Special).w ; play smashing sound
+		move.w	#sfx_Collapse,d0				; Should be sfx_WallSmash, but the sound is different
+		jmp		(QueueSound2).w					; play smashing sound
 
 ; End of function SmashObject
