@@ -16,7 +16,7 @@ Sonic_ChkPeelout:
 		move.b	#aniID_Run,obAnim(a0)
 		clr.w	obSpinDashCounter(a0)
 		move.w	#sfx_Charge,d0
-		jsr		(PlaySound_Special).w
+		jsr		(QueueSound2).w
 		addq.l	#4,sp
 		bset	#1,obSpinDashFlag(a0)
 
@@ -61,7 +61,7 @@ Sonic_DashLaunch:
 .dontflip:
 	; Improved section by DeltaWooloo
 		move.w	#sfx_Release,d0
-		jsr		(PlaySound_Special).w
+		jsr		(QueueSound2).w
 		move.b	obAngle(a0),d0
 		jsr		(CalcSine).w
 		muls.w	obInertia(a0),d1
@@ -81,7 +81,7 @@ Sonic_DashCharge:				; If still charging the dash...
 
 Sonic_DashStopSound:
 		move.w	#sfx_Stop,d0
-		jsr		(PlaySound_Special).w
+		jsr		(QueueSound2).w
 		clr.w	obInertia(a0)
 
 Sonic_DashResetScr:

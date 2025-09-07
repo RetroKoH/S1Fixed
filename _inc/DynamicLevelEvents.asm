@@ -196,7 +196,7 @@ loc_6EB0:
 
 loc_6ED0:
 		move.w	#bgm_Boss,d0
-		bsr.w	PlaySound				; play boss music
+		bsr.w	QueueSound1				; play boss music
 		move.b	d0,(v_lastbgmplayed).w	; store last played music
 		move.b	#1,(f_lockscreen).w		; lock screen
 		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
@@ -217,7 +217,7 @@ DLE_LZ3:
 		move.w	#$1718,(a1)					; modify level layout to open a path out of the endless slide
 											; (Replace this chunk, and the next one, w/ chunks $17 and $18, respectively).
 		move.w	#sfx_Rumbling,d0
-		bsr.w	PlaySound_Special			; play rumbling sound
+		bsr.w	QueueSound2			; play rumbling sound
 
 loc_6F28:
 	; New DLE by RetroKoH to seal off the boss area near the fight
@@ -229,7 +229,7 @@ loc_6F28:
 		bhs.s	locret_6F8C
 		move.b	#1,(f_switch+8).w			; trigger the door
 		move.w	#sfx_Rumbling,d0
-		bsr.w	PlaySound_Special			; play rumbling sound
+		bsr.w	QueueSound2			; play rumbling sound
 
 DLE_LZ3_BossChk:
 		tst.w	(v_dle_routine).w			; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
@@ -244,7 +244,7 @@ DLE_LZ3_BossChk:
 
 loc_6F4A:
 		move.w	#bgm_Boss,d0
-		bsr.w	PlaySound					; play boss music
+		bsr.w	QueueSound1					; play boss music
 		move.b	d0,(v_lastbgmplayed).w		; store last played music
 		move.b	#1,(f_lockscreen).w			; lock screen
 		addq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
@@ -407,7 +407,7 @@ DLE_MZ3boss:
 
 loc_70D0:
 		move.w	#bgm_Boss,d0
-		bsr.w	PlaySound				; play boss music
+		bsr.w	QueueSound1				; play boss music
 		move.b	d0,(v_lastbgmplayed).w	; store last played music
 		move.b	#1,(f_lockscreen).w		; lock screen
 		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
@@ -450,7 +450,7 @@ DLE_SLZ3boss:
 
 loc_7144:
 		move.w	#bgm_Boss,d0
-		bsr.w	PlaySound				; play boss music
+		bsr.w	QueueSound1				; play boss music
 		move.b	d0,(v_lastbgmplayed).w	; store last played music
 		move.b	#1,(f_lockscreen).w		; lock screen
 		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
@@ -515,7 +515,7 @@ DLE_SYZ3boss:
 
 loc_71EC:
 		move.w	#bgm_Boss,d0
-		bsr.w	PlaySound				; play boss music
+		bsr.w	QueueSound1				; play boss music
 		move.b	d0,(v_lastbgmplayed).w	; store last played music
 		move.b	#1,(f_lockscreen).w		; lock screen
 		moveq	#plcid_Boss_SYZ,d0		; RetroKoH VRAM Overhaul

@@ -35,7 +35,7 @@ Elec_Shock:	; Routine 2
 		tst.b	obRender(a0)
 		bpl.s	.animate
 		move.w	#sfx_Electric,d0
-		jsr		(PlaySound_Special).w				; play electricity sound
+		jsr		(QueueSound2).w				; play electricity sound
 
 .animate:
 		lea		Ani_Elec(pc),a1

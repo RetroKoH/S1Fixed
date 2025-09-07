@@ -68,7 +68,7 @@ GRing_Collect:	; Routine 4
 
 GRing_PlaySnd:
 		move.w	#sfx_GiantRing,d0
-		jsr		(PlaySound_Special).w	; play giant ring sound
+		jsr		(QueueSound2).w	; play giant ring sound
 ; ===========================================================================
 
 GRing_Flash:	; Routine 6

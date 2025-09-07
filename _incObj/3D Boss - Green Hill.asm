@@ -104,7 +104,7 @@ BossGreenHill_ChkHit:
 		bne.w	BossFlash							; if yes, branch and flash
 		move.b	#$20,boss_flashframes(a0)			; set number of	times for ship to flash
 		move.w	#sfx_HitBoss,d0
-		jsr		(PlaySound_Special).w				; play boss damage sound
+		jsr		(QueueSound2).w				; play boss damage sound
 		bra.w	BossFlash							; apply flash effect
 
 	.end:
@@ -229,7 +229,7 @@ BossGreenHill_ShipDestroyed:	; Secondary Routine $A
 		move.w	#bgm_GHZ,d0
 	endif
 
-		jsr		(PlaySound).w			; play GHZ music
+		jsr		(QueueSound1).w			; play GHZ music
 		move.b	d0,(v_lastbgmplayed).w	; store last played music
 
 	.applymovement:

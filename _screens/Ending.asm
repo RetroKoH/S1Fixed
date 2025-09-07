@@ -4,7 +4,7 @@
 
 GM_Ending:
 		move.b	#bgm_Stop,d0
-		bsr.w	PlaySound_Special ; stop music
+		bsr.w	QueueSound2 ; stop music
 		bsr.w	PaletteFadeOut
 
 		clearRAM v_objspace
@@ -56,7 +56,7 @@ End_LoadData:
 		moveq	#palid_Sonic,d0
 		bsr.w	PalLoad_Fade						; load Sonic's palette
 		move.w	#bgm_Ending,d0
-		bsr.w	PlaySound							; play ending sequence music
+		bsr.w	QueueSound1							; play ending sequence music
 		move.b	d0,(v_lastbgmplayed).w				; store last played music
 
 End_LoadSonic:
@@ -110,7 +110,7 @@ End_MainLoop:
 		move.b	#id_Credits,(v_gamemode).w	; goto credits
 		clr.w	(v_creditsnum).w			; set credits index number to 0
 		move.b	#bgm_Credits,d0
-		bra.w	PlaySound_Special			; play credits music
+		bra.w	QueueSound2			; play credits music
 ; ===========================================================================
 
 End_ChkEmerald:

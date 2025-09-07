@@ -23,7 +23,7 @@ Sonic_ChkDropDash:
 		bgt.s	.skipsound					; if yes, and sound has played, skip ahead
 		move.b	#aniID_DropDash,obAnim(a0)	; Set new animation
 		move.w	#sfx_DropDash,d0
-		jsr		(PlaySound_Special).w		; play charge sound
+		jsr		(QueueSound2).w		; play charge sound
 
 .skipsound:
 		move.b	#$15,obDoubleJumpProp(a0)	; set to cap + 1 so we only play the sound once

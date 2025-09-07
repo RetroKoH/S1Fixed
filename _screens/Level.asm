@@ -7,7 +7,7 @@ GM_Level:
 		tst.w	(f_demo).w
 		bmi.s	Level_NoMusicFade
 		move.b	#bgm_Fade,d0
-		bsr.w	PlaySound_Special			; fade out music
+		bsr.w	QueueSound2			; fade out music
 
 Level_NoMusicFade:
 	if SaveProgressMod=1
@@ -217,7 +217,7 @@ Level_GetBgm:
 		add.b	(v_act).w,d0					; add the act value
 		lea		(MusicList).l,a1				; load music playlist
 		move.b	(a1,d0.w),d0
-		bsr.w	PlaySound						; play music
+		bsr.w	QueueSound1						; play music
 		move.b	d0,(v_lastbgmplayed).w			; store last played music
 ; -----------------------------------------------------------------------
 	else
@@ -236,7 +236,7 @@ Level_BgmNotLZ4:
 Level_PlayBgm:
 		lea		(MusicList).l,a1				; load music playlist
 		move.b	(a1,d0.w),d0
-		bsr.w	PlaySound						; play music
+		bsr.w	QueueSound1						; play music
 		move.b	d0,(v_lastbgmplayed).w			; store last played music
 ; ------------------------------------------------------------------------
 	endif

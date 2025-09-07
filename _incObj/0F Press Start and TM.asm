@@ -57,7 +57,7 @@ PSB_Menu:	; Routine 4
 		addi.b	#4,d2
 		move.b	d2,obFrame(a0)
 		move.b	#sfx_Switch,d0 ; selection blip sound
-		jsr		(PlaySound_Special).l
+		jsr		(QueueSound2).w
 
 	.end:
 		bra.w	DisplaySprite

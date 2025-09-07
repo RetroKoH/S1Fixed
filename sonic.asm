@@ -964,7 +964,7 @@ DACDriverLoad:
 		rts	
 ; End of function DACDriverLoad
 
-		include	"_incObj/sub PlaySound.asm"
+		include	"_inc/Queue Sound Routines.asm"
 		include	"_inc/PauseGame.asm"
 
 ; ---------------------------------------------------------------------------
@@ -3063,7 +3063,7 @@ CollapseObject:
 	; Mass Object Load Optimization End
 		bsr.w	DisplaySprite
 		move.w	#sfx_Collapse,d0
-		jmp		(PlaySound_Special).w			; play collapsing sound
+		jmp		(QueueSound2).w			; play collapsing sound
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
@@ -3681,7 +3681,7 @@ ResumeMusic:
 		move.w	#bgm_Boss,d0
 
 .playselected:
-		jsr		(PlaySound).w				; restore music
+		jsr		(QueueSound1).w				; restore music
 		move.b	d0,(v_lastbgmplayed).w		; store last played music
 
 .over12:
@@ -4926,7 +4926,7 @@ SS_AniEmeraldSparks:
 		clr.l	4(a0)
 		move.b	#4,(v_player+obRoutine).w
 		move.w	#sfx_SSGoal,d0
-		jsr		(PlaySound_Special).w	; play special stage GOAL sound
+		jsr		(QueueSound2).w	; play special stage GOAL sound
 
 locret_1B60C:
 		rts	
@@ -5168,7 +5168,7 @@ AddPoints:
 	; Lives Over/Underflow Fix end
 		
 		move.w	#bgm_ExtraLife,d0
-		jmp		(PlaySound).w			; play extra life bgm
+		jmp		(QueueSound1).w			; play extra life bgm
 
 .noextralife:
 		rts	

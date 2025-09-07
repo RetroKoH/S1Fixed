@@ -299,7 +299,7 @@ loc_18FDC:
 		movea.l	(sp)+,a0
 		move.b	#2,obRoutine(a2)
 		move.w	#sfx_Spring,d0
-		jsr		(PlaySound_Special).w	; play "spring" sound
+		jsr		(QueueSound2).w	; play "spring" sound
 
 loc_19008:
 		clr.w	obVelX(a0)

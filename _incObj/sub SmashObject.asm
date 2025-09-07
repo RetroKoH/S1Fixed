@@ -68,6 +68,6 @@ SmashObject:
 
 .endloop:
 		move.w	#sfx_WallSmash,d0
-		jmp		(PlaySound_Special).w ; play smashing sound
+		jmp		(QueueSound2).w ; play smashing sound
 
 ; End of function SmashObject

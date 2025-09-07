@@ -30,7 +30,7 @@ Sonic_ChkAirRoll:
 	endif
 
 		move.w	#sfx_Roll,d0
-		jsr		(PlaySound_Special).w	; play rolling sound
+		jsr		(QueueSound2).w	; play rolling sound
 
 .noAirRoll:
 		cmpi.w	#-$FC0,obVelY(a0)

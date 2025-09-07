@@ -211,7 +211,7 @@ Drown_Countdown:; Routine $A
 
 		bne.s	.skipmusic						; if air is less than 12, branch
 		move.b	#bgm_Drowning,d0
-		jsr		(PlaySound).w					; play countdown music
+		jsr		(QueueSound1).w					; play countdown music
 		clr.b	(v_lastbgmplayed).w				; clear last played music
 
 .skipmusic:
@@ -227,7 +227,7 @@ Drown_Countdown:; Routine $A
 
 .warnsound:
 		move.b	#sfx_Warning,d0
-		jsr		(PlaySound_Special).w		; play "ding-ding" warning sound
+		jsr		(QueueSound2).w		; play "ding-ding" warning sound
 
 .reduceair:
 		subq.b	#1,(v_air).w			; subtract 1 from air remaining
@@ -237,7 +237,7 @@ Drown_Countdown:; Routine $A
 		bsr.w	ResumeMusic
 		move.b	#$81,obCtrlLock(a2)		; lock controls and disable object interaction
 		move.b	#sfx_Drown,d0
-		jsr		(PlaySound_Special).w	; play drowning sound
+		jsr		(QueueSound2).w	; play drowning sound
 		move.b	#$A,objoff_34(a0)
 		move.w	#1,objoff_36(a0)
 		move.w	#$78,objoff_2C(a0)

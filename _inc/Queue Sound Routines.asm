@@ -1,35 +1,36 @@
 ; ---------------------------------------------------------------------------
-; Subroutine to	play a music track
-
-; input:
-;	d0 = track to play
+; Subroutine to queue a sound into buffer 1, often used for BGM
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
 
 PlaySound:
-		move.b	d0,(v_snddriver_ram.v_soundqueue0).w
+QueueSound1:
+		move.b	d0,(v_snddriver_ram.v_soundqueue0).w	; d0 = sound to play
 		rts
-; End of function PlaySound
+; End of function QueueSound1
 
 ; ---------------------------------------------------------------------------
-; Subroutine to	play a sound effect
+; Subroutine to queue a sound into buffer 2, often used for SFX
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
-
 PlaySound_Special:
-		move.b	d0,(v_snddriver_ram.v_soundqueue1).w
+QueueSound2:
+		move.b	d0,(v_snddriver_ram.v_soundqueue1).w	; d0 = sound to play
 		rts	
-; End of function PlaySound_Special
+; End of function QueueSound2
 
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
-; Unused sound/music subroutine
+; Subroutine to queue a sound into buffer 3, unused (and broken?).
 ; ---------------------------------------------------------------------------
 
 PlaySound_Unused:
-		move.b	d0,(v_snddriver_ram.v_soundqueue2).w
-		rts	
+QueueSound3:
+		move.b	d0,(v_snddriver_ram.v_soundqueue2).w	; d0 = sound to play
+		rts
+; End of function QueueSound3
+
+; ===========================================================================
