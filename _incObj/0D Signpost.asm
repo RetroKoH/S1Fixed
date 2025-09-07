@@ -340,8 +340,12 @@ GotThroughAct:
 .noperfect:		
 	endif
 
+	if AmbienceMode
+		rts
+	else
 		move.b	#bgm_GotThrough,d0
-		jmp		(QueueSound2).w					; play "Sonic got through" music
+		jmp		(QueueSound2).w							; play "Sonic got through" music
+	endif
 ; End of function GotThroughAct
 
 ; ===========================================================================

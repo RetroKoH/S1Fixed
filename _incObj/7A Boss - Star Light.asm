@@ -301,14 +301,17 @@ loc_18BAE:
 loc_18BB4:
 		clr.w	obVelY(a0)
 
-	if DynamicBGMs
-		move.w	#bgm_SLZ3,d0
-	else
-		move.w	#bgm_SLZ,d0
+	if ~~AmbienceMode
+		if DynamicBGMs
+			move.w	#bgm_SLZ3,d0
+		else
+			move.w	#bgm_SLZ,d0
+		endif
+
+			jsr		(QueueSound1).w				; play SLZ music
+			move.b	d0,(v_lastbgmplayed).w		; store last played music
 	endif
 
-		jsr		(QueueSound1).w				; play SLZ music
-		move.b	d0,(v_lastbgmplayed).w		; store last played music
 		bra.w	BossStarLight_ApplyMovement
 ; ===========================================================================
 

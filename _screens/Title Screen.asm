@@ -133,8 +133,12 @@ Tit_LoadText:
 		bsr.w	PalLoad_Fade
 		moveq	#palid_Title,d0							; overwrite first 2 lines w/ title screen palette
 		bsr.w	PalLoad_Fade
+
+	if ~~AmbienceMode
 		move.b	#bgm_Title,d0
-		bsr.w	QueueSound2						; play title screen music
+		bsr.w	QueueSound2								; play title screen music
+	endif
+
 		clr.b	(f_debugmode).w							; disable debug mode
 		move.w	#$178,(v_demolength).w					; run title screen for $178 frames
 
@@ -206,7 +210,7 @@ PlayLevel:
 	endif
 
 		move.b	#bgm_Fade,d0
-		bra.w	QueueSound2		; fade out music	
+		bra.w	QueueSound2				; fade out music	
 ; ===========================================================================
 
 ResetLevel:
@@ -267,7 +271,7 @@ PlayLevel_Load:
 	endif
 
 		move.b	#bgm_Fade,d0
-		bra.w	QueueSound2			; fade out music
+		bra.w	QueueSound2					; fade out music
 	endif
 ; ===========================================================================
 
@@ -299,7 +303,7 @@ loc_33E4:
 		tst.w	(v_demolength).w
 		bne.w	loc_33B6
 		move.b	#bgm_Fade,d0
-		bsr.w	QueueSound2			; fade out music
+		bsr.w	QueueSound2					; fade out music
 		move.w	(v_demonum).w,d0			; load demo number
 		andi.w	#7,d0
 		add.w	d0,d0

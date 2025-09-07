@@ -123,9 +123,15 @@ GameOver:
 
 .playmusic:
 		moveq	#plcid_GameOver,d0
+		
+	if AmbienceMode
+		jmp		(AddPLC).w			; load game over patterns
+	else
 		jsr		(AddPLC).w			; load game over patterns
+
 		move.w	#bgm_GameOver,d0
 		jmp		(QueueSound1).w		; play game over music
+	endif
 ; ===========================================================================
 
 .end:

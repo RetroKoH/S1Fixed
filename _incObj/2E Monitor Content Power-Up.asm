@@ -107,8 +107,14 @@ ExtraLife:
 		addq.b	#1,(f_lifecount).w	; update the lives counter
 .playbgm:
 	; Lives Over/Underflow Fix End
+
+	if AmbienceMode
+		rts
+	else
 		move.w	#bgm_ExtraLife,d0
 		jmp		(QueueSound1).w		; play extra life music
+	endif
+
 ; ===========================================================================
 
 Pow_Shoes:
@@ -128,8 +134,13 @@ Pow_Shoes:
 		lea		(v_sonspeedmax).w,a2					; Load Sonic_top_speed into a2
 		jsr		ApplySpeedSettings						; Fetch Speed settings
 		movem.l (sp)+,a0-a2								; Move a0, a1 and a2 from stack
+
+	if AmbienceMode
+		rts
+	else
 		move.w	#bgm_Speedup,d0
 		jmp		(QueueSound1).w							; Speed	up the music
+	endif
 ; ===========================================================================
 
 Pow_Shield:
@@ -155,9 +166,14 @@ Pow_Invinc:
 		bne.s	.nomusic								; if yes, branch
 		cmpi.b	#$C,(v_air).w
 		bls.s	.nomusic
+
+	if AmbienceMode
+		rts
+	else
 		move.w	#bgm_Invincible,d0
 		move.b	d0,(v_lastbgmplayed).w					; store last played music
 		jmp		(QueueSound1).w							; play invincibility music
+	endif
 ; ===========================================================================
 
 .nomusic:
@@ -174,16 +190,29 @@ Pow_Rings:
 		ori.b	#1,(f_ringcount).w	; update the ring counter
 		cmpi.w	#100,(v_rings).w	; check if you have 100 rings
 		blo.s	Pow_RingSound
+
+	if AmbienceMode
+		bset	#1,(v_lifecount).w
+		beq.s	.life				; if we should gain an extra life, branch
+		cmpi.w	#200,(v_rings).w	; check if you have 200 rings
+		blo.s	Pow_RingSound
+		bset	#2,(v_lifecount).w
+		bne.s	Pow_RingSound		; if we shouldn't gain an extra life, branch
+
+	.life:
+		bsr.w	ExtraLife			; gain extra life, return to play ring sound
+	else
 		bset	#1,(v_lifecount).w
 		beq.w	ExtraLife
 		cmpi.w	#200,(v_rings).w	; check if you have 200 rings
 		blo.s	Pow_RingSound
 		bset	#2,(v_lifecount).w
 		beq.w	ExtraLife
+	endif
 
 Pow_RingSound:
 		move.w	#sfx_Ring,d0
-		jmp		(QueueSound1).w	; play ring sound
+		jmp		(QueueSound1).w		; play ring sound
 ; ===========================================================================
 
 Pow_S:

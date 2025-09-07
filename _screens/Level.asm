@@ -6,8 +6,14 @@ GM_Level:
 		bset	#7,(v_gamemode).w			; add $80 to screen mode (for pre level sequence)
 		tst.w	(f_demo).w
 		bmi.s	Level_NoMusicFade
-		move.b	#bgm_Fade,d0
-		bsr.w	QueueSound2			; fade out music
+
+	if AmbienceMode
+		move.w	#bgm_Stop,d0
+	else
+		move.w	#bgm_Fade,d0
+	endif
+
+		bsr.w	QueueSound2					; fade out music
 
 Level_NoMusicFade:
 	if SaveProgressMod=1
@@ -208,37 +214,39 @@ Level_GetBgm:
 		tst.w	(f_demo).w
 		bmi.s	Level_SkipTtlCard
 
-	if DynamicBGMs
-; -----------------------------------------------------------------------
-		moveq	#0,d0
-		move.b	(v_zone).w,d0
-		add.b	d0,d0
-		add.b	d0,d0							; multiply by 4
-		add.b	(v_act).w,d0					; add the act value
-		lea		(MusicList).l,a1				; load music playlist
-		move.b	(a1,d0.w),d0
-		bsr.w	QueueSound1						; play music
-		move.b	d0,(v_lastbgmplayed).w			; store last played music
-; -----------------------------------------------------------------------
-	else
-; -----------------------------------------------------------------------
-		moveq	#0,d0
-		move.b	(v_zone).w,d0
-		cmpi.w	#(id_LZ<<8)+3,(v_zone).w		; is level SBZ3?
-		bne.s	Level_BgmNotLZ4					; if not, branch
-		moveq	#5,d0							; use 5th music (SBZ)
+	if ~~AmbienceMode
+		if DynamicBGMs
+	; -----------------------------------------------------------------------
+			moveq	#0,d0
+			move.b	(v_zone).w,d0
+			add.b	d0,d0
+			add.b	d0,d0							; multiply by 4
+			add.b	(v_act).w,d0					; add the act value
+			lea		(MusicList).l,a1				; load music playlist
+			move.b	(a1,d0.w),d0
+			bsr.w	QueueSound1						; play music
+			move.b	d0,(v_lastbgmplayed).w			; store last played music
+	; -----------------------------------------------------------------------
+		else
+	; -----------------------------------------------------------------------
+			moveq	#0,d0
+			move.b	(v_zone).w,d0
+			cmpi.w	#(id_LZ<<8)+3,(v_zone).w		; is level SBZ3?
+			bne.s	Level_BgmNotLZ4					; if not, branch
+			moveq	#5,d0							; use 5th music (SBZ)
 
-Level_BgmNotLZ4:
-		cmpi.w	#(id_SBZ<<8)+2,(v_zone).w		; is level FZ?
-		bne.s	Level_PlayBgm					; if not, branch
-		moveq	#6,d0							; use 6th music (FZ)
+	Level_BgmNotLZ4:
+			cmpi.w	#(id_SBZ<<8)+2,(v_zone).w		; is level FZ?
+			bne.s	Level_PlayBgm					; if not, branch
+			moveq	#6,d0							; use 6th music (FZ)
 
-Level_PlayBgm:
-		lea		(MusicList).l,a1				; load music playlist
-		move.b	(a1,d0.w),d0
-		bsr.w	QueueSound1						; play music
-		move.b	d0,(v_lastbgmplayed).w			; store last played music
-; ------------------------------------------------------------------------
+	Level_PlayBgm:
+			lea		(MusicList).l,a1				; load music playlist
+			move.b	(a1,d0.w),d0
+			bsr.w	QueueSound1						; play music
+			move.b	d0,(v_lastbgmplayed).w			; store last played music
+	; ------------------------------------------------------------------------
+		endif
 	endif
 
 		move.b	#id_TitleCard,(v_titlecard).w	; load title card object

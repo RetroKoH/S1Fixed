@@ -38,46 +38,49 @@ Sonic_Display:
 		bne.s	.chkshoes						; if time still remains, branch
 
 	.chkremoveinvinc:
+
+	if ~~AmbienceMode
 		tst.b	(f_lockscreen).w
 		bne.s	.removeinvincible
 		cmpi.b	#$C,(v_air).w
 		blo.s	.removeinvincible
 
-	if DynamicBGMs
-; -----------------------------------------------------------------------
-		moveq	#0,d0
-		move.b	(v_zone).w,d0
-		add.b	d0,d0
-		add.b	d0,d0							; multiply by 4
-		add.b	(v_act).w,d0					; add the act value
-		lea		(MusicList).l,a1
-		move.b	(a1,d0.w),d0
-		cmp.b	(v_lastbgmplayed).w,d0
-		beq.s	.removeinvincible
-		jsr		(QueueSound1).w					; play normal music
-		move.b	d0,(v_lastbgmplayed).w			; store last played music
-; -----------------------------------------------------------------------
-	else
-; -----------------------------------------------------------------------
-		moveq	#0,d0
-		move.b	(v_zone).w,d0
-		cmpi.w	#(id_LZ<<8)+3,(v_zone).w		; check if level is SBZ3
-		bne.s	.notSBZ3
-		move.b	#id_SBZ,d0						; play SBZ music instead
+		if DynamicBGMs
+	; -----------------------------------------------------------------------
+			moveq	#0,d0
+			move.b	(v_zone).w,d0
+			add.b	d0,d0
+			add.b	d0,d0							; multiply by 4
+			add.b	(v_act).w,d0					; add the act value
+			lea		(MusicList).l,a1
+			move.b	(a1,d0.w),d0
+			cmp.b	(v_lastbgmplayed).w,d0
+			beq.s	.removeinvincible
+			jsr		(QueueSound1).w					; play normal music
+			move.b	d0,(v_lastbgmplayed).w			; store last played music
+	; -----------------------------------------------------------------------
+		else
+	; -----------------------------------------------------------------------
+			moveq	#0,d0
+			move.b	(v_zone).w,d0
+			cmpi.w	#(id_LZ<<8)+3,(v_zone).w		; check if level is SBZ3
+			bne.s	.notSBZ3
+			move.b	#id_SBZ,d0						; play SBZ music instead
 
-	.notSBZ3:
-		cmpi.w	#(id_SBZ<<8)+2,(v_zone).w		; check if level is FZ
-		bne.s	.music
-		move.b	#6,d0							; play FZ music instead
+		.notSBZ3:
+			cmpi.w	#(id_SBZ<<8)+2,(v_zone).w		; check if level is FZ
+			bne.s	.music
+			move.b	#6,d0							; play FZ music instead
 
-	.music:
-		lea		(MusicList).l,a1
-		move.b	(a1,d0.w),d0
-		cmp.b	(v_lastbgmplayed).w,d0
-		beq.s	.removeinvincible
-		jsr		(QueueSound1).w					; play normal music
-		move.b	d0,(v_lastbgmplayed).w			; store last played music
-; ------------------------------------------------------------------------
+		.music:
+			lea		(MusicList).l,a1
+			move.b	(a1,d0.w),d0
+			cmp.b	(v_lastbgmplayed).w,d0
+			beq.s	.removeinvincible
+			jsr		(QueueSound1).w					; play normal music
+			move.b	d0,(v_lastbgmplayed).w			; store last played music
+	; ------------------------------------------------------------------------
+		endif
 	endif
 
 	.removeinvincible:
@@ -106,8 +109,11 @@ Sonic_Display:
 		lea     (v_sonspeedmax).w,a2			; Load Sonic_top_speed into a2
 		bsr.w   ApplySpeedSettings				; Fetch Speed settings
 		bclr	#sta2ndShoes,obStatus2nd(a0)	; cancel speed shoes
+
+	if ~~AmbienceMode
 		move.w	#bgm_Slowdown,d0
 		jmp		(QueueSound1).w					; run music at normal speed
+	endif
 
 	.exit:
 		rts	

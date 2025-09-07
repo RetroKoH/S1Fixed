@@ -18,9 +18,15 @@ Sonic_TurnSuper:
 		clr.b	obInvinc(a0)
 		bset	#sta2ndInvinc,obStatus2nd(a0)	; make Sonic invincible
 		move.w	#sfx_GiantRing,d0
-		jsr		(QueueSound2).w
+
+	if AmbienceMode
+		jmp		(QueueSound2).w					; play giant ring sound
+	else
+		jsr		(QueueSound2).w					; play giant ring sound first
 		move.w	#bgm_Invincible,d0
 		move.b	d0,(v_lastbgmplayed).w			; store last played music
-		jmp		(QueueSound1).w
+		jmp		(QueueSound1).w					; play invincibility music
+	endif
+
 ; End of function Sonic_TurnSuper
 ; ===========================================================================
