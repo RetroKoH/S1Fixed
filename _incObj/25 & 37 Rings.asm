@@ -94,8 +94,11 @@ CollectRing:
 		addq.b	#1,(f_lifecount).w	; update the lives counter
 .playbgm:
 	; Lives Over/Underflow Fix End
+
+	if ~~AmbienceMode
 		move.w	#bgm_ExtraLife,d0	; play extra life music
 		jmp		(QueueSound1).w
+	endif
 
 .playsnd:
 		move.w	#sfx_Ring,d0	 	; play ring sound

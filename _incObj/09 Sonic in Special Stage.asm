@@ -592,8 +592,11 @@ Obj09_Get1Up:
 
 .playbgm:
 	; Lives Over/Underflow Fix End
+
+	if ~~AmbienceMode
 		move.w	#bgm_ExtraLife,d0
 		jsr		(QueueSound1).w				; play extra life music
+	endif
 
 		moveq	#0,d4
 		rts	

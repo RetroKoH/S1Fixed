@@ -204,6 +204,11 @@ UpdatedSignposts: = 2				; 0 = default signposts; 1 = CD signposts; 2 = hybrid (
 ; Function: Provides new art for SBZ Act 3
 NewSBZ3LevelArt: = 1
 
+; Name: Ambience Mode
+; Credit: RetroKoH
+; Function: Disables playing music tracks, allowing only sfx to play
+AmbienceMode: = 1
+
 ; ----- SPECIAL STAGES -----------------------------------------------------------
 
 ; Name: Dynamic Special Stage Walls

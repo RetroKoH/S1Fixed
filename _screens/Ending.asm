@@ -55,9 +55,12 @@ End_LoadData:
 		bsr.w	KosDec
 		moveq	#palid_Sonic,d0
 		bsr.w	PalLoad_Fade						; load Sonic's palette
+
+	if ~~AmbienceMode
 		move.w	#bgm_Ending,d0
 		bsr.w	QueueSound1							; play ending sequence music
 		move.b	d0,(v_lastbgmplayed).w				; store last played music
+	endif
 
 End_LoadSonic:
 		move.b	#id_SonicPlayer,(v_player).w		; load Sonic object
@@ -109,8 +112,13 @@ End_MainLoop:
 
 		move.b	#id_Credits,(v_gamemode).w	; goto credits
 		clr.w	(v_creditsnum).w			; set credits index number to 0
+
+	if AmbienceMode
+		rts
+	else
 		move.b	#bgm_Credits,d0
 		bra.w	QueueSound1					; play credits music
+	endif
 ; ===========================================================================
 
 End_ChkEmerald:

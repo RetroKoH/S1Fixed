@@ -68,8 +68,11 @@ GM_Special:
 		move.w	#$100,(v_ssrotate).w				; set stage rotation speed
 	endif
 
-		move.w	#bgm_SpecialStage,d0
+	if ~~AmbienceMode
+		moveq	#bgm_SS,d0
 		bsr.w	QueueSound1							; play special stage BG	music
+	endif
+
 		lea		DemoDataPtr(pc),a1
 		moveq	#6,d0
 		add.w	d0,d0								; Filter: *2 instead of *4
@@ -260,9 +263,11 @@ loc_47D4:
 		move.w	#PerfectScore,(v_perfectbonus).w		; set perfect bonus
 	.noperfect:
 	endif
-		
+
+	if ~~AmbienceMode
 		move.w	#bgm_GotThrough,d0
-		jsr		(QueueSound1).w					; play end-of-level music
+		bsr.w	QueueSound1					; play end-of-level music
+	endif
 
 		clearRAM v_objspace
 

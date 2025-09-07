@@ -133,8 +133,12 @@ Tit_LoadText:
 		bsr.w	PalLoad_Fade
 		moveq	#palid_Title,d0							; overwrite first 2 lines w/ title screen palette
 		bsr.w	PalLoad_Fade
+
+	if ~~AmbienceMode
 		move.b	#bgm_Title,d0
 		bsr.w	QueueSound1								; play title screen music
+	endif
+
 		clr.b	(f_debugmode).w							; disable debug mode
 		move.w	#$178,(v_demolength).w					; run title screen for $178 frames
 

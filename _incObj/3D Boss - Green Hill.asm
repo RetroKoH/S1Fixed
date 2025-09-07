@@ -223,18 +223,20 @@ BossGreenHill_ShipDestroyed:	; Secondary Routine $A
 	.resetmusic:
 		clr.w	obVelY(a0)
 
-	if DynamicBGMs
-		move.w	#bgm_GHZ3,d0
-	else
-		move.w	#bgm_GHZ,d0
-	endif
+	if ~~AmbienceMode
+		if DynamicBGMs
+			move.w	#bgm_GHZ3,d0
+		else
+			move.w	#bgm_GHZ,d0
+		endif
 
-		jsr		(QueueSound1).w			; play GHZ music
-		move.b	d0,(v_lastbgmplayed).w	; store last played music
+			jsr		(QueueSound1).w			; play GHZ music
+			move.b	d0,(v_lastbgmplayed).w	; store last played music
+	endif
 
 	.applymovement:
 		bsr.w	BossMove
-		bra.w	BossGreenHill_ChkHit	; we call this solely for the hover effect
+		bra.w	BossGreenHill_ChkHit		; we call this solely for the hover effect
 ; ===========================================================================
 
 BossGreenHill_ShipFlee:	; Secondary Routine $C

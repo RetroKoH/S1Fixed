@@ -66,8 +66,11 @@ GM_MenuScreen:
 		clr.l	(a1)+
 		dbf		d1,.loop
 
+	if ~~AmbienceMode
 		move.b	#bgm_Options,d0
 		bsr.w	QueueSound1				; play Level Select Menu sound
+	endif
+
 		move.b	#$16,(v_vbla_routine).w
 		bsr.w	WaitForVBla
 		move.w	(v_vdp_buffer1).w,d0

@@ -195,9 +195,13 @@ loc_6EB0:
 		move.w	#boss_ghz_y-$80,obY(a1)
 
 loc_6ED0:
+
+	if ~~AmbienceMode
 		move.w	#bgm_Boss,d0
 		bsr.w	QueueSound1				; play boss music
 		move.b	d0,(v_lastbgmplayed).w	; store last played music
+	endif
+
 		move.b	#1,(f_lockscreen).w		; lock screen
 		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 		moveq	#plcid_Boss_GHZ,d0		; RetroKoH VRAM Overhaul
@@ -243,9 +247,13 @@ DLE_LZ3_BossChk:
 		_move.b	#id_BossLabyrinth,obID(a1)	; load LZ boss object
 
 loc_6F4A:
+
+	if ~~AmbienceMode
 		move.w	#bgm_Boss,d0
 		bsr.w	QueueSound1					; play boss music
 		move.b	d0,(v_lastbgmplayed).w		; store last played music
+	endif
+
 		move.b	#1,(f_lockscreen).w			; lock screen
 		addq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 		moveq	#plcid_Boss,d0
@@ -406,9 +414,13 @@ DLE_MZ3boss:
 		move.w	#boss_mz_y+$1C,obY(a1)
 
 loc_70D0:
+
+	if ~~AmbienceMode
 		move.w	#bgm_Boss,d0
-		bsr.w	QueueSound1				; play boss music
-		move.b	d0,(v_lastbgmplayed).w	; store last played music
+		bsr.w	QueueSound1					; play boss music
+		move.b	d0,(v_lastbgmplayed).w		; store last played music
+	endif
+
 		move.b	#1,(f_lockscreen).w		; lock screen
 		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 		moveq	#plcid_Boss_MZ,d0		; RetroKoH VRAM Overhaul
@@ -449,8 +461,13 @@ DLE_SLZ3boss:
 		move.b	#id_BossStarLight,obID(a1) ; load SLZ boss object
 
 loc_7144:
+
+	if ~~AmbienceMode
 		move.w	#bgm_Boss,d0
-		bsr.w	QueueSound1				; play boss music
+		bsr.w	QueueSound1					; play boss music
+		move.b	d0,(v_lastbgmplayed).w		; store last played music
+	endif
+
 		move.b	d0,(v_lastbgmplayed).w	; store last played music
 		move.b	#1,(f_lockscreen).w		; lock screen
 		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
@@ -514,9 +531,13 @@ DLE_SYZ3boss:
 		addq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 
 loc_71EC:
+
+	if ~~AmbienceMode
 		move.w	#bgm_Boss,d0
-		bsr.w	QueueSound1				; play boss music
-		move.b	d0,(v_lastbgmplayed).w	; store last played music
+		bsr.w	QueueSound1					; play boss music
+		move.b	d0,(v_lastbgmplayed).w		; store last played music
+	endif
+
 		move.b	#1,(f_lockscreen).w		; lock screen
 		moveq	#plcid_Boss_SYZ,d0		; RetroKoH VRAM Overhaul
 		bra.w	AddPLC					; load boss patterns

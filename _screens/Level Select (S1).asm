@@ -78,9 +78,16 @@ LevSel_Ending:
 ; ===========================================================================
 
 LevSel_Credits:
-		move.b	#id_Credits,(v_gamemode).w	; set screen mode to $1C (Credits)
-		move.b	#bgm_Credits,d0
-		bsr.w	QueueSound1 				; play credits music
+		move.b	#id_Credits,(v_gamemode).w ; set screen mode to $1C (Credits)
+
+	if AmbienceMode
+		move.w	#bgm_Stop,d0
+	else
+		move.w	#bgm_Credits,d0
+	endif
+
+		bsr.w	QueueSound1					; play credits music
+
 		clr.w	(v_creditsnum).w
 		move.b	#bgm_Credits,d0
 		bra.w	PlaySound 					; play credits music	
