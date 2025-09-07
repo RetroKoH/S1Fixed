@@ -209,10 +209,13 @@ Drown_Countdown:; Routine $A
 		cmpi.b	#12,d0
 		bhi.s	.reduceair						; if air is above 12, branch
 
+	if ~~AmbienceMode
 		bne.s	.skipmusic						; if air is less than 12, branch
+
 		move.b	#bgm_Drowning,d0
 		jsr		(QueueSound1).w					; play countdown music
 		clr.b	(v_lastbgmplayed).w				; clear last played music
+	endif
 
 .skipmusic:
 		subq.b	#1,objoff_32(a0)

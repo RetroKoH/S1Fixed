@@ -1619,6 +1619,7 @@ WaitForVBla:
 		include "_screens/SEGA Screen.asm"
 		include "_screens/Title Screen.asm"
 
+	if ~~AmbienceMode
 ; ---------------------------------------------------------------------------
 ; Music	playlist
 ; ---------------------------------------------------------------------------
@@ -1650,6 +1651,7 @@ MusicList:
 
 	endif
 ; ===========================================================================
+	endif
 
 		include "_screens/Level.asm"
 
@@ -3639,6 +3641,8 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 
 
 ResumeMusic:
+
+	if ~~AmbienceMode
 		cmpi.b	#12,(v_air).w				; more than 12 seconds of air left?
 		bhi.s	.over12						; if yes, branch
 
@@ -3679,6 +3683,8 @@ ResumeMusic:
 		move.b	d0,(v_lastbgmplayed).w		; store last played music
 
 .over12:
+	endif
+
 		move.b	#30,(v_air).w				; reset air to 30 seconds
 		clr.b	(v_sonicbubbles+$32).w
 		rts	
@@ -5160,9 +5166,11 @@ AddPoints:
 		addq.b	#1,(f_lifecount).w		; update the lives counter
 .playbgm:
 	; Lives Over/Underflow Fix end
-		
+
+	if ~~AmbienceMode
 		move.w	#bgm_ExtraLife,d0
 		jmp		(QueueSound1).w			; play extra life bgm
+	endif
 
 .noextralife:
 		rts	

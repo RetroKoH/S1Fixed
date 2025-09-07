@@ -42,8 +42,12 @@ GM_Continue:
 		jsr		(ContScrCounter).l							; run countdown	(start from 10)
 		moveq	#palid_Continue,d0
 		bsr.w	PalLoad_Fade								; load continue	screen palette
+
+	if ~~AmbienceMode
 		move.b	#bgm_Continue,d0
 		bsr.w	QueueSound1									; play continue	music
+	endif
+
 		move.w	#659,(v_demolength).w						; set time delay to 11 seconds
 		clr.l	(v_screenposx).w
 		move.l	#$1000000,(v_screenposy).w

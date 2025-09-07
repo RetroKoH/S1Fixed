@@ -258,14 +258,17 @@ BossLabyrinth_ShipWaitAtEnd:
 
 loc_18112:
 
-	if DynamicBGMs
-		move.w	#bgm_LZ3,d0
-	else
-		move.w	#bgm_LZ,d0
+	if ~~AmbienceMode
+		if DynamicBGMs
+			move.w	#bgm_LZ3,d0
+		else
+			move.w	#bgm_LZ,d0
+		endif
+
+			jsr		(QueueSound1).w			; play LZ music
+			move.b	d0,(v_lastbgmplayed).w	; store last played music
 	endif
 
-		jsr		(QueueSound1).w			; play LZ music
-		move.b	d0,(v_lastbgmplayed).w	; store last played music
 		clr.b	(f_lockscreen).w
 		bset	#staFlipX,obStatus(a0)
 		addq.b	#2,ob2ndRout(a0)

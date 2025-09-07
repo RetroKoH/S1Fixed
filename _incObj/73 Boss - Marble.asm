@@ -312,14 +312,16 @@ loc_18566:
 loc_1856C:
 		clr.w	obVelY(a0)
 
-	if DynamicBGMs
-		move.w	#bgm_MZ3,d0
-	else
-		move.w	#bgm_MZ,d0
-	endif
+	if ~~AmbienceMode
+		if DynamicBGMs
+			move.w	#bgm_MZ3,d0
+		else
+			move.w	#bgm_MZ,d0
+		endif
 
-		jsr		(QueueSound1).w						; play MZ music
-		move.b	d0,(v_lastbgmplayed).w				; store last played music
+			jsr		(QueueSound1).w					; play MZ music
+			move.b	d0,(v_lastbgmplayed).w			; store last played music
+	endif
 
 loc_1857A:
 		bsr.w	BossMove

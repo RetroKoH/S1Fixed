@@ -243,6 +243,8 @@ Debug_ShowItem:
 
 
 Debug_RestartMusic:
+
+	if ~~AmbienceMode
 		cmpi.b	#id_Level,(v_gamemode).w
 		bne.s	.dontrestart					; don't restart music outside of levels (Ending or Special Stage)
 
@@ -300,6 +302,7 @@ Debug_RestartMusic:
 		beq.s	.dontrestart
 		move.b	d0,(v_lastbgmplayed).w			; store last played music
 		jmp		(QueueSound1).w					; restart last played music
+	endif
 
 .dontrestart:
 		rts
