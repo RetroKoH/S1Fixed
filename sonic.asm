@@ -3565,45 +3565,7 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 		include "_anim/Effects.asm"
 	endif
 
-		include "_player/Sonic.asm"
-
-		include	"_player/Sonic Move.asm"
-		include	"_player/Sonic RollSpeed.asm"
-		include	"_player/Sonic JumpDirection.asm"
-		include	"_player/Sonic LevelBound.asm"
-		include	"_player/Sonic Roll.asm"
-		include	"_player/Sonic Jump.asm"
-		include	"_player/Sonic JumpHeight.asm"
-		
-	if AirRollEnabled
-		include "_player/Sonic AirRoll.asm"
-	endif
-	
-	if PeeloutEnabled
-		include	"_player/Sonic Peelout.asm"
-	endif
-	
-	if SpinDashEnabled
-		include	"_player/Sonic SpinDash.asm"
-	endif
-
-		include	"_player/Sonic SlopeResist.asm"
-		include	"_player/Sonic RollRepel.asm"
-		include	"_player/Sonic SlopeRepel.asm"
-		include	"_player/Sonic JumpAngle.asm"
-		include	"_player/Sonic Floor.asm"
-	if CDCamera
-		include	"_player/Sonic PanCamera.asm"
-	endif
-		include	"_player/Sonic ResetOnFloor.asm"
-		include	"_player/Sonic (part 2).asm"
-		include	"_player/Sonic Loops.asm"
-		include	"_player/Sonic Animate.asm"
-		include	"_anim/Sonic.asm"
-	if SuperMod
-		include	"_anim/Super Sonic.asm"
-	endif
-		include	"_player/Sonic LoadGfx.asm"
+		include "_incObj/01 Sonic.asm"
 
 dplcTiles := Art_Sonic			; MainMemory 128k Boundary Check for DPLCs
 		include	"_maps/Sonic - DPLCs.asm"
@@ -3631,46 +3593,45 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 ResumeMusic:
 
 	if ~~AmbienceMode
-		cmpi.b	#12,(v_air).w				; more than 12 seconds of air left?
-		bhi.s	.over12						; if yes, branch
+			cmpi.b	#12,(v_air).w				; more than 12 seconds of air left?
+			bhi.s	.over12						; if yes, branch
+
+		if DynamicBGMs
+			move.w	#bgm_LZ1,d0
+			add.b	(v_act).w,d0
+			cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; check if level is 0103 (SBZ3)
+			bne.s	.notsbz
+			move.w	#bgm_SBZ3,d0				; play SBZ3 music
+		else
+			move.w	#bgm_LZ,d0					; play LZ music
+			cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; check if level is 0103 (SBZ3)
+			bne.s	.notsbz
+			move.w	#bgm_SBZ,d0					; play SBZ music
+		endif
 
 
-	if DynamicBGMs
-		move.w	#bgm_LZ1,d0
-		add.b	(v_act).w,d0
-		cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; check if level is 0103 (SBZ3)
-		bne.s	.notsbz
-		move.w	#bgm_SBZ3,d0				; play SBZ3 music
-	else
-		move.w	#bgm_LZ,d0					; play LZ music
-		cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; check if level is 0103 (SBZ3)
-		bne.s	.notsbz
-		move.w	#bgm_SBZ,d0					; play SBZ music
-	endif
+	.notsbz:
+		if SuperMod
+			btst	#sta2ndSuper,(v_player+obStatus2nd).w	; is player in Super Form?
+			bne.s	.playinvinc								; if yes, branch
+		endif
 
+			btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; is Sonic invincible?
+			beq.s	.notinvinc								; if not, branch
 
-.notsbz:
-	if SuperMod
-		btst	#sta2ndSuper,(v_player+obStatus2nd).w	; is player in Super Form?
-		bne.s	.playinvinc								; if yes, branch
-	endif
+	.playinvinc:
+			move.w	#bgm_Invincible,d0
 
-		btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; is Sonic invincible?
-		beq.s	.notinvinc								; if not, branch
+	.notinvinc:
+			tst.b	(f_lockscreen).w			; is Sonic at a boss?
+			beq.s	.playselected				; if not, branch
+			move.w	#bgm_Boss,d0
 
-.playinvinc:
-		move.w	#bgm_Invincible,d0
+	.playselected:
+			jsr		(QueueSound1).w				; restore music
+			move.b	d0,(v_lastbgmplayed).w		; store last played music
 
-.notinvinc:
-		tst.b	(f_lockscreen).w			; is Sonic at a boss?
-		beq.s	.playselected				; if not, branch
-		move.w	#bgm_Boss,d0
-
-.playselected:
-		jsr		(QueueSound1).w				; restore music
-		move.b	d0,(v_lastbgmplayed).w		; store last played music
-
-.over12:
+	.over12:
 	endif
 
 		move.b	#30,(v_air).w				; reset air to 30 seconds
@@ -3722,11 +3683,14 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 		include	"_incObj/4A Special Stage Entry (Unused).asm"
 		include	"_anim/Special Stage Entry (Unused).asm"
 
-		include	"_player/Sonic AnglePos.asm"
+; ---------------------------------------------------------------------------
+; Keeping these together in isolation for now
 
+		include	"_incObj/sub Sonic AnglePos.asm"
 		include	"_incObj/sub FindNearestTile.asm"
 		include	"_incObj/sub FindFloor.asm"
 		include	"_incObj/sub FindWall.asm"
+; ---------------------------------------------------------------------------
 		
 		include "_incObj/8F Goggles.asm"
 dplcTiles := Art_Goggles		; MainMemory 128k Boundary Check for DPLCs
