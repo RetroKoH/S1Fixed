@@ -5366,11 +5366,6 @@ Nem_SSDelete:	binclude	"artnem/Special Delete.nem" ; special stage debug delete 
 Nem_ResultEm:	binclude	"artnem/Special Result Emeralds.nem" ; chaos emeralds on special stage results screen
 		even
 
-	if S4SSRingBarriers
-Nem_SSRingBarrier:	binclude	"artnem/Special Ring Barrier.nem" ; special stage ring barrier
-		even
-	endif
-
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - GHZ stuff
 ; ---------------------------------------------------------------------------
@@ -6159,10 +6154,6 @@ Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.bin"
 	endif
 
 		include "_maps/SS Cursor.asm"				; Also used for the Delete Block
-
-	if S4SSRingBarriers
-		include	"_maps/SS Ring Barrier.asm"
-	endif
 
 ; ---------------------------------------------------------------------------
 ; Uncompressed graphics
