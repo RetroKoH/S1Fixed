@@ -396,7 +396,7 @@ bgm_SBZ:		equ ((ptr_mus06-MusicIndex)/4)+bgm__First
 
 bgm_Invincible:	equ ((ptr_mus07-MusicIndex)/4)+bgm__First
 bgm_ExtraLife:	equ ((ptr_mus08-MusicIndex)/4)+bgm__First
-bgm_SS:			equ ((ptr_mus09-MusicIndex)/4)+bgm__First
+bgm_SpecialStage:	equ ((ptr_mus09-MusicIndex)/4)+bgm__First
 bgm_Title:		equ ((ptr_mus0A-MusicIndex)/4)+bgm__First
 bgm_Ending:		equ ((ptr_mus0B-MusicIndex)/4)+bgm__First
 bgm_Boss:		equ ((ptr_mus0C-MusicIndex)/4)+bgm__First
