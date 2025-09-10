@@ -188,26 +188,29 @@ Pow_Rings:
 
 .skipcap:
 		ori.b	#1,(f_ringcount).w	; update the ring counter
-		cmpi.w	#100,(v_rings).w	; check if you have 100 rings
-		blo.s	Pow_RingSound
 
-	if AmbienceMode
-		bset	#1,(v_lifecount).w
-		beq.s	.life				; if we should gain an extra life, branch
-		cmpi.w	#200,(v_rings).w	; check if you have 200 rings
-		blo.s	Pow_RingSound
-		bset	#2,(v_lifecount).w
-		bne.s	Pow_RingSound		; if we shouldn't gain an extra life, branch
+	if RingsLives
+			cmpi.w	#RingsLivesFactor,(v_rings).w	; check if you have x rings (Default: 100)
+			blo.s	Pow_RingSound
 
-	.life:
-		bsr.w	ExtraLife			; gain extra life, return to play ring sound
-	else
-		bset	#1,(v_lifecount).w
-		beq.w	ExtraLife
-		cmpi.w	#200,(v_rings).w	; check if you have 200 rings
-		blo.s	Pow_RingSound
-		bset	#2,(v_lifecount).w
-		beq.w	ExtraLife
+		if AmbienceMode
+			bset	#1,(v_lifecount).w
+			beq.s	.life				; if we should gain an extra life, branch
+			cmpi.w	#RingsLivesFactor*2,(v_rings).w	; check if you have 2x rings (Default: 200)
+			blo.s	Pow_RingSound
+			bset	#2,(v_lifecount).w
+			bne.s	Pow_RingSound		; if we shouldn't gain an extra life, branch
+
+		.life:
+			bsr.w	ExtraLife			; gain extra life, return to play ring sound
+		else
+			bset	#1,(v_lifecount).w
+			beq.w	ExtraLife
+			cmpi.w	#RingsLivesFactor*2,(v_rings).w	; check if you have 2x rings (Default: 200)
+			blo.s	Pow_RingSound
+			bset	#2,(v_lifecount).w
+			beq.w	ExtraLife
+		endif
 	endif
 
 Pow_RingSound:
@@ -221,26 +224,33 @@ Pow_S:
 		bcs.s	.skipcap			; if not, branch
 		move.w	#999,(v_rings).w	; cap rings
 
-.skipcap:
+	.skipcap:
 
 	if ~~SuperMod
+	; No Super Sonic
 		bsr.w	Pow_Invinc
 		bsr.w	Pow_Shoes
 
 		ori.b	#1,(f_ringcount).w						; update the ring counter
-		cmpi.w	#100,(v_rings).w						; check if you have 100 rings
+
+	if RingsLives
+		cmpi.w	#RingsLivesFactor,(v_rings).w			; check if you have x rings (Default: 100)
 		blo.s	.sRingSound
 		bset	#1,(v_lifecount).w
 		beq.w	ExtraLife
-		cmpi.w	#200,(v_rings).w						; check if you have 200 rings
+		cmpi.w	#RingsLivesFactor*2,(v_rings).w			; check if you have 2x rings (Default: 200)
 		blo.s	.sRingSound
 		bset	#2,(v_lifecount).w
 		beq.w	ExtraLife
 		
-.sRingSound:
+	.sRingSound:
+	endif
+
 		move.w	#sfx_GiantRing,d0
 		jmp		(QueueSound2).w					; play giant ring sound
+
 	else
+	; YES Super Sonic
 		if AfterImagesOn	; Hitaxas S3K afterimage
 			move.b	#id_AfterImages,(v_trails).w
 			move.w	#v_player,(v_trails+obParent).w	
@@ -248,28 +258,31 @@ Pow_S:
 			move.b	#2,(v_trails2+obSubtype).w
 			move.w	#v_followobject,(v_trails2+obParent).w
 		endif
-	
-	
+
 		movem.l a0-a2,-(sp)								; Move a0, a1 and a2 onto stack
 		lea     (v_player).w,a0							; Load Sonic to a0
 		btst	#sta2ndSuper,obStatus2nd(a0)			; is Sonic already Super?
 		bne.s	.skipSuper								; if yes, branch ahead
 		jsr		(Sonic_TurnSuper).l						; turn Super
 
-.skipSuper:
+	.skipSuper:
 		movem.l (sp)+,a0-a2								; Move a0, a1 and a2 from stack
 
 		ori.b	#1,(f_ringcount).w						; update the ring counter
-		cmpi.w	#100,(v_rings).w						; check if you have 100 rings
+
+	if RingsLives
+		cmpi.w	#RingsLivesFactor,(v_rings).w			; check if you have x rings (Default: 100)
 		blo.s	.locret
 		bset	#1,(v_lifecount).w
 		beq.w	ExtraLife
-		cmpi.w	#200,(v_rings).w						; check if you have 200 rings
+		cmpi.w	#RingsLivesFactor*2,(v_rings).w			; check if you have 2x rings (Default: 200)
 		blo.s	.locret
 		bset	#2,(v_lifecount).w
 		beq.w	ExtraLife
 
-.locret:
+	.locret:
+	endif
+
 		rts
 	endif
 ; ===========================================================================

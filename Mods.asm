@@ -169,6 +169,7 @@ ScoreLives: = 0
 ; Function: Simply enables/disables acquisition of lives via rings.
 RingsLives: = 1
 	RingsLivesFactor: = 100		; Rings multiple at which lives are awarded (only twice). By default: 100; Proto: 50.
+	; NOTE: Setting this to 50 MIGHT interfere with Continues in the Special Stage.
 
 ; To-Do:
 ; GHZ Eggman cannot be hit until ball is lowered (per remakes)
