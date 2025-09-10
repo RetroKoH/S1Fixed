@@ -35,7 +35,7 @@ AirRollEnabled: = 0							; if set to 1, Sonic can curl into a ball in mid-air b
 DropDashEnabled: = 0
 	ReusableDropDash: = DropDashEnabled*1					; if set to 1, you can try drop dashing again after cancelling (original behavior doesn't allow this)
 	AirRollIntoDropDash: = AirRollEnabled*DropDashEnabled*1	; if set to 1, you can transition from Air Roll into Drop Dash by holding the jump button.
-; NOTE: Auto-Air Roll currently does not allow for a Drop Dash transition
+; NOTE: Auto-Air Roll currently does not allow for a Drop Dash transition unless ReusableDropDash is enabled
 
 ; Name: Elemental Shields (Incomplete: Minor bugfixes)
 ; Credit: RetroKoH, DeltaW
@@ -49,25 +49,28 @@ S3KDoubleJump: = (InstashieldEnabled|ShieldsMode)>0
 ; Credit: RetroKoH (Palette Credit: Clownacy)
 ; Function: Adds 7th Special Stage, 7th Emerald and Super Sonic Form
 SuperMod: = 0
+; NOTE: Super Sonic breaks some objects and foreground elements, visually, due to the changes to blues in Pal Line 0.
+; Adjustments will not be made in S1Fixed, as it's far too cumbersome to make a toggleable mod.
+; I might make a separate branch for this in the future.
 
 ; ----- GAMEPLAY TWEAKS ----------------------------------------------------------
 
 ; Name: Disable Speed Caps
 ; Credit: Mercury (Ground/Air), RetroKoH (Applied to Devon's Rolling Speed Cap Fix)
-; Function: Toggles the speed caps (The original game has all 3 caps active by default)
-GroundSpeedCapEnabled: = 0				; if set to 1, the ground speed cap is active
-AirSpeedCapEnabled: = 0					; if set to 1, the air speed cap is active
-RollSpeedCapEnabled: = 0				; if set to 1, the rolling speed cap is active (fixed by Devon)
+; Function: Toggles the speed caps (The original game has speed caps active by default)
+GroundSpeedCapEnabled: = 1				; if set to 1, the ground speed cap is active
+AirSpeedCapEnabled: = 1					; if set to 1, the air speed cap is active
+RollSpeedCapEnabled: = 1				; if set to 1, the rolling speed cap is active (fixed by Devon)
 
 ; Name: Original Roll Jump Toggle
 ; Credit: Mercury
 ; Function: When turned on, Sonic retains his original roll jump lock (See _incObj/Sonic Jump.asm)
-RollJumpLockActive: = 0					; if set to 1, the original roll jump lock is maintained
+RollJumpLockActive: = 1					; if set to 1, the original roll jump lock is maintained
 
 ; Name: Spike Fix Mod
 ; Credit: FraGag
 ; Function: Prevents spikes from harming Sonic while he's flashing.
-SpikeBugFix: = 1						; if set to 1, the spike "bug" is fixed
+SpikeBugFix: = 0						; if set to 1, the spike "bug" is fixed
 
 ; Name: Rebound Mod
 ; Credit: Mercury
@@ -77,7 +80,7 @@ ReboundMod: = 0
 ; Name: CD Balancing Mod
 ; Credit: Mercury
 ; Function: Uses the Sonic CD balancing sprites (forward and back) instead of Sonic 1's.
-CDBalancing: = 1
+CDBalancing: = 0
 
 ; Name: CD Camera Panning
 ; Credit: Naoto
@@ -87,12 +90,12 @@ CDCamera: = 0							; if set to 1, screen will pan forward, a la Sonic CD
 ; Name: Centralized Camera
 ; Credit: TomatoWave_0
 ; Function: Centralizes the standard camera
-CenteredCamera: = 1*(CDCamera==0)		; if set to 1, screen will be tighter, locking Sonic in the center
+CenteredCamera: = 0*(CDCamera==0)		; if set to 1, screen will be tighter, locking Sonic in the center
 
 ; Name: S3K AfterImages (Incomplete: Add for Super Sonic)
 ; Credit: Hitaxas (Wooloo Engine)
 ; Function: Applies After-Image effects to the Speed Shoes
-AfterImagesOn: = 1
+AfterImagesOn: = 0
 
 ; Name: Random Monitors
 ; Credit: RetroKoH
@@ -102,41 +105,41 @@ RandomMonitors: = 0
 ; Name: Limit LZ Block Rising Speed
 ; Credit: Mercury
 ; Function: Limits the rising speed of blocks in LZ so that Sonic can jump off them more comfortably.
-LimitLZBlockRisingSpeed: = 1			; if set to 1, LZ Rising platforms are speed-capped
+LimitLZBlockRisingSpeed: = 0			; if set to 1, LZ Rising platforms are speed-capped
 
 ; Name: Orbinaut Animation Tweak
 ; Credit: Mercury
 ; Function: Makes Orbinaut "notice" Sonic at a closer range so that it's more likely to happen onscreen, and "get angry" quicker.
-OrbinautAnimationTweak: = 1
+OrbinautAnimationTweak: = 0
 	OrbinautAnimationTweakRange: = $80	; horizontal range in pixels at which Sonic is noticed by the Orbinaut
 	OrbinautAnimationTweakSpeed: = $8	; animation speed of the Orbinaut's "getting angry" animation
 	
 ; Name: SLZ Orbinaut Behaviour Mod (Incomplete: Remove grey frame from SLZ Orbinaut)
 ; Credit: Mercury
 ; Function: Makes the SLZ Orbinauts beatable by giving them behaviour similar to Sonic 4's.
-SLZOrbinautBehaviourMod: = 1
+SLZOrbinautBehaviourMod: = 0
 
 ; Name: Signpost Control Lock Bypass Fix
 ; Credit: Fix by Clownacy, reintroduced as mod by Amy Farbright
 ; Function: Fixes an edge case where being offscreen and in the air as the score tally starts avoids locking controls to run forward
-SignpostControlLockFix: = 1
+SignpostControlLockFix: = 0
 
 ; Name: Speed Up/Instant Score Tally
 ; Credit: Mercury/RetroKoH
 ; Function: Allows the player to hold a button to speed up the score tally, or just have it occur immediately
-SpeedUpScoreTally: = 2					; if set to 1, score tally can be sped up w/ ABC. If 2, it automatically tallies immediately.
+SpeedUpScoreTally: = 0					; if set to 1, score tally can be sped up w/ ABC. If 2, it automatically tallies immediately.
 
 ; Name: Floating Signposts
 ; Credit: RetroKoH
 ; Function: The Signpost flies into the air when you run past it fast enough.
-FloatingSignposts: = 1
+FloatingSignposts: = 0
 
 ; Name: Cool and Perfect Bonuses
 ; Credit: RetroKoH
 ; Cool Bonus Function: Sonic gets an additional 10000 points if he doesn't get hit (decrements by 100 for each hit).
 ; Perfect Bonus Function: Sonic gets an additional 50000 points if he collects every ring in a level or Special Stage.
-CoolBonusEnabled: = 1
-PerfectBonusEnabled: = 1
+CoolBonusEnabled: = 0
+PerfectBonusEnabled: = 0
 ExtraBonuses: = CoolBonusEnabled+PerfectBonusEnabled	; if either bonus is enabled, SCORE is removed from the score tally cards.
 	CoolBonusHits: = 10		; Number of hits allowed to attain any bonus in a level.
 	PerfectScore: = 5000	; Score awarded for Perfect Bonus / 10.
@@ -145,13 +148,13 @@ ExtraBonuses: = CoolBonusEnabled+PerfectBonusEnabled	; if either bonus is enable
 ; Name: Enemies Drop Rings
 ; Credit: RetroKoH, DeltaW
 ; Function: Enemies drop rings instead of animals
-EnemiesDropRings: = 1
+EnemiesDropRings: = 0
 	EnemyRingsAttract: = 1*ShieldsMode	; if set, the Lightning Shield will attract these rings
 
 ; Name: Invincibility Buffer
 ; Credit: RetroKoH
 ; Function: Gives Sonic a second of invulnerability frames after Invincibility expires
-InvincBuffer: = 1
+InvincBuffer: = 0
 ; I saw this in a Sonic 3 AIR Superstars mod. Not sure if that existed in Superstars, but I implemented it here.
 
 ; ----- FLAIR MODS ---------------------------------------------------------------
