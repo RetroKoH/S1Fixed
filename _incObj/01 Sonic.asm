@@ -1450,8 +1450,11 @@ locret_134D2:
 
 
 Sonic_ChkDropDash:
+	if ~~ReusableDropDash
 		cmpi.b	#3,obDoubleJumpFlag(a0)		; was the Drop Dash cancelled?
 		beq.s	.ret						; if yes, branch
+	endif
+
 		move.b	obStatus2nd(a0),d0
 		btst	#sta2ndInvinc,d0			; is Sonic invincible OR Super?
 		bne.s	.skipshieldcheck			; if yes, enable Drop Dash
@@ -1475,7 +1478,10 @@ Sonic_ChkDropDash:
 		rts
 
 .reset:
+	if ~~ReusableDropDash
 		move.b	#3,obDoubleJumpFlag(a0)		; disable attempting the Drop Dash (Remove this to allow repeated attempts (toggle?)
+	endif
+
 		clr.b	obDoubleJumpProp(a0)
 		move.b	#aniID_Roll,obAnim(a0)		; reset to rolling animation
 
@@ -1561,11 +1567,16 @@ Sonic_ChkAirRoll:
 		tst.b	(f_wtunnelmode).w		; are we in a wind tunnel?
 		bne.s	.end					; if yes, branch and exit
 
+	if AutoAirRoll
+		tst.w	obVelY(a0)				; is Sonic moving upward?
+		ble.s	.end					; if yes, don't curl yet
+	else
 		move.b	(v_jpadpress2).w,d0
 		andi.b	#btnABC,d0				; are buttons A, B, or C being pressed?
 		beq.s	.noAirRoll				; if not, branch
-		
-; Air Roll
+	endif
+
+	; Air Roll starts here
 		bset	#staSpin,obStatus(a0)	; set spin status
 		move.w	#$E07,obHeight(a0)		; Height and Width
 		move.b	#aniID_Roll,obAnim(a0)	; enter rolling animation
@@ -1574,6 +1585,7 @@ Sonic_ChkAirRoll:
 		move.b	#2,obDoubleJumpFlag(a0)	; disable shield abilities and/or enable Drop Dash transition
 
 	if AirRollIntoDropDash
+		; Drop Dash transition doesn't work with auto Air Roll
 		move.b	#1,obJumping(a0)		; enable this for potential drop dash transition
 	endif
 
