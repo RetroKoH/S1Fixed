@@ -2025,7 +2025,7 @@ locret_135A2:
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
-
+; Sonic_DoLevelCollision:
 Sonic_Floor:
 		move.l	#v_collision1&$FFFFFF,(v_collindex).w	; MJ: load first collision data location
 		cmpi.b	#$C,(v_top_solid_bit).w					; MJ: is second collision set to be used?
@@ -2062,14 +2062,14 @@ Sonic_Floor:
 		tst.w	d1
 		bpl.s	.chkRightWall
 		sub.w	d1,obX(a0)
-		clr.w	obVelX(a0)
+		clr.w	obVelX(a0)								; stop Sonic since he hit a wall on his left
 
 	.chkRightWall:
 		bsr.w	Sonic_CheckRightWallDist
 		tst.w	d1
 		bpl.s	.chkFloor
 		add.w	d1,obX(a0)
-		clr.w	obVelX(a0)
+		clr.w	obVelX(a0)								; stop Sonic since he hit a wall on his right
 
 	.chkFloor:
 		bsr.w	Sonic_HitFloor
@@ -2107,7 +2107,7 @@ loc_1364E:
 ; ===========================================================================
 
 loc_1365C:
-		clr.w	obVelX(a0)
+		clr.w	obVelX(a0)					; stop Sonic since he hit a wall
 		cmpi.w	#$FC0,obVelY(a0)
 		ble.s	loc_13670
 		move.w	#$FC0,obVelY(a0)
@@ -2133,9 +2133,9 @@ locret_1367E:
 Sonic_AirMode_LeftWall: ;loc_13680:
 		bsr.w	Sonic_CheckLeftWallDist
 		tst.w	d1
-		bpl.s	.chkCeiling
+		bpl.s	.chkCeiling					; branch if distance is positive (not inside wall)
 		sub.w	d1,obX(a0)
-		clr.w	obVelX(a0)
+		clr.w	obVelX(a0)					; stop Sonic since he hit a wall
 		move.w	obVelY(a0),obInertia(a0)
 		rts	
 ; ===========================================================================
@@ -2143,11 +2143,11 @@ Sonic_AirMode_LeftWall: ;loc_13680:
 	.chkCeiling:
 		bsr.w	Sonic_CheckCeilingDist
 		tst.w	d1
-		bpl.s	.chkFloor
+		bpl.s	.chkFloor					; branch if distance is positive (not inside ceiling)
 		sub.w	d1,obY(a0)
 		tst.w	obVelY(a0)
 		bpl.s	.ret
-		clr.w	obVelY(a0)
+		clr.w	obVelY(a0)					; stop Sonic in y since he hit a ceiling
 
 	.ret:
 		rts	
@@ -2180,14 +2180,14 @@ Sonic_AirMode_Ceiling: ;loc_136E2:
 		tst.w	d1
 		bpl.s	.chkRightWall
 		sub.w	d1,obX(a0)
-		clr.w	obVelX(a0)
+		clr.w	obVelX(a0)					; stop Sonic since he hit a wall
 
 	.chkRightWall:
 		bsr.w	Sonic_CheckRightWallDist
 		tst.w	d1
 		bpl.s	.chkCeiling
 		add.w	d1,obX(a0)
-		clr.w	obVelX(a0)
+		clr.w	obVelX(a0)					; stop Sonic since he hit a wall
 
 	.chkCeiling:
 		bsr.w	Sonic_CheckCeilingDist
@@ -2198,7 +2198,7 @@ Sonic_AirMode_Ceiling: ;loc_136E2:
 		addi.b	#$20,d0
 		andi.b	#$40,d0
 		bne.s	.latchToCeiling
-		clr.w	obVelY(a0)
+		clr.w	obVelY(a0)					; stop Sonic in y since he hit a ceiling
 		rts	
 ; ===========================================================================
 
@@ -2226,7 +2226,7 @@ Sonic_AirMode_RightWall: ;loc_1373E:
 		tst.w	d1
 		bpl.s	.chkCeiling
 		add.w	d1,obX(a0)
-		clr.w	obVelX(a0)
+		clr.w	obVelX(a0)					; stop Sonic since he hit a wall
 		move.w	obVelY(a0),obInertia(a0)
 		rts	
 ; ===========================================================================
@@ -2238,7 +2238,7 @@ Sonic_AirMode_RightWall: ;loc_1373E:
 		sub.w	d1,obY(a0)
 		tst.w	obVelY(a0)
 		bpl.s	.ret
-		clr.w	obVelY(a0)
+		clr.w	obVelY(a0)					; stop Sonic in y since he hit a ceiling
 
 	.ret:
 		rts	
@@ -2251,11 +2251,14 @@ Sonic_AirMode_RightWall: ;loc_1373E:
 		tst.w	d1
 		bpl.s	.end
 		add.w	d1,obY(a0)
-		move.b	d3,obAngle(a0)
-		;bsr.w	Sonic_ResetOnFloor			; Moved -- Fix Bubble Bounce
+	;	move.b	d3,obAngle(a0)				; Moved
+	;	bsr.w	Sonic_ResetOnFloor			; Moved -- Fix Bubble Bounce
 		move.b	#aniID_Walk,obAnim(a0)
-		clr.w	obVelY(a0)
+		clr.w	obVelY(a0)					; stop Sonic in y since he hit a floor
+		tst.b	(f_wtunnelmode).w			; is Sonic in a wind tunnel?
+		bne.s	.end						; if yes, branch
 		move.w	obVelX(a0),obInertia(a0)
+		move.b	d3,obAngle(a0)				; Moved
 		bra.w	Sonic_ResetOnFloor			; Moved -- Fix Bubble Bounce
 
 	.end:
