@@ -5,11 +5,15 @@
 
 ; ----- PLAYER ABILITIES ---------------------------------------------------------
 
+; Name: S2 Skid Dust
+; Credit: Mercury
+; Function: Enables Sonic 2 Skidding Dust
+SkidDustEnabled: = 0						; if set to 1, Skid dust will occur when coming to a stop.
+
 ; Name: Spin Dash
 ; Credit: SCHG, DeltaW, Mercury
 ; Function: Enables the Sonic 2 Spin Dash
-SpinDashEnabled: = 1
-	SkidDustEnabled: = 1					; if set to 1, Skid dust will occur when coming to a stop.
+SpinDashEnabled: = 0
 	SpinDashCancel: = SpinDashEnabled*1		; if set to 1, Spin Dash can be cancelled by not pressing ABC
 	SpinDashNoRevDown: = SpinDashEnabled*1	; if set to 1, Spin Dash will not rev down so long as ABC is held down
 ; (TO-DO: Add the CD Spindash variant)
@@ -17,18 +21,18 @@ SpinDashEnabled: = 1
 ; Name: Peelout
 ; Credit: DeltaW, Mercury
 ; Function: Enables the Sonic CD Peelout. Also enables the dashing animation while running.
-PeeloutEnabled: = 1
+PeeloutEnabled: = 0
 
 ; Name: Air Roll
 ; Credit: RetroKoH (Inspired by a guide by Inferno Gear)
 ; Function: Enables the Air Roll from Sonic Triple Trouble
-AirRollEnabled: = 1							; if set to 1, Sonic can curl into a ball in mid-air by pressing Jump while not rolling
-	AutoAirRoll: = AirRollEnabled*1			; if set to 1, air roll will occur automatically when moving downward
+AirRollEnabled: = 0							; if set to 1, Sonic can curl into a ball in mid-air by pressing Jump while not rolling
+	AutoAirRoll: = AirRollEnabled*1				; if set to 1, air roll will occur automatically when moving downward
 
 ; Name: Drop Dash (Incomplete: Need to reset animation if Drop Dash is cancelled)
 ; Credit: DeltaW, giovanni.gen, Hitaxas, RetroKoH
 ; Function: Enables the Drop Dash from Sonic Mania & Origins
-DropDashEnabled: = 1
+DropDashEnabled: = 0
 	ReusableDropDash: = DropDashEnabled*1					; if set to 1, you can try drop dashing again after cancelling (original behavior doesn't allow this)
 	AirRollIntoDropDash: = AirRollEnabled*DropDashEnabled*1	; if set to 1, you can transition from Air Roll into Drop Dash by holding the jump button.
 ; NOTE: Auto-Air Roll currently does not allow for a Drop Dash transition
@@ -37,14 +41,14 @@ DropDashEnabled: = 1
 ; Credit: RetroKoH, DeltaW
 ; Function: Enables the usage of S3K Shields and abilities.
 InstashieldEnabled: = 0					; if set to 1, instashield is now enabled (Now split from Elemental Shields toggle).
-ShieldsMode: = 2						; 0 - Blue Shield only, 1 - Blue + Elementals, 2 - Elementals only.
+ShieldsMode: = 0						; 0 - Blue Shield only, 1 - Blue + Elementals, 2 - Elementals only.
 S3KDoubleJump: = (InstashieldEnabled|ShieldsMode)>0
 	RingMagnetRange: = $40				; The range of the lightning shield's ring magnetism
 
 ; Name: 7th Emerald and Super Sonic (Incomplete: Minor Bugfixes)
 ; Credit: RetroKoH (Palette Credit: Clownacy)
 ; Function: Adds 7th Special Stage, 7th Emerald and Super Sonic Form
-SuperMod: = 1
+SuperMod: = 0
 
 ; ----- GAMEPLAY TWEAKS ----------------------------------------------------------
 

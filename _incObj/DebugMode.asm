@@ -186,9 +186,12 @@ Debug_ChgItem:
 		btst	#bitB,(v_jpadpress1).w				; is button B pressed?
 		beq.s	.stayindebug						; if not, branch
 		clr.w	(v_debuguse).w						; deactivate debug mode
-		jsr		(Reset_Sonic_Position_Array).l
-		lea		(v_player).w,a1
 
+	if (ShieldsMode|DropDashEnabled)
+		jsr		(Reset_Sonic_Position_Array).l
+	endif
+
+		lea		(v_player).w,a1
 		move.l	#Map_Sonic,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Sonic,0,0),obGfx(a1)	; Also resets high priority bit in case of drowning
 		move.b	#aniID_Walk,obAnim(a1)
@@ -461,8 +464,10 @@ Debug_SpecialControl:
 		btst	#bitB,(v_jpadpress1).w				; is button B pressed?
 		beq.s	.stayindebug						; if not, branch
 		clr.w	(v_debuguse).w						; deactivate debug mode
+
+	if (ShieldsMode|DropDashEnabled)
 		jsr		(Reset_Sonic_Position_Array).l
-		lea		(v_player).w,a1
+	endif
 
 		clr.w	(v_ssangle).w
 
@@ -472,6 +477,7 @@ Debug_SpecialControl:
 		move.w	#$40,(v_ssrotate).w					; set new stage rotation speed
 	endif
 
+		lea		(v_player).w,a1
 		move.l	#Map_Sonic,obMap(a1)
 		move.w	#ArtTile_Sonic,obGfx(a1)
 		move.b	#aniID_Roll,obAnim(a1)
