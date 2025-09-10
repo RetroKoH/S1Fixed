@@ -306,7 +306,7 @@ v_opl_data:				ds.b	$10		; ObjPosLoad - data buffer
 v_ssangle:				ds.w	1		; Special Stage angle
 v_ssrotate:				ds.w	1		; Special Stage rotation speed
 v_ssangleprev:			ds.b	1		; Previous Special Stage angle -- Mercury Dynamic Special Stage Walls
-v_ssringquota:			ds.b	1		; Special Stage Ring Barrier Quota (Only used if S4SSRingBarriers is active)
+					ds.b	1		; unused
 f_levelstarted:			ds.b	1		; level start flag (for drawing non-objects) -- RetroKoH S/3K Rings Manager
 v_hudscrollpos:			ds.b	1		; Scrolling x-position for the HUD. -- RetroKoH Scrolling HUD Display
 v_btnpushtime1:			ds.w	1		; button push duration - in level
