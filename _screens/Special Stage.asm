@@ -69,7 +69,7 @@ GM_Special:
 	endif
 
 	if ~~AmbienceMode
-		moveq	#bgm_SS,d0
+		moveq	#bgm_SpecialStage,d0
 		bsr.w	QueueSound1							; play special stage BG	music
 	endif
 
