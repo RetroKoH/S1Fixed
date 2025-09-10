@@ -157,6 +157,19 @@ EnemiesDropRings: = 0
 InvincBuffer: = 0
 ; I saw this in a Sonic 3 AIR Superstars mod. Not sure if that existed in Superstars, but I implemented it here.
 
+; Name: 50k Points Lives Mod
+; Credit: RetroKoH
+; Function: Simply enables/disables the REV01 addition of extra lives for 50k points
+ScoreLives: = 0
+	ScoreLivesFactor: = 5000	; Score multiple at which lives are awarded (By default, 1 life for every 50k points)
+; NOTE: The game sometimes erroneously gives lives when this is enabled (likely due to incorrect setting of v_scorelife
+
+; Name: Rings Lives Mod
+; Credit: RetroKoH
+; Function: Simply enables/disables acquisition of lives via rings.
+RingsLives: = 1
+	RingsLivesFactor: = 100		; Rings multiple at which lives are awarded (only twice). By default: 100; Proto: 50.
+
 ; To-Do:
 ; GHZ Eggman cannot be hit until ball is lowered (per remakes)
 ; Right boundary shift after bosses is immediate (per ROM hacks and remakes)
