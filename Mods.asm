@@ -157,6 +157,10 @@ EnemiesDropRings: = 0
 InvincBuffer: = 0
 ; I saw this in a Sonic 3 AIR Superstars mod. Not sure if that existed in Superstars, but I implemented it here.
 
+; To-Do:
+; GHZ Eggman cannot be hit until ball is lowered (per remakes)
+; Right boundary shift after bosses is immediate (per ROM hacks and remakes)
+
 ; ----- FLAIR MODS ---------------------------------------------------------------
 
 ; Name: Fade-In SEGA Screen
@@ -167,27 +171,29 @@ FadeInSEGA: = 1							; if set to 1, the SEGA screen smoothly fades in
 ; Name: Screen Fading Options
 ; Credit: RetroKoH/MarkeyJester
 ; Function: Screens now fade in/out in one of 7 different ways: (Blue, Green, Red, Cyan, Magenta, Yellow, and Full)
-PaletteFadeSetting: = 6					; 0 - Blue (Original), 1 - Green, 2 - Red, 3 - Cyan (B+G), 4 - Pink (B+R), 5 - Yellow (G+R), 6 - Full
+PaletteFadeSetting: = 0					; 0 - Blue (Original), 1 - Green, 2 - Red, 3 - Cyan (B+G), 4 - Pink (B+R), 5 - Yellow (G+R), 6 - Full
 
 ; Name: GHZ Water Palette Mod
 ; Credit: Sonic 1 Forever Team
 ; Function: Toggles GHZ palette between original and Sonic 1 Forever's altered bg water.
-GHZForeverPal: = 1						; if set to 1, GHZ is set to Sonic 1 Forever's palette
+GHZForeverPal: = 0						; if set to 1, GHZ is set to Sonic 1 Forever's palette
 
 ; Name: Active Death Sequences
 ; Credit: RetroKoH
 ; Function: Active elements will not freeze when the player dies.
-ActiveDeathSequence: = 1				; if set to 1, active elements don't freeze on death a la Sonic CD
+ActiveDeathSequence: = 0				; if set to 1, active elements don't freeze on death a la Sonic CD
+; NOTE: I need to fix a bug that this causes in Labyrinth Zone where the BG scrolls vertically.
 
 ; Name: End-of-Level Music Fade
 ; Credit: RetroKoH
 ; Function: Toggles whether music will fade out after the level ends.
-EndLevelFadeMusic: = 1
+EndLevelFadeMusic: = 0
 
 ; Name: HUD Scrolls Into View
 ; Credit: RetroKoH
 ; Function: HUD Scrolls into view during gameplay.
-HUDScrolling: = 1
+HUDScrolling: = 0
+; NOTE: Add a sub-toggle for it to scroll out at the end of a level
 
 ; Name: HUD w/ Leading Zeroes
 ; Credit: Mercury
@@ -197,27 +203,27 @@ HUDHasLeadingZeroes: = 0				; if set to 1, leading zeroes appear on HUD
 ; Name: HUD Centiseconds
 ; Credit: Mercury
 ; Function: Adds Sonic CD-style centiseconds to the HUD
-HUDCentiseconds: = 1
+HUDCentiseconds: = 0
 
 ; Name: Blinking HUD
 ; Credit: Mercury
 ; Function: Makes "TIME" and "RINGS" will blink on and off instead of flashing red. Useful when changing palettes.
-HUDBlinking: = 1
+HUDBlinking: = 0
 
 ; Name: Updated Signposts
 ; Credit: RetroKoH
 ; Function: Gives the Signposts a base, similar to those in Sonic CD.
-UpdatedSignposts: = 2				; 0 = default signposts; 1 = CD signposts; 2 = hybrid (shorter CD) signposts
+UpdatedSignposts: = 0				; 0 = default signposts; 1 = CD signposts; 2 = hybrid (shorter CD) signposts
 
 ; Name: SBZ3 New Art Mod
 ; Credit: Trickster/Rohan, RetroKoH
 ; Function: Provides new art for SBZ Act 3
-NewSBZ3LevelArt: = 1
+NewSBZ3LevelArt: = 0
 
 ; Name: Ambience Mode
 ; Credit: RetroKoH
 ; Function: Disables playing music tracks, allowing only sfx to play
-AmbienceMode: = 1
+AmbienceMode: = 0
 
 ; ----- SPECIAL STAGES -----------------------------------------------------------
 
