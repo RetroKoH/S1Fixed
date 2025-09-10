@@ -223,7 +223,7 @@ ResetLevel:
 		move.b	d0,(v_emeralds).w		; clear emerald count
 		move.b	d0,(v_emldlist).w		; clear emerald array
 		move.b	d0,(v_continues).w		; clear continues
-		move.l	#5000,(v_scorelife).w	; extra life is awarded at 50000 points
+		move.l	#ScoreLivesFactor,(v_scorelife).w	; extra life is awarded at X points (Default: 50000)
 
 	if CoolBonusEnabled
 		move.b	#10,(v_hitscount).w			; set hits count for cool bonus
@@ -329,7 +329,7 @@ Demo_Level:
 		move.w	d1,(v_rings).w				; clear rings
 		move.l	d1,(v_time).w				; clear time
 		move.l	d1,(v_score).w				; clear score
-		move.l	#5000,(v_scorelife).w		; extra life is awarded at 50000 points
+		move.l	#ScoreLivesFactor,(v_scorelife).w	; extra life is awarded at X points (Default: 50000)
 		rts	
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
