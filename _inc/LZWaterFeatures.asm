@@ -317,7 +317,7 @@ LZWindTunnels:
 		tst.b	(f_wtunnelallow).w		; are wind tunnels disabled?
 		bne.w	.quit					; if yes, branch
 		cmpi.b	#4,obRoutine(a1)		; is Sonic hurt/dying?
-		bhs.s	.leavehurt				; if yes, branch
+		bhs.w	.leavehurt				; if yes, branch
 		move.b	#1,(f_wtunnelmode).w	; affects character animation and bubble movement
 		move.w	d1,d0					; FixBugs
 		subi.w	#$80,d0
@@ -337,20 +337,30 @@ LZWindTunnels:
 		move.b	#aniID_Float2,obAnim(a1)	; use floating animation
 		bset	#staAir,obStatus(a1)
 	; DeltaW/RetroKoH Wind Tunnel Fix
-		clr.b	obJumping(a0)				; if we were jumping, we aren't anymore
+		clr.b	obJumping(a1)				; if we were jumping, we aren't anymore
 		bclr	#staSpin,obStatus(a1)		; clear rolling state
 		move.w	#$E07,obHeight(a1)			; set rolling height though
 	; Wind Tunnel Fix end
 		btst	#bitUp,(v_jpadhold2).w		; is up pressed?
 		beq.s	.down						; if not, branch
-		subq.w	#1,obY(a1)					; move Sonic up on pole
+		subq.w	#1,obY(a1)					; move Sonic up
 
 	.down:
 		btst	#bitDn,(v_jpadhold2).w		; is down being pressed?
 		beq.s	.end						; if not, branch
-		addq.w	#1,obY(a1)					; move Sonic down on pole
+		addq.w	#1,obY(a1)					; move Sonic down
+
+	; RetroKoH Floor Check (This prevents a floor clip in LZ3)
+		move.l	a0,-(sp)
+		movea.l	a1,a0						; a0 = Sonic
+		jsr		(Sonic_HitFloor).l
+		tst.w	d1
+		bpl.s	.end
+		subq.w	#1,obY(a0)
 
 	.end:
+		movea.l	(sp)+,a0
+	; Floor Check end
 		rts	
 ; ===========================================================================
 
