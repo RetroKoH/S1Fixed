@@ -230,17 +230,17 @@ AmbienceMode: = 0
 ; Name: Dynamic Special Stage Walls
 ; Credit: Mercury
 ; Function: Dynamically loads the wall art in the Special Stages to free VRAM (for things like the HUD)
-DynamicSpecialStageWalls: = 1
+DynamicSpecialStageWalls: = 0
 
 ; Name: Smooth Special Stage Rotation and Jumping
 ; Credit: Cinossu and Devon
 ; Function: Special Stage scrolls smoothly. Movement/Jump angles are also affected.
-SmoothSpecialStages: = 1
+SmoothSpecialStages: = 0
 
 ; Name: Special Stage Index Increases Only If Won
 ; Credit: Mercury
 ; Function: Makes the Special Stage index not increase when you fail the stage, allowing you to retry the previous stage.
-SpecialStageAdvancementMod: = 1
+SpecialStageAdvancementMod: = 0
 
 ; Name: HUD (and Time Limits) In Special Stage
 ; Credit: Mercury/RetroKoH
@@ -252,54 +252,53 @@ HUDInSpecialStage: = DynamicSpecialStageWalls*1
 		SSTimeLimitPinch: = $00001E00	; "pinch" threshold that time must reach in order to trigger "TIME" to flash. Format: $000MSSCC
 		SSTimeLimitStart: = $00010000	; time on the clock to start with when Special Stage is entered. Format: $000MSSCC
 		; NOTE: SSTimeLimitStart must always end in 00
+		; To-Do: Make time limits for all 7 stages
 
 ; Mods listed below alter the layouts in real-time. See variable: AlteredSpecialStages
 ; Name: Sonic 4 Controls in Special Stage
 ; Credit: RetroKoH
 ; Function: If active, Special Stages control like Sonic 4 Ep 1 (Left/Right rotate the stage).
-S4SpecialStages: = 1	; (Removes UP/DOWN, and R Blocks)
+S4SpecialStages: = 0	; (Removes UP/DOWN, and R Blocks)
+; NOTE: Add a sub-toggle for disabling jump in the S4 special stage. (Bounce off walls)
 
 ; Name: Special Stages Still Appear With All Emeralds
 ; Credit: Mercury
 ; Function: Makes the Special Stages still accessible even once all emeralds are collected.
-SpecialStagesWithAllEmeralds: = 1		; (Replaces Emeralds w/ 1-Ups if Emeralds are obtained)
+SpecialStagesWithAllEmeralds: = 0		; (Replaces Emeralds w/ 1-Ups if Emeralds are obtained)
 
-; Name: Ring Barriers in Special Stages
-; Credit: RetroKoH
-; Function: Adds the ring barriers from Sonic 4 (Ep 1)'s Special Stages
-S4SSRingBarriers: = 1					; Replaces Ghost Blocks with Ring Barriers and removes ghost block triggers.
-	SSRingQuota: = 25					; For now, each ring barrier requires 25 rings to pass.
+; To-Do: Add Special Stages to SBZ 1 and 2 Toggle from ReadySonic
 
 ; Perfect Bonuses are included here because it helps keep SS_Load efficient.
-AlteredSpecialStages: = (S4SpecialStages+SpecialStagesWithAllEmeralds+S4SSRingBarriers+PerfectBonusEnabled)
+AlteredSpecialStages: = (S4SpecialStages+SpecialStagesWithAllEmeralds+PerfectBonusEnabled)
 
 ; ----- PROTO ELEMENTS -----------------------------------------------------------
 
 ; Name: Original Level Order
 ; Credit: RetroKoH
 ; Function: Toggles level order between Original and Final
-OriginalLevelOrder: = 1						; if set to 1, Level Order is that seen in the original level select screen
+OriginalLevelOrder: = 0						; if set to 1, Level Order is that seen in the original level select screen
 
 ; Name: Proto Sonic Palette Mod
 ; Credit: Ikey Ilex
 ; Function: Gives Sonic his prototype palette found in the Tom Payne archives. Also seen in Crackers and Sonic CD.
-ProtoSonicPalette: = 1
+ProtoSonicPalette: = 0
 
 ; Name: Proto Percussion
 ; Credit: OrionNavattan
 ; Function: Gives the percussion the sound style as heard in earlier prototype versions of the game.
-ProtoPercussion: = 1
+ProtoPercussion: = 0
 
 ; Name: Proto Zone Names
 ; Credit: RetroKoH
 ; Function: Changes the names of Spring Yard and Scrap Brain to Sparkling and Clock Work, respectively.
-ProtoZoneNames: = 1
+ProtoZoneNames: = 0
 
 ; Name: Proto Victory Leap
 ; Credit: RetroKoH
 ; Function: Restores the victory leap Sonic performs at the end of a level.
-ProtoVictoryLeap: = 1
+ProtoVictoryLeap: = 0
 ; Unlike the actual prototype, this triggers as soon as Sonic hits a Signpost.
+; NOTE: Need to fix Drop Dash bug
 
 ; ----- UNDER-THE-HOOD -----------------------------------------------------------
 
