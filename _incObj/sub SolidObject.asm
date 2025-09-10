@@ -219,6 +219,8 @@ Solid_Ignore:
 		btst	#staSonicPush,obStatus(a0)	; is Sonic pushing?
 		beq.s	Solid_Debug					; if not, branch
 		; Removed line -- Mercury Walking In Air Fix
+		; s2disasm fixBugs has a slightly different fix for this. (See: SolidObject_TestClearPush)
+		; I believe Mercury's to be more efficient.
 
 Solid_NotPushing:
 		bclr	#staSonicPush,obStatus(a0)	; clear pushing flag

@@ -1529,7 +1529,7 @@ Sonic_TurnSuper:
 	if (ShieldsMode|DropDashEnabled)
 ; ---------------------------------------------------------------------------
 ; Subroutine to reset Sonic's position array
-; Added for S3K Shields and Drop Dash
+; Added for S3K Shields and Drop Dash; Also used in Debug Mode.
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -1790,7 +1790,7 @@ Sonic_UpdateSpinDash:
 		clr.b	(v_playerdust+obAnim).w
 		move.w	#sfx_Teleport,d0
 		jsr		(QueueSound2).w
-	; RHS/Esrael Boundary Spindash bugfix
+	; flamewing Boundary Spindash bugfix: https://info.sonicretro.org/SCHG_How-to:Fix_screen_boundary_spindash_bug
 		move.b	obAngle(a0),d0
 		jsr		(CalcSine).w
 		muls.w	obInertia(a0),d1
