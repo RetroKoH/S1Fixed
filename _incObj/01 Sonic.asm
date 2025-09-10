@@ -1237,8 +1237,10 @@ Sonic_LevelBound:
 
 
 Sonic_Roll:
-		tst.b	(f_slidemode).w
-		bne.s	.noroll
+		tst.b	(f_slidemode).w			; are we on a water slide?
+		bne.s	.noroll					; if yes, branch and exit
+		tst.b	(f_wtunnelmode).w		; are we in a wind tunnel?
+		bne.s	.noroll					; if yes, branch and exit
 
 ; Rewritten to match S3K
 	; Check controls first
@@ -1397,8 +1399,8 @@ Sonic_Jump:
 
 
 Sonic_JumpHeight:
-		tst.b	obJumping(a0)
-		beq.s	loc_134C4
+		tst.b	obJumping(a0)		; is Sonic jumping?
+		beq.s	loc_134C4			; if not, branch
 		move.w	#-$400,d1
 		btst	#staWater,obStatus(a0)
 		beq.s	loc_134AE
@@ -1553,8 +1555,11 @@ loc_10DEC:
 Sonic_ChkAirRoll:
 	if SpinDashEnabled
 		tst.b	obSpinDashFlag(a0)		; is Sonic charging his spin dash?
-		bne.w	.end					; if yes, branch
+		bne.s	.end					; if yes, branch and exit
 	endif
+
+		tst.b	(f_wtunnelmode).w		; are we in a wind tunnel?
+		bne.s	.end					; if yes, branch and exit
 
 		move.b	(v_jpadpress2).w,d0
 		andi.b	#btnABC,d0				; are buttons A, B, or C being pressed?

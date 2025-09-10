@@ -280,7 +280,7 @@ DynWater_SBZ3:
 LZWindTunnels:
 		tst.w	(v_debuguse).w	; is debug mode	being used?
 		bne.w	.quit			; if yes, branch
-		lea		(LZWind_Data+8).l,a2
+		lea		(WindTunnelsCoordinates+8).l,a2
 		moveq	#0,d0
 		move.b	(v_act).w,d0	; get act number
 		lsl.w	#3,d0			; multiply by 8
@@ -291,10 +291,11 @@ LZWindTunnels:
 		moveq	#1,d1
 		subq.w	#8,a2			; use different data for act 1
 
-.notact1:
+	.notact1:
 		lea		(v_player).w,a1
 
-.chksonic:
+	.chksonic:
+	; check for current wind tunnel if Sonic is inside it
 		move.w	obX(a1),d0
 		cmp.w	(a2),d0
 		blo.w	.chknext			; branch, if Sonic is too far left
@@ -304,19 +305,19 @@ LZWindTunnels:
 		cmp.w	2(a2),d2
 		blo.w	.chknext			; branch, if Sonic is too far up
 		cmp.w	6(a2),d2
-		bhs.s	.chknext			; branch if Sonic is too far down
+		bhs.w	.chknext			; branch if Sonic is too far down
 		move.w	d0,d1				; FixBugs
 		move.b	(v_vbla_byte).w,d0
 		andi.b	#$3F,d0				; does VInt counter fall on 0, $40, $80 or $C0?
 		bne.s	.skipsound			; if not, branch
 		move.w	#sfx_Waterfall,d0
-		jsr		(QueueSound2).w	; play rushing water sound (only every $40 frames)
+		jsr		(QueueSound2).w		; play rushing water sound (only every $40 frames)
 
-.skipsound:
+	.skipsound:
 		tst.b	(f_wtunnelallow).w		; are wind tunnels disabled?
 		bne.w	.quit					; if yes, branch
 		cmpi.b	#4,obRoutine(a1)		; is Sonic hurt/dying?
-		bhs.s	.clrquit				; if yes, branch
+		bhs.s	.leavehurt				; if yes, branch
 		move.b	#1,(f_wtunnelmode).w	; affects character animation and bubble movement
 		move.w	d1,d0					; FixBugs
 		subi.w	#$80,d0
@@ -327,46 +328,53 @@ LZWindTunnels:
 		bne.s	.notact2				; if not, branch
 		neg.w	d0
 
-.notact2:
+	.notact2:
 		add.w	d0,obY(a1)				; adjust Sonic's y-axis for curve of tunnel
 
-.movesonic:
-		addq.w	#4,obX(a1)
+	.movesonic:
+		addq.w	#4,obX(a1)					; nudge Sonic to the right
 		move.l	#$4000000,obVelX(a1)		; move Sonic to the right and stop vertical movement
 		move.b	#aniID_Float2,obAnim(a1)	; use floating animation
 		bset	#staAir,obStatus(a1)
+	; DeltaW/RetroKoH Wind Tunnel Fix
+		clr.b	obJumping(a0)				; if we were jumping, we aren't anymore
+		bclr	#staSpin,obStatus(a1)		; clear rolling state
+		move.w	#$E07,obHeight(a1)			; set rolling height though
+	; Wind Tunnel Fix end
 		btst	#bitUp,(v_jpadhold2).w		; is up pressed?
 		beq.s	.down						; if not, branch
 		subq.w	#1,obY(a1)					; move Sonic up on pole
 
-.down:
+	.down:
 		btst	#bitDn,(v_jpadhold2).w		; is down being pressed?
 		beq.s	.end						; if not, branch
 		addq.w	#1,obY(a1)					; move Sonic down on pole
 
-.end:
+	.end:
 		rts	
 ; ===========================================================================
 
-.chknext:
+	.chknext:
 		addq.w	#8,a2					; use second set of values (act 1 only)
 		dbf		d1,.chksonic			; on act 1, repeat for a second tunnel
 	; when all wind tunnels have been checked
 		tst.b	(f_wtunnelmode).w		; is Sonic still in a tunnel?
 		beq.s	.quit					; if yes, branch
 		move.b	#aniID_Walk,obAnim(a1)	; use walking animation
+		move.w	#$1309,obHeight(a1)		; set default height -- DeltaW/RetroKoH Wind Tunnel Fix
 
-.clrquit:
+	.leavehurt:
 		clr.b	(f_wtunnelmode).w		; finish tunnel
 
-.quit:
+	.quit:
 		rts	
 ; End of function LZWindTunnels
 
 ; ===========================================================================
 
 		;    left, top,  right, bottom boundaries
-LZWind_Data:	dc.w $A80, $300, $C10,  $380 ; act 1 values (set 1)
+WindTunnelsCoordinates:
+		dc.w $A80, $300, $C10,  $380 ; act 1 values (set 1)
 		dc.w $F80, $100, $1410,	$180 ; act 1 values (set 2)
 		dc.w $460, $400, $710,  $480 ; act 2 values
 		dc.w $A20, $600, $1610, $6E0 ; act 3 values
