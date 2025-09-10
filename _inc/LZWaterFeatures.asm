@@ -463,7 +463,7 @@ Slide_Speeds:
 		dc.b  11,  11,  11,  11
 		dc.b -11, -11, -11, -11
 		dc.b -12, -12, -12, -12
-		dc.b -11
+		dc.b -11,  11
 		even
 
 Slide_Chunks:
@@ -472,7 +472,8 @@ Slide_Chunks:
 		dc.b $0B,$0C,$0D,$0E
 		dc.b $15,$16,$F8,$F9
 		dc.b $19,$1A,$1B,$1C
-		dc.b $17
+		dc.b $17,$36						; KoH: Added Chunk $36 to try to fix a spin bug
+
 ; byte_3FCF:
 Slide_Chunks_End
 		even
