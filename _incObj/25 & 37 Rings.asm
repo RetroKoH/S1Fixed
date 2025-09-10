@@ -76,31 +76,35 @@ CollectRing:
 		bcc.s	.playsnd         	; if yes, branch
 		addq.w	#1,(v_rings).w	 	; add 1 to rings
 	; Ring Count Cap End
-		ori.b	#1,(f_ringcount).w	; update the rings counter
-		cmpi.w	#100,(v_rings).w	; do you have < 100 rings?
-		blo.s	.playsnd			; if yes, branch
-		bset	#1,(v_lifecount).w	; update lives counter
-		beq.s	.got100
-		cmpi.w	#200,(v_rings).w	; do you have < 200 rings?
-		blo.s	.playsnd			; if yes, branch
-		bset	#2,(v_lifecount).w	; update lives counter
-		bne.s	.playsnd
+		ori.b	#1,(f_ringcount).w				; update the rings counter
 
-.got100:
-	; Mercury Lives Over/Underflow Fix
-		cmpi.b	#99,(v_lives).w		; are lives at max?
-		beq.s	.playbgm
-		addq.b	#1,(v_lives).w		; add 1 to number of lives
-		addq.b	#1,(f_lifecount).w	; update the lives counter
-.playbgm:
-	; Lives Over/Underflow Fix End
+	if RingsLives
+			cmpi.w	#RingsLivesFactor,(v_rings).w	; do you have < x rings (Default: 100)
+			blo.s	.playsnd						; if yes, branch
+			bset	#1,(v_lifecount).w				; update lives counter
+			beq.s	.got100
+			cmpi.w	#RingsLivesFactor*2,(v_rings).w	; do you have < 2x rings (Default: 200)
+			blo.s	.playsnd						; if yes, branch
+			bset	#2,(v_lifecount).w				; update lives counter
+			bne.s	.playsnd
 
-	if ~~AmbienceMode
-		move.w	#bgm_ExtraLife,d0	; play extra life music
-		jmp		(QueueSound1).w
+		.got100:
+		; Mercury Lives Over/Underflow Fix
+			cmpi.b	#99,(v_lives).w		; are lives at max?
+			beq.s	.playbgm
+			addq.b	#1,(v_lives).w		; add 1 to number of lives
+			addq.b	#1,(f_lifecount).w	; update the lives counter
+
+		.playbgm:
+		; Lives Over/Underflow Fix End
+
+		if ~~AmbienceMode
+			move.w	#bgm_ExtraLife,d0	; play extra life music
+			jmp		(QueueSound1).w
+		endif
 	endif
 
-.playsnd:
+	.playsnd:
 		move.w	#sfx_Ring,d0	 	; play ring sound
 		jmp		(QueueSound2).w
 ; End of function CollectRing
