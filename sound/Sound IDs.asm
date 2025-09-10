@@ -43,7 +43,7 @@ bgm_SBZ =			SMPS_id(ptr_mus06)
 
 bgm_Invincible =	SMPS_id(ptr_mus07)
 bgm_ExtraLife =		SMPS_id(ptr_mus08)
-bgm_SS =			SMPS_id(ptr_mus09)
+bgm_SpecialStage =	SMPS_id(ptr_mus09)
 bgm_Title =			SMPS_id(ptr_mus0A)
 bgm_Ending =		SMPS_id(ptr_mus0B)
 bgm_Boss =			SMPS_id(ptr_mus0C)
