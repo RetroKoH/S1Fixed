@@ -306,6 +306,7 @@ ProtoVictoryLeap: = 0
 ; Credit: Clownacy/MarkeyJester
 ; Function: Sound alert when running through the path swapper while Debug Mode is enabled
 DebugPathSwappers: = 1
+; To-Do: Add Forced Roll object from Sonic 2, and give it a similar debug function to this
 
 ; Name: Save Game Functionality
 ; Credit: RetroKoH, s1Disasm Team
@@ -319,7 +320,7 @@ SaveProgressMod: = EnableSRAM*1
 ; Name: S2 Level Select
 ; Credit: RetroKoH
 ; Function: Replaces the Sonic 1 Level Select with a Sonic 2-inspired Level Select
-NewLevelSelect:	= 1
+NewLevelSelect:	= 0
 
 ; Name: Chunks In ROM
 ; Credit: Mercury/FraGag
@@ -337,24 +338,25 @@ DynamicPalettes: = 0					; if set to 1, there will be a separate palette for eac
 ; Credit: RetroKoH
 ; Plays a different BGM track for each act (Scrap Brain is unaffected, as it has dynamic palettes by default)
 ; (By default, they are identical to the original. It'll be up to you to add music if you use this mod)
-DynamicBGMs: = 1						; if set to 1, there will be a separate BGM track for each act
+DynamicBGMs: = 0						; if set to 1, there will be a separate BGM track for each act
 
 ; Name: Optimal Title Card Art
 ; Credit: RetroKoH
 ; Loads only necessary tiles for various cards. The benefit is less VRAM taken up by cards.
 ; The drawback is that they may be harder to edit for new users, and ROM size is slightly larger.
 OptimalTitleCardArt: = 1				; if set to 1, new art and mappings are used, reducing VRAM footprint and sprite piece count
+; To-Do: Make this a permanent mod once bugs are all fixed
 
 ; Name: Dynamic Art
 ; Credit: RetroKoH
 ; Plays a different BGM track for each act
 ; (By default, they are identical to the original. It'll be up to you to add music if you use this mod)
-DynamicArt: = 1							; if set to 1, there will be separate art loaded for each act
+DynamicArt: = 0							; if set to 1, there will be separate art loaded for each act
 ; LevelHeaders is expanded by this mod. In some respects, this might make DynamicPalettes and NewSBZ3LevelArt seem redundant as solo mods.
 
 ; Name: Dynamic Collision
 ; Credit: RetroKoH
 ; Plays a different BGM track for each act (Scrap Brain is unaffected, as it has dynamic palettes by default)
 ; (By default, they are identical to the original. It'll be up to you to add collision data if you use this mod)
-DynamicCollision: = 1*(DynamicArt)		; if set to 1, there will be separate collision loaded for each act
+DynamicCollision: = DynamicArt*0		; if set to 1, there will be separate collision loaded for each act
 ; This mod is dependant on the DynamicArt mod, if only because there is little reason to have this one, without the other one.
