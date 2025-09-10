@@ -5104,33 +5104,41 @@ AddPoints:
 		cmp.l   (a3),d1					; is score below 999999?
 		bhi.s   .belowmax				; if yes, branch
 		move.l  d1,(a3)					; reset score to 999999
-.belowmax:
-		move.l  (a3),d0
-		cmp.l   (v_scorelife).w,d0		; has Sonic got 50000+ points?
-		blo.s   .noextralife			; if not, branch
 
-		addi.l  #5000,(v_scorelife).w	; increase requirement by 50000
-		
-	; Mercury Lives Over/Underflow Fix
-		cmpi.b	#99,(v_lives).w			; are lives at max?
-		beq.s	.playbgm
-		addq.b	#1,(v_lives).w			; add 1 to number of lives
-		addq.b	#1,(f_lifecount).w		; update the lives counter
-.playbgm:
-	; Lives Over/Underflow Fix end
+	.belowmax:
 
-	if ~~AmbienceMode
-		move.w	#bgm_ExtraLife,d0
-		jmp		(QueueSound1).w			; play extra life bgm
+; The following mod grants an extra life for 50k points
+	if ScoreLives
+			move.l  (a3),d0
+			cmp.l   (v_scorelife).w,d0		; has Sonic got 50000+ points?
+			blo.s   .noextralife			; if not, branch
+
+			addi.l  #ScoreLivesFactor,(v_scorelife).w	; increase requirement by 50000
+			
+		; Mercury Lives Over/Underflow Fix
+			cmpi.b	#99,(v_lives).w			; are lives at max?
+			beq.s	.playbgm
+			addq.b	#1,(v_lives).w			; add 1 to number of lives
+			addq.b	#1,(f_lifecount).w		; update the lives counter
+
+		.playbgm:
+		; Lives Over/Underflow Fix end
+
+		if ~~AmbienceMode
+			move.w	#bgm_ExtraLife,d0
+			jmp		(QueueSound1).w			; play extra life bgm
+		endif
+
+		.noextralife:
 	endif
 
-.noextralife:
 		rts	
 ; End of function AddPoints
+; ===========================================================================
 
 		include	"_inc/HUD Update.asm"
 
-	if HUDInSpecialStage=1	; Mercury HUD In Special Stage
+	if HUDInSpecialStage	; Mercury HUD In Special Stage
 		include	"_inc/HUD Update SS.asm"
 	endif	; HUD In Special Stage End
 
