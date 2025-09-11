@@ -1363,8 +1363,10 @@ Sonic_Jump:
 		move.w	#sfx_Jump,d0
 		jsr		(QueueSound2).w		; play jumping sound
 	; Removed code expanding Sonic's radius -- RetroKoH Rolling Jump Fix
+	if ProtoVictoryLeap
 		tst.b	(f_victory).w				; has the victory animation flag been set?
 		bne.s	.victoryleap				; if yes, branch
+	endif
 
 		btst	#staSpin,obStatus(a0)		; Is Sonic already in a ball?
 		bne.s	.rolljumplock
@@ -1377,11 +1379,12 @@ Sonic_Jump:
 	.end:
 		rts	
 ; ===========================================================================
-
+	if ProtoVictoryLeap
 	.victoryleap:
 		move.b	#aniID_VictoryLeap,obAnim(a0)	; use the "victory leaping" animation
 		rts
 ; ===========================================================================
+	endif
 
 .rolljumplock:
 	if RollJumpLockActive	; Mercury Rolling Jump Lock Toggle
@@ -1562,6 +1565,11 @@ loc_10DEC:
 Sonic_ChkAirRoll:
 	if SpinDashEnabled
 		tst.b	obSpinDashFlag(a0)		; is Sonic charging his spin dash?
+		bne.s	.end					; if yes, branch and exit
+	endif
+
+	if ProtoVictoryLeap
+		tst.b	(f_victory).w			; has the victory animation flag been set?
 		bne.s	.end					; if yes, branch and exit
 	endif
 
