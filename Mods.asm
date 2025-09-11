@@ -213,8 +213,8 @@ EndLevelFadeMusic: = 0
 ; Name: HUD Scrolls Into View
 ; Credit: RetroKoH
 ; Function: HUD Scrolls into view during gameplay.
-HUDScrolling: = 0
-; NOTE: Add a sub-toggle for it to scroll out at the end of a level
+HUDScrolling: = 0						; if set to 1, the HUD scrolls into frame at the start of a level
+	HUDScrollOut: = HUDScrolling*1			; if set to 1, the HUD scrolls out once you hit a signpost, OR hit a Prison Capsule.
 
 ; Name: HUD w/ Leading Zeroes
 ; Credit: Mercury

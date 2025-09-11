@@ -440,13 +440,29 @@ Level_MainLoop:
 		bsr.w	DeformLayers
 
 Level_SkipDeform:
-	if HUDScrolling=1
-		cmpi.b	#128+16,(v_hudscrollpos).w
-		beq.s	Level_SkipHUDScroll
-		add.b	#4,(v_hudscrollpos).w
 
-Level_SkipHUDScroll:
+	if HUDScrolling
+
+		if HUDScrollOut
+				tst.b	(f_timecount).w				; has the level ended?
+				bne.s	.notEnded					; if not, branch
+				
+
+				tst.b	(v_hudscrollpos).w			; has the HUD scrolled out?
+				beq.s	.skipHUDScroll				; if yes, branch
+				sub.b	#4,(v_hudscrollpos).w		; scroll out
+				bra.s	.skipHUDScroll				; skip scrolling in
+
+			.notEnded:
+		endif
+
+			cmpi.b	#128+16,(v_hudscrollpos).w	; has the HUD scrolled in?
+			beq.s	.skipHUDScroll				; if yes, branch
+			add.b	#4,(v_hudscrollpos).w		; scroll in
+
+		.skipHUDScroll:
 	endif
+
 		jsr		(BuildSprites).l
 		jsr		(ObjPosLoad).l
 		bsr.w	PaletteCycle
