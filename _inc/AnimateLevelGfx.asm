@@ -14,6 +14,7 @@ AnimateLevelGfx_Init:
 		move.l	d0,(a1)+
 
 		; Setup animated art update pointer
+		; ???NOTE???: This can be made dynamic (per act)
 		move.b	(v_zone).w,d0				; d0 = zone
 		lsl.w	#3,d0						; d0 = zone * 8
 		lea		AniArt_Index(pc,d0),a0

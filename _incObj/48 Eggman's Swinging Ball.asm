@@ -96,10 +96,14 @@ loc_17BE0:
 
 		cmp.b	objoff_3C(a1),d0
 		bne.s	loc_17BFA
-		movea.l	objoff_34(a0),a1
+		movea.l	objoff_34(a0),a1			; a1 = Eggman
 		cmpi.b	#6,ob2ndRout(a1)
 		bne.s	loc_17BFA
 		addq.b	#2,obRoutine(a0)
+
+	if GHZBossDelay
+		st.b	ghzboss_battleflag(a1)		; once lowered, Eggman can be hit
+	endif
 
 loc_17BFA:
 		cmpi.w	#$20,objoff_32(a0)
