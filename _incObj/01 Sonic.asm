@@ -604,12 +604,12 @@ Sonic_LookUp:
 		beq.s	Sonic_Duck					; if not, branch
 		move.b	#aniID_LookUp,obAnim(a0)	; use "looking up" animation
 
-	if SpinDashEnabled		; S2 Scroll Delay -- Spin Dash Enabled
-		addq.b	#1,(v_scrolldelay).w		; add 1 to the scroll timer
-		cmpi.b	#120,(v_scrolldelay).w		; is it equal to or greater than the scroll delay?
-		bcs.s	Sonic_LookReset				; if not, skip ahead without looking up
-		move.b	#120,(v_scrolldelay).w 		; move the scroll delay value into the scroll timer so it won't continue to count higher
-	endif	; S2 Scroll Delay -- Spin Dash Enabled End
+	if (SpinDashEnabled|ScrollDelay)		; S2 Scroll Delay (Automatically on when Spin Dash is enabled)
+		addq.b	#1,(v_scrolldelay).w				; add 1 to the scroll timer
+		cmpi.b	#ScrollDelayTime,(v_scrolldelay).w	; is it equal to or greater than the scroll delay?
+		bcs.s	Sonic_LookReset						; if not, skip ahead without looking up
+		move.b	#ScrollDelayTime,(v_scrolldelay).w	; move the scroll delay value into the scroll timer so it won't continue to count higher
+	endif	; S2 Scroll Delay end
 
 		; Mercury Look Shift Fix
 		move.w	(v_screenposy).w,d0		; get camera top coordinate
@@ -632,12 +632,12 @@ Sonic_Duck:
 		beq.s	Sonic_ResetScr			; if not, branch
 		move.b	#aniID_Duck,obAnim(a0)		; use "ducking" animation
 
-	if SpinDashEnabled		; S2 Scroll Delay -- Spin Dash Enabled
-		addq.b	#1,(v_scrolldelay).w		; add 1 to the scroll timer
-		cmpi.b	#120,(v_scrolldelay).w		; is it equal to or greater than the scroll delay?
-		bcs.s	Sonic_LookReset				; if not, skip ahead without looking down
-		move.b	#120,(v_scrolldelay).w 		; move the scroll delay value into the scroll timer so it won't continue to count higher
-	endif	; S2 Scroll Delay -- Spin Dash Enabled End
+	if (SpinDashEnabled|ScrollDelay)		; S2 Scroll Delay (Automatically on when Spin Dash is enabled)
+		addq.b	#1,(v_scrolldelay).w				; add 1 to the scroll timer
+		cmpi.b	#ScrollDelayTime,(v_scrolldelay).w	; is it equal to or greater than the scroll delay?
+		bcs.s	Sonic_LookReset						; if not, skip ahead without looking down
+		move.b	#ScrollDelayTime,(v_scrolldelay).w	; move the scroll delay value into the scroll timer so it won't continue to count higher
+	endif	; S2 Scroll Delay end
 
 		; Mercury Look Shift Fix
 		move.w	(v_screenposy).w,d0		; get camera top coordinate
@@ -656,11 +656,12 @@ Sonic_Duck:
 ; ===========================================================================
 
 Sonic_ResetScr:
-	if SpinDashEnabled		; S2 Scroll Delay -- Spin Dash Enabled
-		move.b	#0,(v_scrolldelay).w	; clear the scroll timer, because up/down are not being held
+	if (SpinDashEnabled|ScrollDelay)		; S2 Scroll Delay (Automatically on when Spin Dash is enabled)
+		clr.b	(v_scrolldelay).w			; clear the scroll timer, because up/down are not being held
 
 Sonic_LookReset:	; added branch point that the new scroll delay code skips ahead to
-	endif
+	endif	; S2 Scroll Delay end
+
 		cmpi.w	#$60,(v_lookshift).w		; is screen in its default position?
 		beq.s	Sonic_UpdateSpeedOnGround	; if yes, branch
 		bcc.s	loc_12FBE

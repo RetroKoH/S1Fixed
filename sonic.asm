@@ -2960,7 +2960,7 @@ MvSonic2:
 	; Move Shields with Sonic End
 	
 .noShield:
-	if (SpinDashEnabled)
+	if SpinDashEnabled
 	; RetroKoH Move Spindash dust with Sonic
 		lea		(v_playerdust).w,a2
 		cmpi.b	#1,obAnim(a2)

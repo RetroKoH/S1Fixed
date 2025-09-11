@@ -92,6 +92,13 @@ CDCamera: = 0							; if set to 1, screen will pan forward, a la Sonic CD
 ; Function: Centralizes the standard camera
 CenteredCamera: = 0*(CDCamera==0)		; if set to 1, screen will be tighter, locking Sonic in the center
 
+; Name: Camera Scroll Delay
+; Credit: Mercury
+; Function: Adds a delay before scrolling the camera up and down
+ScrollDelay: = 0						; if set to 1, looking up and down will have a delay before the camera scrolls
+	ScrollDelayTime: = 120				; number of frames to wait before the camera scrolls when looking up/down
+; NOTE: This mod is forced whenever Spin Dash is enabled. THIS toggle is purely for those who don't want the spindash, but still want a delay.
+
 ; Name: S3K AfterImages (Incomplete: Add for Super Sonic)
 ; Credit: Hitaxas (Wooloo Engine)
 ; Function: Applies After-Image effects to the Speed Shoes
