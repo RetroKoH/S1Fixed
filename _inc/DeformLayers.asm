@@ -28,6 +28,8 @@ DeformLayers:
 		bsr.w	DynamicLevelEvents
 		move.w	(v_screenposy).w,(v_scrposy_vdp).w
 		move.w	(v_bgscreenposy).w,(v_bgscrposy_vdp).w
+
+	; ???NOTE???: This can be made dynamic (per act) 
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
 		add.w	d0,d0

@@ -9,6 +9,8 @@ PaletteCycle:
 	if SuperMod
 		bsr.w	PalCycle_SuperSonic
 	endif
+
+	; ???NOTE???: This can be made dynamic (per act)
 		moveq	#0,d2
 		moveq	#0,d0
 		move.b	(v_zone).w,d0			; get level number

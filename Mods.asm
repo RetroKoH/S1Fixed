@@ -109,6 +109,12 @@ AfterImagesOn: = 0
 ; Function: All monitors are randomized a la Sonic 2 (2P)
 RandomMonitors: = 0
 
+; Name: GHZ Boss Battle Delay
+; Credit: RetroKoH
+; Function: You cannot hit Eggman until he lowers the wrecking ball, per the 2013 remake and Origins
+GHZBossDelay: = 0						; if set to 1, the boss can't be hit until he lowers the wrecking ball.
+; ???NOTE???: I am NOT happy with the hackish manner in which I implemented this. I'll revisit later.
+
 ; Name: Limit LZ Block Rising Speed
 ; Credit: Mercury
 ; Function: Limits the rising speed of blocks in LZ so that Sonic can jump off them more comfortably.
