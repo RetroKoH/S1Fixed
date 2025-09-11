@@ -22,6 +22,8 @@ BossGreenHill_ObjData:
 		dc.b 4,	aniID_NormalFace1
 	; Flame
 		dc.b 6,	aniID_Blank
+
+ghzboss_battleflag = objoff_2F		; flag noting that the boss can be hit (GHZBossDelay mod)
 ; ===========================================================================
 
 BossGreenHill_Main:	; Routine 0
@@ -66,7 +68,17 @@ BossGreenHill_ShipMain:	; Routine 2
 		andi.b	#(maskFlipX+maskFlipY),d0
 		andi.b	#$FC,obRender(a0)
 		or.b	d0,obRender(a0)
+
+	if GHZBossDelay
+		tst.b	ghzboss_battleflag(a0)
+		beq.s	.nohit						; skip hit check if boss isn't ready
 		jmp		(DisplayAndCollision).l		; S3K TouchResponse
+
+	.nohit:
+		jmp		(DisplaySprite).l
+	else
+		jmp		(DisplayAndCollision).l		; S3K TouchResponse
+	endif
 ; ===========================================================================
 BossGreenHill_ShipIndex:		offsetTable
 		offsetTableEntry.w BossGreenHill_ShipDropDown
@@ -94,6 +106,12 @@ BossGreenHill_ChkHit:
 		move.w	d0,obY(a0)
 		move.w	boss_bufferX(a0),obX(a0)
 		addq.b	#2,boss_hoverangle(a0)
+
+	if GHZBossDelay
+		tst.b	ghzboss_battleflag(a0)
+		beq.s	.end								; skip hit check if boss isn't ready
+	endif
+
 		cmpi.b	#8,ob2ndRout(a0)
 		bhs.s	.end								; skip hit check if boss has been defeated
 		tst.b	obStatus(a0)
@@ -104,7 +122,7 @@ BossGreenHill_ChkHit:
 		bne.w	BossFlash							; if yes, branch and flash
 		move.b	#$20,boss_flashframes(a0)			; set number of	times for ship to flash
 		move.w	#sfx_HitBoss,d0
-		jsr		(QueueSound2).w				; play boss damage sound
+		jsr		(QueueSound2).w						; play boss damage sound
 		bra.w	BossFlash							; apply flash effect
 
 	.end:
