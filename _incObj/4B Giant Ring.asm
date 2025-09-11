@@ -22,7 +22,6 @@ GRing_Main:	; Routine 0
 		ori.b	#4,obRender(a0)
 		move.w	#priority2,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager - Moved here to fix a bug caused by the new manager
 		move.b	#$40,obActWid(a0)
-		move.b	#$FF,objoff_3F(a0)			; Added for DPLC frame check
 		tst.b	obRender(a0)
 		bpl.s	GRing_Animate
 
@@ -113,10 +112,10 @@ GRing_LoadGfx:
 		moveq	#0,d0
 		move.b	obFrame(a0),d0			; load frame number
 		move.b	d0,d1					; copy to d1
-		cmp.b	objoff_3F(a0),d0		; has frame changed?
+		cmp.b	(v_giantringframe).w,d0	; has global frame changed?
 		beq.s	.nochange				; if not, branch and exit
 
-		move.b	d0,objoff_3F(a0)		; update frame number for next check
+		move.b	d0,(v_giantringframe).w	; update frame number for next check
 		lea		GRingDynPLC(pc),a2
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2

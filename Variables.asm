@@ -289,7 +289,8 @@ v_bg1_scroll_flags:		ds.w	1		; screen redraw flags for background 1
 v_bg2_scroll_flags:		ds.w	1		; screen redraw flags for background 2
 v_bg3_scroll_flags:		ds.w	1		; screen redraw flags for background 3
 f_bgscrollvert:			ds.b	1		; flag for vertical background scrolling
-					ds.b	3		; unused
+v_giantringframe:		ds.b	1		; global frame for Giant Ring DPLCs
+					ds.b	2		; unused
 v_sonspeedmax:			ds.w	1		; Sonic's maximum speed
 v_sonspeedacc:			ds.w	1		; Sonic's acceleration
 v_sonspeeddec:			ds.w	1		; Sonic's deceleration
