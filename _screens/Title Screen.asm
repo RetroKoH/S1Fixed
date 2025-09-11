@@ -20,7 +20,7 @@ GM_Title:
 		clr.b	(f_wtr_state).w
 		bsr.w	ClearScreen
 
-	if HUDScrolling=1
+	if HUDScrolling
 		clr.w	(f_levelstarted).w		; clear flag AND HUD scrolling byte -- RetroKoH S3K Rings Manager
 	else
 		clr.b	(f_levelstarted).w		; clear flag -- RetroKoH S3K Rings Manager
