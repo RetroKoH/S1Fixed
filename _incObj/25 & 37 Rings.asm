@@ -43,7 +43,7 @@ Ring_Animate:	; Routine 2
 RAttract_Collect:
 	if PerfectBonusEnabled
 		if EnemiesDropRings
-			tst.b	$3E(a0)						; Attracted rings from enemies don't decrement Perfect Count
+			tst.b	objoff_3D(a0)			; Attracted rings from enemies don't decrement Perfect Count
 			bne.s	Ring_Collect
 		endif
 		subq.w	#1,(v_perfectringsleft).w
@@ -152,16 +152,26 @@ RLoss_Count:	; Routine 0
 
 	; RetroKoH/DeltaW Enemies Drop Rings Mod
 	if EnemiesDropRings
-		tst.b	$3E(a0)					; was this ring from a badnik?
+		tst.b	objoff_3D(a0)			; was this ring from a badnik?
 		beq.w	.lostrings				; if not, branch
 
 		move.w	#-$380,obVelY(a0)
 		tst.b   (f_water).w				; Does the level have water?
-		beq.w   .setanim				; If not, branch and skip underwater checks
+		beq.w   .loadpoints				; If not, branch and skip underwater checks
 		move.w  (v_waterpos1).w,d6		; Move water level to d6
 		cmp.w   obY(a0),d6				; Is the ring object underneath the water level?
-		bgt.w   .setanim				; If not, branch and skip underwater commands
+		bgt.w   .loadpoints				; If not, branch and skip underwater commands
 		move.w	#-$1C0,obVelY(a0)		; halve speed underwater
+
+	.loadpoints:	; Load points, since we still get points from enemies
+		bsr.w	FindFreeObj
+		bne.w	.setanim
+		_move.b	#id_Points,obID(a1)		; load points object
+		move.w	obX(a0),obX(a1)
+		move.w	obY(a0),obY(a1)
+		move.w	objoff_3E(a0),d0
+		lsr.w	#1,d0
+		move.b	d0,obFrame(a1)
 		bra.w	.setanim
 	endif
 	; Enemies Drop Rings Mod End

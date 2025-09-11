@@ -457,12 +457,13 @@ v_timingvariables:	ds.b	$40		; values which oscillate - for swinging platforms, 
 v_spindashsfx1:		ds.b	1
 v_spindashsfx2:		ds.b	1
 v_spindashsfx3:		ds.b	1
+	else
+				ds.b	3		; unused
+	endif
+
 v_cameralag:		ds.b	1		; camera lag after launching Spin Dash (1 byte)
 v_scrolldelay:		ds.b	1		; scroll delay timer (1 byte)
 				ds.b	1		; unused
-	else
-				ds.b	6		; unused
-	endif
 
 v_ani0_time:		ds.b	1		; synchronised sprite animation 0 - time until next frame (used for synchronised animations)
 v_ani0_frame:		ds.b	1		; synchronised sprite animation 0 - current frame
