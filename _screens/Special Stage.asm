@@ -120,7 +120,7 @@ SS_MainLoop:
 
 		bsr.w	LoadSSRingFrame
 
-	if (HUDInSpecialStage=1&HUDScrolling=1)
+	if (HUDInSpecialStage&HUDScrolling)
 		tst.b	(f_timecount).w
 		beq.s	.remove
 		cmpi.b	#$90,(v_hudscrollpos).w
