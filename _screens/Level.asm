@@ -16,6 +16,8 @@ GM_Level:
 		bsr.w	QueueSound1					; fade out music
 
 Level_NoMusicFade:
+		move.b	#$FF,(v_giantringframe).w	; reset giant ring frame (Added for DPLC frame check)
+
 	if SaveProgressMod=1
 		cmpi.b	#$8C,(v_gamemode).w			; is game mode = $0C (standard level)?
 		bne.s	.noSRAM						; if not, branch
