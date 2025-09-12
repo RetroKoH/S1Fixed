@@ -142,6 +142,12 @@ SLZOrbinautBehaviourMod: = 0
 ; Function: Fixes an edge case where being offscreen and in the air as the score tally starts avoids locking controls to run forward
 SignpostControlLockFix: = 0
 
+; Name: Post-Boss Instant Screen Unlock
+; Credit: RetroKoH
+; Function: Allows the right side screen lock to open immediately (as in the remakes) instead of gradually.
+PostBossScreenUnlock: = 1
+; ???NOTE???: This function may be necessary depending on how you wish to alter End-of-Level sequences.
+
 ; Name: Speed Up/Instant Score Tally
 ; Credit: Mercury/RetroKoH
 ; Function: Allows the player to hold a button to speed up the score tally, or just have it occur immediately
