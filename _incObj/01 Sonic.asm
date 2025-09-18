@@ -48,35 +48,44 @@ Sonic_Control:	; Routine 2
 		bsr.w	Sonic_PanCamera
 	endif
 
-	if WallJumpActive	; Mercury Wall Jump
-		tst.b	obWallJump(a0)
-		beq.s	.nodec
-		subq.b	#1,obWallJump(a0)
-		bne.s	.chkLR
-		move.b	#aniID_Roll,obAnim(a0) 	; use "jumping" animation
+	if WallJumpEnabled	; Mercury Wall Jump
+		tst.b	obWallJump(a0)			; is Sonic latched to a wall for a Wall Jump?
+		beq.s	.nodec					; if not, branch
+		subq.b	#1,obWallJump(a0)		; decrement latch time
+		bne.s	.chkLR					; if time remains, branch
+		move.b	#aniID_Roll,obAnim(a0) 	; switch to rolling animation
 		
 	.chkLR:
-		move.b	(v_jpadhold2).w,d0		; get jpad
-		and.b	obWallJump+1(a0),d0		; compare jpad to stored L,R button states
-		bne.s	.skip					; if still held, branch
-		clr.w	obWallJump(a0)			; clear wall jump flag and button states
-		move.b	#aniID_Roll,obAnim(a0) 	; use "jumping" animation
+		move.b	(v_jpadhold2).w,d0		; get jpad input
+		and.b	obWallJump+1(a0),d0		; is Sonic still holding the required directional input?
+		bne.s	.skip					; if yes, branch
+		clr.w	obWallJump(a0)			; clear wall latch flag and saved directional input state
+		move.b	#aniID_Roll,obAnim(a0) 	; switch to rolling animation
+		bra.s	.nodec					; skip dust generation
 	
 	.skip:
-	; Mercury Wall Jump Smoke Puff
-	;	move.b	(v_framebyte).w,d0
-	;	andi.b	#7,d0
-	;	cmpi.b	#7,d0
-	;	bne.s	.nodec
 
-	;	bsr.w	FindFreeObj
-	;	bne.s	.nodec
-	;	move.b	#id_Effect,obID(a1)	; create puff
-	;	move.w	obX(a0),obX(a1)
-	;	move.w	obY(a0),obY(a1)
-	;	addi.w	#$1C,obY(a1)
-	;	move.b	#1,obSubtype(a1)
-		;end Wall Jump Smoke Puff
+	if WallDustEnabled	; Mercury Wall Jump Smoke Puff
+		move.b	(v_framebyte).w,d0
+		andi.b	#7,d0
+		bne.s	.nodec
+
+		bsr.w	FindFreeObj
+		bne.s	.nodec
+		move.b	#id_Effects,obID(a1)	; create puff
+		move.w	obX(a0),obX(a1)
+		move.w	obY(a0),obY(a1)
+		addi.w	#$A,obX(a1)
+		addi.w	#$11,obY(a1)
+		clr.b	obStatus(a1)
+		move.b	#2,obAnim(a1)
+		addq.b	#2,obRoutine(a1)
+		move.l	#Map_Effects,obMap(a1)
+		ori.b	#4,obRender(a1)
+		move.w	#priority1,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
+		move.b	#4,obActWid(a1)
+		move.w	#ArtTile_Dust,obGfx(a1)
+		endif	; Wall Jump Smoke Puff end
 		
 	.nodec:
 	endif	; Wall Jump end
@@ -417,7 +426,7 @@ Sonic_MdAir:
 		bsr.w	Sonic_LevelBound
 		jsr		(ObjectFall).l
 
-	if WallJumpActive
+	if WallJumpEnabled
 		tst.b	obWallJump(a0)
 		beq.s	.nowalljump
 		subi.w	#$30,obVelY(a0)
@@ -462,7 +471,7 @@ Sonic_MdJump:
 		bsr.w	Sonic_LevelBound
 		jsr		(ObjectFall).l
 
-	if WallJumpActive
+	if WallJumpEnabled
 		tst.b	obWallJump(a0)
 		beq.s	.nowalljump
 		subi.w	#$30,obVelY(a0)
@@ -1460,12 +1469,12 @@ Sonic_Jump:
 
 Sonic_JumpHeight:
 
-	if WallJumpActive	; Mercury Wall Jump
-		tst.b	obWallJump(a0)			; on wall?
-		beq.s	.skip
+	if WallJumpEnabled	; Mercury Wall Jump
+		tst.b	obWallJump(a0)			; is Sonic latched to a wall for a Wall Jump?
+		beq.s	.skip					; if not, branch
 		move.b	(v_jpadpress2).w,d0
 		andi.b	#btnABC,d0				; is A, B or C pressed?
-		beq.s	.skip					; if yes, branch
+		beq.s	.skip					; if not, branch
 		clr.w	obWallJump(a0)			; clear Wall Jump data
 		move.b	#1,obJumping(a0)
 		move.b	#aniID_Roll,obAnim(a0) 	; use "jumping" animation
@@ -1502,8 +1511,8 @@ loc_134AE:
 		cmp.w	obVelY(a0),d1
 		ble.s	Sonic_DoubleJump
 		move.b	(v_jpadhold2).w,d0
-		andi.b	#btnABC,d0			; is A, B or C pressed?
-		bne.s	locret_134C2		; if yes, branch
+		andi.b	#btnABC,d0				; is A, B or C pressed/held?
+		bne.s	locret_134C2			; if yes, branch
 		move.w	d1,obVelY(a0)
 
 locret_134C2:
@@ -2174,8 +2183,8 @@ Sonic_Floor:
 		sub.w	d1,obX(a0)
 		clr.w	obVelX(a0)								; stop Sonic since he hit a wall on his left
 
-	if WallJumpActive	; Mercury Wall Jump
-		move.b	#btnL,d1
+	if WallJumpEnabled	; Mercury Wall Jump
+		move.b	#btnL,d1								; store left button for directional input check
 		bsr.w	Sonic_WallJump
 	endc	; Wall Jump end
 
@@ -2186,8 +2195,8 @@ Sonic_Floor:
 		add.w	d1,obX(a0)
 		clr.w	obVelX(a0)								; stop Sonic since he hit a wall on his right
 
-	if WallJumpActive	; Mercury Wall Jump
-		move.b	#btnR,d1
+	if WallJumpEnabled	; Mercury Wall Jump
+		move.b	#btnR,d1								; store right button for directional input check
 		bsr.w	Sonic_WallJump
 	endc	; Wall Jump end
 
@@ -2255,7 +2264,7 @@ Sonic_AirMode_LeftWall: ;loc_13680:
 		tst.w	d1
 		bpl.s	.chkCeiling					; branch if distance is positive (not inside wall)
 		sub.w	d1,obX(a0)
-		clr.w	obVelX(a0)					; stop Sonic since he hit a wall
+		clr.w	obVelX(a0)					; stop Sonic since he hit a wall on his left
 		move.w	obVelY(a0),obInertia(a0)
 		rts	
 ; ===========================================================================
@@ -2302,8 +2311,8 @@ Sonic_AirMode_Ceiling: ;loc_136E2:
 		sub.w	d1,obX(a0)
 		clr.w	obVelX(a0)					; stop Sonic since he hit a wall
 
-	if WallJumpActive	; Mercury Wall Jump
-		move.b	#btnL,d1
+	if WallJumpEnabled	; Mercury Wall Jump
+		move.b	#btnL,d1					; store left button for directional input check
 		bsr.w	Sonic_WallJump
 	endc	; Wall Jump end
 
@@ -2314,8 +2323,8 @@ Sonic_AirMode_Ceiling: ;loc_136E2:
 		add.w	d1,obX(a0)
 		clr.w	obVelX(a0)					; stop Sonic since he hit a wall
 
-	if WallJumpActive	; Mercury Wall Jump
-		move.b	#btnR,d1
+	if WallJumpEnabled	; Mercury Wall Jump
+		move.b	#btnR,d1					; store right button for directional input check
 		bsr.w	Sonic_WallJump
 	endc	; Wall Jump end
 
@@ -2356,7 +2365,7 @@ Sonic_AirMode_RightWall: ;loc_1373E:
 		tst.w	d1
 		bpl.s	.chkCeiling
 		add.w	d1,obX(a0)
-		clr.w	obVelX(a0)					; stop Sonic since he hit a wall
+		clr.w	obVelX(a0)					; stop Sonic since he hit a wall on his right
 		move.w	obVelY(a0),obInertia(a0)
 		rts	
 ; ===========================================================================
@@ -2396,24 +2405,24 @@ Sonic_AirMode_RightWall: ;loc_1373E:
 ; End of function Sonic_Floor
 ; ===========================================================================
 
-	if WallJumpActive	; Mercury Wall Jump
+	if WallJumpEnabled	; Mercury Wall Jump
 Sonic_WallJump:
-		tst.b	obJumping(a0)	;Mercury Constants
-		beq.s	.return
-		tst.b	obVelY(a0)
-		bmi.s	.return
-		move.b	(v_jpadhold2).w,d0		; get jpad
-		andi.b	#(btnL|btnR),d0			; keep just L and R state
-		beq.s	.return					; fail if neither are pressed
-		cmpi.b	#(btnL|btnR),d0			; fail if both are pressed
-		beq.s	.return
-		and.b	d1,d0					; keep only L or R depending on d1
-		beq.s	.return					; fail if not pressed
-		move.b	d0,(obWallJump+1)(a0)	; remember them
-		clr.w	obVelY(a0)
-		move.b	#$18,obWallJump(a0)		; Mercury Constants
-		clr.b	obJumping(a0)
-		move.b	#aniID_WallJump,obAnim(a0)
+		tst.b	obJumping(a0)				; is Sonic jumping?
+		beq.s	.return						; if not, branch and exit (fail)
+		tst.b	obVelY(a0)					; is Sonic moving upward?
+		bmi.s	.return						; if yes, branch and exit (fail)
+		move.b	(v_jpadhold2).w,d0
+		andi.b	#(btnL|btnR),d0				; are left or right held?
+		beq.s	.return						; if not, branch and exit (fail)
+		cmpi.b	#(btnL|btnR),d0				; are both being pressed together?
+		beq.s	.return						; if yes, branch and exit (fail)
+		and.b	d1,d0						; is the player holding the necessary directional (left or right)?
+		beq.s	.return						; if not, branch and exit (fail)
+		move.b	d0,(obWallJump+1)(a0)		; store input direction
+		clr.w	obVelY(a0)					; stop vertical movement
+		move.b	#40,obWallJump(a0)			; latch onto the wall for 40 frames
+		clr.b	obJumping(a0)				; clear jumping flag
+		move.b	#aniID_WallJump,obAnim(a0)	; set animation
 		
 	.return:
 		rts
@@ -2501,8 +2510,8 @@ Sonic_ResetOnFloor:
 		clr.b	obJumping(a0)
 		clr.w	(v_itembonus).w
 
-	if WallJumpActive	; Mercury Wall Jump
-		clr.b	obWallJump(a0)
+	if WallJumpEnabled	; Mercury Wall Jump
+		clr.w	obWallJump(a0)					; clear wall latch flag and saved directional input state
 	endif	; Wall Jump end
 
 		btst	#staSpin,obStatus(a0)			; is Sonic spinning?
@@ -2758,8 +2767,8 @@ Sonic_Hurt_Normal:
 		clr.b	(v_cameralag).w			; Spin Dash Enabled
 	endif
 
-	if WallJumpActive	; Mercury Wall Jump
-		clr.b	obWallJump(a0)
+	if WallJumpEnabled	; Mercury Wall Jump
+		clr.w	obWallJump(a0)					; clear wall latch flag and saved directional input state
 	endif	; Wall Jump end
 
 		jsr		(SpeedToPos).l

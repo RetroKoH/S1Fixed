@@ -8,12 +8,12 @@
 ; Name: S2 Skid Dust
 ; Credit: Mercury
 ; Function: Enables Sonic 2 Skidding Dust
-SkidDustEnabled: = 0						; if set to 1, Skid dust will occur when coming to a stop.
+SkidDustEnabled: = 1						; if set to 1, Skid dust will occur when coming to a stop.
 
 ; Name: Spin Dash
 ; Credit: SCHG, DeltaW, Mercury
 ; Function: Enables the Sonic 2 Spin Dash
-SpinDashEnabled: = 0
+SpinDashEnabled: = 1
 	SpinDashCancel: = SpinDashEnabled*1		; if set to 1, Spin Dash can be cancelled by not pressing ABC
 	SpinDashNoRevDown: = SpinDashEnabled*1	; if set to 1, Spin Dash will not rev down so long as ABC is held down
 ; (TO-DO: Add the CD Spindash variant)
@@ -26,7 +26,7 @@ PeeloutEnabled: = 0
 ; Name: Air Roll
 ; Credit: RetroKoH (Inspired by a guide by Inferno Gear)
 ; Function: Enables the Air Roll from Sonic Triple Trouble
-AirRollEnabled: = 0							; if set to 1, Sonic can curl into a ball in mid-air by pressing Jump while not rolling
+AirRollEnabled: = 0						; if set to 1, Sonic can curl into a ball in mid-air by pressing Jump while not rolling
 	AutoAirRoll: = AirRollEnabled*0				; if set to 1, air roll will occur automatically when moving downward
 
 ; Name: Drop Dash (Incomplete: Need to reset animation if Drop Dash is cancelled)
@@ -48,7 +48,8 @@ S3KDoubleJump: = (InstashieldEnabled|ShieldsMode)>0
 ; Name: Wall Jump
 ; Credit: Mercury, RetroKoH
 ; Function: Enables the Wall Jump used by Mighty in Chaotix
-WallJumpActive: = 1
+WallJumpEnabled: = 1					; if set to 1, the wall jump is enabled
+	WallDustEnabled: = WallJumpEnabled*SkidDustEnabled*1	; if set to 1, dust will emanate when latched to a wall
 
 ; Name: 7th Emerald and Super Sonic (Incomplete: Minor Bugfixes)
 ; Credit: RetroKoH (Palette Credit: Clownacy)
@@ -141,6 +142,12 @@ SLZOrbinautBehaviourMod: = 0
 ; Credit: Fix by Clownacy, reintroduced as mod by Amy Farbright
 ; Function: Fixes an edge case where being offscreen and in the air as the score tally starts avoids locking controls to run forward
 SignpostControlLockFix: = 0
+
+; Name: Post-Boss Instant Screen Unlock
+; Credit: RetroKoH
+; Function: Allows the right side screen lock to open immediately (as in the remakes) instead of gradually.
+PostBossScreenUnlock: = 1
+; ???NOTE???: This function may be necessary depending on how you wish to alter End-of-Level sequences.
 
 ; Name: Speed Up/Instant Score Tally
 ; Credit: Mercury/RetroKoH
