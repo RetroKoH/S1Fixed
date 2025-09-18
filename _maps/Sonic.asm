@@ -134,6 +134,7 @@ Map_Sonic:	mappingsTable
 		mappingsTableEntry.w	SonMap_Transform3
 		mappingsTableEntry.w	SonMap_Transform4
 		mappingsTableEntry.w	SonMap_Transform5
+		mappingsTableEntry.w	SonMap_WallJump
 
 SonMap_Null:	spriteHeader
 SonMap_Null_End
@@ -754,5 +755,10 @@ SonMap_Transform5:	spriteHeader
 	spritePiece	-$10, -4, 3, 3, 9, 0, 0, 0, 0
 	spritePiece	8, -3, 1, 1, $12, 0, 0, 0, 0
 SonMap_Transform5_End
+
+SonMap_WallJump:	spriteHeader
+	spritePiece -$12, -$14, 3, 2, 0, 0, 0, 0, 0
+	spritePiece -$12, -4, 4, 3, 6, 0, 0, 0, 0
+SonMap_WallJump_End
 
 	even

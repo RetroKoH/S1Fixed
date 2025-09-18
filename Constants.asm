@@ -172,7 +172,7 @@ obInertia:		equ $20			; potential speed (2 bytes) -- Exclusive to players
 					; Sonic uses $25 if double jump stuff is enabled
 							; $26 obAngle
 							; $27-$29 unused
-
+obWallJump:		equ $28
 							; $2B-$2E unused
 					; Sonic uses $2F if double jump stuff is enabled
 obInvuln:		equ $30			; Invulnerable (blinking after getting hit) timer

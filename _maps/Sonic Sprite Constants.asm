@@ -37,6 +37,7 @@ aniID_VictoryLeap:		ds.b 1		; Victory Leap animation (Enabled via toggle)
 aniID_Peelout:			ds.b 1		; Peelout animation (Enabled via toggle)
 aniID_DropDash:			ds.b 1		; Drop Dash animation (Enabled via toggle)
 aniID_Transform:		ds.b 1		; Transform animation (Enabled via toggle)
+aniID_WallJump:			ds.b 1
 	dephase
 
 ; Sonic Mapping Frame IDs
@@ -176,6 +177,7 @@ fr_SonTransform2:		ds.b 1
 fr_SonTransform3:		ds.b 1
 fr_SonTransform4:		ds.b 1
 fr_SonTransform5:		ds.b 1
+fr_SonWallJump:			ds.b 1
 	dephase
 
 	if SuperMod
