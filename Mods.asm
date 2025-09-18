@@ -26,13 +26,13 @@ PeeloutEnabled: = 0
 ; Name: Air Roll
 ; Credit: RetroKoH (Inspired by a guide by Inferno Gear)
 ; Function: Enables the Air Roll from Sonic Triple Trouble
-AirRollEnabled: = 1							; if set to 1, Sonic can curl into a ball in mid-air by pressing Jump while not rolling
+AirRollEnabled: = 0						; if set to 1, Sonic can curl into a ball in mid-air by pressing Jump while not rolling
 	AutoAirRoll: = AirRollEnabled*0				; if set to 1, air roll will occur automatically when moving downward
 
 ; Name: Drop Dash (Incomplete: Need to reset animation if Drop Dash is cancelled)
 ; Credit: DeltaW, giovanni.gen, Hitaxas, RetroKoH
 ; Function: Enables the Drop Dash from Sonic Mania & Origins
-DropDashEnabled: = 1
+DropDashEnabled: = 0
 	ReusableDropDash: = DropDashEnabled*1					; if set to 1, you can try drop dashing again after cancelling (original behavior doesn't allow this)
 	AirRollIntoDropDash: = AirRollEnabled*DropDashEnabled*1	; if set to 1, you can transition from Air Roll into Drop Dash by holding the jump button.
 ; NOTE: Auto-Air Roll currently does not allow for a Drop Dash transition unless ReusableDropDash is enabled
@@ -48,7 +48,8 @@ S3KDoubleJump: = (InstashieldEnabled|ShieldsMode)>0
 ; Name: Wall Jump
 ; Credit: Mercury, RetroKoH
 ; Function: Enables the Wall Jump used by Mighty in Chaotix
-WallJumpActive: = 1
+WallJumpEnabled: = 1					; if set to 1, the wall jump is enabled
+	WallDustEnabled: = WallJumpEnabled*SkidDustEnabled*1	; if set to 1, dust will emanate when latched to a wall
 
 ; Name: 7th Emerald and Super Sonic (Incomplete: Minor Bugfixes)
 ; Credit: RetroKoH (Palette Credit: Clownacy)

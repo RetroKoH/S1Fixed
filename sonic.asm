@@ -3110,7 +3110,7 @@ Obj44_SolidWall:
 		beq.s	loc_8AA8
 		bmi.w	loc_8AC4
 
-	if WallJumpActive	; Mercury Wall Jump
+	if WallJumpEnabled	; Mercury Wall Jump
 		moveq	#0,d1
 	endif	; Wall Jump end	
 
@@ -3120,7 +3120,7 @@ Obj44_SolidWall:
 		tst.w	obVelX(a1)
 		bmi.s	loc_8A92
 
-	if WallJumpActive	; Mercury Wall Jump
+	if WallJumpEnabled	; Mercury Wall Jump
 		move.b	#btnR,d1
 	endif	; Wall Jump end	
 
@@ -3131,7 +3131,7 @@ loc_8A7C:
 		tst.w	obVelX(a1)
 		bpl.s	loc_8A92
 
-	if WallJumpActive	; Mercury Wall Jump
+	if WallJumpEnabled	; Mercury Wall Jump
 		move.b	#btnL,d1
 	endif	; Wall Jump end	
 
@@ -3153,7 +3153,7 @@ loc_8AA8:
 		beq.s	locret_8AC2
 		; Removed line -- Mercury Walking In Air Fix
 
-	if WallJumpActive	; Mercury Wall Jump
+	if WallJumpEnabled	; Mercury Wall Jump
 		bra.s	loc_8AB6_PushClear
 
 loc_8AB6:
