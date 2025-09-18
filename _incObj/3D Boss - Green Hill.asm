@@ -36,18 +36,20 @@ BossGreenHill_Main:	; Routine 0
 	.loop:
 		jsr		(FindNextFreeObj).l
 		bne.s	.notfound
-
-	.loadboss:
-		move.b	(a2)+,obRoutine(a1)
 		_move.b	#id_BossGreenHill,obID(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
+
+	.loadboss:
+		bclr	#staFlipX,obStatus(a1)
+		clr.b	ob2ndRout(a1)
+		move.b	(a2)+,obRoutine(a1)
+		move.b	(a2)+,obAnim(a1)
+		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.l	#Map_Eggman,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.b	#$20,obActWid(a1)
-		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	(a2)+,obAnim(a1)
 		move.l	a0,boss_parent(a1)
 		dbf		d1,.loop					; repeat sequence 2 more times
 
