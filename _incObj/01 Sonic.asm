@@ -53,48 +53,65 @@ Sonic_Control:	; Routine 2
 		beq.s	.nodec					; if not, branch
 		subq.b	#1,obWallJump(a0)		; decrement latch time
 		bne.s	.chkLR					; if time remains, branch
-		move.b	#aniID_Roll,obAnim(a0) 	; switch to rolling animation
-		
+		bra.s	.nowalljump				; if not, jump to cancelling wall jump
+
 	.chkLR:
 		move.b	(v_jpadhold2).w,d0		; get jpad input
 		and.b	obWallJump+1(a0),d0		; is Sonic still holding the required directional input?
 		bne.s	.skip					; if yes, branch
+
+	.nowalljump:
 		clr.w	obWallJump(a0)			; clear wall latch flag and saved directional input state
 		move.b	#aniID_Roll,obAnim(a0) 	; switch to rolling animation
-		bra.s	.nodec					; skip dust generation
-	
-	.skip:
 
-	if WallDustEnabled	; Mercury Wall Jump Smoke Puff
-		move.b	(v_framebyte).w,d0
-		andi.b	#7,d0
-		bne.s	.nodec
+		if ReusableDropDash		; fall from wall into drop dash (toggle)
+			move.b	#$FF,obJumping(a0)			; set jumping flag for proper control (Drop Dash but not Wall re-latch)
+			cmpi.b	#$15,obDoubleJumpProp(a0)	; did Sonic have a Drop Dash revved before the wall jump attempt?
+			blt.s	.nodropdash					; if not, branch
+			move.b	#aniID_DropDash,obAnim(a0)	; switch to drop dash animation
+			move.w	#sfx_DropDash,d0
+			jsr		(QueueSound2).w				; play charge sound
 
-		bsr.w	FindFreeObj
-		bne.s	.nodec
-		move.b	#id_Effects,obID(a1)	; create puff
-		move.w	obX(a0),obX(a1)
-		move.w	obY(a0),obY(a1)
-		addi.w	#$A,obX(a1)
-		addi.w	#$11,obY(a1)
-		clr.b	obStatus(a1)
-		move.b	#2,obAnim(a1)
-		addq.b	#2,obRoutine(a1)
-		move.l	#Map_Effects,obMap(a1)
-		ori.b	#4,obRender(a1)
-		move.w	#priority1,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#4,obActWid(a1)
-		move.w	#ArtTile_Dust,obGfx(a1)
+		.nodropdash:
+		endif		; fall from wall into drop dash end
+		
+		if WallDustEnabled	; Mercury Wall Jump Smoke Puff
+			bra.s	.nodec						; skip dust generation
+
+		.skip:
+			move.b	(v_framebyte).w,d0
+			andi.b	#7,d0
+			bne.s	.nodec
+
+			bsr.w	FindFreeObj
+			bne.s	.nodec
+			move.b	#id_Effects,obID(a1)		; create puff
+			move.w	obX(a0),obX(a1)
+			move.w	obY(a0),obY(a1)
+			addi.w	#$A,obX(a1)
+			addi.w	#$11,obY(a1)
+			clr.b	obStatus(a1)
+			move.b	#2,obAnim(a1)
+			addq.b	#2,obRoutine(a1)
+			move.l	#Map_Effects,obMap(a1)
+			ori.b	#4,obRender(a1)
+			move.w	#priority1,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
+			move.b	#4,obActWid(a1)
+			move.w	#ArtTile_Dust,obGfx(a1)
+		else
+
+		.skip:
+
 		endif	; Wall Jump Smoke Puff end
 		
 	.nodec:
 	endif	; Wall Jump end
 
-		tst.w	(f_debugmode).w			; is debug cheat enabled?
-		beq.s	loc_12C58				; if not, branch
-		btst	#bitB,(v_jpadpress1).w	; is button B pressed?
-		beq.s	loc_12C58				; if not, branch
-		move.w	#1,(v_debuguse).w		; change Sonic into a ring/item
+		tst.w	(f_debugmode).w					; is debug cheat enabled?
+		beq.s	loc_12C58						; if not, branch
+		btst	#bitB,(v_jpadpress1).w			; is button B pressed?
+		beq.s	loc_12C58						; if not, branch
+		move.w	#1,(v_debuguse).w				; change Sonic into a ring/item
 		clr.b	(f_lockctrl).w
 		rts	
 ; ===========================================================================
@@ -1580,7 +1597,7 @@ Sonic_ChkDropDash:
 
 .reset:
 	if ~~ReusableDropDash
-		move.b	#3,obDoubleJumpFlag(a0)		; disable attempting the Drop Dash (Remove this to allow repeated attempts (toggle?)
+		move.b	#3,obDoubleJumpFlag(a0)		; disable attempting the Drop Dash
 	endif
 
 		clr.b	obDoubleJumpProp(a0)
@@ -2409,6 +2426,7 @@ Sonic_AirMode_RightWall: ;loc_1373E:
 Sonic_WallJump:
 		tst.b	obJumping(a0)				; is Sonic jumping?
 		beq.s	.return						; if not, branch and exit (fail)
+		bmi.s	.return						; if yes, but we fell from wall, branch and exit (fail)
 		tst.b	obVelY(a0)					; is Sonic moving upward?
 		bmi.s	.return						; if yes, branch and exit (fail)
 		move.b	(v_jpadhold2).w,d0
@@ -2423,6 +2441,11 @@ Sonic_WallJump:
 		move.b	#40,obWallJump(a0)			; latch onto the wall for 40 frames
 		clr.b	obJumping(a0)				; clear jumping flag
 		move.b	#aniID_WallJump,obAnim(a0)	; set animation
+
+	if ~~ReusableDropDash
+		move.b	#3,obDoubleJumpFlag(a0)		; cancel out Drop Dash
+		clr.b	obDoubleJumpProp(a0)
+	endif
 		
 	.return:
 		rts
@@ -2720,6 +2743,7 @@ DropDash_Release:
 		clr.b	obDoubleJumpFlag(a0)
 		clr.b	obDoubleJumpProp(a0)
 
+	if DropDustEnabled
 	; Create drop dash dust
 		jsr		(FindFreeObj).l
 		bne.s	.noDust
@@ -2735,6 +2759,8 @@ DropDash_Release:
 		move.w	#priority1,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$10,obActWid(a1)
 		move.w	#ArtTile_Dust,obGfx(a1)
+	endif
+
 		movea.l	a0,a1
 
 		move.w	#sfx_Teleport,d0
