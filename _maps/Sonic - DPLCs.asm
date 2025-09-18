@@ -134,6 +134,7 @@ SonicDynPLC: mappingsTable
 		mappingsTableEntry.w	SonDPLC_Transform3
 		mappingsTableEntry.w	SonDPLC_Transform4
 		mappingsTableEntry.w	SonDPLC_Transform5
+		mappingsTableEntry.w	SonDPLC_WallJump
 
 SonDPLC_Null:	dplcHeader
 SonDPLC_Null_End
@@ -815,5 +816,10 @@ SonDPLC_Transform5:	dplcHeader
  dplcEntry 9, $7A1
  dplcEntry 1, $7AA
 SonDPLC_Transform5_End
+
+SonDPLC_WallJump:	dplcHeader
+ dplcEntry $10, $85A
+ dplcEntry 2, $86A
+SonDPLC_WallJump_End
 
 	even

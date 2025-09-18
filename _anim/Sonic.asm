@@ -35,6 +35,7 @@ Ani_Sonic:
 		dc.w SonAni_Peelout-Ani_Sonic		; (Toggle)
 		dc.w SonAni_DropDash-Ani_Sonic		; (Toggle)
 		dc.w SonAni_Transform-Ani_Sonic		; (Toggle)
+		dc.w SonAni_WallJump-Ani_Sonic		; (Toggle)
 
 SonAni_Null:	dc.b $77, fr_SonNull, afChange, aniID_Walk
 		even
@@ -116,4 +117,6 @@ SonAni_Transform:
 		dc.b	2, fr_SonTransform1, fr_SonTransform1, fr_SonTransform2, fr_SonTransform2, fr_SonTransform3
 		dc.b	fr_SonTransform4, fr_SonTransform5, fr_SonTransform4, fr_SonTransform5, fr_SonTransform4
 		dc.b	fr_SonTransform5, fr_SonTransform4, fr_SonTransform5, afChange, aniID_Walk
+		even
+SonAni_WallJump:	dc.b 3,	fr_SonWallJump, afEnd
 		even

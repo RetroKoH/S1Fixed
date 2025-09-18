@@ -182,18 +182,34 @@ loc_FB0E:
 		cmp.w	d1,d5
 		bhi.w	Solid_TopBottom	; if Sonic hits top or bottom, branch
 		cmpi.w	#4,d1
+
+	if WallJumpActive	; Mercury Wall Jump
+		bls.s	Solid_SideAir2
+		moveq	#0,d1
+	else
 		bls.s	Solid_SideAir
+	endif				; Wall Jump end
+
 		tst.w	d0		; where is Sonic?
 		beq.s	Solid_Centre	; if inside the object, branch
 		bmi.s	Solid_Right	; if right of the object, branch
 		tst.w	obVelX(a1)	; is Sonic moving left?
 		bmi.s	Solid_Centre	; if yes, branch
+
+	if WallJumpActive	; Mercury Wall Jump
+		move.b	#btnR,d1
+	endif				; Wall Jump end
+
 		bra.s	Solid_Left
 ; ===========================================================================
 
 Solid_Right:
 		tst.w	obVelX(a1)	; is Sonic moving right?
 		bpl.s	Solid_Centre	; if yes, branch
+
+	if WallJumpActive	; Mercury Wall Jump
+		move.b	#btnL,d1
+	endif				; Wall Jump end
 
 Solid_Left:
 		clr.w	obInertia(a1)
@@ -210,6 +226,16 @@ Solid_Centre:
 ; ===========================================================================
 
 Solid_SideAir:
+
+	if WallJumpActive	; Mercury Wall Jump
+		move.l	a0,-(sp)
+		movea.l	a1,a0
+		bsr.w	Sonic_WallJump
+		movea.l	(sp)+,a0
+		
+Solid_SideAir2:
+	endif				; Wall Jump end
+
 		bsr.s	Solid_NotPushing
 		moveq	#1,d4		; return side collision
 		rts	
