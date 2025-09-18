@@ -43,9 +43,44 @@ Sonic_Main:	; Routine 0
 	endif
 
 Sonic_Control:	; Routine 2
+
 	if CDCamera
 		bsr.w	Sonic_PanCamera
 	endif
+
+	if WallJumpActive	; Mercury Wall Jump
+		tst.b	obWallJump(a0)
+		beq.s	.nodec
+		subq.b	#1,obWallJump(a0)
+		bne.s	.chkLR
+		move.b	#aniID_Roll,obAnim(a0) 	; use "jumping" animation
+		
+	.chkLR:
+		move.b	(v_jpadhold2).w,d0		; get jpad
+		and.b	obWallJump+1(a0),d0		; compare jpad to stored L,R button states
+		bne.s	.skip					; if still held, branch
+		clr.w	obWallJump(a0)			; clear wall jump flag and button states
+		move.b	#aniID_Roll,obAnim(a0) 	; use "jumping" animation
+	
+	.skip:
+	; Mercury Wall Jump Smoke Puff
+	;	move.b	(v_framebyte).w,d0
+	;	andi.b	#7,d0
+	;	cmpi.b	#7,d0
+	;	bne.s	.nodec
+
+	;	bsr.w	FindFreeObj
+	;	bne.s	.nodec
+	;	move.b	#id_Effect,obID(a1)	; create puff
+	;	move.w	obX(a0),obX(a1)
+	;	move.w	obY(a0),obY(a1)
+	;	addi.w	#$1C,obY(a1)
+	;	move.b	#1,obSubtype(a1)
+		;end Wall Jump Smoke Puff
+		
+	.nodec:
+	endif	; Wall Jump end
+
 		tst.w	(f_debugmode).w			; is debug cheat enabled?
 		beq.s	loc_12C58				; if not, branch
 		btst	#bitB,(v_jpadpress1).w	; is button B pressed?
@@ -381,11 +416,21 @@ Sonic_MdAir:
 		bsr.w	Sonic_JumpDirection
 		bsr.w	Sonic_LevelBound
 		jsr		(ObjectFall).l
+
+	if WallJumpActive
+		tst.b	obWallJump(a0)
+		beq.s	.nowalljump
+		subi.w	#$30,obVelY(a0)
+		bra.s	.notunderwater
+		
+	.nowalljump:
+	endif
+
 		btst	#staWater,obStatus(a0)
-		beq.s	loc_12E5C
+		beq.s	.notunderwater
 		subi.w	#$28,obVelY(a0)
 
-loc_12E5C:
+	.notunderwater:
 		bsr.w	Sonic_JumpAngle
 		bra.w	Sonic_Floor
 ; ===========================================================================
@@ -401,6 +446,7 @@ Sonic_MdRoll:
 	else
 		bsr.w	Sonic_Jump
 	endif
+
 		bsr.w	Sonic_RollRepel
 		bsr.w	Sonic_RollSpeed
 		bsr.w	Sonic_LevelBound
@@ -415,11 +461,21 @@ Sonic_MdJump:
 		bsr.w	Sonic_JumpDirection
 		bsr.w	Sonic_LevelBound
 		jsr		(ObjectFall).l
+
+	if WallJumpActive
+		tst.b	obWallJump(a0)
+		beq.s	.nowalljump
+		subi.w	#$30,obVelY(a0)
+		bra.s	.notunderwater
+		
+	.nowalljump:
+	endif
+
 		btst	#staWater,obStatus(a0)
-		beq.s	loc_12EA6
+		beq.s	.notunderwater
 		subi.w	#$28,obVelY(a0)
 
-loc_12EA6:
+	.notunderwater:
 		bsr.w	Sonic_JumpAngle
 		bra.w	Sonic_Floor
 ; ===========================================================================
@@ -1403,8 +1459,40 @@ Sonic_Jump:
 
 
 Sonic_JumpHeight:
-		tst.b	obJumping(a0)		; is Sonic jumping?
-		beq.s	loc_134C4			; if not, branch
+
+	if WallJumpActive	; Mercury Wall Jump
+		tst.b	obWallJump(a0)			; on wall?
+		beq.s	.skip
+		move.b	(v_jpadpress2).w,d0
+		andi.b	#btnABC,d0				; is A, B or C pressed?
+		beq.s	.skip					; if yes, branch
+		clr.w	obWallJump(a0)			; clear Wall Jump data
+		move.b	#1,obJumping(a0)
+		move.b	#aniID_Roll,obAnim(a0) 	; use "jumping" animation
+		move.w	#-$600,d0
+		btst	#bitUp,(v_jpadhold2).w
+		bne.s	.uponly
+		move.w	#-$580,d0
+		move.w	#-$400,obVelX(a0)
+		btst	#staFacing,obStatus(a0)
+		beq.s	.uponly
+		neg.w	obVelX(a0)
+		
+	.uponly:
+		btst	#staWater,obStatus(a0)
+		beq.s	.notinwater
+		addi.w	#$280,d0
+		
+	.notinwater:
+		move.w	d0,obVelY(a0)
+		move.w	#sfx_Jump,d0
+		jsr		(QueueSound2).w			; play jumping sound
+		
+	.skip:
+	endif	;end Wall Jump
+
+		tst.b	obJumping(a0)			; is Sonic jumping?
+		beq.s	loc_134C4				; if not, branch
 		move.w	#-$400,d1
 		btst	#staWater,obStatus(a0)
 		beq.s	loc_134AE
@@ -2054,6 +2142,7 @@ Sonic_Floor:
 		move.l	#v_collision2&$FFFFFF,(v_collindex).w	; MJ: load second collision data location
 .first:
 		move.b	(v_lrb_solid_bit).w,d5					; MJ: load L/R/B soldity bit
+
 	; Devon Air Collision Improvement
 	; Avoiding CalcAngle When Performing Collision in the Air
 		move.w	obVelX(a0),d0
@@ -2085,12 +2174,22 @@ Sonic_Floor:
 		sub.w	d1,obX(a0)
 		clr.w	obVelX(a0)								; stop Sonic since he hit a wall on his left
 
+	if WallJumpActive	; Mercury Wall Jump
+		move.b	#btnL,d1
+		bsr.w	Sonic_WallJump
+	endc	; Wall Jump end
+
 	.chkRightWall:
 		bsr.w	Sonic_CheckRightWallDist
 		tst.w	d1
 		bpl.s	.chkFloor
 		add.w	d1,obX(a0)
 		clr.w	obVelX(a0)								; stop Sonic since he hit a wall on his right
+
+	if WallJumpActive	; Mercury Wall Jump
+		move.b	#btnR,d1
+		bsr.w	Sonic_WallJump
+	endc	; Wall Jump end
 
 	.chkFloor:
 		bsr.w	Sonic_HitFloor
@@ -2203,12 +2302,22 @@ Sonic_AirMode_Ceiling: ;loc_136E2:
 		sub.w	d1,obX(a0)
 		clr.w	obVelX(a0)					; stop Sonic since he hit a wall
 
+	if WallJumpActive	; Mercury Wall Jump
+		move.b	#btnL,d1
+		bsr.w	Sonic_WallJump
+	endc	; Wall Jump end
+
 	.chkRightWall:
 		bsr.w	Sonic_CheckRightWallDist
 		tst.w	d1
 		bpl.s	.chkCeiling
 		add.w	d1,obX(a0)
 		clr.w	obVelX(a0)					; stop Sonic since he hit a wall
+
+	if WallJumpActive	; Mercury Wall Jump
+		move.b	#btnR,d1
+		bsr.w	Sonic_WallJump
+	endc	; Wall Jump end
 
 	.chkCeiling:
 		bsr.w	Sonic_CheckCeilingDist
@@ -2286,6 +2395,29 @@ Sonic_AirMode_RightWall: ;loc_1373E:
 		rts	
 ; End of function Sonic_Floor
 ; ===========================================================================
+
+	if WallJumpActive	; Mercury Wall Jump
+Sonic_WallJump:
+		tst.b	obJumping(a0)	;Mercury Constants
+		beq.s	.return
+		tst.b	obVelY(a0)
+		bmi.s	.return
+		move.b	(v_jpadhold2).w,d0		; get jpad
+		andi.b	#(btnL|btnR),d0			; keep just L and R state
+		beq.s	.return					; fail if neither are pressed
+		cmpi.b	#(btnL|btnR),d0			; fail if both are pressed
+		beq.s	.return
+		and.b	d1,d0					; keep only L or R depending on d1
+		beq.s	.return					; fail if not pressed
+		move.b	d0,(obWallJump+1)(a0)	; remember them
+		clr.w	obVelY(a0)
+		move.b	#$18,obWallJump(a0)		; Mercury Constants
+		clr.b	obJumping(a0)
+		move.b	#aniID_WallJump,obAnim(a0)
+		
+	.return:
+		rts
+	endif	; Wall Jump end
 
 	if CDCamera
 ; ---------------------------------------------------------------------------
@@ -2368,6 +2500,11 @@ Sonic_ResetOnFloor:
 		move.b	#aniID_Walk,obAnim(a0)			; use running/walking animation -- Hame Animation Reset Fix
 		clr.b	obJumping(a0)
 		clr.w	(v_itembonus).w
+
+	if WallJumpActive	; Mercury Wall Jump
+		clr.b	obWallJump(a0)
+	endif	; Wall Jump end
+
 		btst	#staSpin,obStatus(a0)			; is Sonic spinning?
 		beq.s	.ret							; if not, branch
 	; If Sonic is spinning upon landing
@@ -2621,13 +2758,17 @@ Sonic_Hurt_Normal:
 		clr.b	(v_cameralag).w			; Spin Dash Enabled
 	endif
 
+	if WallJumpActive	; Mercury Wall Jump
+		clr.b	obWallJump(a0)
+	endif	; Wall Jump end
+
 		jsr		(SpeedToPos).l
 		addi.w	#$30,obVelY(a0)
 		btst	#staWater,obStatus(a0)
-		beq.s	loc_1380C
+		beq.s	.notunderwater
 		subi.w	#$20,obVelY(a0)
 
-loc_1380C:
+	.notunderwater:
 		bsr.w	Sonic_HurtStop
 		bsr.w	Sonic_LevelBound
 		bsr.w	Sonic_RecordPosition

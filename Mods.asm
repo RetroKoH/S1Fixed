@@ -27,7 +27,7 @@ PeeloutEnabled: = 0
 ; Credit: RetroKoH (Inspired by a guide by Inferno Gear)
 ; Function: Enables the Air Roll from Sonic Triple Trouble
 AirRollEnabled: = 0							; if set to 1, Sonic can curl into a ball in mid-air by pressing Jump while not rolling
-	AutoAirRoll: = AirRollEnabled*1				; if set to 1, air roll will occur automatically when moving downward
+	AutoAirRoll: = AirRollEnabled*0				; if set to 1, air roll will occur automatically when moving downward
 
 ; Name: Drop Dash (Incomplete: Need to reset animation if Drop Dash is cancelled)
 ; Credit: DeltaW, giovanni.gen, Hitaxas, RetroKoH
@@ -44,6 +44,11 @@ InstashieldEnabled: = 0					; if set to 1, instashield is now enabled (Now split
 ShieldsMode: = 0						; 0 - Blue Shield only, 1 - Blue + Elementals, 2 - Elementals only.
 S3KDoubleJump: = (InstashieldEnabled|ShieldsMode)>0
 	RingMagnetRange: = $40				; The range of the lightning shield's ring magnetism
+
+; Name: Wall Jump
+; Credit: Mercury, RetroKoH
+; Function: Enables the Wall Jump used by Mighty in Chaotix
+WallJumpActive: = 1
 
 ; Name: 7th Emerald and Super Sonic (Incomplete: Minor Bugfixes)
 ; Credit: RetroKoH (Palette Credit: Clownacy)
