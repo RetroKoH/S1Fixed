@@ -77,11 +77,17 @@ BossMarble_ShipMain:		; Routine 2
 		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 ; ===========================================================================
 BossMarble_ShipIndex:	offsetTable
-		offsetTableEntry.w BossMarble_ShipStart
-		offsetTableEntry.w BossMarble_ShipMove
-		offsetTableEntry.w BossMarble_ShipExplode
-		offsetTableEntry.w BossMarble_ShipDestroyed
-		offsetTableEntry.w BossMarble_ShipFlee
+ptr_MZB_Start:		offsetTableEntry.w BossMarble_ShipStart
+ptr_MZB_Move:		offsetTableEntry.w BossMarble_ShipMove
+ptr_MZB_Explode:	offsetTableEntry.w BossMarble_ShipExplode
+ptr_MZB_Destroyed:	offsetTableEntry.w BossMarble_ShipDestroyed
+ptr_MZB_Flee:		offsetTableEntry.w BossMarble_ShipFlee
+
+id_mzb_wait = ptr_MZB_Start-BossMarble_ShipIndex			; 0
+id_mzb_move = ptr_MZB_Move-BossMarble_ShipIndex				; 2
+id_mzb_explode = ptr_MZB_Explode-BossMarble_ShipIndex		; 4
+id_mzb_destroyed = ptr_MZB_Destroyed-BossMarble_ShipIndex	; 6
+id_mzb_flee = ptr_MZB_Flee-BossMarble_ShipIndex				; 8
 ; ===========================================================================
 
 BossMarble_ShipStart:		; Secondary Routine 0
@@ -354,11 +360,17 @@ BossMarble_ShipDel:
 ; ===========================================================================
 
 BossMarble_FaceMain:			; Routine 4
+		movea.l	boss_parent(a0),a1					; load the parent object (ship) to a1
+
+	; Devon Boss Object Fix
+		cmpi.b	#id_BossMarble,obID(a1)				; is the boss still loaded?
+		bne.w	BossMarble_Delete					; if not, delete object
+	; Boss Object Fix End
+
 		moveq	#0,d0
 		moveq	#aniID_NormalFace1,d1
-		movea.l	boss_parent(a0),a1					; load the parent object (ship) to a1
 		move.b	ob2ndRout(a1),d0					; get the ship's current routine
-		subq.w	#2,d0								; is ship in a movement phase?
+		subq.w	#id_mzb_move,d0						; is ship in a movement phase?
 		bne.s	.notMoving							; if not, branch
 		btst	#1,obSubtype(a1)
 		beq.s	.chkHurt
@@ -398,9 +410,15 @@ BossMarble_FaceMain:			; Routine 4
 ; ===========================================================================
 
 BossMarble_FlameMain:			; Routine 6
-		move.b	#aniID_Blank,obAnim(a0)
 		movea.l	boss_parent(a0),a1					; load the parent object (ship) to a1
-		cmpi.b	#8,ob2ndRout(a1)					; has Eggman begun fleeing?
+
+	; Devon Boss Object Fix
+		cmpi.b	#id_BossMarble,obID(a1)				; is the boss still loaded?
+		bne.s	BossMarble_Delete					; if not, delete object
+	; Boss Object Fix End
+
+		move.b	#aniID_Blank,obAnim(a0)
+		cmpi.b	#id_mzb_flee,ob2ndRout(a1)			; has Eggman begun fleeing?
 		blt.s	.notfleeing							; if not, branch
 		move.b	#aniID_EscapeFlame,obAnim(a0)		; use the escape animation for the flame
 		tst.b	obRender(a0)
@@ -434,13 +452,19 @@ BossMarble_Delete:
 ; ===========================================================================
 
 BossMarble_TubeMain:			; Routine 8
-		movea.l	boss_parent(a0),a1
-		cmpi.b	#8,ob2ndRout(a1)
-		bne.s	loc_18688
+		movea.l	boss_parent(a0),a1					; a1 = Eggman's ship
+
+	; Devon Boss Object Fix
+		cmpi.b	#id_BossMarble,obID(a1)				; is the boss still loaded?
+		bne.s	BossMarble_Delete					; if not, delete object
+	; Boss Object Fix End
+
+		cmpi.b	#id_mzb_flee,ob2ndRout(a1)			; has Eggman begun fleeing?
+		bne.s	.notfleeing							; if not, branch
 		tst.b	obRender(a0)
 		bpl.s	BossMarble_Delete
 
-loc_18688:
+	.notfleeing:
 		move.l	#Map_BossItems,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Eggman_Weapons,1,0),obGfx(a0)
 		move.b	#4,obFrame(a0)

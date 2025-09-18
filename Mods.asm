@@ -8,12 +8,12 @@
 ; Name: S2 Skid Dust
 ; Credit: Mercury
 ; Function: Enables Sonic 2 Skidding Dust
-SkidDustEnabled: = 0						; if set to 1, Skid dust will occur when coming to a stop.
+SkidDustEnabled: = 1						; if set to 1, Skid dust will occur when coming to a stop.
 
 ; Name: Spin Dash
 ; Credit: SCHG, DeltaW, Mercury
 ; Function: Enables the Sonic 2 Spin Dash
-SpinDashEnabled: = 0
+SpinDashEnabled: = 1
 	SpinDashCancel: = SpinDashEnabled*1		; if set to 1, Spin Dash can be cancelled by not pressing ABC
 	SpinDashNoRevDown: = SpinDashEnabled*1	; if set to 1, Spin Dash will not rev down so long as ABC is held down
 ; (TO-DO: Add the CD Spindash variant)
@@ -26,13 +26,13 @@ PeeloutEnabled: = 0
 ; Name: Air Roll
 ; Credit: RetroKoH (Inspired by a guide by Inferno Gear)
 ; Function: Enables the Air Roll from Sonic Triple Trouble
-AirRollEnabled: = 0							; if set to 1, Sonic can curl into a ball in mid-air by pressing Jump while not rolling
+AirRollEnabled: = 1							; if set to 1, Sonic can curl into a ball in mid-air by pressing Jump while not rolling
 	AutoAirRoll: = AirRollEnabled*1				; if set to 1, air roll will occur automatically when moving downward
 
 ; Name: Drop Dash (Incomplete: Need to reset animation if Drop Dash is cancelled)
 ; Credit: DeltaW, giovanni.gen, Hitaxas, RetroKoH
 ; Function: Enables the Drop Dash from Sonic Mania & Origins
-DropDashEnabled: = 0
+DropDashEnabled: = 1
 	ReusableDropDash: = DropDashEnabled*1					; if set to 1, you can try drop dashing again after cancelling (original behavior doesn't allow this)
 	AirRollIntoDropDash: = AirRollEnabled*DropDashEnabled*1	; if set to 1, you can transition from Air Roll into Drop Dash by holding the jump button.
 ; NOTE: Auto-Air Roll currently does not allow for a Drop Dash transition unless ReusableDropDash is enabled
