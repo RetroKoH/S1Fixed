@@ -50,7 +50,7 @@ Sonic_Control:	; Routine 2
 
 	if WallJumpEnabled	; Mercury Wall Jump
 		tst.b	obWallJump(a0)			; is Sonic latched to a wall for a Wall Jump?
-		beq.s	.nodec					; if not, branch
+		beq		.nodec					; if not, branch
 		subq.b	#1,obWallJump(a0)		; decrement latch time
 		bne.s	.chkLR					; if time remains, branch
 		bra.s	.nowalljump				; if not, jump to cancelling wall jump
@@ -2427,8 +2427,11 @@ Sonic_WallJump:
 		tst.b	obJumping(a0)				; is Sonic jumping?
 		beq.s	.return						; if not, branch and exit (fail)
 		bmi.s	.return						; if yes, but we fell from wall, branch and exit (fail)
+
+	; Removing this check makes it feel more intuitive, but it causes unwanted wall jumps EVERYWHERE
 		tst.b	obVelY(a0)					; is Sonic moving upward?
 		bmi.s	.return						; if yes, branch and exit (fail)
+
 		move.b	(v_jpadhold2).w,d0
 		andi.b	#(btnL|btnR),d0				; are left or right held?
 		beq.s	.return						; if not, branch and exit (fail)
