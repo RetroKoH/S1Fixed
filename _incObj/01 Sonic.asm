@@ -89,6 +89,12 @@ Sonic_Control:	; Routine 2
 			move.w	obX(a0),obX(a1)
 			move.w	obY(a0),obY(a1)
 			addi.w	#$A,obX(a1)
+
+			btst	#staFacing,obStatus(a0)		; is Sonic facing left?
+			beq.s	.notleft					; if not, branch
+			subi.w	#$14,obX(a1)				; adjust positioning
+
+		.notleft:
 			addi.w	#$11,obY(a1)
 			clr.b	obStatus(a1)
 			move.b	#2,obAnim(a1)
