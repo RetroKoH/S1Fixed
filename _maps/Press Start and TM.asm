@@ -19,37 +19,13 @@ M_PSB_PSB:	spriteHeader							; "PRESS START BUTTON"
 	spritePiece $80, 0, 2, 1, $FB, 0, 0, 0, 0
 M_PSB_PSB_End
 
-M_PSB_Limiter:	spriteHeader						; sprite line limiter
-	spritePiece -$80, -$48, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -$48, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -$48, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -$48, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -$48, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -$48, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -$48, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -$48, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -$48, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -$48, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -$28, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -$28, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -$28, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -$28, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -$28, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -$28, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -$28, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -$28, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -$28, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -$28, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -8, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -8, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -8, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -8, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -8, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -8, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -8, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -8, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -8, 4, 4, 0, 0, 0, 0, 0
-	spritePiece -$80, -8, 4, 4, 0, 0, 0, 0, 0
+M_PSB_Limiter:	spriteHeader						; sprite line limiter (by Iso Kilo)
+	spritePiece -8, -$30, 1, 4, 0, 0, 0, 0, 0
+	spritePiece 0, -$30, 1, 4, 0, 0, 0, 0, 0
+	spritePiece -8, -$10, 1, 4, 0, 0, 0, 0, 0
+	spritePiece 0, -$10, 1, 4, 0, 0, 0, 0, 0
+	spritePiece -8, $10, 1, 4, 0, 0, 0, 0, 0
+	spritePiece 0, $10, 1, 4, 0, 0, 0, 0, 0
 M_PSB_Limiter_End
 
 M_PSB_TM:	spriteHeader							; "TM"
