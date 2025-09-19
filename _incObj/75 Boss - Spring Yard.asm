@@ -62,6 +62,11 @@ BossSpringYard_LoadBoss:
 		move.l	a0,boss_parent(a1)
 		dbf		d1,BossSpringYard_Loop	; repeat sequence 3 more times
 
+	; Set data for Spike
+		move.l	#Map_BossItems,obMap(a1)
+		move.w	#make_art_tile(ArtTile_Eggman_Weapons,1,0),obGfx(a1)
+		move.b	#5,obFrame(a1)
+
 BossSpringYard_ShipMain:	; Routine 2
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
@@ -399,6 +404,12 @@ loc_194C2:
 		cmpi.w	#$2A,boss_delaytime(a0)
 		blo.w	BossSpringYard_ApplyMovement
 		addq.b	#2,ob2ndRout(a0)
+		move.l	#$0400FFC0,obVelX(a0)	; (xVel: $400, yVel: -$40); move ship to the right, and upward slightly
+
+	if PostBossScreenUnlock
+		move.w	#boss_syz_end,(v_limitright2).w
+	endif
+
 		bra.w	BossSpringYard_ApplyMovement
 ; ===========================================================================
 
@@ -425,13 +436,13 @@ loc_194E0:
 ; ===========================================================================
 
 BossSpringYard_ShipFlee:		; Secondary Routine $A
-		move.w	#$400,obVelX(a0)
-		move.w	#-$40,obVelY(a0)
+	if ~~PostBossScreenUnlock
 		cmpi.w	#boss_syz_end,(v_limitright2).w
 		bhs.s	loc_1950C
 		addq.w	#2,(v_limitright2).w
 		bra.s	loc_19512
 ; ===========================================================================
+	endif
 
 loc_1950C:
 		tst.b	obRender(a0)
@@ -450,9 +461,15 @@ BossSpringYard_ShipDelete:
 ; ===========================================================================
 
 BossSpringYard_FaceMain:	; Routine 4
-		moveq	#aniID_NormalFace1,d1
 		movea.l	boss_parent(a0),a1
+
+	; Devon Boss Object Fix
+		cmpi.b	#id_BossSpringYard,obID(a1)			; is the boss still loaded?
+		bne.w	BossSpringYard_Delete				; if not, delete object
+	; Boss Object Fix End
+
 		moveq	#0,d0
+		moveq	#aniID_NormalFace1,d1
 		move.b	ob2ndRout(a1),d0
 		move.w	BossSpringYard_FaceRoutines(pc,d0.w),d0
 		jsr		BossSpringYard_FaceRoutines(pc,d0.w)
@@ -504,8 +521,14 @@ locret_19588:
 ; ===========================================================================
 
 BossSpringYard_FlameMain:; Routine 6
-		move.b	#aniID_Blank,obAnim(a0)
 		movea.l	boss_parent(a0),a1
+
+	; Devon Boss Object Fix
+		cmpi.b	#id_BossSpringYard,obID(a1)			; is the boss still loaded?
+		bne.w	BossSpringYard_Delete				; if not, delete object
+	; Boss Object Fix End
+
+		move.b	#aniID_Blank,obAnim(a0)
 		cmpi.b	#$A,ob2ndRout(a1)
 		bne.s	loc_195AA
 		move.b	#aniID_EscapeFlame,obAnim(a0)
@@ -540,10 +563,13 @@ loc_195DA:
 ; ===========================================================================
 
 BossSpringYard_SpikeMain:	; Routine 8
-		move.l	#Map_BossItems,obMap(a0)
-		move.w	#make_art_tile(ArtTile_Eggman_Weapons,1,0),obGfx(a0)
-		move.b	#5,obFrame(a0)
 		movea.l	boss_parent(a0),a1
+
+	; Devon Boss Object Fix
+		cmpi.b	#id_BossSpringYard,obID(a1)			; is the boss still loaded?
+		bne.w	BossSpringYard_Delete				; if not, delete object
+	; Boss Object Fix End
+
 		cmpi.b	#$A,ob2ndRout(a1)
 		bne.s	loc_1961C
 		tst.b	obRender(a0)

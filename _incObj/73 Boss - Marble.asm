@@ -63,6 +63,11 @@ BossMarble_LoadBoss:
 		move.l	a0,boss_parent(a1)
 		dbf		d1,BossMarble_Loop		; repeat sequence 3 more times
 
+	; Set data for Tube
+		move.l	#Map_BossItems,obMap(a1)
+		move.w	#make_art_tile(ArtTile_Eggman_Weapons,1,0),obGfx(a1)
+		move.b	#4,obFrame(a1)
+
 BossMarble_ShipMain:		; Routine 2
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
@@ -467,13 +472,8 @@ BossMarble_TubeMain:			; Routine 8
 	; Boss Object Fix End
 
 		cmpi.b	#id_mzb_flee,ob2ndRout(a1)			; has Eggman begun fleeing?
-		bne.s	.notfleeing							; if not, branch
+		bne.s	BossMarble_Display					; if not, branch
 		tst.b	obRender(a0)
 		bpl.s	BossMarble_Delete
-
-	.notfleeing:
-		move.l	#Map_BossItems,obMap(a0)
-		move.w	#make_art_tile(ArtTile_Eggman_Weapons,1,0),obGfx(a0)
-		move.b	#4,obFrame(a0)
 		bra.s	BossMarble_Display
 ; ===========================================================================

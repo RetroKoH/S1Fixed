@@ -283,14 +283,19 @@ BossLabyrinth_ShipTurnToFlee:
 
 loc_18136:
 		clr.b	boss_delaytime(a0)
-		move.w	#$400,obVelX(a0)
-		move.w	#-$40,obVelY(a0)
+		move.l	#$0400FFC0,obVelX(a0)	; (xVel: $400, yVel: -$40); move ship to the right, and upward slightly
 		clr.b	objoff_3D(a0)
 		addq.b	#2,ob2ndRout(a0)
+
+	if PostBossScreenUnlock
+		move.w	#boss_lz_end,(v_limitright2).w
+	endif
+
 		bra.w	loc_17F38
 ; ===========================================================================
 
 BossLabyrinth_ShipFlee:
+	if ~~PostBossScreenUnlock
 		cmpi.w	#boss_lz_end,(v_limitright2).w
 		bhs.s	loc_18160
 		addq.w	#2,(v_limitright2).w
@@ -298,6 +303,8 @@ BossLabyrinth_ShipFlee:
 ; ===========================================================================
 
 loc_18160:
+	endif
+
 		tst.b	obRender(a0)
 		bpl.s	BossLabyrinth_ShipDel
 		bra.w	loc_17F38
@@ -312,9 +319,12 @@ BossLabyrinth_ShipDel:
 
 BossLabyrinth_FaceMain:	; Routine 4
 		movea.l	boss_parent(a0),a1
-		move.b	(a1),d0
-		cmp.b	(a0),d0
-		bne.s	BossLabyrinth_Delete
+
+	; Devon Boss Object Fix
+		cmpi.b	#id_BossLabyrinth,obID(a1)			; is the boss still loaded?
+		bne.s	BossLabyrinth_Delete				; if not, delete object
+	; Boss Object Fix End
+
 		moveq	#0,d0
 		move.b	ob2ndRout(a1),d0
 		moveq	#aniID_NormalFace1,d1
@@ -351,11 +361,14 @@ BossLabyrinth_Delete:
 ; ===========================================================================
 
 BossLabyrinth_FlameMain:; Routine 6
-		move.b	#aniID_Blank,obAnim(a0)
 		movea.l	boss_parent(a0),a1
-		move.b	(a1),d0
-		cmp.b	(a0),d0
-		bne.s	BossLabyrinth_Delete
+
+	; Devon Boss Object Fix
+		cmpi.b	#id_BossLabyrinth,obID(a1)			; is the boss still loaded?
+		bne.s	BossLabyrinth_Delete				; if not, delete object
+	; Boss Object Fix End
+
+		move.b	#aniID_Blank,obAnim(a0)
 		cmpi.b	#$E,ob2ndRout(a1)
 		bne.s	BossLabyrinth_Display
 		move.b	#aniID_EscapeFlame,obAnim(a0)

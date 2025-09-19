@@ -63,6 +63,11 @@ BossStarLight_LoadBoss:
 		move.l	a0,boss_parent(a1)
 		dbf		d1,BossStarLight_Loop	; repeat sequence 3 more times
 
+	; Set data for Tube
+		move.l	#Map_BossItems,obMap(a1)
+		move.w	#make_art_tile(ArtTile_Eggman_Weapons,1,0),obGfx(a1)
+		move.b	#3,obFrame(a1)
+
 loc_1895C:
 		lea		(v_lvlobjspace).w,a1	; FixBugs -- Formerly (v_objspace+object_size*1)
 		lea		objoff_2A(a0),a2
@@ -290,6 +295,12 @@ loc_18B96:
 		cmpi.b	#$2A,boss_delaytime(a0)
 		blo.w	BossStarLight_ApplyMovement
 		addq.b	#2,ob2ndRout(a0)
+		move.l	#$0400FFC0,obVelX(a0)		; (xVel: $400, yVel: -$40); move ship to the right, and upward slightly
+
+	if PostBossScreenUnlock
+		move.w	#boss_slz_end,(v_limitright2).w
+	endif
+
 		bra.w	BossStarLight_ApplyMovement
 ; ===========================================================================
 
@@ -316,8 +327,7 @@ loc_18BB4:
 ; ===========================================================================
 
 BossStarLight_ShipFlee:		; Secondary Routine $A
-		move.w	#$400,obVelX(a0)
-		move.w	#-$40,obVelY(a0)
+	if ~~PostBossScreenUnlock
 		cmpi.w	#boss_slz_end,(v_limitright2).w
 		bhs.s	loc_18BE0
 		addq.w	#2,(v_limitright2).w
@@ -325,6 +335,8 @@ BossStarLight_ShipFlee:		; Secondary Routine $A
 ; ===========================================================================
 
 loc_18BE0:
+	endif
+
 		tst.b	obRender(a0)
 		bpl.s	BossStarLight_PopAndDelete	; Clownacy DisplaySprite Fix
 
@@ -340,9 +352,15 @@ BossStarLight_PopAndDelete:
 ; ===========================================================================
 
 BossStarLight_FaceMain:	; Routine 4
+		movea.l	boss_parent(a0),a1
+
+	; Devon Boss Object Fix
+		cmpi.b	#id_BossStarLight,obID(a1)			; is the boss still loaded?
+		bne.w	BossStarLight_Delete				; if not, delete object
+	; Boss Object Fix End
+
 		moveq	#0,d0
 		moveq	#aniID_NormalFace1,d1
-		movea.l	boss_parent(a0),a1
 		move.b	ob2ndRout(a1),d0
 		cmpi.b	#6,d0
 		bmi.s	loc_18C06
@@ -373,8 +391,14 @@ loc_18C1A:
 ; ===========================================================================
 
 BossStarLight_FlameMain:; Routine 6
-		move.b	#aniID_Flame1,obAnim(a0)
 		movea.l	boss_parent(a0),a1
+
+	; Devon Boss Object Fix
+		cmpi.b	#id_BossStarLight,obID(a1)			; is the boss still loaded?
+		bne.w	BossStarLight_Delete				; if not, delete object
+	; Boss Object Fix End
+
+		move.b	#aniID_Flame1,obAnim(a0)
 		cmpi.b	#$A,ob2ndRout(a1)
 		bne.s	loc_18C56
 		tst.b	obRender(a0)
@@ -408,15 +432,16 @@ BossStarLight_Display:
 
 BossStarLight_TubeMain:	; Routine 8
 		movea.l	boss_parent(a0),a1
+
+	; Devon Boss Object Fix
+		cmpi.b	#id_BossStarLight,obID(a1)			; is the boss still loaded?
+		bne.s	BossStarLight_Delete				; if not, delete object
+	; Boss Object Fix End
+
 		cmpi.b	#$A,ob2ndRout(a1)
-		bne.s	loc_18CB8
+		bne.s	BossStarLight_Display
 		tst.b	obRender(a0)
 		bpl.s	BossStarLight_Delete
-
-loc_18CB8:
-		move.l	#Map_BossItems,obMap(a0)
-		move.w	#make_art_tile(ArtTile_Eggman_Weapons,1,0),obGfx(a0)
-		move.b	#3,obFrame(a0)
 		bra.s	BossStarLight_Display
 ; ===========================================================================
 
