@@ -8,7 +8,7 @@
 ; Name: S2 Skid Dust
 ; Credit: Mercury
 ; Function: Enables Sonic 2 Skidding Dust
-SkidDustEnabled: = 0						; if set to 1, Skid dust will occur when coming to a stop.
+SkidDustEnabled: = 1						; if set to 1, Skid dust will occur when coming to a stop.
 
 ; Name: Spin Dash
 ; Credit: SCHG, DeltaW, Mercury
@@ -26,7 +26,7 @@ PeeloutEnabled: = 0
 ; Name: Air Roll
 ; Credit: RetroKoH (Inspired by a guide by Inferno Gear)
 ; Function: Enables the Air Roll from Sonic Triple Trouble
-AirRollEnabled: = 0						; if set to 1, Sonic can curl into a ball in mid-air by pressing Jump while not rolling
+AirRollEnabled: = 1						; if set to 1, Sonic can curl into a ball in mid-air by pressing Jump while not rolling
 	AutoAirRoll: = AirRollEnabled*0				; if set to 1, air roll will occur automatically when moving downward
 
 ; Name: Drop Dash (Incomplete: Need to reset animation if Drop Dash is cancelled)
@@ -34,7 +34,7 @@ AirRollEnabled: = 0						; if set to 1, Sonic can curl into a ball in mid-air by
 ; Function: Enables the Drop Dash from Sonic Mania & Origins
 DropDashEnabled: = 1
 	DropDustEnabled: = DropDashEnabled*SkidDustEnabled*1	; if set to 1, dust will emanate when drop-dashing
-	ReusableDropDash: = DropDashEnabled*0					; if set to 1, you can try drop dashing again after cancelling (original behavior doesn't allow this)
+	ReusableDropDash: = DropDashEnabled*1					; if set to 1, you can try drop dashing again after cancelling (original behavior doesn't allow this)
 	AirRollIntoDropDash: = AirRollEnabled*DropDashEnabled*1	; if set to 1, you can transition from Air Roll into Drop Dash by holding the jump button.
 ; NOTE: Auto-Air Roll currently does not allow for a Drop Dash transition unless ReusableDropDash is enabled
 
@@ -42,7 +42,7 @@ DropDashEnabled: = 1
 ; Credit: RetroKoH, DeltaW
 ; Function: Enables the usage of S3K Shields and abilities.
 InstashieldEnabled: = 0					; if set to 1, instashield is now enabled (Now split from Elemental Shields toggle).
-ShieldsMode: = 0						; 0 - Blue Shield only, 1 - Blue + Elementals, 2 - Elementals only.
+ShieldsMode: = 2						; 0 - Blue Shield only, 1 - Blue + Elementals, 2 - Elementals only.
 S3KDoubleJump: = (InstashieldEnabled|ShieldsMode)>0
 	RingMagnetRange: = $40				; The range of the lightning shield's ring magnetism
 
@@ -51,6 +51,7 @@ S3KDoubleJump: = (InstashieldEnabled|ShieldsMode)>0
 ; Function: Enables the Wall Jump used by Mighty in Chaotix
 WallJumpEnabled: = 1					; if set to 1, the wall jump is enabled
 	WallDustEnabled: = WallJumpEnabled*SkidDustEnabled*1	; if set to 1, dust will emanate when latched to a wall
+; Should I make it toggleable as to whether you need to hold jump to latch to the wall?
 
 ; Name: 7th Emerald and Super Sonic (Incomplete: Minor Bugfixes)
 ; Credit: RetroKoH (Palette Credit: Clownacy)

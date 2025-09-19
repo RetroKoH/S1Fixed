@@ -38,6 +38,11 @@ Bump_Hit:	; Routine 2
 		bclr	#staRollJump,obStatus(a1)
 		bclr	#staPush,obStatus(a1)
 		clr.b	obJumping(a1)
+
+	if WallJumpEnabled	; Mercury Wall Jump
+		clr.w	obWallJump(a1)			; clear Wall Jump data
+	endif
+
 		move.b	#1,obAnim(a0)			; use "hit" animation
 		move.w	#sfx_Bumper,d0
 		jsr		(QueueSound2).w	; play bumper sound
