@@ -2,7 +2,7 @@
 ; Title Screen Main Loop
 ; ---------------------------------------------------------------------------
 
-	if SaveProgressMod=0
+	if ~~SaveProgressMod
 
 Tit_MainLoop:
 		move.b	#4,(v_vbla_routine).w
@@ -10,6 +10,23 @@ Tit_MainLoop:
 		jsr		(ExecuteObjects).l
 		bsr.w	DeformLayers
 		jsr		(BuildSprites).l
+
+	; Kilo sprite line limiter fix
+		lea		($FFFFF804).w,a1			; fetch sprite table, starting from tile IDs
+		moveq	#0,d0						; this will be our X position
+		moveq	#80-1,d6					; iterate through the whole sprite table
+
+	.maskLoop:
+		tst.w	(a1)						; does this sprite have tile ID $0000? (Indicates either a mask or nothing)
+		bne.s	.nextMask					; if not, then this is a normal sprite do not modify it's X position
+		bchg	#0,d0						; change X position to 1 or 0 masks need a non X=0 higher priority sprite to mask
+		move.w	d0,2(a1)					; write to X position
+
+	.nextMask:
+		addq.w	#8,a1						; go to next sprite
+		dbf		d6,.maskLoop				; loop
+	; sprite line limiter fix end
+
 		bsr.w	PalCycle_Title
 		bsr.w	RunPLC
 		move.w	(v_player+obX).w,d0
@@ -80,14 +97,15 @@ Tit_ChkLevSel:
 		beq.w	PlayLevel					; if not, play level
 		btst	#bitA,(v_jpadhold1).w		; check if A is pressed
 		beq.w	PlayLevel					; if not, play level
-	if NewLevelSelect=1
+
+	if NewLevelSelect
 		move.b	#id_MenuScreen,(v_gamemode).w
 		jmp		MainGameLoop
 	else
-	;fallthrough to Tit_LevSel
+	; fallthrough to Tit_LevSel
 	endif
 
-	else	; if SaveProgressMod=1
+	else	; if SaveProgressMod
 
 Tit_MainLoop:
 		move.b	#4,(v_vbla_routine).w
@@ -95,6 +113,23 @@ Tit_MainLoop:
 		jsr		(ExecuteObjects).l
 		bsr.w	DeformLayers
 		jsr		(BuildSprites).l
+
+	; Kilo sprite line limiter fix
+		lea		($FFFFF804).w,a1			; fetch sprite table, starting from tile IDs
+		moveq	#0,d0						; this will be our X position
+		moveq	#80-1,d6					; iterate through the whole sprite table
+
+	.maskLoop:
+		tst.w	(a1)						; does this sprite have tile ID $0000? (Indicates either a mask or nothing)
+		bne.s	.nextMask					; if not, then this is a normal sprite do not modify it's X position
+		bchg	#0,d0						; change X position to 1 or 0 masks need a non X=0 higher priority sprite to mask
+		move.w	d0,2(a1)					; write to X position
+
+	.nextMask:
+		addq.w	#8,a1						; go to next sprite
+		dbf		d6,.maskLoop				; loop
+	; sprite line limiter fix end
+
 		bsr.w	PalCycle_Title
 		bsr.w	RunPLC
 		move.w	(v_player+obX).w,d0
@@ -171,7 +206,7 @@ Tit_ChkLevSel:
 		beq.s	Tit_MenuChoice					; if yes, Level Select can't be activated
 		tst.b	(f_levselcheat).w				; otherwise, check if level select code is on
 
-	if NewLevelSelect=0
+	if ~~NewLevelSelect
 		bne.w	Tit_LevSel						; if yes, activate level select
 	else
 		beq.s	Tit_NoLevSel
