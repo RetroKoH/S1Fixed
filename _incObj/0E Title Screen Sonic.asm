@@ -20,7 +20,7 @@ TSon_Main:	; Routine 0
 		move.w	#$DE,obScreenY(a0)			; position is fixed to screen
 		move.l	#Map_TSon,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Title_Sonic,1,0),obGfx(a0)
-		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
+		move.w	#priority7,obPriority(a0)	; Kilo: Change to #7 -- RetroKoH/Devon S3K+ Priority Manager
 		move.b	#29,obDelayAni(a0)			; set time delay to 0.5 seconds
 		move.b	#$FF,objoff_3F(a0)			; Added for DPLC frame check
 		lea		Ani_TSon(pc),a1

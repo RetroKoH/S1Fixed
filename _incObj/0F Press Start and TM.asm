@@ -10,9 +10,11 @@ PSBTM:
 PSB_Index:
 		bra.s	PSB_Main
 		bra.s	PSB_PrsStart
-	if SaveProgressMod=1
+
+	if SaveProgressMod
 		bra.s	PSB_Menu
 	endif
+
 		bra.w	DisplaySprite
 ; ===========================================================================
 
@@ -26,17 +28,26 @@ PSB_Main:	; Routine 0
 		cmpi.b	#2,obFrame(a0)				; is object "PRESS START"?
 		blo.s	PSB_PrsStart				; if yes, branch
 
-	if SaveProgressMod=1
-		addq.b	#4,obRoutine(a0)
+	; Kilo sprite line limiter fix
+		clr.w	obGfx(a0)					; Clear out tile ID.
+		clr.w	obX(a0)						; Clear X position.
+		move.w	#128+152,obScreenY(a0)		; Set Y position.
+		move.w	#priority6,obPriority(a0)	; Kilo: Change to #6 -- RetroKoH/Devon S3K+ Priority Manager
+	; sprite line limiter fix end
+
+	if SaveProgressMod
+		addq.b	#4,obRoutine(a0)			; sprite line limiter and TM routine
 	else
-		addq.b	#2,obRoutine(a0)
+		addq.b	#2,obRoutine(a0)			; sprite line limiter and TM routine
 	endif
+
 		cmpi.b	#3,obFrame(a0)				; is the object	"TM"?
 		bne.w	DisplaySprite				; if not, branch and exit
 
 		move.w	#make_art_tile(ArtTile_Title_Trademark,1,0),obGfx(a0)	; "TM" specific code
 		move.w	#$178,obX(a0)				; RetroKoH Title Screen Adjustment
 		move.w	#$F8,obScreenY(a0)
+		move.w	#priority0,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		bra.w	DisplaySprite
 ; ===========================================================================
 
@@ -46,7 +57,7 @@ PSB_PrsStart:	; Routine 2
 		bra.w	DisplaySprite
 ; ===========================================================================
 
-	if SaveProgressMod=1
+	if SaveProgressMod
 PSB_Menu:	; Routine 4
 		move.b	(v_jpadpress1).w,d0
 		andi.b	#btnUp|btnDn,d0
