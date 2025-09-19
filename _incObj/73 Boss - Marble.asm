@@ -307,6 +307,13 @@ loc_1854E:
 		cmpi.w	#$38,boss_delaytime(a0)
 		blo.s	loc_1857A							; branch to movement
 		addq.b	#2,ob2ndRout(a0)
+	; movement applied here, instead of EVERY frame in 2ndRout $C
+		move.l	#$0500FFC0,obVelX(a0)	; (xVel: $500, yVel: -$40); move ship to the right, and upward slightly
+
+	if PostBossScreenUnlock
+		move.w	#boss_mz_end,(v_limitright2).w
+	endif
+
 		bra.s	loc_1857A							; branch to movement
 ; ===========================================================================
 
@@ -335,19 +342,19 @@ loc_1857A:
 ; ===========================================================================
 
 BossMarble_ShipFlee:			; Secondary Routine 8
-		move.w	#$500,obVelX(a0)
-		move.w	#-$40,obVelY(a0)
+	if ~~PostBossScreenUnlock
 		cmpi.w	#boss_mz_end,(v_limitright2).w
-		bhs.s	loc_1859C
+		bhs.s	.limitreached
 		addq.w	#2,(v_limitright2).w
-		bra.s	loc_185A2
+		bra.s	.moveboss
 ; ===========================================================================
+	endif
 
-loc_1859C:
+	.limitreached:
 		tst.b	obRender(a0)
 		bpl.s	BossMarble_ShipDel
 
-loc_185A2:
+	.moveboss:
 		bsr.w	BossMove
 		bra.w	BossMarble_ChkHit					; we call this solely for the hover effect
 ; ===========================================================================
