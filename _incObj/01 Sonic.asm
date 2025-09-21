@@ -3319,7 +3319,7 @@ Sonic_LoadGfx:
 		move.w	(a2)+,d5				; read "number of PLC entries" value						; S3K Changed from .b to .w
 		subq.w	#1,d5					; decrement for .readentry loop
 		bmi.s	.nochange				; if there are no entries, branch and exit
-		move.w	#(ArtTile_Sonic*$20),d4	; d4 = Sonic's VRAM location
+		move.w	#(ArtTile_Sonic*tile_size),d4	; d4 = Sonic's VRAM location
 
 	.readentry:
 		moveq	#0,d1

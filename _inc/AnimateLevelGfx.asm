@@ -30,10 +30,12 @@ AnimateLevelGfx_Init:
 AnimateLevelGfx:
 		tst.b	(f_pause).w					; is the game paused?
 		bne.s	.ispaused					; if yes, branch
+
 	if ~~ActiveDeathSequence				; RetroKoH Active Death Sequence Mod
 		cmpi.b	#6,(v_player+obRoutine).w	; has Sonic just died?
 		bhs.s	.ispaused					; if yes, branch
 	endif
+
 		movea.l	(v_lani_updateproc).w,a0
 		jmp		(a0)
 

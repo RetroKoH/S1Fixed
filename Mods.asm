@@ -197,10 +197,6 @@ RingsLives: = 1
 	RingsLivesFactor: = 100		; Rings multiple at which lives are awarded (only twice). By default: 100; Proto: 50.
 	; NOTE: Setting this to 50 MIGHT interfere with Continues in the Special Stage.
 
-; To-Do:
-; GHZ Eggman cannot be hit until ball is lowered (per remakes)
-; Right boundary shift after bosses is immediate (per ROM hacks and remakes)
-
 ; ----- FLAIR MODS ---------------------------------------------------------------
 
 ; Name: Fade-In SEGA Screen
@@ -222,7 +218,9 @@ GHZForeverPal: = 0						; if set to 1, GHZ is set to Sonic 1 Forever's palette
 ; Credit: RetroKoH
 ; Function: Active elements will not freeze when the player dies.
 ActiveDeathSequence: = 0				; if set to 1, active elements don't freeze on death a la Sonic CD
-; NOTE: I need to fix a bug that this causes in Labyrinth Zone where the BG scrolls vertically.
+; NOTE (Bugs when enabled):
+; Causes Labyrinth Zone BG to scroll vertically; (Skipping DeformLayers fixes this, but causes the GHZ clouds to not scroll)
+; Also, New dynamic rings glitch out if no other objects are active on screen (seemingly unrelated to this mod, but not sure)
 
 ; Name: End-of-Level Music Fade
 ; Credit: RetroKoH
@@ -368,6 +366,18 @@ NewLevelSelect:	= 0
 BlocksInROM: = 1						; if set to 1, frees RAM ($0000-$A3FF)
 ChunksInROM: = 1						; if set to 1, frees RAM ($B000-$C7FF)
 
+; Name: Optimal Title Card Art
+; Credit: RetroKoH
+; Loads only necessary tiles for various cards. The benefit is less VRAM taken up by cards.
+; The drawback is that they may be harder to edit for new users, and ROM size is slightly larger.
+OptimalTitleCardArt: = 1				; if set to 1, new art and mappings are used, reducing VRAM footprint and sprite piece count
+
+; Name: S3K Underwater Palette Handling
+; Credit: ProjectFM (https://sonicresearch.org/community/index.php?threads/removing-the-water-surface-object-in-sonic-1.5975)
+; Uses S3K's method of applying the underwater palette, removing the need for the water surface object (if desired)
+S3KUnderwaterPalette: = 0				; if set to 1, the HBlank method is changed to that of S3K's.
+; I've made this a toggle because the visuals may or may not be desirable to the user.
+
 ; Name: Dynamic Level Palettes
 ; Credit: RetroKoH (Based on my S1C Difficulty Mod)
 ; Loads a different palette for every act (Scrap Brain is unaffected, as it has dynamic palettes by default)
@@ -379,13 +389,6 @@ DynamicPalettes: = 0					; if set to 1, there will be a separate palette for eac
 ; Plays a different BGM track for each act (Scrap Brain is unaffected, as it has dynamic palettes by default)
 ; (By default, they are identical to the original. It'll be up to you to add music if you use this mod)
 DynamicBGMs: = 0						; if set to 1, there will be a separate BGM track for each act
-
-; Name: Optimal Title Card Art
-; Credit: RetroKoH
-; Loads only necessary tiles for various cards. The benefit is less VRAM taken up by cards.
-; The drawback is that they may be harder to edit for new users, and ROM size is slightly larger.
-OptimalTitleCardArt: = 1				; if set to 1, new art and mappings are used, reducing VRAM footprint and sprite piece count
-; To-Do: Make this a permanent mod once bugs are all fixed
 
 ; Name: Dynamic Art
 ; Credit: RetroKoH

@@ -42,10 +42,12 @@ OscillateNumInit:
 ; Oscillate values
 
 OscillateNumDo:
+
 	if ~~ActiveDeathSequence				; RetroKoH Active Death Sequence Mod
 		cmpi.b	#6,(v_player+obRoutine).w	; has Sonic just died?
 		bhs.s	.end						; if yes, branch
 	endif
+
 		lea		(v_oscillate).w,a1
 		lea		.settings(pc),a2			; Optimization
 		move.w	(a1)+,d3					; get oscillation direction bitfield
