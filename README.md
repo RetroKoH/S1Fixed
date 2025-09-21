@@ -21,10 +21,6 @@
  Sonic doesn't take damage once he is sent to the right at EoL (RetroKoH)  
  Add Goggle sprites; Let them extend underwater time (RetroKoH)  
  Add Title Card file w/ missing letters for users  
- Toggleable: Beta Snare Drum sound (Consult Vladikcomper)  
  Proper Y-Wrapping (RetroKoH)  
  Subsprites for additional objects  
  Certain Beta Zone elements  
-
-# To be documented
- Soulless Sentinel's ASCII Level Select
