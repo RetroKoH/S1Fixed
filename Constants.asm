@@ -171,8 +171,8 @@ obInertia:		equ $20			; potential speed (2 bytes) -- Exclusive to players
 							; $24 obRoutine
 					; Sonic uses $25 if double jump stuff is enabled
 							; $26 obAngle
-							; $27-$29 unused
-obWallJump:		equ $28
+							; $27 unused
+obWallJump:		equ $28			; used for wall jumps (2 bytes)
 							; $2B-$2E unused
 					; Sonic uses $2F if double jump stuff is enabled
 obInvuln:		equ $30			; Invulnerable (blinking after getting hit) timer
@@ -193,6 +193,7 @@ obPlatformAddr:	equ $3E			; ost slot of the object Sonic's on top of (Convert to
 
 ;	if (SpinDashEnabled|PeeloutEnabled)
 obSpinDashFlag:		equ $2A				; spin dash/peelout flag - if toggled off, this is unused.
+obAutoRollFlag:		equ obSpinDashFlag	; auto-roll (pinball mode) flag
 obSpinDashCounter:	equ obRestartTimer	; Counter used for the Spin Dash and/or Peelout (2 bytes) - if toggled off, this is unused.
 ;	endif
 ;	if (ShieldsMode|DropDashEnabled)
