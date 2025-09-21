@@ -59,6 +59,10 @@ Level_NoMusicFade:
 		disable_ints
 		locVRAM	ArtTile_Title_Card*tile_size
 
+	; TheBlad768 title card fix
+		move.w	sr,-(sp)
+		disable_ints
+
 	if OptimalTitleCardArt
 	; RetroKoH Optimal Title Cards for VRAM/SpritePiece Reduction
 		moveq	#0,d0
@@ -84,22 +88,24 @@ Level_NoMusicFade:
 		movea.l	(a2)+,a0					; a0 = zone's art file movea.l?
 		move.l	(a2),d0						; # of tiles
 .load:
-		jsr		(LoadUncArt).w
+		jsr		(LoadUncArt2).w
 		locVRAM	(ArtTile_Title_Card+$22)*tile_size							; if we don't call this, locVRAM will pick up where left off.
 		lea		Art_TitCardZone,a0											; load title card patterns
 		move.l	#((Art_TitCardZone_End-Art_TitCardZone)/tile_size)-1,d0		; # of tiles
-		jsr		(LoadUncArt).w
+		jsr		(LoadUncArt2).w
 		lea		Art_TitCardItems,a0											; load title card patterns
 		move.l	#((Art_TitCardItems_End-Art_TitCardItems)/tile_size)-1,d0	; # of tiles
-		jsr		(LoadUncArt).w
+		jsr		(LoadUncArt2).w
 	; Optimal Title Cards End
 	else
 	; AURORA☆FIELDS Title Card Optimization
 		lea		Art_TitleCard,a0									; load title card patterns
 		move.l	#((Art_TitleCard_End-Art_TitleCard)/tile_size)-1,d0	; # of tiles
-		jsr		(LoadUncArt).w
+		jsr		(LoadUncArt2).w
 	; Title Card Optimization End
 	endif
+
+		move.w	(sp)+,sr	; TheBlad768 title card fix
 
 	if DynamicArt
 ; -----------------------------------------------------------------------
@@ -175,6 +181,10 @@ Level_ClrRam:
 
 		cmpi.b	#id_LZ,(v_zone).w		; is level LZ?
 		bne.s	Level_LoadPal			; if not, branch
+
+	if S3KUnderwaterPalette
+		move.l	#LZ_WaterTransition,(v_watertranstable).w	; store transition table
+	endif
 
 		move.w	#$8014,(a6)				; enable H-interrupts
 		moveq	#0,d0

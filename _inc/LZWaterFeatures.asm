@@ -477,3 +477,29 @@ Slide_Chunks:
 ; byte_3FCF:
 Slide_Chunks_End
 		even
+
+	if S3KUnderwaterPalette
+; ===========================================================================
+LZ_WaterTransition:
+		dc.w $13	; # of entries - 1
+		dc.w $62
+		dc.w $68
+		dc.w $7A
+		dc.w $6E
+		dc.w $74
+		dc.w $42
+		dc.w $48
+		dc.w $4E
+		dc.w $54
+		dc.w $5A
+		dc.w 2
+		dc.w 8
+		dc.w $E
+		dc.w $14
+		dc.w $1A
+		dc.w $34
+		dc.w $22
+		dc.w $3A
+		dc.w $2E
+		dc.w $28
+	endif

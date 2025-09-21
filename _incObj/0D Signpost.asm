@@ -255,27 +255,31 @@ GotThroughAct:
 		clr.b	(f_timecount).w							; stop time counter
 		move.b	#id_GotThroughCard,(v_endcard).w
 		
+	; TheBlad768 title card fix
+		move.w	sr,-(sp)
+		disable_ints
+
 	if OptimalTitleCardArt
 	; RetroKoH Optimal Title Cards for VRAM/SpritePiece Reduction
 		move.l	a0,-(sp)										; save object address to stack
 		locVRAM	ArtTile_Title_Card*tile_size
 		lea		Art_TitCardSonic,a0													; load title card patterns
 		move.l	#((Art_TitCardSonic_End-Art_TitCardSonic)/tile_size)-1,d0			; # of tiles
-		jsr		(LoadUncArt).w														; load uncompressed art
+		jsr		(LoadUncArt2).w														; load uncompressed art
 		lea		Art_TitCardHasPassed,a0												; load title card patterns
 		move.l	#((Art_TitCardHasPassed_End-Art_TitCardHasPassed)/tile_size)-1,d0	; # of tiles
-		jsr		(LoadUncArt).w														; load uncompressed art
+		jsr		(LoadUncArt2).w														; load uncompressed art
 		lea		Art_TitCardItems,a0													; load title card patterns
 		move.l	#((Art_TitCardItems_End-Art_TitCardItems)/tile_size)-1,d0			; # of tiles
-		jsr		(LoadUncArt).w														; load uncompressed art
+		jsr		(LoadUncArt2).w														; load uncompressed art
 		lea		Art_TitCardBonuses,a0												; load title card patterns
 		move.l	#((Art_TitCardBonuses_End-Art_TitCardBonuses)/tile_size)-1,d0		; # of tiles
-		jsr		(LoadUncArt).w														; load uncompressed art
+		jsr		(LoadUncArt2).w														; load uncompressed art
 
 	if PerfectBonusEnabled
 		lea		Art_Perfect,a0														; load title card patterns
 		move.l	#((Art_Perfect_End-Art_Perfect)/tile_size)-1,d0						; # of tiles
-		jsr		(LoadUncArt).w														; load uncompressed art
+		jsr		(LoadUncArt2).w														; load uncompressed art
 	endif
 
 		move.l	(sp)+,a0										; get object address from stack
@@ -286,19 +290,21 @@ GotThroughAct:
 		locVRAM	ArtTile_Title_Card*tile_size
 		lea		Art_TitleCard,a0									; load title card patterns
 		move.l	#((Art_TitleCard_End-Art_TitleCard)/tile_size)-1,d0	; the title card art lenght, in tiles
-		jsr		(LoadUncArt).w										; load uncompressed art
+		jsr		(LoadUncArt2).w										; load uncompressed art
 
 	if PerfectBonusEnabled
 		locVRAM	ArtTile_Perfect*tile_size
 		lea		Art_Perfect,a0									; load title card patterns
 		move.l	#((Art_Perfect_End-Art_Perfect)/tile_size)-1,d0	; # of tiles
-		jsr		(LoadUncArt).w									; load uncompressed art
+		jsr		(LoadUncArt2).w									; load uncompressed art
 	endif
 
 		move.l	(sp)+,a0										; get object address from stack
 	; Title Card Optimization End
 	endif
-		
+
+		move.w	(sp)+,sr	; TheBlad768 title card fix
+
 		move.b	#1,(f_endactbonus).w
 		moveq	#0,d0
 		move.b	(v_timemin).w,d0
