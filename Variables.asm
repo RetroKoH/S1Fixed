@@ -180,7 +180,13 @@ v_jpadhold2:		ds.b	1		; joypad input - held, duplicate
 v_jpadpress2:		ds.b	1		; joypad input - pressed, duplicate
 v_jpadhold1:		ds.b	1		; joypad input - held
 v_jpadpress1:		ds.b	1		; joypad input - pressed
-				ds.b	4		; unused
+
+	if S3KUnderwaterPalette
+v_watertranstable:	ds.l	1		; address of the water transition table
+	else
+				ds.l	1		; unused
+	endif
+
 v_levelheader_id:	ds.w	1		; ID of the Level Header (2 bytes)
 v_vdp_buffer1:		ds.w	1		; VDP instruction buffer
 v_sram_errorcode:	ds.l	1		; SRAM error code
@@ -464,7 +470,12 @@ v_spindashsfx3:		ds.b	1
 
 v_cameralag:		ds.b	1		; camera lag after launching Spin Dash (1 byte)
 v_scrolldelay:		ds.b	1		; scroll delay timer (1 byte)
+
+	if S3KUnderwaterPalette
+v_hbla_line_copy:	ds.b	1		; copy of v_hbla_line to fix a flashing bug
+	else
 				ds.b	1		; unused
+	endif
 
 v_ani0_time:		ds.b	1		; synchronised sprite animation 0 - time until next frame (used for synchronised animations)
 v_ani0_frame:		ds.b	1		; synchronised sprite animation 0 - current frame

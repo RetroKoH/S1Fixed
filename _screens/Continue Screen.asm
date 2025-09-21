@@ -26,8 +26,8 @@ GM_Continue:
 	; Optimal Title Cards End
 	else
 	; AURORA☆FIELDS Title Card Optimization
-		lea		Art_TitleCard,a0									; load title card patterns
-		move.l	#((Art_TitleCard_End-Art_TitleCard)/tile_size)-1,d0	; # of tiles
+		lea		Art_TitleCard,a0													; load title card patterns
+		move.l	#((Art_TitleCard_End-Art_TitleCard)/tile_size)-1,d0					; # of tiles
 		jsr		(LoadUncArt).w
 	; Title Card Optimization End
 	endif

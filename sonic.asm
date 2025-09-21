@@ -485,84 +485,90 @@ Art_Text_End:	even
 ; ---------------------------------------------------------------------------
 
 VBlank:
-		movem.l	d0-a6,-(sp)
-		tst.b	(v_vbla_routine).w
-		beq.s	VBla_00
+		movem.l	d0-a6,-(sp)							; save all registers to stack
+		tst.b	(v_vbla_routine).w					; is routine number 00?
+		beq.s	VBlank_Lag							; if yes, branch
 		move.w	(vdp_control_port).l,d0
-		move.l	#$40000010,(vdp_control_port).l
-		move.l	(v_scrposy_vdp).w,(vdp_data_port).l ; send screen y-axis pos. to VSRAM
-		btst	#6,(v_megadrive).w ; is Megadrive PAL?
-		beq.s	.notPAL		; if not, branch
+		move.l	#$40000010,(vdp_control_port).l		; set write destination to VSRAM address 0
+		move.l	(v_scrposy_vdp).w,(vdp_data_port).l	; send screen y-axis pos. to VSRAM
+		btst	#6,(v_megadrive).w					; is Mega Drive PAL?
+		beq.s	.notPAL								; if not, branch
 
 		move.w	#$700,d0
 .waitPAL:
-		dbf		d0,.waitPAL ; wait here in a loop doing nothing for a while...
+		dbf		d0,.waitPAL							; wait here in a loop doing nothing for a while...
 
 .notPAL:
-		move.b	(v_vbla_routine).w,d0
-		move.b	#0,(v_vbla_routine).w
-		move.w	#1,(f_hbla_pal).w
+		move.b	(v_vbla_routine).w,d0				; get routine number
+		move.b	#0,(v_vbla_routine).w				; reset to 00
+		move.w	#1,(f_hbla_pal).w					; set flag to let HBlank know a frame has finished
 		andi.w	#$3E,d0
 		move.w	VBla_Index(pc,d0.w),d0
-		jsr		VBla_Index(pc,d0.w)
+		jsr		VBla_Index(pc,d0.w)					; go to relevant VBlank subroutine
 
 VBla_Music:
 		SMPS_UpdateSoundDriver			; update SMPS	; warning: a5-a6 will be overwritten
 
 VBla_Exit:
-		addq.l	#1,(v_vbla_count).w
-		movem.l	(sp)+,d0-a6
-		rte
+		addq.l	#1,(v_vbla_count).w					; increment frame counter
+		movem.l	(sp)+,d0-a6							; restore all registers from stack
+		rte											; end of VBlank
 ; ===========================================================================
 VBla_Index:		offsetTable
-		offsetTableEntry.w	VBla_00
-		offsetTableEntry.w	VBla_02
-		offsetTableEntry.w	VBla_04
-		offsetTableEntry.w	VBla_06
-		offsetTableEntry.w	VBla_08
-		offsetTableEntry.w	VBla_0A
-		offsetTableEntry.w	VBla_0C
-		offsetTableEntry.w	VBla_0E
-		offsetTableEntry.w	VBla_10
-		offsetTableEntry.w	VBla_12
-		offsetTableEntry.w	VBla_14
-		offsetTableEntry.w	VBla_16
-		offsetTableEntry.w	VBla_0C
+		offsetTableEntry.w	VBlank_Lag				; $00
+		offsetTableEntry.w	VBlank_Sega				; $02
+		offsetTableEntry.w	VBlank_Title			; $04
+		offsetTableEntry.w	VBlank_Unused			; $06
+		offsetTableEntry.w	VBlank_Level			; $08
+		offsetTableEntry.w	VBlank_Special			; $0A
+		offsetTableEntry.w	VBlank_TitleCard		; $0C
+		offsetTableEntry.w	VBlank_Unused2			; $0E ???
+		offsetTableEntry.w	VBlank_Pause			; $10
+		offsetTableEntry.w	VBlank_Fade				; $12
+		offsetTableEntry.w	VBlank_Sega_SkipLoad	; $14
+		offsetTableEntry.w	VBlank_Continue			; $16
+		offsetTableEntry.w	VBlank_TitleCard		; $18
 ; ===========================================================================
 
-VBla_00:
-		cmpi.b	#$80+id_Level,(v_gamemode).w
-		beq.s	.islevel
-		cmpi.b	#id_Level,(v_gamemode).w ; is game on a level?
-		bne.s	VBla_Music	; if not, branch
+; 0 - runs when a frame ends before WaitForVBlank triggers (i.e. the game is lagging)
+VBlank_Lag:
+		cmpi.b	#$80+id_Level,(v_gamemode).w	; is game on level init sequence?
+		beq.s	.islevel						; if yes, branch
+		cmpi.b	#id_Level,(v_gamemode).w		; is game on a level proper?
+		bne.s	VBla_Music						; if not, branch
 
-.islevel:
-		cmpi.b	#id_LZ,(v_zone).w ; is level LZ ?
-		bne.s	VBla_Music	; if not, branch
+	.islevel:
+		cmpi.b	#id_LZ,(v_zone).w				; is level LZ ?
+		bne.s	VBla_Music						; if not, branch
 
 		move.w	(vdp_control_port).l,d0
-		btst	#6,(v_megadrive).w ; is Megadrive PAL?
-		beq.s	.notPAL		; if not, branch
+		btst	#6,(v_megadrive).w				; is Megadrive PAL?
+		beq.s	.notPAL							; if not, branch
 
 		move.w	#$700,d0
-.waitPAL:
+	.waitPAL:
 		dbf		d0,.waitPAL
 
-.notPAL:
-		move.w	#1,(f_hbla_pal).w ; set HBlank flag
+	.notPAL:
+		move.w	#1,(f_hbla_pal).w				; set flag to let HBlank know a frame has finished
 		stopZ80		; removed Z80 macro
 		waitZ80		; removed Z80 macro
-		tst.b	(f_wtr_state).w	; is water above top of screen?
-		bne.s	.waterabove 	; if yes, branch
+		tst.b	(f_wtr_state).w					; is the water above top of screen?
+		bne.s	.waterabove 					; if yes, branch
 
-		writeCRAM	v_palette,0
+		writeCRAM	v_palette,0					; copy normal palette to CRAM (water palette will be copied by HBlank later)
 		bra.s	.waterbelow
 
-.waterabove:
-		writeCRAM	v_palette_water,0
+	.waterabove:
+		writeCRAM	v_palette_water,0			; copy water palette to CRAM
 
-.waterbelow:
-		move.w	(v_hbla_hreg).w,(a5)
+	.waterbelow:
+		move.w	(v_hbla_hreg).w,(a5)			; set water palette position by sending VDP register $8Axx to control port (vdp_control_port)
+
+	if S3KUnderwaterPalette
+		move.b	(v_hbla_line).w,(v_hbla_line_copy).w	; copy to previously unused RAM space to fix a flashing bug
+	endif
+
 		startZ80	; removed Z80 macro
 		; instead of branching back to VBla_Music, call directly.
 		SMPS_UpdateSoundDriver			; update SMPS	; warning: a5-a6 will be overwritten
@@ -571,68 +577,77 @@ VBla_00:
 		rte
 ; ===========================================================================
 
-VBla_02:
-		bsr.w	sub_106E
+; 2 - GM_Sega> Sega_WaitPal, Sega_WaitEnd
+VBlank_Sega:
+		bsr.w	ReadPad_Palette_Sprites_HScroll	; read joypad, DMA palettes, sprites and hscroll
 
-VBla_14:
+; $14 - GM_Sega> Sega_WaitPal (once)
+VBlank_Sega_SkipLoad:
 		tst.w	(v_demolength).w
 		beq.w	.end
-		subq.w	#1,(v_demolength).w
+		subq.w	#1,(v_demolength).w				; decrement timer
+
+	.end:
+		rts	
+; ===========================================================================
+
+; 4 - GM_Title> Tit_MainLoop, LevelSelect, GotoDemo; GM_Credits> Cred_WaitLoop, TryAg_MainLoop
+VBlank_Title:
+		bsr.w	ReadPad_Palette_Sprites_HScroll	; read joypad, DMA palettes, sprites and hscroll
+		bsr.w	LoadTilesAsYouMove_BGOnly		; update background
+		bsr.w	Process_PLC						; decompress up to 9 cells of Nemesis gfx if needed
+		tst.w	(v_demolength).w
+		beq.w	.end
+		subq.w	#1,(v_demolength).w				; decrement timer
 
 .end:
 		rts	
 ; ===========================================================================
 
-VBla_04:
-		bsr.w	sub_106E
-		bsr.w	LoadTilesAsYouMove_BGOnly
-		bsr.w	sub_1642
-		tst.w	(v_demolength).w
-		beq.w	.end
-		subq.w	#1,(v_demolength).w
-
-.end:
-		rts	
+; 6 - unused
+VBlank_Unused:
+		bra.w	ReadPad_Palette_Sprites_HScroll	; read joypad, DMA palettes, sprites and hscroll
 ; ===========================================================================
 
-VBla_06:
-		bsr.w	sub_106E
-		rts	
-; ===========================================================================
+; $10 - PauseGame> Pause_Loop
+VBlank_Pause:
+		cmpi.b	#id_Special,(v_gamemode).w		; is game on special stage?
+		beq.w	VBlank_Special					; if yes, branch
 
-VBla_10:
-		cmpi.b	#id_Special,(v_gamemode).w ; is game on special stage?
-		beq.w	VBla_0A		; if yes, branch
-
-VBla_08:
+; 8 - GM_Level> Level_MainLoop, Level_FDLoop, Level_DelayLoop
+VBlank_Level:
 		stopZ80		; removed Z80 macro
 		waitZ80		; removed Z80 macro
 		bsr.w	ReadJoypads
-		tst.b	(f_wtr_state).w
-		bne.s	.waterabove
+		tst.b	(f_wtr_state).w					; is the water above top of screen?
+		bne.s	.waterabove						; if yes, branch
 
-		writeCRAM	v_palette,0
+		writeCRAM	v_palette,0					; copy normal palette to CRAM (water palette will be copied by HBlank later)
 		bra.s	.waterbelow
 
 .waterabove:
-		writeCRAM	v_palette_water,0
+		writeCRAM	v_palette_water,0			; copy water palette to CRAM
 
 .waterbelow:
-		move.w	(v_hbla_hreg).w,(a5)
+		move.w	(v_hbla_hreg).w,(a5)			; set water palette position by sending VDP register $8Axx to control port (vdp_control_port)
+
+	if S3KUnderwaterPalette
+		move.b	(v_hbla_line).w,(v_hbla_line_copy).w	; copy to previously unused RAM space to fix a flashing bug
+	endif
 
 		writeVRAM	v_hscrolltablebuffer,vram_hscroll
 		writeVRAM	v_spritetablebuffer,vram_sprites
 
-		bsr.w		ProcessDMAQueue	; Mercury Use DMA Queue
+		bsr.w		ProcessDMAQueue				; Mercury Use DMA Queue
 
 		startZ80	; removed Z80 macro
-		movem.l	(v_screenposx).w,d0-d7
-		movem.l	d0-d7,(v_screenposx_dup).w
-		movem.l	(v_fg_scroll_flags).w,d0-d1
-		movem.l	d0-d1,(v_fg_scroll_flags_dup).w
-		cmpi.b	#96,(v_hbla_line).w
-		bhs.s	Demo_Time
-		move.b	#1,(f_doupdatesinhblank).w
+		movem.l	(v_screenposx).w,d0-d7			; copy all camera & bg x/y positions to d0-d7
+		movem.l	d0-d7,(v_screenposx_dup).w		; create duplicates in RAM
+		movem.l	(v_fg_scroll_flags).w,d0-d1		; copy all fg/bg redraw direction flags to d0-d1
+		movem.l	d0-d1,(v_fg_scroll_flags_dup).w	; create duplicates in RAM
+		cmpi.b	#96,(v_hbla_line).w				; is HBlank set to run on line 96 or below? (42% of the way down the screen)
+		bhs.s	Demo_Time						; if yes, branch
+		move.b	#1,(f_doupdatesinhblank).w		; set flag to run sound driver on HBlank
 		addq.l	#4,sp
 		bra.w	VBla_Exit
 
@@ -644,21 +659,19 @@ VBla_08:
 
 
 Demo_Time:
-		bsr.w	LoadTilesAsYouMove
-	;	jsr		(AnimateLevelGfx).l
-		jsr		(HUD_Update).l
-		bsr.w	ProcessDPLC2
-		tst.w	(v_demolength).w ; is there time left on the demo?
-		beq.w	.end		; if not, branch
-		subq.w	#1,(v_demolength).w ; subtract 1 from time left
+		bsr.w	LoadTilesAsYouMove				; display new tiles if camera has moved
+		jsr		(HUD_Update).l					; update HUD graphics
+		bsr.w	ProcessDPLC2					; decompress up to 3 cells of Nemesis gfx
+		tst.w	(v_demolength).w				; is there time left on the demo?
+		beq.w	.end							; if not, branch
+		subq.w	#1,(v_demolength).w				; decrement timer
 
-.end:
+	.end:
 		rts	
 ; End of function Demo_Time
-
 ; ===========================================================================
 
-VBla_0A:
+VBlank_Special:
 		stopZ80		; removed Z80 macro
 		waitZ80		; removed Z80 macro
 		bsr.w	ReadJoypads
@@ -666,129 +679,149 @@ VBla_0A:
 		writeVRAM	v_spritetablebuffer,vram_sprites
 		writeVRAM	v_hscrolltablebuffer,vram_hscroll
 		startZ80	; removed Z80 macro
-		bsr.w	PalCycle_SS
-		
-		bsr.w	ProcessDMAQueue	; Mercury Use DMA Queue
+		bsr.w	PalCycle_SS						; update cycling palette
 
-	if DynamicSpecialStageWalls=1 ; Mercury Dynamic Special Stage Walls
+		
+		bsr.w	ProcessDMAQueue					; Mercury Use DMA Queue
+
+	if DynamicSpecialStageWalls	; Mercury Dynamic Special Stage Walls
 		cmpi.b	#96,(v_hbla_line).w
 		bcc.s	.update
 		bra.s	.end
 		
-.update:
+	.update:
 		jsr		(SS_LoadWalls).l
 
-	if HUDInSpecialStage=1	; Mercury HUD in Special Stage
+	if HUDInSpecialStage	; Mercury HUD in Special Stage
 		jsr		(HUD_Update_SS).l
 	endif	; HUD in Special Stage End
+
 	endif	; Dynamic Special Stage Walls End
 
-		tst.w	(v_demolength).w	; is there time left on the demo?
-		beq.s	.end				; if not, return
-		subq.w	#1,(v_demolength).w	; subtract 1 from time left in demo
+		tst.w	(v_demolength).w				; is there time left on the demo?
+		beq.s	.end							; if not, return
+		subq.w	#1,(v_demolength).w				; subtract 1 from time left in demo
 
-.end:
+	.end:
 		rts	
 ; ===========================================================================
 
-VBla_0C:
+; $C - GM_Level> Level_TtlCardLoop; GM_Special> SS_NormalExit
+; $18 - GM_Ending> End_LoadSonic (once), End_MainLoop
+VBlank_TitleCard:
 		stopZ80		; removed Z80 macro
 		waitZ80		; removed Z80 macro
 		bsr.w	ReadJoypads
-		tst.b	(f_wtr_state).w
-		bne.s	.waterabove
+		tst.b	(f_wtr_state).w					; is the water above top of screen?
+		bne.s	.waterabove						; if yes, branch
 
-		writeCRAM	v_palette,0
+		writeCRAM	v_palette,0					; copy normal palette to CRAM (water palette will be copied by HBlank later)
 		bra.s	.waterbelow
 
-.waterabove:
-		writeCRAM	v_palette_water,0
+	.waterabove:
+		writeCRAM	v_palette_water,0			; copy water palette to CRAM
 
-.waterbelow:
-		move.w	(v_hbla_hreg).w,(a5)
+	.waterbelow:
+		move.w	(v_hbla_hreg).w,(a5)			; set water palette position by sending VDP register $8Axx to control port (vdp_control_port)
+
+	if S3KUnderwaterPalette
+		move.b	(v_hbla_line).w,(v_hbla_line_copy).w	; copy to previously unused RAM space to fix a flashing bug
+	endif
+
 		writeVRAM	v_hscrolltablebuffer,vram_hscroll
 		writeVRAM	v_spritetablebuffer,vram_sprites
 		
-		bsr.w	ProcessDMAQueue	; Mercury Use DMA Queue
+		bsr.w	ProcessDMAQueue					; Mercury Use DMA Queue
 
 		startZ80	; removed Z80 macro
-		movem.l	(v_screenposx).w,d0-d7
-		movem.l	d0-d7,(v_screenposx_dup).w
-		movem.l	(v_fg_scroll_flags).w,d0-d1
-		movem.l	d0-d1,(v_fg_scroll_flags_dup).w
-		bsr.w	LoadTilesAsYouMove
-	;	jsr		(AnimateLevelGfx).l
-		jsr		(HUD_Update).l
-		bra.w	sub_1642
+		movem.l	(v_screenposx).w,d0-d7			; copy all camera & bg x/y positions to d0-d7
+		movem.l	d0-d7,(v_screenposx_dup).w		; create duplicates in RAM
+		movem.l	(v_fg_scroll_flags).w,d0-d1		; copy all fg/bg redraw direction flags to d0-d1
+		movem.l	d0-d1,(v_fg_scroll_flags_dup).w	; create duplicates in RAM
+		bsr.w	LoadTilesAsYouMove				; display new tiles if camera has moved
+		jsr		(HUD_Update).l					; update HUD graphics
+		bra.w	Process_PLC						; decompress up to 9 cells of Nemesis gfx
 ; ===========================================================================
 
-VBla_0E:
-		bsr.w	sub_106E
-		addq.b	#1,(v_vbla_0e_counter).w ; Unused besides this one write...
+; $E - unused
+VBlank_Unused2:
+		bsr.w	ReadPad_Palette_Sprites_HScroll	; read joypad, DMA palettes, sprites and hscroll
+		addq.b	#1,(v_vbla_0e_counter).w		; Unused besides this one write...
 		move.b	#$E,(v_vbla_routine).w
 		rts	
 ; ===========================================================================
 
-VBla_12:
-		bsr.w	sub_106E
-		move.w	(v_hbla_hreg).w,(a5)
-		bra.w	sub_1642
+; $12 - PaletteWhiteIn, PaletteWhiteOut, PaletteFadeIn, PaletteFadeOut
+VBlank_Fade:
+		bsr.w	ReadPad_Palette_Sprites_HScroll	; read joypad, DMA palettes, sprites and hscroll
+		move.w	(v_hbla_hreg).w,(a5)			; set water palette position by sending VDP register $8Axx to control port (vdp_control_port)
+
+	if S3KUnderwaterPalette
+		move.b	(v_hbla_line).w,(v_hbla_line_copy).w	; copy to previously unused RAM space to fix a flashing bug
+	endif
+
+		bra.w	Process_PLC						; decompress up to 9 cells of Nemesis gfx
 ; ===========================================================================
 
-VBla_16:
+; $16 - GM_Special> SS_FinLoop; GM_Continue> Cont_MainLoop
+VBlank_Continue:
 		stopZ80		; removed Z80 macro
 		waitZ80		; removed Z80 macro
 		bsr.w	ReadJoypads
-		writeCRAM	v_palette,0
+		writeCRAM	v_palette,0					; copy palette to CRAM
 		writeVRAM	v_spritetablebuffer,vram_sprites
 		writeVRAM	v_hscrolltablebuffer,vram_hscroll
 		startZ80	; removed Z80 macro
 
-		bsr.w	ProcessDMAQueue	; Mercury Use DMA Queue
+		bsr.w	ProcessDMAQueue					; Mercury Use DMA Queue
 
-	if DynamicSpecialStageWalls=1 ; Mercury Dynamic Special Stage Walls
+	if DynamicSpecialStageWalls ; Mercury Dynamic Special Stage Walls
 		cmpi.b	#96,(v_hbla_line).w
 		bcc.s	.update
 		bra.s	.end
 		
-.update:
+	.update:
 		jsr		(SS_LoadWalls).l
-	if HUDInSpecialStage=1	; Mercury HUD in Special Stage
+
+	if HUDInSpecialStage	; Mercury HUD in Special Stage
 		jsr		(HUD_Update_SS).l
 	endif	; HUD in Special Stage End
+
 	endif	; Dynamic Special Stage Walls End
 
 		tst.w	(v_demolength).w
 		beq.s	.end
-		subq.w	#1,(v_demolength).w
+		subq.w	#1,(v_demolength).w				; decrement timer
 
-.end:
+	.end:
 		rts	
+
+; ---------------------------------------------------------------------------
+; Subroutine to read joypad and DMA palettes, sprite table and hscroll table
+; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-sub_106E:
+ReadPad_Palette_Sprites_HScroll:
 		stopZ80		; removed Z80 macro
 		waitZ80		; removed Z80 macro
 		bsr.w	ReadJoypads
-		tst.b	(f_wtr_state).w ; is water above top of screen?
-		bne.s	.waterabove	; if yes, branch
-		writeCRAM	v_palette,0
+		tst.b	(f_wtr_state).w					; is water above top of screen?
+		bne.s	.waterabove						; if yes, branch
+		writeCRAM	v_palette,0					; copy normal palette to CRAM (water palette will be copied by HBlank later)
 		bra.s	.waterbelow
 
-.waterabove:
-		writeCRAM	v_palette_water,0
+	.waterabove:
+		writeCRAM	v_palette_water,0			; copy water palette to CRAM
 
-.waterbelow:
+	.waterbelow:
 		writeVRAM	v_spritetablebuffer,vram_sprites
 		writeVRAM	v_hscrolltablebuffer,vram_hscroll
 		startZ80	; removed Z80 macro
 		
-		bra.w		ProcessDMAQueue	; Mercury Use DMA Queue
-		
-		rts	
-; End of function sub_106E
+		bra.w		ProcessDMAQueue				; Mercury Use DMA Queue
+; End of function ReadPad_Palette_Sprites_HScroll
 
 ; ---------------------------------------------------------------------------
 ; Horizontal interrupt
@@ -798,11 +831,59 @@ sub_106E:
 
 
 HBlank:
+
+	if S3KUnderwaterPalette
+		tst.w	(f_hbla_pal).w			; is palette set to change?
+		beq.s	.nochg					; if not, branch
+		move.w	#0,(f_hbla_pal).w
+		movem.l	d0-d1/a0-a2,-(sp)
+
+		lea		(vdp_data_port).l,a1
+		move.w	#$8A00+223,4(a1)		; reset HBlank register
+		stopZ80
+
+		waitZ80
+		movea.l	(v_watertranstable).w,a2	; load stored transition table to a2
+		moveq	#$F,d0						; adjust to push artifacts off screen
+
+	.loop:
+		dbf		d0,.loop				; waste a few cycles here
+
+		move.w	(a2)+,d1
+		move.b	(v_hbla_line_copy).w,d0		; previously unused RAM space utilized to fix a flashing bug
+		subi.b	#200,d0					; is H-int occuring below line 200?
+		bcs.s	.transferColors			; if it is, branch
+		sub.b	d0,d1
+		bcs.s	.skipTransfer
+
+	.transferColors:
+		move.w	(a2)+,d0
+		lea		(v_palette_water).w,a0	; get palette from RAM
+		adda.w	d0,a0
+		addi.w	#$C000,d0
+		swap	d0
+		move.l	d0,4(a1)				; write to CRAM at appropriate address
+		move.l	(a0)+,(a1)				; transfer two colors to CRAM
+		move.w	(a0)+,(a1)				; transfer the third color to CRAM
+		nop
+		nop
+		moveq	#$24,d0
+
+	.wasteSomeCycles:
+		dbf		d0,.wasteSomeCycles
+		dbf		d1,.transferColors		; repeat for number of colors
+
+	.skipTransfer:
+		startZ80
+		movem.l	(sp)+,d0-d1/a0-a2
+	
+	else
+	
 		disable_ints
 		tst.w	(f_hbla_pal).w			; is palette set to change?
 		beq.s	.nochg					; if not, branch
 		move.w	#0,(f_hbla_pal).w
-		movem.l	a0-a1,-(sp)
+		movem.l	a0-a1,-(sp)				; save a0-a1 to stack
 		lea		(vdp_data_port).l,a1
 		lea		(v_palette_water).w,a0	; get palette from RAM
 		move.l	#$C0000000,4(a1)		; set VDP to CRAM write
@@ -812,15 +893,18 @@ HBlank:
 		endm
 
 		move.w	#$8A00+223,4(a1)		; reset HBlank register
-		movem.l	(sp)+,a0-a1
-		tst.b	(f_doupdatesinhblank).w
-		bne.s	loc_119E
+		movem.l	(sp)+,a0-a1				; restore a0-a1 from stack
+	endif
 
-.nochg:
+		tst.b	(f_doupdatesinhblank).w	; is flag set to update sound & some graphics during HBlank?
+		bne.s	.update_hblank			; if yes, branch
+
+	.nochg:
 		rte	
 ; ===========================================================================
 
-loc_119E:
+; The following only runs during a level and HBlank is set to run on line 96 or below
+	.update_hblank:
 		move.b	#0,(f_doupdatesinhblank).w
 		movem.l	d0-a6,-(sp)
 		bsr.w	Demo_Time
@@ -995,13 +1079,15 @@ Tilemap_Cell:
 		include	"_inc/Nemesis Decompression.asm"
 
 ; ---------------------------------------------------------------
-; uncompressed art to VRAM loader -- AURORA☆FIELDS Title Card Optimization
+; uncompressed art to VRAM loader
+; AURORA☆FIELDS Title Card Optimization
 ; ---------------------------------------------------------------
 ; INPUT:
 ;       a0      - Source Offset
 ;       d0      - length in tiles
 ; ---------------------------------------------------------------
 LoadUncArt:
+		move.w	sr,-(sp)
 		disable_ints
 		lea		$C00000.l,a6    ; get VDP data port
 
@@ -1017,9 +1103,34 @@ LoadArt_Loop:
 
 		dbf		d0,LoadArt_Loop	; loop until d0 = 0
 		enable_ints
+		move.w 	(sp)+,sr
 		rts
 ; ===========================================================================
 
+; ---------------------------------------------------------------
+; A second uncompressed art to VRAM loader -- TheBlad768 title card fix
+; Used specically for title cards so we only have to disable interrupts once.
+; ---------------------------------------------------------------
+; INPUT:
+;       a0      - Source Offset
+;       d0      - length in tiles
+; ---------------------------------------------------------------
+LoadUncArt2:
+		lea		$C00000.l,a6    ; get VDP data port
+
+LoadArt2_Loop:
+		move.l	(a0)+,(a6)		; transfer 4 bytes
+		move.l	(a0)+,(a6)		; transfer 4 more bytes
+		move.l	(a0)+,(a6)		; and so on and so forth
+		move.l	(a0)+,(a6)		;
+		move.l	(a0)+,(a6)		;
+		move.l	(a0)+,(a6)		;
+		move.l	(a0)+,(a6)		; in total transfer 32 bytes
+		move.l	(a0)+,(a6)		; which is 1 full tile
+
+		dbf		d0,LoadArt2_Loop	; loop until d0 = 0
+		rts
+; ===========================================================================
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to load pattern load cues (aka to queue pattern load requests)
@@ -1163,7 +1274,7 @@ Rplc_Exit:
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-sub_1642:
+Process_PLC:
 		tst.w	(v_plc_patternsleft).w
 		beq.s	Rplc_Exit
 		move.w	#9,(v_plc_framepatternsleft).w
@@ -1171,7 +1282,7 @@ sub_1642:
 		move.w	(v_plc_buffer+4).w,d0
 		addi.w	#$120,(v_plc_buffer+4).w
 		bra.s	loc_1676
-; End of function sub_1642
+; End of function Process_PLC
 
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -3395,6 +3506,7 @@ ExecuteObjects:
 		lea		(v_objspace).w,a0			; set address for object RAM
 		moveq	#v_allobjcount,d7
 		moveq	#0,d0
+
 	if ~~ActiveDeathSequence				; RetroKoH Active Death Sequence Mod
 		cmpi.b	#6,(v_player+obRoutine).w	; has Sonic just died?
 		bhs.s	ObjectsDisplayOnly			; if yes, branch
