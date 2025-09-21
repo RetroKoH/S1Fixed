@@ -7,10 +7,12 @@ PathSwapper:
 		move.b	obRoutine(a0),d0
 		move.w	PSwapper_Index(pc,d0.w),d1
 		jsr		PSwapper_Index(pc,d1.w)
+
 	if DebugPathSwappers
 		tst.w	(f_debugcheat).w
 		bne.w	RememberState
 	endif
+
 		; like RememberState, but doesn't display (Sonic 2's MarkObjGone3)
 		out_of_range.w	.offscreen
 		rts
@@ -36,7 +38,7 @@ PSwapper_Index:		offsetTable
 PSwapper_Init:
 		addq.b	#2,obRoutine(a0) ; => PSwapper_MainX
 		move.l	#Map_PathSwapper,obMap(a0)
-		move.w	#$27B2,obGfx(a0)
+		move.w	#$27B2,obGfx(a0)			; change this
 		ori.b	#4,obRender(a0)
 		move.b	#$10,obActWid(a0)
 		move.w	#priority5,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
@@ -72,11 +74,9 @@ PSwapper_Init_CheckX:
 		move.w	obX(a0),d1
 		lea		(v_player).w,a1		; a1=character
 		cmp.w	obX(a1),d1
-		bhs.s	.jump
+		bhs.s	PSwapper_MainX
 		move.b	#1,objoff_34(a0)
-.jump:
 
-; loc_1FDA4:
 PSwapper_MainX:
 		tst.w	(v_debuguse).w
 		bne.w	.locret
@@ -134,7 +134,7 @@ PSwapper_MainX:
 PSwapper_MainX_Alt:
 		cmp.w	obX(a1),d1
 		bls.s	.locret
-		clr.b	-1(a2)
+		clr.b	-1(a2)				; clear $34(a0)
 		move.w	obY(a0),d2
 		move.w	d2,d3
 		move.w	objoff_32(a0),d4

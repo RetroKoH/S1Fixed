@@ -156,12 +156,10 @@ loc_12C7E:
 loc_12CA6:
 		bsr.w	Sonic_Animate
 		tst.b	obCtrlLock(a0)
-		bmi.s	loc_12CB6
+		bmi.w	Sonic_LoadGfx
 		jsr		(ReactToItem).l
-
-loc_12CB6:
-		bsr.w	Sonic_Loops
-		bra.w	Sonic_LoadGfx	
+	; Removed Sonic_Loops
+		bra.w	Sonic_LoadGfx
 ; ===========================================================================
 
 Sonic_Modes:	offsetTable
@@ -469,16 +467,11 @@ Sonic_MdAir:
 
 Sonic_MdRoll:
 	; in a ball, not in the air
-	if SpinDashEnabled
-		tst.b	obSpinDashFlag(a0)
+		tst.b	obAutoRollFlag(a0)
 		bne.s	.skip
 		bsr.w	Sonic_Jump
 
 .skip:
-	else
-		bsr.w	Sonic_Jump
-	endif
-
 		bsr.w	Sonic_RollRepel
 		bsr.w	Sonic_RollSpeed
 		bsr.w	Sonic_LevelBound
@@ -996,68 +989,65 @@ Sonic_RollSpeed:
 
 .nowater:
 		move.w	(v_sonspeeddec).w,d4
-		asr.w	#2,d4
+		asr.w	#2,d4	; controlled roll deceleration
 		tst.b	(f_slidemode).w
-		bne.w	loc_131CC
+		bne.w	Sonic_Roll_ResetScr
 		tst.b	obLRLock(a0)
-		bne.s	.notright
+		bne.s	Sonic_ApplyRollSpeed
 		btst	#bitL,(v_jpadhold2).w	; is left being pressed?
 		beq.s	.notleft				; if not, branch
 		bsr.w	Sonic_RollLeft
 
 .notleft:
 		btst	#bitR,(v_jpadhold2).w	; is right being pressed?
-		beq.s	.notright				; if not, branch
+		beq.s	Sonic_ApplyRollSpeed	; if not, branch
 		bsr.w	Sonic_RollRight
 
-.notright:
+
+Sonic_ApplyRollSpeed:
 		move.w	obInertia(a0),d0
-		beq.s	loc_131AA
-		bmi.s	loc_1319E
+		beq.s	Sonic_CheckRollStop
+		bmi.s	Sonic_ApplyRollSpeedLeft
+
+; ; Sonic_ApplyRollSpeedRight:
 		sub.w	d5,d0
-		bcc.s	loc_13198
+		bcc.s	.setinertia
 		clr.w	d0
 
-loc_13198:
+	.setinertia:
 		move.w	d0,obInertia(a0)
-		bra.s	loc_131AA
+		bra.s	Sonic_CheckRollStop
 ; ===========================================================================
 
-loc_1319E:
+Sonic_ApplyRollSpeedLeft:
 		add.w	d5,d0
-		bcc.s	loc_131A6
+		bcc.s	.setinertia
 		clr.w	d0
 
-loc_131A6:
+	.setinertia:
 		move.w	d0,obInertia(a0)
 
-loc_131AA:
+Sonic_CheckRollStop:
 		tst.w	obInertia(a0)			; is Sonic moving?
-		bne.s	loc_131CC				; if yes, branch
-
-	if SpinDashEnabled
-		tst.b	obSpinDashFlag(a0)
+		bne.s	Sonic_Roll_ResetScr		; if yes, branch
+		tst.b	obAutoRollFlag(a0)		; NOTE: the spindash flag has a different meaning when Sonic's already rolling -- it's used to mean he's not allowed to stop rolling
 		bne.s	Sonic_KeepRolling
-	endif
-
 		bclr	#staSpin,obStatus(a0)
 		move.w	#$1309,obHeight(a0)		; Height and Width
 		move.b	#aniID_Wait,obAnim(a0)	; use "standing" animation
 		subq.w	#5,obY(a0)
-
-	if SpinDashEnabled
-		bra.s	loc_131CC
+		bra.s	Sonic_Roll_ResetScr
 ; ===========================================================================
-
-; DeltaWooloo: This part is from Sonic 2
+; magically gives Sonic an extra push if he's going to stop rolling where it's not allowed
+; (such as in an S-tunnel in GHZ)
 Sonic_KeepRolling:
 		move.w	#$400,obInertia(a0)
 		btst	#staFacing,obStatus(a0)
-		beq.s	loc_131CC
+		beq.s	Sonic_Roll_ResetScr
 		neg.w	obInertia(a0)
-	endif
 
-loc_131CC:
+; resets the screen to normal while rolling
+Sonic_Roll_ResetScr:
 	; Mercury Screen Scroll While Rolling Fix
 		cmpi.w	#$60,(v_lookshift).w
 		beq.s	.cont2
@@ -1378,16 +1368,7 @@ Sonic_ChkRoll:
 		bset	#staSpin,obStatus(a0)
 		move.w	#$E07,obHeight(a0)				; Height and Width
 		move.b	#aniID_Roll,obAnim(a0)			; use "rolling" animation
-		move.b	#fr_SonRoll1,obFrame(a0)		; hard sets frame so no flicker when roll in tunnels - Mercury Roll Frame Fix
-
-	if SuperMod
-		btst	#sta2ndSuper,obStatus2nd(a0)	; is Sonic super?
-		beq.s	.notsuper
-		move.b	#fr_SupSonRoll1,obFrame(a0)		; hard sets frame so no flicker when roll in tunnels - Mercury Roll Frame Fix
-
-	.notsuper:
-	endif
-
+	; Removed Mercury frame set fix, as it's no longer needed, and actually causes a bug in the new system
 		addq.w	#5,obY(a0)						; Add to y-pos the difference in height radius
 		move.w	#sfx_Roll,d0
 		jsr		(QueueSound2).w					; play rolling sound
@@ -1543,13 +1524,11 @@ locret_134C2:
 ; ===========================================================================
 
 loc_134C4:
-	if SpinDashEnabled
-		tst.b	obSpinDashFlag(a0)	; is Sonic charging his spin dash?
+		tst.b	obAutoRollFlag(a0)	; is Sonic charging a spindash or in a rolling-only area?
 		bne.w	locret_134D2		; if yes, branch
-	endif
-		cmpi.w	#-$FC0,obVelY(a0)
-		bge.s	locret_134D2
-		move.w	#-$FC0,obVelY(a0)
+		cmpi.w	#-$FC0,obVelY(a0)	; is Sonic moving up really fast?
+		bge.s	locret_134D2		; if not, return
+		move.w	#-$FC0,obVelY(a0)	; cap upward speed
 
 locret_134D2:
 		rts	
@@ -2239,7 +2218,7 @@ loc_1361E:
 		add.w	d1,obY(a0)
 		move.b	d3,obAngle(a0)
 		;bsr.w	Sonic_ResetOnFloor			; Moved to loc_1364E -- Fix Bubble Bounce
-		move.b	#aniID_Walk,obAnim(a0)
+		;move.b	#aniID_Walk,obAnim(a0)
 		move.b	d3,d0
 		addi.b	#$20,d0
 		andi.b	#$40,d0
@@ -2314,7 +2293,7 @@ Sonic_AirMode_LeftWall: ;loc_13680:
 		add.w	d1,obY(a0)
 		move.b	d3,obAngle(a0)
 		;bsr.w	Sonic_ResetOnFloor			; Moved -- Fix Bubble Bounce
-		move.b	#aniID_Walk,obAnim(a0)
+		;move.b	#aniID_Walk,obAnim(a0)
 		clr.w	obVelY(a0)
 		move.w	obVelX(a0),obInertia(a0)
 		bra.w	Sonic_ResetOnFloor			; Moved -- Fix Bubble Bounce
@@ -2415,7 +2394,7 @@ Sonic_AirMode_RightWall: ;loc_1373E:
 		add.w	d1,obY(a0)
 	;	move.b	d3,obAngle(a0)				; Moved
 	;	bsr.w	Sonic_ResetOnFloor			; Moved -- Fix Bubble Bounce
-		move.b	#aniID_Walk,obAnim(a0)
+	;	move.b	#aniID_Walk,obAnim(a0)
 		clr.w	obVelY(a0)					; stop Sonic in y since he hit a floor
 		tst.b	(f_wtunnelmode).w			; is Sonic in a wind tunnel?
 		bne.s	.end						; if yes, branch
@@ -2537,21 +2516,28 @@ Sonic_PanCamera:
 
 
 Sonic_ResetOnFloor:
-		andi.b	#~(maskAir+maskRollJump+maskPush),obStatus(a0)	; Should clear Air, RollJump and Push bits ($CD)
+		tst.b	obAutoRollFlag(a0)
+		bne.s	.skippart
 		move.b	#aniID_Walk,obAnim(a0)			; use running/walking animation -- Hame Animation Reset Fix
+
+;Part2
+		btst	#staSpin,obStatus(a0)			; is Sonic spinning?
+		beq.s	.skippart						; if not, branch
+	; if Sonic is spinning upon landing
+		bclr	#staSpin,obStatus(a0)
+		move.w	#$1309,obHeight(a0)				; Height and Width
+		move.b	#aniID_Walk,obAnim(a0)			; use running/walking animation
+		subq.w	#5,obY(a0)						; move Sonic up 5 pixels so the increased height doesn't push him into the ground
+
+;Part3
+	.skippart:
+		andi.b	#~(maskAir+maskRollJump+maskPush),obStatus(a0)	; Should clear Air, RollJump and Push bits ($CD)
 		clr.b	obJumping(a0)
 		clr.w	(v_itembonus).w
 
 	if WallJumpEnabled	; Mercury Wall Jump
 		clr.w	obWallJump(a0)					; clear wall latch flag and saved directional input state
 	endif	; Wall Jump end
-
-		btst	#staSpin,obStatus(a0)			; is Sonic spinning?
-		beq.s	.ret							; if not, branch
-	; If Sonic is spinning upon landing
-		move.w	#$1309,obHeight(a0)				; Height and Width
-		bclr	#staSpin,obStatus(a0)
-		subq.w	#5,obY(a0)						; move Sonic up 5 pixels so the increased height doesn't push him into the ground
 
 	if ~~ShieldsMode
 
@@ -2980,50 +2966,6 @@ Sonic_Drowned_Normal:
 		bsr.s	Sonic_Animate			; Animate Sonic
 		bsr.w	Sonic_LoadGfx			; Load Sonic's DPLCs
 		bra.w	DisplaySprite			; And finally, display Sonic
-; ===========================================================================
-
-; ---------------------------------------------------------------------------
-; Subroutine to	make Sonic spin in tunnels (GHZ/SLZ)
-; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
-Sonic_Loops:
-	; Loops are no longer handled here, only the windtunnels. Loops are now handled by pathswappers.
-	; To-Do: Add Forced Roll object from Sonic 2, and remove this subroutine entirely.
-		tst.b	(v_zone).w			; is level GHZ ?
-		bne.w	.noloops			; if not, branch
-
-;.isstarlight:
-		move.w	obY(a0),d0			; MJ: Load Y position
-		move.w	obX(a0),d1			; MJ: Load X position
-		andi.w	#$780,d0			; MJ: keep Y position within 800 pixels (in multiples of 80)
-		add.w	d0,d0				; MJ: multiply by 2 (Because every 80 bytes switch from FG to BG..)
-		lsr.w	#7,d1				; MJ: divide X position by 80 (00 = 0, 80 = 1, etc)
-		andi.w	#$7F,d1				; MJ: keep within 4000 pixels (4000 / 80 = 80)
-		add.w	d1,d0				; MJ: add together
-		lea		(v_lvllayout).w,a1	; MJ: Load address of layout
-		move.b	(a1,d0.w),d1		; MJ: collect correct 128x128 chunk ID based on the position of Sonic
-
-		lea		STunnel_Chunks_End(pc),a2					; MJ: lead list of S-Tunnel chunks
-		moveq	#(STunnel_Chunks_End-STunnel_Chunks)-1,d2	; MJ: get size of list
-
-	.loop:
-		cmp.b	-(a2),d1			; MJ: is the chunk an S-Tunnel chunk?
-		dbeq	d2,.loop			; MJ: check for each listed S-Tunnel chunk
-		beq.w	Sonic_ChkRoll		; MJ: if so, branch
-
-	.noloops:
-		rts	
-; End of function Sonic_Loops
-
-; ===========================================================================
-
-STunnel_Chunks:		; MJ: list of S-Tunnel chunks
-		dc.b	$75,$76,$77,$78
-		dc.b	$79,$7A,$7B,$7C
-STunnel_Chunks_End
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------

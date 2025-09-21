@@ -4,7 +4,7 @@
 ptr_SonicPlayer:		dc.l SonicPlayer	; $01
 ptr_Obj02:				dc.l NullObject
 ptr_PathSwapper:		dc.l PathSwapper
-ptr_Obj04:				dc.l NullObject
+ptr_AutoRollTag:		dc.l AutoRollTag
 ptr_Obj05:				dc.l NullObject
 ptr_SpecialCursor:		dc.l SpecialCursor
 
@@ -163,7 +163,7 @@ NullObject:
 id_SonicPlayer:			equ ((ptr_SonicPlayer-Obj_Index)/4)+1		; $01
 id_Obj02:				equ ((ptr_Obj02-Obj_Index)/4)+1
 id_PathSwapper:			equ ((ptr_PathSwapper-Obj_Index)/4)+1
-id_Obj04:				equ ((ptr_Obj04-Obj_Index)/4)+1
+id_AutoRollTag:			equ ((ptr_AutoRollTag-Obj_Index)/4)+1
 id_Obj05:				equ ((ptr_Obj05-Obj_Index)/4)+1
 id_SpecialCursor:		equ ((ptr_SpecialCursor-Obj_Index)/4)+1
 

@@ -3798,6 +3798,7 @@ ResumeMusic:
 		include	"_incObj/38 Shield.asm"
 		include	"_incObj/21 Invincibility.asm"						; Split from Shields (RetroKoH)
 		include	"_incObj/03 Collision Switcher.asm"
+		include "_incObj/04 Auto Roll Tag.asm"						; Backported from Sonic 2
 		include	"_incObj/08 Water Splash.asm"
 		include	"_anim/Water Splash.asm"
 
