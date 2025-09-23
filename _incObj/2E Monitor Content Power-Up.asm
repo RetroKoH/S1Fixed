@@ -105,7 +105,8 @@ ExtraLife:
 		beq.s	.playbgm
 		addq.b	#1,(v_lives).w		; add 1 to number of lives
 		addq.b	#1,(f_lifecount).w	; update the lives counter
-.playbgm:
+
+	.playbgm:
 	; Lives Over/Underflow Fix End
 
 	if AmbienceMode
@@ -190,26 +191,18 @@ Pow_Rings:
 		ori.b	#1,(f_ringcount).w	; update the ring counter
 
 	if RingsLives
-			cmpi.w	#RingsLivesFactor,(v_rings).w	; check if you have x rings (Default: 100)
-			blo.s	Pow_RingSound
+			cmpi.b	#2,(v_lifecount).w					; did we already get 2 lives via rings?
+			beq.s	Pow_RingSound
+			move.w	(v_rings).w,d1						; move ring count into d1
+			cmp.w	(v_ringlife).w,d1					; do you have enough rings for an extra life?
+			blo.s	Pow_RingSound						; if not, branch
+			addq.b	#1,(v_lifecount).w					; increment the rings lives counter
+			add.w	#RingsLivesFactor,(v_ringlife).w	; increase ring limit to earn a 1-up
 
 		if AmbienceMode
-			bset	#1,(v_lifecount).w
-			beq.s	.life				; if we should gain an extra life, branch
-			cmpi.w	#RingsLivesFactor*2,(v_rings).w	; check if you have 2x rings (Default: 200)
-			blo.s	Pow_RingSound
-			bset	#2,(v_lifecount).w
-			bne.s	Pow_RingSound		; if we shouldn't gain an extra life, branch
-
-		.life:
-			bsr.w	ExtraLife			; gain extra life, return to play ring sound
+			bsr.w	ExtraLife							; gain extra life, return to play ring sound
 		else
-			bset	#1,(v_lifecount).w
-			beq.w	ExtraLife
-			cmpi.w	#RingsLivesFactor*2,(v_rings).w	; check if you have 2x rings (Default: 200)
-			blo.s	Pow_RingSound
-			bset	#2,(v_lifecount).w
-			beq.w	ExtraLife
+			bra.w	ExtraLife							; gain extra life and play jingle
 		endif
 	endif
 
@@ -234,15 +227,20 @@ Pow_S:
 		ori.b	#1,(f_ringcount).w						; update the ring counter
 
 	if RingsLives
-		cmpi.w	#RingsLivesFactor,(v_rings).w			; check if you have x rings (Default: 100)
-		blo.s	.sRingSound
-		bset	#1,(v_lifecount).w
-		beq.w	ExtraLife
-		cmpi.w	#RingsLivesFactor*2,(v_rings).w			; check if you have 2x rings (Default: 200)
-		blo.s	.sRingSound
-		bset	#2,(v_lifecount).w
-		beq.w	ExtraLife
-		
+			cmpi.b	#2,(v_lifecount).w					; did we already get 2 lives via rings?
+			beq.s	.sRingSound
+			move.w	(v_rings).w,d1						; move ring count into d1
+			cmp.w	(v_ringlife).w,d1					; do you have enough rings for an extra life?
+			blo.s	.sRingSound							; if not, branch
+			addq.b	#1,(v_lifecount).w					; increment the rings lives counter
+			add.w	#RingsLivesFactor,(v_ringlife).w	; increase ring limit to earn a 1-up
+
+			cmpi.b	#99,(v_lives).w						; are lives at max?
+			beq.s	.sRingSound
+			addq.b	#1,(v_lives).w						; add 1 to number of lives
+			addq.b	#1,(f_lifecount).w					; update the lives counter
+		; don't play lives jingle here, as it seems to cause conflicts (use queue 3 here?)
+
 	.sRingSound:
 	endif
 
@@ -271,14 +269,19 @@ Pow_S:
 		ori.b	#1,(f_ringcount).w						; update the ring counter
 
 	if RingsLives
-		cmpi.w	#RingsLivesFactor,(v_rings).w			; check if you have x rings (Default: 100)
-		blo.s	.locret
-		bset	#1,(v_lifecount).w
-		beq.w	ExtraLife
-		cmpi.w	#RingsLivesFactor*2,(v_rings).w			; check if you have 2x rings (Default: 200)
-		blo.s	.locret
-		bset	#2,(v_lifecount).w
-		beq.w	ExtraLife
+			cmpi.b	#2,(v_lifecount).w					; did we already get 2 lives via rings?
+			beq.s	.locret
+			move.w	(v_rings).w,d1						; move ring count into d1
+			cmp.w	(v_ringlife).w,d1					; do you have enough rings for an extra life?
+			blo.s	.locret								; if not, branch
+			addq.b	#1,(v_lifecount).w					; increment the rings lives counter
+			add.w	#RingsLivesFactor,(v_ringlife).w	; increase ring limit to earn a 1-up
+
+			cmpi.b	#99,(v_lives).w						; are lives at max?
+			beq.s	.locret
+			addq.b	#1,(v_lives).w						; add 1 to number of lives
+			addq.b	#1,(f_lifecount).w					; update the lives counter
+		; don't play lives jingle here, as it seems to cause conflicts (use queue 3 here?)
 
 	.locret:
 	endif
