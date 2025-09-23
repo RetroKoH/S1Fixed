@@ -232,18 +232,57 @@ Sign_SonicRun:	; Routine 6
 		bhs.s	loc_EC86
 
 Sign_Exit:	; Routine 8 -- ; Moved this rts label to optimize some branches.
-		rts	
+		rts
 ; ===========================================================================
 
 loc_EC86:
 		addq.b	#2,obRoutine(a0)
+		bra.s	GotThroughAct		; Added a short branch so I could include the table below
+; ===========================================================================
 
+GotThrough_UncList:
+	if OptimalTitleCardArt
+	; RetroKoH Optimal Title Cards for VRAM/SpritePiece Reduction
+		
+	if PerfectBonusEnabled
+		dc.w 4		; 5 items
+	else
+		dc.w 3		; 4 items
+	endif
+
+		dc.l Art_TitCardSonic
+		dc.w ((Art_TitCardSonic_End-Art_TitCardSonic)/tile_size)-1
+		dc.l Art_TitCardHasPassed
+		dc.w ((Art_TitCardHasPassed_End-Art_TitCardHasPassed)/tile_size)-1
+		dc.l Art_TitCardItems
+		dc.w ((Art_TitCardItems_End-Art_TitCardItems)/tile_size)-1
+		dc.l Art_TitCardBonuses
+		dc.w ((Art_TitCardBonuses_End-Art_TitCardBonuses)/tile_size)-1
+	else
+	; AURORA☆FIELDS Title Card Optimization
+	if PerfectBonusEnabled
+		dc.w 1		; 2 items
+	else
+		dc.w 0		; 1 item
+	endif
+
+		dc.l Art_TitleCard
+		dc.w ((Art_TitleCard_End-Art_TitleCard)/tile_size)-1
+	endif
+
+	if PerfectBonusEnabled
+	; Add Perfect Bonus Art
+		dc.l Art_Perfect
+		dc.w ((Art_Perfect_End-Art_Perfect)/tile_size)-1
+	endif
+; ===========================================================================
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	set up bonuses at the end of an	act
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+
 
 GotThroughAct:
 		tst.b	(v_endcard).w
@@ -252,56 +291,12 @@ GotThroughAct:
 		bclr	#sta2ndInvinc,(v_player+obStatus2nd).w	; disable invincibility
 		clr.b	(f_timecount).w							; stop time counter
 		move.b	#id_GotThroughCard,(v_endcard).w
-		
-	; TheBlad768 title card fix
-		move.w	sr,-(sp)
-		disable_ints
 
-	if OptimalTitleCardArt
-	; RetroKoH Optimal Title Cards for VRAM/SpritePiece Reduction
-		move.l	a0,-(sp)										; save object address to stack
-		locVRAM	ArtTile_Title_Card*tile_size
-		lea		Art_TitCardSonic,a0													; load title card patterns
-		move.l	#((Art_TitCardSonic_End-Art_TitCardSonic)/tile_size)-1,d0			; # of tiles
-		jsr		(LoadUncArt2).w														; load uncompressed art
-		lea		Art_TitCardHasPassed,a0												; load title card patterns
-		move.l	#((Art_TitCardHasPassed_End-Art_TitCardHasPassed)/tile_size)-1,d0	; # of tiles
-		jsr		(LoadUncArt2).w														; load uncompressed art
-		lea		Art_TitCardItems,a0													; load title card patterns
-		move.l	#((Art_TitCardItems_End-Art_TitCardItems)/tile_size)-1,d0			; # of tiles
-		jsr		(LoadUncArt2).w														; load uncompressed art
-		lea		Art_TitCardBonuses,a0												; load title card patterns
-		move.l	#((Art_TitCardBonuses_End-Art_TitCardBonuses)/tile_size)-1,d0		; # of tiles
-		jsr		(LoadUncArt2).w														; load uncompressed art
-
-	if PerfectBonusEnabled
-		lea		Art_Perfect,a0														; load title card patterns
-		move.l	#((Art_Perfect_End-Art_Perfect)/tile_size)-1,d0						; # of tiles
-		jsr		(LoadUncArt2).w														; load uncompressed art
-	endif
-
-		move.l	(sp)+,a0										; get object address from stack
-	; Optimal Title Cards End
-	else
-	; AURORA☆FIELDS Title Card Optimization
-		move.l	a0,-(sp)										; save object address to stack
-		locVRAM	ArtTile_Title_Card*tile_size
-		lea		Art_TitleCard,a0									; load title card patterns
-		move.l	#((Art_TitleCard_End-Art_TitleCard)/tile_size)-1,d0	; the title card art lenght, in tiles
-		jsr		(LoadUncArt2).w										; load uncompressed art
-
-	if PerfectBonusEnabled
-		locVRAM	ArtTile_Perfect*tile_size
-		lea		Art_Perfect,a0									; load title card patterns
-		move.l	#((Art_Perfect_End-Art_Perfect)/tile_size)-1,d0	; # of tiles
-		jsr		(LoadUncArt2).w									; load uncompressed art
-	endif
-
-		move.l	(sp)+,a0										; get object address from stack
+	; TheBlad768/AURORA☆FIELDS/RetroKoH Title Card Optimization
+        lea    GotThrough_UncList(pc),a1
+        locVRAM    ArtTile_Title_Card*tile_size,d1
+        jsr    (LoadUncArt2).w
 	; Title Card Optimization End
-	endif
-
-		move.w	(sp)+,sr	; TheBlad768 title card fix
 
 		move.b	#1,(f_endactbonus).w
 		moveq	#0,d0
