@@ -59,6 +59,8 @@ Level_NoMusicFade:
 
 	if OptimalTitleCardArt
 
+		locVRAM	ArtTile_Title_Card*tile_size						; change this to d1?
+
 	; RetroKoH Optimal Title Cards for VRAM/SpritePiece Reduction
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
