@@ -73,8 +73,9 @@ End_LoadSonic:
 		jsr		(BuildSprites).l
 		moveq	#0,d0
 		move.w	d0,(v_rings).w
-		move.l	d0,(v_time).w
 		move.b	d0,(v_lifecount).w
+		move.w	#RingsLivesFactor,(v_ringlife).w
+		move.l	d0,(v_time).w
 		move.w	d0,(v_debuguse).w
 		move.b	d0,(f_restart).w
 		move.w	d0,(v_framecount).w

@@ -217,6 +217,8 @@ ResetLevel:
 		moveq	#0,d0
 		move.b	#3,(v_lives).w			; set lives to 3
 		move.w	d0,(v_rings).w			; clear rings
+		move.b	d0,(v_lifecount).w
+		move.w	#RingsLivesFactor,(v_ringlife).w
 		move.l	d0,(v_time).w			; clear time
 		move.l	d0,(v_score).w			; clear score
 		move.b	d0,(v_lastspecial).w	; clear special stage number
@@ -262,6 +264,8 @@ PlayLevel_Load:
 
 	; everything else can be reset like normal
 		move.w	d0,(v_rings).w				; clear rings
+		move.b	d0,(v_lifecount).w
+		move.w	#RingsLivesFactor,(v_ringlife).w
 		move.l	d0,(v_time).w				; clear time
 		
 		move.b	#id_Level,(v_gamemode).w	; set screen mode to $0C (level)
@@ -326,6 +330,8 @@ loc_3422:
 Demo_Level:
 		move.b	#3,(v_lives).w				; set lives to 3
 		move.w	d1,(v_rings).w				; clear rings
+		move.b	d0,(v_lifecount).w
+		move.w	#RingsLivesFactor,(v_ringlife).w
 		move.l	d1,(v_time).w				; clear time
 		move.l	d1,(v_score).w				; clear score
 		move.l	#ScoreLivesFactor,(v_scorelife).w	; extra life is awarded at X points (Default: 50000)
