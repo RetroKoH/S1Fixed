@@ -62,10 +62,11 @@ GM_Special:
 	endif	; Dynamic Special Stage Walls End
 
 		bsr.w	PalCycle_SS
-	if S4SpecialStages=0
-		move.w	#$40,(v_ssrotate).w					; set stage rotation speed
-	else
+
+	if S4SpecialStages
 		move.w	#$100,(v_ssrotate).w				; set stage rotation speed
+	else
+		move.w	#$40,(v_ssrotate).w					; set stage rotation speed
 	endif
 
 	if ~~AmbienceMode
@@ -84,6 +85,7 @@ GM_Special:
 		move.w	d0,(v_btnpushtime1).w
 		move.w	d0,(v_rings).w
 		move.b	d0,(v_lifecount).w
+		move.w	#RingsLivesFactor,(v_ringlife).w
 		move.w	d0,(v_debuguse).w
 		move.w	#1800,(v_demolength).w
 ;		tst.b	(f_debugcheat).w					; has debug cheat been entered?

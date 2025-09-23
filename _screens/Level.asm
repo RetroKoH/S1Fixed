@@ -342,6 +342,7 @@ Level_LoadObj:
 	endif	; HUD Centiseconds end
 
 		move.b	d0,(v_lifecount).w		; clear lives counter
+		move.w	#RingsLivesFactor,(v_ringlife).w
 
 Level_SkipClr:
 		move.b	d0,(f_timeover).w

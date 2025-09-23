@@ -99,9 +99,11 @@ Cont_GotoLevel:
 		move.b	#3,(v_lives).w				; set lives to 3
 		moveq	#0,d0
 		move.w	d0,(v_rings).w				; clear rings
+		move.b	d0,(v_lifecount).w
+		move.w	#RingsLivesFactor,(v_ringlife).w
 		move.l	d0,(v_time).w				; clear time
 
-	if HUDCentiseconds=1	; Mercury HUD Centiseconds
+	if HUDCentiseconds	; Mercury HUD Centiseconds
 		move.b	d0,(v_centstep).w
 	endif	; HUD Centiseconds End
 

@@ -110,6 +110,8 @@ EndingDemoLoad:
 		move.b	#3,(v_lives).w				; set lives to 3
 		moveq	#0,d0
 		move.w	d0,(v_rings).w				; clear rings
+		move.b	d0,(v_lifecount).w
+		move.w	#RingsLivesFactor,(v_ringlife).w
 		move.l	d0,(v_time).w				; clear time
 		move.l	d0,(v_score).w				; clear score
 		move.b	d0,(v_lastlamp).w			; clear lamppost counter

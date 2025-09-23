@@ -72,35 +72,35 @@ Ring_Delete:	; Routine 8
 
 CollectRing:
 	; RetroKoH Ring Count Cap
-		move.w	#sfx_Ring,d0	 	; prepare to play ring sound
-		cmpi.w	#999,(v_rings).w	; did the Sonic collect 999+ rings? < Added ring cap
-		bcc.s	.playsnd         	; if yes, branch
-		addq.w	#1,(v_rings).w	 	; add 1 to rings
+		move.w	#sfx_Ring,d0	 					; prepare to play ring sound
+		cmpi.w	#999,(v_rings).w					; did the Sonic collect 999+ rings? < Added ring cap
+		bcc.s	.playsnd         					; if yes, branch
+		addq.w	#1,(v_rings).w	 					; add 1 to rings
 	; Ring Count Cap End
-		ori.b	#1,(f_ringcount).w				; update the rings counter
+		ori.b	#1,(f_ringcount).w					; update the rings counter
 
 	if RingsLives
-		cmpi.w	#RingsLivesFactor,(v_rings).w	; do you have < x rings (Default: 100)
-		blo.s	.playsnd						; if yes, branch
-		bset	#1,(v_lifecount).w				; update lives counter
-		beq.s	.got100
-		cmpi.w	#RingsLivesFactor*2,(v_rings).w	; do you have < 2x rings (Default: 200)
-		blo.s	.playsnd						; if yes, branch
-		bset	#2,(v_lifecount).w				; update lives counter
-		bne.s	.playsnd
+		cmpi.b	#2,(v_lifecount).w					; did we already get 2 lives via rings?
+		beq.s	.playsnd							; if yes, branch
+
+		move.w	(v_rings).w,d1						; move ring count into d1
+        cmp.w	(v_ringlife).w,d1					; do you have enough rings for an extra life?
+		blo.s	.playsnd							; if not, branch
+		addq.b	#1,(v_lifecount).w					; increment the rings lives counter
+		add.w	#RingsLivesFactor,(v_ringlife).w	; increase ring limit to earn a 1-up
 
 	.got100:
 	; Mercury Lives Over/Underflow Fix
-		cmpi.b	#99,(v_lives).w		; are lives at max?
+		cmpi.b	#99,(v_lives).w						; are lives at max?
 		beq.s	.playbgm
-		addq.b	#1,(v_lives).w		; add 1 to number of lives
-		addq.b	#1,(f_lifecount).w	; update the lives counter
+		addq.b	#1,(v_lives).w						; add 1 to number of lives
+		addq.b	#1,(f_lifecount).w					; update the lives counter
 
 	.playbgm:
 	; Lives Over/Underflow Fix End
 
 	if ~~AmbienceMode
-		move.w	#bgm_ExtraLife,d0	; play extra life music
+		move.w	#bgm_ExtraLife,d0					; play extra life music
 	endif
 
 	endif
@@ -229,7 +229,7 @@ RLoss_Count:	; Routine 0
 	.resetcounter:
 		clr.w	(v_rings).w					; reset number of rings to zero
 		move.b	#$80,(f_ringcount).w		; update ring counter
-		clr.b	(v_lifecount).w
+	;	clr.b	(v_lifecount).w
 	; Moved sfx above anim timer code to accomodate potential badnik ring branch
 		move.w	#sfx_RingLoss,d0
 		jsr		(QueueSound2).w		; play ring loss sound
