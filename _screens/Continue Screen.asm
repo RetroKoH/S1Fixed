@@ -12,6 +12,7 @@ GM_Continue:
 		move.w	#$8004,(a6)				; 8 colour mode
 		move.w	#$8700,(a6)				; background colour
 		bsr.w	ClearScreen
+		enable_ints
 		clr.b	(f_levelstarted).w		; RetroKoH S3K Rings Manager
 
 		clearRAM v_objspace
