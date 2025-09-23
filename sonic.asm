@@ -1084,56 +1084,60 @@ Tilemap_Cell:
 
 
 ; ---------------------------------------------------------------
-; uncompressed art to VRAM loader
-; AURORA☆FIELDS Title Card Optimization
-; ---------------------------------------------------------------
-; INPUT:
-;       a0      - Source Offset
-;       d0      - length in tiles
+; Load uncompressed art to VRAM
+;
+; Inputs:
+; a0 = source offset
+; d0 = length in tiles
 ; ---------------------------------------------------------------
 LoadUncArt:
 		move.w	sr,-(sp)
 		disable_ints
 		lea		$C00000.l,a6    ; get VDP data port
 
-LoadArt_Loop:
-		move.l	(a0)+,(a6)		; transfer 4 bytes
-		move.l	(a0)+,(a6)		; transfer 4 more bytes
-		move.l	(a0)+,(a6)		; and so on and so forth
-		move.l	(a0)+,(a6)		;
-		move.l	(a0)+,(a6)		;
-		move.l	(a0)+,(a6)		;
-		move.l	(a0)+,(a6)		; in total transfer 32 bytes
-		move.l	(a0)+,(a6)		; which is 1 full tile
+	.loop:
+	rept 8
+		move.l	(a0)+,(a6)		; transfer $20 bytes to VDP data port
+	endr
 
-		dbf		d0,LoadArt_Loop	; loop until d0 = 0
-		enable_ints
+		dbf		d0,.loop
+
 		move.w 	(sp)+,sr
 		rts
 ; ===========================================================================
 
-; ---------------------------------------------------------------
-; A second uncompressed art to VRAM loader -- TheBlad768 title card fix
-; Used specically for title cards so we only have to disable interrupts once.
-; ---------------------------------------------------------------
-; INPUT:
-;       a0      - Source Offset
-;       d0      - length in tiles
-; ---------------------------------------------------------------
+; ---------------------------------------------------------------------------
+; Load uncompressed art list to VRAM
+; Implemented by TheBlad768
+;
+; Inputs:
+; d1 = VRAM address
+; a1 = list address
+; ---------------------------------------------------------------------------
+
+; =============== S U B R O U T I N E =======================================
+
 LoadUncArt2:
-		lea		$C00000.l,a6    ; get VDP data port
+		move.w	sr,-(sp)
+		disable_ints
+		lea		$C00000.l,a6	; get VDP data port
 
-LoadArt2_Loop:
-		move.l	(a0)+,(a6)		; transfer 4 bytes
-		move.l	(a0)+,(a6)		; transfer 4 more bytes
-		move.l	(a0)+,(a6)		; and so on and so forth
-		move.l	(a0)+,(a6)		;
-		move.l	(a0)+,(a6)		;
-		move.l	(a0)+,(a6)		;
-		move.l	(a0)+,(a6)		; in total transfer 32 bytes
-		move.l	(a0)+,(a6)		; which is 1 full tile
+		move.l	d1,4(a6)		; set VDP ctrl port
+		move.w	(a1)+,d0		; number of uncompressed graphics in list
 
-		dbf		d0,LoadArt2_Loop	; loop until d0 = 0
+	.load:
+		movea.l	(a1)+,a2		; load art pointer
+		move.w	(a1)+,d1		; get art size
+
+	.loop:
+	rept 8
+		move.l	(a2)+,(a6)		; transfer $20 bytes to VDP data port
+	endr
+
+		dbf		d1,.loop
+		dbf		d0,.load
+
+		move.w	(sp)+,sr
 		rts
 ; ===========================================================================
 
