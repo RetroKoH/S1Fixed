@@ -333,7 +333,7 @@ Sonic_Display:
 
 	if ~~AmbienceMode
 		move.w	#bgm_Slowdown,d0
-		jmp		(QueueSound1).w					; run music at normal speed
+		jmp		(QueueSound3).w					; run music at normal speed
 	endif
 
 	.exit:

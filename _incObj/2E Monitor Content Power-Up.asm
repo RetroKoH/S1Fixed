@@ -140,7 +140,7 @@ Pow_Shoes:
 		rts
 	else
 		move.w	#bgm_Speedup,d0
-		jmp		(QueueSound1).w							; Speed	up the music
+		jmp		(QueueSound3).w							; Speed	up the music
 	endif
 ; ===========================================================================
 
@@ -219,36 +219,36 @@ Pow_S:
 
 	.skipcap:
 
-	if ~~SuperMod
-	; No Super Sonic
+	if ~~SuperMod	; No Super Sonic
 		bsr.w	Pow_Invinc
 		bsr.w	Pow_Shoes
 
 		ori.b	#1,(f_ringcount).w						; update the ring counter
 
-	if RingsLives
-			cmpi.b	#2,(v_lifecount).w					; did we already get 2 lives via rings?
-			beq.s	.sRingSound
-			move.w	(v_rings).w,d1						; move ring count into d1
-			cmp.w	(v_ringlife).w,d1					; do you have enough rings for an extra life?
-			blo.s	.sRingSound							; if not, branch
-			addq.b	#1,(v_lifecount).w					; increment the rings lives counter
-			add.w	#RingsLivesFactor,(v_ringlife).w	; increase ring limit to earn a 1-up
+		if RingsLives
+		; ---------------------------------------------------------------------------
+				cmpi.b	#2,(v_lifecount).w					; did we already get 2 lives via rings?
+				beq.s	.sRingSound
+				move.w	(v_rings).w,d1						; move ring count into d1
+				cmp.w	(v_ringlife).w,d1					; do you have enough rings for an extra life?
+				blo.s	.sRingSound							; if not, branch
+				addq.b	#1,(v_lifecount).w					; increment the rings lives counter
+				add.w	#RingsLivesFactor,(v_ringlife).w	; increase ring limit to earn a 1-up
 
-			cmpi.b	#99,(v_lives).w						; are lives at max?
-			beq.s	.sRingSound
-			addq.b	#1,(v_lives).w						; add 1 to number of lives
-			addq.b	#1,(f_lifecount).w					; update the lives counter
-		; don't play lives jingle here, as it seems to cause conflicts (use queue 3 here?)
+				cmpi.b	#99,(v_lives).w						; are lives at max?
+				beq.s	.sRingSound
+				addq.b	#1,(v_lives).w						; add 1 to number of lives
+				addq.b	#1,(f_lifecount).w					; update the lives counter
+			; don't play lives jingle here, as it seems to cause conflicts (use queue 3 here?)
 
-	.sRingSound:
-	endif
+		.sRingSound:
+		; ---------------------------------------------------------------------------
+		endif
 
 		move.w	#sfx_GiantRing,d0
 		jmp		(QueueSound2).w					; play giant ring sound
 
-	else
-	; YES Super Sonic
+	else	; YES Super Sonic
 		if AfterImagesOn	; Hitaxas S3K afterimage
 			move.b	#id_AfterImages,(v_trails).w
 			move.w	#v_player,(v_trails+obParent).w	
@@ -268,7 +268,8 @@ Pow_S:
 
 		ori.b	#1,(f_ringcount).w						; update the ring counter
 
-	if RingsLives
+		if RingsLives
+		; ---------------------------------------------------------------------------
 			cmpi.b	#2,(v_lifecount).w					; did we already get 2 lives via rings?
 			beq.s	.locret
 			move.w	(v_rings).w,d1						; move ring count into d1
@@ -282,9 +283,9 @@ Pow_S:
 			addq.b	#1,(v_lives).w						; add 1 to number of lives
 			addq.b	#1,(f_lifecount).w					; update the lives counter
 		; don't play lives jingle here, as it seems to cause conflicts (use queue 3 here?)
-
-	.locret:
-	endif
+		.locret:
+		; ---------------------------------------------------------------------------
+		endif
 
 		rts
 	endif
