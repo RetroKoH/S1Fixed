@@ -197,6 +197,12 @@ RingsLives: = 1
 	RingsLivesFactor: = 100		; Rings multiple at which lives are awarded (only twice). By default: 100; Proto: 50.
 	; NOTE: Setting this to 50 MIGHT interfere with Continues in the Special Stage.
 
+; Name: Giant Rings In SBZ (INCOMPLETE)
+; Credit: Mercury
+; Function: Adds Giant Rings (and therefore extra shots at the Special Stage) to SBZ1 and SBZ2.
+GiantRingsInSBZ: = 0
+; Minor graphical bugs w/ Eggman, and End-of-SS
+
 ; ----- FLAIR MODS ---------------------------------------------------------------
 
 ; Name: Fade-In SEGA Screen

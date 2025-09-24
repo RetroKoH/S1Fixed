@@ -17,6 +17,12 @@ GRing_Index:	offsetTable
 ; ===========================================================================
 
 GRing_Main:	; Routine 0
+
+	if ~~GiantRingsInSBZ	; Mercury Giant Rings In SBZ
+		cmpi.b	#id_SBZ,(v_zone).w			; is this Scrap Brain?
+		beq.w	DeleteObject				; if so, no Special Rings here
+	endif	; Giant Rings In SBZ end
+
 		move.l	#Map_GRing,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Giant_Ring,1,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
@@ -25,7 +31,7 @@ GRing_Main:	; Routine 0
 		tst.b	obRender(a0)
 		bpl.s	GRing_Animate
 
-	if SpecialStagesWithAllEmeralds=0	; Mercury Special Stages Still Appear With All Emeralds
+	if ~~SpecialStagesWithAllEmeralds	; Mercury Special Stages Still Appear With All Emeralds
 		cmpi.b	#emldCount,(v_emeralds).w	; do you have all emeralds?
 		beq.w	DeleteObject				; if yes, branch
 	endif	; Special Stages Still Appear With All Emeralds End
