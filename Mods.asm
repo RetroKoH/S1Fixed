@@ -366,12 +366,6 @@ NewLevelSelect:	= 0
 BlocksInROM: = 1						; if set to 1, frees RAM ($0000-$A3FF)
 ChunksInROM: = 1						; if set to 1, frees RAM ($B000-$C7FF)
 
-; Name: Optimal Title Card Art
-; Credit: RetroKoH
-; Loads only necessary tiles for various cards. The benefit is less VRAM taken up by cards.
-; The drawback is that they may be harder to edit for new users, and ROM size is slightly larger.
-OptimalTitleCardArt: = 1				; if set to 1, new art and mappings are used, reducing VRAM footprint and sprite piece count
-
 ; Name: S3K Underwater Palette Handling
 ; Credit: ProjectFM (https://sonicresearch.org/community/index.php?threads/removing-the-water-surface-object-in-sonic-1.5975)
 ; Uses S3K's method of applying the underwater palette, removing the need for the water surface object (if desired)

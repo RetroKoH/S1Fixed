@@ -1,5 +1,6 @@
 ; ----------------------------------------------------------------------------
 ; Object 03 - Collision plane/layer switcher
+; Backported from Sonic 2's object for Sonic 1: Two-Eight
 ; ----------------------------------------------------------------------------
 
 PathSwapper:
@@ -59,6 +60,7 @@ PSwapper_Init:
 		move.b	#1,objoff_34(a0)
 		bra.w	PSwapper_MainY
 ; ===========================================================================
+
 word_1FD68:
 		dc.w   $20
 		dc.w   $40	; 1

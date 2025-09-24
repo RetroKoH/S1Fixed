@@ -1,5 +1,5 @@
 ; ----------------------------------------------------------------------------
-; Object 84 - Pinball mode enable/disable
+; Object 04 - Pinball mode enable/disable
 ; Backported from Sonic 2's Obj84 by RetroKoH
 ; ----------------------------------------------------------------------------
 
@@ -9,7 +9,10 @@ AutoRollTag:
 		move.w	AutoRoll_Index(pc,d0.w),d1
 		jsr		AutoRoll_Index(pc,d1.w)
 
-	; DebugPathSwappers render here?
+	if DebugPathSwappers
+		tst.w	(f_debugcheat).w
+		bne.w	RememberState
+	endif
 
 		; like RememberState, but doesn't display (Sonic 2's MarkObjGone3)
 		out_of_range.w	.offscreen
@@ -138,25 +141,13 @@ AutoRoll_MainX_Alt:
 ; ===========================================================================
 
 AutoRoll_ChkRoll:
+; the original S2 code had a copy of the Chk Roll code
+; I went this route, in case there are modifications to ChkRoll, and to keep code cleaner
 		move.l	a0,-(sp)
 		movea.l	a1,a0			; move player to a0
 		bsr.w	Sonic_ChkRoll
 		movea.l	(sp)+,a0		; restore a0 = obj04
 		rts
-
-; original S2 code had a copy of the Chk Roll code:
-;		btst	#staSpin,obStatus(a1)
-;		beq.s	.notspinning
-;		rts
-; ---------------------------------------------------------------------------
-
-;	.notspinning:
-;		bset	#staSpin,obStatus(a1)
-;		move.w	#$E07,obHeight(a1)		; Height and Width
-;		move.b	#aniID_Roll,obAnim(a1)	; use "rolling" animation
-;		addq.w	#5,obY(a1)				; Add to y-pos the difference in height radius
-;		move.w	#sfx_Roll,d0
-;		jmp		(QueueSound2).w			; play rolling sound
 ; ===========================================================================
 
 AutoRoll_MainY:

@@ -57,11 +57,10 @@ Level_NoMusicFade:
 		tst.w	(f_demo).w					; is an ending sequence demo running?
 		bmi.w	Level_ClrRam				; if yes, branch
 
-	if OptimalTitleCardArt
-
-		locVRAM	ArtTile_Title_Card*tile_size						; change this to d1?
 
 	; RetroKoH Optimal Title Cards for VRAM/SpritePiece Reduction
+		locVRAM	ArtTile_Title_Card*tile_size	; change this to d1?
+
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
 
@@ -93,20 +92,8 @@ Level_NoMusicFade:
         jsr    (LoadUncArt2).w
 	; Optimal Title Cards End
 
-	else
-
-	; AURORA☆FIELDS Title Card Optimization
-		locVRAM	ArtTile_Title_Card*tile_size						; change this to d1?
-
-		lea		Art_TitleCard,a0									; load title card patterns
-		move.l	#((Art_TitleCard_End-Art_TitleCard)/tile_size)-1,d0	; # of tiles
-		jsr		(LoadUncArt).w
-	; Title Card Optimization End
-
-	endif
-
-	if OptimalTitleCardArt
 		bra.s	LoadLevelArt		; Added a short branch so I could include the table below
+; ===========================================================================
 
 TitleCard_UncList:
 		dc.w 1
@@ -114,7 +101,7 @@ TitleCard_UncList:
 		dc.w ((Art_TitCardZone_End-Art_TitCardZone)/tile_size)-1
 		dc.l Art_TitCardItems
 		dc.w ((Art_TitCardItems_End-Art_TitCardItems)/tile_size)-1
-	endif
+; ===========================================================================
 
 LoadLevelArt:
 	if DynamicArt

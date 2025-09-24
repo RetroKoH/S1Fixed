@@ -243,13 +243,11 @@ loc_EC86:
 ; ===========================================================================
 
 GotThrough_UncList:
-	if OptimalTitleCardArt
-	; RetroKoH Optimal Title Cards for VRAM/SpritePiece Reduction
 		
 	if PerfectBonusEnabled
-		dc.w 4		; 5 items
+		dc.w 5-1
 	else
-		dc.w 3		; 4 items
+		dc.w 4-1
 	endif
 
 		dc.l Art_TitCardSonic
@@ -260,17 +258,6 @@ GotThrough_UncList:
 		dc.w ((Art_TitCardItems_End-Art_TitCardItems)/tile_size)-1
 		dc.l Art_TitCardBonuses
 		dc.w ((Art_TitCardBonuses_End-Art_TitCardBonuses)/tile_size)-1
-	else
-	; AURORA☆FIELDS Title Card Optimization
-	if PerfectBonusEnabled
-		dc.w 1		; 2 items
-	else
-		dc.w 0		; 1 item
-	endif
-
-		dc.l Art_TitleCard
-		dc.w ((Art_TitleCard_End-Art_TitleCard)/tile_size)-1
-	endif
 
 	if PerfectBonusEnabled
 	; Add Perfect Bonus Art

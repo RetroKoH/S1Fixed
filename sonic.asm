@@ -6118,31 +6118,8 @@ Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.bin"
 		include	"_maps/Pushable Blocks.asm"
 		
 		include	"_maps/Game Over.asm"
-		
-	if OptimalTitleCardArt	; RetroKoH Optimal Title Card Art
-		include "_maps/Zone Title Cards - Optimal.asm"
-		include	"_maps/Continue Screen - Optimal.asm"
 
-		if PerfectBonusEnabled
-			if CoolBonusEnabled
-				include "_maps/Got Through Card_BOTH - Optimal.asm"
-			else
-				include "_maps/Got Through Card_PERFECT - Optimal.asm"
-			endif
-		elseif CoolBonusEnabled
-			include "_maps/Got Through Card_COOL - Optimal.asm"
-		else
-			include "_maps/Got Through Card - Optimal.asm"
-		endif
-		
-		if PerfectBonusEnabled
-			include "_maps/SS Results Card_PERFECT - Optimal.asm"
-		else
-			include "_maps/SS Results Card - Optimal.asm"
-		endif
-
-	else
-
+	; RetroKoH Optimal Title Card Art
 		include "_maps/Zone Title Cards.asm"
 		include	"_maps/Continue Screen.asm"
 
@@ -6163,7 +6140,7 @@ Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.bin"
 		else
 			include "_maps/SS Results Card.asm"
 		endif
-	endif	; Optimal Title Card Art End
+	; Optimal Title Card Art end
 
 		include	"_maps/SS Result Chaos Emeralds.asm"
 		include	"_maps/Spikes.asm"
@@ -6348,33 +6325,11 @@ Art_Mon_Rand:	binclude	"artunc/Monitors - Random.bin"		; Monitor Art Mod
 		even
 	endif
 
-	if OptimalTitleCardArt
 	; RetroKoH Optimal Title Cards for VRAM/SpritePiece Reduction
-	
 	include "artunc/Title and End Cards/Art Includes.asm"
-	
-	else
-
-; AURORA☆FIELDS Title Card Optimization
-	if CoolBonusEnabled
-Art_TitleCard:	binclude	"artunc/Title Cards - COOL.bin"		; Title Card patterns
-	else
-Art_TitleCard:	binclude	"artunc/Title Cards.bin"			; Title Card patterns
-	endif
-Art_TitleCard_End:	even
-
-	endif
-
-; RetroKoH Perfect Bonus Mod
-	if PerfectBonusEnabled
-Art_Perfect:	binclude	"artunc/Perfect Text.bin"			; Result Perfect Bonus Text
-Art_Perfect_End:
-	endif
-	
 
 Art_TimeOver:	binclude	"artunc/Time Over.bin"				; time over (TI) -- RetroKoH VRAM Overhaul
 Art_TimeOver_End:	even
-
 
 ; We only need to add an 'align $20000' at any point where art that is used by DPLCs crosses a 128k boundary
 	align $20000
@@ -6385,7 +6340,6 @@ Art_SuperSonic:		binclude	"artunc/Super Sonic.bin"		; Sonic
 Art_SuperStars:	binclude	"artunc/Super Sonic Stars.bin"
 Art_SuperStars_End:	even
 	endif
-
 
 Art_TitleSonic:	binclude	"artunc/Title Screen Sonic.bin"		; Title Sonic -- RetroKoH VRAM Overhaul
 		even
