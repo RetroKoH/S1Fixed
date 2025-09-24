@@ -145,5 +145,11 @@ loc_199E6:
 		move.b	#1,obFrame(a0)
 		addq.b	#2,ob2ndRout(a0)
 
+	if GiantRingsInSBZ	; Mercury Giant Rings In SBZ
+		cmpi.w	#50,(v_rings).w	; do you have at least 50 rings?
+		blt.s	SEgg_SwDisplay
+		move.w	#boss_sbz2_y+$E0,(v_limitbtm1).w	; $600 by default
+	endif	; Giant Rings In SBZ end
+
 SEgg_SwDisplay:
 		jmp	(DisplaySprite).l
