@@ -182,20 +182,21 @@ loc_47D4:
 
 		disable_ints
 		lea		(vdp_control_port).l,a6
-		move.w	#$8200+(vram_fg>>10),(a6) ; set foreground nametable address
-		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
-		move.w	#$9001,(a6)		; 64-cell hscroll size
+		move.w	#$8200+(vram_fg>>10),(a6)	; set foreground nametable address
+		move.w	#$8400+(vram_bg>>13),(a6)	; set background nametable address
+		move.w	#$9001,(a6)					; 64-cell hscroll size
 		bsr.w	ClearScreen
-		locVRAM	ArtTile_Title_Card*tile_size
 
 	; RetroKoH Optimal Title Cards for VRAM/SpritePiece Reduction
+		locVRAM	ArtTile_Title_Card*tile_size,d1
+
 		lea		Art_TitCardSpecStage,a0												; load title card patterns
 		move.l	#((Art_TitCardSpecStage_End-Art_TitCardSpecStage)/tile_size)-1,d0	; # of tiles
-		move.b	(v_emeralds).w,d1	; do you have ANY chaos emeralds?
+		move.b	(v_emeralds).w,d2	; do you have ANY chaos emeralds?
 		beq.s	.load				; if not, branch
 		lea		Art_TitCardChaosEmlds,a0											; load title card patterns
 		move.l	#((Art_TitCardChaosEmlds_End-Art_TitCardChaosEmlds)/tile_size)-1,d0	; # of tiles
-		cmpi.b	#emldCount,d1		; do you have all chaos	emeralds?
+		cmpi.b	#emldCount,d2		; do you have all chaos	emeralds?
 		bne.s	.load				; if not, branch
 		lea		Art_TitCardSonic,a0													; load title card patterns
 		move.l	#((Art_TitCardSonic_End-Art_TitCardSonic)/tile_size)-1,d0			; # of tiles
@@ -205,22 +206,34 @@ loc_47D4:
 		
 .load:
 		jsr		(LoadUncArt).w
-		locVRAM	(ArtTile_Title_Card+$32)*tile_size									; if we don't call this, locVRAM will pick up where left off.
-		lea		Art_TitCardBonuses,a0												; load title card patterns
-		move.l	#((Art_TitCardBonuses_End-Art_TitCardBonuses)/tile_size)-1,d0		; # of tiles
-		jsr		(LoadUncArt).w
-		movea.l	#Art_TitCardOval,a0													; load title card patterns
-		move.l	#Art_TitCardOvalCt,d0												; # of tiles
-		jsr		(LoadUncArt).w
+
+	; TheBlad768/AURORA☆FIELDS/RetroKoH Title Card Optimization
+        lea    SSResults_UncList(pc),a1
+		locVRAM	(ArtTile_Title_Card+$32)*tile_size,d1
+        jsr    (LoadUncArt2).w
+	; Title Card Optimization End
 	
 	if PerfectBonusEnabled
-		locVRAM ArtTile_Perfect*tile_size
 		lea		Art_Perfect,a0									; load title card patterns
 		move.l	#((Art_Perfect_End-Art_Perfect)/tile_size)-1,d0	; # of tiles
+		locVRAM ArtTile_Perfect*tile_size,d1
 		jsr		(LoadUncArt).w									; load uncompressed art
 	endif
 	; Optimal Title Cards End
-		
+
+		bra.s	LoadSSBase		; Added a short branch so I could include the table below
+; ===========================================================================
+
+SSResults_UncList:
+		dc.w 2-1
+
+		dc.l Art_TitCardBonuses
+		dc.w ((Art_TitCardBonuses_End-Art_TitCardBonuses)/tile_size)-1
+		dc.l Art_TitCardOval
+		dc.w Art_TitCardOvalCt
+; ===========================================================================
+
+LoadSSBase:
 		jsr		(Hud_Base).l
 
 	; Mercury Use DMA Queue
@@ -260,7 +273,7 @@ loc_47D4:
 
 		move.b	#id_SSResult,(v_ssrescard).w	; load results screen object
 
-	if HUDInSpecialStage=1
+	if HUDInSpecialStage
 		clr.b	(f_levelstarted).w				; remove HUD
 	endif
 
