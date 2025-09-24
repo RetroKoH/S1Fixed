@@ -17,11 +17,10 @@ GM_Continue:
 
 		clearRAM v_objspace
 
-		locVRAM	ArtTile_Title_Card*tile_size
-
 	; RetroKoH Optimal Title Cards for VRAM/SpritePiece Reduction
-		lea		Art_TitCardContinue,a0												; load title card patterns
-		move.l	#((Art_TitCardContinue_End-Art_TitCardContinue)/tile_size)-1,d0		; # of tiles
+		lea		Art_TitCardContinue,a0											; load text patterns
+		move.l	#((Art_TitCardContinue_End-Art_TitCardContinue)/tile_size)-1,d0	; text art length, in tiles
+		locVRAM	ArtTile_Title_Card*tile_size,d1									; VRAM location to be set AFTER interrupts disabled
 		jsr		(LoadUncArt).w
 	; Optimal Title Cards End
 

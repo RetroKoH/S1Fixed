@@ -1073,11 +1073,13 @@ Tilemap_Cell:
 ; Inputs:
 ; a0 = source offset
 ; d0 = length in tiles
+; d1 = VRAM address
 ; ---------------------------------------------------------------
 LoadUncArt:
 		move.w	sr,-(sp)
 		disable_ints
 		lea		$C00000.l,a6    ; get VDP data port
+		move.l	d1,4(a6)		; set VDP ctrl port
 
 	.loop:
 	rept 8
@@ -1095,8 +1097,8 @@ LoadUncArt:
 ; Implemented by TheBlad768
 ;
 ; Inputs:
-; d1 = VRAM address
 ; a1 = list address
+; d1 = VRAM address
 ; ---------------------------------------------------------------------------
 
 ; =============== S U B R O U T I N E =======================================

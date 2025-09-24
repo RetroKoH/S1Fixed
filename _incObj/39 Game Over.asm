@@ -34,14 +34,14 @@ Over_1stWord:
 		clr.b	obRender(a0)
 		move.w	#priority0,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 
-; Load TI - RetroKoH VRAM Overhaul
+	; Load TI - RetroKoH VRAM Overhaul
 		cmpi.b	#2,obFrame(a0)	; is the object	"TIME"?
 		bne.s	Over_Move		; if not, branch
 
 		move.l	a0,-(sp)
-		locVRAM	(ArtTile_Game_Over+2)*$20
-		lea		(Art_TimeOver).l,a0									; load TI art
+		lea		(Art_TimeOver).l,a0									; load TI art to a0
 		move.l  #((Art_TimeOver_End-Art_TimeOver)/tile_size)-1,d0	; TI art length, in tiles
+		locVRAM	(ArtTile_Game_Over+2)*tile_size,d1					; VRAM location to be set AFTER interrupts disabled
 		jsr		(LoadUncArt).w
 		move.l	(sp)+,a0
 
