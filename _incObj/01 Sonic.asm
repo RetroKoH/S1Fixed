@@ -622,7 +622,7 @@ SuperSonic_Balance:
 		blt.w	SuperSonic_BalanceOnObjLeft
 		cmp.w	d2,d1
 		bge.w	SuperSonic_BalanceOnObjRight
-		bra.w	Sonic_Lookup
+		bra		Sonic_LookUp
 ; ===========================================================================
 	endif
 
