@@ -57,9 +57,8 @@ Level_NoMusicFade:
 		tst.w	(f_demo).w					; is an ending sequence demo running?
 		bmi.w	Level_ClrRam				; if yes, branch
 
-
 	; RetroKoH Optimal Title Cards for VRAM/SpritePiece Reduction
-		locVRAM	ArtTile_Title_Card*tile_size	; change this to d1?
+		locVRAM	ArtTile_Title_Card*tile_size,d1	; VRAM location to be set AFTER interrupts disabled
 
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
@@ -277,9 +276,9 @@ Level_TtlCardLoop:
 
 Level_SkipTtlCard:
 	if RandomMonitors
-		locVRAM	(ArtTile_Monitor+$14)*tile_size
-		lea		Art_Mon_Rand,a0					; load random monitor patterns
-		move.l	#3,d0							; # of tiles
+		lea		Art_Mon_Rand,a0						; load random monitor patterns
+		move.l	#3,d0								; # of tiles
+		locVRAM	(ArtTile_Monitor+$14)*tile_size,d1	; VRAM location to be set AFTER interrupts disabled
 		jsr		(LoadUncArt).w
 	endif
 

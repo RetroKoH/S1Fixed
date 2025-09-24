@@ -11,9 +11,9 @@ SuperStars:
 
 SStars_Main:	; Routine 0
 		move.l	a0,-(sp)
-		locVRAM	ArtTile_Shield*$20
-		lea		(Art_SuperStars).l,a0									; load super star art
-		move.l  #((Art_SuperStars_End-Art_SuperStars)/tile_size)-1,d0	; the title card art length, in tiles
+		lea		(Art_SuperStars).l,a0									; load super star art to a0
+		move.l  #((Art_SuperStars_End-Art_SuperStars)/tile_size)-1,d0	; super star art length, in tiles
+		locVRAM	ArtTile_Shield*tile_size,d1								; VRAM location to be set AFTER interrupts disabled
 		jsr		(LoadUncArt).w
 		move.l	(sp)+,a0
 
