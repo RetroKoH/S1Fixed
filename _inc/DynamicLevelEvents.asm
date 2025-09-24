@@ -575,6 +575,10 @@ SBZ2_Index:		offsetTable
 		offsetTableEntry.w DLE_SBZ2boss
 		offsetTableEntry.w DLE_SBZ2boss2
 		offsetTableEntry.w DLE_SBZ2end
+
+	if GiantRingsInSBZ	; Mercury Giant Rings In SBZ
+		offsetTableEntry.w DLE_SBZ2warp
+	endif	; Giant Rings In SBZ end
 ; ===========================================================================
 
 DLE_SBZ2main:
@@ -619,9 +623,39 @@ loc_72B0:
 ; ===========================================================================
 
 DLE_SBZ2end:
+
+	if GiantRingsInSBZ	; Mercury Giant Rings In SBZ
+		tst.b	(f_bigring).w	
+		beq.s	.skip
+		addq.w	#2,(v_dle_routine).w	
+		move.b	#60,(v_player+obRestartTimer).w	
+		move.b	#1,(v_player+obCtrlLock).w
+
+	.skip:
+	endif	; Giant Rings In SBZ end
+
 		cmpi.w	#boss_sbz2_x,(v_screenposx).w
 		blo.s	loc_72C2
-		rts	
+		rts
+; ===========================================================================
+
+	if GiantRingsInSBZ	; Mercury Giant Rings In SBZ
+DLE_SBZ2warp:
+		tst.b	(v_player+obRestartTimer).w 	; check the timer
+		beq.s	.reallygo						; if it's run out, really go to the ss
+		subq.b	#1,(v_player+obRestartTimer).w	; otherwise, subtract 1 from the timer
+		rts
+	
+	.reallygo:
+		clr.b	(v_lastlamp).w				; clear	lamppost counter
+		move.b	#id_Special,(v_gamemode).w	; set game mode to Special Stage (10)
+;		move.b	#1,(f_restart).w			; restart the level
+		move.w	#(id_LZ<<8)+3,(v_zone).w	; set level to SBZ3 (LZ4)
+		move.w	#$F00,(v_waterpos1).w		; set water level so no distortion effect
+		move.w	#$F00,(v_waterpos2).w
+		move.w	#$F00,(v_waterpos3).w
+		rts
+	endif	; Giant Rings In SBZ end
 ; ===========================================================================
 
 loc_72C2:
