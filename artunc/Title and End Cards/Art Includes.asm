@@ -85,3 +85,9 @@ Art_TitCardContinue_End:	even
 Art_TitCardBonuses:
 	binclude	"artunc/Title and End Cards/Bonuses.bin"
 Art_TitCardBonuses_End:	even
+
+; RetroKoH Perfect Bonus Mod
+	if PerfectBonusEnabled
+Art_Perfect:	binclude	"artunc/Perfect Text.bin"			; Result Perfect Bonus Text
+Art_Perfect_End:
+	endif

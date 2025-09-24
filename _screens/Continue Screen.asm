@@ -19,19 +19,11 @@ GM_Continue:
 
 		locVRAM	ArtTile_Title_Card*tile_size
 
-	if OptimalTitleCardArt
 	; RetroKoH Optimal Title Cards for VRAM/SpritePiece Reduction
 		lea		Art_TitCardContinue,a0												; load title card patterns
 		move.l	#((Art_TitCardContinue_End-Art_TitCardContinue)/tile_size)-1,d0		; # of tiles
 		jsr		(LoadUncArt).w
 	; Optimal Title Cards End
-	else
-	; AURORA☆FIELDS Title Card Optimization
-		lea		Art_TitleCard,a0													; load title card patterns
-		move.l	#((Art_TitleCard_End-Art_TitleCard)/tile_size)-1,d0					; # of tiles
-		jsr		(LoadUncArt).w
-	; Title Card Optimization End
-	endif
 
 		locVRAM	ArtTile_Continue_Sonic*tile_size
 		lea		(Nem_ContSonic).l,a0						; load Sonic patterns

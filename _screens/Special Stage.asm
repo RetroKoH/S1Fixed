@@ -188,7 +188,6 @@ loc_47D4:
 		bsr.w	ClearScreen
 		locVRAM	ArtTile_Title_Card*tile_size
 
-	if OptimalTitleCardArt
 	; RetroKoH Optimal Title Cards for VRAM/SpritePiece Reduction
 		lea		Art_TitCardSpecStage,a0												; load title card patterns
 		move.l	#((Art_TitCardSpecStage_End-Art_TitCardSpecStage)/tile_size)-1,d0	; # of tiles
@@ -221,20 +220,6 @@ loc_47D4:
 		jsr		(LoadUncArt).w									; load uncompressed art
 	endif
 	; Optimal Title Cards End
-	else
-	; AURORA☆FIELDS Title Card Optimization
-		lea		Art_TitleCard,a0									; load title card patterns
-		move.l	#((Art_TitleCard_End-Art_TitleCard)/tile_size)-1,d0	; # of tiles
-		jsr		(LoadUncArt).w
-		
-	if PerfectBonusEnabled
-		locVRAM	ArtTile_Perfect*tile_size
-		lea		Art_Perfect,a0									; load title card patterns
-		move.l	#((Art_Perfect_End-Art_Perfect)/tile_size)-1,d0	; # of tiles
-		jsr		(LoadUncArt).w									; load uncompressed art
-	endif
-	; Title Card Optimization End
-	endif
 		
 		jsr		(Hud_Base).l
 

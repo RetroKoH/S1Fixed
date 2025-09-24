@@ -1,5 +1,6 @@
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Continue screen
+; RetroKoH Optimal Title Card Art
 ; ---------------------------------------------------------------------------
 Map_ContScr:	mappingsTable
 	mappingsTableEntry.w	M_Cont_text
@@ -12,14 +13,12 @@ Map_ContScr:	mappingsTable
 	mappingsTableEntry.w	M_Cont_Mini2
 
 M_Cont_text:	spriteHeader	; "CONTINUE", stars and countdown
-	spritePiece	-$3C, -8, 2, 2, $70, 0, 0, 0, 0	; C
-	spritePiece	-$2C, -8, 2, 2, $9A, 0, 0, 0, 0	; O
-	spritePiece	-$1C, -8, 2, 2, $96, 0, 0, 0, 0	; N
-	spritePiece	-$C, -8, 2, 2, $AA, 0, 0, 0, 0	; T
-	spritePiece	4, -8, 1, 2, $88, 0, 0, 0, 0	; I
-	spritePiece	$C, -8, 2, 2, $96, 0, 0, 0, 0	; N
-	spritePiece	$1C, -8, 2, 2, $AE, 0, 0, 0, 0	; U
-	spritePiece	$2C, -8, 2, 2, $78, 0, 0, 0, 0	; E
+; The 1st letter starts at relative offset $68, as opposed to 0 like other card mappings
+	spritePiece	-$3C, -8, 4, 2, $68, 0, 0, 0, 0	; CO
+	spritePiece	-$1C, -8, 4, 2, $72, 0, 0, 0, 0	; NT
+	spritePiece	4, -8, 3, 2, $70, 0, 0, 0, 0	; IN
+	spritePiece	$1C, -8, 4, 2, $7A, 0, 0, 0, 0	; UE
+
 	spritePiece	-$18, $38, 2, 2, $21, 0, 0, 1, 0
 	spritePiece	8, $38, 2, 2, $21, 0, 0, 1, 0
 	spritePiece	-8, $36, 2, 2, $1FC, 0, 0, 0, 0
