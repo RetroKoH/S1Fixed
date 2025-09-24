@@ -140,7 +140,7 @@ Pow_Shoes:
 		rts
 	else
 		move.w	#bgm_Speedup,d0
-		jmp		(QueueSound1).w							; Speed	up the music
+		jmp		(QueueSound3).w							; Speed	up the music
 	endif
 ; ===========================================================================
 
