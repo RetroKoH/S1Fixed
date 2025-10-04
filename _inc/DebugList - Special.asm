@@ -20,7 +20,7 @@ DebugList_Special:
 	sdbug	Map_SS_R,		SSBlock_GOAL,			0,		make_art_tile(ArtTile_SS_Goal,0,0)				; Goal
 	sdbug	Map_SS_R,		SSBlock_1Up,			0,		make_art_tile(ArtTile_SS_Extra_Life,0,0)		; 1-Up
 
-	if S4SpecialStages=0
+	if ~~S4SpecialStages
 	sdbug	Map_SS_Up,		SSBlock_UP,				0,		make_art_tile(ArtTile_SS_Up_Down,0,0)			; Speed UP rotation
 	sdbug	Map_SS_Down,	SSBlock_DOWN,			0,		make_art_tile(ArtTile_SS_Up_Down,0,0)			; Speed DOWN rotation
 	sdbug	Map_SS_R,		SSBlock_R,				0,		make_art_tile(ArtTile_SS_R_Block,1,0)			; Reverse rotation

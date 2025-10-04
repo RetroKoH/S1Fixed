@@ -303,7 +303,9 @@ HUDInSpecialStage: = DynamicSpecialStageWalls*1
 ; Credit: RetroKoH
 ; Function: If active, Special Stages control like Sonic 4 Ep 1 (Left/Right rotate the stage).
 S4SpecialStages: = 0	; (Removes UP/DOWN, and R Blocks)
-; NOTE: Add a sub-toggle for disabling jump in the S4 special stage. (Bounce off walls)
+	S4SS_NoJump: = 1*S4SpecialStages 	; Sub-toggle for disabling jump in the S4 special stage.
+; The sub-toggle is NOT recommended unless you modify the layouts to accommodate.
+; Wall bounce not included. I tried. Screw that.
 
 ; Name: Special Stages Still Appear With All Emeralds
 ; Credit: Mercury

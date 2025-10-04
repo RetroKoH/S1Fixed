@@ -49,14 +49,22 @@ Obj09_NoDebug:
 
 Obj09_OnWall:
 		bclr	#staSSJump,obStatus(a0)	; clear "Sonic has jumped" flag -- Mercury Fixed SS Jumping Physics
+
+	if ~~S4SS_NoJump
 		bsr.w	Obj09_Jump
+	endif
+
 		bsr.w	Obj09_Move
 		bsr.w	Obj09_Fall
 		bra.s	Obj09_Display
 ; ===========================================================================
 
 Obj09_InAir:
+
+	if ~~S4SS_NoJump
 		bsr.w	Obj09_JumpHeight	; Mercury Fixed SS Jumping Physics
+	endif
+
 		bsr.w	Obj09_Move
 		bsr.w	Obj09_Fall
 
@@ -66,7 +74,7 @@ Obj09_Display:
 		jsr		(SpeedToPos).l
 		bsr.w	SS_FixCamera
 
-	if S4SpecialStages=0
+	if ~~S4SpecialStages
 		move.w	(v_ssangle).w,d0
 		add.w	(v_ssrotate).w,d0
 		move.w	d0,(v_ssangle).w
@@ -152,7 +160,7 @@ loc_1BAF2:
 
 Obj09_MoveLeft:
 		bset	#staFacing,obStatus(a0)
-	if S4SpecialStages=0
+	if ~~S4SpecialStages
 		move.w	obInertia(a0),d0
 		beq.s	loc_1BB06
 		bpl.s	loc_1BB1A
@@ -190,7 +198,7 @@ loc_1BB22:
 
 Obj09_MoveRight:
 		bclr	#staFacing,obStatus(a0)
-	if S4SpecialStages=0
+	if ~~S4SpecialStages
 		move.w	obInertia(a0),d0
 		bmi.s	loc_1BB48
 		addi.w	#$C,d0
@@ -218,7 +226,12 @@ loc_1BB50:
 	endif
 		rts
 ; End of function Obj09_MoveRight
+; ===========================================================================
 
+	if ~~S4SS_NoJump
+; ---------------------------------------------------------------------------
+; Subroutine allowing Sonic to jump in the Special Stage
+; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
@@ -229,7 +242,7 @@ Obj09_Jump:
 		beq.s	Obj09_NoJump	; if not, branch
 		move.b	(v_ssangle).w,d0
 
-	if SmoothSpecialStages=0	; Cinossu Smooth Special Stages
+	if ~~SmoothSpecialStages	; Cinossu Smooth Special Stages
 		andi.b	#$FC,d0
 	endif						; Smooth Special Stages End
 
@@ -245,13 +258,13 @@ Obj09_Jump:
 		bset	#staAir,obStatus(a0)
 		bset	#staSSJump,obStatus(a0)	; set "Sonic has jumped" flag -- Mercury Fixed SS Jumping Physics
 		move.w	#sfx_Jump,d0
-		jmp		(QueueSound2).w	; play jumping sound
+		jmp		(QueueSound2).w			; play jumping sound
 
 Obj09_NoJump:
 		rts	
 ; End of function Obj09_Jump
-
 ; ===========================================================================
+
 ; ---------------------------------------------------------------------------
 ; Subroutine to limit Sonic's upward vertical speed when jumping
 ; ---------------------------------------------------------------------------
@@ -268,7 +281,7 @@ Obj09_JumpHeight:
 		beq.s	locret_1BBB4			; if not, branch to return
 		move.b	(v_ssangle).w,d0		; get SS angle
 
-	if SmoothSpecialStages=0	; Cinossu Smooth Special Stages
+	if ~~SmoothSpecialStages	; Cinossu Smooth Special Stages
 		andi.b	#$FC,d0
 	endif						; Smooth Special Stages End
 
@@ -286,7 +299,7 @@ Obj09_JumpHeight:
 		ble.s	locret_1BBB4		; if it's less, branch to return
 		move.b	(v_ssangle).w,d0
 
-	if SmoothSpecialStages=0	; Cinossu Smooth Special Stages
+	if ~~SmoothSpecialStages	; Cinossu Smooth Special Stages
 		andi.b	#$FC,d0
 	endif						; Smooth Special Stages End
 
@@ -303,8 +316,10 @@ Obj09_JumpHeight:
 
 locret_1BBB4:
 		rts
-
+; End of function Obj09_JumpHeight
 ; ===========================================================================
+	endif
+
 ; ---------------------------------------------------------------------------
 ; Subroutine to	fix the	camera on Sonic's position (special stage)
 ; ---------------------------------------------------------------------------
@@ -377,7 +392,7 @@ Obj09_Fall:
 		move.l	obX(a0),d3
 		move.b	(v_ssangle).w,d0
 
-	if SmoothSpecialStages=0	; Cinossu Smooth Special Stages
+	if ~~SmoothSpecialStages	; Cinossu Smooth Special Stages
 		andi.b	#$FC,d0
 	endif						; Smooth Special Stages End
 
@@ -405,7 +420,7 @@ Obj09_Fall:
 		sub.l	d1,d2
 		moveq	#0,d1
 		move.w	d1,obVelY(a0)
-		rts	
+		rts
 ; ===========================================================================
 
 loc_1BCB0:
@@ -422,7 +437,7 @@ loc_1BCC6:
 		asr.l	#8,d1
 		move.w	d0,obVelX(a0)
 		move.w	d1,obVelY(a0)
-		rts	
+		rts
 ; ===========================================================================
 
 loc_1BCD4:
