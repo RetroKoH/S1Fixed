@@ -13,7 +13,7 @@ SkidDustEnabled: = 0						; if set to 1, Skid dust will occur when coming to a s
 ; Name: Spin Dash
 ; Credit: SCHG, DeltaW, Mercury
 ; Function: Enables the Sonic 2 Spin Dash
-SpinDashEnabled: = 1
+SpinDashEnabled: = 2	; if set to 1, the Spindash is enabled. If set to 2, the CD variant is used.
 	SpinDashCancel: = SpinDashEnabled*0		; if set to 1, Spin Dash can be cancelled by not pressing ABC
 	SpinDashNoRevDown: = SpinDashEnabled*0	; if set to 1, Spin Dash will not rev down so long as ABC is held down
 ; (TO-DO: Add the CD Spindash variant)

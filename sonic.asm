@@ -3094,7 +3094,7 @@ MvSonic2:
 	; Move Shields with Sonic End
 	
 .noShield:
-	if SpinDashEnabled
+	if SpinDashEnabled==1
 	; RetroKoH Move Spindash dust with Sonic
 		lea		(v_playerdust).w,a2
 		cmpi.b	#1,obAnim(a2)
@@ -3343,7 +3343,7 @@ Obj44_SolidWall2:
 		move.w	obY(a1),d3
 
 	; Mercury Ducking Size Fix	
-	if SpinDashEnabled
+	if SpinDashEnabled==1
 		cmpi.b	#aniID_SpinDash,obAnim(a1)
 		beq.s	.short
 	endif

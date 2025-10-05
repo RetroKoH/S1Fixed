@@ -218,7 +218,7 @@ UpdateMusic:
 		jsr	PlaySoundID(pc)
 ; loc_71BC8:
 .nonewsound:
-	if SpinDashEnabled=1
+	if SpinDashEnabled==1
 	; Spin Dash SFX
 		tst.b	(v_spindashsfx2).w
 		beq.s	.cont
@@ -1040,7 +1040,7 @@ Sound_SpecialSFX:
 		bne.w	Sound_ClearPriority
 		tst.b	SMPS_RAM.f_fadein_flag(a6)
 		bne.w	Sound_ClearPriority
-	if SpinDashEnabled=1
+	if SpinDashEnabled==1
 		clr.b	(v_spindashsfx1).w
 		cmp.b	#sfx_SpinDash,d7		; is this the Spin Dash sound?
 		bne.s	.cont3	; if not, branch
@@ -1077,7 +1077,7 @@ Sound_PlaySFX:
 		bne.w	Sound_ClearPriority		; Exit if it is
 		tst.b	SMPS_RAM.f_fadein_flag(a6)		; Is music being faded in?
 		bne.w	Sound_ClearPriority		; Exit if it is
-	if SpinDashEnabled=1
+	if SpinDashEnabled==1
 		clr.b	(v_spindashsfx1).w		; Spin Dash SFX
 	endif
 		cmpi.b	#sfx_Ring,d7			; is ring sound	effect played?
@@ -1097,7 +1097,7 @@ Sound_PlaySFX:
 		move.b	#$80,SMPS_RAM.f_push_playing(a6)	; Mark it as playing
 ; Sound_notA7:
 .sfx_notPush:
-	if SpinDashEnabled=1
+	if SpinDashEnabled==1
 	; Spin Dash SFX
 		cmp.b	#sfx_SpinDash,d7		; is this the Spin Dash sound?
 		bne.s	.cont3					; if not, branch
@@ -1180,7 +1180,7 @@ SoundEffects_Common:
 		add.l	a3,d0				; Relative pointer
 		move.l	d0,SMPS_Track.DataPointer(a5)	; Store track pointer
 		move.w	(a1)+,SMPS_Track.Transpose(a5)	; load FM/PSG channel modifier
-	if SpinDashEnabled=1
+	if SpinDashEnabled==1
 	; Spin Dash SFX
 		tst.b	(v_spindashsfx1).w	; is the Spin Dash sound playing?
 		beq.s	.cont		; if not, branch

@@ -45,7 +45,7 @@ ReactToItem:
 		sub.w	d5,d3
 
 	; Mercury Ducking Size Fix
-	if SpinDashEnabled	; Mercury Spin Dash
+	if SpinDashEnabled==1	; Mercury Spin Dash
 		cmpi.b	#aniID_SpinDash,obAnim(a0)		; is player spindashing?
 		beq.s	.short							; if not, branch
 	endif	; Spin Dash End
@@ -251,7 +251,7 @@ React_Enemy:
 		btst	#sta2ndInvinc,obStatus2nd(a0)	; is Sonic invincible?
 		bne.s	.donthurtsonic					; if yes, branch
 
-	if SpinDashEnabled	; Mercury Spin Dash
+	if SpinDashEnabled==1	; Mercury Spin Dash
 		cmpi.b	#aniID_SpinDash,obAnim(a0)	; is Sonic Spin Dashing?
 		beq.w	.breakenemy					; if yes, branch
 	endif	; Spin Dash End
