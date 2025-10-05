@@ -1816,9 +1816,9 @@ Sonic_DashResetScr:
 ; ===========================================================================
 	endif
 	
-	if SpinDashEnabled
+	if SpinDashEnabled==1
 ; ---------------------------------------------------------------------------
-; Subroutine to check for starting to charge a spindash
+; Subroutine to check for starting to charge a spindash (Standard Version)
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -1988,6 +1988,117 @@ loc_1AD88:
 		subq.w	#2,(v_lookshift).w
 
 loc_1AD8C:
+		bsr.w	Sonic_LevelBound
+		bra.w	Sonic_AnglePos
+; ===========================================================================
+
+	elseif SpinDashEnabled==2
+
+; ---------------------------------------------------------------------------
+; Subroutine to check for starting to charge a spindash (CD Variant)
+; I based this largely off of the ReadySonic Peelout, but credit to LuigiXHero's
+; CD Art Test disassembly for the reference.
+; ---------------------------------------------------------------------------
+
+; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+
+
+Sonic_ChkSpinDash:
+		btst	#1,obSpinDashFlag(a0)	; obSpinDashFlag is also used for Peelout
+		bne.s	Sonic_SpinDashLaunch
+		cmpi.b	#aniID_Duck,obAnim(a0)
+		bne.s	.return
+		move.b	(v_jpadpress2).w,d0
+		andi.b	#btnABC,d0
+		beq.w	.return
+		move.w	#$0E07,obHeight(a0)		; Height and Width
+		move.b	#aniID_Roll,obAnim(a0)	; should I use a new animation here?
+		addq.w	#5,obY(a0)
+		clr.w	obSpinDashCounter(a0)
+		move.w	#sfx_Charge,d0
+		jsr		(QueueSound2).w
+		addq.l	#4,sp
+		bset	#1,obSpinDashFlag(a0)
+
+		bsr.w	Sonic_LevelBound
+		bra.w	Sonic_AnglePos
+
+.return:
+		rts
+; ===========================================================================
+
+Sonic_SpinDashLaunch:
+		move.b	(v_jpadhold2).w,d0
+		btst	#bitDn,d0
+		bne.w	Sonic_SpinDashCharge
+
+		clr.b	obSpinDashFlag(a0)			; stop Dashing
+		cmpi.w	#$1E,obSpinDashCounter(a0)	; have we been charging long enough?
+		bne.s	Sonic_SpinDashStopSound		; if not, branch
+		move.b	#aniID_Roll,obAnim(a0)		; launches here
+		bset	#staSpin,obStatus(a0)		; Sonic is now spinning
+		move.w	#1,obVelX(a0)				; force X speed to nonzero for camera lag's benefit
+		move.w	#$C00,obInertia(a0)			; set speed
+
+	if SuperMod
+		btst	#sta2ndSuper,obStatus2nd(a0)
+		beq.s	.notSuper
+		move.w	#$F00,obInertia(a0)			; set speed
+.notSuper:
+	endif
+
+; This part copied from the Peelout code 1:1
+		move.w	obInertia(a0),d0
+		subq.b	#$8,d0
+		add.b	d0,d0
+		andi.b	#$1F,d0
+		neg.b	d0
+		addi.b	#$20,d0
+		move.b	d0,(v_cameralag).w			; use it to set the camera lag
+		btst	#staFacing,obStatus(a0)
+		beq.s	.dontflip
+		neg.w	obInertia(a0)
+
+.dontflip:
+	; Improved section by DeltaWooloo
+		move.w	#sfx_Release,d0
+		jsr		(QueueSound2).w
+		move.b	obAngle(a0),d0
+		jsr		(CalcSine).w
+		muls.w	obInertia(a0),d1
+		asr.l	#8,d1
+		move.w	d1,obVelX(a0)
+		muls.w	obInertia(a0),d0
+		asr.l	#8,d0
+		move.w	d0,obVelY(a0)
+		bra.w	Sonic_SpinDashResetScr
+; ===========================================================================
+
+Sonic_SpinDashCharge:				; If still charging the dash...
+		cmpi.w	#$1E,obSpinDashCounter(a0)
+		beq.s	Sonic_SpinDashResetScr
+		addi.w	#1,obSpinDashCounter(a0)
+		bra.s	Sonic_SpinDashResetScr
+
+Sonic_SpinDashStopSound:
+		move.w	#sfx_Stop,d0
+		jsr		(QueueSound2).w
+		clr.w	obInertia(a0)
+		move.w	#$1309,obHeight(a0)		; Height and Width
+		move.b	#aniID_Wait,obAnim(a0)
+		subq.w	#5,obY(a0)
+
+Sonic_SpinDashResetScr:
+		addq.l	#4,sp			; increase stack ptr
+		cmpi.w	#$60,(v_lookshift).w
+		beq.s	.finish
+		bcc.s	.skip
+		addq.w	#4,(v_lookshift).w
+
+.skip:
+		subq.w	#2,(v_lookshift).w
+
+.finish:
 		bsr.w	Sonic_LevelBound
 		bra.w	Sonic_AnglePos
 ; ===========================================================================

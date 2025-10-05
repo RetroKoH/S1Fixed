@@ -460,7 +460,7 @@ v_timingvariables:	ds.b	$40		; values which oscillate - for swinging platforms, 
 
 				ds.b	$1A		; unused
 
-	if SpinDashEnabled
+	if SpinDashEnabled==1
 v_spindashsfx1:		ds.b	1
 v_spindashsfx2:		ds.b	1
 v_spindashsfx3:		ds.b	1
