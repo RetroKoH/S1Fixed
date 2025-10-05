@@ -270,8 +270,13 @@ React_Enemy:
 
 		neg.w	obVelX(a0)					; repel Sonic
 		neg.w	obVelY(a0)
+		; s3 negates inertia. Not sure if I should implement this in the toggle below?
+
+	if ~~S2BossRebound
 		asr		obVelX(a0)
 		asr		obVelY(a0)
+	endif
+
 		clr.b	obColType(a1)
 		subq.b	#1,obColProp(a1)
 		bne.s	.flagnotclear
