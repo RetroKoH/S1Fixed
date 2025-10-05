@@ -84,6 +84,11 @@ SpikeBugFix: = 0						; if set to 1, the spike "bug" is fixed
 ; Function: Makes rebounding from enemies/monitors after rolling off a cliff onto them function the same as if they were jumped on - the rebound is cut short if the jump button is released. 
 ReboundMod: = 0
 
+; Name: Sonic 2 Boss Rebounding
+; Credit: RetroKoH
+; Function: Makes Sonic rebound from bosses as he does in later games.
+S2BossRebound: = 0
+
 ; Name: CD Balancing Mod
 ; Credit: Mercury
 ; Function: Uses the Sonic CD balancing sprites (forward and back) instead of Sonic 1's.
