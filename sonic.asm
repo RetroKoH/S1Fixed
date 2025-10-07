@@ -2729,6 +2729,12 @@ LevelDataLoad:
 		move.l	a2,-(sp)					; store LevelHeader location for future use (Data Load)
 
 		move.l	(a2)+,d0					; d0 = 1st longword of data that a2 points to, (zone's first PLC ID and art address).
+
+	if SkipLevelArtLoad
+		tst.b	(f_deathflag).w				; are we restarting from death?
+		bne		LevelDataLoad_2				; if yes, don't load level art
+	endif
+
 	; The auto increment was pointless as a2 is overwritten later, and nothing reads from a2 before then
 		andi.l	#$FFFFFF,d0					; Filter out the high byte, which contains the first PLC ID, leaving the address of the zone's art in d0
 		movea.l	d0,a0						; a0 = address of the zone's art (SOURCE)
@@ -2757,8 +2763,9 @@ LevelDataLoad:
 		move.w	(sp)+,d7					; Restore d7 from the Stack
 		move.w	#$800,d3					; Force the DMA transfer length to be $1000/2 (the first cycle is dynamic because the art's DMA'd backwards)
 		dbf		d7,.loop					; Loop for each $1000 bytes the decompressed art is
+; fallthrough (We keep the next label purely for the QuickRestart mod)
 
-;LevelDataLoad:
+LevelDataLoad_2:
 	if BlocksInROM	;Mercury Blocks In ROM
 		move.l	(a2)+,(v_16x16).l			; store the ROM address for the block mappings
 		andi.l	#$FFFFFF,(v_16x16).l
@@ -2769,7 +2776,7 @@ LevelDataLoad:
 		bsr.w	EniDec
 	endif
 
-	if ChunksInROM=1	;Mercury Chunks In ROM
+	if ChunksInROM	;Mercury Chunks In ROM
 		move.l	(a2)+,(v_128x128).l			; store the ROM address for the chunk mappings
 	else
 		movea.l	(a2)+,a0
@@ -2780,7 +2787,7 @@ LevelDataLoad:
 		bsr.w	LevelLayoutLoad
 
 	; Load Level Palette
-		move.b	(a2),d0				; load palette ID byte
+		move.b	(a2),d0						; load palette ID byte
 	
 ; We won't use the NewSBZ3LevelArt toggle here, because the LZ Palette
 ; is always overwritten in Scrap Brain 3
