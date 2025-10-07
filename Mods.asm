@@ -208,6 +208,12 @@ RingsLives: = 1
 GiantRingsInSBZ: = 0
 ; Minor graphical bugs w/ Eggman, and End-of-SS
 
+; Name: Quick Level Restarts
+; Credit: RetroKoH
+; Function: If enabled, this allows quick restarts whenever a level is restarted from death (music isn't restarted, level art not reloaded, etc).
+QuickRestart: = 0
+; If you do anything to dynamically change art or music in a level, this mod might not be ideal.
+
 ; ----- FLAIR MODS ---------------------------------------------------------------
 
 ; Name: Fade-In SEGA Screen

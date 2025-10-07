@@ -2988,6 +2988,10 @@ GameOver:
 		addq.b	#2,obRoutine(a0)
 		clr.b	(f_timecount).w		; stop time counter
 
+	if QuickRestart
+		st.b	(f_deathflag).w		; set flag noting we are restarting the level from death
+	endif
+
 	; Mercury Lives Over/Underflow Fix
 		tst.b	(v_lives).w			; are lives already at 0?
 		beq.s	.skip
