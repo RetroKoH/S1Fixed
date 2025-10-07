@@ -13,10 +13,9 @@ SkidDustEnabled: = 0						; if set to 1, Skid dust will occur when coming to a s
 ; Name: Spin Dash
 ; Credit: SCHG, DeltaW, Mercury
 ; Function: Enables the Sonic 2 Spin Dash
-SpinDashEnabled: = 2	; if set to 1, the Spindash is enabled. If set to 2, the CD variant is used.
-	SpinDashCancel: = SpinDashEnabled*0		; if set to 1, Spin Dash can be cancelled by not pressing ABC
-	SpinDashNoRevDown: = SpinDashEnabled*0	; if set to 1, Spin Dash will not rev down so long as ABC is held down
-; (TO-DO: Add the CD Spindash variant)
+SpinDashEnabled: = 0	; if set to 1, the standard Spindash is enabled. If set to 2, the CD variant is used.
+	SpinDashCancel: = SpinDashEnabled*0		; if set to 1, Spin Dash can be cancelled by not pressing ABC (usable with Standard Spindash).
+	SpinDashNoRevDown: = SpinDashEnabled*0	; if set to 1, Spin Dash will not rev down so long as ABC is held down (usable with Standard Spindash).
 
 ; Name: Peelout
 ; Credit: DeltaW, Mercury
@@ -211,8 +210,9 @@ GiantRingsInSBZ: = 0
 ; Name: Quick Level Restarts
 ; Credit: RetroKoH
 ; Function: If enabled, this allows quick restarts whenever a level is restarted from death (music isn't restarted, level art not reloaded, etc).
-QuickRestart: = 0
-; If you do anything to dynamically change art or music in a level, this mod might not be ideal.
+QuickRestart: = 1
+	MusicContinues: = 1*QuickRestart		; if set, music won't restart after death unless necessary
+	SkipTitleCard: = 1*QuickRestart			; if set, Title Cards aren't used when restarting after death
 
 ; ----- FLAIR MODS ---------------------------------------------------------------
 
@@ -270,7 +270,7 @@ HUDBlinking: = 0
 ; Function: Gives the Signposts a base, similar to those in Sonic CD.
 UpdatedSignposts: = 0				; 0 = default signposts; 1 = CD signposts; 2 = hybrid (shorter CD) signposts
 
-; Name: SBZ3 New Art Mod
+; Name: SBZ3 New Art Mod (INCOMPLETE)
 ; Credit: Trickster/Rohan, RetroKoH
 ; Function: Provides new art for SBZ Act 3
 NewSBZ3LevelArt: = 0
