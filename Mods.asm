@@ -207,12 +207,14 @@ RingsLives: = 1
 GiantRingsInSBZ: = 0
 ; Minor graphical bugs w/ Eggman, and End-of-SS
 
-; Name: Quick Level Restarts
+; Name: Quick Level Restarts (INCOMPLETE)
 ; Credit: RetroKoH
 ; Function: If enabled, this allows quick restarts whenever a level is restarted from death (music isn't restarted, level art not reloaded, etc).
 QuickRestart: = 1
-	MusicContinues: = 1*QuickRestart		; if set, music won't restart after death unless necessary
-	SkipTitleCard: = 1*QuickRestart			; if set, Title Cards aren't used when restarting after death
+	MusicContinues: = 0*QuickRestart		; if set, music won't restart after death unless necessary
+	SkipTitleCard: = 0*QuickRestart			; if set, Title Cards aren't used when restarting after death
+	SkipLevelArtLoad: = 1*QuickRestart		; if set, level art won't be reloaded on death (Not recommended if art changes mid-level)
+; Perhaps rearrange PLCs so that Cue 1 loads art that'd overwrite EoL stuff (Signpost, Giant Ring, Hidden Points)
 
 ; ----- FLAIR MODS ---------------------------------------------------------------
 
