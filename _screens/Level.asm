@@ -13,7 +13,7 @@ GM_Level:
 ; ---------------------------------------------------------------------------
 	else
 ; ---------------------------------------------------------------------------
-	if QuickRestart
+	if MusicContinues
 		tst.b	(f_deathflag).w				; are we restarting from death?
 		beq.s	.fade						; if no, fade out.
 
@@ -70,6 +70,11 @@ Level_NoMusicFade:
 		bsr.w	PaletteFadeOut
 		tst.w	(f_demo).w					; is an ending sequence demo running?
 		bmi.w	Level_ClrRam				; if yes, branch
+
+	if SkipTitleCard
+		tst.b	(f_deathflag).w					; are we restarting from death?
+		bne		LoadLevelArt					; if yes, don't load title card art
+	endif
 
 	; RetroKoH Optimal Title Cards for VRAM/SpritePiece Reduction
 		locVRAM	ArtTile_Title_Card*tile_size,d1	; VRAM location to be set AFTER interrupts disabled
@@ -236,7 +241,7 @@ Level_GetBgm:
 
 	if ~~AmbienceMode
 
-	if QuickRestart
+	if MusicContinues
 			tst.b	(f_deathflag).w					; are we restarting from death?
 			beq.s	.dontskipmusic					; if not, branch and load music
 			move.b	(v_lastbgmplayed).w,d0			; load the last BGM played?
@@ -273,7 +278,7 @@ Level_GetBgm:
 			lea		(MusicList).l,a1				; load music playlist
 			move.b	(a1,d0.w),d0					; get current level's music
 	
-		if QuickRestart
+		if MusicContinues
 			move.b	d0,(v_currentzonebgm).w			; store the current level's music
 		endif
 
@@ -282,12 +287,13 @@ Level_GetBgm:
 	endif
 
 Level_LoadTitleCard:
+	if SkipTitleCard
+		tst.b	(f_deathflag).w					; are we restarting from death?
+		bne.s	Level_TtlCardLoop				; if yes, don't load title card objects
+	endif
+
 		move.b	#id_TitleCard,(v_titlecard).w		; load title card object
 		move.b  #3,(v_carddelay).w					; set the delay timer -- Fixes bug w/ HUD elements not appearing (AURORAFIELDS fix; is this still needed?)
-
-	if QuickRestart
-		clr.b	(f_deathflag).w						; clear flag noting we are restarting the level from death
-	endif
 
 Level_TtlCardLoop:
 		move.b	#$C,(v_vbla_routine).w
@@ -295,6 +301,11 @@ Level_TtlCardLoop:
 		jsr		(ExecuteObjects).l
 		jsr		(BuildSprites).l
 		bsr.w	RunPLC
+
+	if SkipTitleCard
+		tst.l	(v_plc_buffer).w				; are there any items in the pattern load cue?
+		bne.s	Level_TtlCardLoop				; if yes, branch
+	else
 		move.w	(v_ttlcardact+obX).w,d0
 		cmp.w	(v_ttlcardact+card_mainX).w,d0	; has title card sequence finished?
 		bne.s	Level_TtlCardLoop				; if not, branch
@@ -302,9 +313,16 @@ Level_TtlCardLoop:
 		bne.s	Level_TtlCardLoop				; if yes, branch
 		subq.b  #1,(v_carddelay).w				; substract 1 from timer
         bne.s   Level_TtlCardLoop				; if timer is not 0, branch
+	endif
+
 		jsr		(Hud_Base).l					; load basic HUD gfx
 
 Level_SkipTtlCard:
+
+	if QuickRestart
+		clr.b	(f_deathflag).w					; clear flag noting we are restarting the level from death
+	endif
+
 	if RandomMonitors
 		lea		Art_Mon_Rand,a0						; load random monitor patterns
 		move.l	#3,d0								; # of tiles
