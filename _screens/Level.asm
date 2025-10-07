@@ -8,9 +8,23 @@ GM_Level:
 		bmi.s	Level_NoMusicFade
 
 	if AmbienceMode
-		move.w	#bgm_Stop,d0
+; ---------------------------------------------------------------------------
+		move.w	#bgm_Stop,d0				; stop sound in Ambience mode
+; ---------------------------------------------------------------------------
 	else
+; ---------------------------------------------------------------------------
+	if QuickRestart
+		tst.b	(f_deathflag).w				; are we restarting from death?
+		beq.s	.fade						; if no, fade out.
+
+		move.b	(v_lastbgmplayed).w,d0		; load the last BGM played?
+		cmp.b	(v_currentzonebgm).w,d0		; does it match this level's BGM?
+		beq.s	Level_NoMusicFade			; if yes, skip fading
+	endif
+
+	.fade:
 		move.w	#bgm_Fade,d0
+; ---------------------------------------------------------------------------
 	endif
 
 		bsr.w	QueueSound2					; fade out music
@@ -218,9 +232,20 @@ Level_WaterPal:
 
 Level_GetBgm:
 		tst.w	(f_demo).w
-		bmi.s	Level_SkipTtlCard
+		bmi		Level_SkipTtlCard
 
 	if ~~AmbienceMode
+
+	if QuickRestart
+			tst.b	(f_deathflag).w					; are we restarting from death?
+			beq.s	.dontskipmusic					; if not, branch and load music
+			move.b	(v_lastbgmplayed).w,d0			; load the last BGM played?
+			cmp.b	(v_currentzonebgm).w,d0			; does it match this level's BGM?
+			beq.s	Level_LoadTitleCard				; if yes, skip starting BGM
+
+	.dontskipmusic:
+	endif
+
 		if DynamicBGMs
 	; -----------------------------------------------------------------------
 			moveq	#0,d0
@@ -228,10 +253,6 @@ Level_GetBgm:
 			add.b	d0,d0
 			add.b	d0,d0							; multiply by 4
 			add.b	(v_act).w,d0					; add the act value
-			lea		(MusicList).l,a1				; load music playlist
-			move.b	(a1,d0.w),d0
-			bsr.w	QueueSound1						; play music
-			move.b	d0,(v_lastbgmplayed).w			; store last played music
 	; -----------------------------------------------------------------------
 		else
 	; -----------------------------------------------------------------------
@@ -245,19 +266,28 @@ Level_GetBgm:
 			cmpi.w	#(id_SBZ<<8)+2,(v_zone).w		; is level FZ?
 			bne.s	Level_PlayBgm					; if not, branch
 			moveq	#6,d0							; use 6th music (FZ)
+	; ------------------------------------------------------------------------
+		endif
 
 	Level_PlayBgm:
 			lea		(MusicList).l,a1				; load music playlist
-			move.b	(a1,d0.w),d0
+			move.b	(a1,d0.w),d0					; get current level's music
+	
+		if QuickRestart
+			move.b	d0,(v_currentzonebgm).w			; store the current level's music
+		endif
+
 			bsr.w	QueueSound1						; play music
 			move.b	d0,(v_lastbgmplayed).w			; store last played music
-	; ------------------------------------------------------------------------
-		endif
 	endif
 
-		move.b	#id_TitleCard,(v_titlecard).w	; load title card object
+Level_LoadTitleCard:
+		move.b	#id_TitleCard,(v_titlecard).w		; load title card object
+		move.b  #3,(v_carddelay).w					; set the delay timer -- Fixes bug w/ HUD elements not appearing (AURORAFIELDS fix; is this still needed?)
 
-		move.b  #3,(v_carddelay).w				; set the delay timer -- Fixes bug w/ HUD elements not appearing
+	if QuickRestart
+		clr.b	(f_deathflag).w						; clear flag noting we are restarting the level from death
+	endif
 
 Level_TtlCardLoop:
 		move.b	#$C,(v_vbla_routine).w
