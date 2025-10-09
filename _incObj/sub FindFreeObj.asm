@@ -9,17 +9,15 @@
 
 
 FindFreeObj: ; SingleObjLoad
-		lea		(v_lvlobjspace).w,a1	; start address for object RAM
+	; Slight improvement by Malachi
+		lea		(v_lvlobjspace-object_size).w,a1	; start address for object RAM
 		move.w	#v_lvlobjcount,d0
 
-FFree_Loop:
-		tst.b	obID(a1)			; is object RAM	slot empty?
-		beq.s	FFree_Found			; if yes, branch
+	.loop:
 		lea		object_size(a1),a1	; goto next object RAM slot
-		dbf		d0,FFree_Loop		; repeat $5F times
-
-FFree_Found:
-		rts	
+		tst.b	obID(a1)			; is object RAM	slot empty?
+		dbeq	d0,.loop			; if not, branch
+		rts							; if yes, exit
 ; End of function FindFreeObj
 
 

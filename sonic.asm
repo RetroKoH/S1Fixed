@@ -3145,23 +3145,23 @@ CollapseObject:
 		move.w	obPriority(a0),d5				; ++DeltaW addition
 		move.b	obActWid(a0),d6					; ++DeltaW addition
 
-	; RetroKoH Optimization; Built off of Spirituinsanum's Mass Object Load Optimization
-	; Init the first ring right away (which is already created)
+	; RetroKoH Mass Object Load Optimization; Built off of Spirituinsanum's Ring Loss Optimization
+	; Init the first fragment right away (which is already created)
 		move.b	#6,obRoutine(a0)
 		move.l	a3,obMap(a0)					; Set appropriate mapping
 		move.b	(a4)+,ledge_timedelay(a0)
 
 	; Here we begin what's replacing SingleObjLoad.
-		lea		(v_lvlobjspace).w,a1
+	; Slight improvement by Malachi
+		lea		(v_lvlobjspace-object_size).w,a1
 		move.w	#v_lvlobjcount,d0
 
 .loop:
 	; REMOVE FindFreeObj. It's the routine that causes such slowdown
-		tst.b	obID(a1)						; is object RAM	slot empty?
-		beq.s	.loadfrag						; Let's correct the branches. Here we can also skip the bne that was originally after bsr.w SingleObjLoad because we already know there's a free object slot in memory.
 		lea		object_size(a1),a1
-		dbf		d0,.loop						; Branch correction again.
-		bne.s	.endloop						; We're moving this line here.
+		tst.b	obID(a1)					; is object RAM	slot empty?
+		dbeq	d0,.loop					; Branch correction again.
+		bne.s	.endloop					; We're moving this line here.
 
 .loadfrag:
 	; Create fragment object

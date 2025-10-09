@@ -137,7 +137,7 @@ RLoss_Index:		offsetTable
 ; ===========================================================================
 
 RLoss_Count:	; Routine 0
-	; RetroKoH Ring Optimization; Built off of Spirituinsanum's Mass Object Load Optimization
+	; RetroKoH Mass Object Load Optimization; Built off of Spirituinsanum's Ring Loss Optimization
 	; Init the first ring right away (which is already created)
 		move.l	#Map_Ring,d2			; doing this purely to save cycles
 		move.w	#$808,d3
@@ -200,15 +200,15 @@ RLoss_Count:	; Routine 0
 		bmi.s	.resetcounter				; if only one ring is needed, branch and skip EVERYTHING below altogether
 
 	; Here we begin what's replacing FindFreeObj/SingleObjLoad
-		lea		(v_lvlobjspace).w,a1
+	; Slight improvement by Malachi
+		lea		(v_lvlobjspace-object_size).w,a1
 		move.w	#v_lvlobjcount,d0
 
 	.loop:
 	; REMOVE FindFreeObj. It's the routine that causes such slowdown
-		tst.b	obID(a1)					; is object RAM	slot empty?
-		beq.s	.makerings					; Let's correct the branches. Here we can also skip the bne that was originally after bsr.w FindFreeObj because we already know there's a free object slot in memory.
 		lea		object_size(a1),a1
-		dbf		d0,.loop					; Branch correction again.
+		tst.b	obID(a1)					; is object RAM	slot empty?
+		dbeq	d0,.loop					; Branch correction again.
 		bne.s	.resetcounter				; We're moving this line here.
 
 	.makerings:
