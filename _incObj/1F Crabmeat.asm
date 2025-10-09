@@ -81,26 +81,41 @@ Crab_Action:	; Routine 2
 .fire:
 		move.w	#59,crab_timedelay(a0)
 		move.b	#6,obAnim(a0)	; use firing animation
-		bsr.w	FindFreeObj
-		bne.s	.failleft
-		_move.b	#id_Crabmeat,obID(a1) ; load left fireball
+
+	; RetroKoH Mass Object Load Optimization; Built off of Spirituinsanum's Ring Loss Optimization
+	; Here we begin what's replacing FindFreeObj/SingleObjLoad
+	; Slight improvement by Malachi
+		lea		(v_lvlobjspace-object_size).w,a1	; start address for object RAM
+		move.w	#v_lvlobjcount,d0
+
+	.loop:
+	; REMOVE FindFreeObj. It's the routine that causes such slowdown
+		lea		object_size(a1),a1
+		tst.b	obID(a1)					; is object RAM	slot empty?
+		dbeq	d0,.loop					; Branch correction again.
+		bne.s	.fail						; We're moving this line here.
+
+		_move.b	#id_Crabmeat,obID(a1)		; load left fireball
 		move.b	#id_Crab_BallMain,obRoutine(a1)
 		move.w	obX(a0),obX(a1)
 		subi.w	#$10,obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.w	#-$100,obVelX(a1)
 
-.failleft:
-		bsr.w	FindFreeObj
-		bne.s	.failright
-		_move.b	#id_Crabmeat,obID(a1) ; load right fireball
+	; REMOVE FindFreeObj. It's the routine that causes such slowdown
+		lea		object_size(a1),a1
+		tst.b	obID(a1)					; is object RAM	slot empty?
+		dbeq	d0,.loop					; Branch correction again.
+		bne.s	.fail						; We're moving this line here.
+
+		_move.b	#id_Crabmeat,obID(a1)		; load right fireball
 		move.b	#id_Crab_BallMain,obRoutine(a1)
 		move.w	obX(a0),obX(a1)
 		addi.w	#$10,obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.w	#$100,obVelX(a1)
 
-.failright:
+.fail:
 		lea		Ani_Crab(pc),a1
 		bsr.w	AnimateSprite
 		bra.w	RememberState	

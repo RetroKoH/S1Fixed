@@ -21,24 +21,24 @@ SmashObject:
 		_move.b	obID(a0),d4
 		move.b	obRender(a0),d5
 
-	; RetroKoH Optimization; Built off of Spirituinsanum's Mass Object Load Optimization
-	; Init the first ring right away (which is already created)
+	; RetroKoH Mass Object Load Optimization; Built off of Spirituinsanum's Ring Loss Optimization
+	; Init the first fragment right away (which is already created)
 		move.b	#4,obRoutine(a0)
 		move.l	a3,obMap(a0)					; Set appropriate mapping
 		move.l	(a4)+,obVelX(a0)				; move the data contained in the array to obVelX and obVelY, and increment the address in a4
 
 	; Here we begin what's replacing FindFreeObj/SingleObjLoad.
+	; Slight improvement by Malachi
 		moveq	#0,d3
-		lea		(v_lvlobjspace).w,a1
+		lea		(v_lvlobjspace-object_size).w,a1
 		move.w	#v_lvlobjcount,d3
 
 .loop:
 	; REMOVE FindFreeObj. It's the routine that causes such slowdown
-		tst.b	obID(a1)						; is object RAM	slot empty?
-		beq.s	.loadfrag						; Let's correct the branches. Here we can also skip the bne that was originally after bsr.w FindFreeObj because we already know there's a free object slot in memory.
 		lea		object_size(a1),a1
-		dbf		d3,.loop						; Branch correction again.
-		bne.s	.endloop						; We're moving this line here.
+		tst.b	obID(a1)				; is object RAM	slot empty?
+		dbeq	d3,.loop				; Branch correction again.
+		bne.s	.endloop				; We're moving this line here.
 
 .loadfrag:
 		move.b	#4,obRoutine(a1)

@@ -77,18 +77,19 @@ Swing_Main:	; Routine 0
 		addq.b	#8,d3				; add #8 to d3
 		subq.w	#1,d1				; decrement from length
 
-	; RetroKoH Mass Object Load Optimization -- Based on Spirituinsanum Guides
-	; Instead of calling FindNextFreeObj, we're going to do one pass from the start.
+	; RetroKoH Mass Object Load Optimization; Built off of Spirituinsanum's Ring Loss Optimization
+	; Instead of calling FindNextFreeObj, we're going to loop directly here.
+	; Slight improvement by Malachi
 .startloop
-		lea		(v_lvlobjspace).w,a1
+		lea		(v_lvlobjspace-object_size).w,a1
 		move.w	#v_lvlobjcount,d0
 
 .makechain:
-		tst.b	obID(a1)				; is object RAM	slot empty?
-		beq.s	.cont					; if so, create object piece
+	; REMOVE FindFreeObj. It's the routine that causes such slowdown
 		lea		object_size(a1),a1
-		dbf		d0,.makechain			; loop through object RAM
-		bne.s	.fail
+		tst.b	obID(a1)				; is object RAM	slot empty?
+		dbeq	d0,.makechain			; Branch correction again.
+		bne.s	.fail					; We're moving this line here.
 
 .cont
 	; Mass Object Load Optimization End
