@@ -33,18 +33,18 @@ FFloor_Main:	; Routine 0
 		move.w	#boss_sbz2_x-$40,d5
 		moveq	#7,d6						; iterator
 
-	; RetroKoH Optimization; Built off of Spirituinsanum's Mass Object Load Optimization
+	; RetroKoH Mass Object Load Optimization; Built off of Spirituinsanum's Ring Loss Optimization
 	; Here we begin what's replacing FindFreeObj/SingleObjLoad
-		lea		(v_lvlobjspace).w,a1
+	; Slight improvement by Malachi
+		lea		(v_lvlobjspace-object_size).w,a1
 		move.w	#v_lvlobjcount,d0
 
 	.loop:
 	; REMOVE FindFreeObj. It's the routine that causes such slowdown
-		tst.b	obID(a1)					; is object RAM	slot empty?
-		beq.s	.makefloor					; Let's correct the branches. Here we can also skip the bne that was originally after bsr.w FindFreeObj because we already know there's a free object slot in memory.
 		lea		object_size(a1),a1
-		dbf		d0,.loop					; Branch correction again.
-		bne.s	.endloop					; We're moving this line here.
+		tst.b	obID(a1)				; is object RAM	slot empty?
+		dbeq	d0,.loop				; Branch correction again.
+		bne.s	.endloop				; We're moving this line here.
 
 	.makefloor:
 		move.w	a1,(a2)+					; store the new object's address in the controller's memory (objoff_30(a0) onward)

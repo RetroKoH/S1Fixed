@@ -116,7 +116,7 @@ loc_1639A:
 		move.w	(a2)+,d1						; d1 = number of platforms minus 1
 		movea.l	a0,a1
 
-	; RetroKoH Mass Object Load Optimization (Based on SpirituInsanum's Ring Loss Optimization)
+	; RetroKoH Mass Object Load Optimization; Built off of Spirituinsanum's Ring Loss Optimization
 	; Create the first instance, then loop to create the others afterward.
 .firstPlatform:
 		_move.b	#id_SpinConvey,obID(a1)
@@ -127,17 +127,17 @@ loc_1639A:
 		subq	#1,d1					; decrement for the first platform created
 		bmi.s	.endloop				; if, somehow, only one platform is needed, skip
 
-		; Here we begin what's replacing FindFreeObj, in order to avoid resetting its d0 every time an object is created.
-		lea		(v_lvlobjspace).w,a1
+	; Here we begin what's replacing FindFreeObj, in order to avoid resetting its d0 every time an object is created.
+	; Slight improvement by Malachi
+		lea		(v_lvlobjspace-object_size).w,a1
 		move.w	#v_lvlobjcount,d2
 
 .loop:
-		; REMOVE FindFreeObj. It's the routine that causes such slowdown
-		tst.b	obID(a1)				; is object RAM	slot empty?
-		beq.s	.makePtfms				; Let's correct the branches. Here we can also skip the bne that was originally after bsr.w FindFreeObj because we already know there's a free object slot in memory.
+	; REMOVE FindFreeObj. It's the routine that causes such slowdown
 		lea		object_size(a1),a1
-		dbf		d2,.loop				; Branch correction again.
-		bne.s	.endloop
+		tst.b	obID(a1)				; is object RAM	slot empty?
+		dbeq	d2,.loop				; Branch correction again.
+		bne.s	.endloop				; We're moving this line here.
 
 .makePtfms:
 		_move.b	#id_SpinConvey,obID(a1)
