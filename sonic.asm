@@ -1777,6 +1777,58 @@ MusicList:
 
 		include "_inc/Collision Loading.asm"
 
+		include	"_inc/Oscillatory Routines.asm"
+
+; ---------------------------------------------------------------------------
+; Subroutine to	change synchronised animation variables (rings, giant rings)
+; ---------------------------------------------------------------------------
+
+; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+
+
+SynchroAnimate:
+
+; Used for GHZ spiked log
+Sync1:
+		subq.b	#1,(v_ani0_time).w	; has timer reached 0?
+		bpl.s	Sync2				; if not, branch
+		move.b	#$B,(v_ani0_time).w	; reset timer
+		subq.b	#1,(v_ani0_frame).w	; next frame
+		andi.b	#7,(v_ani0_frame).w	; max frame is 7
+
+; Used for 8-frame rings and giant rings -- RetroKoH 8-Frame Rings Change
+Sync2:
+		subq.b	#1,(v_ani1_time).w	; decrement timer
+		bpl.s	Sync3				; if timer !=0, branch
+		move.b	#3,(v_ani1_time).w	; reset timer
+		addq.b	#1,(v_ani1_frame).w	; next frame
+		andi.b	#7,(v_ani1_frame).w	; max frame is 7
+
+; Used for SYZ Lights (Timing is already identical, no need for identical timers to run twice)
+Sync3:
+		subq.b	#1,(v_ani2_time).w
+		bpl.s	Sync4
+		move.b	#7,(v_ani2_time).w
+		addq.b	#1,(v_ani2_frame).w
+		cmpi.b	#6,(v_ani2_frame).w
+		blo.s	Sync4
+		clr.b	(v_ani2_frame).w
+
+; Used for bouncing rings and rings in the special stage -- RetroKoH 8-Frame Rings Change
+Sync4:
+		tst.b	(v_ani3_time).w
+		beq.s	LoadRingFrame
+		moveq	#0,d0
+		move.b	(v_ani3_time).w,d0
+		add.w	(v_ani3_buf).w,d0
+		move.w	d0,(v_ani3_buf).w
+		rol.w	#8,d0
+		andi.w	#7,d0
+		move.b	d0,(v_ani3_frame).w
+		subq.b	#1,(v_ani3_time).w
+
+; End of function SynchroAnimate
+; fallthrough
 ; ---------------------------------------------------------------------------
 ; Queue ring frame graphics loading
 ; ---------------------------------------------------------------------------
@@ -1819,66 +1871,6 @@ LoadSSRingFrame:
 		move.w  #$80/2,d3
 		jmp		(QueueDMATransfer).w
 ; ===========================================================================
-
-		include	"_inc/Oscillatory Routines.asm"
-
-; ---------------------------------------------------------------------------
-; Subroutine to	change synchronised animation variables (rings, giant rings)
-; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
-SynchroAnimate:
-
-	if ~~ActiveDeathSequence				; RetroKoH Active Death Sequence Mod
-		cmpi.b	#6,(v_player+obRoutine).w	; has Sonic just died?
-		bhs.s	SyncEnd						; if yes, branch
-	endif
-
-; Used for GHZ spiked log
-Sync1:
-		subq.b	#1,(v_ani0_time).w	; has timer reached 0?
-		bpl.s	Sync2				; if not, branch
-		move.b	#$B,(v_ani0_time).w	; reset timer
-		subq.b	#1,(v_ani0_frame).w	; next frame
-		andi.b	#7,(v_ani0_frame).w	; max frame is 7
-
-; Used for 8-frame rings and giant rings -- RetroKoH 8-Frame Rings Change
-Sync2:
-		subq.b	#1,(v_ani1_time).w	; decrement timer
-		bpl.s	Sync3				; if timer !=0, branch
-		move.b	#3,(v_ani1_time).w	; reset timer
-		addq.b	#1,(v_ani1_frame).w	; next frame
-		andi.b	#7,(v_ani1_frame).w	; max frame is 7
-
-; Used for SYZ Lights (Timing is already identical, no need for identical timers to run twice)
-Sync3:
-		subq.b	#1,(v_ani2_time).w
-		bpl.s	Sync4
-		move.b	#7,(v_ani2_time).w
-		addq.b	#1,(v_ani2_frame).w
-		cmpi.b	#6,(v_ani2_frame).w
-		blo.s	Sync4
-		clr.b	(v_ani2_frame).w
-
-; Used for bouncing rings and rings in the special stage -- RetroKoH 8-Frame Rings Change
-Sync4:
-		tst.b	(v_ani3_time).w
-		beq.w	LoadRingFrame
-		moveq	#0,d0
-		move.b	(v_ani3_time).w,d0
-		add.w	(v_ani3_buf).w,d0
-		move.w	d0,(v_ani3_buf).w
-		rol.w	#8,d0
-		andi.w	#7,d0
-		move.b	d0,(v_ani3_frame).w
-		subq.b	#1,(v_ani3_time).w
-		bra.w	LoadRingFrame
-
-SyncEnd:
-		rts
-; End of function SynchroAnimate
 
 ; ---------------------------------------------------------------------------
 ; End-of-act signpost pattern loading subroutine
@@ -3582,7 +3574,6 @@ loc_D37C:
 		rts
 	endif
 ; End of function ExecuteObjects
-
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Object pointers
