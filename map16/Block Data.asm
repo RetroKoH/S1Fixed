@@ -1,7 +1,7 @@
-; ChunksInROM enabled means that the chunks are uncompressed, and loaded directly from ROM.
-; DynamicArt enabled means that each act has its own 128x128 chunks.
+; BlocksInROM enabled means that the blocks are uncompressed, and loaded directly from ROM.
+; DynamicArt enabled means that each act has its own 16x16 blocks.
 
-	if ChunksInROM	; Mercury Chunks In ROM
+	if BlocksInROM	; Mercury Blocks In ROM
 ; -----------------------------------------------------------------------
 
 	if DynamicArt ; RetroKoH Dynamic Zone Art
@@ -116,4 +116,4 @@ Blk16_SBZ3:		binclude	"map16/SBZ3.eni"
 	endif
 
 ; -----------------------------------------------------------------------
-	endif	;end Chunks In ROM
+	endif	;end Blocks In ROM
