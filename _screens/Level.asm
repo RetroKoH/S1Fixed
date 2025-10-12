@@ -39,7 +39,8 @@ Level_NoMusicFade:
 		bne.s	.noSRAM
 
 		gotoSRAM							; Enable SRAM writing
-	if AddressSRAM=3
+
+	if AddressSRAM==3
 		; no need to change this by yourself anymore -- Starleaf
 		lea 	($200009).l,a1				; Base of usable SRAM
 	else
@@ -302,18 +303,16 @@ Level_TtlCardLoop:
 		jsr		(BuildSprites).l
 		bsr.w	RunPLC
 
-	if SkipTitleCard
-		tst.l	(v_plc_buffer).w				; are there any items in the pattern load cue?
-		bne.s	Level_TtlCardLoop				; if yes, branch
-	else
+; Run these checks before proceeding...
 		move.w	(v_ttlcardact+obX).w,d0
 		cmp.w	(v_ttlcardact+card_mainX).w,d0	; has title card sequence finished?
 		bne.s	Level_TtlCardLoop				; if not, branch
 		tst.l	(v_plc_buffer).w				; are there any items in the pattern load cue?
 		bne.s	Level_TtlCardLoop				; if yes, branch
 		subq.b  #1,(v_carddelay).w				; substract 1 from timer
-        bne.s   Level_TtlCardLoop				; if timer is not 0, branch
-	endif
+		bne.s   Level_TtlCardLoop				; if timer is not 0, branch
+; The v_carddelay timer is no longer needed for its original purpose, but it DOES help circumvent a minor bug
+; that seems to happen in SLZ, where the Act number pauses for a moment before reaching its final destination.
 
 		jsr		(Hud_Base).l					; load basic HUD gfx
 
