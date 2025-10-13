@@ -1128,6 +1128,17 @@ LoadUncArt2:
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
+; Subroutine to load PLCs for levels
+; I added this due to splitting level PLCs from the rest
+; This should make a dynamic PLC toggle easier to manage.
+; ---------------------------------------------------------------------------
+
+AddLevelPLC:
+		movem.l	a1-a2,-(sp)
+		lea		(LevelLoadCues).l,a1
+		bra.s	LoadPLC
+
+; ---------------------------------------------------------------------------
 ; Subroutine to load pattern load cues (aka to queue pattern load requests)
 ; ---------------------------------------------------------------------------
 
@@ -1141,6 +1152,8 @@ LoadUncArt2:
 AddPLC:
 		movem.l	a1-a2,-(sp)
 		lea	(ArtLoadCues).l,a1
+
+LoadPLC:
 		add.w	d0,d0
 		move.w	(a1,d0.w),d0
 		lea	(a1,d0.w),a1		; jump to relevant PLC
@@ -2796,11 +2809,14 @@ LevelDataLoad_2:
 
 		bsr.w	PalLoad_Fade	; load palette (based on d0)
 		movea.l	(sp)+,a2
-		addq.w	#4,a2			; read number for 2nd PLC
+		addq.w	#4,a2						; read number for 2nd PLC
+
+		cmpi.w	#End_Header,(v_levelheader_id).w	; check for ending, since 0 now points to GHZ
+		beq.s	.skipPLC					; don't load PLCs here
+
 		moveq	#0,d0
-		move.b	(a2),d0
-		beq.s	.skipPLC		; if 2nd PLC is 0 (i.e. the ending sequence), branch
-		bra.w	AddPLC			; load pattern load cues
+		move.b	(a2),d0						; get 2nd level PLC index
+		bra.w	AddLevelPLC					; load pattern load cues
 
 .skipPLC:
 		rts	
@@ -5362,6 +5378,7 @@ Art_LivesNums:	binclude	"artunc/Lives Counter Numbers.bin" ; 8x8 pixel numbers o
 		include "_inc/DebugList - Special.asm"
 		include	"_inc/LevelHeaders.asm"
 		include	"_inc/Pattern Load Cues.asm"
+		include	"_inc/Pattern Load Cues - Levels.asm"
 
 		align	$200
 
