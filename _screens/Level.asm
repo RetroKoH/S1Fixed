@@ -163,9 +163,8 @@ LoadLevelArt:
 		lea		(LevelHeaders).l,a2				; a2 = LevelHeaders address
 		lea		(a2,d0.w),a2					; a2 = LevelHeaders + zone offset
 		moveq	#0,d0
-		move.b	(a2),d0
-		beq.s	loc_37FC
-		bsr.w	AddPLC				; load level patterns
+		move.b	(a2),d0							; get 2nd level PLC index (Removed conditional branch, as 0 now points to GHZ)
+		bsr.w	AddLevelPLC						; load level patterns
 
 loc_37FC:
 		moveq	#plcid_Main2,d0
