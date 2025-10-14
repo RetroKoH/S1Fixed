@@ -240,7 +240,7 @@ Orb_MoveOrb:	; Routine 6
 	endif	;end SLZ Orbinaut Behaviour Mod
 
 		move.b	obAngle(a0),d0
-		jsr		(CalcSine).w
+		calcsine_direct
 
 	if SLZOrbinautBehaviourMod	;Mercury SLZ Orbinaut Behaviour Mod
 		asr.w	d2,d1

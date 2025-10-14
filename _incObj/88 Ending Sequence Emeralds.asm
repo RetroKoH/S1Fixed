@@ -48,7 +48,9 @@ ECha_Move:	; Routine 2
 		move.w	echa_angle(a0),d0
 		add.w	d0,obAngle(a0)
 		move.b	obAngle(a0),d0
-		jsr		(CalcSine).w
+
+		calcsine_direct
+
 		moveq	#0,d4
 		move.b	echa_radius(a0),d4
 		muls.w	d4,d1
