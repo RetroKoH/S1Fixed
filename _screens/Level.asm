@@ -69,7 +69,7 @@ Level_NoMusicFade:
 
 		bsr.w	ClearPLC
 		bsr.w	PaletteFadeOut
-		tst.w	(f_demo).w					; is an ending sequence demo running?
+		tst.w	(f_demo).w					; is this an ending sequence demo?
 		bmi.w	Level_ClrRam				; if yes, branch
 
 	if SkipTitleCard
@@ -236,8 +236,8 @@ Level_WaterPal:
 		move.b	(v_lamp_wtrstat).w,(f_wtr_state).w
 
 Level_GetBgm:
-		tst.w	(f_demo).w
-		bmi		Level_SkipTtlCard
+		tst.w	(f_demo).w				; is this an ending sequence demo?
+		bmi		Level_SkipTtlCard		; if yes, branch and skip title cards
 
 	if ~~AmbienceMode
 
@@ -408,8 +408,8 @@ Level_Demo:
 		move.b	1(a1),(v_btnpushtime2).w	; load key press duration
 		subq.b	#1,(v_btnpushtime2).w		; subtract 1 from duration
 		move.w	#1800,(v_demolength).w
-		tst.w	(f_demo).w
-		bpl.s	Level_ChkWaterPal
+		tst.w	(f_demo).w					; is this an ending sequence demo?
+		bpl.s	Level_ChkWaterPal			; if not, branch
 		move.w	#540,(v_demolength).w
 		cmpi.w	#4,(v_creditsnum).w
 		bne.s	Level_ChkWaterPal
@@ -437,11 +437,11 @@ Level_DelayLoop:
 		bsr.w	WaitForVBla
 		dbf	d1,Level_DelayLoop
 
-		move.w	#$202F,(v_pfade_start).w ; fade in 2nd, 3rd & 4th palette lines
+		move.w	#$202F,(v_pfade_start).w		; fade in 2nd, 3rd & 4th palette lines
 		bsr.w	PalFadeIn_Alt
-		tst.w	(f_demo).w	; is an ending sequence demo running?
-		bmi.s	Level_ClrCardArt ; if yes, branch
-		addq.b	#2,(v_ttlcardname+obRoutine).w ; make title card move
+		tst.w	(f_demo).w						; is this an ending sequence demo?
+		bmi.s	Level_ClrCardArt 				; if yes, branch
+		addq.b	#2,(v_ttlcardname+obRoutine).w	; make title card move
 		addq.b	#4,(v_ttlcardzone+obRoutine).w
 		addq.b	#4,(v_ttlcardact+obRoutine).w
 		addq.b	#4,(v_ttlcardoval+obRoutine).w
@@ -457,12 +457,13 @@ Level_ClrCardArt:
 		jsr		(AddPLC).w	; load animal gfx (level no. + $15)
 
 Level_StartGame:
-		; The above check is for the S2 HUD Manager (RetroKoH)
-		; This also removes rings from the end demos. Need to fix this another way.
-		tst.w	(f_demo).w
-		bmi.s	.demo					; Branch if End Credits Demo
-		move.b	#1,(f_levelstarted).w	; RetroKoH S3K Rings Manager
-.demo:
+		moveq	#1,d0			; set to 1
+		tst.w	(f_demo).w		; is this an ending sequence demo?
+		bge.s	.notCredits		; if not, branch
+		subq.b	#2,d0			; set to negative (load rings, not HUD)
+
+.notCredits:
+		move.b	d0,(f_levelstarted).w
 
 	if HUDCentiseconds=1	;Mercury HUD Centiseconds
 		move.b	#1,(f_timecount).w ; update time counter
