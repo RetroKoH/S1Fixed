@@ -11,8 +11,8 @@ BuildSprites:
 		moveq	#0,d4						; RetroKoH S3K Rings Manager
 	; RetroKoH S2 HUD Manager
 		tst.b	(f_levelstarted).w
-		beq.s	.noHUD
-		bsr.w	BuildHUD					
+		ble.s	.noHUD						; value is negative during the credits sequence
+		bsr.w	BuildHUD					; build during gameplay and demos, not during the credits
 
 	.noHUD:
 	; S2 HUD Manager End
