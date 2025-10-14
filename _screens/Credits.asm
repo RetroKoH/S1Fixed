@@ -37,8 +37,7 @@ GM_Credits:
 		lea		(a2,d0.w),a2			; a2 = LevelHeaders + zone offset
 		moveq	#0,d0
 		move.b	(a2),d0
-		beq.s	Cred_SkipObjGfx
-		bsr.w	AddPLC					; load object graphics
+		bsr.w	AddLevelPLC				; load object graphics (removed beq branch, since GHZ is now index 0)
 
 Cred_SkipObjGfx:
 		moveq	#plcid_Main2,d0

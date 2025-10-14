@@ -71,10 +71,11 @@ Level_NoMusicFade:
 		bsr.w	PaletteFadeOut
 		tst.w	(f_demo).w					; is this an ending sequence demo?
 		bmi.w	Level_ClrRam				; if yes, branch
+	; we'll skip LoadLevelArt for now. Object PLCs will be loaded in the Credits screen code
 
 	if SkipTitleCard
-		tst.b	(f_deathflag).w					; are we restarting from death?
-		bne		LoadLevelArt					; if yes, don't load title card art
+		tst.b	(f_deathflag).w				; are we restarting from death?
+		bne		LoadLevelArt				; if yes, don't load title card art
 	endif
 
 	; RetroKoH Optimal Title Cards for VRAM/SpritePiece Reduction
