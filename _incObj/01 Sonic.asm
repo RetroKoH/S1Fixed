@@ -2729,7 +2729,7 @@ BubbleShield_Bounce:
 		moveq	#0,d0
 		move.b	obAngle(a0),d0
 		subi.b	#$40,d0
-		jsr		CalcSine
+		jsr		(CalcSine).w
 		muls.w	d2,d1
 		asr.l	#8,d1
 		add.w	d1,obVelX(a0)

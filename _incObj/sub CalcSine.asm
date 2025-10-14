@@ -8,20 +8,29 @@
 ;	d0 = sine
 ;	d1 = cosine
 
-; Slight optimization thanks to Sonic 1 Co-Op
+; Slightly optimized thanks to a collaboration between (Undying Star, Hame, and Malachi)
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
+; CalcSine direct implementation (saves 36 (7/2))
+calcsine_direct:	macro
+		lea		(Sine_Data).w,a2
+		clr.w	d1
+		move.b	d0,d1
+		add.w	d1,d1				; double because we're handling words
+		adda.w	d1,a2
+		move.w	(a2),d0				; sin
+		move.w	Cosine_Data-Sine_Data(a2),d1	; cos
+		endm
 
 CalcSine:
 		clr.w	d1
-		andi.w	#$FF,d0						; use only single-byte input (256 angles)
-		add.w	d0,d0						; double, as we're handling word values
-		move.w	d0,d1
-		move.w	Sine_Data(pc,d0.w),d0		; return sine of angle
-		addq.w	#8,d1						; add 8 so we can use the faster addressing mode below
-		move.w	Cosine_Data-8(pc,d1.w),d1	; return cosine of angle
+		move.b	d0,d1							; move angle to d1; single-byte input (256 angles)
+		add.w	d1,d1							; double because we're handling words
+		move.w	Sine_Data(pc,d1.w),d0			; return sine of angle
+		addq.w	#8,d1							; add 8 so cosine can reach further
+		move.w	Cosine_Data-8(pc,d1.w),d1		; return cosine of angle
 		rts
 ; End of function CalcSine
 

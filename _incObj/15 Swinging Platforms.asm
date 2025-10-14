@@ -217,7 +217,8 @@ loc_7BB6:
 
 
 Swing_Move2:
-		bsr.w	CalcSine
+		calcsine_direct
+
 		move.w	swing_origY(a0),d2
 		move.w	swing_origX(a0),d3
 		lea		obSubtype(a0),a2
