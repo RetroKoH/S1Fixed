@@ -43,7 +43,7 @@ HUD_Update_SS:
 			tst.l	(a1)+					; has the time run out?
 			beq.w	TimeOver_SS				; if yes, branch
 			move.b	(v_centstep).w,d1
-			addi.b	#1,d1
+			addq.b	#1,d1
 			cmpi.b	#3,d1
 			bne.s	.skip
 			clr.b	d1
@@ -52,7 +52,7 @@ HUD_Update_SS:
 			move.b	d1,(v_centstep).w
 			cmpi.b	#2,d1
 			beq.s	.skip2
-			addi.b	#1,d1
+			addq.b	#1,d1
 			
 		.skip2:
 			sub.b	d1,-(a1)
@@ -83,7 +83,7 @@ HUD_Update_SS:
 			cmpi.l	#$93B63,(a1)+							; is the time 9'59"99?
 			beq.w	TimeOver_SS								; if yes, branch
 			move.b	(v_centstep).w,d1
-			addi.b	#1,d1
+			addq.b	#1,d1
 			cmpi.b	#3,d1
 			bne.s	.skip
 			clr.b	d1
@@ -92,7 +92,7 @@ HUD_Update_SS:
 			move.b	d1,(v_centstep).w
 			cmpi.b	#2,d1
 			beq.s	.skip2
-			addi.b	#1,d1
+			addq.b	#1,d1
 			
 		.skip2:
 			add.b	d1,-(a1)

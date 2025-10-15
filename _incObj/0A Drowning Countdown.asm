@@ -297,7 +297,7 @@ Drown_Countdown:; Routine $A
 		tst.w	objoff_2C(a0)
 		beq.w	.loc_1403E
 		andi.w	#7,objoff_3A(a0)
-		addi.w	#0,objoff_3A(a0)
+;		addi.w	#0,objoff_3A(a0) ; Adding 0 does nothing...
 		move.w	obY(a2),d0
 		subi.w	#$C,d0
 		move.w	d0,obY(a1)

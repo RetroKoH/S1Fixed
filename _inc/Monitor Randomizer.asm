@@ -20,7 +20,7 @@ MonitorRandomizer:
 		andi.l	#$FFFF,d0	; Make sure division will always work
 		divu.w	#6,d0		; Divide by adjusted maximum number > #(MAX_NUM-MIN_NUM)+1,d0 MAX = 6; MIN = 1.
 		swap	d0			; Get remainder of division
-		addi.w	#1,d0		; Add minimum number
+		addq.w	#1,d0		; Add minimum number
 	
 	if ShieldsMode
 		cmpi.b	#4,d0					; is this a shield?

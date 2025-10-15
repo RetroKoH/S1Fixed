@@ -208,7 +208,7 @@ Touch_Rings:
 
 		move.w	obX(a0),d2						; get character's position
 		move.w	obY(a0),d3
-		subi.w	#8,d2							; assume X radius to be 8
+		subq.w	#8,d2							; assume X radius to be 8
 		moveq	#0,d5
 		move.b	obHeight(a0),d5
 		subq.b	#3,d5
@@ -337,7 +337,7 @@ BuildRings:
 		move.w	2(a0),d2			; get ring Y pos
 		sub.w	4(a3),d2			; subtract camera Y pos
 		andi.w	#$7FF,d2
-		addi.w	#8,d2
+		addq.w	#8,d2
 		bmi.s	.noren				; dunno how this check is supposed to work
 		cmpi.w	#240,d2
 		bge.s	.noren				; if the ring is not on-screen, branch

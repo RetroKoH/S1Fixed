@@ -65,7 +65,7 @@ PSB_Menu:	; Routine 4
 		bchg	#0,objoff_30(a0)
 		moveq	#0,d2
 		move.b	objoff_30(a0),d2
-		addi.b	#4,d2
+		addq.b	#4,d2
 		move.b	d2,obFrame(a0)
 		move.b	#sfx_Switch,d0 ; selection blip sound
 		jsr		(QueueSound2).w
