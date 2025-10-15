@@ -18,13 +18,13 @@ DeformLayers:
 		clr.w	(v_bg3_scroll_flags).w
 		bsr.w	ScrollHoriz
 
-	if ActiveDeathSequence				; RetroKoH Active Death Sequence Mod
-		cmpi.b	#6,(v_player+obRoutine).w	; has Sonic just died?
-		bhs.s	.novertical					; if yes, branch and deform only
-	endif
+;	if ActiveDeathSequence				; RetroKoH Active Death Sequence Mod
+;		cmpi.b	#6,(v_player+obRoutine).w	; has Sonic just died?
+;		bhs.s	.novertical					; if yes, branch and deform only
+;	endif
 		bsr.w	ScrollVertical
 
-	.novertical:
+;	.novertical:
 		bsr.w	DynamicLevelEvents
 		move.w	(v_screenposy).w,(v_scrposy_vdp).w
 		move.w	(v_bgscreenposy).w,(v_bgscrposy_vdp).w
@@ -766,7 +766,7 @@ MoveScreenHoriz:
 		bra.s	.cont1
 
 	.cont0:
-		sub.b	#1,d1
+		subq.b	#1,d1
 		move.b	d1,(v_cameralag).w
 		lsl.b	#2,d1
 		addq.b	#4,d1

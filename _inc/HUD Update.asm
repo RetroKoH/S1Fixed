@@ -41,7 +41,7 @@ HUD_Update:
 		beq.w	TimeOver						; if yes, branch
 
 		move.b	(v_centstep).w,d1
-		addi.b	#1,d1
+		addq.b	#1,d1
 		cmpi.b	#3,d1
 		bne.s	.skip
 		clr.b	d1
@@ -50,7 +50,7 @@ HUD_Update:
 		move.b	d1,(v_centstep).w
 		cmpi.b	#2,d1
 		beq.s	.skip2
-		addi.b	#1,d1
+		addq.b	#1,d1
 
 .skip2:
 		add.b	d1,-(a1)
