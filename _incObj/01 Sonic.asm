@@ -1792,7 +1792,7 @@ Sonic_DashLaunch:
 Sonic_DashCharge:				; If still charging the dash...
 		cmpi.w	#$1E,obSpinDashCounter(a0)
 		beq.s	Sonic_DashResetScr
-		addi.w	#1,obSpinDashCounter(a0)
+		addq.w	#1,obSpinDashCounter(a0)
 		bra.s	Sonic_DashResetScr
 
 Sonic_DashStopSound:
@@ -2077,7 +2077,7 @@ Sonic_SpinDashLaunch:
 Sonic_SpinDashCharge:				; If still charging the dash...
 		cmpi.w	#$1E,obSpinDashCounter(a0)
 		beq.s	Sonic_SpinDashResetScr
-		addi.w	#1,obSpinDashCounter(a0)
+		addq.w	#1,obSpinDashCounter(a0)
 		bra.s	Sonic_SpinDashResetScr
 
 Sonic_SpinDashStopSound:

@@ -3350,8 +3350,8 @@ Obj44_SolidWall2:
 		bne.s	.skip
 		
 .short:
-		subi.w	#5,d2
-		addi.w	#5,d3
+		subq.w	#5,d2
+		addq.w	#5,d3
 
 .skip:
 	; Ducking Size Fix end

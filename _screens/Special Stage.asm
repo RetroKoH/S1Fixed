@@ -127,7 +127,7 @@ SS_MainLoop:
 		beq.s	.remove
 		cmpi.b	#$90,(v_hudscrollpos).w
 		beq.s	SS_SkipHUDScroll
-		add.b	#4,(v_hudscrollpos).w
+		addq.b	#4,(v_hudscrollpos).w
 		bra.s	SS_SkipHUDScroll
 
 .remove:

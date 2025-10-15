@@ -505,7 +505,7 @@ Level_SkipDeform:
 
 				tst.b	(v_hudscrollpos).w			; has the HUD scrolled out?
 				beq.s	.skipHUDScroll				; if yes, branch
-				sub.b	#4,(v_hudscrollpos).w		; scroll out
+				subq.b	#4,(v_hudscrollpos).w		; scroll out
 				bra.s	.skipHUDScroll				; skip scrolling in
 
 			.notEnded:
@@ -513,7 +513,7 @@ Level_SkipDeform:
 
 			cmpi.b	#128+16,(v_hudscrollpos).w	; has the HUD scrolled in?
 			beq.s	.skipHUDScroll				; if yes, branch
-			add.b	#4,(v_hudscrollpos).w		; scroll in
+			addq.b	#4,(v_hudscrollpos).w		; scroll in
 
 		.skipHUDScroll:
 	endif
