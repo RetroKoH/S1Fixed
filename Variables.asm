@@ -530,8 +530,9 @@ v_levselsound:		ds.w	1		; level select - sound selected
 v_menuanimtimer:	ds.b	1		; could I reuse the above variables for this?
 v_menuanimcounter:	ds.b	1		; and this?
 v_levselzone:		ds.w	1		; and this? Selected zone and act in level select (2 bytes)
-			ds.b	$34		; unused
 v_ringlife:			ds.w	1		; rings required for an extra life
+			ds.b	$34		; unused
+			;$FF00 should not be used
 v_scorelife:		ds.l	1		; points required for an extra life
 v_top_solid_bit:	ds.b	1
 v_lrb_solid_bit:	ds.b	1
