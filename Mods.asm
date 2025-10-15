@@ -393,6 +393,13 @@ ChunksInROM: = 1						; if set to 1, frees RAM ($B000-$C7FF)
 S3KUnderwaterPalette: = 0				; if set to 1, the HBlank method is changed to that of S3K's.
 ; I've made this a toggle because the visuals may or may not be desirable to the user.
 
+; ----- DYNAMIC LEVEL ELEMENTS ---------------------------------------------------
+; To include Level Palettes, Palette Cycling, Object PLCs, BGMs, Level Art (8x8, 16x16, 128x128), Collision
+
+; Name: Dynamic Level Headers
+; Credit: RetroKoH
+; If enabled, 
+
 ; Name: Dynamic Level Palettes
 ; Credit: RetroKoH (Based on my S1C Difficulty Mod)
 ; Loads a different palette for every act (Scrap Brain is unaffected, as it has dynamic palettes by default)
