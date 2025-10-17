@@ -53,6 +53,7 @@ Ring_Collect:	; Routine 4
 		clr.b	obColType(a0)
 		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.w	#make_art_tile(ArtTile_RingSparkles,1,0),obGfx(a0)
+		moveq	#1,d0
 		bsr.s	CollectRing
 		; Code Removed -- ProjectFM S3K Objects Manager
 
@@ -72,27 +73,33 @@ Ring_Delete:	; Routine 8
 
 CollectRing:
 	; RetroKoH Ring Count Cap
-		move.w	#sfx_Ring,d0	 					; prepare to play ring sound
-		cmpi.w	#999,(v_rings).w					; did the Sonic collect 999+ rings? < Added ring cap
-		bcc.s	.playsnd         					; if yes, branch
-		addq.w	#1,(v_rings).w	 					; add 1 to rings
-	; Ring Count Cap End
+		cmpi.w	#999,(v_rings).w					; is Sonic already at the ring cap?
+		beq.s	.playsnd         					; if yes, branch
+
+		add.w	d0,(v_rings).w	 					; add to rings
 		ori.b	#1,(f_ringcount).w					; update the rings counter
 
+		cmpi.w	#999,(v_rings).w					; is Sonic now past the ring cap?
+		bcs.s	.nocap         						; if not, branch
+		move.w	#999,(v_rings).w
+		bra.s	.playsnd 
+	; Ring Count Cap End
+
+	.nocap:
 	if RingsLives
-		cmpi.b	#2,(v_lifecount).w					; did we already get 2 lives via rings?
-		beq.s	.playsnd							; if yes, branch
+	; All-new implementation by TheBlad786 (Allows for 3 lives instead of 2)
+		moveq	#6,d0
+		and.b	(v_lifecount).w,d0
+		move.w	.table(pc,d0.w),d0					; get next ring requirement for lives
+		bmi.s	.playsnd							; if no more lives can be obtained, branch
 
-		move.w	(v_rings).w,d1						; move ring count into d1
-        cmp.w	(v_ringlife).w,d1					; do you have enough rings for an extra life?
-		blo.s	.playsnd							; if not, branch
-		addq.b	#1,(v_lifecount).w					; increment the rings lives counter
-		add.w	#RingsLivesFactor,(v_ringlife).w	; increase ring limit to earn a 1-up
+		cmp.w	(v_rings).w,d0						; do you have enough rings for an extra life?
+		bhi.s	.playsnd							; if not, branch
+		addq.b	#2,(v_lifecount).w					; set next rings bonus
 
-	.got100:
 	; Mercury Lives Over/Underflow Fix
 		cmpi.b	#99,(v_lives).w						; are lives at max?
-		beq.s	.playbgm
+		beq.s	.playbgm							; if yes, branch
 		addq.b	#1,(v_lives).w						; add 1 to number of lives
 		addq.b	#1,(f_lifecount).w					; update the lives counter
 
@@ -100,16 +107,25 @@ CollectRing:
 	; Lives Over/Underflow Fix End
 
 		if ~~AmbienceMode
-			move.w	#bgm_ExtraLife,d0	; play extra life music
-			jmp		(QueueSound1).w
+			move.w	#bgm_ExtraLife,d0				; play extra life music
+			jmp	(QueueSound1).w
 		endif
 	endif
 
 	.playsnd:
-		move.w	#sfx_Ring,d0	 	; play ring sound
-		jmp		(QueueSound2).w
+		move.w	#sfx_Ring,d0	 					; play ring sound
+		jmp	(QueueSound2).w
 ; End of function CollectRing
+
+	if RingsLives
+	.table:
+		dc.w 1*RingsLivesFactor						; first extra life
+		dc.w 2*RingsLivesFactor						; second extra life
+		dc.w 3*RingsLivesFactor						; third extra life
+		dc.w -1										; no more can be obtained
+	endif
 ; ===========================================================================
+
 ; ---------------------------------------------------------------------------
 ; Object 37 - Scattered Rings (Lost or Attracted)
 ; ---------------------------------------------------------------------------
