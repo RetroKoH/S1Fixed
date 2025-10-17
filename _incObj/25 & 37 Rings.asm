@@ -109,7 +109,6 @@ CollectRing:
 		move.w	#sfx_Ring,d0	 	; play ring sound
 		jmp		(QueueSound2).w
 ; End of function CollectRing
-
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Object 37 - Scattered Rings (Lost or Attracted)
