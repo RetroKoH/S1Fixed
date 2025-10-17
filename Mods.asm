@@ -198,7 +198,7 @@ ScoreLives: = 0
 ; Credit: RetroKoH
 ; Function: Simply enables/disables acquisition of lives via rings.
 RingsLives: = 1
-	RingsLivesFactor: = 100		; Rings multiple at which lives are awarded (only twice). By default: 100; Proto: 50.
+	RingsLivesFactor: = 100		; Rings multiple at which lives are awarded. By default: 100; Proto: 50.
 	; NOTE: Setting this to 50 MIGHT interfere with Continues in the Special Stage.
 
 ; Name: Giant Rings In SBZ (INCOMPLETE)

@@ -267,10 +267,8 @@ Touch_Rings:
 		subq.w	#1,(v_perfectringsleft).w
 	endif
 
-	; TO-DO: Is there a way to do the new ring lives system without having to utilize the stack for d1?
-		move.w	d1,-(sp)						; save d1 (ring radius) to the stack
-		bsr.w	CollectRing						; CollectRing uses d1 for ring count comparison
-		move.w	(sp)+,d1						; restore d1 (ring radius) from the stack
+		moveq	#1,d0
+		bsr.w	CollectRing
 		lea		(v_ringconsumelist).w,a3
 
 	.find:
