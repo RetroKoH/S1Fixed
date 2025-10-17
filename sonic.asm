@@ -6673,14 +6673,12 @@ RingPos_Index:
 		dc.l RingPos_SBZ2
 		dc.l RingPos_Null
 		dc.l RingPos_Null
+		zonewarning RingPos_Index,$10
 		; Ending
 		dc.l RingPos_Null
 		dc.l RingPos_Null
 		dc.l RingPos_Null
 		dc.l RingPos_Null
-
-		; --- Put extra ring data here. ---
-		dc.b $FF, $FF, 0, 0, 0,	0
 
 RingPos_GHZ1:	binclude	"ringpos/ghz1.bin"
 		even
@@ -6718,7 +6716,8 @@ RingPos_SBZ1:	binclude	"ringpos/sbz1.bin"
 		even
 RingPos_SBZ2:	binclude	"ringpos/sbz2.bin"
 		even
-RingPos_Null:	dc.b $FF, $FF, 0, 0, 0, 0
+RingPos_Null:	dc.b 0, 0, 0, 0, $FF, $FF, $FF, $FF
+
 
 		rept $63C
 		dc.b $FF
