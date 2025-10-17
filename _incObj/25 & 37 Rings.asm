@@ -108,7 +108,6 @@ CollectRing:
 	.playsnd:
 		jmp	(QueueSound2).w
 ; End of function CollectRing
-
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Object 37 - Scattered Rings (Lost or Attracted)
