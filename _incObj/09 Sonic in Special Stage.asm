@@ -550,6 +550,7 @@ Obj09_GetCont:
 		subq.w	#1,(v_perfectringsleft).w
 	endif
 
+		moveq	#1,d0
 		jsr		(CollectRing).l
 		cmpi.w	#50,(v_rings).w				; check if you have 50 rings
 		blo.s	Obj09_NoCont
