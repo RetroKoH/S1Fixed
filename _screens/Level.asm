@@ -288,13 +288,14 @@ Level_GetBgm:
 	endif
 
 Level_LoadTitleCard:
+		move.b  #3,(v_carddelay).w					; set the delay timer -- Fixes bug w/ HUD elements not appearing (AURORAFIELDS fix; is this still needed?)
+
 	if SkipTitleCard
 		tst.b	(f_deathflag).w					; are we restarting from death?
 		bne.s	Level_TtlCardLoop				; if yes, don't load title card objects
 	endif
 
 		move.b	#id_TitleCard,(v_titlecard).w		; load title card object
-		move.b  #3,(v_carddelay).w					; set the delay timer -- Fixes bug w/ HUD elements not appearing (AURORAFIELDS fix; is this still needed?)
 
 Level_TtlCardLoop:
 		move.b	#$C,(v_vbla_routine).w
@@ -304,9 +305,20 @@ Level_TtlCardLoop:
 		bsr.w	RunPLC
 
 ; Run these checks before proceeding...
+	if SkipTitleCard
+		tst.b	(v_titlecard).w					; is a title card loaded
+		beq.s	.nocard							; if not, branch
+
 		move.w	(v_ttlcardact+obX).w,d0
 		cmp.w	(v_ttlcardact+card_mainX).w,d0	; has title card sequence finished?
 		bne.s	Level_TtlCardLoop				; if not, branch
+
+	.nocard:
+	else
+		move.w	(v_ttlcardact+obX).w,d0
+		cmp.w	(v_ttlcardact+card_mainX).w,d0	; has title card sequence finished?
+		bne.s	Level_TtlCardLoop				; if not, branch
+	endif
 		tst.l	(v_plc_buffer).w				; are there any items in the pattern load cue?
 		bne.s	Level_TtlCardLoop				; if yes, branch
 		subq.b  #1,(v_carddelay).w				; substract 1 from timer
