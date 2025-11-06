@@ -355,12 +355,14 @@ LZWindTunnels:
 		movea.l	a1,a0						; a0 = Sonic
 		jsr		(Sonic_HitFloor).l
 		tst.w	d1
-		bpl.s	.end
+		bpl.s	.skip
 		subq.w	#1,obY(a0)
 
-	.end:
+	.skip:
 		movea.l	(sp)+,a0
 	; Floor Check end
+
+	.end:
 		rts	
 ; ===========================================================================
 
