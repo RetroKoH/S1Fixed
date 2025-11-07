@@ -298,7 +298,7 @@ loc_18B96:
 		move.l	#$0400FFC0,obVelX(a0)		; (xVel: $400, yVel: -$40); move ship to the right, and upward slightly
 
 	if PostBossScreenUnlock
-		move.w	#boss_slz_end,(v_limitright2).w
+		move.w	#boss_slz_end,(v_limitright).w
 	endif
 
 		bra.w	BossStarLight_ApplyMovement
@@ -328,9 +328,9 @@ loc_18BB4:
 
 BossStarLight_ShipFlee:		; Secondary Routine $A
 	if ~~PostBossScreenUnlock
-		cmpi.w	#boss_slz_end,(v_limitright2).w
+		cmpi.w	#boss_slz_end,(v_limitright).w
 		bhs.s	loc_18BE0
-		addq.w	#2,(v_limitright2).w
+		addq.w	#2,(v_limitright).w
 		bra.s	loc_18BE8
 ; ===========================================================================
 

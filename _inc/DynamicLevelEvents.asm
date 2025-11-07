@@ -21,20 +21,20 @@ DynamicLevelEvents:
 		move.w	DLE_Index(pc,d0.w),d0
 		jsr		DLE_Index(pc,d0.w) ; run level-specific events
 		moveq	#2,d1
-		move.w	(v_limitbtm1).w,d0
-		sub.w	(v_limitbtm2).w,d0 ; has lower level boundary changed recently?
+		move.w	(v_limitbtm_target).w,d0
+		sub.w	(v_limitbtm).w,d0 ; has lower level boundary changed recently?
 		beq.s	DLE_NoChg	; if not, branch
 		bcc.s	loc_6DAC
 
 		neg.w	d1
 		move.w	(v_screenposy).w,d0
-		cmp.w	(v_limitbtm1).w,d0
+		cmp.w	(v_limitbtm_target).w,d0
 		bls.s	loc_6DA0
-		move.w	d0,(v_limitbtm2).w
-		andi.w	#$FFFE,(v_limitbtm2).w
+		move.w	d0,(v_limitbtm).w
+		andi.w	#$FFFE,(v_limitbtm).w
 
 loc_6DA0:
-		add.w	d1,(v_limitbtm2).w
+		add.w	d1,(v_limitbtm).w
 		move.b	#1,(f_bgscrollvert).w
 
 DLE_NoChg:
@@ -44,7 +44,7 @@ DLE_NoChg:
 loc_6DAC:
 		move.w	(v_screenposy).w,d0
 		addq.w	#8,d0
-		cmp.w	(v_limitbtm2).w,d0
+		cmp.w	(v_limitbtm).w,d0
 		blo.s	loc_6DC4
 		btst	#staAir,(v_player+obStatus).w
 		beq.s	loc_6DC4
@@ -52,7 +52,7 @@ loc_6DAC:
 		add.w	d1,d1
 
 loc_6DC4:
-		add.w	d1,(v_limitbtm2).w
+		add.w	d1,(v_limitbtm).w
 		move.b	#1,(f_bgscrollvert).w
 		rts	
 ; End of function DynamicLevelEvents
@@ -105,10 +105,10 @@ DLE_Index:	offsetTable
 ; ---------------------------------------------------------------------------
 
 DLE_GHZ1:
-		move.w	#$300,(v_limitbtm1).w ; set lower y-boundary
+		move.w	#$300,(v_limitbtm_target).w ; set lower y-boundary
 		cmpi.w	#$1780,(v_screenposx).w ; has the camera reached $1780 on x-axis?
 		blo.s	.ret	; if not, branch
-		move.w	#$400,(v_limitbtm1).w ; set lower y-boundary
+		move.w	#$400,(v_limitbtm_target).w ; set lower y-boundary
 
 	.ret:
 DLE_LZ12:
@@ -119,16 +119,16 @@ DLE_Ending:
 ; ===========================================================================
 
 DLE_GHZ2:
-		move.w	#$300,(v_limitbtm1).w
+		move.w	#$300,(v_limitbtm_target).w
 		cmpi.w	#$ED0,(v_screenposx).w
 		blo.s	.ret
-		move.w	#$200,(v_limitbtm1).w
+		move.w	#$200,(v_limitbtm_target).w
 		cmpi.w	#$1600,(v_screenposx).w
 		blo.s	.ret
-		move.w	#$400,(v_limitbtm1).w
+		move.w	#$400,(v_limitbtm_target).w
 		cmpi.w	#$1D60,(v_screenposx).w
 		blo.s	.ret
-		move.w	#$300,(v_limitbtm1).w
+		move.w	#$300,(v_limitbtm_target).w
 
 .ret:
 		rts	
@@ -147,24 +147,24 @@ GHZ3_Index:
 	; Routine Optimization End
 
 DLE_GHZ3end:
-		move.w	(v_screenposx).w,(v_limitleft2).w
+		move.w	(v_screenposx).w,(v_limitleft).w
 		rts	
 ; ===========================================================================
 
 DLE_GHZ3main:
-		move.w	#$300,(v_limitbtm1).w
+		move.w	#$300,(v_limitbtm_target).w
 		cmpi.w	#$380,(v_screenposx).w
 		blo.s	locret_6E96
-		move.w	#$310,(v_limitbtm1).w
+		move.w	#$310,(v_limitbtm_target).w
 		cmpi.w	#$960,(v_screenposx).w
 		blo.s	locret_6E96
 		cmpi.w	#$280,(v_screenposy).w
 		blo.s	loc_6E98
-		move.w	#$400,(v_limitbtm1).w
+		move.w	#$400,(v_limitbtm_target).w
 		cmpi.w	#$1380,(v_screenposx).w
 		bhs.s	loc_6E8E
-		move.w	#$4C0,(v_limitbtm1).w
-		move.w	#$4C0,(v_limitbtm2).w
+		move.w	#$4C0,(v_limitbtm_target).w
+		move.w	#$4C0,(v_limitbtm).w
 
 loc_6E8E:
 		cmpi.w	#$1700,(v_screenposx).w
@@ -175,7 +175,7 @@ locret_6E96:
 ; ===========================================================================
 
 loc_6E98:
-		move.w	#boss_ghz_y,(v_limitbtm1).w
+		move.w	#boss_ghz_y,(v_limitbtm_target).w
 		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 		rts	
 ; ===========================================================================
@@ -293,13 +293,13 @@ MZ1_Index:
 	; Routine Optimization End
 
 loc_6FBA:
-		move.w	#$1D0,(v_limitbtm1).w
+		move.w	#$1D0,(v_limitbtm_target).w
 		cmpi.w	#$700,(v_screenposx).w
 		blo.s	locret_6FE8
-		move.w	#$220,(v_limitbtm1).w
+		move.w	#$220,(v_limitbtm_target).w
 		cmpi.w	#$D00,(v_screenposx).w
 		blo.s	locret_6FE8
-		move.w	#$340,(v_limitbtm1).w
+		move.w	#$340,(v_limitbtm_target).w
 		cmpi.w	#$340,(v_screenposy).w
 		blo.s	locret_6FE8
 		addq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
@@ -316,14 +316,14 @@ loc_6FEA:
 ; ===========================================================================
 
 loc_6FF8:
-		clr.w	(v_limittop2).w
+		clr.w	(v_limittop).w
 		cmpi.w	#$E00,(v_screenposx).w
 		bhs.s	locret_702C
-		move.w	#$340,(v_limittop2).w
-		move.w	#$340,(v_limitbtm1).w
+		move.w	#$340,(v_limittop).w
+		move.w	#$340,(v_limitbtm_target).w
 		cmpi.w	#$A90,(v_screenposx).w
 		bhs.s	locret_702C
-		move.w	#$500,(v_limitbtm1).w
+		move.w	#$500,(v_limitbtm_target).w
 		cmpi.w	#$370,(v_screenposy).w
 		blo.s	locret_702C
 		addq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
@@ -344,7 +344,7 @@ loc_703C:
 		blo.s	locret_704E
 		cmpi.w	#$B80,(v_screenposx).w
 		bcs.s	locret_704E
-		move.w	#$500,(v_limittop2).w
+		move.w	#$500,(v_limittop).w
 		addq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 
 locret_704E:
@@ -354,36 +354,36 @@ locret_704E:
 loc_7050:
 		cmpi.w	#$B80,(v_screenposx).w
 		bcc.s	locj_76B8
-		cmpi.w	#$340,(v_limittop2).w
+		cmpi.w	#$340,(v_limittop).w
 		beq.s	locret_7072
-		subq.w	#2,(v_limittop2).w
+		subq.w	#2,(v_limittop).w
 		rts
 
 locj_76B8:
-		cmpi.w	#$500,(v_limittop2).w
+		cmpi.w	#$500,(v_limittop).w
 		beq.s	locj_76CE
 		cmpi.w	#$500,(v_screenposy).w
 		bcs.s	locret_7072
-		move.w	#$500,(v_limittop2).w
+		move.w	#$500,(v_limittop).w
 
 locj_76CE:
 		cmpi.w	#$E70,(v_screenposx).w
 		blo.s	locret_7072
-		clr.w	(v_limittop2).w
-		move.w	#$500,(v_limitbtm1).w
+		clr.w	(v_limittop).w
+		move.w	#$500,(v_limitbtm_target).w
 		cmpi.w	#$1430,(v_screenposx).w
 		blo.s	locret_7072
-		move.w	#$210,(v_limitbtm1).w
+		move.w	#$210,(v_limitbtm_target).w
 
 locret_7072:
 		rts	
 ; ===========================================================================
 
 DLE_MZ2:
-		move.w	#$520,(v_limitbtm1).w
+		move.w	#$520,(v_limitbtm_target).w
 		cmpi.w	#$1700,(v_screenposx).w
 		blo.s	locret_7088
-		move.w	#$200,(v_limitbtm1).w
+		move.w	#$200,(v_limitbtm_target).w
 
 locret_7088:
 		rts	
@@ -396,15 +396,15 @@ DLE_MZ3:
 	; Optimized Routine Handling End
 
 ;DLE_MZ3end:
-		move.w	(v_screenposx).w,(v_limitleft2).w
+		move.w	(v_screenposx).w,(v_limitleft).w
 locret_70E8:
 		rts
 
 DLE_MZ3boss:
-		move.w	#$720,(v_limitbtm1).w
+		move.w	#$720,(v_limitbtm_target).w
 		cmpi.w	#boss_mz_x-$2A0,(v_screenposx).w
 		blo.s	locret_70E8
-		move.w	#boss_mz_y,(v_limitbtm1).w
+		move.w	#boss_mz_y,(v_limitbtm_target).w
 		cmpi.w	#boss_mz_x-$10,(v_screenposx).w
 		blo.s	locret_70E8
 		bsr.w	FindFreeObj
@@ -446,7 +446,7 @@ SLZ3_Index:
 DLE_SLZ3main:
 		cmpi.w	#boss_slz_x-$190,(v_screenposx).w
 		blo.s	locret_7130
-		move.w	#boss_slz_y,(v_limitbtm1).w
+		move.w	#boss_slz_y,(v_limitbtm_target).w
 		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 
 locret_7130:
@@ -476,7 +476,7 @@ loc_7144:
 ; ===========================================================================
 
 DLE_SLZ3end:
-		move.w	(v_screenposx).w,(v_limitleft2).w
+		move.w	(v_screenposx).w,(v_limitleft).w
 		rts
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -484,13 +484,13 @@ DLE_SLZ3end:
 ; ---------------------------------------------------------------------------
 
 DLE_SYZ2:
-		move.w	#$520,(v_limitbtm1).w
+		move.w	#$520,(v_limitbtm_target).w
 		cmpi.w	#$25A0,(v_screenposx).w
 		blo.s	locret_71A2
-		move.w	#$420,(v_limitbtm1).w
+		move.w	#$420,(v_limitbtm_target).w
 		cmpi.w	#$4D0,(v_player+obY).w
 		blo.s	locret_71A2
-		move.w	#$520,(v_limitbtm1).w
+		move.w	#$520,(v_limitbtm_target).w
 
 locret_71A2:
 		rts	
@@ -524,7 +524,7 @@ locret_71CE:
 DLE_SYZ3boss:
 		cmpi.w	#boss_syz_x,(v_screenposx).w
 		blo.s	locret_7200
-		move.w	#boss_syz_y,(v_limitbtm1).w
+		move.w	#boss_syz_y,(v_limitbtm_target).w
 		bsr.w	FindFreeObj
 		bne.s	loc_71EC
 		move.b	#id_BossSpringYard,obID(a1)	; load SYZ boss object
@@ -544,7 +544,7 @@ loc_71EC:
 ; ===========================================================================
 
 DLE_SYZ3end:
-		move.w	(v_screenposx).w,(v_limitleft2).w
+		move.w	(v_screenposx).w,(v_limitleft).w
 locret_7200:
 		rts	
 ; ===========================================================================
@@ -553,13 +553,13 @@ locret_7200:
 ; ---------------------------------------------------------------------------
 
 DLE_SBZ1:
-		move.w	#$720,(v_limitbtm1).w
+		move.w	#$720,(v_limitbtm_target).w
 		cmpi.w	#$1880,(v_screenposx).w
 		blo.s	locret_7242
-		move.w	#$620,(v_limitbtm1).w
+		move.w	#$620,(v_limitbtm_target).w
 		cmpi.w	#$2000,(v_screenposx).w
 		blo.s	locret_7242
-		move.w	#$2A0,(v_limitbtm1).w
+		move.w	#$2A0,(v_limitbtm_target).w
 
 locret_7242:
 		rts	
@@ -582,10 +582,10 @@ SBZ2_Index:		offsetTable
 ; ===========================================================================
 
 DLE_SBZ2main:
-		move.w	#$800,(v_limitbtm1).w
+		move.w	#$800,(v_limitbtm_target).w
 		cmpi.w	#$1800,(v_screenposx).w
 		blo.s	locret_727A
-		move.w	#boss_sbz2_y,(v_limitbtm1).w
+		move.w	#boss_sbz2_y,(v_limitbtm_target).w
 		cmpi.w	#$1E00,(v_screenposx).w
 		blo.s	locret_727A
 		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
@@ -651,15 +651,15 @@ DLE_SBZ2warp:
 		move.b	#id_Special,(v_gamemode).w	; set game mode to Special Stage (10)
 ;		move.b	#1,(f_restart).w			; restart the level
 		move.w	#(id_LZ<<8)+3,(v_zone).w	; set level to SBZ3 (LZ4)
-		move.w	#$F00,(v_waterpos1).w		; set water level so no distortion effect
-		move.w	#$F00,(v_waterpos2).w
-		move.w	#$F00,(v_waterpos3).w
+		move.w	#$F00,(v_waterpos_actual).w		; set water level so no distortion effect
+		move.w	#$F00,(v_waterpos_base).w
+		move.w	#$F00,(v_waterpos_target).w
 		rts
 	endif	; Giant Rings In SBZ end
 ; ===========================================================================
 
 loc_72C2:
-		move.w	(v_screenposx).w,(v_limitleft2).w
+		move.w	(v_screenposx).w,(v_limitleft).w
 		rts	
 ; ===========================================================================
 

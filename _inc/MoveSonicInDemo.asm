@@ -12,7 +12,7 @@ MoveSonicInDemo:
 ; ===========================================================================
 
 MDemo_On:
-		tst.b	(v_jpadhold1).w				; is start button pressed?
+		tst.b	(v_jpadheld_actual).w				; is start button pressed?
 		bpl.s	.dontquit					; if not, branch
 		tst.w	(f_demo).w					; is this an ending sequence demo?
 		bmi.s	.dontquit					; if yes, branch
@@ -39,7 +39,7 @@ MDemo_On:
 		move.w	(v_btnpushtime1).w,d0
 		adda.w	d0,a1
 		move.b	(a1),d0
-		lea		(v_jpadhold1).w,a0
+		lea		(v_jpadheld_actual).w,a0
 		move.b	d0,d1
 		move.b	-2(a0),d2					; FraGag Demo Playback Fix
 		eor.b	d2,d0

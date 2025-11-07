@@ -375,9 +375,9 @@ loc_1A15C:
 		jsr		(AnimateSprite).w
 
 loc_1A166:
-		cmpi.w	#boss_fz_end,(v_limitright2).w
+		cmpi.w	#boss_fz_end,(v_limitright).w
 		bge.s	loc_1A172
-		addq.w	#2,(v_limitright2).w
+		addq.w	#2,(v_limitright).w
 
 loc_1A172:
 		cmpi.b	#$C,objoff_34(a0)
@@ -435,11 +435,11 @@ loc_1A216:
 		cmpi.w	#boss_fz_end+$90,(v_player+obX).w
 		blt.s	loc_1A23A
 		move.b	#1,(f_lockctrl).w
-		clr.w	(v_jpadhold2).w
+		clr.w	(v_jpadheld_dup).w
 		clr.w	(v_player+obInertia).w
 		tst.w	obVelY(a0)
 		bpl.s	loc_1A248
-		move.w	#$100,(v_jpadhold2).w
+		move.w	#$100,(v_jpadheld_dup).w
 
 loc_1A23A:
 		cmpi.w	#boss_fz_end+$E0,(v_player+obX).w

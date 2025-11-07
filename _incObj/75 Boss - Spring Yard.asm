@@ -407,7 +407,7 @@ loc_194C2:
 		move.l	#$0400FFC0,obVelX(a0)	; (xVel: $400, yVel: -$40); move ship to the right, and upward slightly
 
 	if PostBossScreenUnlock
-		move.w	#boss_syz_end,(v_limitright2).w
+		move.w	#boss_syz_end,(v_limitright).w
 	endif
 
 		bra.w	BossSpringYard_ApplyMovement
@@ -437,9 +437,9 @@ loc_194E0:
 
 BossSpringYard_ShipFlee:		; Secondary Routine $A
 	if ~~PostBossScreenUnlock
-		cmpi.w	#boss_syz_end,(v_limitright2).w
+		cmpi.w	#boss_syz_end,(v_limitright).w
 		bhs.s	loc_1950C
-		addq.w	#2,(v_limitright2).w
+		addq.w	#2,(v_limitright).w
 		bra.s	loc_19512
 ; ===========================================================================
 	endif

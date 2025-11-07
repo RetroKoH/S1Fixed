@@ -118,7 +118,7 @@ Got_Display:
 Got_TimeBonus:	; Routine 6
 		bsr.w	DisplaySprite
 		moveq	#10,d1					; set score decrement to 10
-		move.b	(v_jpadhold1).w,d0
+		move.b	(v_jpadheld_actual).w,d0
 		andi.b	#btnABC,d0				; is A, B or C pressed?
 		beq.w	.dontspeedup			; if not, branch
 		move.b	#100,d1					; increase score decrement to 100
@@ -414,8 +414,8 @@ Got_SBZ2:
 ; ===========================================================================
 
 loc_C766:	; Routine $10
-		addq.w	#2,(v_limitright2).w
-		cmpi.w	#$2100,(v_limitright2).w
+		addq.w	#2,(v_limitright).w
+		cmpi.w	#$2100,(v_limitright).w
 		beq.w	DeleteObject
 		rts	
 ; ===========================================================================

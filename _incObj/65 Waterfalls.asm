@@ -54,7 +54,7 @@ WFall_ChkDel:	; Routine 4
 ; ===========================================================================
 
 WFall_OnWater:	; Routine 6
-		move.w	(v_waterpos1).w,d0
+		move.w	(v_waterpos_actual).w,d0
 		subi.w	#$10,d0
 		move.w	d0,obY(a0)	; match	object position	to water height
 		lea		Ani_WFall(pc),a1

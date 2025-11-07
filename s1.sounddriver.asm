@@ -808,10 +808,10 @@ PlayPCM_Loop:
 		dbf		d0,*						; Decrement d0; jump to itself if not 0. (for pitch control, avoids playing the sample too fast)  
 		sub.l	#1,d3						; Subtract 1 from the PCM sample size 
 		beq.s	return_PlayPCM				; If d3 = 0, we finished playing the PCM sample, so stop playing, leave this loop, and unfreeze the 68K 
-		lea		(v_jpadhold1).w,a0			; address where JoyPad states are written 
+		lea		(v_jpadheld_actual).w,a0			; address where JoyPad states are written 
 		lea		(ym2612_d1).l,a1			; address where JoyPad states are read from 
 		jsr		(ReadJoypads).w				; Read only the first joypad port. It's important that we do NOT do the two ports, we don't have the cycles for that 
-		btst	#bitStart,(v_jpadhold1).w	; Check for Start button 
+		btst	#bitStart,(v_jpadheld_actual).w	; Check for Start button 
 		bne.s	return_PlayPCM				; If start is pressed, stop playing, leave this loop, and unfreeze the 68K 
 		bra.s	PlayPCM_Loop				; Otherwise, continue playing PCM sample
 

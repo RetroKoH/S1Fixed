@@ -8,7 +8,7 @@ GM_Ending:
 		bsr.w	PaletteFadeOut
 
 		clearRAM v_objspace
-		clearRAM v_misc_variables
+		clearRAM v_vbla_variables
 		clearRAM v_levelvariables
 		clearRAM v_timingandscreenvariables
 
@@ -66,7 +66,7 @@ End_LoadSonic:
 		move.b	#id_SonicPlayer,(v_player).w		; load Sonic object
 		bset	#staFacing,(v_player+obStatus).w	; make Sonic face left
 		move.b	#1,(f_lockctrl).w					; lock controls
-		move.w	#(btnL<<8),(v_jpadhold2).w			; move Sonic to the left
+		move.w	#(btnL<<8),(v_jpadheld_dup).w			; move Sonic to the left
 		move.w	#$F800,(v_player+obInertia).w		; set Sonic's speed
 		jsr		(ObjPosLoad).l
 		jsr		(ExecuteObjects).l
@@ -81,7 +81,7 @@ End_LoadSonic:
 		move.w	d0,(v_framecount).w
 		move.w	d0,(f_debugmode).w					; disable debug mode
 		bsr.w	OscillateNumInit
-		move.w	#1800,(v_demolength).w
+		move.w	#1800,(v_countdown).w
 		move.b	#$18,(v_vbla_routine).w
 		bsr.w	WaitForVBla
 		move.w	(v_vdp_buffer1).w,d0
@@ -184,7 +184,7 @@ End_MoveSonic:
 
 		addq.b	#2,(v_sonicend).w
 		move.b	#1,(f_lockctrl).w ; lock player's controls
-		move.w	#(btnR<<8),(v_jpadhold2).w ; move Sonic to the right
+		move.w	#(btnR<<8),(v_jpadheld_dup).w ; move Sonic to the right
 		rts	
 ; ===========================================================================
 
@@ -197,7 +197,7 @@ End_MoveSon2:
 		addq.b	#2,(v_sonicend).w
 		moveq	#0,d0
 		move.b	d0,(f_lockctrl).w
-		move.w	d0,(v_jpadhold2).w ; stop Sonic moving
+		move.w	d0,(v_jpadheld_dup).w ; stop Sonic moving
 		move.w	d0,(v_player+obInertia).w
 		move.b	#$81,(v_player+obCtrlLock).w ; lock controls and disable object interaction
 		move.b	#fr_SonWait2,(v_player+obFrame).w

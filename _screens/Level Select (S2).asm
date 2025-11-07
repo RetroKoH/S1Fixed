@@ -95,7 +95,7 @@ LevelSelect_MainLoop:
 		enable_ints
 		lea		(Anim_SonicMilesBG).l,a2
 		jsr		Dynamic_Menu	; background
-		move.b	(v_jpadpress1).w,d0
+		move.b	(v_jpadpressed_actual).w,d0
 		andi.b	#btnStart,d0	; start pressed?
 		bne.s	LevelSelect_PressStart	; yes
 		bra.w	LevelSelect_MainLoop	; no
@@ -112,7 +112,7 @@ LevelSelect_PressStart:
 		move.b	#id_Special,(v_gamemode).w	; set screen mode to $10 (Special Stage)
 	;	tst.b	(f_debugcheat).w			; has debug cheat been entered?
 	;	beq.s	.nodebug					; if not, branch
-	;	btst	#bitA,(v_jpadhold1).w		; is A button held?
+	;	btst	#bitA,(v_jpadheld_actual).w		; is A button held?
 	;	beq.s	.nodebug					; if not, branch
 		move.b	#1,(f_debugmode).w			; enable debug mode
 .nodebug:
@@ -187,7 +187,7 @@ LevelSelect_StartZone:
 		move.w	d0,(v_zone).w
 	;	tst.b	(f_debugcheat).w		; has debug cheat been entered?
 	;	beq.s	PlayLevel				; if not, branch
-	;	btst	#bitA,(v_jpadhold1).w	; is A button held?
+	;	btst	#bitA,(v_jpadheld_actual).w	; is A button held?
 	;	beq.s	PlayLevel				; if not, branch
 		move.b	#1,(f_debugmode).w		; enable debug mode
 		bra.w	PlayLevel				; added branch because I consolidated all level select code/data to this file
@@ -197,7 +197,7 @@ LevelSelect_StartZone:
 ; ---------------------------------------------------------------------------
 ; loc_94DC:
 LevSelControls:
-		move.b	(v_jpadpress1).w,d1
+		move.b	(v_jpadpressed_actual).w,d1
 		andi.b	#btnUp|btnDn,d1
 		bne.s	.ChkUpDown	; up/down pressed
 		subq.w	#1,(v_levseldelay).w
@@ -205,7 +205,7 @@ LevSelControls:
 
 	.ChkUpDown:
 		move.w	#$B,(v_levseldelay).w
-		move.b	(v_jpadhold1).w,d1
+		move.b	(v_jpadheld_actual).w,d1
 		andi.b	#btnUp|btnDn,d1
 		beq.s	LevSelControls_CheckLR	; up/down not pressed, check for left & right
 		move.w	(v_levselzone).w,d0
@@ -231,7 +231,7 @@ LevSelControls_CheckLR:
 		cmpi.w	#$15,(v_levselzone).w		; are we in the sound test?
 		bne.s	LevSelControls_SwitchSide	; if not, branch
 		move.w	(v_levselsound).w,d0
-		move.b	(v_jpadpress1).w,d1
+		move.b	(v_jpadpressed_actual).w,d1
 		btst	#bitL,d1
 		beq.s	.chkright
 		subq.b	#1,d0
@@ -266,7 +266,7 @@ LevSelControls_CheckLR:
 		rts
 ; ===========================================================================
 LevSelControls_SwitchSide:	; not in soundtest, not up/down pressed
-		move.b	(v_jpadpress1).w,d1
+		move.b	(v_jpadpressed_actual).w,d1
 		andi.b	#btnL|btnR,d1
 		beq.s	.rts				; no direction key pressed
 		move.w	(v_levselzone).w,d0	; left or right pressed

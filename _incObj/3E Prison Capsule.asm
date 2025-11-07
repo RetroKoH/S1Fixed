@@ -108,7 +108,7 @@ Pri_Switched:	; Routine 4
 		clr.b	(f_timecount).w					; stop time counter
 		clr.b	(f_lockscreen).w				; lock screen position
 		move.b	#1,(f_lockctrl).w				; lock controls
-		move.w	#(btnR<<8),(v_jpadhold2).w		; make Sonic run to the right
+		move.w	#(btnR<<8),(v_jpadheld_dup).w		; make Sonic run to the right
 		bclr	#staSonicOnObj,obStatus(a0)
 		bclr	#staOnObj,(v_player+obStatus).w
 		bset	#staAir,(v_player+obStatus).w

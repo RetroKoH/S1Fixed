@@ -120,7 +120,7 @@ SSR_RingBonus:	; Routine 6
 
 	if SpeedUpScoreTally=1	; Mercury Speed Up Score Tally
 		moveq	#10,d1			; set score decrement to 10
-		move.b	(v_jpadhold1).w,d0
+		move.b	(v_jpadheld_actual).w,d0
 		andi.b	#btnABC,d0		; is A, B or C pressed?
 		beq.w	.dontspeedup	; if not, branch
 		move.b	#100,d1			; increase score decrement to 100

@@ -14,7 +14,7 @@ Sonic_DoubleJump:
 		bne.s	Sonic_ShieldDoNothing			; if yes, branch and exit
 	endif
 
-		move.b	(v_jpadpress2).w,d0
+		move.b	(v_jpadpressed_dup).w,d0
 		andi.b	#btnABC,d0						; are buttons A, B, or C being pressed?
 		beq.s	Sonic_ShieldDoNothing			; if not, branch
 		bclr	#staRollJump,obStatus(a0)

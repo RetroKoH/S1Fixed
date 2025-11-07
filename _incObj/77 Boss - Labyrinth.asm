@@ -288,7 +288,7 @@ loc_18136:
 		addq.b	#2,ob2ndRout(a0)
 
 	if PostBossScreenUnlock
-		move.w	#boss_lz_end,(v_limitright2).w
+		move.w	#boss_lz_end,(v_limitright).w
 	endif
 
 		bra.w	loc_17F38
@@ -296,9 +296,9 @@ loc_18136:
 
 BossLabyrinth_ShipFlee:
 	if ~~PostBossScreenUnlock
-		cmpi.w	#boss_lz_end,(v_limitright2).w
+		cmpi.w	#boss_lz_end,(v_limitright).w
 		bhs.s	loc_18160
-		addq.w	#2,(v_limitright2).w
+		addq.w	#2,(v_limitright).w
 		bra.w	loc_17F38
 ; ===========================================================================
 

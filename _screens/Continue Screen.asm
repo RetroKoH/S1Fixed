@@ -40,7 +40,7 @@ GM_Continue:
 		bsr.w	QueueSound1									; play continue	music
 	endif
 
-		move.w	#659,(v_demolength).w						; set time delay to 11 seconds
+		move.w	#659,(v_countdown).w						; set time delay to 11 seconds
 		clr.l	(v_screenposx).w
 		move.l	#$1000000,(v_screenposy).w
 		move.b	#id_ContSonic,(v_player).w					; load Sonic object
@@ -66,7 +66,7 @@ Cont_MainLoop:
 		cmpi.b	#6,(v_player+obRoutine).w
 		bhs.s	loc_4DF2
 		disable_ints
-		move.w	(v_demolength).w,d1
+		move.w	(v_countdown).w,d1
 		divu.w	#$3C,d1
 		andi.l	#$F,d1
 		jsr		(ContScrCounter).l
@@ -79,7 +79,7 @@ loc_4DF2:
 		bhs.s	Cont_GotoLevel				; if yes, branch
 		cmpi.b	#6,(v_player+obRoutine).w
 		bhs.s	Cont_MainLoop
-		tst.w	(v_demolength).w
+		tst.w	(v_countdown).w
 		bne.w	Cont_MainLoop
 		move.b	#id_Sega,(v_gamemode).w		; go to Sega screen
 		rts	

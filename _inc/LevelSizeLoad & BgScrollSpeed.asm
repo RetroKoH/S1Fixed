@@ -11,28 +11,21 @@ LevelSizeLoad:
 		move.w	(v_zone).w,d0
 		ror.b	#2,d0						; lsl.b	#6,d0 > Filter Optimized Shifting
 		lsr.w	#4,d0
-		move.w	d0,d1
-		add.w	d0,d0
-		add.w	d1,d0
+		add.w	d0,d0						; d0 = zone/act id multiplied by 8 (Hivebrain optimization)
 		lea		LevelSizeArray(pc,d0.w),a0	; load level boundaries
-		move.w	(a0)+,d0					; always loads 0004 (unused)
 
 	; load left/right boundaries (word-length each)
 		move.l	(a0)+,d0
-		move.l	d0,(v_limitleft2).w
-		move.l	d0,(v_limitleft1).w
+		move.l	d0,(v_limitleft).w			; load left & right boundaries (2 bytes each)
+		move.l	d0,(v_limitleft_target).w			; load left & right target boundaries (2 bytes each)
 
 	; load top/bottom boundaries (word-length each)
 		move.l	(a0)+,d0
-		move.l	d0,(v_limittop2).w
-		move.l	d0,(v_limittop1).w
+		move.l	d0,(v_limittop).w			; load top & bottom boundaries (2 bytes each)
+		move.l	d0,(v_limittop_target).w			; load top & bottom target boundaries (2 bytes each)
 
-		move.w	(v_limitleft2).w,d0
-		addi.w	#$240,d0
-		move.w	d0,(v_limitleft3).w
 		move.w	#$1010,(v_fg_xblock).w		; and v_fg_yblock
-		move.w	(a0)+,d0
-		move.w	d0,(v_lookshift).w
+		move.w	#$60,(v_lookshift).w		; default camera shift = $60 (changes when Sonic looks up/down)
 	
 	if CDCamera
 		move.w	#160,(v_camera_pan).w		; reset the horizontal camera pan value to 160 pixels
@@ -40,46 +33,47 @@ LevelSizeLoad:
 
 		bra.w	LevSz_ChkLamp
 ; ===========================================================================
+
 ; ---------------------------------------------------------------------------
-; Level size array
+; Level size array - 4 values per act (Hivebrain optimization)
 ; ---------------------------------------------------------------------------
 LevelSizeArray:
 		; GHZ
-		dc.w $0004, $0000, $24BF, $0000, $0300, $0060
-		dc.w $0004, $0000, $1EBF, $0000, $0300, $0060
-		dc.w $0004, $0000, $2960, $0000, $0300, $0060
-		dc.w $0004, $0000, $2ABF, $0000, $0300, $0060
+		dc.w $0000, $24BF, $0000, $0300
+		dc.w $0000, $1EBF, $0000, $0300
+		dc.w $0000, $2960, $0000, $0300
+		dc.w $0000, $2ABF, $0000, $0300
 		; LZ
-		dc.w $0004, $0000, $19BF, $0000, $0530, $0060
-		dc.w $0004, $0000, $10AF, $0000, $0720, $0060
-		dc.w $0004, $0000, $202F, $FF00, $0800, $0060
-		dc.w $0004, $0000, $20BF, $0000, $0720, $0060
+		dc.w $0000, $19BF, $0000, $0530
+		dc.w $0000, $10AF, $0000, $0720
+		dc.w $0000, $202F, $FF00, $0800
+		dc.w $0000, $20BF, $0000, $0720
 		; MZ
-		dc.w $0004, $0000, $17BF, $0000, $01D0, $0060
-		dc.w $0004, $0000, $18BF, $0000, $0520, $0060	; Act 2 right boundary expanded slightly.
-		dc.w $0004, $0000, $1800, $0000, $0720, $0060
-		dc.w $0004, $0000, $16BF, $0000, $0720, $0060
+		dc.w $0000, $17BF, $0000, $01D0
+		dc.w $0000, $18BF, $0000, $0520		; Act 2 right boundary expanded slightly.
+		dc.w $0000, $1800, $0000, $0720
+		dc.w $0000, $16BF, $0000, $0720
 		; SLZ
-		dc.w $0004, $0000, $1FBF, $0000, $0640, $0060
-		dc.w $0004, $0000, $1FBF, $0000, $0640, $0060
-		dc.w $0004, $0000, $2000, $0000, $06C0, $0060
-		dc.w $0004, $0000, $3EC0, $0000, $0720, $0060
+		dc.w $0000, $1FBF, $0000, $0640
+		dc.w $0000, $1FBF, $0000, $0640
+		dc.w $0000, $2000, $0000, $06C0
+		dc.w $0000, $3EC0, $0000, $0720
 		; SYZ
-		dc.w $0004, $0000, $22C0, $0000, $0420, $0060
-		dc.w $0004, $0000, $28C0, $0000, $0520, $0060
-		dc.w $0004, $0000, $2C00, $0000, $0620, $0060
-		dc.w $0004, $0000, $2EC0, $0000, $0620, $0060
+		dc.w $0000, $22C0, $0000, $0420
+		dc.w $0000, $28C0, $0000, $0520
+		dc.w $0000, $2C00, $0000, $0620
+		dc.w $0000, $2EC0, $0000, $0620
 		; SBZ
-		dc.w $0004, $0000, $21C0, $0000, $0720, $0060
-		dc.w $0004, $0000, $1E40, $FF00, $0800, $0060
-		dc.w $0004, $2080, $2460, $0510, $0510, $0060
-		dc.w $0004, $0000, $3EC0, $0000, $0720, $0060
-		zonewarning LevelSizeArray,$30
+		dc.w $0000, $21C0, $0000, $0720
+		dc.w $0000, $1E40, $FF00, $0800
+		dc.w $2080, $2460, $0510, $0510
+		dc.w $0000, $3EC0, $0000, $0720
+		zonewarning LevelSizeArray,$20
 		; Ending
-		dc.w $0004, $0000, $0500, $0110, $0110, $0060
-		dc.w $0004, $0000, $0DC0, $0110, $0110, $0060
-		dc.w $0004, $0000, $2FFF, $0000, $0320, $0060
-		dc.w $0004, $0000, $2FFF, $0000, $0320, $0060
+		dc.w $0000, $0500, $0110, $0110
+		dc.w $0000, $0DC0, $0110, $0110
+		dc.w $0000, $2FFF, $0000, $0320
+		dc.w $0000, $2FFF, $0000, $0320
 
 ; ---------------------------------------------------------------------------
 ; Ending start location array
@@ -150,7 +144,7 @@ LevSz_SkipStartPos:
 		moveq	#0,d1
 
 SetScr_WithinLeft:
-		move.w	(v_limitright2).w,d2
+		move.w	(v_limitright).w,d2
 		cmp.w	d2,d1					; is Sonic inside the right edge?
 		blo.s	SetScr_WithinRight		; if yes, branch
 		move.w	d2,d1
@@ -163,9 +157,9 @@ SetScr_WithinRight:
 		moveq	#0,d0
 
 SetScr_WithinTop:
-		cmp.w	(v_limitbtm2).w,d0 ; is Sonic above the bottom edge?
+		cmp.w	(v_limitbtm).w,d0 ; is Sonic above the bottom edge?
 		blt.s	SetScr_WithinBottom ; if yes, branch
-		move.w	(v_limitbtm2).w,d0
+		move.w	(v_limitbtm).w,d0
 
 SetScr_WithinBottom:
 		move.w	d0,(v_screenposy).w ; set vertical screen position

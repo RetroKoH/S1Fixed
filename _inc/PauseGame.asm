@@ -11,7 +11,7 @@ PauseGame:
 		beq.s	Unpause						; if not, branch
 		tst.b	(f_pause).w					; is game already paused?
 		bne.s	Pause_StopGame				; if yes, branch
-		btst	#bitStart,(v_jpadpress1).w	; is Start button pressed?
+		btst	#bitStart,(v_jpadpressed_actual).w	; is Start button pressed?
 		beq.s	Pause_DoNothing				; if not, branch
 
 Pause_StopGame:
@@ -23,7 +23,7 @@ Pause_Loop:
 		bsr.w	WaitForVBla
 		tst.b	(f_slomocheat).w			; is slow-motion cheat on?
 		beq.s	Pause_ChkStart				; if not, branch
-		btst	#bitA,(v_jpadpress1).w		; is button A pressed?
+		btst	#bitA,(v_jpadpressed_actual).w		; is button A pressed?
 		beq.s	Pause_ChkBC					; if not, branch
 		move.b	#id_Title,(v_gamemode).w	; set game mode to 4 (title screen)
 		nop	
@@ -31,13 +31,13 @@ Pause_Loop:
 ; ===========================================================================
 
 Pause_ChkBC:
-		btst	#bitB,(v_jpadhold1).w		; is button B pressed?
+		btst	#bitB,(v_jpadheld_actual).w		; is button B pressed?
 		bne.s	Pause_SlowMo				; if yes, branch
-		btst	#bitC,(v_jpadpress1).w		; is button C pressed?
+		btst	#bitC,(v_jpadpressed_actual).w		; is button C pressed?
 		bne.s	Pause_SlowMo				; if yes, branch
 
 Pause_ChkStart:
-		btst	#bitStart,(v_jpadpress1).w	; is Start button pressed?
+		btst	#bitStart,(v_jpadpressed_actual).w	; is Start button pressed?
 		beq.s	Pause_Loop					; if not, branch
 
 Pause_EndMusic:
