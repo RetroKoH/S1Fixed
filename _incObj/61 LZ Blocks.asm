@@ -159,7 +159,7 @@ LBlk_Type05:
 ; ===========================================================================
 
 LBlk_Type07:
-		move.w	(v_waterpos1).w,d0
+		move.w	(v_waterpos_actual).w,d0
 		sub.w	obY(a0),d0	; is block level with water?
 		beq.s	.stop07		; if yes, branch
 		bcc.s	.fall07		; branch if block is above water

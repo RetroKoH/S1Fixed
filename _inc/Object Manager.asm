@@ -23,7 +23,7 @@ ObjPosLoad:
 	; Object Routine Optimization End
 
 OPL_Main:
-		addq.b	#4,(v_opl_routine).w
+		addq.b	#2,(v_opl_routine).w
 
 		lea     (v_objstate).w,a0
 		move.w  #$BF,d1					; set loop counter
@@ -99,7 +99,7 @@ OPL_ClrList:
 ; ---------------------------------------------------------------------------
 
 OPL_Next:
-		tst.w	(v_limitbtm1).w			; does this level y-wrap?
+		tst.w	(v_limitbtm_target).w			; does this level y-wrap?
 		bpl.s	ObjMan_Main_NoYWrap		; if not, branch
 		lea		(ChkLoadObj_YWrap).l,a6	; set object loading routine
 		move.w	(v_screenposy).w,d3
@@ -239,7 +239,7 @@ ObjPosLoad_SameXRange:
 		bge.s	ObjPosLoad_GoingDown		; if the player is moving down
  
 	; if the player is moving up
-		tst.w	(v_limittop2).w	; does the level y-wrap?
+		tst.w	(v_limittop).w	; does the level y-wrap?
 		bpl.s	ObjMan_GoingUp_NoYWrap	; if not, branch
 		tst.w	d6
 		bne.s	ObjMan_GoingUp_YWrap
@@ -261,7 +261,7 @@ ObjMan_GoingUp_NoYWrap:
 ; ---------------------------------------------------------------------------
  
 ObjPosLoad_GoingDown:
-		tst.w	(v_limittop2).w				; does the level y-wrap?
+		tst.w	(v_limittop).w				; does the level y-wrap?
 		bpl.s	ObjMan_GoingDown_NoYWrap	; if not, branch
 		tst.w	(v_screenposy_last).w
 		bne.s	ObjMan_GoingDown_YWrap

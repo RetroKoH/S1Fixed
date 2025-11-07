@@ -201,7 +201,7 @@ Deform_LZ:
 		move.b	(v_lz_deform).w,d3						; load wave-scroll timer
 		addi.w	#$80,(v_lz_deform).w					; increase wave-scroll timer
 		move.w	#224,d2									; prepare water-line count
-		move.w	(v_waterpos1).w,d1						; load water line position
+		move.w	(v_waterpos_actual).w,d1						; load water line position
 		sub.w	(v_screenposy).w,d1						; minus FG Y position
 		bmi.s	.water									; if the screen is already underwater, branch
 		cmp.w	d2,d1									; is the water line below the screen?
@@ -827,9 +827,9 @@ SH_AheadOfMid:
 
 SH_Ahead16:
 		add.w	(v_screenposx).w,d0
-		cmp.w	(v_limitright2).w,d0
+		cmp.w	(v_limitright).w,d0
 		blt.s	SH_SetScreen
-		move.w	(v_limitright2).w,d0
+		move.w	(v_limitright).w,d0
 
 SH_SetScreen:
 		move.w	d0,d1
@@ -849,9 +849,9 @@ SH_BehindMid:
 SH_Behind16:
 	; Horizontal Screen Scrolling Fix End
 		add.w	(v_screenposx).w,d0
-		cmp.w	(v_limitleft2).w,d0
+		cmp.w	(v_limitleft).w,d0
 		bgt.s	SH_SetScreen
-		move.w	(v_limitleft2).w,d0
+		move.w	(v_limitleft).w,d0
 		bra.s	SH_SetScreen
 ; End of function MoveScreenHoriz
 
@@ -962,7 +962,7 @@ loc_66C0:
 		swap	d1
 
 loc_66CC:
-		cmp.w	(v_limittop2).w,d1
+		cmp.w	(v_limittop).w,d1
 		bgt.s	loc_6724
 		cmpi.w	#-$100,d1
 		bgt.s	loc_66F0
@@ -974,7 +974,7 @@ loc_66CC:
 ; ===========================================================================
 
 loc_66F0:
-		move.w	(v_limittop2).w,d1
+		move.w	(v_limittop).w,d1
 		bra.s	loc_6724
 ; ===========================================================================
 
@@ -985,7 +985,7 @@ loc_66F6:
 		swap	d1
 
 loc_6700:
-		cmp.w	(v_limitbtm2).w,d1
+		cmp.w	(v_limitbtm).w,d1
 		blt.s	loc_6724
 		subi.w	#$800,d1
 		bcs.s	loc_6720
@@ -996,7 +996,7 @@ loc_6700:
 ; ===========================================================================
 
 loc_6720:
-		move.w	(v_limitbtm2).w,d1
+		move.w	(v_limitbtm).w,d1
 
 loc_6724:
 		move.w	(v_screenposy).w,d4

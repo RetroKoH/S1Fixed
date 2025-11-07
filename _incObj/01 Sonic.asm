@@ -56,7 +56,7 @@ Sonic_Control:	; Routine 2
 		bra.s	.nowalljump				; if not, jump to cancelling wall jump
 
 	.chkLR:
-		move.b	(v_jpadhold2).w,d0		; get jpad input
+		move.b	(v_jpadheld_dup).w,d0		; get jpad input
 		and.b	obWallJump+1(a0),d0		; is Sonic still holding the required directional input?
 		bne.s	.skip					; if yes, branch
 
@@ -115,7 +115,7 @@ Sonic_Control:	; Routine 2
 
 		tst.w	(f_debugmode).w					; is debug cheat enabled?
 		beq.s	loc_12C58						; if not, branch
-		btst	#bitB,(v_jpadpress1).w			; is button B pressed?
+		btst	#bitB,(v_jpadpressed_actual).w			; is button B pressed?
 		beq.s	loc_12C58						; if not, branch
 		move.w	#1,(v_debuguse).w				; change Sonic into a ring/item
 		clr.b	(f_lockctrl).w
@@ -125,7 +125,7 @@ Sonic_Control:	; Routine 2
 loc_12C58:
 		tst.b	(f_lockctrl).w					; are controls locked?
 		bne.s	loc_12C64						; if yes, branch
-		move.w	(v_jpadhold1).w,(v_jpadhold2).w	; enable joypad control
+		move.w	(v_jpadheld_actual).w,(v_jpadheld_dup).w	; enable joypad control
 
 loc_12C64:
 		btst	#0,obCtrlLock(a0)				; are controls locked somehow?
@@ -145,8 +145,7 @@ loc_12C7E:
 	endif
 		bsr.w	Sonic_RecordPosition
 		bsr.w	Sonic_Water
-		move.b	(v_anglebuffer).w,obFrontAngle(a0)
-		move.b	(v_anglebuffer2).w,obRearAngle(a0)
+		move.w	(v_anglebuffer_right).w,obFrontAngle(a0)	; move both angle buffers to Sonic's OSTs
 		tst.b	(f_wtunnelmode).w
 		beq.s	loc_12CA6
 		cmpi.b	#aniID_Walk,obAnim(a0)			; changed instruction because Walk is no longer #0
@@ -374,7 +373,7 @@ Sonic_Water:
 ; ===========================================================================
 
 .islabyrinth:
-		move.w	(v_waterpos1).w,d0
+		move.w	(v_waterpos_actual).w,d0
 		cmp.w	obY(a0),d0							; is Sonic above the water?
 		bge.s	.abovewater							; if yes, branch
 		bset	#staWater,obStatus(a0)
@@ -519,12 +518,12 @@ Sonic_Move:
 		bne.w	Sonic_Traction
 		tst.b	obLRLock(a0)
 		bne.w	Sonic_ResetScr
-		btst	#bitL,(v_jpadhold2).w	; is left being pressed?
+		btst	#bitL,(v_jpadheld_dup).w	; is left being pressed?
 		beq.s	.notleft				; if not, branch
 		bsr.w	Sonic_MoveLeft
 
 .notleft:
-		btst	#bitR,(v_jpadhold2).w	; is right being pressed?
+		btst	#bitR,(v_jpadheld_dup).w	; is right being pressed?
 		beq.s	.notright				; if not, branch
 		bsr.w	Sonic_MoveRight
 
@@ -681,7 +680,7 @@ SuperSonic_BalanceSetAnim:
 	endif
 
 Sonic_LookUp:
-		btst	#bitUp,(v_jpadhold2).w		; is up being pressed?
+		btst	#bitUp,(v_jpadheld_dup).w		; is up being pressed?
 		beq.s	Sonic_Duck					; if not, branch
 		move.b	#aniID_LookUp,obAnim(a0)	; use "looking up" animation
 
@@ -694,7 +693,7 @@ Sonic_LookUp:
 
 		; Mercury Look Shift Fix
 		move.w	(v_screenposy).w,d0		; get camera top coordinate
-		sub.w	(v_limittop2).w,d0		; subtract zone's top bound from it
+		sub.w	(v_limittop).w,d0		; subtract zone's top bound from it
 		add.w	(v_lookshift).w,d0		; add default offset
 		cmpi.w	#$C8,d0					; is offset <= $C8?
 		ble.s	.skip					; if so, branch
@@ -709,7 +708,7 @@ Sonic_LookUp:
 ; ===========================================================================
 
 Sonic_Duck:
-		btst	#bitDn,(v_jpadhold2).w	; is down being pressed?
+		btst	#bitDn,(v_jpadheld_dup).w	; is down being pressed?
 		beq.s	Sonic_ResetScr			; if not, branch
 		move.b	#aniID_Duck,obAnim(a0)		; use "ducking" animation
 
@@ -722,7 +721,7 @@ Sonic_Duck:
 
 		; Mercury Look Shift Fix
 		move.w	(v_screenposy).w,d0		; get camera top coordinate
-		sub.w	(v_limitbtm2).w,d0		; subtract zone's bottom bound from it (creating a negative number)
+		sub.w	(v_limitbtm).w,d0		; subtract zone's bottom bound from it (creating a negative number)
 		add.w	(v_lookshift).w,d0		; add default offset
 		cmpi.w	#8,d0					; is offset > 8?
 		bgt.s	.skip					; if greater than 8, branch
@@ -753,7 +752,7 @@ loc_12FBE:
 
 Sonic_UpdateSpeedOnGround: ;loc_12FC2:
 ; No need to update Super Sonic's d5 value here due to ApplySpeedSettings.
-		move.b	(v_jpadhold2).w,d0
+		move.b	(v_jpadheld_dup).w,d0
 		andi.b	#btnL+btnR,d0				; is left/right	pressed?
 		bne.s	Sonic_Traction				; if yes, branch
 		move.w	obInertia(a0),d0
@@ -994,12 +993,12 @@ Sonic_RollSpeed:
 		bne.w	Sonic_Roll_ResetScr
 		tst.b	obLRLock(a0)
 		bne.s	Sonic_ApplyRollSpeed
-		btst	#bitL,(v_jpadhold2).w	; is left being pressed?
+		btst	#bitL,(v_jpadheld_dup).w	; is left being pressed?
 		beq.s	.notleft				; if not, branch
 		bsr.w	Sonic_RollLeft
 
 .notleft:
-		btst	#bitR,(v_jpadhold2).w	; is right being pressed?
+		btst	#bitR,(v_jpadheld_dup).w	; is right being pressed?
 		beq.s	Sonic_ApplyRollSpeed	; if not, branch
 		bsr.w	Sonic_RollRight
 
@@ -1158,7 +1157,7 @@ Sonic_JumpDirection:
 		btst	#staRollJump,obStatus(a0)	; is Sonic locked by a rolling jump?
 		bne.s	Obj01_ResetScr2				; if yes, branch
 		move.w	obVelX(a0),d0
-		btst	#bitL,(v_jpadhold2).w		; is left being pressed?
+		btst	#bitL,(v_jpadheld_dup).w		; is left being pressed?
 		beq.s	loc_13278					; if not, branch
 		bset	#staFacing,obStatus(a0)
 		sub.w	d5,d0
@@ -1176,7 +1175,7 @@ Sonic_JumpDirection:
 		move.w	d1,d0
 
 loc_13278:
-		btst	#bitR,(v_jpadhold2).w		; is right being pressed?
+		btst	#bitR,(v_jpadheld_dup).w		; is right being pressed?
 		beq.s	Obj01_JumpMove				; if not, branch
 		bclr	#staFacing,obStatus(a0)
 		add.w	d5,d0
@@ -1253,13 +1252,13 @@ Sonic_LevelBound:
 		add.l	d0,d1
 		spl.b	d2				; +++ set if position+speed is < 32768
 		swap	d1
-		move.w	(v_limitleft2).w,d0
+		move.w	(v_limitleft).w,d0
 		addi.w	#$10,d0
 		tst.w	d2				; +++ if d2 is zero, we had an underflow of position
 		beq.s	.sides
 		cmp.w	d1,d0			; has Sonic touched the left side boundary?
 		bhi.s	.sides			; if yes, branch
-		move.w	(v_limitright2).w,d0
+		move.w	(v_limitright).w,d0
 		addi.w	#$128,d0
 		tst.b	(f_lockscreen).w
 		bne.s	.screenlocked
@@ -1270,11 +1269,11 @@ Sonic_LevelBound:
 		bls.s	.sides		; if yes, branch
 
 .chkbottom:
-		move.w	(v_limitbtm2).w,d0
+		move.w	(v_limitbtm).w,d0
 	; RetroKoH Bottom Boundary Fix
-		cmp.w	(v_limitbtm1).w,d0	; is the intended bottom boundary lower than the current one?
+		cmp.w	(v_limitbtm_target).w,d0	; is the intended bottom boundary lower than the current one?
 		bcc.s	.notlower			; if not, branch
-		move.w	(v_limitbtm1).w,d0	; d0 = intended bottom boundary
+		move.w	(v_limitbtm_target).w,d0	; d0 = intended bottom boundary
 .notlower:
 	; Bottom Boundary Fix End
 		addi.w	#224,d0
@@ -1323,10 +1322,10 @@ Sonic_Roll:
 
 ; Rewritten to match S3K
 	; Check controls first
-		move.b	(v_jpadhold2).w,d0
+		move.b	(v_jpadheld_dup).w,d0
 		andi.b	#btnL+btnR,d0			; is left/right	being pressed?
 		bne.s	.noroll					; if yes, branch
-		btst	#bitDn,(v_jpadhold2).w	; is down being pressed?
+		btst	#bitDn,(v_jpadheld_dup).w	; is down being pressed?
 		beq.s	Sonic_ChkWalk			; if not, branch and exit
 
 	; Check speeds and roll if fast enough
@@ -1389,7 +1388,7 @@ Sonic_ChkRoll:
 
 
 Sonic_Jump:
-		move.b	(v_jpadpress2).w,d0
+		move.b	(v_jpadpressed_dup).w,d0
 		andi.b	#btnABC,d0				; is A, B or C pressed?
 		beq.w	.end			; if not, branch
 		moveq	#0,d0
@@ -1476,14 +1475,14 @@ Sonic_JumpHeight:
 	if WallJumpEnabled	; Mercury Wall Jump
 		tst.b	obWallJump(a0)			; is Sonic latched to a wall for a Wall Jump?
 		beq.s	.skip					; if not, branch
-		move.b	(v_jpadpress2).w,d0
+		move.b	(v_jpadpressed_dup).w,d0
 		andi.b	#btnABC,d0				; is A, B or C pressed?
 		beq.s	.skip					; if not, branch
 		clr.w	obWallJump(a0)			; clear Wall Jump data
 		move.b	#1,obJumping(a0)
 		move.b	#aniID_Roll,obAnim(a0) 	; use "jumping" animation
 		move.w	#-$600,d0
-		btst	#bitUp,(v_jpadhold2).w
+		btst	#bitUp,(v_jpadheld_dup).w
 		bne.s	.uponly
 		move.w	#-$580,d0
 		move.w	#-$400,obVelX(a0)
@@ -1514,7 +1513,7 @@ Sonic_JumpHeight:
 loc_134AE:
 		cmp.w	obVelY(a0),d1
 		ble.s	Sonic_DoubleJump
-		move.b	(v_jpadhold2).w,d0
+		move.b	(v_jpadheld_dup).w,d0
 		andi.b	#btnABC,d0				; is A, B or C pressed/held?
 		bne.s	locret_134C2			; if yes, branch
 		move.w	d1,obVelY(a0)
@@ -1565,7 +1564,7 @@ Sonic_ChkDropDash:
 		bne.s	.ret						; if yes, exit
 
 .skipshieldcheck:
-		move.b	(v_jpadhold2).w,d0
+		move.b	(v_jpadheld_dup).w,d0
 		andi.b	#btnABC,d0					; is A, B or C held down?
 		beq.s	.reset						; if no, branch
 		addq.b	#1,obDoubleJumpProp(a0)		; increment charge timer
@@ -1679,7 +1678,7 @@ Sonic_ChkAirRoll:
 		tst.w	obVelY(a0)				; is Sonic moving upward?
 		ble.s	.end					; if yes, don't curl yet
 	else
-		move.b	(v_jpadpress2).w,d0
+		move.b	(v_jpadpressed_dup).w,d0
 		andi.b	#btnABC,d0				; are buttons A, B, or C being pressed?
 		beq.s	.noAirRoll				; if not, branch
 	endif
@@ -1726,7 +1725,7 @@ Sonic_ChkPeelout:
 		bne.s	Sonic_DashLaunch
 		cmpi.b	#aniID_LookUp,obAnim(a0)
 		bne.s	.return
-		move.b	(v_jpadpress2).w,d0
+		move.b	(v_jpadpressed_dup).w,d0
 		andi.b	#btnABC,d0
 		beq.w	.return
 		move.b	#aniID_Run,obAnim(a0)
@@ -1745,7 +1744,7 @@ Sonic_ChkPeelout:
 
 Sonic_DashLaunch:
 		move.b	#aniID_Peelout,obAnim(a0)
-		move.b	(v_jpadhold2).w,d0
+		move.b	(v_jpadheld_dup).w,d0
 		btst	#bitUp,d0
 		bne.w	Sonic_DashCharge
 
@@ -1829,7 +1828,7 @@ Sonic_ChkSpinDash:
 		bne.s	Sonic_UpdateSpinDash	; if yes, branch to updating spin dash
 		cmpi.b	#aniID_Duck,obAnim(a0)
 		bne.s	.return					; if not ducking down, return
-		move.b	(v_jpadpress2).w,d0
+		move.b	(v_jpadpressed_dup).w,d0
 		andi.b	#btnABC,d0
 		beq.w	.return					; if not pressing ABC, return
 		move.b	#aniID_SpinDash,obAnim(a0)
@@ -1857,7 +1856,7 @@ Sonic_ChkSpinDash:
 
 Sonic_UpdateSpinDash:
 		move.b	#aniID_SpinDash,obAnim(a0)
-		move.b	(v_jpadhold2).w,d0
+		move.b	(v_jpadheld_dup).w,d0
 		btst	#bitDn,d0
 		bne.w	Sonic_ChargingSpinDash
 
@@ -1942,7 +1941,7 @@ Sonic_ChargingSpinDash:				; If still charging the dash...
 		beq.s	loc_1AD48
 		
 	if SpinDashNoRevDown ; Mercury Spin Dash No Rev Down
-		move.b	(v_jpadhold2).w,d0
+		move.b	(v_jpadheld_dup).w,d0
 		andi.b	#btnABC,d0
 		bne.s	loc_1AD48	
 	endif	; Spin Dash No Rev Down end
@@ -1965,7 +1964,7 @@ Sonic_ChargingSpinDash:				; If still charging the dash...
 		clr.w	obSpinDashCounter(a0)
 
 loc_1AD48:
-		move.b	(v_jpadpress2).w,d0
+		move.b	(v_jpadpressed_dup).w,d0
 		andi.b	#btnABC,d0
 		beq.w	SpinDash_ResetScr
 		;move.w	#(id_SpinDash<<8),obAnim(a0)	; id_SpinDash
@@ -2008,7 +2007,7 @@ Sonic_ChkSpinDash:
 		bne.s	Sonic_SpinDashLaunch
 		cmpi.b	#aniID_Duck,obAnim(a0)
 		bne.s	.return
-		move.b	(v_jpadpress2).w,d0
+		move.b	(v_jpadpressed_dup).w,d0
 		andi.b	#btnABC,d0
 		beq.w	.return
 		move.w	#$0E07,obHeight(a0)		; Height and Width
@@ -2028,7 +2027,7 @@ Sonic_ChkSpinDash:
 ; ===========================================================================
 
 Sonic_SpinDashLaunch:
-		move.b	(v_jpadhold2).w,d0
+		move.b	(v_jpadheld_dup).w,d0
 		btst	#bitDn,d0
 		bne.w	Sonic_SpinDashCharge
 
@@ -2528,7 +2527,7 @@ Sonic_WallJump:
 		tst.b	obVelY(a0)					; is Sonic moving upward?
 		bmi.s	.return						; if yes, branch and exit (fail)
 
-		move.b	(v_jpadhold2).w,d0
+		move.b	(v_jpadheld_dup).w,d0
 		andi.b	#(btnL|btnR),d0				; are left or right held?
 		beq.s	.return						; if not, branch and exit (fail)
 		cmpi.b	#(btnL|btnR),d0				; are both being pressed together?
@@ -2776,9 +2775,9 @@ DropDash_Release:
 	endif
 
 		move.w	obInertia(a0),d4
-		btst	#bitL,(v_jpadhold2).w	; is left being pressed?
+		btst	#bitL,(v_jpadheld_dup).w	; is left being pressed?
 		bne.s	.dropLeft				; if yes, branch	
-		btst	#bitR,(v_jpadhold2).w	; is right being pressed?
+		btst	#bitR,(v_jpadheld_dup).w	; is right being pressed?
 		bne.s	.dropRight				; if yes, branch		
 		btst	#staFacing,obStatus(a0)	; if neither are being pressed, check orientation
 		beq.s	.dropRight
@@ -2886,7 +2885,7 @@ Sonic_Hurt:	; Routine 4
 	; RetroKoH Debug Mode Addition
 		tst.w	(f_debugmode).w			; is debug cheat enabled?
 		beq.s	Sonic_Hurt_Normal		; if not, branch
-		btst	#bitB,(v_jpadpress1).w	; is button B pressed?
+		btst	#bitB,(v_jpadpressed_actual).w	; is button B pressed?
 		beq.s	Sonic_Hurt_Normal		; if not, branch
 		move.w	#1,(v_debuguse).w		; change Sonic into a ring/item
 		clr.b	(f_lockctrl).w
@@ -2951,7 +2950,7 @@ Sonic_Death:	; Routine 6
 	; RetroKoH Debug Mode Addition
 		tst.w	(f_debugmode).w			; is debug cheat enabled?
 		beq.s	Sonic_Death_Normal		; if not, branch
-		btst	#bitB,(v_jpadpress1).w	; is button B pressed?
+		btst	#bitB,(v_jpadpressed_actual).w	; is button B pressed?
 		beq.s	Sonic_Death_Normal		; if not, branch
 		move.w	#1,(v_debuguse).w		; change Sonic into a ring/item
 		clr.b	(f_lockctrl).w
@@ -3064,7 +3063,7 @@ Sonic_Drowned:
 	; RetroKoH Debug Mode Addition
 		tst.w	(f_debugmode).w			; is debug cheat enabled?
 		beq.s	Sonic_Drowned_Normal	; if not, branch
-		btst	#bitB,(v_jpadpress1).w	; is button B pressed?
+		btst	#bitB,(v_jpadpressed_actual).w	; is button B pressed?
 		beq.s	Sonic_Drowned_Normal	; if not, branch
 		move.w	#1,(v_debuguse).w		; change Sonic into a ring/item
 		clr.b	(f_lockctrl).w

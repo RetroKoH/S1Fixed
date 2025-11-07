@@ -59,7 +59,7 @@ PSB_PrsStart:	; Routine 2
 
 	if SaveProgressMod
 PSB_Menu:	; Routine 4
-		move.b	(v_jpadpress1).w,d0
+		move.b	(v_jpadpressed_actual).w,d0
 		andi.b	#btnUp|btnDn,d0
 		beq.s	.end
 		bchg	#0,objoff_30(a0)

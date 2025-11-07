@@ -174,7 +174,7 @@ RLoss_Count:	; Routine 0
 		move.w	#-$380,obVelY(a0)
 		tst.b   (f_water).w				; Does the level have water?
 		beq.w   .loadpoints				; If not, branch and skip underwater checks
-		move.w  (v_waterpos1).w,d6		; Move water level to d6
+		move.w  (v_waterpos_actual).w,d6		; Move water level to d6
 		cmp.w   obY(a0),d6				; Is the ring object underneath the water level?
 		bgt.w   .loadpoints				; If not, branch and skip underwater commands
 		move.w	#-$1C0,obVelY(a0)		; halve speed underwater
@@ -263,7 +263,7 @@ RLoss_Bounce:	; Routine 2
 	; RHS Underwater Rings Physics Fix
 		tst.b	(f_water).w					; Does the level have water?
 		beq.s	.skipbounceslow				; If not, branch and skip underwater checks
-		move.w	(v_waterpos1).w,d6			; Move water level to d6
+		move.w	(v_waterpos_actual).w,d6			; Move water level to d6
 		cmp.w	obY(a0),d6					; Is the ring object underneath the water level?
 		bgt.s	.skipbounceslow				; If not, branch and skip underwater commands
 		subi.w	#$E,obVelY(a0)				; Reduce gravity by $E ($18-$E=$A), giving the underwater effect
@@ -290,10 +290,10 @@ RLoss_Bounce:	; Routine 2
 		beq.w	DeleteObject				; If 0, delete
 		; Ring Timers Fix End
 		; RHS Accidental Ring Deletion Fix
-		cmpi.w	#$FF00,(v_limittop2).w		; is vertical wrapping enabled?
+		cmpi.w	#$FF00,(v_limittop).w		; is vertical wrapping enabled?
 		beq.w	.chkflash					; if so, branch
 		; Accidental Ring Deletion Fix End
-		move.w	(v_limitbtm2).w,d0
+		move.w	(v_limitbtm).w,d0
 		addi.w	#$E0,d0
 		cmp.w	obY(a0),d0					; has object moved below level boundary?
 		blo.w	DeleteObject				; if yes, branch
@@ -404,11 +404,11 @@ RAttract_Main:
 
 .hasshield:
 		; Fix accidental deletion of scattered rings - REV C EDIT
-		cmpi.w  #$FF00,(v_limittop2).w	; is vertical wrapping enabled?
+		cmpi.w  #$FF00,(v_limittop).w	; is vertical wrapping enabled?
 		beq.s   .display				; if so, branch
 		; End of fix
 
-		move.w	(v_limitbtm2).w,d0
+		move.w	(v_limitbtm).w,d0
 		addi.w	#$E0,d0
 		cmp.w	obY(a0),d0				; has object moved below level boundary?
 		bcs.w	DeleteObject			; if yes, branch

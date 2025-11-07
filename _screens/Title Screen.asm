@@ -17,7 +17,7 @@ GM_Title:
 		move.w	#$9200,(a6)					; window vertical position
 		move.w	#$8B03,(a6)
 		move.w	#$8720,(a6)					; set background colour (palette line 2, entry 0)
-		clr.b	(f_wtr_state).w
+		clr.b	(f_water_pal_full).w
 		bsr.w	ClearScreen
 
 	if HUDScrolling
@@ -140,7 +140,7 @@ Tit_LoadText:
 	endif
 
 		clr.b	(f_debugmode).w							; disable debug mode
-		move.w	#$178,(v_demolength).w					; run title screen for $178 frames
+		move.w	#$178,(v_countdown).w					; run title screen for $178 frames
 
 		clearRAM v_sonicteam,v_sonicteam+object_size	; PRESS START BUTTON Fix (Quickman)
 		move.b	#id_TitleSonic,(v_titlesonic).w			; load big Sonic object
@@ -283,7 +283,7 @@ PlayLevel_Load:
 ; ---------------------------------------------------------------------------
 
 GotoDemo:
-		move.w	#$1E,(v_demolength).w
+		move.w	#$1E,(v_countdown).w
 
 loc_33B6:
 		move.b	#4,(v_vbla_routine).w
@@ -301,9 +301,9 @@ loc_33B6:
 ; ===========================================================================
 
 loc_33E4:
-		andi.b	#btnStart,(v_jpadpress1).w	; is Start button pressed?
+		andi.b	#btnStart,(v_jpadpressed_actual).w	; is Start button pressed?
 		bne.w	Tit_ChkLevSel				; if yes, branch
-		tst.w	(v_demolength).w
+		tst.w	(v_countdown).w
 		bne.w	loc_33B6
 		move.b	#bgm_Fade,d0
 		bsr.w	QueueSound2					; fade out music

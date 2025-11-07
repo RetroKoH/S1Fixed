@@ -13,7 +13,7 @@ GM_Credits:
 		move.w	#$9200,(a6)		; window vertical position
 		move.w	#$8B03,(a6)		; line scroll mode
 		move.w	#$8720,(a6)		; set background colour (line 3; colour 0)
-		clr.b	(f_wtr_state).w
+		clr.b	(f_water_pal_full).w
 		bsr.w	ClearScreen
 		clr.b	(f_levelstarted).w	; RetroKoH S3K Rings Manager
 
@@ -42,14 +42,14 @@ GM_Credits:
 Cred_SkipObjGfx:
 		moveq	#plcid_Main2,d0
 		bsr.w	AddPLC					; load standard	level graphics
-		move.w	#120,(v_demolength).w	; display a credit for 2 seconds
+		move.w	#120,(v_countdown).w	; display a credit for 2 seconds
 		bsr.w	PaletteFadeIn
 
 Cred_WaitLoop:
 		move.b	#4,(v_vbla_routine).w
 		bsr.w	WaitForVBla
 		bsr.w	RunPLC
-		tst.w	(v_demolength).w ; have 2 seconds elapsed?
+		tst.w	(v_countdown).w ; have 2 seconds elapsed?
 		bne.s	Cred_WaitLoop	; if not, branch
 		tst.l	(v_plc_buffer).w ; have level gfx finished decompressing?
 		bne.s	Cred_WaitLoop	; if not, branch
@@ -159,7 +159,7 @@ TryAgainEnd:
 		move.w	#$9200,(a6)	; window vertical position
 		move.w	#$8B03,(a6)	; line scroll mode
 		move.w	#$8720,(a6)	; set background colour (line 3; colour 0)
-		clr.b	(f_wtr_state).w
+		clr.b	(f_water_pal_full).w
 		bsr.w	ClearScreen
 
 		clearRAM v_objspace
@@ -175,7 +175,7 @@ TryAgainEnd:
 		move.b	#id_EndEggman,(v_endeggman).w ; load Eggman object
 		jsr	(ExecuteObjects).l
 		jsr	(BuildSprites).l
-		move.w	#1800,(v_demolength).w ; show screen for 30 seconds
+		move.w	#1800,(v_countdown).w ; show screen for 30 seconds
 		bsr.w	PaletteFadeIn
 
 ; ---------------------------------------------------------------------------
@@ -187,9 +187,9 @@ TryAg_MainLoop:
 		bsr.w	WaitForVBla
 		jsr	(ExecuteObjects).l
 		jsr	(BuildSprites).l
-		andi.b	#btnStart,(v_jpadpress1).w ; is Start button pressed?
+		andi.b	#btnStart,(v_jpadpressed_actual).w ; is Start button pressed?
 		bne.s	TryAg_Exit	; if yes, branch
-		tst.w	(v_demolength).w ; has 30 seconds elapsed?
+		tst.w	(v_countdown).w ; has 30 seconds elapsed?
 		beq.s	TryAg_Exit	; if yes, branch
 		cmpi.b	#id_Credits,(v_gamemode).w
 		beq.s	TryAg_MainLoop

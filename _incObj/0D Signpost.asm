@@ -105,7 +105,7 @@ Sign_Touch:	; Routine 2
 
 		clr.b	obShoes(a1)							; Mercury Remove Speed Shoes At Signpost Fix (Moved from the Got_Through Card and improved) -- RetroKoH Sonic SST Compaction
 		clr.b	(f_timecount).w						; stop time counter
-		move.w	(v_limitright2).w,(v_limitleft2).w	; lock screen position
+		move.w	(v_limitright).w,(v_limitleft).w	; lock screen position
 		addq.b	#2,obRoutine(a0)
 
 .notouch:
@@ -214,19 +214,19 @@ Sign_SonicRun:	; Routine 6
 		bne.s	Sign_Exit
 	; Signpost Routine Fix End
 		move.b	#1,(f_lockctrl).w			; lock controls
-		move.w	#btnR<<8,(v_jpadhold2).w	; make Sonic run to the right
+		move.w	#btnR<<8,(v_jpadheld_dup).w	; make Sonic run to the right
 	; Old check moved to above -- Signpost Routine Fix
 	else
 		btst	#staAir,(v_player+obStatus).w
 		bne.s	.skiplockcontrols
 		move.b	#1,(f_lockctrl).w			; lock controls
-		move.w	#btnR<<8,(v_jpadhold2).w	; make Sonic run to the right
+		move.w	#btnR<<8,(v_jpadheld_dup).w	; make Sonic run to the right
 .skiplockcontrols:
 		tst.b	(v_player+obID).w			; Check if Sonic's object has been deleted (because he entered the giant ring)
 		beq.s	loc_EC86
 	endif
 		move.w	(v_player+obX).w,d0
-		move.w	(v_limitright2).w,d1
+		move.w	(v_limitright).w,d1
 		addi.w	#$128,d1
 		cmp.w	d1,d0
 		bhs.s	loc_EC86
@@ -274,7 +274,7 @@ GotThrough_UncList:
 GotThroughAct:
 		tst.b	(v_endcard).w
 		bne.s	Sign_Exit
-		move.w	(v_limitright2).w,(v_limitleft2).w
+		move.w	(v_limitright).w,(v_limitleft).w
 		bclr	#sta2ndInvinc,(v_player+obStatus2nd).w	; disable invincibility
 		clr.b	(f_timecount).w							; stop time counter
 		move.b	#id_GotThroughCard,(v_endcard).w

@@ -35,12 +35,12 @@ ObjFloorDist2:
 		move.l	#v_collision2&$FFFFFF,(v_collindex).w	; MJ: load second collision data location
 .first:
 .notsonic:
-		lea		(v_anglebuffer).w,a4
+		lea		(v_anglebuffer_right).w,a4
 		clr.b	(a4)
 		movea.w	#$10,a3									; height of a 16x16 tile
 		clr.w	d6
 		bsr.w	FindFloor								; MJ: check solidity
-		move.b	(v_anglebuffer).w,d3
+		move.b	(v_anglebuffer_right).w,d3
 		btst	#0,d3
 		beq.s	locret_14E4E
 		clr.b	d3
@@ -58,12 +58,12 @@ RingFloorDist:
 		ext.w	d0
 		add.w	d0,d2
 		moveq	#$C,d5
-		lea		(v_anglebuffer).w,a4
+		lea		(v_anglebuffer_right).w,a4
 		clr.b	(a4)
 		movea.w	#$10,a3									; height of a 16x16 tile
 		clr.w	d6
 		bsr.w	FindFloor								; MJ: check solidity
-		move.b	(v_anglebuffer).w,d3
+		move.b	(v_anglebuffer_right).w,d3
 		btst	#0,d3
 		beq.s	.ret
 		clr.b	d3

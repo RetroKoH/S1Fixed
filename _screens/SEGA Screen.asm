@@ -13,7 +13,7 @@ GM_Sega:
 		move.w	#$8400+(vram_bg>>13),(a6)	; set background nametable address
 		move.w	#$8700,(a6)					; set background colour (palette entry 0)
 		move.w	#$8B00,(a6)					; full-screen vertical scrolling
-		clr.b	(f_wtr_state).w
+		clr.b	(f_water_pal_full).w
 		disable_ints
 		move.w	(v_vdp_buffer1).w,d0
 		andi.b	#$BF,d0
@@ -70,14 +70,14 @@ Sega_WaitPal:
 		bsr.w	QueueSound2				; play "SEGA" sound
 		move.b	#$14,(v_vbla_routine).w
 		bsr.w	WaitForVBla
-		move.w	#3*60,(v_demolength).w			; 3 seconds
+		move.w	#3*60,(v_countdown).w	; 3 seconds
 
 Sega_WaitEnd:
 		move.b	#2,(v_vbla_routine).w
 		bsr.w	WaitForVBla
-		tst.w	(v_demolength).w
+		tst.w	(v_countdown).w
 		beq.s	Sega_GotoTitle
-		andi.b	#btnStart,(v_jpadpress1).w		; is Start button pressed?
+		andi.b	#btnStart,(v_jpadpressed_actual).w		; is Start button pressed?
 		beq.s	Sega_WaitEnd					; if not, branch
 
 	if SaveProgressMod

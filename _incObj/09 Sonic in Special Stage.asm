@@ -36,7 +36,7 @@ Obj09_Main:	; Routine 0
 Obj09_ChkDebug:	; Routine 2
 		tst.w	(f_debugmode).w			; is debug mode	cheat enabled?
 		beq.s	Obj09_NoDebug			; if not, branch
-		btst	#bitB,(v_jpadpress1).w	; is button B pressed?
+		btst	#bitB,(v_jpadpressed_actual).w	; is button B pressed?
 		beq.s	Obj09_NoDebug			; if not, branch
 		move.w	#1,(v_debuguse).w		; change Sonic into a ring
 
@@ -93,17 +93,17 @@ Obj09_Display:
 
 
 Obj09_Move:
-		btst	#bitL,(v_jpadhold2).w	; is left being pressed?
+		btst	#bitL,(v_jpadheld_dup).w	; is left being pressed?
 		beq.s	Obj09_ChkRight			; if not, branch
 		bsr.w	Obj09_MoveLeft
 
 Obj09_ChkRight:
-		btst	#bitR,(v_jpadhold2).w	; is right being pressed?
+		btst	#bitR,(v_jpadheld_dup).w	; is right being pressed?
 		beq.s	loc_1BA78				; if not, branch
 		bsr.w	Obj09_MoveRight
 
 loc_1BA78:
-		move.b	(v_jpadhold2).w,d0
+		move.b	(v_jpadheld_dup).w,d0
 		andi.b	#btnL+btnR,d0			; is left/right being pressed?
 		bne.s	loc_1BAA8				; if yes, branch
 	; Apply friction
@@ -237,7 +237,7 @@ loc_1BB50:
 
 
 Obj09_Jump:
-		move.b	(v_jpadpress2).w,d0
+		move.b	(v_jpadpressed_dup).w,d0
 		andi.b	#btnABC,d0		; is A,	B or C pressed?
 		beq.s	Obj09_NoJump	; if not, branch
 		move.b	(v_ssangle).w,d0
@@ -274,7 +274,7 @@ Obj09_NoJump:
 
 Obj09_JumpHeight:
 	; Mercury Fixed SS Jumping Physics
-		move.b	(v_jpadhold2).w,d0		; is the jump button up?
+		move.b	(v_jpadheld_dup).w,d0		; is the jump button up?
 		andi.b	#btnABC,d0
 		bne.s	locret_1BBB4			; if not, branch to return
 		btst	#staSSJump,obStatus(a0)	; did Sonic jump or is he just falling or hit by a bumper?

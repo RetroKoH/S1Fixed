@@ -12,10 +12,10 @@ Debug_Main:	; Routine 0
 		addq.b	#2,(v_debuguse).w
 		clr.b	(v_sonicbubbles+objoff_2C).w
 		jsr		(ResumeMusic).l						; cancel countdown music
-		move.w	(v_limittop2).w,(v_limittopdb).w	; buffer level x-boundary
-		move.w	(v_limitbtm1).w,(v_limitbtmdb).w	; buffer level y-boundary
-		clr.w	(v_limittop2).w
-		move.w	#$720,(v_limitbtm1).w
+		move.w	(v_limittop).w,(v_limittopdb).w	; buffer level x-boundary
+		move.w	(v_limitbtm_target).w,(v_limitbtmdb).w	; buffer level y-boundary
+		clr.w	(v_limittop).w
+		move.w	#$720,(v_limitbtm_target).w
 		andi.w	#$7FF,(v_player+obY).w
 		andi.w	#$7FF,(v_screenposy).w
 		andi.w	#$3FF,(v_bgscreenposy).w
@@ -76,11 +76,11 @@ Debug_Action:	; Routine 2
 Debug_Control:
 		moveq	#0,d4
 		move.w	#1,d1
-		move.b	(v_jpadpress1).w,d4
+		move.b	(v_jpadpressed_actual).w,d4
 		andi.w	#btnDir,d4	; is up/down/left/right	pressed?
 		bne.s	.dirpressed	; if yes, branch
 
-		move.b	(v_jpadhold1).w,d0
+		move.b	(v_jpadheld_actual).w,d0
 		andi.w	#btnDir,d0	; is up/down/left/right	held?
 		bne.s	.dirheld	; if yes, branch
 
@@ -98,7 +98,7 @@ Debug_Control:
 		move.b	#-1,(v_debugyspeed).w
 
 .dirpressed:
-		move.b	(v_jpadhold1).w,d4
+		move.b	(v_jpadheld_actual).w,d4
 
 loc_1D01C:
 		moveq	#0,d1
@@ -139,9 +139,9 @@ loc_1D066:
 		move.l	d3,obX(a0)
 
 Debug_ChgItem:
-		btst	#bitA,(v_jpadhold1).w	; is button A pressed?
+		btst	#bitA,(v_jpadheld_actual).w	; is button A pressed?
 		beq.s	.createitem				; if not, branch
-		btst	#bitC,(v_jpadpress1).w	; is button C pressed?
+		btst	#bitC,(v_jpadpressed_actual).w	; is button C pressed?
 		beq.s	.nextitem				; if not, branch
 		subq.b	#1,(v_debugitem).w		; go back 1 item
 		bcc.s	.display
@@ -150,7 +150,7 @@ Debug_ChgItem:
 ; ===========================================================================
 
 .nextitem:
-		btst	#bitA,(v_jpadpress1).w	; is button A pressed?
+		btst	#bitA,(v_jpadpressed_actual).w	; is button A pressed?
 		beq.s	.createitem				; if not, branch
 		addq.b	#1,(v_debugitem).w		; go forwards 1 item
 		cmp.b	(v_debugitem).w,d6
@@ -162,7 +162,7 @@ Debug_ChgItem:
 ; ===========================================================================
 
 .createitem:
-		btst	#bitC,(v_jpadpress1).w		; is button C pressed?
+		btst	#bitC,(v_jpadpressed_actual).w		; is button C pressed?
 		beq.s	.backtonormal				; if not, branch
 		jsr		(FindFreeObj).l
 		bne.s	.backtonormal
@@ -185,7 +185,7 @@ Debug_ChgItem:
 
 .backtonormal:
 	; RetroKoH Debug Mode Fix
-		btst	#bitB,(v_jpadpress1).w				; is button B pressed?
+		btst	#bitB,(v_jpadpressed_actual).w				; is button B pressed?
 		beq.s	.stayindebug						; if not, branch
 		clr.w	(v_debuguse).w						; deactivate debug mode
 
@@ -218,8 +218,8 @@ Debug_ChgItem:
 
 		lea     (v_sonspeedmax).w,a2				; Load Sonic_top_speed into a2
 		jsr		(ApplySpeedSettings).l				; Fetch Speed settings
-		move.w	(v_limittopdb).w,(v_limittop2).w	; restore level boundaries
-		move.w	(v_limitbtmdb).w,(v_limitbtm1).w
+		move.w	(v_limittopdb).w,(v_limittop).w	; restore level boundaries
+		move.w	(v_limitbtmdb).w,(v_limitbtm_target).w
 
 ; HUD resets
 		jsr		(Hud_Base).l						; reload basic HUD gfx	-- RetroKoH Debug Mode Improvement
@@ -350,11 +350,11 @@ Debug_SS_Action:	; Routine 2
 Debug_SpecialControl:
 		moveq	#0,d4
 		move.w	#1,d1
-		move.b	(v_jpadpress1).w,d4
+		move.b	(v_jpadpressed_actual).w,d4
 		andi.w	#btnDir,d4				; is up/down/left/right	pressed?
 		bne.s	.dirpressed				; if yes, branch
 
-		move.b	(v_jpadhold1).w,d0
+		move.b	(v_jpadheld_actual).w,d0
 		andi.w	#btnDir,d0				; is up/down/left/right	held?
 		bne.s	.dirheld				; if yes, branch
 
@@ -372,7 +372,7 @@ Debug_SpecialControl:
 		move.b	#-1,(v_debugyspeed).w
 
 .dirpressed:
-		move.b	(v_jpadhold1).w,d4
+		move.b	(v_jpadheld_actual).w,d4
 
 .skipdir:
 		moveq	#0,d1
@@ -413,9 +413,9 @@ Debug_SpecialControl:
 		move.l	d3,obX(a0)
 
 .chgitem:
-		btst	#bitA,(v_jpadhold1).w	; is button A pressed?
+		btst	#bitA,(v_jpadheld_actual).w	; is button A pressed?
 		beq.s	.createitem				; if not, branch
-		btst	#bitC,(v_jpadpress1).w	; is button C pressed?
+		btst	#bitC,(v_jpadpressed_actual).w	; is button C pressed?
 		beq.s	.nextitem				; if not, branch
 		subq.b	#1,(v_debugitem).w		; go back 1 item
 		bcc.s	.display
@@ -424,7 +424,7 @@ Debug_SpecialControl:
 ; ===========================================================================
 
 .nextitem:
-		btst	#bitA,(v_jpadpress1).w	; is button A pressed?
+		btst	#bitA,(v_jpadpressed_actual).w	; is button A pressed?
 		beq.s	.createitem				; if not, branch
 		addq.b	#1,(v_debugitem).w		; go forwards 1 item
 		cmp.b	(v_debugitem).w,d6
@@ -436,7 +436,7 @@ Debug_SpecialControl:
 ; ===========================================================================
 
 .createitem:
-		btst	#bitC,(v_jpadpress1).w		; is button C pressed?
+		btst	#bitC,(v_jpadpressed_actual).w		; is button C pressed?
 		beq.s	.backtonormal				; if not, branch
 
 ; place new block at our current location
@@ -463,7 +463,7 @@ Debug_SpecialControl:
 
 .backtonormal:
 	; RetroKoH Debug Mode Fix
-		btst	#bitB,(v_jpadpress1).w				; is button B pressed?
+		btst	#bitB,(v_jpadpressed_actual).w				; is button B pressed?
 		beq.s	.stayindebug						; if not, branch
 		clr.w	(v_debuguse).w						; deactivate debug mode
 

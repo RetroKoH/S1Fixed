@@ -56,7 +56,7 @@ Bub_Animate:	; Routine 2
 		move.b	#1,bub_inhalable(a0)		; set "inhalable" flag
 
 Bub_ChkWater:	; Routine 4
-		move.w	(v_waterpos1).w,d0
+		move.w	(v_waterpos_actual).w,d0
 		cmp.w	obY(a0),d0					; is bubble underwater?
 		blo.s	.wobble						; if yes, branch
 
@@ -135,7 +135,7 @@ Bub_Delete:	; Routine 8
 Bub_BblMaker:	; Routine $A
 		tst.w	objoff_36(a0)
 		bne.s	.loc_12874
-		move.w	(v_waterpos1).w,d0
+		move.w	(v_waterpos_actual).w,d0
 		cmp.w	obY(a0),d0			; is bubble maker underwater?
 		bhs.w	.chkdel				; if not, branch
 		tst.b	obRender(a0)
@@ -215,7 +215,7 @@ Bub_BblMaker:	; Routine $A
 
 .chkdel:
 		offscreen.w	DeleteObject	; PFM S3K OBJ
-		move.w	(v_waterpos1).w,d0
+		move.w	(v_waterpos_actual).w,d0
 		cmp.w	obY(a0),d0
 		blo.w	DisplaySprite
 		rts	
