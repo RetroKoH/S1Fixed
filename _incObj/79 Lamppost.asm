@@ -143,7 +143,7 @@ Lamp_StoreInfo:
 		move.b	(v_lifecount).w,(v_lamp_lives).w 		; lives
 		move.l	(v_time).w,(v_lamp_time).w 				; time
 		move.w	(v_dle_routine).w,(v_lamp_dle).w		; routine counter for dynamic level events -- Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
-		move.w	(v_limitbtm2).w,(v_lamp_limitbtm).w 	; lower y-boundary of level
+		move.w	(v_limitbtm).w,(v_lamp_limitbtm).w 	; lower y-boundary of level
 		move.w	(v_screenposx).w,(v_lamp_scrx).w 		; screen x-position
 		move.w	(v_screenposy).w,(v_lamp_scry).w 		; screen y-position
 		move.w	(v_bgscreenposx).w,(v_lamp_bgscrx).w	; bg position
@@ -152,9 +152,9 @@ Lamp_StoreInfo:
 		move.w	(v_bg2screenposy).w,(v_lamp_bg2scry).w 	; bg position
 		move.w	(v_bg3screenposx).w,(v_lamp_bg3scrx).w 	; bg position
 		move.w	(v_bg3screenposy).w,(v_lamp_bg3scry).w 	; bg position
-		move.w	(v_waterpos2).w,(v_lamp_wtrpos).w 		; water height
-		move.b	(v_wtr_routine).w,(v_lamp_wtrrout).w	; rountine counter for water
-		move.b	(f_wtr_state).w,(v_lamp_wtrstat).w 		; water direction
+		move.w	(v_waterpos_base).w,(v_lamp_wtrpos).w 		; water height
+		move.b	(v_water_routine).w,(v_lamp_wtrrout).w	; rountine counter for water
+		move.b	(f_water_pal_full).w,(v_lamp_wtrstat).w 		; water direction
 		rts	
 
 ; ---------------------------------------------------------------------------
@@ -176,9 +176,9 @@ Lamp_LoadInfo:
 		move.b	#59,(v_timecent).w
 		subq.b	#1,(v_timesec).w
 		move.w	(v_lamp_dle).w,(v_dle_routine).w	; Now word-length so we don't need to clear d0 elsewhere -- Filter Optimized DLE Manager
-		move.b	(v_lamp_wtrrout).w,(v_wtr_routine).w
-		move.w	(v_lamp_limitbtm).w,(v_limitbtm2).w
-		move.w	(v_lamp_limitbtm).w,(v_limitbtm1).w
+		move.b	(v_lamp_wtrrout).w,(v_water_routine).w
+		move.w	(v_lamp_limitbtm).w,(v_limitbtm).w
+		move.w	(v_lamp_limitbtm).w,(v_limitbtm_target).w
 		move.w	(v_lamp_scrx).w,(v_screenposx).w
 		move.w	(v_lamp_scry).w,(v_screenposy).w
 		move.w	(v_lamp_bgscrx).w,(v_bgscreenposx).w
@@ -190,16 +190,16 @@ Lamp_LoadInfo:
 		cmpi.b	#id_LZ,(v_zone).w	; is this Labyrinth Zone?
 		bne.s	.notlabyrinth		; if not, branch
 
-		move.w	(v_lamp_wtrpos).w,(v_waterpos2).w
-		move.b	(v_lamp_wtrrout).w,(v_wtr_routine).w
-		move.b	(v_lamp_wtrstat).w,(f_wtr_state).w
+		move.w	(v_lamp_wtrpos).w,(v_waterpos_base).w
+		move.b	(v_lamp_wtrrout).w,(v_water_routine).w
+		move.b	(v_lamp_wtrstat).w,(f_water_pal_full).w
 
 .notlabyrinth:
 		tst.b	(v_lastlamp).w
 		bpl.s	locret_170F6
 		move.w	(v_lamp_xpos).w,d0
 		subi.w	#$A0,d0
-		move.w	d0,(v_limitleft2).w
+		move.w	d0,(v_limitleft).w
 
 locret_170F6:
 		rts	

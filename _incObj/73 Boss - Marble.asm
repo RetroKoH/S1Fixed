@@ -316,7 +316,7 @@ loc_1854E:
 		move.l	#$0500FFC0,obVelX(a0)	; (xVel: $500, yVel: -$40); move ship to the right, and upward slightly
 
 	if PostBossScreenUnlock
-		move.w	#boss_mz_end,(v_limitright2).w
+		move.w	#boss_mz_end,(v_limitright).w
 	endif
 
 		bra.s	loc_1857A							; branch to movement
@@ -348,9 +348,9 @@ loc_1857A:
 
 BossMarble_ShipFlee:			; Secondary Routine 8
 	if ~~PostBossScreenUnlock
-		cmpi.w	#boss_mz_end,(v_limitright2).w
+		cmpi.w	#boss_mz_end,(v_limitright).w
 		bhs.s	.limitreached
-		addq.w	#2,(v_limitright2).w
+		addq.w	#2,(v_limitright).w
 		bra.s	.moveboss
 ; ===========================================================================
 	endif

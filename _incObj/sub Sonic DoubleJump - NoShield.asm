@@ -11,7 +11,7 @@ Sonic_DoubleJump:
 	if DropDashEnabled
 			tst.b	obDoubleJumpFlag(a0)			; is double jump flag set?
 			bne.s	Sonic_ChkDropDash				; if yes, check for Drop Dash
-			move.b	(v_jpadpress2).w,d0
+			move.b	(v_jpadpressed_dup).w,d0
 			andi.b	#btnABC,d0						; are buttons A, B, or C being pressed?
 			beq.s	Sonic_ShieldDoNothing			; if not, branch
 			bclr	#staRollJump,obStatus(a0)
@@ -37,7 +37,7 @@ Sonic_NoSuper:
 	else
 
 		if SuperMod
-			move.b	(v_jpadpress2).w,d0
+			move.b	(v_jpadpressed_dup).w,d0
 			andi.b	#btnABC,d0						; are buttons A, B, or C being pressed?
 			beq.s	Sonic_ShieldDoNothing			; if not, branch
 			btst	#sta2ndSuper,d0					; is Sonic currently in his Super form?

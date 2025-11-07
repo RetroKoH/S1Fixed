@@ -33,7 +33,7 @@ GM_Special:
 		clearRAM v_ngfx_buffer
 
 		moveq	#0,d0
-		move.b	d0,(f_wtr_state).w
+		move.b	d0,(f_water_pal_full).w
 		move.b	d0,(f_restart).w
 		moveq	#palid_Special,d0
 		bsr.w	PalLoad_Fade						; load special stage palette
@@ -87,10 +87,10 @@ GM_Special:
 		move.b	d0,(v_lifecount).w
 		move.w	#RingsLivesFactor,(v_ringlife).w
 		move.w	d0,(v_debuguse).w
-		move.w	#1800,(v_demolength).w
+		move.w	#1800,(v_countdown).w
 ;		tst.b	(f_debugcheat).w					; has debug cheat been entered?
 ;		beq.s	SS_NoDebug							; if not, branch
-;		btst	#bitA,(v_jpadhold1).w				; is A button pressed?
+;		btst	#bitA,(v_jpadheld_actual).w				; is A button pressed?
 ;		beq.s	SS_NoDebug							; if not, branch
 		move.b	#1,(f_debugmode).w					; enable debug mode
 
@@ -117,7 +117,7 @@ SS_MainLoop:
 	endc	; HUD in Special Stage End
 
 		bsr.w	MoveSonicInDemo
-		move.w	(v_jpadhold1).w,(v_jpadhold2).w
+		move.w	(v_jpadheld_actual).w,(v_jpadheld_dup).w
 		jsr		(SpecialObjects).l
 
 		bsr.w	LoadSSRingFrame
@@ -143,7 +143,7 @@ SS_SkipHUDScroll:
 		bsr.w	SS_BGAnimate
 		tst.w	(f_demo).w	; is demo mode on?
 		beq.s	SS_ChkEnd	; if not, branch
-		tst.w	(v_demolength).w ; is there time left on the demo?
+		tst.w	(v_countdown).w ; is there time left on the demo?
 		beq.w	SS_ToSegaScreen	; if not, branch
 
 SS_ChkEnd:
@@ -158,7 +158,7 @@ SS_ChkEnd:
 		clr.w	(v_zone).w	; set to GHZ1
 
 SS_Finish:
-		move.w	#60,(v_demolength).w ; set delay time to 1 second
+		move.w	#60,(v_countdown).w ; set delay time to 1 second
 		move.w	#$3F,(v_pfade_start).w
 		clr.w	(v_palchgspeed).w
 
@@ -166,7 +166,7 @@ SS_FinLoop:
 		move.b	#$16,(v_vbla_routine).w
 		bsr.w	WaitForVBla
 		bsr.w	MoveSonicInDemo
-		move.w	(v_jpadhold1).w,(v_jpadhold2).w
+		move.w	(v_jpadheld_actual).w,(v_jpadheld_dup).w
 		jsr		(SpecialObjects).l
 		jsr		(BuildSprites).l
 		jsr		(SS_ShowLayout).l
@@ -177,7 +177,7 @@ SS_FinLoop:
 		bsr.w	WhiteOut_ToWhite
 
 loc_47D4:
-		tst.w	(v_demolength).w
+		tst.w	(v_countdown).w
 		bne.s	SS_FinLoop
 
 		disable_ints

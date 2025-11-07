@@ -25,7 +25,7 @@ Surf_Action:	; Routine 2
 		andi.w	#$FFE0,d1
 		add.w	surf_origX(a0),d1
 	; LuigiXHero Water Surface Fix
-		btst	#bitStart,(v_jpadpress1).w	; is Start button pressed?
+		btst	#bitStart,(v_jpadpressed_actual).w	; is Start button pressed?
 		bne.s	.even						; if yes, branch
 	; Water Surface Fix End
 		btst	#0,(v_framebyte).w
@@ -34,11 +34,11 @@ Surf_Action:	; Routine 2
 
 .even:
 		move.w	d1,obX(a0)	; match	obj x-position to screen position
-		move.w	(v_waterpos1).w,d1
+		move.w	(v_waterpos_actual).w,d1
 		move.w	d1,obY(a0)	; match	obj y-position to water	height
 		tst.b	surf_freeze(a0)
 		bne.s	.stopped
-		btst	#bitStart,(v_jpadpress1).w	; is Start button pressed?
+		btst	#bitStart,(v_jpadpressed_actual).w	; is Start button pressed?
 		beq.s	.animate					; if not, branch
 		addq.b	#3,obFrame(a0)				; use different	frames
 		move.b	#1,surf_freeze(a0)			; stop animation

@@ -543,7 +543,7 @@ VBlank_Lag:
 		move.w	#1,(f_hbla_pal).w				; set flag to let HBlank know a frame has finished
 		stopZ80
 		waitZ80
-		tst.b	(f_wtr_state).w					; is the water above top of screen?
+		tst.b	(f_water_pal_full).w					; is the water above top of screen?
 		bne.s	.waterabove 					; if yes, branch
 
 		writeCRAM	v_palette,0					; copy normal palette to CRAM (water palette will be copied by HBlank later)
@@ -572,9 +572,9 @@ VBlank_Sega:
 
 ; $14 - GM_Sega> Sega_WaitPal (once)
 VBlank_Sega_SkipLoad:
-		tst.w	(v_demolength).w
+		tst.w	(v_countdown).w
 		beq.w	.end
-		subq.w	#1,(v_demolength).w				; decrement timer
+		subq.w	#1,(v_countdown).w				; decrement timer
 
 	.end:
 		rts	
@@ -585,9 +585,9 @@ VBlank_Title:
 		bsr.w	ReadPad_Palette_Sprites_HScroll	; read joypad, DMA palettes, sprites and hscroll
 		bsr.w	LoadTilesAsYouMove_BGOnly		; update background
 		bsr.w	Process_PLC						; decompress up to 9 cells of Nemesis gfx if needed
-		tst.w	(v_demolength).w
+		tst.w	(v_countdown).w
 		beq.w	.end
-		subq.w	#1,(v_demolength).w				; decrement timer
+		subq.w	#1,(v_countdown).w				; decrement timer
 
 .end:
 		rts	
@@ -608,7 +608,7 @@ VBlank_Level:
 		stopZ80
 		waitZ80
 		bsr.w	ReadJoypads
-		tst.b	(f_wtr_state).w					; is the water above top of screen?
+		tst.b	(f_water_pal_full).w					; is the water above top of screen?
 		bne.s	.waterabove						; if yes, branch
 
 		writeCRAM	v_palette,0					; copy normal palette to CRAM (water palette will be copied by HBlank later)
@@ -636,7 +636,7 @@ VBlank_Level:
 		movem.l	d0-d1,(v_fg_scroll_flags_dup).w	; create duplicates in RAM
 		cmpi.b	#96,(v_hbla_line).w				; is HBlank set to run on line 96 or below? (42% of the way down the screen)
 		bhs.s	Demo_Time						; if yes, branch
-		move.b	#1,(f_doupdatesinhblank).w		; set flag to run sound driver on HBlank
+		move.b	#1,(f_hblank_run_snd).w			; set flag to run sound driver on HBlank
 		rts										; replaces the sp increment and VBla_Exit branch in flamedriver version
 
 ; ---------------------------------------------------------------------------
@@ -650,9 +650,9 @@ Demo_Time:
 		bsr.w	LoadTilesAsYouMove				; display new tiles if camera has moved
 		jsr		(HUD_Update).l					; update HUD graphics
 		bsr.w	ProcessDPLC2					; decompress up to 3 cells of Nemesis gfx
-		tst.w	(v_demolength).w				; is there time left on the demo?
+		tst.w	(v_countdown).w				; is there time left on the demo?
 		beq.w	.end							; if not, branch
-		subq.w	#1,(v_demolength).w				; decrement timer
+		subq.w	#1,(v_countdown).w				; decrement timer
 
 	.end:
 		rts	
@@ -685,9 +685,9 @@ VBlank_Special:
 
 	endif	; Dynamic Special Stage Walls End
 
-		tst.w	(v_demolength).w				; is there time left on the demo?
+		tst.w	(v_countdown).w				; is there time left on the demo?
 		beq.s	.end							; if not, return
-		subq.w	#1,(v_demolength).w				; subtract 1 from time left in demo
+		subq.w	#1,(v_countdown).w				; subtract 1 from time left in demo
 
 	.end:
 		rts	
@@ -699,7 +699,7 @@ VBlank_TitleCard:
 		stopZ80
 		waitZ80
 		bsr.w	ReadJoypads
-		tst.b	(f_wtr_state).w					; is the water above top of screen?
+		tst.b	(f_water_pal_full).w					; is the water above top of screen?
 		bne.s	.waterabove						; if yes, branch
 
 		writeCRAM	v_palette,0					; copy normal palette to CRAM (water palette will be copied by HBlank later)
@@ -732,9 +732,6 @@ VBlank_TitleCard:
 
 ; $E - unused
 VBlank_Unused2:
-		bsr.w	ReadPad_Palette_Sprites_HScroll	; read joypad, DMA palettes, sprites and hscroll
-		addq.b	#1,(v_vbla_0e_counter).w		; Unused besides this one write...
-		move.b	#$E,(v_vbla_routine).w
 		rts	
 ; ===========================================================================
 
@@ -776,9 +773,9 @@ VBlank_Continue:
 
 	endif	; Dynamic Special Stage Walls End
 
-		tst.w	(v_demolength).w
+		tst.w	(v_countdown).w
 		beq.s	.end
-		subq.w	#1,(v_demolength).w				; decrement timer
+		subq.w	#1,(v_countdown).w				; decrement timer
 
 	.end:
 		rts	
@@ -794,7 +791,7 @@ ReadPad_Palette_Sprites_HScroll:
 		stopZ80
 		waitZ80
 		bsr.w	ReadJoypads
-		tst.b	(f_wtr_state).w					; is water above top of screen?
+		tst.b	(f_water_pal_full).w					; is water above top of screen?
 		bne.s	.waterabove						; if yes, branch
 		writeCRAM	v_palette,0					; copy normal palette to CRAM (water palette will be copied by HBlank later)
 		bra.s	.waterbelow
@@ -883,7 +880,7 @@ HBlank:
 		movem.l	(sp)+,a0-a1				; restore a0-a1 from stack
 	endif
 
-		tst.b	(f_doupdatesinhblank).w	; is flag set to update sound & some graphics during HBlank?
+		tst.b	(f_hblank_run_snd).w	; is flag set to update sound & some graphics during HBlank?
 		bne.s	.update_hblank			; if yes, branch
 
 	.nochg:
@@ -892,7 +889,7 @@ HBlank:
 
 ; The following only runs during a level and HBlank is set to run on line 96 or below
 	.update_hblank:
-		move.b	#0,(f_doupdatesinhblank).w
+		move.b	#0,(f_hblank_run_snd).w
 		movem.l	d0-a6,-(sp)
 		bsr.w	Demo_Time
 		movem.l	(sp)+,d0-a6
@@ -924,7 +921,7 @@ JoypadInit:
 
 
 ReadJoypads:
-		lea		(v_jpadhold1).w,a0			; address where joypad states are written
+		lea		(v_jpadheld_actual).w,a0			; address where joypad states are written
 		lea		(z80_port_1_data+1).l,a1	; first	joypad port
 		bsr.s	.read						; do the first joypad
 		addq.w	#2,a1						; do the second	joypad
@@ -974,7 +971,6 @@ VDPSetupGame:
 		dbf		d7,.clrCRAM								; clear	the CRAM
 
 		clr.l	(v_scrposy_vdp).w
-		clr.l	(v_scrposx_vdp).w
 		move.l	d1,-(sp)
 		fillVRAM	0,0,$10000							; clear the entirety of VRAM
 		move.l	(sp)+,d1
@@ -1015,7 +1011,6 @@ ClearScreen:
 		fillVRAM	0, vram_bg, vram_bg+plane_size_64x32 ; clear background namespace
 
 		clr.l	(v_scrposy_vdp).w
-		clr.l	(v_scrposx_vdp).w
 
 		; Fixed
 		clearRAM v_spritetablebuffer
@@ -1889,15 +1884,15 @@ SignpostArtLoad:
 		beq.s	.exit				; if yes, branch
 
 		move.w	(v_screenposx).w,d0
-		move.w	(v_limitright2).w,d1
+		move.w	(v_limitright).w,d1
 		subi.w	#$100,d1
 		cmp.w	d1,d0				; has Sonic reached the	edge of	the level?
 		blt.s	.exit				; if not, branch
 		tst.b	(f_timecount).w
 		beq.s	.exit
-		cmp.w	(v_limitleft2).w,d1
+		cmp.w	(v_limitleft).w,d1
 		beq.s	.exit
-		move.w	d1,(v_limitleft2).w	; move left boundary to current screen position
+		move.w	d1,(v_limitleft).w	; move left boundary to current screen position
 		moveq	#plcid_Signpost,d0
 		bra.w	NewPLC				; load signpost	patterns
 
@@ -3994,8 +3989,8 @@ Sonic_WalkSpeed:
 		add.l	d1,d2
 		swap	d2
 		swap	d3
-		move.b	d0,(v_anglebuffer).w
-		move.b	d0,(v_anglebuffer2).w
+		move.b	d0,(v_anglebuffer_right).w
+		move.b	d0,(v_anglebuffer_left).w
 		move.b	d0,d1
 		addi.b	#$20,d0
 		bpl.s	loc_14D1A
@@ -4047,8 +4042,8 @@ sub_14D48:
 		move.l	#v_collision2&$FFFFFF,(v_collindex).w	; MJ: load second collision data location
 .first:
 		move.b	(v_lrb_solid_bit).w,d5					; MJ: load L/R/B soldity bit
-		move.b	d0,(v_anglebuffer).w
-		move.b	d0,(v_anglebuffer2).w
+		move.b	d0,(v_anglebuffer_right).w
+		move.b	d0,(v_anglebuffer_left).w
 		addi.b	#$20,d0
 		andi.b	#$C0,d0
 		cmpi.b	#$40,d0
@@ -4083,7 +4078,7 @@ Sonic_HitFloor:
 		move.b	obWidth(a0),d0
 		ext.w	d0
 		add.w	d0,d3
-		lea		(v_anglebuffer).w,a4
+		lea		(v_anglebuffer_right).w,a4
 		movea.w	#$10,a3
 		clr.w	d6
 		bsr.w	FindFloor	; MJ: check solidity
@@ -4097,7 +4092,7 @@ Sonic_HitFloor:
 		move.b	obWidth(a0),d0
 		ext.w	d0
 		sub.w	d0,d3
-		lea		(v_anglebuffer2).w,a4
+		lea		(v_anglebuffer_left).w,a4
 		movea.w	#$10,a3
 		clr.w	d6
 		bsr.w	FindFloor	; MJ: check solidity
@@ -4105,10 +4100,10 @@ Sonic_HitFloor:
 		clr.b	d2
 
 loc_14DD0:
-		move.b	(v_anglebuffer2).w,d3
+		move.b	(v_anglebuffer_left).w,d3
 		cmp.w	d0,d1
 		ble.s	loc_14DDE
-		move.b	(v_anglebuffer).w,d3
+		move.b	(v_anglebuffer_right).w,d3
 		exg		d0,d1
 
 loc_14DDE:
@@ -4125,14 +4120,14 @@ locret_14DE6:
 
 loc_14DF0:
 		addi.w	#$A,d2
-		lea		(v_anglebuffer).w,a4
+		lea		(v_anglebuffer_right).w,a4
 		movea.w	#$10,a3
 		clr.w	d6
 		bsr.w	FindFloor	; MJ: check solidity
 		clr.b	d2
 
 loc_14E0A:
-		move.b	(v_anglebuffer).w,d3
+		move.b	(v_anglebuffer_right).w,d3
 		btst	#0,d3
 		beq.s	locret_14E16
 		move.b	d2,d3
@@ -4156,7 +4151,7 @@ sub_14E50:
 		move.b	obHeight(a0),d0
 		ext.w	d0
 		add.w	d0,d3
-		lea	(v_anglebuffer).w,a4
+		lea	(v_anglebuffer_right).w,a4
 		movea.w	#$10,a3
 		clr.w	d6
 		bsr.w	FindWall	; MJ: check solidity
@@ -4170,7 +4165,7 @@ sub_14E50:
 		move.b	obHeight(a0),d0
 		ext.w	d0
 		add.w	d0,d3
-		lea	(v_anglebuffer2).w,a4
+		lea	(v_anglebuffer_left).w,a4
 		movea.w	#$10,a3
 		clr.w	d6
 		bsr.w	FindWall	; MJ: check solidity
@@ -4193,7 +4188,7 @@ Sonic_CheckRightWallDist: ;sub_14EB4:
 
 loc_14EBC:
 		addi.w	#$A,d3
-		lea		(v_anglebuffer).w,a4
+		lea		(v_anglebuffer_right).w,a4
 		movea.w	#$10,a3
 		clr.w	d6
 		bsr.w	FindWall	; MJ: check solidity
@@ -4212,13 +4207,13 @@ loc_14EBC:
 ObjHitWallRight:
 		add.w	obX(a0),d3
 		move.w	obY(a0),d2
-		lea	(v_anglebuffer).w,a4
+		lea	(v_anglebuffer_right).w,a4
 		clr.b	(a4)
 		movea.w	#$10,a3
 		clr.w	d6
 		moveq	#$D,d5		; MJ: set solid type to check
 		bsr.w	FindWall	; MJ: check solidity
-		move.b	(v_anglebuffer).w,d3
+		move.b	(v_anglebuffer_right).w,d3
 		btst	#0,d3
 		beq.s	locret_14F06
 		move.b	#-$40,d3
@@ -4247,7 +4242,7 @@ Sonic_CheckCeilingDist: ;Sonic_DontRunOnWalls:
 		move.b	obWidth(a0),d0
 		ext.w	d0
 		add.w	d0,d3
-		lea		(v_anglebuffer).w,a4
+		lea		(v_anglebuffer_right).w,a4
 		movea.w	#-$10,a3
 		move.w	#$800,d6	; MJ: $1000/2
 		bsr.w	FindFloor	; MJ: check solidity
@@ -4262,7 +4257,7 @@ Sonic_CheckCeilingDist: ;Sonic_DontRunOnWalls:
 		move.b	obWidth(a0),d0
 		ext.w	d0
 		sub.w	d0,d3
-		lea		(v_anglebuffer2).w,a4
+		lea		(v_anglebuffer_left).w,a4
 		movea.w	#-$10,a3
 		move.w	#$800,d6	; MJ: $1000/2
 		bsr.w	FindFloor	; MJ: check solidity
@@ -4276,7 +4271,7 @@ Sonic_CheckCeilingDist: ;Sonic_DontRunOnWalls:
 loc_14F7C:
 		subi.w	#$A,d2
 		eori.w	#$F,d2
-		lea		(v_anglebuffer).w,a4
+		lea		(v_anglebuffer_right).w,a4
 		movea.w	#-$10,a3
 		move.w	#$800,d6	; MJ: $1000/2
 		bsr.w	FindFloor	; MJ: check solidity
@@ -4294,12 +4289,12 @@ ObjHitCeiling:
 		ext.w	d0
 		sub.w	d0,d2
 		eori.w	#$F,d2
-		lea		(v_anglebuffer).w,a4
+		lea		(v_anglebuffer_right).w,a4
 		movea.w	#-$10,a3
 		move.w	#$800,d6	; MJ: $1000/2
 		moveq	#$D,d5		; MJ: set solid type to check
 		bsr.w	FindFloor	; MJ: check solidity
-		move.b	(v_anglebuffer).w,d3
+		move.b	(v_anglebuffer_right).w,d3
 		btst	#0,d3
 		beq.s	locret_14FD4
 		move.b	#-$80,d3
@@ -4321,7 +4316,7 @@ loc_14FD6:
 		ext.w	d0
 		sub.w	d0,d3
 		eori.w	#$F,d3
-		lea	(v_anglebuffer).w,a4
+		lea	(v_anglebuffer_right).w,a4
 		movea.w	#-$10,a3
 		move.w	#$400,d6	; MJ: $800/2
 		bsr.w	FindWall	; MJ: check solidity
@@ -4336,7 +4331,7 @@ loc_14FD6:
 		ext.w	d0
 		sub.w	d0,d3
 		eori.w	#$F,d3
-		lea	(v_anglebuffer2).w,a4
+		lea	(v_anglebuffer_left).w,a4
 		movea.w	#-$10,a3
 		move.w	#$400,d6	; MJ: $800/2
 		bsr.w	FindWall	; MJ: check solidity
@@ -4358,7 +4353,7 @@ Sonic_CheckLeftWallDist:	;Sonic_HitWall:
 loc_1504A:
 		subi.w	#$A,d3
 		eori.w	#$F,d3
-		lea		(v_anglebuffer).w,a4
+		lea		(v_anglebuffer_right).w,a4
 		movea.w	#-$10,a3
 		move.w	#$400,d6	; MJ: $800/2
 		bsr.w	FindWall	; MJ: check solidity
@@ -4377,13 +4372,13 @@ ObjHitWallLeft:
 		add.w	obX(a0),d3
 		move.w	obY(a0),d2
 		eori.w	#$F,d3		; added instruction to fix engine bug
-		lea		(v_anglebuffer).w,a4
+		lea		(v_anglebuffer_right).w,a4
 		clr.b	(a4)
 		movea.w	#-$10,a3
 		move.w	#$400,d6	; MJ: $800/2
 		moveq	#$D,d5		; MJ: set solid type to check
 		bsr.w	FindWall	; MJ: check solidity
-		move.b	(v_anglebuffer).w,d3
+		move.b	(v_anglebuffer_right).w,d3
 		btst	#0,d3
 		beq.s	locret_15098
 		move.b	#$40,d3

@@ -14,7 +14,7 @@ GM_SRAMError:
 		move.w	#$8400+(vram_bg>>13),(a6) ; set background nametable address
 		move.w	#$8700,(a6)	; set background colour (palette entry 0)
 		move.w	#$8B00,(a6)	; full-screen vertical scrolling
-		clr.b	(f_wtr_state).w
+		clr.b	(f_water_pal_full).w
 		bsr.w	ClearScreen
 
 ; load ment text font
@@ -69,7 +69,7 @@ SRAMError_Main:
 		move.b	#$16,(v_vbla_routine).w
 		bsr.w	WaitForVBla
 
-		move.b	(v_jpadpress1).w,d0 ; fetch commands
+		move.b	(v_jpadpressed_actual).w,d0 ; fetch commands
 		andi.b	#btnStart,d0
 		beq.s	SRAMError_Main
 

@@ -37,7 +37,7 @@ LevelSelect:
 		bsr.w	RunPLC
 		tst.l	(v_plc_buffer).w
 		bne.s	LevelSelect
-		andi.b	#btnABC+btnStart,(v_jpadpress1).w	; is A, B, C, or Start pressed?
+		andi.b	#btnABC+btnStart,(v_jpadpressed_actual).w	; is A, B, C, or Start pressed?
 		beq.s	LevelSelect							; if not, branch
 		move.w	(v_levselitem).w,d0
 		cmpi.w	#$14,d0								; have you selected item $14 (sound test)?
@@ -154,7 +154,7 @@ LevSel_Level:
 		move.b	#id_Special,(v_gamemode).w	; set screen mode to $10 (Special Stage)
 	;	tst.b	(f_debugcheat).w			; has debug cheat been entered?
 	;	beq.s	.nodebug					; if not, branch
-	;	btst	#bitA,(v_jpadhold1).w		; is A button held?
+	;	btst	#bitA,(v_jpadheld_actual).w		; is A button held?
 	;	beq.s	.nodebug					; if not, branch
 		move.b	#1,(f_debugmode).w			; enable debug mode
 .nodebug:
@@ -168,7 +168,7 @@ LevSel_NotSpecial:
 		move.w	d0,(v_zone).w			; set level number
 	;	tst.b	(f_debugcheat).w		; has debug cheat been entered?
 	;	beq.s	PlayLevel				; if not, branch
-	;	btst	#bitA,(v_jpadhold1).w	; is A button held?
+	;	btst	#bitA,(v_jpadheld_actual).w	; is A button held?
 	;	beq.s	PlayLevel				; if not, branch
 		move.b	#1,(f_debugmode).w		; enable debug mode
 		bra.w	PlayLevel				; added branch because I consolidated all level select code/data to this file
@@ -182,7 +182,7 @@ LevSel_NotSpecial:
 
 
 LevSelControls:
-		move.b	(v_jpadpress1).w,d1
+		move.b	(v_jpadpressed_actual).w,d1
 		andi.b	#btnUp+btnDn,d1	; is up/down pressed and held?
 		bne.s	LevSel_UpDown	; if yes, branch
 		subq.w	#1,(v_levseldelay).w ; subtract 1 from time to next move
@@ -190,7 +190,7 @@ LevSelControls:
 
 LevSel_UpDown:
 		move.w	#$B,(v_levseldelay).w ; reset time delay
-		move.b	(v_jpadhold1).w,d1
+		move.b	(v_jpadheld_actual).w,d1
 		andi.b	#btnUp+btnDn,d1	; is up/down pressed?
 		beq.s	LevSel_SndTest	; if not, branch
 		move.w	(v_levselitem).w,d0
@@ -216,7 +216,7 @@ LevSel_Refresh:
 LevSel_SndTest:
 		cmpi.w	#$14,(v_levselitem).w	; is item $14 selected?
 		bne.s	LevSel_NoMove			; if not, branch
-		move.b	(v_jpadpress1).w,d1
+		move.b	(v_jpadpressed_actual).w,d1
 		andi.b	#btnR+btnL,d1			; is left/right	pressed?
 		beq.s	LevSel_NoMove			; if not, branch
 		move.w	(v_levselsound).w,d0

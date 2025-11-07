@@ -174,7 +174,7 @@ loc_37FC:
 Level_ClrRam:
 		clearRAM v_ringpos,v_ringspace_end				; clear ring RAM -- RetroKoH S3K Rings Manager
 		clearRAM v_objspace								; clear object RAM
-		clearRAM v_misc_variables
+		clearRAM v_vbla_variables
 		clearRAM v_levelvariables						; f_levelstarted should clear here
 		clearRAM v_timingandscreenvariables
 
@@ -206,12 +206,12 @@ Level_ClrRam:
 		add.w	d0,d0
 		lea		(WaterHeight).l,a1		; load water height array
 		move.w	(a1,d0.w),d0
-		move.w	d0,(v_waterpos1).w		; set water heights
-		move.w	d0,(v_waterpos2).w
-		move.w	d0,(v_waterpos3).w
+		move.w	d0,(v_waterpos_actual).w		; set water heights
+		move.w	d0,(v_waterpos_base).w
+		move.w	d0,(v_waterpos_target).w
 		moveq	#0,d0
-		move.b	d0,(v_wtr_routine).w	; clear water routine counter
-		move.b	d0,(f_wtr_state).w		; clear	water state
+		move.b	d0,(v_water_routine).w	; clear water routine counter
+		move.b	d0,(f_water_pal_full).w		; clear	water state
 		move.b	#1,(f_water).w			; enable water
 
 Level_LoadPal:
@@ -234,7 +234,7 @@ Level_WaterPal:
 		bsr.w	PalLoad_Fade_Water		; load underwater palette
 		tst.b	(v_lastlamp).w
 		beq.s	Level_GetBgm
-		move.b	(v_lamp_wtrstat).w,(f_wtr_state).w
+		move.b	(v_lamp_wtrstat).w,(f_water_pal_full).w
 
 Level_GetBgm:
 		tst.w	(f_demo).w				; is this an ending sequence demo?
@@ -362,8 +362,8 @@ Level_SkipTtlCard:
 
 Level_ChkWater:
 		moveq	#0,d0
-		move.w	d0,(v_jpadhold2).w
-		move.w	d0,(v_jpadhold1).w
+		move.w	d0,(v_jpadheld_dup).w
+		move.w	d0,(v_jpadheld_actual).w
 		cmpi.b	#id_LZ,(v_zone).w						; is level LZ?
 		bne.s	Level_LoadObj							; if not, branch
 		move.b	#id_WaterSurface,(v_watersurface1).w	; load water surface object
@@ -420,13 +420,13 @@ Level_SkipClr:
 Level_Demo:
 		move.b	1(a1),(v_btnpushtime2).w	; load key press duration
 		subq.b	#1,(v_btnpushtime2).w		; subtract 1 from duration
-		move.w	#1800,(v_demolength).w
+		move.w	#1800,(v_countdown).w
 		tst.w	(f_demo).w					; is this an ending sequence demo?
 		bpl.s	Level_ChkWaterPal			; if not, branch
-		move.w	#540,(v_demolength).w
+		move.w	#540,(v_countdown).w
 		cmpi.w	#4,(v_creditsnum).w
 		bne.s	Level_ChkWaterPal
-		move.w	#510,(v_demolength).w
+		move.w	#510,(v_countdown).w
 
 Level_ChkWaterPal:
 		cmpi.b	#id_LZ,(v_zone).w	; is level LZ/SBZ3?
@@ -550,7 +550,7 @@ Level_SkipDeform:
 Level_ChkDemo:
 		tst.b	(f_restart).w	; is level set to restart?
 		bne.s	Level_EndDemo	; if yes, branch
-		tst.w	(v_demolength).w ; is there time left on the demo?
+		tst.w	(v_countdown).w ; is there time left on the demo?
 		beq.s	Level_EndDemo	; if not, branch
 		cmpi.b	#id_Demo,(v_gamemode).w
 		beq.w	Level_MainLoop	; if mode is 8 (demo), branch
@@ -567,7 +567,7 @@ Level_EndDemo:
 		move.b	#id_Credits,(v_gamemode).w ; go to credits
 
 Level_FadeDemo:
-		move.w	#$3C,(v_demolength).w
+		move.w	#$3C,(v_countdown).w
 		move.w	#$3F,(v_pfade_start).w
 		clr.w	(v_palchgspeed).w
 
@@ -584,7 +584,7 @@ Level_FDLoop:
 		bsr.w	FadeOut_ToBlack
 
 loc_3BC8:
-		tst.w	(v_demolength).w
+		tst.w	(v_countdown).w
 		bne.s	Level_FDLoop
 		rts	
 ; ===========================================================================

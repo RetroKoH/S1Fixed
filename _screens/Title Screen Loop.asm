@@ -49,7 +49,7 @@ Tit_EnterCheat:
 		lea		LevSelCode(pc),a0			; load level select code
 		move.w	(v_title_dcount).w,d0
 		adda.w	d0,a0
-		move.b	(v_jpadpress1).w,d0			; get button press
+		move.b	(v_jpadpressed_actual).w,d0			; get button press
 		andi.b	#btnDir,d0					; read only UDLR buttons
 		cmp.b	(a0),d0						; does button press match the cheat code?
 		bne.s	Tit_ResetCheat				; if not, branch
@@ -81,21 +81,21 @@ Tit_ResetCheat:
 		clr.w	(v_title_dcount).w			; reset UDLR counter
 
 Tit_CountC:
-		move.b	(v_jpadpress1).w,d0
+		move.b	(v_jpadpressed_actual).w,d0
 		andi.b	#btnC,d0					; is C button pressed?
 		beq.s	Tit_CheckStartDemo			; if not, branch
 		addq.w	#1,(v_title_ccount).w		; increment C counter
 
 Tit_CheckStartDemo:
-		tst.w	(v_demolength).w
+		tst.w	(v_countdown).w
 		beq.w	GotoDemo
-		andi.b	#btnStart,(v_jpadpress1).w	; check if Start is pressed
+		andi.b	#btnStart,(v_jpadpressed_actual).w	; check if Start is pressed
 		beq.w	Tit_MainLoop				; if not, branch
 
 Tit_ChkLevSel:
 		tst.b	(f_levselcheat).w			; check if level select code is on
 		beq.w	PlayLevel					; if not, play level
-		btst	#bitA,(v_jpadhold1).w		; check if A is pressed
+		btst	#bitA,(v_jpadheld_actual).w		; check if A is pressed
 		beq.w	PlayLevel					; if not, play level
 
 	if NewLevelSelect
@@ -156,7 +156,7 @@ Tit_EnterCheat:
 		lea		LevSelCode(pc),a0			; load level select code
 		move.w	(v_title_dcount).w,d0
 		adda.w	d0,a0
-		move.b	(v_jpadpress1).w,d0			; get button press
+		move.b	(v_jpadpressed_actual).w,d0			; get button press
 		andi.b	#btnDir,d0					; read only UDLR buttons
 		cmp.b	(a0),d0						; does button press match the cheat code?
 		bne.s	Tit_ResetCheat				; if not, branch
@@ -188,17 +188,17 @@ Tit_ResetCheat:
 		clr.w	(v_title_dcount).w				; reset UDLR counter
 
 Tit_CountC:
-		move.b	(v_jpadpress1).w,d0
+		move.b	(v_jpadpressed_actual).w,d0
 		andi.b	#btnC,d0						; is C button pressed?
 		beq.s	Tit_CheckStartDemo				; if not, branch
 		addq.w	#1,(v_title_ccount).w			; increment C counter
 
 Tit_CheckStartDemo:
-		tst.w	(v_demolength).w
+		tst.w	(v_countdown).w
 		beq.w	GotoDemo
 
 Tit_NoDemo:
-		andi.b	#btnStart,(v_jpadpress1).w		; check if Start is pressed
+		andi.b	#btnStart,(v_jpadpressed_actual).w		; check if Start is pressed
 		beq.w	Tit_MainLoop					; if not, branch
 
 Tit_ChkLevSel:

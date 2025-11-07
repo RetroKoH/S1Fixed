@@ -176,10 +176,10 @@ v_snddriver_ram:	ds.b	$5C0	; sound driver state
 
 v_gamemode:			ds.b	1		; game mode (00=Sega; 04=Title; 08=Demo; 0C=Level; 10=SS; 14=Cont; 18=End; 1C=Credit; +8C=PreLevel)
 v_lastbgmplayed:	ds.b	1		; last bgm played (Used by RestartMusic)
-v_jpadhold2:		ds.b	1		; joypad input - held, duplicate
-v_jpadpress2:		ds.b	1		; joypad input - pressed, duplicate
-v_jpadhold1:		ds.b	1		; joypad input - held
-v_jpadpress1:		ds.b	1		; joypad input - pressed
+v_jpadheld_dup:		ds.b	1		; joypad input - held, duplicate (can be overridden by demos)
+v_jpadpressed_dup:	ds.b	1		; joypad input - pressed, duplicate (can be overridden by demos)
+v_jpadheld_actual:	ds.b	1		; joypad input - held, actual
+v_jpadpressed_actual:	ds.b	1	; joypad input - pressed, actual
 
 	if S3KUnderwaterPalette
 v_watertranstable:	ds.l	1		; address of the water transition table
@@ -188,25 +188,25 @@ v_watertranstable:	ds.l	1		; address of the water transition table
 	endif
 
 v_levelheader_id:	ds.w	1		; ID of the Level Header (2 bytes)
-v_vdp_buffer1:		ds.w	1		; VDP instruction buffer
+v_vdp_buffer1:		ds.w	1		; VDP register $81 buffer - contains $8134 which is sent to vdp_control_port
 v_sram_errorcode:	ds.l	1		; SRAM error code
 				ds.b	2		; unused
-v_demolength:		ds.w	1		; the length of a demo in frames
-v_scrposy_vdp:		ds.w	1		; screen position y (VDP)
-v_bgscrposy_vdp:	ds.w	1		; background screen position y (VDP)
-v_scrposx_vdp:		ds.w	1		; screen position x (VDP)
-v_bgscrposx_vdp:	ds.w	1		; background screen position x (VDP)
-v_bg3scrposy_vdp:	ds.w	1
-v_bg3scrposx_vdp:	ds.w	1
-				ds.b	2		; unused
+v_countdown:		ds.w	1		; decrements every time VBlank runs, used as a general purpose frame timer (often for demo timer)
+v_scrposy_vdp:		ds.w	1		; foreground y position, sent to VSRAM during VBlank
+v_bgscrposy_vdp:	ds.w	1		; background y position, sent to VSRAM during VBlank
+				
+				ds.b	$A		; unused
+
 v_hbla_hreg:		ds.w	1		; VDP H.interrupt register buffer (8Axx)
 v_hbla_line = v_hbla_hreg+1			; screen line where water starts and palette is changed by HBlank
 v_pfade_start:		ds.b	1		; palette fading - start position in bytes
 v_pfade_size:		ds.b	1		; palette fading - number of colours
 
-v_misc_variables:
-v_vbla_0e_counter:	ds.b	1		; tracks how many times vertical interrupts routine 0E occured (pretty much unused because routine 0E is unused)
-				ds.b	1		; unused
+; -------------------------------------------------------------------------------------
+; VBlank-related variables; cleared by GM_Level, GM_Ending
+; -------------------------------------------------------------------------------------
+v_vbla_variables:
+				ds.b	2		; unused
 v_vbla_routine:		ds.b	1		; VBlank - routine counter
 				ds.b	1		; unused
 v_spritecount:		ds.b	1		; number of sprites on-screen
@@ -221,18 +221,19 @@ v_palette_frame:	ds.w	1
 v_palette_timer:	ds.b	1
 f_super_palette:	ds.b	1
 
-v_vdp_buffer2:		ds.w	1		; VDP instruction buffer
+v_vdp_dma_buffer:	ds.w	1	; VDP DMA command buffer
 				ds.b	2		; unused
 f_hbla_pal:			ds.w	1		; flag set to change palette during HBlank (0000 = no; 0001 = change)
-v_waterpos1:		ds.w	1		; water height, actual
-v_waterpos2:		ds.w	1		; water height, ignoring sway
-v_waterpos3:		ds.w	1		; water height, next target
+v_waterpos_actual:	ds.w	1		; water height, actual
+v_waterpos_base:	ds.w	1		; water height, ignoring sway
+v_waterpos_target:	ds.w	1		; water height, next target
 f_water:			ds.b	1		; flag set for water
-v_wtr_routine:		ds.b	1		; water event - routine counter
-f_wtr_state:		ds.b	1		; water palette state when water is above/below the screen (00 = partly/all dry; 01 = all underwater)
-f_doupdatesinhblank:	ds.b	1		; defers performing various tasks to the Horizontal Interrupt (H-Blank)
+v_water_routine:	ds.b	1		; water event - routine counter
+f_water_pal_full:	ds.b	1		; water palette state when water is above/below the screen (00 = partly/all dry; 01 = all underwater)
+f_hblank_run_snd:	ds.b	1		; flag set when sound driver should be run from HBlank
 v_pal_buffer:		ds.b	$30		; palette data buffer (used for palette cycling)
-v_misc_variables_end:
+v_vbla_variables_end:
+; =====================================================================================
 
 v_plc_buffer:		ds.b	6*16		; pattern load cues buffer (maximum $10 PLCs)
 v_plc_buffer_only_end:
@@ -247,39 +248,37 @@ v_plc_framepatternsleft:ds.w	1
 			ds.b	4		; unused
 v_plc_buffer_end:
 
-v_levelvariables:				; variables that are reset between levels
+; -------------------------------------------------------------------------------------
+; Level-related variables; cleared by GM_Level, GM_Special, GM_Ending
+; -------------------------------------------------------------------------------------
+v_levelvariables:
 v_screenposx:		ds.l	1		; screen position x
 v_screenposy:		ds.l	1		; screen position y
 v_bgscreenposx:		ds.l	1		; background screen position x
 v_bgscreenposy:		ds.l	1		; background screen position y
-v_bg2screenposx:	ds.l	1
-v_bg2screenposy:	ds.l	1
-v_bg3screenposx:	ds.l	1
-v_bg3screenposy:	ds.l	1
-v_limitleft1:		ds.w	1		; left level boundary (unused)
-v_limitright1:		ds.w	1		; right level boundary (unused)
-v_limittop1:		ds.w	1		; top level boundary (unused)
-v_limitbtm1:		ds.w	1		; bottom level boundary
-v_limitleft2:		ds.w	1		; left level boundary
-v_limitright2:		ds.w	1		; right level boundary
-v_limittop2:		ds.w	1		; top level boundary
-v_limitbtm2:		ds.w	1		; bottom level boundary
-v_unused11:			ds.w	1		; unused
-v_limitleft3:		ds.w	1		; left level boundary, at the end of an act
+v_bg2screenposx:	ds.l	1		; background 2 x position (e.g. GHZ treeline)
+v_bg2screenposy:	ds.l	1		; background 2 y position
+v_bg3screenposx:	ds.l	1		; background 3 x position (e.g. GHZ mountains)
+v_bg3screenposy:	ds.l	1		; background 3 y position
+v_limitleft_target:	ds.w	1		; left level boundary (unused)
+v_limitright_target:	ds.w	1	; right level boundary (unused)
+v_limittop_target:	ds.w	1		; top level boundary (unused)
+v_limitbtm_target:	ds.w	1		; bottom level boundary
+v_limitleft:		ds.w	1		; left level boundary
+v_limitright:		ds.w	1		; right level boundary
+v_limittop:			ds.w	1		; top level boundary
+v_limitbtm:			ds.w	1		; bottom level boundary
 v_screenposx_last:	ds.w	1		; ProjectFM S3K Object Manager
 v_screenposy_last:	ds.w	1		; ProjectFM S3K Object Manager
 
-			ds.b	2		; unused
-v_scrshiftx:		ds.w	1		; x-screen shift (new - last) * $100
-v_scrshifty:		ds.w	1		; y-screen shift (new - last) * $100
-v_lookshift:		ds.w	1		; screen shift when Sonic looks up/down
+				ds.b	6		; unused
+v_scrshiftx:		ds.w	1		; camera x position change since last frame * $100
+v_scrshifty:		ds.w	1		; camera y position change since last frame * $100
+v_lookshift:		ds.w	1		; screen shift when Sonic looks up/down - $60 = default; $C8 = look up; 8 = look down
 				ds.b	2		; unused
 v_dle_routine:		ds.w	1		; dynamic level event - routine counter (2 bytes) -- Filter Optimized DLE Manager
-f_nobgscroll:		ds.b	1		; flag set to cancel background scrolling
-			ds.b	1		; unused
-v_unused9:		ds.b	1		; unused
-			ds.b	1		; unused
-v_unused10:		ds.b	1		; unused
+f_nobgscroll:		ds.b	1		; flag set to disable all scrolling and LZ water features
+				ds.b	4		; unused
 f_victory:			ds.b	1		; flag noting whether Sonic should leap for victory at the end of a level (ProtoVictoryLeap mod).
 v_fg_xblock:		ds.b	1		; foreground x-block parity (for redraw)
 v_fg_yblock:		ds.b	1		; foreground y-block parity (for redraw)
@@ -302,10 +301,9 @@ v_sonspeedacc:			ds.w	1		; Sonic's acceleration
 v_sonspeeddec:			ds.w	1		; Sonic's deceleration
 v_sonframenum:			ds.b	1		; frame to display for Sonic
 f_sonframechg:			ds.b	1		; flag set to update Sonic's sprite frame
-v_anglebuffer:			ds.b	1		; angle of collision block that Sonic or object is standing on
-					ds.b	1		; unused
-v_anglebuffer2:			ds.b	1		; other angle of collision block that Sonic or object is standing on
-					ds.b	1		; unused
+v_anglebuffer_right:	ds.b	1		; angle of floor on Sonic's right side
+v_anglebuffer_left:		ds.b	1		; angle of floor on Sonic's left side
+					ds.b	2		; unused
 v_opl_routine:			ds.b	1		; ObjPosLoad - routine counter
 					ds.b	1		; unused
 v_opl_screen:			ds.w	1		; ObjPosLoad - screen variable
@@ -374,6 +372,7 @@ v_scroll_block_3_size:	ds.w	1		; unused
 v_scroll_block_4_size:	ds.w	1		; unused
 					ds.b	8		; unused
 v_levelvariables_end:
+; =====================================================================================
 
 v_spritetablebuffer:	ds.b	$280	; sprite table (last $80 bytes are overwritten by v_palette_water_fading)
 v_spritetablebuffer_end:

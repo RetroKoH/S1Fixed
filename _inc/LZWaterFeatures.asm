@@ -15,20 +15,20 @@ LZWaterFeatures:
 		bsr.w	LZDynamicWater
 
 .setheight:
-		clr.b	(f_wtr_state).w
+		clr.b	(f_water_pal_full).w
 		moveq	#0,d0
 		move.b	(v_oscillate+2).w,d0
 		lsr.w	#1,d0
-		add.w	(v_waterpos2).w,d0
-		move.w	d0,(v_waterpos1).w
-		move.w	(v_waterpos1).w,d0
+		add.w	(v_waterpos_base).w,d0
+		move.w	d0,(v_waterpos_actual).w
+		move.w	(v_waterpos_actual).w,d0
 		sub.w	(v_screenposy).w,d0
 		bcc.s	.isbelow
 		tst.w	d0
 		bpl.s	.isbelow	; if water is below top of screen, branch
 
 		move.b	#223,(v_hbla_line).w
-		move.b	#1,(f_wtr_state).w ; screen is all underwater
+		move.b	#1,(f_water_pal_full).w ; screen is all underwater
 
 .isbelow:
 		cmpi.w	#223,d0		; is water within 223 pixels of top of screen?
@@ -64,14 +64,14 @@ LZDynamicWater:
 		jsr		DynWater_Index(pc,d0.w)
 		moveq	#0,d1
 		move.b	(f_water).w,d1
-		move.w	(v_waterpos3).w,d0
-		sub.w	(v_waterpos2).w,d0
+		move.w	(v_waterpos_target).w,d0
+		sub.w	(v_waterpos_base).w,d0
 		beq.s	.exit		; if water level is correct, branch
 		bcc.s	.movewater	; if water level is too high, branch
 		neg.w	d1		; set water to move up instead
 
 .movewater:
-		add.w	d1,(v_waterpos2).w ; move water up/down
+		add.w	d1,(v_waterpos_base).w ; move water up/down
 
 .exit:
 		rts
@@ -86,7 +86,7 @@ DynWater_Index:	offsetTable
 
 DynWater_LZ1:
 		move.w	(v_screenposx).w,d0
-		move.b	(v_wtr_routine).w,d2
+		move.b	(v_water_routine).w,d2
 		bne.s	.routine2
 		move.w	#$B8,d1		; water height
 		cmpi.w	#$600,d0	; has screen reached next position?
@@ -104,12 +104,12 @@ DynWater_LZ1:
 		cmpi.w	#$1380,d0
 		blo.s	.setwater
 		move.w	#$3A8,d1
-		cmp.w	(v_waterpos2).w,d1 ; has water reached last height?
+		cmp.w	(v_waterpos_base).w,d1 ; has water reached last height?
 		bne.s	.setwater	; if not, branch
-		move.b	#1,(v_wtr_routine).w ; use second routine next
+		move.b	#1,(v_water_routine).w ; use second routine next
 
 .setwater:
-		move.w	d1,(v_waterpos3).w
+		move.w	d1,(v_waterpos_target).w
 		rts	
 ; ===========================================================================
 
@@ -132,10 +132,10 @@ DynWater_LZ1:
 		cmpi.w	#$1300,d0
 		blo.s	.setwater2
 		move.w	#$108,d1
-		move.b	#2,(v_wtr_routine).w
+		move.b	#2,(v_water_routine).w
 
 .setwater2:
-		move.w	d1,(v_waterpos3).w
+		move.w	d1,(v_waterpos_target).w
 
 .skip:
 		rts	
@@ -152,13 +152,13 @@ DynWater_LZ2:
 		move.w	#$428,d1
 
 .setwater:
-		move.w	d1,(v_waterpos3).w
+		move.w	d1,(v_waterpos_target).w
 		rts	
 ; ===========================================================================
 
 DynWater_LZ3:
 		move.w	(v_screenposx).w,d0
-		move.b	(v_wtr_routine).w,d2
+		move.b	(v_water_routine).w,d2
 		bne.s	.routine2
 
 		move.w	#$900,d1
@@ -171,13 +171,13 @@ DynWater_LZ3:
 
 		move.w	#$4C8,d1	; set new water height
 		move.w	#$F8F9,(v_lvllayout+$50C).w ; update level layout
-		move.b	#1,(v_wtr_routine).w ; use second routine next
+		move.b	#1,(v_water_routine).w ; use second routine next
 		move.w	#sfx_Rumbling,d0
 		bsr.w	QueueSound2 ; play sound $B7 (rumbling)
 
 .setwaterlz3:
-		move.w	d1,(v_waterpos3).w
-		move.w	d1,(v_waterpos2).w ; change water height instantly
+		move.w	d1,(v_waterpos_target).w
+		move.w	d1,(v_waterpos_base).w ; change water height instantly
 		rts	
 ; ===========================================================================
 
@@ -190,7 +190,7 @@ DynWater_LZ3:
 		move.w	#$308,d1
 		cmpi.w	#$1400,d0
 		blo.s	.setwater2
-		cmpi.w	#$508,(v_waterpos3).w
+		cmpi.w	#$508,(v_waterpos_target).w
 		beq.s	.sonicislow
 		cmpi.w	#$600,(v_player+obY).w	; is Sonic below $600 y-axis?
 		bhs.s	.sonicislow				; if yes, branch
@@ -199,13 +199,13 @@ DynWater_LZ3:
 
 .sonicislow:
 		move.w	#$508,d1
-		move.w	d1,(v_waterpos2).w
+		move.w	d1,(v_waterpos_base).w
 		cmpi.w	#$1770,d0
 		blo.s	.setwater2
-		move.b	#2,(v_wtr_routine).w
+		move.b	#2,(v_water_routine).w
 
 .setwater2:
-		move.w	d1,(v_waterpos3).w
+		move.w	d1,(v_waterpos_target).w
 		rts	
 ; ===========================================================================
 
@@ -218,14 +218,14 @@ DynWater_LZ3:
 		move.w	#$188,d1
 		cmpi.w	#$1AF0,d0
 		bhs.s	.loc_3DC6
-		cmp.w	(v_waterpos2).w,d1
+		cmp.w	(v_waterpos_base).w,d1
 		bne.s	.setwater3
 
 .loc_3DC6:
-		move.b	#3,(v_wtr_routine).w
+		move.b	#3,(v_water_routine).w
 
 .setwater3:
-		move.w	d1,(v_waterpos3).w
+		move.w	d1,(v_waterpos_target).w
 		rts	
 ; ===========================================================================
 
@@ -238,23 +238,23 @@ DynWater_LZ3:
 		move.w	#$900,d1
 		cmpi.w	#$1BC0,d0
 		blo.s	.setwater4
-		move.b	#4,(v_wtr_routine).w
-		move.w	#$608,(v_waterpos3).w
-		move.w	#$7C0,(v_waterpos2).w
+		move.b	#4,(v_water_routine).w
+		move.w	#$608,(v_waterpos_target).w
+		move.w	#$7C0,(v_waterpos_base).w
 		; Removed (This is now called in LZ3's DLE)
 		rts	
 ; ===========================================================================
 
 .setwater4:
-		move.w	d1,(v_waterpos3).w
-		move.w	d1,(v_waterpos2).w
+		move.w	d1,(v_waterpos_target).w
+		move.w	d1,(v_waterpos_base).w
 		rts	
 ; ===========================================================================
 
 .routine5:
 		cmpi.w	#$1E00,d0	; has screen passed final position?
 		blo.s	.dontset	; if not, branch
-		move.w	#$128,(v_waterpos3).w
+		move.w	#$128,(v_waterpos_target).w
 
 .dontset:
 		rts	
@@ -267,7 +267,7 @@ DynWater_SBZ3:
 		move.w	#$4C8,d1
 
 .setwater:
-		move.w	d1,(v_waterpos3).w
+		move.w	d1,(v_waterpos_target).w
 		rts
 
 ; ---------------------------------------------------------------------------
@@ -341,12 +341,12 @@ LZWindTunnels:
 		bclr	#staSpin,obStatus(a1)		; clear rolling state
 		move.w	#$E07,obHeight(a1)			; set rolling height though
 	; Wind Tunnel Fix end
-		btst	#bitUp,(v_jpadhold2).w		; is up pressed?
+		btst	#bitUp,(v_jpadheld_dup).w		; is up pressed?
 		beq.s	.down						; if not, branch
 		subq.w	#1,obY(a1)					; move Sonic up
 
 	.down:
-		btst	#bitDn,(v_jpadhold2).w		; is down being pressed?
+		btst	#bitDn,(v_jpadheld_dup).w		; is down being pressed?
 		beq.s	.end						; if not, branch
 		addq.w	#1,obY(a1)					; move Sonic down
 

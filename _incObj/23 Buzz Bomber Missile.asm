@@ -81,7 +81,7 @@ Msl_FromBuzz:	; Routine 4
 		move.b	#(colHarmful|colSz_6x6),obColType(a0)
 		move.b	#1,obAnim(a0)
 		bsr.w	SpeedToPos
-		move.w	(v_limitbtm2).w,d0
+		move.w	(v_limitbtm).w,d0
 		addi.w	#$E0,d0
 		cmp.w	obY(a0),d0			; has object moved below the level boundary?
 		blo.w	DeleteObject		; if yes, branch
