@@ -12,7 +12,7 @@ PauseGame:
 		tst.b	(f_pause).w					; is game already paused?
 		bne.s	Pause_StopGame				; if yes, branch
 		btst	#bitStart,(v_jpadpressed_actual).w	; is Start button pressed?
-		beq.s	Pause_DoNothing				; if not, branch
+		beq.w	Pause_DoNothing				; if not, branch
 
 Pause_StopGame:
 		st.b	(f_pause).w					; freeze time
