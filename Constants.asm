@@ -163,39 +163,30 @@ obParent:		equ $3E
 ; ---------------------------------------------------------------------------
 ; conventions specific to playable characters
 obInertia:		equ $20			; potential speed (2 bytes) -- Exclusive to players
-							; $23 unused
-							; $24 obRoutine
-					; Sonic uses $25 if double jump stuff is enabled
-							; $26 obAngle
-							; $27 unused
 obWallJump:		equ $28			; used for wall jumps (2 bytes)
-							; $2B-$2E unused
-					; Sonic uses $2F if double jump stuff is enabled
 obInvuln:		equ $30			; Invulnerable (blinking after getting hit) timer
 obInvinc:		equ $31			; Invincibility timer
 obShoes:		equ $32			; Speed Shoes timer
-							; $33-34 unused
 obCtrlLock:		equ $35			; formerly f_playerctrl (0, 1, or $81)
 obFrontAngle:	equ $36			; angle on ground in front of sprite
 obRearAngle:	equ $37			; angle on ground behind sprite
 obOnWheel:		equ $38			; on convex wheel flag
 obStatus2nd:	equ $39			; secondary status counter
-obRestartTimer:	equ $3A			; level restart timer (1 byte)
-							; $3B obSpinDashCounter+1
+obRestartTimer:	equ $3A			; level restart timer (2 bytes -- Shared with obSpinDashCounter)
 obJumping:		equ $3C			; jumping flag
 obLRLock:		equ $3D			; flag for preventing left and right input
-obPlatformAddr:	equ $3E			; ost slot of the object Sonic's on top of (Convert to 2 bytes and swap with obLRLock)
-							; $3F obPlatformAddr
+obPlatformAddr:	equ $3E			; ObjRAM location of the object Sonic's on top of (2 bytes)
 
+;	if (ShieldsMode|DropDashEnabled)
+obDoubleJumpProp:	equ $25				; Counter for Sonic's Drop Dash (if enabled). Can also be utilized for remaining frames of flight / 2 for Tails, gliding-related for Knuckles.
+obDoubleJumpFlag:	equ	$2F				; Flag noting double jump status. 0 - not triggered. 1 - triggered. 2 - post-instashield (Begin Drop Dash revving). 3 - Drop Dash Cancelled.
+;	endif
 ;	if (SpinDashEnabled|PeeloutEnabled)
 obSpinDashFlag:		equ $2A				; spin dash/peelout flag - if toggled off, this is unused.
 obAutoRollFlag:		equ obSpinDashFlag	; auto-roll (pinball mode) flag
 obSpinDashCounter:	equ obRestartTimer	; Counter used for the Spin Dash and/or Peelout (2 bytes) - if toggled off, this is unused.
 ;	endif
-;	if (ShieldsMode|DropDashEnabled)
-obDoubleJumpFlag:	equ	$2F				; Flag noting double jump status. 0 - not triggered. 1 - triggered. 2 - post-instashield (Begin Drop Dash revving). 3 - Drop Dash Cancelled.
-obDoubleJumpProp:	equ $25				; Counter for Sonic's Drop Dash (if enabled). Can also be utilized for remaining frames of flight / 2 for Tails, gliding-related for Knuckles.
-;	endif
+
 ; ---------------------------------------------------------------------------
 ; obStatus bitfield constants
 ;

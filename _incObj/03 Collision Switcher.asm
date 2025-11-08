@@ -1,6 +1,9 @@
 ; ----------------------------------------------------------------------------
 ; Object 03 - Collision plane/layer switcher
 ; Backported from Sonic 2's object for Sonic 1: Two-Eight
+;
+; 9 OST bytes free
+; $14, $15, $27, $2B-2E, $33, $34 
 ; ----------------------------------------------------------------------------
 
 PathSwapper:
