@@ -54,7 +54,12 @@ WallJumpEnabled: = 0					; if set to 1, the wall jump is enabled
 ; Name: 7th Emerald and Super Sonic (Incomplete: Minor Bugfixes)
 ; Credit: RetroKoH (Palette Credit: Clownacy)
 ; Function: Adds 7th Special Stage, 7th Emerald and Super Sonic Form
-SuperMod: = 0
+SuperMod: = 1
+; Add sub-toggles for the following:
+	; 7th emerald
+	; separate button transformation
+	; manual reversion
+	; jump dash ability
 ; NOTE: Super Sonic breaks some objects and foreground elements, visually, due to the changes to blues in Pal Line 0.
 ; Adjustments will not be made in S1Fixed, as it's far too cumbersome to make a toggleable mod.
 ; I might make a separate branch for this in the future.

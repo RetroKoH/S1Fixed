@@ -350,10 +350,7 @@ loc_19DD8:
 ;RideObject_SetRide:
 		btst	#staOnObj,obStatus(a1)
 		beq.s	loc_19E30
-	; RetroKoH obPlatform SST mod
-		movea.w	obPlatformAddr(a1),a3
-		adda.l	#v_ram_start,a3				; a3 = object being stood upon 
-	; obPlatform SST mod end
+		movea.w	obPlatformAddr(a1),a3	; a3 = object being stood upon (RetroKoH obPlatform SST mod)
 		bclr	#staSonicOnObj,obStatus(a3)	; removed obSolid
 
 loc_19E30:

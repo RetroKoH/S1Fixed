@@ -1,5 +1,12 @@
 ; ---------------------------------------------------------------------------
 ; Object 78 - Caterkiller enemy	(MZ, SBZ)
+;
+; 0STs used
+;		0		1		2		3		4		5		6		7		8		9		A		B		C		D		E		F
+;0x		ID		REND	GFX1	GFX2	MAP1	MAP2	MAP3	MAP4	XPOS1	XPOS2	XPOS3	XPOS4	YPOS1	YPOS2	YPOS3	YPOS4
+;1x		VELX1	VELX2	----	----	AcWID	----	
+;2x
+;3x
 ; ---------------------------------------------------------------------------
 
 Caterkiller:
@@ -16,14 +23,6 @@ Cat_Index:	offsetTable
 		offsetTableEntry.w Cat_BodySeg1
 		offsetTableEntry.w Cat_Delete
 		offsetTableEntry.w loc_16CC0
-
-; SSTs used
-;		0		1		2		3		4		5		6		7		8		9		A		B		C		D		E		F
-;0x		ID		REND	GFX1	GFX2	MAP1	MAP2	MAP3	MAP4	XPOS1	XPOS2	XPOS3	XPOS4	YPOS1	YPOS2	YPOS3	YPOS4
-;1x		VELX1	VELX2	----	----	AcWID	----	
-;2x
-;3x
-
 
 cat_intertia = obVelY		; formerly obInertia. Needed to change after shifting SSTs for the Priority Manager.
 							; Caterkiller uses obXVel but doesn't use obYVel (unless broken), and this causes no glitches.
