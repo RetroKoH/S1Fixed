@@ -2900,10 +2900,7 @@ Platform3:
 loc_74AE:
 		btst	#staOnObj,obStatus(a1)
 		beq.s	loc_74DC
-	; RetroKoH obPlatform SST mod
-		movea.w	obPlatformAddr(a1),a2
-		adda.l	#v_ram_start,a2		; a2 = object being stood upon 
-	; obPlatform SST mod end
+		movea.w	obPlatformAddr(a1),a2	; a2 = object being stood upon (RetroKoH obPlatform SST mod)
 		bclr	#staSonicOnObj,obStatus(a2)
 		clr.b	ob2ndRout(a2)
 		cmpi.b	#4,obRoutine(a2)
@@ -2911,9 +2908,7 @@ loc_74AE:
 		subq.b	#2,obRoutine(a2)
 
 loc_74DC:
-	; RetroKoH obPlatform SST mod
 		move.w	a0,obPlatformAddr(a1)
-	; obPlatform SST mod end
 		clr.b	obAngle(a1)
 		clr.w	obVelY(a1)
 		move.w	obVelX(a1),obInertia(a1)
@@ -4046,7 +4041,7 @@ loc_14D3C:
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-sub_14D48:
+Sonic_CalcHeadRoom:
 		move.l	#v_collision1&$FFFFFF,(v_collindex).w	; MJ: load first collision data location
 		cmpi.b	#$C,(v_top_solid_bit).w					; MJ: is second collision set to be used?
 		beq.s	.first									; MJ: if not, branch
@@ -4064,7 +4059,7 @@ sub_14D48:
 		cmpi.b	#$C0,d0
 		beq.w	sub_14E50
 
-; End of function sub_14D48
+; End of function Sonic_CalcHeadRoom
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	make Sonic land	on the floor after jumping
