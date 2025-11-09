@@ -1399,8 +1399,6 @@ Pal_SLZCyc:		binclude	"palette/Cycle - SLZ.bin"
 Pal_SYZCyc1:	binclude	"palette/Cycle - SYZ1.bin"
 Pal_SYZCyc2:	binclude	"palette/Cycle - SYZ2.bin"
 
-		include	"_inc/SBZ Palette Scripts.asm"
-
 Pal_SBZCyc1:	binclude	"palette/Cycle - SBZ 1.bin"
 Pal_SBZCyc2:	binclude	"palette/Cycle - SBZ 2.bin"
 Pal_SBZCyc3:	binclude	"palette/Cycle - SBZ 3.bin"

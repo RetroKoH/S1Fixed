@@ -200,7 +200,7 @@ Drown_Countdown:; Routine $A
 		beq.s	.cantdrown						; if not, branch
 
 		subq.w	#1,drown_time(a0)				; decrement timer between countdown number changes
-		bpl.w	.nochange						; branch if time remains
+		bpl.w	.create_bubble					; branch if time remains
 		move.w	#59,drown_time(a0)				; set timer to 1 second
 		move.w	#1,objoff_36(a0)
 		jsr		(RandomNumber).w
