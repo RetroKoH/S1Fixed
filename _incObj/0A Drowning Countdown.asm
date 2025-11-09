@@ -1,6 +1,11 @@
 ; ---------------------------------------------------------------------------
 ; Object 0A - drowning countdown numbers and small bubbles that float out of
 ; Sonic's mouth (LZ)
+;
+; spawned by:
+;	SonicPlayer - subtype $81
+;	DrownCount - subtypes 6 (small), $E (medium), 0-5 (numbers)
+; To-Do: (Does S1Squared change how these are spawned in)?
 ; ---------------------------------------------------------------------------
 
 DrownCount:
@@ -45,37 +50,37 @@ Drown_Main:	; Routine 0
 		addq.b	#8,obRoutine(a0)			; goto Drown_Countdown next
 		move.l	#Map_Drown,obMap(a0)
 		move.w	#make_art_tile(ArtTile_LZ_Sonic_Drowning,0,0),obGfx(a0)
-		andi.w	#$7F,d0
-		move.b	d0,objoff_33(a0)
+		andi.w	#$7F,d0						; ignore high bit of type
+		move.b	d0,objoff_33(a0)			; type should be 1
 		bra.w	Drown_Countdown
 ; ===========================================================================
 
 .smallbubble:
-		move.b	d0,obAnim(a0)
+		move.b	d0,obAnim(a0)				; use animation from subtype (0-5 = nums; 6 = small bubble; $E = medium)
 		move.w	obX(a0),drown_origX(a0)
 		move.w	#-$88,obVelY(a0)
 
 Drown_Animate:	; Routine 2
 		lea		Ani_Drown(pc),a1
-		jsr		(AnimateSprite).w
+		jsr		(AnimateSprite).w			; run animation and goto Drown_ChkWater next
 
 Drown_ChkWater:	; Routine 4
 		move.w	(v_waterpos_actual).w,d0
-		cmp.w	obY(a0),d0	; has bubble reached the water surface?
-		blo.s	.wobble		; if not, branch
+		cmp.w	obY(a0),d0					; has bubble reached the water surface?
+		blo.s	.wobble						; if not, branch
 
 		move.b	#id_Drown_Display,obRoutine(a0)	; goto Drown_Display next
 		addq.b	#7,obAnim(a0)
-		cmpi.b	#$D,obAnim(a0)
-		beq.s	Drown_Display
-		blo.s	Drown_Display
-		move.b	#$D,obAnim(a0)
+		cmpi.b	#$D,obAnim(a0)				; blank animation?
+		beq.s	Drown_Display				; if yes, branch
+		blt.s	Drown_Display
+		move.b	#$D,obAnim(a0)				; if higher than the last animation, hard-set it to blank
 		bra.s	Drown_Display
 ; ===========================================================================
 
 .wobble:
-		tst.b	(f_wtunnelmode).w	; is Sonic in a water tunnel?
-		beq.s	.notunnel			; if not, branch
+		tst.b	(f_wtunnelmode).w			; is Sonic in a water tunnel?
+		beq.s	.notunnel					; if not, branch
 		addq.w	#4,drown_origX(a0)
 
 .notunnel:
@@ -83,18 +88,15 @@ Drown_ChkWater:	; Routine 4
 		addq.b	#1,obAngle(a0)
 		andi.w	#$7F,d0
 		lea		Drown_WobbleData(pc),a1
-		move.b	(a1,d0.w),d0
+		move.b	(a1,d0.w),d0				; get byte from wobble data array based on angle value
 		ext.w	d0
 		add.w	drown_origX(a0),d0
-		move.w	d0,obX(a0)
+		move.w	d0,obX(a0)					; update position
 		bsr.s	Drown_ShowNumber
-		jsr		(SpeedToPos_YOnly).l	; Horizontal movement is NOT applied by VelX
-		tst.b	obRender(a0)
-		bpl.s	.delete
+		jsr		(SpeedToPos_YOnly).l		; horizontal movement is NOT applied by obVelX
+		tst.b	obRender(a0)				; is object on-screen?
+		bpl.s	Drown_Delete				; if not, branch
 		jmp		(DisplaySprite).l
-
-.delete:
-		jmp		(DeleteObject).l
 ; ===========================================================================
 
 Drown_Display:	; Routine 6, Routine $E
@@ -114,7 +116,7 @@ Drown_AirLeft:	; Routine $C
 		subq.w	#1,drown_time(a0)
 		bne.s	.display
 		move.b	#id_Drown_Display+8,obRoutine(a0)	; goto Drown_Display next
-		addq.b	#7,obAnim(a0)
+		addq.b	#7,obAnim(a0)						; use flashing number animation
 		bra.s	Drown_Display
 ; ===========================================================================
 
@@ -153,6 +155,11 @@ Drown_ShowNumber:
 .nonumber:
 		rts	
 ; ===========================================================================
+; ---------------------------------------------------------------------------
+; Data for a bubble's side-to-side wobble (also used by REV01's underwater
+; background ripple effect)
+; ---------------------------------------------------------------------------
+
 Drown_WobbleData:
 		dc.b 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2
 		dc.b 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3
@@ -177,8 +184,8 @@ Drown_Countdown:; Routine $A
 
 	; If Sonic has drowned, and the object is waiting until the
 	; world should pause, then go deal with that.
-		tst.w	objoff_2C(a0)
-		bne.w	.loc_13F86
+		tst.w	objoff_2C(a0)					; has Sonic drowned?
+		bne.w	.kill_sonic						; if yes, branch
 		tst.b	(v_debuguse).w					; is debug mode active?
 		bne.s	.cantdrown						; if yes, branch
 		cmpi.b	#6,obRoutine(a2)				; is Sonic dead?
@@ -192,20 +199,20 @@ Drown_Countdown:; Routine $A
 		btst	#staWater,obStatus(a2)			; is Sonic underwater?
 		beq.s	.cantdrown						; if not, branch
 
-		subq.w	#1,drown_time(a0)				; decrement timer
+		subq.w	#1,drown_time(a0)				; decrement timer between countdown number changes
 		bpl.w	.nochange						; branch if time remains
-		move.w	#59,drown_time(a0)
+		move.w	#59,drown_time(a0)				; set timer to 1 second
 		move.w	#1,objoff_36(a0)
 		jsr		(RandomNumber).w
-		andi.w	#1,d0
+		andi.w	#1,d0							; random number 0 or 1
 		move.b	d0,objoff_34(a0)
 		move.b	(v_air).w,d0					; check air remaining
 		cmpi.b	#25,d0
 		beq.s	.warnsound						; play sound if	air is 25
 		cmpi.b	#20,d0
-		beq.s	.warnsound
+		beq.s	.warnsound						; play sound if	air is 20
 		cmpi.b	#15,d0
-		beq.s	.warnsound
+		beq.s	.warnsound						; play sound if	air is 15
 		cmpi.b	#12,d0
 		bhi.s	.reduceair						; if air is above 12, branch
 
@@ -217,113 +224,113 @@ Drown_Countdown:; Routine $A
 		clr.b	(v_lastbgmplayed).w				; clear last played music
 	endif
 
-.skipmusic:
-		subq.b	#1,objoff_32(a0)
-		bpl.s	.reduceair
-		move.b	objoff_33(a0),objoff_32(a0)
+	.skipmusic:
+		subq.b	#1,objoff_32(a0)				; decrement display timer
+		bpl.s	.reduceair						; branch if time remains
+		move.b	objoff_33(a0),objoff_32(a0)		; reset timer (1)
 		bset	#7,objoff_36(a0)
 		bra.s	.reduceair
 
-.cantdrown:
+	.cantdrown:
 		rts
 ; ===========================================================================
 
-.warnsound:
+	.warnsound:
 		move.b	#sfx_Warning,d0
-		jsr		(QueueSound2).w		; play "ding-ding" warning sound
+		jsr		(QueueSound2).w					; play "ding-ding" warning sound
 
-.reduceair:
-		subq.b	#1,(v_air).w			; subtract 1 from air remaining
-		bcc.w	.makenum				; if air is above 0, branch
+	.reduceair:
+		subq.b	#1,(v_air).w					; subtract 1 from air remaining
+		bcc.w	.makenum						; if air is above 0, branch
 
 		; Sonic drowns here
 		bsr.w	ResumeMusic
-		move.b	#$81,obCtrlLock(a2)		; lock controls and disable object interaction
+		move.b	#$81,obCtrlLock(a2)				; lock controls and disable object interaction
 		move.b	#sfx_Drown,d0
-		jsr		(QueueSound2).w	; play drowning sound
+		jsr		(QueueSound2).w					; play drowning sound
 		move.b	#$A,objoff_34(a0)
 		move.w	#1,objoff_36(a0)
-		move.w	#$78,objoff_2C(a0)
+		move.w	#$78,objoff_2C(a0)				; restart after 2 seconds
 		move.l	a0,-(sp)
-		movea.l	a2,a0					; instruction changed due to S2 optimization
+		movea.l	a2,a0							; instruction changed due to S2 optimization
 		bsr.w	Sonic_ResetOnFloor
-		move.b	#aniID_Drown,obAnim(a0)	; use Sonic's drowning animation
+		move.b	#aniID_Drown,obAnim(a0)			; use Sonic's drowning animation
 		bset	#staAir,obStatus(a0)
-		bset	#gfxPriority,obGfx(a0)	; set high priority bit
+		bset	#gfxPriority,obGfx(a0)			; set high priority bit
 		moveq	#0,d0
-		move.l	d0,obVelX(a0)			; stop all movement (obVelX and obVelY)
+		move.l	d0,obVelX(a0)					; stop all movement (obVelX and obVelY)
 		move.w	d0,obInertia(a0)
-		move.b	#$A,obRoutine(a0)		; Force the character to drown -- RHS Drowning Fix
+		move.b	#$A,obRoutine(a0)				; Force the character to drown -- RHS Drowning Fix
 		move.b	#1,(f_nobgscroll).w
-		movea.l	(sp)+,a0				; restore a0 = obj0A
+		movea.l	(sp)+,a0						; restore a0 = obj0A
 		rts	
 ; ===========================================================================
-.loc_13F86:
+	.kill_sonic:
 	; RHS Drowning Fix
-		subq.w	#1,objoff_2C(a0)
-		bne.s	.nochange				; Make it jump straight to this location
-		cmpi.b	#$A,obRoutine(a2)		; is Sonic drowning (won't be if Debug was used)
-		bne.s	.noDeath
-		move.b	#6,obRoutine(a2)		; kill Sonic
-.noDeath:
+		subq.w	#1,objoff_2C(a0)				; decrement delay timer after drowning
+		bne.s	.create_bubble					; branch if time remains
+		cmpi.b	#$A,obRoutine(a2)				; is Sonic drowning (won't be if Debug was used)
+		bne.s	.noDeath						; if not, branch
+		move.b	#6,obRoutine(a2)				; kill Sonic
+
+	.noDeath:
 		rts
 	; Drowning Fix End
 ; ===========================================================================
 
-.nochange:
-		tst.w	objoff_36(a0)
-		beq.w	.nocountdown
-		subq.w	#1,objoff_3A(a0)
-		bpl.w	.nocountdown
+	.create_bubble:
+		tst.w	objoff_36(a0)					; should bubbles/numbers be spawned?
+		beq.w	.nocountdown					; if not, branch
+		subq.w	#1,objoff_3A(a0)				; decrement timer between bubble spawning
+		bpl.w	.nocountdown					; branch if time remains
 
-.makenum:
+	.makenum:
 		jsr		(RandomNumber).w
 		andi.w	#$F,d0
-		move.w	d0,objoff_3A(a0)
+		move.w	d0,objoff_3A(a0)				; set timer as random 0-15 frames
 		jsr		(FindFreeObj).l
-		bne.w	.nocountdown
-		_move.b	#id_DrownCount,obID(a1)		; load object
-		move.w	obX(a2),obX(a1)	; match X position to Sonic
-		moveq	#6,d0
-		btst	#staFacing,obStatus(a2)
-		beq.s	.noflip
-		neg.w	d0
+		bne.w	.nocountdown					; branch if object slot not found
+		_move.b	#id_DrownCount,obID(a1)			; load object
+		move.w	obX(a2),obX(a1)					; match X position to Sonic
+		moveq	#6,d0							; 6 pixels to right
+		btst	#staFacing,obStatus(a2)			; is Sonic facing left?
+		beq.s	.noflip							; if not, branch
+		neg.w	d0								; 6 pixels to left
 		move.b	#$40,obAngle(a1)
 
-.noflip:
-		add.w	d0,obX(a1)
+	.noflip:
+		add.w	d0,obX(a1)						; adjust X position to in front of Sonic's face
 		move.w	obY(a2),obY(a1)
-		move.b	#6,obSubtype(a1)
-		tst.w	objoff_2C(a0)
-		beq.w	.loc_1403E
-		andi.w	#7,objoff_3A(a0)
-;		addi.w	#0,objoff_3A(a0) ; Adding 0 does nothing...
-		move.w	obY(a2),d0
-		subi.w	#$C,d0
-		move.w	d0,obY(a1)
+		move.b	#6,obSubtype(a1)				; object is small bubble (6)
+		tst.w	objoff_2C(a0)					; has Sonic drowned?
+		beq.w	.not_dead						; if not, branch
+		andi.w	#7,objoff_3A(a0)				; cut time between bubbles to 7 frames or less
+		move.w	obY(a2),d0						; match Y position to Sonic
+		subi.w	#$C,d0							; 12 pixels up
+		move.w	d0,obY(a1)						; adjust Y position to in front of Sonic's face
 		jsr		(RandomNumber).w
 		move.b	d0,obAngle(a1)
 		move.w	(v_framecount).w,d0
 		andi.b	#3,d0
 		bne.s	.loc_14082
-		move.b	#$E,obSubtype(a1)
+		move.b	#$E,obSubtype(a1)				; object is medium bubble ($E)
 		bra.s	.loc_14082
 ; ===========================================================================
 
-.loc_1403E:
+	.not_dead:
 		btst	#7,objoff_36(a0)
 		beq.s	.loc_14082
-		move.b	(v_air).w,d2
-		lsr.b	#1,d2
+		move.b	(v_air).w,d2					; get air remaining
+		lsr.b	#1,d2							; divide by 2
 		jsr		(RandomNumber).w
 		andi.w	#3,d0
 		bne.s	.loc_1406A
 		bset	#6,objoff_36(a0)
 		bne.s	.loc_14082
-		move.b	d2,obSubtype(a1)
+		move.b	d2,obSubtype(a1)				; object is a number (0-5)
 		move.w	#$1C,drown_time(a1)
 
-.loc_1406A:
+	.loc_1406A:
 		tst.b	objoff_34(a0)
 		bne.s	.loc_14082
 		bset	#6,objoff_36(a0)
@@ -331,10 +338,11 @@ Drown_Countdown:; Routine $A
 		move.b	d2,obSubtype(a1)
 		move.w	#$1C,drown_time(a1)
 
-.loc_14082:
+	.loc_14082:
 		subq.b	#1,objoff_34(a0)
 		bpl.s	.nocountdown
 		clr.w	objoff_36(a0)
 
-.nocountdown:
+	.nocountdown:
 		rts	
+; ===========================================================================

@@ -54,7 +54,7 @@ WallJumpEnabled: = 0					; if set to 1, the wall jump is enabled
 ; Name: 7th Emerald and Super Sonic (Incomplete: Minor Bugfixes)
 ; Credit: RetroKoH (Palette Credit: Clownacy)
 ; Function: Adds 7th Special Stage, 7th Emerald and Super Sonic Form
-SuperMod: = 1
+SuperMod: = 0
 ; Add sub-toggles for the following:
 	; 7th emerald
 	; separate button transformation
