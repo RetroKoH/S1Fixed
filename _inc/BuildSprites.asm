@@ -59,7 +59,7 @@ BuildSprites:
 		lea		(v_screenposx).w,a1
 	; check object bounds
 		moveq	#0,d0
-		move.b	obActWid(a0),d0
+		move.b	obDispWid(a0),d0
 		move.w	obX(a0),d3
 		sub.w	(a1),d3			; d3 = screen x-pos
 		move.w	d3,d1

@@ -28,7 +28,7 @@ GMake_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_MZ_Lava,3,1),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$38,obActWid(a0)
+		move.b	#$38,obDispWid(a0)
 		move.w	#120,gmake_time(a0)		; set time delay to 2 seconds
 
 GMake_Wait:	; Routine 2
@@ -148,7 +148,7 @@ Geyser_Main:	; Routine 0
 		move.l	#Map_Geyser,obMap(a1)
 		move.w	#make_art_tile(ArtTile_MZ_Lava,3,0),obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.b	#$20,obActWid(a1)
+		move.b	#$20,obDispWid(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.b	obSubtype(a0),obSubtype(a1)
@@ -174,7 +174,7 @@ Geyser_Main:	; Routine 0
 		move.b	#$80,obHeight(a1)
 		bset	#4,obRender(a1)
 		addq.b	#4,obRoutine(a1)
-		move.l	a0,objoff_3C(a1)
+		move.w	a0,gmake_parent(a1)
 		tst.b	obSubtype(a0)
 		beq.s	.sound
 		moveq	#0,d1
@@ -184,7 +184,7 @@ Geyser_Main:	; Routine 0
 		addi.w	#$100,obY(a1)
 		move.w	#priority0,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
 		move.w	objoff_30(a0),objoff_30(a1)
-		move.l	objoff_3C(a0),objoff_3C(a1)
+		move.w	gmake_parent(a0),gmake_parent(a1)
 		clr.b	obSubtype(a0)
 
 .sound:
@@ -198,7 +198,7 @@ Geyser_Action:	; Routine 2
 		cmp.w	obY(a0),d0
 		bhs.s	loc_EFDA
 		addq.b	#4,obRoutine(a0)
-		movea.l	objoff_3C(a0),a1
+		movea.w	gmake_parent(a0),a1
 		move.b	#3,obAnim(a1)
 		tst.b	obSubtype(a0)
 		beq.s	loc_EFDA
@@ -213,7 +213,7 @@ loc_EFDA:
 ; ===========================================================================
 
 loc_EFFC:	; Routine 4
-		movea.l	objoff_3C(a0),a1
+		movea.w	gmake_parent(a0),a1
 		cmpi.b	#6,obRoutine(a1)
 		beq.w	DeleteObject
 		move.w	obY(a1),d0

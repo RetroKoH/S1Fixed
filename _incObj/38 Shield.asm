@@ -62,7 +62,7 @@ shTypeLtning	equ 3
 
 Shi_Main:	; Routine 0
 		move.b	#4,obRender(a0)
-		move.b	#$10,obActWid(a0)
+		move.b	#$10,obDispWid(a0)
 		move.w	#make_art_tile(ArtTile_Shield,0,0),obGfx(a0)
 
 	if ~~S3KDoubleJump
@@ -300,7 +300,7 @@ Flame_Dissipate:
 		move.l	#Map_ExplodeItem,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Explosion,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.b	#$C,obActWid(a1)
+		move.b	#$C,obDispWid(a1)
 		move.b	#3,obTimeFrame(a1)
 		move.b	#1,obFrame(a1)
 		rts
@@ -489,7 +489,7 @@ Lightning_CreateSpark:
 		move.l	obMap(a0),obMap(a1)
 		move.w	obGfx(a0),obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.b	#8,obActWid(a1)
+		move.b	#8,obDispWid(a1)
 		move.b	#aniID_LightningSpark,obAnim(a1)
 		move.l	(a2)+,obVelX(a1)		; move the data contained in the array to obVelX and obVelY, and increment the address in a2
 		lea		object_size(a1),a1

@@ -20,7 +20,7 @@ FFloor_Index:	offsetTable
 FFloor_Main:	; Routine 0
 		move.w	#boss_sbz2_x+$30,obX(a0)	; $2080
 		move.w	#boss_sbz2_y+$C0,obY(a0)	; $5D0
-		move.b	#$80,obActWid(a0)
+		move.b	#$80,obDispWid(a0)
 		move.b	#$84,obRender(a0)			; render_flags = 4; bit 7 also set
 
 	; store values for faster looping
@@ -52,7 +52,7 @@ FFloor_Main:	; Routine 0
 		move.l	d2,obMap(a1)
 		move.w	d3,obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.b	d4,obActWid(a1)
+		move.b	d4,obDispWid(a1)
 		move.b	d4,obHeight(a1)
 		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.w	d5,obX(a1)					; set X	position
@@ -81,7 +81,7 @@ FFloor_Solid:
 		asl.w	#4,d0
 		move.w	#boss_sbz2_x+$B0,d4
 		sub.w	d0,d4
-		move.b	d0,obActWid(a0)
+		move.b	d0,obDispWid(a0)
 		move.w	d4,obX(a0)
 		moveq	#$B,d1
 		add.w	d0,d1
@@ -136,7 +136,7 @@ FFloor_Break:
 		moveq	#$38,d2
 		addq.b	#2,obRoutine(a0)			; advance floor panel to routine $A
 		moveq	#8,d0
-		move.b	d0,obActWid(a0)
+		move.b	d0,obDispWid(a0)
 		move.b	d0,obHeight(a0)
 
 	; RetroKoH Object Load Optimization -- Based on Spirituinsanum Guides

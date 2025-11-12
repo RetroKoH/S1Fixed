@@ -18,7 +18,7 @@ Effects_Init:	; Routine 0
 		move.l	#Map_Effects,obMap(a0)
 		ori.b	#4,obRender(a0)
 		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$10,obActWid(a0)
+		move.b	#$10,obDispWid(a0)
 		clr.b	obAnim(a0)
 		move.w	#ArtTile_Dust,obGfx(a0)
 	;	move.w	#$F400,objoff_3C(a0)	; $34 = address to load art to in DPLC processing
@@ -97,7 +97,7 @@ Effects_SkidDust:
 		move.l	obMap(a0),obMap(a1)
 		move.b	obRender(a0),obRender(a1)
 		move.w	#priority1,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#4,obActWid(a1)
+		move.b	#4,obDispWid(a1)
 		move.w	obGfx(a0),obGfx(a1)
 ;fallthrough
 ; ===========================================================================

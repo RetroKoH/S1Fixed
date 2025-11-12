@@ -41,7 +41,7 @@ SpinC_Rout1:
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Spin,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Spinning_Platform,0,0),obGfx(a0)
-		move.b	#$10,obActWid(a0)
+		move.b	#$10,obDispWid(a0)
 		ori.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		moveq	#0,d0

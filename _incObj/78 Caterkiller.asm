@@ -1,12 +1,5 @@
 ; ---------------------------------------------------------------------------
 ; Object 78 - Caterkiller enemy	(MZ, SBZ)
-;
-; 0STs used
-;		0		1		2		3		4		5		6		7		8		9		A		B		C		D		E		F
-;0x		ID		REND	GFX1	GFX2	MAP1	MAP2	MAP3	MAP4	XPOS1	XPOS2	XPOS3	XPOS4	YPOS1	YPOS2	YPOS3	YPOS4
-;1x		VELX1	VELX2	----	----	AcWID	----	
-;2x
-;3x
 ; ---------------------------------------------------------------------------
 
 Caterkiller:
@@ -48,7 +41,7 @@ Cat_Main:	; Routine 0
 		ori.b	#4,obRender(a0)
 		move.b	obRender(a0),obStatus(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#8,obActWid(a0)
+		move.b	#8,obDispWid(a0)
 		move.b	#(colEnemy|colSz_8x8),obColType(a0)
 		move.w	obX(a0),d2
 		moveq	#$C,d5
@@ -86,7 +79,7 @@ Cat_Main:	; Routine 0
 		move.l	obMap(a0),obMap(a1)
 		move.w	obGfx(a0),obGfx(a1)
 		move.w	#priority5,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#8,obActWid(a1)
+		move.b	#8,obDispWid(a1)
 		move.b	#(colSpecial|colSz_8x8),obColType(a1)
 		add.w	d5,d2
 		move.w	d2,obX(a1)
@@ -130,7 +123,7 @@ Cat_Head:	; Routine 2
 		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 
 Cat_ChkGone:
-		move.w	obRespawnNo(a0),d0		; get address in respawn table
+		move.w	obRespawnAddr(a0),d0		; get address in respawn table
 		beq.s	.delete					; if it's zero, don't remember object
 		movea.w	d0,a2					; load address into a2
 		bclr	#7,(a2)					; clear respawn table entry, so object can be loaded again

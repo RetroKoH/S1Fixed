@@ -18,7 +18,7 @@ Pole_Main:	; Routine 0
 		move.l	#Map_Pole,obMap(a0)
 		move.w	#make_art_tile(ArtTile_LZ_Pole,2,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.b	#8,obActWid(a0)
+		move.b	#8,obDispWid(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colSpecial|colSz_4x32),obColType(a0)
 		moveq	#$F,d0

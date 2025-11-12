@@ -34,7 +34,7 @@ LWall_Main:	; Routine 0
 		move.l	#Map_LWall,obMap(a1)
 		move.w	#make_art_tile(ArtTile_MZ_Lava,3,0),obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.b	#$50,obActWid(a1)
+		move.b	#$50,obDispWid(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.w	#priority1,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
@@ -43,7 +43,7 @@ LWall_Main:	; Routine 0
 		
 		bset	#shPropFlame,obShieldProp(a1)	; Negated by Flame Shield
 		
-		move.l	a0,objoff_3C(a1)
+		move.w	a0,objoff_3C(a1)
 
 .fail:
 		dbf		d1,.loop	; repeat sequence once
@@ -112,7 +112,7 @@ LWall_Solid:	; Routine 2
 
 .chkgone:
 	; ProjectFM S3K Object Manager
-		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		move.w	obRespawnAddr(a0),d0	; get address in respawn table
 		movea.w	d0,a2				; load address into a2
 		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again
 	; S3K Object Manager
@@ -121,7 +121,7 @@ LWall_Solid:	; Routine 2
 ; ===========================================================================
 
 LWall_Move:	; Routine 6
-		movea.l	objoff_3C(a0),a1
+		movea.w	objoff_3C(a0),a1
 		cmpi.b	#8,obRoutine(a1)
 		beq.w	DeleteObject
 		move.w	obX(a1),obX(a0)	; move rest of lava wall

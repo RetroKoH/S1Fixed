@@ -46,7 +46,7 @@ Sign_Main:	; Routine 0
 		move.l	#Map_Sign,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Signpost,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.b	#$18,obActWid(a0)
+		move.b	#$18,obDispWid(a0)
 		move.w	#priority4,obPriority(a0)			; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$FF,objoff_3F(a0)					; Added for DPLC frame check
 
@@ -182,7 +182,7 @@ Sign_Spin:	; Routine 4
 		move.w	#make_art_tile(ArtTile_RingSparkles,1,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.w	#priority2,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#8,obActWid(a1)
+		move.b	#8,obDispWid(a1)
 
 .fail:
 		rts	

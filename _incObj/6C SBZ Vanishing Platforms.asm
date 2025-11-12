@@ -23,7 +23,7 @@ VanP_Main:	; Routine 0
 		move.l	#Map_VanP,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Vanishing_Block,2,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
-		move.b	#$10,obActWid(a0)
+		move.b	#$10,obDispWid(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		moveq	#$F,d0						; read only the 2nd digit
 		and.b	obSubtype(a0),d0			; get object type
@@ -78,14 +78,14 @@ VanP_Appear:	; Routine 4
 		cmpi.b	#2,obRoutine(a0)
 		bne.s	.loc_160D6
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		jsr		(PlatformObject).l
 		jmp		(RememberState).l
 ; ===========================================================================
 
 .loc_160D6:
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		jsr		(ExitPlatform).l
 		move.w	obX(a0),d2
 		jsr		(MvSonicOnPtfm2).l

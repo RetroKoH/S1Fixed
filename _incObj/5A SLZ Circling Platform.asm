@@ -24,20 +24,20 @@ Circ_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$18,obActWid(a0)
+		move.b	#$18,obDispWid(a0)
 		move.w	obX(a0),circ_origX(a0)
 		move.w	obY(a0),circ_origY(a0)
 
 Circ_Platform:	; Routine 2
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		jsr		(PlatformObject).l
 		bra.w	Circ_Types
 ; ===========================================================================
 
 Circ_Action:	; Routine 4
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		jsr		(ExitPlatform).l
 		move.w	obX(a0),-(sp)
 		bsr.w	Circ_Types

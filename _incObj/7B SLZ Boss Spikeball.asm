@@ -16,7 +16,7 @@ BossSpikeball:
 		; Removed first call to _Delete
 		cmpi.w	#$280,d0
 		bls.s	BossStarLight_NoDel
-		move.w	obRespawnNo(a0),d0		; get address in respawn table
+		move.w	obRespawnAddr(a0),d0		; get address in respawn table
 		beq.s	BossStarLight_Delete	; if it's zero, don't remember object
 		movea.w	d0,a2					; load address into a2
 		bclr	#7,(a2)					; clear respawn table entry, so object can be loaded again
@@ -41,7 +41,7 @@ BossSpikeball_Main:	; Routine 0
 		ori.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colHarmful|colSz_8x8),obColType(a0)
-		move.b	#$C,obActWid(a0)
+		move.b	#$C,obDispWid(a0)
 		movea.l	objoff_3C(a0),a1
 		move.w	obX(a1),objoff_30(a0)
 		move.w	obY(a1),objoff_34(a0)
@@ -360,7 +360,7 @@ BossSpikeball_MakeFrag:
 
 		ori.b	#4,obRender(a1)
 		bset	#7,obRender(a1)
-		move.b	#$C,obActWid(a1)
+		move.b	#$C,obDispWid(a1)
 		dbf		d1,.loop							; repeat sequence 3 more times
 
 	.end:

@@ -17,7 +17,7 @@ Hog_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colEnemy|colSz_12x18),obColType(a0)
-		move.b	#$C,obActWid(a0)
+		move.b	#$C,obDispWid(a0)
 		bsr.w	ObjectFall_YOnly
 		jsr		(ObjFloorDist).l			; find floor
 		tst.w	d1

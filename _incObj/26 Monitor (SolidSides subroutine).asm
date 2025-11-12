@@ -52,7 +52,7 @@ loc_A4E6:
 
 loc_A4EA:
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		addq.w	#4,d1
 		move.w	d1,d2
 		add.w	d2,d2

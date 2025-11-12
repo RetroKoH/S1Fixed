@@ -54,7 +54,7 @@ loc_17B60:
 		andi.w	#$7F,d5
 		move.b	d5,(a2)+
 		move.b	#4,obRender(a1)
-		move.b	#8,obActWid(a1)
+		move.b	#8,obDispWid(a1)
 		move.w	#priority6,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.l	objoff_34(a0),objoff_34(a1)
 		dbf		d1,GBall_MakeLinks ; repeat sequence 5 more times

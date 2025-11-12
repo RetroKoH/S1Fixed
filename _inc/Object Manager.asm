@@ -318,7 +318,7 @@ OPLBack8:	; check, if current object needs to be loaded
 		andi.b	#$7F,d0
 		move.b	d0,obID(a1)
 		move.b	3(a0),obSubtype(a1)
-		move.w	a3,obRespawnNo(a1)
+		move.w	a3,obRespawnAddr(a1)
 		bsr.w	FindFreeObj				; find new object slot
 		bne.s	ObjPosLoad_SameYRange	; brach, if there are none left
 OPL8:
@@ -386,7 +386,7 @@ LoadObj_YWrap:
 	andi.b	#$7F,d0
 	move.b	d0,obID(a1)
 	move.b	(a0)+,obSubtype(a1)
-	move.w	a3,obRespawnNo(a1)
+	move.w	a3,obRespawnAddr(a1)
 	bra.s	FindFreeObj		; find new object slot
  
 ;loc_17F36
@@ -429,7 +429,7 @@ LoadObj:
 	andi.b	#$7F,d0
 	move.b	d0,obID(a1)
 	move.b	(a0)+,obSubtype(a1)
-	move.w	a3,obRespawnNo(a1)
+	move.w	a3,obRespawnAddr(a1)
 	; continue straight to FindFreeObj
 ; End of function ChkLoadObj
 ; ===========================================================================

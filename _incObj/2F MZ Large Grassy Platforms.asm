@@ -38,7 +38,7 @@ LGrass_Main:	; Routine 0
 		lea		LGrass_Data(pc,d0.w),a2
 		move.l	a2,objoff_30(a0)
 		move.b	(a1)+,obFrame(a0)
-		move.b	(a1),obActWid(a0)
+		move.b	(a1),obDispWid(a0)
 		andi.b	#$F,obSubtype(a0)
 		move.b	#$40,obHeight(a0)
 		bset	#4,obRender(a0)
@@ -48,7 +48,7 @@ LGrass_Action:	; Routine 2
 		btst	#staSonicOnObj,obStatus(a0)	; removed obSolid
 		beq.s	LGrass_Solid
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		addi.w	#$B,d1
 		bsr.w	ExitPlatform
 		btst	#staOnObj,obStatus(a1)		; is Sonic on the object?
@@ -59,7 +59,7 @@ LGrass_Action:	; Routine 2
 
 LGrass_Slope:
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		addi.w	#$B,d1
 		movea.l	objoff_30(a0),a2
 		move.w	obX(a0),d2
@@ -69,7 +69,7 @@ LGrass_Slope:
 
 LGrass_Solid:
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		addi.w	#$B,d1
 		move.w	#$20,d2
 		cmpi.b	#2,obFrame(a0)

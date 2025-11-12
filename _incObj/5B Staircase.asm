@@ -48,7 +48,7 @@ Stair_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$10,obActWid(a1)
+		move.b	#$10,obDispWid(a1)
 		move.b	obSubtype(a0),obSubtype(a1)
 		move.w	d2,obX(a1)
 		move.w	obY(a0),obY(a1)
@@ -56,7 +56,7 @@ Stair_Main:	; Routine 0
 		move.w	obY(a1),stair_origY(a1)
 		addi.w	#$20,d2
 		move.b	d3,objoff_37(a1)
-		move.l	a0,stair_parent(a1)
+		move.w	a0,stair_parent(a1)
 		add.b	d4,d3
 		dbf		d1,.loop	; repeat sequence 3 times
 
@@ -71,14 +71,14 @@ Stair_Move:	; Routine 2
 		jsr		Stair_TypeIndex(pc,d1.w)
 
 Stair_Solid:	; Routine 4
-		movea.l	stair_parent(a0),a2
+		movea.w	stair_parent(a0),a2
 		moveq	#0,d0
 		move.b	objoff_37(a0),d0
 		move.b	(a2,d0.w),d0
 		add.w	stair_origY(a0),d0
 		move.w	d0,obY(a0)
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		addi.w	#$B,d1
 		move.w	#$10,d2
 		move.w	#$11,d3

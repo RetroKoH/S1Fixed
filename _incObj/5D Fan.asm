@@ -16,7 +16,7 @@ Fan_Main:	; Routine 0
 		move.l	#Map_Fan,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SLZ_Fan,2,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
-		move.b	#$10,obActWid(a0)
+		move.b	#$10,obDispWid(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 
 Fan_Delay:	; Routine 2

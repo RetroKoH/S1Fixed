@@ -34,7 +34,7 @@ Spik_Main:	; Routine 0
 		lsr.w	#3,d0
 		adda.w	d0,a1
 		move.b	(a1)+,obFrame(a0)
-		move.b	(a1)+,obActWid(a0)
+		move.b	(a1)+,obDispWid(a0)
 		move.w	obX(a0),spik_origX(a0)
 		move.w	obY(a0),spik_origY(a0)
 
@@ -66,7 +66,7 @@ Spik_SideWays:
 
 Spik_Upright:
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		addi.w	#$B,d1
 		move.w	#$10,d2
 		move.w	#$11,d3

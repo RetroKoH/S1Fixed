@@ -21,7 +21,7 @@ Spla_Main:	; Routine 0
 		move.l	#Map_Splash,obMap(a0)
 		ori.b	#4,obRender(a0)
 		move.w	#priority1,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$10,obActWid(a0)
+		move.b	#$10,obDispWid(a0)
 		move.w	#make_art_tile(ArtTile_Splash,2,0),obGfx(a0)
 		move.w	(v_player+obX).w,obX(a0)		; copy x-position from Sonic
 

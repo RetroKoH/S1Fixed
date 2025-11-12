@@ -32,7 +32,7 @@ LBlk_Main:	; Routine 0
 		lsr.w	#3,d0						; read only the 1st digit
 		andi.w	#$E,d0
 		lea		LBlk_Var(pc,d0.w),a2
-		move.b	(a2)+,obActWid(a0)			; set width
+		move.b	(a2)+,obDispWid(a0)			; set width
 		move.b	(a2),obHeight(a0)			; set height
 		lsr.w	#1,d0
 		move.b	d0,obFrame(a0)
@@ -60,7 +60,7 @@ LBlk_Action:	; Routine 2
 		tst.b	obRender(a0)
 		bpl.s	.chkdel
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		addi.w	#$B,d1
 		moveq	#0,d2
 		move.b	obHeight(a0),d2

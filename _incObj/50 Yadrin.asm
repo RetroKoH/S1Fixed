@@ -15,7 +15,7 @@ Yad_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Yadrin,1,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$14,obActWid(a0)
+		move.b	#$14,obDispWid(a0)
 		move.w	#$1108,obHeight(a0)			; Height and Width
 		move.b	#(colSpecial|colSz_20x16),obColType(a0)
 		bsr.w	ObjectFall_YOnly
@@ -93,7 +93,7 @@ Yad_ChkWall:
 		andi.w	#3,d0
 		bne.s	loc_F836
 		moveq	#0,d3
-		move.b	obActWid(a0),d3
+		move.b	obDispWid(a0),d3
 		tst.w	obVelX(a0)
 		bmi.s	loc_F82C
 		bsr.w	ObjHitWallRight

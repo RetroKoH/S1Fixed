@@ -25,7 +25,7 @@ Van_Main:	; Routine 0
 		move.l	#Map_Vanish,obMap(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$38,obActWid(a0)
+		move.b	#$38,obDispWid(a0)
 		move.w	#make_art_tile(ArtTile_Warp,0,0),obGfx(a0)
 		move.w	#120,van_time(a0) ; set time for Sonic's disappearance to 2 seconds
 

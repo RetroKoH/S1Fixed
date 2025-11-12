@@ -38,7 +38,7 @@ Orb_Main:	; Routine 0
 		ori.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colEnemy|colSz_8x8),obColType(a0)
-		move.b	#$C,obActWid(a0)
+		move.b	#$C,obDispWid(a0)
 		moveq	#0,d2
 		lea		objoff_37(a0),a2
 		movea.l	a2,a3
@@ -74,12 +74,12 @@ Orb_Main:	; Routine 0
 		move.w	obGfx(a0),obGfx(a1)
 		ori.b	#4,obRender(a1)
 		move.w	#priority4,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#8,obActWid(a1)
+		move.b	#8,obDispWid(a1)
 		move.b	#3,obFrame(a1)
 		move.b	#(colHarmful|colSz_4x4),obColType(a1)
 		move.b	d2,obAngle(a1)
 		addi.b	#$40,d2
-		move.l	a0,orb_parent(a1)
+		move.w	a0,orb_parent(a1)
 		dbf		d1,.loop				; repeat sequence 3 more times
 
 .fail:
@@ -153,7 +153,7 @@ Orb_ChkDel:
 		bra.w	DisplayAndCollision	; S3K TouchResponse
 
 .chkgone:
-		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		move.w	obRespawnAddr(a0),d0	; get address in respawn table
 		beq.s	loc_11E34			; if it's zero, don't remember object
 		movea.w	d0,a2				; load address into a2
 		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again
@@ -178,7 +178,7 @@ loc_11E40:
 ; ===========================================================================
 
 Orb_MoveOrb:	; Routine 6
-		movea.l	orb_parent(a0),a1
+		movea.w	orb_parent(a0),a1
 		_cmpi.b	#id_Orbinaut,obID(a1)	; does parent object still exist?
 		bne.w	DeleteObject			; if not, delete
 		cmpi.b	#2,obFrame(a1)			; is orbinaut angry?

@@ -42,7 +42,7 @@ Drown_Main:	; Routine 0
 		move.l	#Map_Bub,obMap(a0)
 		move.w	#make_art_tile(ArtTile_LZ_Bubbles,0,1),obGfx(a0)
 		move.b	#$84,obRender(a0)
-		move.b	#$10,obActWid(a0)
+		move.b	#$10,obDispWid(a0)
 		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	obSubtype(a0),d0			; get bubble type
 		bpl.s	.smallbubble				; branch if $00-$7F

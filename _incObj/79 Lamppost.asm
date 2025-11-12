@@ -24,9 +24,9 @@ Lamp_Main:	; Routine 0
 		move.l	#Map_Lamp,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Lamppost,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.b	#8,obActWid(a0)
+		move.b	#8,obDispWid(a0)
 		move.w	#priority5,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.w	obRespawnNo(a0),d0			; get address in respawn table --  ProjectFM
+		move.w	obRespawnAddr(a0),d0			; get address in respawn table --  ProjectFM
 		movea.w	d0,a2						; load address into a2 -- ProjectFM
 		btst	#0,(a2)						; ProjectFM
 		bne.s	.red
@@ -55,7 +55,7 @@ Lamp_Blue:	; Routine 2
 		andi.b	#$7F,d2
 		cmp.b	d2,d1						; is this a "new" lamppost?
 		blo.s	.chkhit						; if yes, branch
-		move.w	obRespawnNo(a0),d0			; get address in respawn table -- ProjectFM
+		move.w	obRespawnAddr(a0),d0			; get address in respawn table -- ProjectFM
 		movea.w	d0,a2						; load address into a2 -- ProjectFM
 		bset	#0,(a2)						; ProjectFM
 		move.b	#4,obRoutine(a0)
@@ -88,7 +88,7 @@ Lamp_Blue:	; Routine 2
 		move.l	#Map_Lamp,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Lamppost,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.b	#8,obActWid(a1)
+		move.b	#8,obDispWid(a1)
 		move.w	#priority4,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#2,obFrame(a1)				; use "ball only" frame
 		move.w	#$20,lamp_time(a1)
@@ -97,7 +97,7 @@ Lamp_Blue:	; Routine 2
 		move.b	#1,obFrame(a0)	; use "post only" frame
 		bsr.w	Lamp_StoreInfo
 	; ProjectFM
-		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		move.w	obRespawnAddr(a0),d0	; get address in respawn table
 		movea.w	d0,a2				; load address into a2
 		bset	#0,(a2)
 	; ProjectFM

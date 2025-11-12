@@ -292,7 +292,7 @@ offscreen:	macro exit,pos
 		cmpi.w	#128+320+192,d0
 		bls.s	.notOff				; if not offscreen, exit here
 		
-		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		move.w	obRespawnAddr(a0),d0	; get address in respawn table
 		beq.ATTRIBUTE	exit		; if it's zero, don't remember object
 		movea.w	d0,a2				; load address into a2
 		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again

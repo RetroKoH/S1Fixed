@@ -30,7 +30,7 @@ Sto_Main:	; Routine 0
 		lsr.w	#2,d0				; subtype div 4
 		andi.w	#$1C,d0
 		lea		Sto_Var(pc,d0.w),a3
-		move.b	(a3)+,obActWid(a0)
+		move.b	(a3)+,obDispWid(a0)
 		move.b	(a3)+,obHeight(a0)
 		lsr.w	#2,d0
 		move.b	d0,obFrame(a0)
@@ -42,7 +42,7 @@ Sto_Main:	; Routine 0
 		beq.s	.isSBZ3
 
 .chkdel:
-		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		move.w	obRespawnAddr(a0),d0	; get address in respawn table
 		beq.s	.delete				; if it's zero, don't remember object
 		movea.w	d0,a2				; load address into a2
 		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again
@@ -55,7 +55,7 @@ Sto_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_LZ_Block_2,2,0),obGfx(a0)
 		cmpi.w	#$A80,obX(a0)
 		bne.s	.isSBZ12
-		move.w	obRespawnNo(a0),d0		; get address in respawn table
+		move.w	obRespawnAddr(a0),d0		; get address in respawn table
 		beq.s	.isSBZ12				; if it's zero, don't remember object
 		movea.w	d0,a2					; load address into a2
 		btst	#0,(a2)
@@ -83,7 +83,7 @@ Sto_Main:	; Routine 0
 		bset	#4,obRender(a0)
 
 .chkgone:
-		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		move.w	obRespawnAddr(a0),d0	; get address in respawn table
 		beq.s	Sto_Action			; if it's zero, don't remember object
 		movea.w	d0,a2				; load address into a2
 		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again
@@ -102,7 +102,7 @@ Sto_Action:	; Routine 2
 		tst.b	obRender(a0)
 		bpl.s	.chkdel
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		addi.w	#$B,d1
 		moveq	#0,d2
 		move.b	obHeight(a0),d2
@@ -118,7 +118,7 @@ Sto_Action:	; Routine 2
 		cmpi.b	#id_LZ,(v_zone).w
 		bne.s	.delete
 		clr.b	(v_obj6B).w
-		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		move.w	obRespawnAddr(a0),d0	; get address in respawn table
 		beq.s	.delete				; if it's zero, don't remember object
 		movea.w	d0,a2				; load address into a2
 		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again
@@ -168,7 +168,7 @@ Sto_Type01:
 		addq.b	#1,obSubtype(a0)
 		move.w	#$B4,objoff_36(a0)
 		clr.b	sto_active(a0)
-		move.w	obRespawnNo(a0),d0		; get address in respawn table
+		move.w	obRespawnAddr(a0),d0		; get address in respawn table
 		beq.s	.loc_15DC2				; if it's zero, don't remember object
 		movea.w	d0,a2					; load address into a2
 		bset	#0,(a2)
@@ -204,7 +204,7 @@ Sto_Type02:
 .loc_15E3C:
 		subq.b	#1,obSubtype(a0)
 		clr.b	sto_active(a0)
-		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		move.w	obRespawnAddr(a0),d0	; get address in respawn table
 		beq.s	.loc_15E1E			; if it's zero, don't remember object
 		movea.w	d0,a2				; load address into a2
 		bclr	#0,(a2)
@@ -299,7 +299,7 @@ Sto_Type05:
 		btst	#0,(a2,d0.w)
 		beq.s	.locret_15F5C
 		move.b	#1,sto_active(a0)
-		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		move.w	obRespawnAddr(a0),d0	; get address in respawn table
 		beq.s	.loc_15F3E			; if it's zero, don't remember object
 		movea.w	d0,a2				; load address into a2
 		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again

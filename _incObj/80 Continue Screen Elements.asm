@@ -26,7 +26,7 @@ CSI_Main:	; Routine 0
 
 .skip:
 		clr.b	obRender(a0)
-		move.b	#$3C,obActWid(a0)
+		move.b	#$3C,obDispWid(a0)
 		move.w	#$120,obX(a0)
 		move.w	#$C0,obScreenY(a0)
 

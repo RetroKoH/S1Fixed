@@ -23,7 +23,7 @@ PathSwapper:
 
 .offscreen:
 	; ProjectFM S3K Objects Manager (RetroKoH additional change)
-		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		move.w	obRespawnAddr(a0),d0	; get address in respawn table
 		beq.s	.delete				; if it's zero, don't remember object
 		movea.w	d0,a2				; load address into a2
 		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again
@@ -44,7 +44,7 @@ PSwapper_Init:
 		move.l	#Map_PathSwapper,obMap(a0)
 		move.w	#$27B2,obGfx(a0)			; change this
 		ori.b	#4,obRender(a0)
-		move.b	#$10,obActWid(a0)
+		move.b	#$10,obDispWid(a0)
 		move.w	#priority5,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	obSubtype(a0),d0
 		btst	#2,d0

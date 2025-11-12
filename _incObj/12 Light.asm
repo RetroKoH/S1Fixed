@@ -13,7 +13,7 @@ Light_Main:	; Routine 0
 		move.l	#Map_Light,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Level,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.b	#$10,obActWid(a0)
+		move.b	#$10,obDispWid(a0)
 		move.w	#priority6,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 
 Light_Animate:	; Routine 2 (Replaced with global sync animation)

@@ -13,7 +13,7 @@ Bump_Main:	; Routine 0
 		move.l	#Map_Bump,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SYZ_Bumper,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.b	#$10,obActWid(a0)
+		move.b	#$10,obDispWid(a0)
 		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colSpecial|colSz_8x8_2),obColType(a0)
 
@@ -46,7 +46,7 @@ Bump_Hit:	; Routine 2
 		move.b	#1,obAnim(a0)			; use "hit" animation
 		move.w	#sfx_Bumper,d0
 		jsr		(QueueSound2).w	; play bumper sound
-		move.w	obRespawnNo(a0),d0		; get address in respawn table
+		move.w	obRespawnAddr(a0),d0		; get address in respawn table
 		beq.s	.addscore				; if it's zero, don't remember object
 		movea.w	d0,a2					; load address into a2
 		cmpi.b	#$8A,(a2)				; has bumper been hit 10 times?
@@ -71,7 +71,7 @@ Bump_Hit:	; Routine 2
 ; ===========================================================================
 
 .resetcount:
-		move.w	obRespawnNo(a0),d0		; get address in respawn table
+		move.w	obRespawnAddr(a0),d0		; get address in respawn table
 		beq.w	DeleteObject			; if it's zero, don't remember object
 		movea.w	d0,a2					; load address into a2
 		bclr	#7,(a2)					; clear respawn table entry, so object can be loaded again
