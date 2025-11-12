@@ -25,8 +25,8 @@ ptr_PSBTM:				dc.l PSBTM
 ptr_Obj10:				dc.l Obj10			; $10
 ptr_Bridge:				dc.l Bridge
 ptr_SpinningLight:		dc.l SpinningLight
-ptr_LavaMaker:			dc.l LavaMaker
-ptr_LavaBall:			dc.l LavaBall
+ptr_FireMaker:			dc.l FireMaker
+ptr_FireBall:			dc.l FireBall
 ptr_SwingingPlatform:	dc.l SwingingPlatform
 ptr_Harpoon:			dc.l Harpoon
 ptr_Helix:				dc.l Helix
@@ -184,8 +184,8 @@ id_PSBTM:				equ ((ptr_PSBTM-Obj_Index)/4)+1
 id_Obj10:				equ ((ptr_Obj10-Obj_Index)/4)+1				; $10
 id_Bridge:				equ ((ptr_Bridge-Obj_Index)/4)+1
 id_SpinningLight:		equ ((ptr_SpinningLight-Obj_Index)/4)+1
-id_LavaMaker:			equ ((ptr_LavaMaker-Obj_Index)/4)+1
-id_LavaBall:			equ ((ptr_LavaBall-Obj_Index)/4)+1
+id_FireMaker:			equ ((ptr_FireMaker-Obj_Index)/4)+1
+id_FireBall:			equ ((ptr_FireBall-Obj_Index)/4)+1
 id_SwingingPlatform:	equ ((ptr_SwingingPlatform-Obj_Index)/4)+1
 id_Harpoon:				equ ((ptr_Harpoon-Obj_Index)/4)+1
 id_Helix:				equ ((ptr_Helix-Obj_Index)/4)+1

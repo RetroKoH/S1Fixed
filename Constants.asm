@@ -117,75 +117,78 @@ bitL:		equ 2
 bitDn:		equ 1
 bitUp:		equ 0
 
-; Object variables 
+; Object variables
+
+	include "_incObj/00 OST Constants.asm"
+
 ; ---------------------------------------------------------------------------
 ; Object Status Table offsets (Rearranged for S3K Priority and Object Managers -- RetroKoH)
 ; Nomenclature adopted from s1disasm, Sorting adopted from s2disasm
 ; ---------------------------------------------------------------------------
 ; Universally followed object conventions
-obID:			equ 0			; object ID number
-obRender:		equ 1			; bitfield for x/y flip, display mode
-obGfx:			equ 2			; palette line & VRAM setting (2 bytes)
-obMap:			equ 4			; mappings address (4 bytes)
-obX:			equ 8			; x-axis position (2-4 bytes)
-obXSub:			equ obX+2		; x-axis position fraction, for extra precision (2 bytes)
-obScreenY:		equ obXSub		; y-axis position for screen-fixed items (2 bytes)
-obY:			equ $C			; y-axis position (2-4 bytes)
-obYSub:			equ obY+2		; y-axis position fraction, for extra precision (2 bytes)
-obPriority:		equ $18			; sprite stack priority (2 bytes)
-obFrame:		equ $1A			; current frame displayed
-obDispWid:		equ $23			; action width
-; ---------------------------------------------------------------------------
-; conventions followed by most objects including Sonic:
-obVelX:			equ $10			; x-axis velocity (2 bytes)
-obVelY:			equ $12			; y-axis velocity (2 bytes)
-obHeight:		equ $16			; height/2
-obWidth:		equ $17			; width/2
-obAniFrame:		equ $1B			; current frame in animation script
-obAnim:			equ $1C			; current animation
-obPrevAni:		equ $1D			; previous animation
-obTimeFrame:	equ $1E			; time to next frame
-obDelayAni:		equ $1F			; time to delay animation
-obStatus:		equ $22			; orientation or mode
-obRoutine:		equ $24			; routine number
-obAngle:		equ $26			; angle
-; ---------------------------------------------------------------------------
-; conventions followed by many objects but NOT Sonic
-obRespawnAddr:	equ $14			; respawn list address (2 bytes)
-obColType:		equ $20			; collision response type
-obColProp:		equ $21			; collision extra property
-ob2ndRout:		equ $25			; secondary routine number
-obShieldProp:	equ $27			; How object responds to shields {Reflect-Lightning-Bubble-Flame 0-0-0-0}
-obSubtype:		equ $28			; object subtype
-obBossX:		equ $30
-obBossY:		equ $38
-obParent:		equ $3E
-; ---------------------------------------------------------------------------
-; conventions specific to Sonic (playable characters)
-obInertia:		equ $20			; potential speed (2 bytes) -- Exclusive to players
-obWallJump:		equ $28			; used for wall jumps (2 bytes)
-obInvuln:		equ $30			; Invulnerable (blinking after getting hit) timer
-obInvinc:		equ $31			; Invincibility timer
-obShoes:		equ $32			; Speed Shoes timer
-obCtrlLock:		equ $35			; formerly f_playerctrl (0, 1, or $81)
-obFrontAngle:	equ $36			; angle on ground in front of sprite
-obRearAngle:	equ $37			; angle on ground behind sprite
-obOnWheel:		equ $38			; on convex wheel flag
-obStatus2nd:	equ $39			; secondary status counter
-obRestartTimer:	equ $3A			; level restart timer (2 bytes -- Shared with obSpinDashCounter)
-obJumping:		equ $3C			; jumping flag
-obLRLock:		equ $3D			; flag for preventing left and right input
-obPlatformAddr:	equ $3E			; ObjRAM location of the object Sonic's on top of (2 bytes)
+; obID:			equ 0			; object ID number
+; obRender:		equ 1			; bitfield for x/y flip, display mode
+; obGfx:			equ 2			; palette line & VRAM setting (2 bytes)
+; obMap:			equ 4			; mappings address (4 bytes)
+; obX:			equ 8			; x-axis position (2-4 bytes)
+; obXSub:			equ obX+2		; x-axis position fraction, for extra precision (2 bytes)
+; obScreenY:		equ obXSub		; y-axis position for screen-fixed items (2 bytes)
+; obY:			equ $C			; y-axis position (2-4 bytes)
+; obYSub:			equ obY+2		; y-axis position fraction, for extra precision (2 bytes)
+; obPriority:		equ $18			; sprite stack priority (2 bytes)
+; obFrame:		equ $1A			; current frame displayed
+; obDispWid:		equ $23			; action width
+; ; ---------------------------------------------------------------------------
+; ; conventions followed by most objects including Sonic:
+; obVelX:			equ $10			; x-axis velocity (2 bytes)
+; obVelY:			equ $12			; y-axis velocity (2 bytes)
+; obHeight:		equ $16			; height/2
+; obWidth:		equ $17			; width/2
+; obAniFrame:		equ $1B			; current frame in animation script
+; obAnim:			equ $1C			; current animation
+; obPrevAni:		equ $1D			; previous animation
+; obTimeFrame:	equ $1E			; time to next frame
+; obDelayAni:		equ $1F			; time to delay animation
+; obStatus:		equ $22			; orientation or mode
+; obRoutine:		equ $24			; routine number
+; obAngle:		equ $26			; angle
+; ; ---------------------------------------------------------------------------
+; ; conventions followed by many objects but NOT Sonic
+; obRespawnAddr:	equ $14			; respawn list address (2 bytes)
+; obColType:		equ $20			; collision response type
+; obColProp:		equ $21			; collision extra property
+; ob2ndRout:		equ $25			; secondary routine number
+; obShieldProp:	equ $27			; How object responds to shields {Reflect-Lightning-Bubble-Flame 0-0-0-0}
+; obSubtype:		equ $28			; object subtype
+; obBossX:		equ $30
+; obBossY:		equ $38
+; obParent:		equ $3E
+; ; ---------------------------------------------------------------------------
+; ; conventions specific to playable characters
+; obInertia:		equ $20			; potential speed (2 bytes) -- Exclusive to players
+; obWallJump:		equ $28			; used for wall jumps (2 bytes)
+; obInvuln:		equ $30			; Invulnerable (blinking after getting hit) timer
+; obInvinc:		equ $31			; Invincibility timer
+; obShoes:		equ $32			; Speed Shoes timer
+; obCtrlLock:		equ $35			; formerly f_playerctrl (0, 1, or $81)
+; obFrontAngle:	equ $36			; angle on ground in front of sprite
+; obRearAngle:	equ $37			; angle on ground behind sprite
+; obOnWheel:		equ $38			; on convex wheel flag
+; obStatus2nd:	equ $39			; secondary status counter
+; obRestartTimer:	equ $3A			; level restart timer (2 bytes -- Shared with obSpinDashCounter)
+; obJumping:		equ $3C			; jumping flag
+; obLRLock:		equ $3D			; flag for preventing left and right input
+; obPlatformAddr:	equ $3E			; ObjRAM location of the object Sonic's on top of (2 bytes)
 
-;	if (ShieldsMode|DropDashEnabled)
-obDoubleJumpProp:	equ $25				; Counter for Sonic's Drop Dash (if enabled). Can also be utilized for remaining frames of flight / 2 for Tails, gliding-related for Knuckles.
-obDoubleJumpFlag:	equ	$2F				; Flag noting double jump status. 0 - not triggered. 1 - triggered. 2 - post-instashield (Begin Drop Dash revving). 3 - Drop Dash Cancelled.
-;	endif
-;	if (SpinDashEnabled|PeeloutEnabled)
-obSpinDashFlag:		equ $2A				; spin dash/peelout flag - if toggled off, this is unused.
-obAutoRollFlag:		equ obSpinDashFlag	; auto-roll (pinball mode) flag
-obSpinDashCounter:	equ obRestartTimer	; Counter used for the Spin Dash and/or Peelout (2 bytes) - if toggled off, this is unused.
-;	endif
+; ;	if (ShieldsMode|DropDashEnabled)
+; obDoubleJumpProp:	equ $25				; Counter for Sonic's Drop Dash (if enabled). Can also be utilized for remaining frames of flight / 2 for Tails, gliding-related for Knuckles.
+; obDoubleJumpFlag:	equ	$2F				; Flag noting double jump status. 0 - not triggered. 1 - triggered. 2 - post-instashield (Begin Drop Dash revving). 3 - Drop Dash Cancelled.
+; ;	endif
+; ;	if (SpinDashEnabled|PeeloutEnabled)
+; obSpinDashFlag:		equ $2A				; spin dash/peelout flag - if toggled off, this is unused.
+; obAutoRollFlag:		equ obSpinDashFlag	; auto-roll (pinball mode) flag
+; obSpinDashCounter:	equ obRestartTimer	; Counter used for the Spin Dash and/or Peelout (2 bytes) - if toggled off, this is unused.
+; ;	endif
 
 ; ---------------------------------------------------------------------------
 ; obStatus bitfield constants
@@ -274,70 +277,70 @@ priority5:	equ	v_spritequeue+$280
 priority6:	equ	v_spritequeue+$300
 priority7:	equ	v_spritequeue+$380
 
-; Miscellaneous object scratch-RAM
-objoff_25:	equ $25
-objoff_26:	equ $26
-objoff_27:	equ $27	; unused
-objoff_28:	equ $28	; unused
-objoff_29:	equ $29
-objoff_2A:	equ $2A
-objoff_2B:	equ $2B
-objoff_2C:	equ $2C
-objoff_2E:	equ $2E
-objoff_2F:	equ $2F
-objoff_30:	equ $30
-objoff_31:	equ $31	; unused
-objoff_32:	equ $32
-objoff_33:	equ $33
-objoff_34:	equ $34
-objoff_35:	equ $35
-objoff_36:	equ $36
-objoff_37:	equ $37
-objoff_38:	equ $38
-objoff_39:	equ $39
-objoff_3A:	equ $3A
-objoff_3B:	equ $3B
-objoff_3C:	equ $3C
-objoff_3D:	equ $3D
-objoff_3E:	equ $3E
-objoff_3F:	equ $3F
+; ; Miscellaneous object scratch-RAM
+; objoff_25:	equ $25
+; objoff_26:	equ $26
+; objoff_27:	equ $27	; unused
+; objoff_28:	equ $28	; unused
+; objoff_29:	equ $29
+; objoff_2A:	equ $2A
+; objoff_2B:	equ $2B
+; objoff_2C:	equ $2C
+; objoff_2E:	equ $2E
+; objoff_2F:	equ $2F
+; objoff_30:	equ $30
+; objoff_31:	equ $31	; unused
+; objoff_32:	equ $32
+; objoff_33:	equ $33
+; objoff_34:	equ $34
+; objoff_35:	equ $35
+; objoff_36:	equ $36
+; objoff_37:	equ $37
+; objoff_38:	equ $38
+; objoff_39:	equ $39
+; objoff_3A:	equ $3A
+; objoff_3B:	equ $3B
+; objoff_3C:	equ $3C
+; objoff_3D:	equ $3D
+; objoff_3E:	equ $3E
+; objoff_3F:	equ $3F
 
-object_size_bits:		equ 6
-object_size:			equ 1<<object_size_bits
+; object_size_bits:		equ 6
+; object_size:			equ 1<<object_size_bits
 
-; Devon Subsprite OSTs -- Subsprite properties set DO override some standard object SSTs.
-; What is overridden really depends on the amount of sub sprites you have set to display.
-mainspr_routine:		equ $A	; added by RetroKoH
-mainspr_mapframe:		equ $B	; last byte of obX (2nd byte of obScreenY)
-mainspr_width:			equ $E
-mainspr_childsprites:	equ $F	; amount of child sprites
-mainspr_height:			equ $14
-subspr_data:			equ $10
-sub2_x_pos:				equ $10	; x_vel
-sub2_y_pos:				equ $12	; y_vel
-sub2_mapframe:			equ $15
-sub3_x_pos:				equ $16	; y_radius
-sub3_y_pos:				equ $18 ; priority
-sub3_mapframe:			equ $1B ; anim_frame
-sub4_x_pos:				equ $1C ; anim
-sub4_y_pos:				equ $1E ; anim_frame_duration
-sub4_mapframe:			equ $21 ; collision_property
-sub5_x_pos:				equ $22 ; status
-sub5_y_pos:				equ $24 ; routine
-sub5_mapframe:			equ $27
-sub6_x_pos:				equ $28 ; subtype
-sub6_y_pos:				equ $2A
-sub6_mapframe:			equ $2D
-sub7_x_pos:				equ $2E
-sub7_y_pos:				equ $30
-sub7_mapframe:			equ $33
-sub8_x_pos:				equ $34
-sub8_y_pos:				equ $36
-sub8_mapframe:			equ $39
-sub9_x_pos:				equ $3A
-sub9_y_pos:				equ $3C
-sub9_mapframe:			equ $3F
-next_subspr:			equ $6
+; ; Devon Subsprite OSTs -- Subsprite properties set DO override some standard object SSTs.
+; ; What is overridden really depends on the amount of sub sprites you have set to display.
+; mainspr_routine:		equ $A	; added by RetroKoH
+; mainspr_mapframe:		equ $B	; last byte of obX (2nd byte of obScreenY)
+; mainspr_width:			equ $E
+; mainspr_childsprites:	equ $F	; amount of child sprites
+; mainspr_height:			equ $14
+; subspr_data:			equ $10
+; sub2_x_pos:				equ $10	; x_vel
+; sub2_y_pos:				equ $12	; y_vel
+; sub2_mapframe:			equ $15
+; sub3_x_pos:				equ $16	; y_radius
+; sub3_y_pos:				equ $18 ; priority
+; sub3_mapframe:			equ $1B ; anim_frame
+; sub4_x_pos:				equ $1C ; anim
+; sub4_y_pos:				equ $1E ; anim_frame_duration
+; sub4_mapframe:			equ $21 ; collision_property
+; sub5_x_pos:				equ $22 ; status
+; sub5_y_pos:				equ $24 ; routine
+; sub5_mapframe:			equ $27
+; sub6_x_pos:				equ $28 ; subtype
+; sub6_y_pos:				equ $2A
+; sub6_mapframe:			equ $2D
+; sub7_x_pos:				equ $2E
+; sub7_y_pos:				equ $30
+; sub7_mapframe:			equ $33
+; sub8_x_pos:				equ $34
+; sub8_y_pos:				equ $36
+; sub8_mapframe:			equ $39
+; sub9_x_pos:				equ $3A
+; sub9_y_pos:				equ $3C
+; sub9_mapframe:			equ $3F
+; next_subspr:			equ $6
 
 ; Animation flags
 afEnd:			equ $FF	; return to beginning of animation

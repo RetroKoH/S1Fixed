@@ -28,8 +28,6 @@ BossMarble_ObjData:
 	; Tube -- Does not animate
 		dc.b 8,	0
 		dc.w priority3
-
-mzboss_lavatimer = objoff_34		; delay timer for random lava ball spawning (1 byte)
 ; ===========================================================================
 
 BossMarble_Main:			; Routine 0
@@ -111,7 +109,7 @@ BossMarble_ShipStart:		; Secondary Routine 0
 
 loc_18334:
 		jsr		(RandomNumber).w
-		move.b	d0,mzboss_lavatimer(a0)				; init timer to a random value between 00-FF
+		move.b	d0,obMZBoss_FireBallTimer(a0)		; init timer to a random value between 00-FF
 
 BossMarble_ChkHit:
 		move.w	boss_bufferY(a0),obY(a0)
@@ -126,7 +124,7 @@ BossMarble_ChkHit:
 		bne.w	BossFlash							; if yes, branch and flash
 		move.b	#$28,boss_flashframes(a0)			; set number of	times for ship to flash
 		move.w	#sfx_HitBoss,d0
-		jsr		(QueueSound2).w				; play boss damage sound
+		jsr		(QueueSound2).w						; play boss damage sound
 		bra.w	BossFlash							; apply flash effect
 
 	.end:
@@ -185,17 +183,17 @@ BossMarble_MoveAcross:		; Tertiary Routine 0/4
 
 	.ismoving:
 		cmpi.b	#24,boss_flashframes(a0)			; does Eggman have 24 (or more) flash frames left?
-		bhs.s	.spawnlavaball						; if yes, don't move and spawn lava from the center
+		bhs.s	.spawnfireball						; if yes, don't move and spawn lava from the center
 		bsr.w	BossMove							; otherwise, begin moving Eggman
 		subq.w	#4,obVelY(a0)						; reduce Y-speed (creating the arc motion)
 
-	.spawnlavaball:
-		subq.b	#1,mzboss_lavatimer(a0)				; decrement random value
-		bcc.s	.nolavaball							; if greater than 0, branch (and don't spawn lava ball)
+	.spawnfireball:
+		subq.b	#1,obMZBoss_FireBallTimer(a0)		; decrement random value
+		bcc.s	.nofireball							; if greater than 0, branch (and don't spawn fireball)
 		jsr		(FindFreeObj).l
 		bne.s	.resettimer
-		_move.b	#id_LavaBall,obID(a1)				; load lava ball object
-		move.w	#boss_mz_y+$D8,obY(a1)				; hardset lava ball's Y-position
+		_move.b	#id_FireBall,obID(a1)				; load fireball object
+		move.w	#boss_mz_y+$D8,obY(a1)				; hardset fireball's Y-position
 		jsr		(RandomNumber).w
 		andi.l	#$FFFF,d0
 		divu.w	#$50,d0
@@ -203,15 +201,15 @@ BossMarble_MoveAcross:		; Tertiary Routine 0/4
 		addi.w	#boss_mz_x+$78,d0
 		move.w	d0,obX(a1)							; randomly set X-position
 		lsr.b	#7,d1
-		move.w	#$FF,obSubtype(a1)					; set lava ball's subtype to -1
+		move.w	#priority5,obPriority(a1)			; boss fireballs assume lower priority
 
 	.resettimer:
 		jsr		(RandomNumber).w
 		andi.b	#$1F,d0
 		addi.b	#$40,d0								; generate a random value from ($40-5F)
-		move.b	d0,mzboss_lavatimer(a0)				; store this value
+		move.b	d0,obMZBoss_FireBallTimer(a0)		; store this value
 
-	.nolavaball:
+	.nofireball:
 		btst	#staFlipX,obStatus(a0)				; is Eggman facing left?
 		beq.s	.facingleft							; if yes, branch
 		cmpi.w	#boss_mz_x+$110,boss_bufferX(a0)	; has Eggman reached (or passed) his boundary to the right?
