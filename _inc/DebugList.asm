@@ -147,7 +147,7 @@ standards:	macro
 	dbug	Map_Brick,		id_MarbleBrick,		1,		0,		make_art_tile(ArtTile_Level,2,0)				; Purple Brick - Moving block
 	dbug	Map_Brick,		id_MarbleBrick,		2,		0,		make_art_tile(ArtTile_Level,2,0)				; Purple Brick - Falling block
 	dbug	Map_MBlock,		id_MovingBlock,		0,		0,		make_art_tile(ArtTile_MZ_Block,2,0)				; Moving Block
-	dbug	Map_Fire,		id_LavaMaker,		0,		0,		make_art_tile(ArtTile_Fireball,0,0)				; Fireball Spawner - spawns upward, add downward one, and sideward one
+	dbug	Map_Fire,		id_FireMaker,		0,		0,		make_art_tile(ArtTile_Fireball,0,0)				; Fireball Spawner - spawns upward, add downward one, and sideward one
 	dbug	Map_Swing_GHZ,	id_SwingingPlatform, 5,		0,		make_art_tile(ArtTile_GHZ_MZ_Swing,2,0)			; Swing (Add subtypes and Debug Mappings)
 	dbug	Map_Smab,		id_SmashBlock,		0,		0,		make_art_tile(ArtTile_MZ_Block,2,0)				; Smashable Block
 	dbug	Map_MBlock,		id_MovingBlock,		2,		0,		make_art_tile(ArtTile_MZ_Block,2,0)				; Moving Block, activated by Sonic stepping on it.
@@ -171,7 +171,7 @@ standards:	macro
 	dbug	Map_Orb,		id_Orbinaut,		2,		0,		make_art_tile(ArtTile_Orbinaut,1,0)				; SLZ Orbinaut
 	; Level Objects
 	dbug	Map_Smash,		id_SmashWall,		0,		0,		make_art_tile(ArtTile_SLZ_Smashable_Wall,2,0)	; Smashable Wall
-	dbug	Map_Fire,		id_LavaMaker,		0,		0,		make_art_tile(ArtTile_Fireball,0,0)				; Fireball Spawner - spawns upward, add downward one, and sideward one	
+	dbug	Map_Fire,		id_FireMaker,		0,		0,		make_art_tile(ArtTile_Fireball,0,0)				; Fireball Spawner - spawns upward, add downward one, and sideward one	
 	dbug	Map_CFlo,		id_CollapseFloor,	0,		2,		make_art_tile(ArtTile_SLZ_Collapsing_Floor,2,0)	; Collapsing Floor
 	dbug	Map_Stair,		id_Staircase,		0,		0,		make_art_tile(ArtTile_Level,2,0)				; Staircase (Activates when stood on)
 							; Giant Stairs: id_FloatingBlock,	$58,59,5A,5B (Need a new object to put these together)
