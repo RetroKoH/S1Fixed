@@ -604,7 +604,7 @@ loc_19658:
 		move.w	d0,boss_delaytime(a0)
 		asr.w	#2,d0
 		add.w	d0,obY(a0)
-		move.b	#8,obActWid(a0)
+		move.b	#8,obDispWid(a0)
 		move.b	#$C,obHeight(a0)
 		clr.b	obColType(a0)
 		movea.l	boss_parent(a0),a1
