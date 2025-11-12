@@ -21,7 +21,7 @@ WFall_Main:	; Routine 0
 		move.l	#Map_WFall,obMap(a0)
 		move.w	#make_art_tile(ArtTile_LZ_Waterfall,2,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
-		move.b	#$18,obActWid(a0)
+		move.b	#$18,obDispWid(a0)
 		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	obSubtype(a0),d0			; get object type
 		bpl.s	.under80					; branch if $00-$7F

@@ -42,7 +42,7 @@ ChkObjectVisible:
 
 ChkPartiallyVisible:
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		move.w	obX(a0),d0	; get object x-position
 		sub.w	(v_screenposx).w,d0 ; subtract screen x-position
 		add.w	d1,d0		; add object width
@@ -80,7 +80,7 @@ ChkPartiallyVisible:
 ChkSizedObjVisible:
 	; Devon Checking For Solids Fix
 		moveq	#0,d1				; Get object's width
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		move.w	obX(a0),d0			; Get object's X position
 		sub.w	(v_screenposx).w,d0	; Get object's X position on screen
 		add.w	d1,d0				; Is the right side of the object on screen?

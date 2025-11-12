@@ -26,7 +26,7 @@ SEgg_Main:	; Routine 0
 		move.l	#Map_SEgg,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
 		move.b	#$84,obRender(a0)
-		move.b	#$20,obActWid(a0)
+		move.b	#$20,obDispWid(a0)
 
 		jsr		(FindNextFreeObj).l
 		bne.s	SEgg_Eggman
@@ -40,7 +40,7 @@ SEgg_Main:	; Routine 0
 		move.l	#Map_But,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman_Button,0,0),obGfx(a1)
 		move.b	#$84,obRender(a1)
-		move.b	#$10,obActWid(a1)
+		move.b	#$10,obDispWid(a1)
 		clr.b	obFrame(a1)
 
 SEgg_Eggman:	; Routine 2

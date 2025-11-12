@@ -27,7 +27,7 @@ BossFire_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.w	#priority5,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		move.w	obY(a0),bossfire_bufferY(a0)
-		move.b	#8,obActWid(a0)
+		move.b	#8,obDispWid(a0)
 		addq.b	#2,obRoutine(a0)
 
 		bset	#shPropFlame,obShieldProp(a0)	; Negated by Flame Shield

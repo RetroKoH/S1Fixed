@@ -38,7 +38,7 @@ Sonic_Main:	; Routine 0
 		move.l	#Map_Sonic,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Sonic,0,0),obGfx(a0)
 		move.w	#priority2,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$18,obActWid(a0)
+		move.b	#$18,obDispWid(a0)
 		move.b	#4,obRender(a0)
 		lea     (v_sonspeedmax).w,a2			; load Sonic's top speed into a2
 		bsr.w   ApplySpeedSettings				; fetch Speed settings
@@ -107,7 +107,7 @@ Sonic_Control:	; Routine 2
 			move.l	#Map_Effects,obMap(a1)
 			ori.b	#4,obRender(a1)
 			move.w	#priority1,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-			move.b	#4,obActWid(a1)
+			move.b	#4,obDispWid(a1)
 			move.w	#ArtTile_Dust,obGfx(a1)
 		else
 
@@ -534,7 +534,7 @@ Sonic_Move:
 		bmi.w	Sonic_LookUp			; if yes, branch
 
 		moveq	#0,d1
-		move.b	obActWid(a1),d1
+		move.b	obDispWid(a1),d1
 		move.w	d1,d2
 		add.w	d2,d2
 		subq.w	#4,d2					; d2 = width of platform -4
@@ -2789,7 +2789,7 @@ DropDash_Release:
 		move.l	#Map_Effects,obMap(a1)
 		ori.b	#4,obRender(a1)
 		move.w	#priority1,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$10,obActWid(a1)
+		move.b	#$10,obDispWid(a1)
 		move.w	#ArtTile_Dust,obGfx(a1)
 	endif
 

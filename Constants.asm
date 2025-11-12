@@ -134,7 +134,7 @@ obY:			equ $C			; y-axis position (2-4 bytes)
 obYSub:			equ obY+2		; y-axis position fraction, for extra precision (2 bytes)
 obPriority:		equ $18			; sprite stack priority (2 bytes)
 obFrame:		equ $1A			; current frame displayed
-obActWid:		equ $23			; action width
+obDispWid:		equ $23			; action width
 ; ---------------------------------------------------------------------------
 ; conventions followed by most objects including Sonic:
 obVelX:			equ $10			; x-axis velocity (2 bytes)
@@ -151,7 +151,7 @@ obRoutine:		equ $24			; routine number
 obAngle:		equ $26			; angle
 ; ---------------------------------------------------------------------------
 ; conventions followed by many objects but NOT Sonic
-obRespawnNo:	equ $14			; respawn list address (2 bytes)
+obRespawnAddr:	equ $14			; respawn list address (2 bytes)
 obColType:		equ $20			; collision response type
 obColProp:		equ $21			; collision extra property
 ob2ndRout:		equ $25			; secondary routine number

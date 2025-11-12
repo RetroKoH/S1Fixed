@@ -17,7 +17,7 @@ Brick_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$10,obActWid(a0)
+		move.b	#$10,obDispWid(a0)
 		move.w	obY(a0),brick_origY(a0)
 		move.w	#$5C0,objoff_32(a0)
 

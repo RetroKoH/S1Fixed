@@ -60,13 +60,13 @@ Glass_Main:	; Routine 0
 		move.b	#4,obRender(a1)
 		move.w	obY(a1),objoff_30(a1)
 		move.b	obSubtype(a0),obSubtype(a1)
-		move.b	#$20,obActWid(a1)
+		move.b	#$20,obDispWid(a1)
 		move.w	#priority4,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	(a2)+,obFrame(a1)
-		move.l	a0,glass_parent(a1)
+		move.w	a0,glass_parent(a1)
 		dbf		d1,.Repeat	; repeat once to load "reflection object"
 
-		move.b	#$10,obActWid(a1)
+		move.b	#$10,obDispWid(a1)
 		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		addq.b	#8,obSubtype(a1)
 		andi.b	#$F,obSubtype(a1)
@@ -86,7 +86,7 @@ Glass_Block012:	; Routine 2
 
 Glass_Reflect012:
 		; Routine 4
-		movea.l	objoff_3C(a0),a1
+		movea.w	glass_parent(a0),a1
 		move.w	glass_dist(a1),glass_dist(a0)
 		bra.w	Glass_Types
 ; ===========================================================================
@@ -102,7 +102,7 @@ Glass_Block34:	; Routine 6
 
 Glass_Reflect34:
 		; Routine 8
-		movea.l	objoff_3C(a0),a1
+		movea.w	glass_parent(a0),a1
 		move.w	glass_dist(a1),glass_dist(a0)
 		move.w	obY(a1),objoff_30(a0)
 		bra.w	Glass_Types

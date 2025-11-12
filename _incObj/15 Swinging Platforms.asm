@@ -34,7 +34,7 @@ Swing_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_GHZ_MZ_Swing,2,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$18,obActWid(a0)
+		move.b	#$18,obDispWid(a0)
 		move.b	#8,obHeight(a0)
 		move.w	obY(a0),swing_origY(a0)
 		move.w	obX(a0),swing_origX(a0)
@@ -43,7 +43,7 @@ Swing_Main:	; Routine 0
 
 		move.l	#Map_Swing_SLZ,obMap(a0)	; SLZ specific code
 		move.w	#make_art_tile(ArtTile_SLZ_Swing,2,0),obGfx(a0)
-		move.b	#$20,obActWid(a0)
+		move.b	#$20,obDispWid(a0)
 		move.b	#$10,obHeight(a0)
 		move.b	#(colHarmful|colSz_32x8),obColType(a0)
 
@@ -53,7 +53,7 @@ Swing_Main:	; Routine 0
 
 		move.l	#Map_BBall,obMap(a0)	; SBZ specific code
 		move.w	#make_art_tile(ArtTile_SYZ_Big_Spikeball,0,0),obGfx(a0)
-		move.b	#$18,obActWid(a0)
+		move.b	#$18,obDispWid(a0)
 		move.b	#$18,obHeight(a0)
 		move.b	#(colHarmful|colSz_16x16),obColType(a0)
 		move.b	#$A,obRoutine(a0)		; goto Swing_Action next
@@ -106,7 +106,7 @@ Swing_Main:	; Routine 0
 		bclr	#gfxPalUpper,obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.w	#priority4,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#8,obActWid(a1)
+		move.b	#8,obDispWid(a1)
 		move.b	#1,obFrame(a1)
 		move.b	d3,objoff_3C(a1)
 		subi.b	#$10,d3
@@ -142,7 +142,7 @@ Swing_Main:	; Routine 0
 
 Swing_SetSolid:	; Routine 2
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		moveq	#0,d3
 		move.b	obHeight(a0),d3
 		bsr.w	Swing_Solid
@@ -154,7 +154,7 @@ Swing_Action:	; Routine $A
 
 Swing_Action2:	; Routine 4
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		bsr.w	ExitPlatform
 		move.w	obX(a0),-(sp)
 		bsr.w	Swing_Move

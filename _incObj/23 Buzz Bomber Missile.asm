@@ -15,7 +15,7 @@ Msl_Index:	offsetTable
 		offsetTableEntry.w Msl_Delete
 		offsetTableEntry.w Msl_FromNewt
 
-msl_parent = objoff_3C
+msl_parent = objoff_3E
 ; ===========================================================================
 
 Msl_Main:	; Routine 0
@@ -26,7 +26,7 @@ Msl_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Buzz_Bomber,1,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#8,obActWid(a0)
+		move.b	#8,obDispWid(a0)
 		andi.b	#(maskFlipX+maskFlipY),obStatus(a0)
 		bset	#shPropReflect,obShieldProp(a0)	; Reflected by Elemental Shields
 		tst.b	obSubtype(a0)					; was object created by	a Newtron?
@@ -61,7 +61,7 @@ Msl_Animate:	; Routine 2
 
 
 Msl_ChkCancel:
-		movea.l	msl_parent(a0),a1
+		movea.w	msl_parent(a0),a1
 		_cmpi.b	#id_ExplosionItem,obID(a1) ; has Buzz Bomber been destroyed?
 		; This adds a return value so that we know if the object has
 		; been freed. -- Clownacy DisplaySprite Fix

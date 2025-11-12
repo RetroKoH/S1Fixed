@@ -50,7 +50,7 @@ SmashObject:
 		move.w	obY(a0),obY(a1)
 		move.w	obGfx(a0),obGfx(a1)
 		move.w	obPriority(a0),obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	obActWid(a0),obActWid(a1)
+		move.b	obDispWid(a0),obDispWid(a1)
 		move.l	(a4)+,obVelX(a1)				; move the data contained in the array to obVelX and obVelY, and increment the address in a4
 		cmpa.l	a0,a1							; has this fragment's RAM space already been passed over by the Object Manager?
 		bhs.s	.loc_D268						; if not, branch.

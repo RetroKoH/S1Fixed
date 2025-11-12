@@ -34,7 +34,7 @@ Spring_Main:	; Routine 0
 		move.l	#Map_Spring,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Spring_Horizontal,0,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
-		move.b	#$10,obActWid(a0)
+		move.b	#$10,obDispWid(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	obSubtype(a0),d0
 		btst	#4,d0		; does the spring face left/right?
@@ -44,7 +44,7 @@ Spring_Main:	; Routine 0
 		move.b	#1,obAnim(a0)
 		move.b	#3,obFrame(a0)
 		move.w	#make_art_tile(ArtTile_Spring_Vertical,0,0),obGfx(a0)
-		move.b	#8,obActWid(a0)
+		move.b	#8,obDispWid(a0)
 
 Spring_NotLR:
 		btst	#5,d0				; does the spring face downwards?

@@ -13,7 +13,7 @@ Pyl_Main:	; Routine 0
 		move.l	#Map_Pylon,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SLZ_Pylon,0,1),obGfx(a0)
 		move.w	#priority0,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$10,obActWid(a0)
+		move.b	#$10,obDispWid(a0)
 
 Pyl_Display:	; Routine 2
 		move.l	(v_screenposx).w,d1

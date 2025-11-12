@@ -21,7 +21,7 @@ Roll_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Roller,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH S3K Priority Manager
-		move.b	#$10,obActWid(a0)
+		move.b	#$10,obDispWid(a0)
 
 locret_E052:
 		rts	
@@ -47,7 +47,7 @@ Roll_Action:	; Routine 2
 
 Roll_ChkGone:
 	; ProjectFM S3K Object Manager
-		move.w	obRespawnNo(a0),d0		; get address in respawn table
+		move.w	obRespawnAddr(a0),d0		; get address in respawn table
 		beq.w	DeleteObject			; if it's zero, don't remember object
 		movea.w	d0,a2					; load address into a2
 		bclr	#7,(a2)					; clear respawn table entry, so object can be loaded again

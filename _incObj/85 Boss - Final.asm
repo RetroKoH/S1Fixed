@@ -72,7 +72,7 @@ BossFinal_LoadBoss:
 		move.l	(a2)+,obMap(a1)
 		move.b	(a3)+,obRoutine(a1)
 		move.b	(a3)+,obAnim(a1)
-		move.b	(a3)+,obActWid(a1)
+		move.b	(a3)+,obDispWid(a1)
 		move.b	(a3)+,obHeight(a1)
 		move.w	(a3)+,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#4,obRender(a1)
@@ -283,7 +283,7 @@ loc_1A020:
 ; ===========================================================================
 
 loc_1A02A:
-		move.b	#$30,obActWid(a0)
+		move.b	#$30,obDispWid(a0)
 		bset	#staFlipX,obStatus(a0)
 		jsr		(SpeedToPos).l
 		move.b	#6,obFrame(a0)
@@ -292,7 +292,7 @@ loc_1A02A:
 		blo.w	loc_1A166
 		move.w	#boss_fz_y+$8C,obY(a0)
 		addq.b	#2,objoff_34(a0)
-		move.b	#$20,obActWid(a0)
+		move.b	#$20,obDispWid(a0)
 		move.w	#$100,obVelX(a0)
 		move.w	#-$100,obVelY(a0)
 		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 elsewhere -- Filter Optimized DLE Manager

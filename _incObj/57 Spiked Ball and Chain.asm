@@ -27,7 +27,7 @@ SBall_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_SYZ_Spikeball_Chain,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#8,obActWid(a0)
+		move.b	#8,obDispWid(a0)
 		move.w	obX(a0),sball_origX(a0)
 		move.w	obY(a0),sball_origY(a0)
 		move.b	#(colHarmful|colSz_4x4),obColType(a0)		; SYZ specific code (chain hurts Sonic)
@@ -93,7 +93,7 @@ SBall_Main:	; Routine 0
 		move.w	obGfx(a0),obGfx(a1)
 		move.b	obRender(a0),obRender(a1)
 		move.w	obPriority(a0),obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	obActWid(a0),obActWid(a1)
+		move.b	obDispWid(a0),obDispWid(a1)
 		move.b	obColType(a0),obColType(a1)
 		subi.b	#$10,d3
 		move.b	d3,sball_radius(a1)

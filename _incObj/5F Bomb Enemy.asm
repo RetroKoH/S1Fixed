@@ -26,7 +26,7 @@ Bom_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Bomb,0,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$C,obActWid(a0)
+		move.b	#$C,obDispWid(a0)
 		move.b	obSubtype(a0),d0
 		beq.s	loc_11A3C
 		move.b	d0,obRoutine(a0)
@@ -133,7 +133,7 @@ Bom_ActIndex:	offsetTable
 
 .normal:
 		move.w	#143,bom_time(a1) ; set fuse time
-		move.l	a0,bom_parent(a1)
+		move.w	a0,bom_parent(a1)
 
 .outofrange:
 		rts	

@@ -37,7 +37,7 @@ PushB_Main:	; Routine 0
 		add.w	d0,d0
 		andi.w	#$E,d0
 		lea		PushB_Var(pc,d0.w),a2
-		move.b	(a2)+,obActWid(a0)
+		move.b	(a2)+,obDispWid(a0)
 		move.b	(a2)+,obFrame(a0)
 		tst.b	obSubtype(a0)
 		beq.s	.chkgone
@@ -49,7 +49,7 @@ PushB_Main:	; Routine 0
 .notLZ2:
 .chkgone:
 	; ProjectFM S3K Objects Manager
-		move.w	obRespawnNo(a0),d0		; get address in respawn table
+		move.w	obRespawnAddr(a0),d0		; get address in respawn table
 		beq.s	loc_BF6E				; if it's zero, don't remember object
 		movea.w	d0,a2					; load address into a2
 		bclr	#7,(a2)					; clear respawn table entry, so object can be loaded again
@@ -61,7 +61,7 @@ loc_BF6E:	; Routine 2
 		tst.b	objoff_32(a0)
 		bne.w	loc_C046
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		addi.w	#$B,d1
 		move.w	#$10,d2
 		move.w	#$11,d3
@@ -97,7 +97,7 @@ loc_ppppp:
 
 loc_C016:
 	; ProjectFM S3K Object Manager
-		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		move.w	obRespawnAddr(a0),d0	; get address in respawn table
 		beq.w	DeleteObject		; if it's zero, don't remember object
 		movea.w	d0,a2				; load address into a2
 		bclr	#0,(a2)
@@ -152,7 +152,7 @@ loc_C0A0:
 		beq.w	loc_C0D6
 		bmi.s	loc_C0BC
 		moveq	#0,d3
-		move.b	obActWid(a0),d3
+		move.b	obDispWid(a0),d3
 		jsr		(ObjHitWallRight).l
 		tst.w	d1					; has block touched a wall?
 		bmi.s	PushB_StopPush		; if yes, branch
@@ -161,7 +161,7 @@ loc_C0A0:
 
 loc_C0BC:
 		moveq	#0,d3
-		move.b	obActWid(a0),d3
+		move.b	obDispWid(a0),d3
 		not.w	d3
 		jsr		(ObjHitWallLeft).l
 		tst.w	d1					; has block touched a wall?
@@ -181,7 +181,7 @@ loc_C0D6:
 
 loc_C0E6:
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		addi.w	#$B,d1
 		move.w	#$10,d2
 		move.w	#$11,d3
@@ -317,7 +317,7 @@ loc_C230:
 		bne.w	.locret
 		move.w	d0,-(sp)
 		moveq	#0,d3
-		move.b	obActWid(a0),d3
+		move.b	obDispWid(a0),d3
 		jsr		(ObjHitWallRight).l
 		move.w	(sp)+,d0
 		tst.w	d1
@@ -335,7 +335,7 @@ loc_C268:
 		beq.s	locret_C2E4
 		move.w	d0,-(sp)
 		moveq	#0,d3
-		move.b	obActWid(a0),d3
+		move.b	obDispWid(a0),d3
 		not.w	d3
 		jsr		(ObjHitWallLeft).l
 		move.w	(sp)+,d0

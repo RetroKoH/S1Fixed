@@ -22,7 +22,7 @@ Splats_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Splats,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$C,obActWid(a0)
+		move.b	#$C,obDispWid(a0)
 		move.b	#$14,obHeight(a0)
 		move.b	#(colEnemy|colSz_12x20),obColType(a0)
 		tst.b	obSubtype(a0)
@@ -95,7 +95,7 @@ sub_D2DA:
 		andi.w	#3,d0
 		bne.s	loc_D308
 		moveq	#0,d3
-		move.b	obActWid(a0),d3
+		move.b	obDispWid(a0),d3
 		tst.w	obVelX(a0)
 		bmi.s	loc_D2FE
 		bsr.w	ObjHitWallRight

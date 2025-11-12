@@ -49,7 +49,7 @@ BossGreenHill_Main:	; Routine 0
 		move.l	#Map_Eggman,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.b	#$20,obActWid(a1)
+		move.b	#$20,obDispWid(a1)
 		move.l	a0,boss_parent(a1)
 		dbf		d1,.loop					; repeat sequence 2 more times
 

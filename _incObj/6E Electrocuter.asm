@@ -16,7 +16,7 @@ Elec_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_SBZ_Electric_Orb,0,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
 		move.w	#priority1,obPriority(a0)			; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$28,obActWid(a0)
+		move.b	#$28,obDispWid(a0)
 
 		bset	#shPropLightning,obShieldProp(a0)	; Negated by Lightning Shield
 

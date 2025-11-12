@@ -77,7 +77,7 @@ CStom_MakeStomper:
 		move.b	#4,obRender(a1)
 		move.w	obY(a1),objoff_30(a1)
 		move.b	obSubtype(a0),obSubtype(a1)
-		move.b	#$10,obActWid(a1)
+		move.b	#$10,obDispWid(a1)
 		move.w	d2,objoff_34(a1)
 		move.w	#priority4,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	(a2)+,obFrame(a1)
@@ -88,12 +88,12 @@ CStom_MakeStomper:
 		andi.w	#$F0,d0
 		cmpi.w	#$20,d0
 		beq.s	CStom_MakeStomper
-		move.b	#$38,obActWid(a1)
+		move.b	#$38,obDispWid(a1)
 		move.b	#(colHarmful|colSz_40x16),obColType(a1)
 		addq.w	#1,d1
 
 loc_B76A:
-		move.l	a0,objoff_3C(a1)
+		move.w	a0,objoff_3C(a1)
 		dbf		d1,CStom_Loop
 
 		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
@@ -104,7 +104,7 @@ CStom_SetSize:
 		lsr.w	#3,d0
 		andi.b	#$E,d0
 		lea		CStom_Var2(pc,d0.w),a2
-		move.b	(a2)+,obActWid(a0)
+		move.b	(a2)+,obDispWid(a0)
 		move.b	(a2)+,obFrame(a0)
 		bra.s	loc_B798
 ; ===========================================================================
@@ -118,7 +118,7 @@ loc_B798:	; Routine 2
 		bsr.w	CStom_Types
 		move.w	obY(a0),(v_obj31ypos).w
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		addi.w	#$B,d1
 		move.w	#$C,d2
 		move.w	#$D,d3
@@ -140,14 +140,14 @@ loc_B798:	; Routine 2
 loc_B7E2:	; Routine 8
 		move.b	#$80,obHeight(a0)
 		bset	#4,obRender(a0)
-		movea.l	objoff_3C(a0),a1
+		movea.w	objoff_3C(a0),a1
 		move.b	objoff_32(a1),d0
 		lsr.b	#5,d0
 		addq.b	#3,d0
 		move.b	d0,obFrame(a0)
 
 loc_B7FE:	; Routine 4
-		movea.l	objoff_3C(a0),a1
+		movea.w	objoff_3C(a0),a1
 		moveq	#0,d0
 		move.b	objoff_32(a1),d0
 		add.w	objoff_30(a0),d0

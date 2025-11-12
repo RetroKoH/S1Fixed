@@ -17,7 +17,7 @@ Flap_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_LZ_Flapping_Door,2,0),obGfx(a0)
 		move.w	#priority0,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		ori.b	#4,obRender(a0)
-		move.b	#$28,obActWid(a0)
+		move.b	#$28,obDispWid(a0)
 		moveq	#$F,d0
 		and.b	obSubtype(a0),d0			; get object type (clamp at 0-F)
 		add.w	d0,d0						; multiply by 60 (1 second)

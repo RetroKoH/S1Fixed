@@ -27,7 +27,7 @@ Ledge_Main:	; Routine 0
 		ori.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#7,ledge_timedelay(a0)		; set time delay for collapse
-		move.b	#$64,obActWid(a0)
+		move.b	#$64,obDispWid(a0)
 		move.b	obSubtype(a0),obFrame(a0)
 		move.b	#$38,obHeight(a0)
 		bset	#4,obRender(a0)

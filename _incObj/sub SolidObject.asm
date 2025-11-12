@@ -293,7 +293,7 @@ Solid_Squash:
 Solid_Landed:
 		subq.w	#4,d3
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		move.w	d1,d2
 		add.w	d2,d2
 		add.w	obX(a1),d1

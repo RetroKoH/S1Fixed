@@ -47,7 +47,7 @@ loc_FE60:
 		lsr.w	#3,d0
 		andi.w	#$1E,d0
 		lea		MBlock_Var(pc,d0.w),a2
-		move.b	(a2)+,obActWid(a0)
+		move.b	(a2)+,obDispWid(a0)
 		move.b	(a2)+,obFrame(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.w	obX(a0),mblock_origX(a0)
@@ -57,14 +57,14 @@ loc_FE60:
 MBlock_Platform: ; Routine 2
 		bsr.w	MBlock_Move
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		jsr		(PlatformObject).l
 		bra.s	MBlock_ChkDel
 ; ===========================================================================
 
 MBlock_StandOn:	; Routine 4
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		jsr		(ExitPlatform).l
 	; FixBugs: MBlock_Move manipulates the stack pointer, potentially
 	; resulting in a crash. To avoid this, don't store data on
@@ -129,7 +129,7 @@ MBlock_02_Wait:
 
 MBlock_Type03:
 		moveq	#0,d3
-		move.b	obActWid(a0),d3
+		move.b	obDispWid(a0),d3
 		bsr.w	ObjHitWallRight
 		tst.w	d1		; has the platform hit a wall?
 		bmi.s	MBlock_03_End	; if yes, branch
@@ -145,7 +145,7 @@ MBlock_03_End:
 
 MBlock_Type05:
 		moveq	#0,d3
-		move.b	obActWid(a0),d3
+		move.b	obDispWid(a0),d3
 		bsr.w	ObjHitWallRight
 		tst.w	d1		; has the platform hit a wall?
 		bmi.s	MBlock_05_End	; if yes, branch
@@ -204,7 +204,7 @@ loc_FFE2:
 
 MBlock_Type0A:
 		moveq	#0,d3
-		move.b	obActWid(a0),d3
+		move.b	obDispWid(a0),d3
 		add.w	d3,d3
 		moveq	#8,d1
 		btst	#staFlipX,obStatus(a0)

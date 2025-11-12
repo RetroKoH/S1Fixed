@@ -22,7 +22,7 @@ Seesaw:
 		; Deleted first call to DeleteObject
 		cmpi.w	#$280,d0
 		bls.w	SBall_Display		; branch to here for S3K TouchResponse
-		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		move.w	obRespawnAddr(a0),d0	; get address in respawn table
 		beq.w	DeleteObject		; if it's zero, don't remember object
 		movea.w	d0,a2				; load address into a2
 		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again
@@ -43,7 +43,7 @@ See_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_SLZ_Seesaw,0,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$30,obActWid(a0)
+		move.b	#$30,obDispWid(a0)
 		move.w	obX(a0),see_origX(a0)
 		tst.b	obSubtype(a0)	; is object type 00 ?
 		bne.s	.noball		; if not, branch
@@ -55,7 +55,7 @@ See_Main:	; Routine 0
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.b	obStatus(a0),obStatus(a1)
-		move.l	a0,see_parent(a1)
+		move.w	a0,see_parent(a1)
 
 .noball:
 		btst	#staFlipX,obStatus(a0)	; is seesaw flipped?
@@ -136,7 +136,7 @@ See_Spikeball:	; Routine 6
 		ori.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colHarmful|colSz_8x8),obColType(a0)
-		move.b	#$C,obActWid(a0)
+		move.b	#$C,obDispWid(a0)
 		move.w	obX(a0),see_origX(a0)
 		addi.w	#$28,obX(a0)
 		move.w	obY(a0),see_origY(a0)
@@ -147,7 +147,7 @@ See_Spikeball:	; Routine 6
 		move.b	#2,see_frame(a0)
 
 See_MoveSpike:	; Routine 8
-		movea.l	see_parent(a0),a1
+		movea.w	see_parent(a0),a1
 		moveq	#0,d0
 		move.b	see_frame(a0),d0
 		sub.b	see_frame(a1),d0
@@ -219,7 +219,7 @@ locret_11898:
 
 loc_1189A:
 		bsr.w	ObjectFall
-		movea.l	see_parent(a0),a1
+		movea.w	see_parent(a0),a1
 		lea		(See_Speeds).l,a2
 		moveq	#0,d0
 		move.b	obFrame(a1),d0
@@ -234,7 +234,7 @@ loc_118BA:
 		add.w	(a2,d0.w),d1
 		cmp.w	obY(a0),d1
 		bgt.s	locret_11938
-		movea.l	see_parent(a0),a1
+		movea.w	see_parent(a0),a1
 		moveq	#2,d1
 		tst.w	obVelX(a0)
 		bmi.s	See_Spring
