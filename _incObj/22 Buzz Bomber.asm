@@ -5,7 +5,7 @@
 
 buzz_timedelay = objoff_32
 buzz_buzzstatus = objoff_34
-buzz_parent = objoff_3C
+buzz_parent = objoff_3E
 
 BuzzBomber:
 	; RetroKoH/LavaGaming Object Routine Optimization
@@ -22,7 +22,7 @@ Buzz_Main:		; Routine 0
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colEnemy|colSz_24x12),obColType(a0)
-		move.b	#$18,obActWid(a0)
+		move.b	#$18,obDispWid(a0)
 
 Buzz_Action:	; Routine 2
 	; LavaGaming Object Routine Optimization		
@@ -68,7 +68,7 @@ Buzz_Action:	; Routine 2
 
 		move.b	obStatus(a0),obStatus(a1)
 		move.w	#14,buzz_timedelay(a1)
-		move.l	a0,buzz_parent(a1)
+		move.w	a0,buzz_parent(a1)
 		move.b	#1,buzz_buzzstatus(a0)	; set to "already fired" to prevent refiring
 		move.w	#59,buzz_timedelay(a0)
 		move.b	#2,obAnim(a0)			; use "firing" animation

@@ -15,7 +15,7 @@ MDis_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		clr.b	obColType(a0)
-		move.b	#$C,obActWid(a0)
+		move.b	#$C,obDispWid(a0)
 		move.b	#9,obTimeFrame(a0)
 		clr.b	obFrame(a0)
 		move.w	#sfx_A5,d0
@@ -74,7 +74,7 @@ ExItem_Main:	; Routine 2
 		move.b	#4,obRender(a0)
 		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		clr.b	obColType(a0)
-		move.b	#$C,obActWid(a0)
+		move.b	#$C,obDispWid(a0)
 		move.b	#7,obTimeFrame(a0)			; set frame duration to 7 frames
 		clr.b	obFrame(a0)
 		move.w	#sfx_BreakItem,d0
@@ -108,7 +108,7 @@ ExBom_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		clr.b	obColType(a0)
-		move.b	#$C,obActWid(a0)
+		move.b	#$C,obDispWid(a0)
 		move.b	#7,obTimeFrame(a0)
 		clr.b	obFrame(a0)
 		move.w	#sfx_Bomb,d0

@@ -18,7 +18,7 @@ Saw_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_SBZ_Saw,2,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$20,obActWid(a0)
+		move.b	#$20,obDispWid(a0)
 		move.w	obX(a0),saw_origX(a0)
 		move.w	obY(a0),saw_origY(a0)
 		cmpi.b	#3,obSubtype(a0)			; is object a ground saw?

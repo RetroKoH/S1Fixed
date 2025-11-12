@@ -43,7 +43,7 @@ FBlock_Main:	; Routine 0
 		lsr.w	#3,d0
 		andi.w	#$E,d0						; Example: Subtype $F8 >> 3 = $1F. $1F & $E = $E.
 		lea		FBlock_Var(pc,d0.w),a2		; get size data
-		move.b	(a2)+,obActWid(a0)
+		move.b	(a2)+,obDispWid(a0)
 		move.b	(a2),obHeight(a0)
 		lsr.w	#1,d0
 		move.b	d0,obFrame(a0)
@@ -96,7 +96,7 @@ FBlock_Main:	; Routine 0
 
 .chkstate:
 	; ProjectFM S3K Object Manager
-		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		move.w	obRespawnAddr(a0),d0	; get address in respawn table
 		beq.s	FBlock_Action		; if it's zero, don't remember object
 		movea.w	d0,a2				; load address into a2
 		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again
@@ -120,7 +120,7 @@ FBlock_Action:	; Routine 2
 		tst.b	obRender(a0)
 		bpl.s	.chkdel
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		addi.w	#$B,d1
 		moveq	#0,d2
 		move.b	obHeight(a0),d2
@@ -264,7 +264,7 @@ FBlock_Type05:
 		addq.b	#1,obSubtype(a0)
 		clr.b	objoff_38(a0)
 	; ProjectFM S3K Object Manager
-		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		move.w	obRespawnAddr(a0),d0	; get address in respawn table
 		beq.s	.loc_104AE			; if it's zero, don't remember object
 		movea.w	d0,a2				; load address into a2
 		bset	#0,(a2)
@@ -307,7 +307,7 @@ FBlock_Type06:
 		subq.b	#1,obSubtype(a0)
 		clr.b	objoff_38(a0)
 	; ProjectFM S3K Obj Manager
-		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		move.w	obRespawnAddr(a0),d0	; get address in respawn table
 		beq.s	.loc_10512			; if it's zero, don't remember object
 		movea.w	d0,a2				; load address into a2
 		bclr	#0,(a2)
@@ -370,7 +370,7 @@ FBlock_Type0C:
 		addq.b	#1,obSubtype(a0)
 		clr.b	objoff_38(a0)
 	; ProjectFM S3K Obj Manager
-		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		move.w	obRespawnAddr(a0),d0	; get address in respawn table
 		beq.s	.loc_105A2			; if it's zero, don't remember object
 		movea.w	d0,a2				; load address into a2
 		bset	#0,(a2)
@@ -412,7 +412,7 @@ FBlock_Type0D:
 		subq.b	#1,obSubtype(a0)
 		clr.b	objoff_38(a0)
 	; ProjectFM S3K Obj Manager
-		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		move.w	obRespawnAddr(a0),d0	; get address in respawn table
 		beq.s	.wtf				; if it's zero, don't remember object
 		movea.w	d0,a2				; load address into a2
 		bclr	#0,(a2)

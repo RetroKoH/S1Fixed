@@ -20,7 +20,7 @@ Scen_Main:	; Routine 0
 		move.w	(a1)+,obGfx(a0)
 		ori.b	#4,obRender(a0)
 		move.b	(a1)+,obFrame(a0)
-		move.b	(a1)+,obActWid(a0)
+		move.b	(a1)+,obDispWid(a0)
 		move.w	(a1)+,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 
 Scen_ChkDel:	; Routine 2

@@ -19,8 +19,8 @@ Harp_Main:	; Routine 0
 		ori.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		move.b	obSubtype(a0),obAnim(a0)		; get type (vert/horiz)
-		move.b	#$14,obActWid(a0)
-		move.w	#60,harp_time(a0)				; set time to 1 second
+		move.b	#$14,obDispWid(a0)
+		move.b	#60,harp_time(a0)				; set time to 1 second
 
 Harp_Move:	; Routine 2
 		lea		Ani_Harp(pc),a1
@@ -36,9 +36,9 @@ Harp_Move:	; Routine 2
 		even
 
 Harp_Wait:	; Routine 4
-		subq.w	#1,harp_time(a0)	; decrement timer
+		subq.b	#1,harp_time(a0)	; decrement timer
 		bpl.w	RememberState		; branch if time remains
-		move.w	#60,harp_time(a0)	; reset timer
+		move.b	#60,harp_time(a0)	; reset timer
 		subq.b	#2,obRoutine(a0)	; run "Harp_Move" subroutine
 		bchg	#0,obAnim(a0)		; reverse animation
 		bra.w	RememberState

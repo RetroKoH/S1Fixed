@@ -58,7 +58,7 @@ Card_MakeSprite:
 		move.b	d0,obFrame(a1)				; display frame	number d0
 		move.l	#Map_Card,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Title_Card,0,1),obGfx(a1)
-		move.b	#$78,obActWid(a1)
+		move.b	#$78,obDispWid(a1)
 		clr.b	obRender(a1)
 		move.w	#priority0,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.w	#60,obTimeFrame(a1)			; set time delay to 1 second

@@ -37,11 +37,11 @@ LBall_Main:	; Routine 0
 		move.b	obSubtype(a0),d0
 		add.w	d0,d0
 		move.w	LBall_Speeds(pc,d0.w),obVelY(a0) ; load object speed (vertical)
-		move.b	#8,obActWid(a0)
+		move.b	#8,obDispWid(a0)
 		cmpi.b	#6,obSubtype(a0) ; is object type below $6 ?
 		blo.s	.sound		; if yes, branch
 
-		move.b	#$10,obActWid(a0)
+		move.b	#$10,obDispWid(a0)
 		move.b	#2,obAnim(a0)	; use horizontal animation
 		move.w	obVelY(a0),obVelX(a0) ; set horizontal speed
 		clr.w	obVelY(a0)	; delete vertical speed

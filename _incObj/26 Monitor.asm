@@ -29,10 +29,10 @@ Mon_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Monitor,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$F,obActWid(a0)
+		move.b	#$F,obDispWid(a0)
 
 	; ProjectFM S3K Objects Manager
-		move.w	obRespawnNo(a0),d0			; get address in respawn table
+		move.w	obRespawnAddr(a0),d0			; get address in respawn table
 		movea.w	d0,a2						; load address into a2
 		;bclr	#7,(a2)						; clear respawn table entry, so object can be loaded again
 		btst	#0,(a2)						; has monitor been broken?
@@ -75,7 +75,7 @@ Mon_Solid:	; Routine 2
 
 		; 2nd Routine 2
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		addi.w	#$B,d1
 		bsr.w	ExitPlatform
 		btst	#staOnObj,obStatus(a1)	; is Sonic on top of the monitor?
@@ -209,7 +209,7 @@ Mon_BreakOpen:	; Routine 4
 
 	.fail:
 	; ProjectFM S3K Objects Manager
-		move.w	obRespawnNo(a0),d0			; get address in respawn table
+		move.w	obRespawnAddr(a0),d0			; get address in respawn table
 		movea.w	d0,a2						; load address into a2
 		bset	#0,(a2)
 	; S3K Objects Manager End

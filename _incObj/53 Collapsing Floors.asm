@@ -39,7 +39,7 @@ CFlo_Main:	; Routine 0
 		ori.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#7,cflo_timedelay(a0)
-		move.b	#$44,obActWid(a0)
+		move.b	#$44,obDispWid(a0)
 
 CFlo_Touch:	; Routine 2
 		tst.b	cflo_collapse_flag(a0)		; has Sonic touched the	object?

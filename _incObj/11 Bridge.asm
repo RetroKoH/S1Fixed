@@ -3,7 +3,7 @@
 ; ---------------------------------------------------------------------------
 ; OST Variables:
 obBriChild1		= objoff_30	; pointer to first set of bridge segments
-obBriChild2		= objoff_34	; pointer to second set of bridge segments, if applicable
+obBriChild2		= objoff_32	; pointer to second set of bridge segments, if applicable
 ; ===========================================================================
 
 Bridge:
@@ -31,7 +31,7 @@ Bri_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_GHZ_Bridge,2,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$80,obActWid(a0)
+		move.b	#$80,obDispWid(a0)
 		move.w	obY(a0),d2
 		move.w	d2,objoff_3C(a0)
 		move.w	obX(a0),d3
@@ -47,14 +47,14 @@ Bri_Main:	; Routine 0
 		move.w	sub6_x_pos(a1),d0
 		subq.w	#8,d0
 		move.w	d0,obX(a1)			; center of first subsprite object
-		move.l	a1,obBriChild1(a0)	; pointer to first subsprite object
+		move.w	a1,obBriChild1(a0)	; pointer to first subsprite object
 		swap	d1					; retrieve subtype
 		subq.w	#8,d1
 		bls.s	.nomore				; branch, if subtype <= 8 (bridge has no more than 8 logs)
 	; else, create a second subsprite object for the rest of the bridge
 		move.w	d1,d4
 		bsr.s	Bri_MakeSegment
-		move.l	a1,obBriChild2(a0)	; pointer to second subsprite object
+		move.w	a1,obBriChild2(a0)	; pointer to second subsprite object
 		move.w	d4,d0
 		add.w	d0,d0
 		add.w	d4,d0	; d0*3
@@ -151,10 +151,10 @@ Bri_Solid:
 .inX:
 		lsr.w	#4,d0
 		move.b	d0,(a0,d5.w)
-		movea.l	obBriChild1(a0),a2
+		movea.w	obBriChild1(a0),a2 ; Get child object
 		cmpi.w	#8,d0
 		blo.s	.firstsubsprite
-		movea.l	obBriChild2(a0),a2 ; a2=object
+		movea.w	obBriChild2(a0),a2 ; Get child object
 		subq.w	#8,d0
 
 .firstsubsprite:
@@ -223,7 +223,7 @@ Bri_Bend:
 		andi.w	#$F,d3
 		lsl.w	#4,d3
 		lea		(a4,d3.w),a3
-		movea.l	obBriChild1(a0),a1
+		movea.w	obBriChild1(a0),a1
 		lea		sub9_y_pos+next_subspr(a1),a2
 		lea		sub2_y_pos(a1),a1
 
@@ -239,7 +239,7 @@ Bri_Bend:
 		addq.w	#6,a1
 		cmpa.w	a2,a1
 		bne.s	.skiploopafter
-		movea.l	obBriChild2(a0),a1 ; a1=object
+		movea.w	obBriChild2(a0),a1 ; a1=object
 		lea		sub2_y_pos(a1),a1
 
 .skiploopafter:
@@ -272,7 +272,7 @@ Bri_Bend:
 		addq.w	#6,a1
 		cmpa.w	a2,a1
 		bne.s	.skiploopbefore
-		movea.l	obBriChild2(a0),a1 ; a1=object
+		movea.w	obBriChild2(a0),a1 ; a1=object
 		lea		sub2_y_pos(a1),a1
 
 .skiploopbefore:
@@ -301,15 +301,15 @@ Bri_Display:	; Routine 4
 ; ===========================================================================
 
 Bri_Delete:
-		movea.l	obBriChild1(a0),a1	; a1=object
+		movea.w	obBriChild1(a0),a1	; a1=object
 		bsr.w	DeleteChild
 		cmpi.b	#8,obSubtype(a0)
 		bls.s	.delete2nd			; if bridge has more than 8 logs, delete second subsprite object
-		movea.l	obBriChild2(a0),a1	; a1=object
+		movea.w	obBriChild2(a0),a1	; a1=object
 		bsr.w	DeleteChild
 
 .delete2nd:
-		move.w	obRespawnNo(a0),d0
+		move.w	obRespawnAddr(a0),d0
 		beq.w	DeleteObject
 		movea.w	d0,a2
 		bclr	#7,(a2)

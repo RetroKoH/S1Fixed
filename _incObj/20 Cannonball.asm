@@ -18,7 +18,7 @@ Cbal_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colHarmful|colSz_6x6),obColType(a0)
-		move.b	#8,obActWid(a0)
+		move.b	#8,obDispWid(a0)
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0	; move subtype to d0
 		add.w	d0,d0				; multiply by 60 (1 second)

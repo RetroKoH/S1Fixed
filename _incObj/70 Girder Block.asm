@@ -20,7 +20,7 @@ Gird_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_SBZ_Girder,2,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$60,obActWid(a0)
+		move.b	#$60,obDispWid(a0)
 		move.b	#$18,obHeight(a0)
 		move.w	obX(a0),gird_origX(a0)
 		move.w	obY(a0),gird_origY(a0)
@@ -44,7 +44,7 @@ Gird_Action:	; Routine 2
 		tst.b	obRender(a0)
 		bpl.s	.chkdel
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		addi.w	#$B,d1
 		moveq	#0,d2
 		move.b	obHeight(a0),d2

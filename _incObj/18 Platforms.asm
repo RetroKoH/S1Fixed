@@ -20,18 +20,18 @@ Plat_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a0)
 		move.l	#Map_Plat_GHZ,obMap(a0)
-		move.b	#$20,obActWid(a0)
+		move.b	#$20,obDispWid(a0)
 		cmpi.b	#id_SYZ,(v_zone).w ; check if level is SYZ
 		bne.s	.notSYZ
 
 		move.l	#Map_Plat_SYZ,obMap(a0) ; SYZ specific code
-		move.b	#$20,obActWid(a0)
+		move.b	#$20,obDispWid(a0)
 
 .notSYZ:
 		cmpi.b	#id_SLZ,(v_zone).w ; check if level is SLZ
 		bne.s	.notSLZ
 		move.l	#Map_Plat_SLZ,obMap(a0) ; SLZ specific code
-		move.b	#$20,obActWid(a0)
+		move.b	#$20,obDispWid(a0)
 		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a0)
 		move.b	#3,obSubtype(a0)
 
@@ -47,7 +47,7 @@ Plat_Main:	; Routine 0
 		cmpi.b	#$A,d0		; is object type $A (large platform)?
 		bne.s	.setframe	; if not, branch
 		addq.b	#1,d1		; use frame #1
-		move.b	#$20,obActWid(a0) ; set width
+		move.b	#$20,obDispWid(a0) ; set width
 
 .setframe:
 		move.b	d1,obFrame(a0)	; set frame to d1
@@ -59,7 +59,7 @@ Plat_Solid:	; Routine 2
 
 loc_7EE0:
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		bsr.w	PlatformObject
 
 Plat_Action:	; Routine 8
@@ -75,7 +75,7 @@ Plat_Action2:	; Routine 4
 
 loc_7F06:
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		bsr.w	ExitPlatform
 		move.w	obX(a0),-(sp)
 		bsr.w	Plat_Move
@@ -221,7 +221,7 @@ Plat_Move:
 		bclr	#staOnObj,obStatus(a1)
 		move.b	#2,obRoutine(a1)
 		bclr	#staSonicOnObj,obStatus(a0)
-		clr.b	objoff_25(a0)
+		clr.b	objoff_25(a0)		; unused???
 		move.w	obVelY(a0),obVelY(a1)
 
 .loc_8042:

@@ -33,7 +33,7 @@ LTag_ChkDel:	; Routine 2
 		; Removed first DeleteObject conditional branch
 		cmpi.w	#$280,d0
 		bls.s	LTag_NoDel
-		move.w	obRespawnNo(a0),d0	; get address in respawn table
+		move.w	obRespawnAddr(a0),d0	; get address in respawn table
 		beq.w	DeleteObject		; if it's zero, don't remember object
 		movea.w	d0,a2				; load address into a2
 		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again

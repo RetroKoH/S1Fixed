@@ -16,7 +16,7 @@ Bas_Main:	; Routine 0
 		move.b	#$C,obHeight(a0)
 		move.w	#priority2,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colEnemy|colSz_8x8),obColType(a0)
-		move.b	#$10,obActWid(a0)
+		move.b	#$10,obDispWid(a0)
 
 Bas_Action:	; Routine 2
 		moveq	#0,d0

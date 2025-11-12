@@ -23,7 +23,7 @@ Gar_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_LZ_Gargoyle,2,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$10,obActWid(a0)
+		move.b	#$10,obDispWid(a0)
 		move.b	obSubtype(a0),d0 ; get object type
 		andi.w	#$F,d0		; read only the	2nd digit
 		move.b	Gar_SpitRate(pc,d0.w),obDelayAni(a0) ; set fireball spit rate
@@ -59,7 +59,7 @@ Gar_FireBall:	; Routine 4
 
 		bset	#shPropFlame,obShieldProp(a0)	; Negated by Flame Shield
 
-		move.b	#8,obActWid(a0)
+		move.b	#8,obDispWid(a0)
 		move.b	#2,obFrame(a0)
 		addq.w	#8,obY(a0)
 		move.w	#$200,obVelX(a0)

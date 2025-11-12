@@ -52,7 +52,7 @@ LCon_Main:	; Routine 0
 		move.l	#Map_LConv,obMap(a0)
 		move.w	#make_art_tile(ArtTile_LZ_Conveyor_Ptfm,2,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
-		move.b	#$10,obActWid(a0)
+		move.b	#$10,obDispWid(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		cmpi.b	#$7F,obSubtype(a0)			; is this the static conveyor wheel?
 		bne.s	LCon_Platform				; if not, branch
@@ -171,14 +171,14 @@ LCon_Spawner:
 
 loc_124B2:	; Routine 2
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		jsr		(PlatformObject).l
 		bra.w	LCon_MovePlatforms
 ; ===========================================================================
 
 loc_124C2:	; Routine 4
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		jsr		(ExitPlatform).l
 		move.w	obX(a0),-(sp)
 		bsr.w	LCon_MovePlatforms

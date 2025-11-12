@@ -29,7 +29,7 @@ GHZBall_Main:
 		move.w	#make_art_tile(ArtTile_GHZ_Giant_Ball,2,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)
-		move.b	#$18,obActWid(a0)
+		move.b	#$18,obDispWid(a0)
 		move.b	#1,obDelayAni(a0)
 		bsr.w	GHZBall_SetFrame
 		bra.w	RememberState

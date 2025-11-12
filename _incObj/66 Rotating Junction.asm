@@ -40,12 +40,12 @@ Jun_Main:	; Routine 0
 		move.l	#Map_Jun,obMap(a1)
 		move.w	#make_art_tile(ArtTile_SBZ_Junction,2,0),obGfx(a1)
 		ori.b	#4,obRender(a1)
-		move.b	#$38,obActWid(a1)
+		move.b	#$38,obDispWid(a1)
 
 .fail:
 		dbf		d1,.repeat
 
-		move.b	#$30,obActWid(a0)
+		move.b	#$30,obDispWid(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.w	#$3C,objoff_30(a0)
 		move.b	#1,jun_frame(a0)

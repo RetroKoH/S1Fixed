@@ -31,7 +31,7 @@ BossBlock_MakeBlock:
 		move.l	#Map_BossBlock,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.b	#$10,obActWid(a1)
+		move.b	#$10,obDispWid(a1)
 		move.b	#$10,obHeight(a1)
 		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.w	d5,obX(a1)	; set x-position
@@ -105,7 +105,7 @@ BossBlock_Break:
 		moveq	#3,d1
 		moveq	#$38,d2
 		addq.b	#2,obRoutine(a0)
-		move.b	#8,obActWid(a0)
+		move.b	#8,obDispWid(a0)
 		move.b	#8,obHeight(a0)
 		lea		(a0),a1
 		bra.s	BossBlock_MakeFrag

@@ -23,7 +23,7 @@ Spin_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_SBZ_Trap_Door,2,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$40,obActWid(a0)			; Ralakimus Trapdoor Glitch Fix
+		move.b	#$40,obDispWid(a0)			; Ralakimus Trapdoor Glitch Fix
 		moveq	#$F,d0
 		and.b	obSubtype(a0),d0
 		add.w	d0,d0						; multiply by 60 (1 second)
@@ -38,7 +38,7 @@ Spin_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)	; goto Spin_Spinner next
 		move.l	#Map_Spin,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Spinning_Platform,0,0),obGfx(a0)
-		move.b	#$10,obActWid(a0)
+		move.b	#$10,obDispWid(a0)
 		move.b	#2,obAnim(a0)
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0	; get object type

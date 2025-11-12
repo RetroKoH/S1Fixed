@@ -28,7 +28,7 @@ GFire_Main:	; Routine 0
 
 		bset	#shPropFlame,obShieldProp(a0)	; Negated by Flame Shield
 
-		move.b	#8,obActWid(a0)
+		move.b	#8,obDispWid(a0)
 		move.w	#sfx_Burning,d0
 		jsr		(QueueSound2).w	 		; play burning sound
 		tst.b	obSubtype(a0)
@@ -66,7 +66,7 @@ loc_B238:	; Routine 2
 		move.w	d2,objoff_2C(a1)
 		move.w	objoff_3C(a0),objoff_3C(a1)
 		move.b	#1,obSubtype(a1)
-		movea.l	objoff_38(a0),a2
+		movea.w	objoff_38(a0),a2
 		bsr.w	sub_B09C
 
 loc_B2B0:

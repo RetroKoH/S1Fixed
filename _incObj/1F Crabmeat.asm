@@ -32,7 +32,7 @@ Crab_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colEnemy|colSz_16x16),obColType(a0)
-		move.b	#$15,obActWid(a0)
+		move.b	#$15,obDispWid(a0)
 		bsr.w	ObjectFall_YOnly
 		jsr		(ObjFloorDist).l			; find floor
 		tst.w	d1
@@ -215,7 +215,7 @@ Crab_BallMain:	; Routine 6
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colHarmful|colSz_6x6),obColType(a0)
-		move.b	#8,obActWid(a0)
+		move.b	#8,obDispWid(a0)
 		move.w	#-$400,obVelY(a0)
 		move.b	#7,obAnim(a0)
 		

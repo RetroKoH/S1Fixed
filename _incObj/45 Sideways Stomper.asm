@@ -57,7 +57,7 @@ SStom_Main:	; Routine 0
 		move.w	obX(a1),objoff_30(a1)
 		move.w	obX(a0),objoff_3A(a1)
 		move.b	obSubtype(a0),obSubtype(a1)
-		move.b	#$20,obActWid(a1)
+		move.b	#$20,obDispWid(a1)
 		move.w	d2,objoff_34(a1)
 		move.w	#priority4,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
 		cmpi.b	#1,(a2)							; is subobject spikes?
@@ -66,12 +66,12 @@ SStom_Main:	; Routine 0
 
 .notspikes:
 		move.b	(a2)+,obFrame(a1)
-		move.l	a0,objoff_3C(a1)
+		move.w	a0,objoff_3C(a1)
 		dbf		d1,.loop					; repeat 3 times
 		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 
 .fail:
-		move.b	#$10,obActWid(a0)
+		move.b	#$10,obDispWid(a0)
 
 SStom_Solid:	; Routine 2
 		move.w	obX(a0),-(sp)
@@ -85,7 +85,7 @@ SStom_Solid:	; Routine 2
 ; ===========================================================================
 
 SStom_Pole:	; Routine 8
-		movea.l	objoff_3C(a0),a1
+		movea.w	objoff_3C(a0),a1
 		move.b	objoff_32(a1),d0
 		addi.b	#$10,d0
 		lsr.b	#5,d0
@@ -93,7 +93,7 @@ SStom_Pole:	; Routine 8
 		move.b	d0,obFrame(a0)
 
 loc_BA8E:	; Routine 4
-		movea.l	objoff_3C(a0),a1
+		movea.w	objoff_3C(a0),a1
 		moveq	#0,d0
 		move.b	objoff_32(a1),d0
 		neg.w	d0

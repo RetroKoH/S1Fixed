@@ -46,7 +46,7 @@ Pri_Main:	; Routine 0
 		add.b	d1,d0
 		lea		Pri_Var(pc,d0.w),a1
 		move.b	(a1)+,obRoutine(a0)
-		move.b	(a1)+,obActWid(a0)
+		move.b	(a1)+,obDispWid(a0)
 		move.b	(a1)+,obFrame(a0)
 		lea		1(a1),a1				; increment a1 to skip 00
 		move.w	(a1)+,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager

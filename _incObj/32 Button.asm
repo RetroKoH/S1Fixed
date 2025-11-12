@@ -19,7 +19,7 @@ But_Main:	; Routine 0
 
 But_NotMZ:
 		move.b	#4,obRender(a0)
-		move.b	#$10,obActWid(a0)
+		move.b	#$10,obDispWid(a0)
 		move.w	#priority4,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		addq.w	#3,obY(a0)
 

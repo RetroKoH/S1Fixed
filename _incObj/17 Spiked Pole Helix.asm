@@ -35,7 +35,7 @@ Hel_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Hel,obMap(a0)
 		move.w	#make_art_tile(ArtTile_GHZ_Spike_Pole,2,0),obGfx(a0)
-		move.b	#$80,obActWid(a0)
+		move.b	#$80,obDispWid(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colHarmful|colSz_4x16),obColType(a0)	; make object harmful
@@ -80,7 +80,7 @@ Hel_MakeSubsprite:
 .done:
 		move.w	obOffsetX(a0),d0
 		addi.w	d0,obX(a1)					; x-offset from above (still in d0)
-		move.l	a1,obHelChild(a0)			; pointer to subsprite object
+		move.w	a1,obHelChild(a0)			; pointer to subsprite object
 		
 	; Spiked Log Helix is finished
 
@@ -92,7 +92,7 @@ Hel_Action:	; Routine 2
 
 
 Hel_RotateSpikes:
-		movea.l	obHelChild(a0),a1 ; a1=object
+		movea.w	obHelChild(a0),a1 ; a1=object
 		moveq	#0,d0
 		move.b	(v_ani0_frame).w,d0
 		moveq	#7,d1						; max spikes frames
@@ -143,7 +143,7 @@ Hel_ChkDel:
 ; ===========================================================================
 
 Hel_Delete:	; Routine 4
-		movea.l	obHelChild(a0),a1 ; a1=object
+		movea.w	obHelChild(a0),a1 ; a1=object
 		bsr.w	DeleteChild
 		bra.w	DeleteObject
 ; ===========================================================================

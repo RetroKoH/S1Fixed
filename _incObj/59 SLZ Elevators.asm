@@ -57,7 +57,7 @@ Elev_Main:	; Routine 0
 ; ===========================================================================
 
 .normal:
-		move.b	#$28,obActWid(a0)	; set width
+		move.b	#$28,obDispWid(a0)	; set width
 		clr.b	obFrame(a0)			; set frame
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
@@ -77,14 +77,14 @@ Elev_Main:	; Routine 0
 
 Elev_Platform:	; Routine 2
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		jsr	(PlatformObject).l
 		bra.w	Elev_Types
 ; ===========================================================================
 
 Elev_Action:	; Routine 4
 		moveq	#0,d1
-		move.b	obActWid(a0),d1
+		move.b	obDispWid(a0),d1
 		jsr	(ExitPlatform).l
 		move.w	obX(a0),-(sp)
 		bsr.w	Elev_Types
