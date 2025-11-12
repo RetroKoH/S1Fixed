@@ -52,7 +52,8 @@ obParent:				equ $3E				; 2 bytes |
 obInertia:				equ $20				; 2 bytes | ground velocity
 ;						equ $25
 ;						equ $28
-;						equ $2A-2B
+obAutoRollFlag:			equ $2A				; 1 byte  | auto-roll (pinball mode) flag
+;						equ $2B
 ;						equ $2F
 obInvuln:				equ $30				; 1 byte  | invulnerablity timer (blinking frames when hurt)
 obInvinc:				equ $31				; 1 byte  | invincibility stars timer
@@ -77,8 +78,7 @@ obWallJump:				equ $28				; 2 bytes | used for wall jumps
 	endif
 
 	if (SpinDashEnabled|PeeloutEnabled)
-obSpinDashFlag:			equ $2A				; 1 byte  | spin dash/peelout flag
-obAutoRollFlag:			equ obSpinDashFlag	; 1 byte  | auto-roll (pinball mode) flag
+obSpinDashFlag:			equ obAutoRollFlag	; 1 byte  | spin dash/peelout flag
 obSpinDashCounter:		equ obRestartTimer	; 2 bytes | Counter used for the Spin Dash and/or Peelout
 	endif
 ; ---------------------------------------------------------------------------
@@ -156,8 +156,7 @@ obBridge_CurrentLog:	equ objoff_3F		; 1 byte  | log Sonic is currently standing 
 ; ---------------------------------------------------------------------------
 
 ; Obj14 - MZ/LZ Fireballs
-obFireBall_MZBoss:		equ objoff_29		; 1 byte  | set to $FF if spawned by MZ boss
-obFireBall_StartY:		equ objoff_30		; 2 bytes | starting Y-axis position
+obFBall_StartY:			equ objoff_30		; 2 bytes | starting Y-axis position
 ; ---------------------------------------------------------------------------
 
 ; Obj15 - GHZ, MZ, SLZ Swinging Platforms/SBZ Spikeball on Chain
@@ -417,8 +416,8 @@ obBas_SonicPosY:		equ objoff_36		; 2 bytes | Sonic's Y-axis position
 ; ---------------------------------------------------------------------------
 
 ; Obj56 - Floating Blocks (SYZ/SLZ), Large Doors (LZ)
-obMBlock_StartY:		equ objoff_30		; 2 bytes | starting Y-axis position
-obMBlock_StartX:		equ objoff_34		; 2 bytes | starting X-axis position
+obFBlock_StartY:		equ objoff_30		; 2 bytes | starting Y-axis position
+obFBlock_StartX:		equ objoff_34		; 2 bytes | starting X-axis position
 obFBlock_MoveFlag:		equ objoff_38		; 1 byte  | 1 = block/door is moving
 obFBlock_MoveDist:		equ objoff_3A		; 2 bytes | distance to move
 obFBlock_ButtonNum:		equ objoff_3C		; 1 byte  | which button the block is linked to
@@ -637,12 +636,12 @@ obCat_WaitTime:			equ objoff_2A		; 1 byte  | time to wait between actions
 obCat_Mode:				equ objoff_2B		; 1 byte  | bit 4 (+$10) = mouth is open/segment moving up; bit 7 (+$80) = update animation
 obCat_FloorMap:			equ objoff_2C		; 16 bytes| height map of floor beneath caterkiller (16 bytes)
 obCat_Parent:			equ objoff_3C		; 4 bytes | address of OST of parent object (4 bytes - high byte is obCat_segment_pos)
-obCat_SegmentPos:		equ obCat_parent	; 1 byte  | segment position - starts as 0/4/8/$A, increments as it moves
+obCat_SegmentPos:		equ obCat_Parent	; 1 byte  | segment position - starts as 0/4/8/$A, increments as it moves
 ; ---------------------------------------------------------------------------
 
 ; Obj79 - Lamppost
 obLamp_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
-obLamp_StartX:			equ objoff_32		; 2 bytes | starting Y-axis position
+obLamp_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position
 obLamp_SpinTime:		equ objoff_36		; 2 bytes | length of time to twirl the lamp
 ; ---------------------------------------------------------------------------
 
@@ -690,6 +689,9 @@ obBoss_DelayTime:		equ objoff_3C		; 2 bytes | delay timer
 obBoss_FlashTime:		equ objoff_3E		; 1 byte  | # of frames to flash white when hit
 obBoss_HoverAngle:		equ objoff_3F		; 1 byte  | Used w/ CalcSine for the ship's hover effect
 ; ---------------------------------------------------------------------------
+
+; Marble Zone Boss
+obMZBoss_FireBallTimer:	equ objoff_34		; 1 byte  | delay timer for random fireball spawning
 
 ; ---------------------------------------------------------------------------
 ; Miscellaneous object scratch-RAM
