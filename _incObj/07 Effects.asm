@@ -4,16 +4,16 @@
 Effects:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0 
-		move.w	Effects_Index(pc,d0.w),d1
-		jmp		Effects_Index(pc,d1.w)
+		move.w	Eff_Index(pc,d0.w),d1
+		jmp		Eff_Index(pc,d1.w)
 ; ===========================================================================
-Effects_Index:	offsetTable
-		offsetTableEntry.w 	Effects_Init
-		offsetTableEntry.w 	Effects_Main
-		offsetTableEntry.w 	Effects_Delete
-		offsetTableEntry.w	Effects_ChkSkid
+Eff_Index:	offsetTable
+		offsetTableEntry.w 	Eff_Init
+		offsetTableEntry.w 	Eff_Main
+		offsetTableEntry.w 	Eff_Delete
+		offsetTableEntry.w	Eff_ChkSkid
 ; ===========================================================================
-Effects_Init:	; Routine 0
+Eff_Init:		; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Effects,obMap(a0)
 		ori.b	#4,obRender(a0)
@@ -21,72 +21,70 @@ Effects_Init:	; Routine 0
 		move.b	#$10,obDispWid(a0)
 		clr.b	obAnim(a0)
 		move.w	#ArtTile_Dust,obGfx(a0)
-	;	move.w	#$F400,objoff_3C(a0)	; $34 = address to load art to in DPLC processing
+	;	move.w	#$F400,obEff_LoadArtLoc(a0)	; address to load art to in DPLC processing
 		; Not needed for a single player game, but needed for adding a second player.
 
-Effects_Main:	; Routine 2
+Eff_Main:		; Routine 2
 		lea		(v_player).w,a2
 		moveq	#0,d0
 		move.b	obAnim(a0),d0	; use current animation as a secondary routine counter
 		add.w	d0,d0
-		move.w	Effects_DisplayModes(pc,d0.w),d1
-		jmp		Effects_DisplayModes(pc,d1.w)
+		move.w	Eff_DisplayModes(pc,d0.w),d1
+		jmp		Eff_DisplayModes(pc,d1.w)
 ; ===========================================================================
 ; off_1DDA4:
-Effects_DisplayModes:	offsetTable
-		offsetTableEntry.w 	Effects_MdDisplay		; 0
-		offsetTableEntry.w 	Effects_MdSpindashDust	; 2
-		offsetTableEntry.w 	Effects_MdDisplay		; Effects_MdSkidDust-Effects_DisplayModes	; 4
-		offsetTableEntry.w 	Effects_MdDisplay		; 6: DropDash Dust
+Eff_DisplayModes:	offsetTable
+		offsetTableEntry.w 	Eff_MdDisplay		; 0
+		offsetTableEntry.w 	Eff_MdSpindashDust	; 2
+		offsetTableEntry.w 	Eff_MdDisplay		; Eff_MdSkidDust-Eff_DisplayModes	; 4
+		offsetTableEntry.w 	Eff_MdDisplay		; 6: DropDash Dust
 ; ===========================================================================
-Effects_MdSpindashDust:
+Eff_MdSpindashDust:
 	if SpinDashEnabled==1
 		cmpi.b	#4,obRoutine(a2)
-		bhs.s	Effects_ResetDisplayMode
+		bhs.s	Eff_ResetDisplayMode
 		tst.b	obSpinDashFlag(a2)
-		beq.s	Effects_ResetDisplayMode
+		beq.s	Eff_ResetDisplayMode
 		move.w	obX(a2),obX(a0)				; match Player's position
 		move.w	obY(a2),obY(a0)
 		move.b	obStatus(a2),obStatus(a0)	; match Player's x orientation
 		andi.b	#maskFacing,obStatus(a0)	; only retain staFacing (staFlipX)
 	endif
 
-Effects_MdDisplay:
+Eff_MdDisplay:
 		lea		Ani_Effects(pc),a1
 		jsr		(AnimateSprite).w
-		bsr.w	Effects_LoadGfx
+		bsr.w	Eff_LoadGfx
 		jmp		(DisplaySprite).l
-
-Effects_MdNull:
-		rts
 ; ===========================================================================
-Effects_ResetDisplayMode:
+
+Eff_ResetDisplayMode:
 		clr.b	obAnim(a0)
 		rts
 
-Effects_Delete:	; Routine 4
-		jmp		(DeleteObject).l	; delete when animation	is complete
+Eff_Delete:		; Routine 4
+		jmp		(DeleteObject).l			; delete when animation	is complete
 ; ===========================================================================
 
-Effects_ChkSkid:
+Eff_ChkSkid:
 	if ~~SkidDustEnabled
 		rts
 	else
 		lea		(v_player).w,a2
 		cmpi.b	#aniID_Stop,obAnim(a2)
-		beq.s	Effects_SkidDust
+		beq.s	Eff_SkidDust
 		move.b	#2,obRoutine(a0)
-		clr.b	objoff_32(a0)
+		clr.b	obEff_DustTimer(a0)
 		rts
 ; ===========================================================================
 
-Effects_SkidDust:
-		subq.b	#1,objoff_32(a0)
-		bpl.s	Effects_LoadGfx
-		move.b	#3,objoff_32(a0)	; create dust once every 4 frames
+Eff_SkidDust:
+		subq.b	#1,obEff_DustTimer(a0)
+		bpl.s	Eff_LoadGfx
+		move.b	#3,obEff_DustTimer(a0)		; create dust once every 4 frames
 		jsr		(FindFreeObj).l
-		bne.s	Effects_LoadGfx
-		move.b	obID(a0),obID(a1)	; load obj07
+		bne.s	Eff_LoadGfx
+		move.b	obID(a0),obID(a1)			; load obj07
 		move.w	obX(a2),obX(a1)
 		move.w	obY(a2),obY(a1)
 		addi.w	#$10,obY(a1)
@@ -103,23 +101,23 @@ Effects_SkidDust:
 ; ===========================================================================
 	endif
 
-Effects_LoadGfx:
+Eff_LoadGfx:
 		moveq	#0,d0
-		move.b	obFrame(a0),d0	; load frame number
-		cmp.b	objoff_3F(a0),d0		; has frame changed?
+		move.b	obFrame(a0),d0			; load frame number
+		cmp.b	obEff_LastFrame(a0),d0	; has frame changed?
 		beq.s	.nochange				; if not, branch and exit
 
-		move.b	d0,objoff_3F(a0)		; update frame number for next check
+		move.b	d0,obEff_LastFrame(a0)	; update frame number for next check
 		lea		DynPLC_Effects(pc),a2
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2
 		moveq	#0,d5
-		move.w	(a2)+,d5			; read "number of entries" value -- S3k: .b to .w
+		move.w	(a2)+,d5					; read "number of entries" value -- S3k: .b to .w
 		subq.w	#1,d5
-		bmi.s	.nochange			; if zero, branch
-		move.w	#(ArtTile_Dust*$20),d4
+		bmi.s	.nochange					; if zero, branch
+		move.w	#(ArtTile_Dust*tile_size),d4
 
-.readentry:
+	.readentry:
 		moveq	#0,d1
 		move.w	(a2)+,d1	; S3K .b to .w
 		move.w	d1,d3		; S3K
@@ -135,5 +133,6 @@ Effects_LoadGfx:
 		jsr		(QueueDMATransfer).w
 		dbf		d5,.readentry	; repeat for number of entries
 
-.nochange:
+	.nochange:
 		rts
+; ===========================================================================

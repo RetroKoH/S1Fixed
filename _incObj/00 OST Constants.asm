@@ -94,8 +94,8 @@ obARoll_Flag:			equ obPSwap_Flag	; 1 byte  | flag utilized during handling
 ; ---------------------------------------------------------------------------
 
 ; Obj07 - Dust Effects
-obEffects_DustTimer:	equ objoff_32		; 1 byte  | timer for generating dust
-obEffects_PrevFrame:	equ objoff_3F		; 1 byte  | stored frame for DPLC handling
+obEff_DustTimer:		equ objoff_32		; 1 byte  | timer for generating dust
+obEff_PrevFrame:		equ objoff_3F		; 1 byte  | stored frame for DPLC handling
 ; ---------------------------------------------------------------------------
 
 ; Obj09 - Special Stage Sonic

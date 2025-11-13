@@ -17,18 +17,18 @@ Splash:
 	; Object Routine Optimization End
 
 Spla_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)
+		addq.b	#2,obRoutine(a0)				; -> Spla_Display
 		move.l	#Map_Splash,obMap(a0)
 		ori.b	#4,obRender(a0)
 		move.w	#priority1,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$10,obDispWid(a0)
 		move.w	#make_art_tile(ArtTile_Splash,2,0),obGfx(a0)
-		move.w	(v_player+obX).w,obX(a0)		; copy x-position from Sonic
+		move.w	(v_player+obX).w,obX(a0)		; copy X-axis position from Sonic
 
 Spla_Display:	; Routine 2
-		move.w	(v_waterpos_actual).w,obY(a0)	; copy y-position from water height
+		move.w	(v_waterpos_actual).w,obY(a0)	; copy Y-axis position from water height
 		lea		Ani_Splash(pc),a1
-		jsr		(AnimateSprite).w
+		jsr		(AnimateSprite).w				; animate; -> Spla_Delete
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 
