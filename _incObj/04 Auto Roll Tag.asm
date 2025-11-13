@@ -52,16 +52,16 @@ AutoRoll_Init:
 		move.b	d0,obFrame(a0)
 		andi.w	#3,d0
 		add.w	d0,d0
-		move.w	word_211E8(pc,d0.w),objoff_32(a0)
+		move.w	AutoRoll_Sizes(pc,d0.w),obARoll_Radius(a0)
 		move.w	obY(a0),d1
 		lea		(v_player).w,a1 ; a1=character
 		cmp.w	obY(a1),d1
 		bhs.w	AutoRoll_MainY
-		move.b	#1,objoff_34(a0)
+		move.b	#1,obARoll_Flag(a0)
 		bra.w	AutoRoll_MainY
 ; ===========================================================================
 
-word_211E8:
+AutoRoll_Sizes:
 		dc.w   $20
 		dc.w   $40	; 1
 		dc.w   $80	; 2
@@ -72,18 +72,18 @@ AutoRoll_Init_CheckX:
 		andi.w	#3,d0
 		move.b	d0,obFrame(a0)
 		add.w	d0,d0
-		move.w	word_211E8(pc,d0.w),objoff_32(a0)
+		move.w	AutoRoll_Sizes(pc,d0.w),obARoll_Radius(a0)
 		move.w	obX(a0),d1
 		lea		(v_player).w,a1		; a1=character
 		cmp.w	obX(a1),d1
 		bhs.s	AutoRoll_MainX
-		move.b	#1,objoff_34(a0)
+		move.b	#1,obARoll_Flag(a0)
 
 AutoRoll_MainX:
 		tst.w	(v_debuguse).w
 		bne.s	.locret
 		move.w	obX(a0),d1
-		lea		objoff_34(a0),a2	; a2=$34(a0)
+		lea		obARoll_Flag(a0),a2	; a2=$34(a0)
 		lea		(v_player).w,a1		; a1=character
 		tst.b	(a2)+				; test $34(a0); a2=$35(a0)
 		bne.s	AutoRoll_MainX_Alt
@@ -92,7 +92,7 @@ AutoRoll_MainX:
 		move.b	#1,-1(a2)			; load to $34(a0)
 		move.w	obY(a0),d2
 		move.w	d2,d3
-		move.w	objoff_32(a0),d4
+		move.w	obARoll_Radius(a0),d4
 		sub.w	d4,d2
 		add.w	d4,d3
 		move.w	obY(a1),d4
@@ -119,7 +119,7 @@ AutoRoll_MainX_Alt:
 		clr.b	-1(a2)				; clear $34(a0)
 		move.w	obY(a0),d2
 		move.w	d2,d3
-		move.w	objoff_32(a0),d4
+		move.w	obARoll_Radius(a0),d4
 		sub.w	d4,d2
 		add.w	d4,d3
 		move.w	obY(a1),d4
@@ -154,7 +154,7 @@ AutoRoll_MainY:
 		tst.w	(v_debuguse).w
 		bne.s	.ret
 		move.w	obY(a0),d1
-		lea		objoff_34(a0),a2		; a2=object
+		lea		obARoll_Flag(a0),a2		; a2=object
 		lea		(v_player).w,a1			; a1=character
 		tst.b	(a2)+
 		bne.s	AutoRoll_MainY_Alt
@@ -163,7 +163,7 @@ AutoRoll_MainY:
 		move.b	#1,-1(a2)
 		move.w	obX(a0),d2
 		move.w	d2,d3
-		move.w	objoff_32(a0),d4
+		move.w	obARoll_Radius(a0),d4
 		sub.w	d4,d2
 		add.w	d4,d3
 		move.w	obX(a1),d4
@@ -190,7 +190,7 @@ AutoRoll_MainY_Alt:
 		move.b	#0,-1(a2)
 		move.w	obX(a0),d2
 		move.w	d2,d3
-		move.w	objoff_32(a0),d4
+		move.w	obARoll_Radius(a0),d4
 		sub.w	d4,d2
 		add.w	d4,d3
 		move.w	obX(a1),d4
