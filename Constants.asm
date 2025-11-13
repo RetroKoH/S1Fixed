@@ -122,77 +122,7 @@ bitDn:		equ 1
 bitUp:		equ 0
 
 ; Object variables
-
 	include "_incObj/00 OST Constants.asm"
-
-; ---------------------------------------------------------------------------
-; Object Status Table offsets (Rearranged for S3K Priority and Object Managers -- RetroKoH)
-; Nomenclature adopted from s1disasm, Sorting adopted from s2disasm
-; ---------------------------------------------------------------------------
-; Universally followed object conventions
-; obID:			equ 0			; object ID number
-; obRender:		equ 1			; bitfield for x/y flip, display mode
-; obGfx:			equ 2			; palette line & VRAM setting (2 bytes)
-; obMap:			equ 4			; mappings address (4 bytes)
-; obX:			equ 8			; x-axis position (2-4 bytes)
-; obXSub:			equ obX+2		; x-axis position fraction, for extra precision (2 bytes)
-; obScreenY:		equ obXSub		; y-axis position for screen-fixed items (2 bytes)
-; obY:			equ $C			; y-axis position (2-4 bytes)
-; obYSub:			equ obY+2		; y-axis position fraction, for extra precision (2 bytes)
-; obPriority:		equ $18			; sprite stack priority (2 bytes)
-; obFrame:		equ $1A			; current frame displayed
-; obDispWid:		equ $23			; action width
-; ; ---------------------------------------------------------------------------
-; ; conventions followed by most objects including Sonic:
-; obVelX:			equ $10			; x-axis velocity (2 bytes)
-; obVelY:			equ $12			; y-axis velocity (2 bytes)
-; obHeight:		equ $16			; height/2
-; obWidth:		equ $17			; width/2
-; obAniFrame:		equ $1B			; current frame in animation script
-; obAnim:			equ $1C			; current animation
-; obPrevAni:		equ $1D			; previous animation
-; obTimeFrame:	equ $1E			; time to next frame
-; obDelayAni:		equ $1F			; time to delay animation
-; obStatus:		equ $22			; orientation or mode
-; obRoutine:		equ $24			; routine number
-; obAngle:		equ $26			; angle
-; ; ---------------------------------------------------------------------------
-; ; conventions followed by many objects but NOT Sonic
-; obRespawnAddr:	equ $14			; respawn list address (2 bytes)
-; obColType:		equ $20			; collision response type
-; obColProp:		equ $21			; collision extra property
-; ob2ndRout:		equ $25			; secondary routine number
-; obShieldProp:	equ $27			; How object responds to shields {Reflect-Lightning-Bubble-Flame 0-0-0-0}
-; obSubtype:		equ $28			; object subtype
-; obBossX:		equ $30
-; obBossY:		equ $38
-; obParent:		equ $3E
-; ; ---------------------------------------------------------------------------
-; ; conventions specific to playable characters
-; obInertia:		equ $20			; potential speed (2 bytes) -- Exclusive to players
-; obWallJump:		equ $28			; used for wall jumps (2 bytes)
-; obInvuln:		equ $30			; Invulnerable (blinking after getting hit) timer
-; obInvinc:		equ $31			; Invincibility timer
-; obShoes:		equ $32			; Speed Shoes timer
-; obCtrlLock:		equ $35			; formerly f_playerctrl (0, 1, or $81)
-; obFrontAngle:	equ $36			; angle on ground in front of sprite
-; obRearAngle:	equ $37			; angle on ground behind sprite
-; obOnWheel:		equ $38			; on convex wheel flag
-; obStatus2nd:	equ $39			; secondary status counter
-; obRestartTimer:	equ $3A			; level restart timer (2 bytes -- Shared with obSpinDashCounter)
-; obJumping:		equ $3C			; jumping flag
-; obLRLock:		equ $3D			; flag for preventing left and right input
-; obPlatformAddr:	equ $3E			; ObjRAM location of the object Sonic's on top of (2 bytes)
-
-; ;	if (ShieldsMode|DropDashEnabled)
-; obDoubleJumpProp:	equ $25				; Counter for Sonic's Drop Dash (if enabled). Can also be utilized for remaining frames of flight / 2 for Tails, gliding-related for Knuckles.
-; obDoubleJumpFlag:	equ	$2F				; Flag noting double jump status. 0 - not triggered. 1 - triggered. 2 - post-instashield (Begin Drop Dash revving). 3 - Drop Dash Cancelled.
-; ;	endif
-; ;	if (SpinDashEnabled|PeeloutEnabled)
-; obSpinDashFlag:		equ $2A				; spin dash/peelout flag - if toggled off, this is unused.
-; obAutoRollFlag:		equ obSpinDashFlag	; auto-roll (pinball mode) flag
-; obSpinDashCounter:	equ obRestartTimer	; Counter used for the Spin Dash and/or Peelout (2 bytes) - if toggled off, this is unused.
-; ;	endif
 
 ; ---------------------------------------------------------------------------
 ; obStatus bitfield constants

@@ -32,7 +32,7 @@ SpCursor_Action:	; Routine 2
 		addq.w	#4,d2
 		move.w	d2,obY(a0)
 
-; set y-position (seems correct)
+; set x-position (seems correct)
 		moveq	#0,d2
 		move.w	obX(a1),d2
 		addq.w	#8,d2
