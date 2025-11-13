@@ -264,9 +264,9 @@ SpSon_JumpHeight:
 	; Mercury Fixed SS Jumping Physics
 		move.b	(v_jpadheld_dup).w,d0			; is the jump button up?
 		andi.b	#btnABC,d0
-		bne.s	locret_1BBB4					; if not, branch to return
+		bne.s	.exit					; if not, branch to return
 		btst	#staSSJump,obStatus(a0)			; did Sonic jump or is he just falling or hit by a bumper?
-		beq.s	locret_1BBB4					; if not, branch to return
+		beq.s	.exit					; if not, branch to return
 		move.b	(v_ssangle).w,d0				; get SS angle
 
 	if ~~SmoothSpecialStages	; Cinossu Smooth Special Stages
@@ -284,7 +284,7 @@ SpSon_JumpHeight:
 		asr.l	#8,d1							; find the new X speed
 		add.w	d0,d1							; combine the two speeds
 		cmpi.w	#$400,d1						; compare the combined speed with the jump release speed
-		ble.s	locret_1BBB4					; if it's less, branch to return
+		ble.s	.exit					; if it's less, branch to return
 		move.b	(v_ssangle).w,d0
 
 	if ~~SmoothSpecialStages	; Cinossu Smooth Special Stages
@@ -302,7 +302,7 @@ SpSon_JumpHeight:
 		move.w	d0,obVelY(a0)					; set the speed to the jump release speed
 		bclr	#staSSJump,obStatus(a0)			; clear "Sonic has jumped" flag
 
-locret_1BBB4:
+	.exit:
 		rts
 ; End of function SpSon_JumpHeight
 ; ===========================================================================
