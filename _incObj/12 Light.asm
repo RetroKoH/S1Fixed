@@ -23,3 +23,4 @@ Light_Animate:	; Routine 2 (Replaced with global sync animation)
 .chkdel:
 		offscreen.w	DeleteObject	; ProjectFM S3K Object Manager
 		bra.w	DisplaySprite
+; ===========================================================================

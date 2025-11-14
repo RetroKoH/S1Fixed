@@ -132,6 +132,7 @@ obSign_SpinTime:		equ objoff_30		; 2 bytes | time for signpost to spin
 obSign_SparkleTime:		equ objoff_32		; 2 bytes | time between sparkles
 obSign_SparkleCount:	equ objoff_34		; 1 byte  | counter to keep track of sparkles
 obSign_StartY:			equ objoff_36		; 2 bytes | starting Y-axis position (For Floating Signpost mod)
+obSign_PrevFrame:		equ objoff_3F		; 1 byte  | stored frame for DPLC handling
 ; ---------------------------------------------------------------------------
 
 ; Obj0E - Title Screen Sonic
@@ -168,7 +169,7 @@ obSwing_Angle:			equ $10				; 2 bytes | precise rotation angle
 obSwing_StartY:			equ objoff_38		; 2 bytes | starting Y-axis position
 obSwing_StartX:			equ objoff_3A		; 2 bytes | starting X-axis position
 obSwing_Radius:			equ objoff_3C		; 1 byte  | distance of chainlink from anchor
-obSwing_Unk:			equ objoff_3E		; 2 bytes | unused
+obSwing_Unk:			equ objoff_3E		; 2 bytes | unused (obBossBall_Speed)
 ; ---------------------------------------------------------------------------
 
 ; Obj16 - LZ Harpoon
@@ -367,6 +368,17 @@ obSStom_Parent:			equ objoff_3E		; 2 bytes | RAM address of parent object
 
 ; Obj46 - MZ Brick (some fall from above)
 obBrick_StartY:			equ objoff_30		; 2 bytes | starting Y-axis position
+; ---------------------------------------------------------------------------
+
+; Obj48 - GHZ Boss Swinging Ball
+obBossBall_ChainHead:	equ objoff_30		; 2 bytes | chain head address (for swinging ball visual effect)
+obBossBall_BossDist:	equ objoff_32		; 2 bytes | distance of base from boss
+obBossBall_Parent:		equ objoff_34		; 4 bytes | address of OST of parent object (need to truncate to 2 bytes)
+obBossBall_BaseY:		equ objoff_38		; 2 bytes | Y-axis position of base
+obBossBall_BaseX:		equ objoff_3A		; 2 bytes | X-axis position of base
+obBossBall_Radius:		equ objoff_3C		; 1 byte  | distance of ball/link from base
+obBossBall_Side:		equ objoff_3D		; 1 byte  | which side the ball is on - 0 = right; 1 = left
+obBossBall_Speed:		equ objoff_3E		; 2 bytes | rate of change of angle
 ; ---------------------------------------------------------------------------
 
 ; Obj4A - Unused Special Stage Entry Vanishing Sprite

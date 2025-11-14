@@ -2,11 +2,6 @@
 ; Object 0D - signpost at the end of a level
 ; ---------------------------------------------------------------------------
 
-spintime = objoff_30		; time for signpost to spin
-sparkletime = objoff_32		; time between sparkles
-sparkle_id = objoff_34		; counter to keep track of sparkles
-sign_origy = objoff_36		; original y-position (For Floating Signpost mod)
-
 Signpost:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
@@ -48,7 +43,7 @@ Sign_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.b	#$18,obDispWid(a0)
 		move.w	#priority4,obPriority(a0)			; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$FF,objoff_3F(a0)					; Added for DPLC frame check
+		move.b	#$FF,obSign_PrevFrame(a0)			; Added for DPLC frame check
 
 Sign_Touch:	; Routine 2
 		tst.b	(f_bigring).w						; did Sonic collect the Giant Ring?
@@ -98,8 +93,8 @@ Sign_Touch:	; Routine 2
 		move.b	d0,obVelY(a0)						; set y speed of signpost
 
 .tooslow:
-		move.w	obY(a0),sign_origy(a0)				; store starting y-position so we know when to land
-		move.w	#60,spintime(a0)					; set spin cycle time to 1 second
+		move.w	obY(a0),obSign_StartY(a0)			; store starting y-position so we know when to land
+		move.w	#60,obSign_SpinTime(a0)				; set spin cycle time to 1 second
 		addq.b	#1,obAnim(a0)						; set to first spin cycle early
 	endif
 
@@ -119,7 +114,7 @@ Sign_Spin:	; Routine 4
 		tst.b	ob2ndRout(a0)
 		bne.s	.onground
 		bsr.w	SpeedToPos_YOnly
-		move.w	sign_origy(a0),d1
+		move.w	obSign_StartY(a0),d1
 		sub.w	obY(a0),d1
 		bpl.s	.inair
 		add.w	d1,obY(a0)						; latch to the floor
@@ -129,14 +124,14 @@ Sign_Spin:	; Routine 4
 
 .inair:
 		addi.w	#$28,obVelY(a0)
-		cmpi.b	#$E,sparkletime(a0)
+		cmpi.b	#$E,obSign_SparkleTime(a0)
 		bne.s	.skipreset
-		clr.b	sparkletime(a0)
+		clr.b	obSign_SparkleTime(a0)
 
 .skipreset:
-		subq.w	#1,spintime(a0)					; subtract 1 from spin time
+		subq.w	#1,obSign_SpinTime(a0)			; subtract 1 from spin time
 		bpl.s	.chksparkle						; if time remains, branch
-		move.w	#60,spintime(a0)				; set spin cycle time to 1 second
+		move.w	#60,obSign_SpinTime(a0)			; set spin cycle time to 1 second
 		cmpi.b	#3,obAnim(a0)					; have 3 spin cycles completed?
 		beq.s	.chksparkle						; if yes, branch
 		addq.b	#1,obAnim(a0)					; next spin cycle
@@ -145,26 +140,28 @@ Sign_Spin:	; Routine 4
 .onground:
 	endif
 
-		subq.w	#1,spintime(a0)					; subtract 1 from spin time
+		subq.w	#1,obSign_SpinTime(a0)			; subtract 1 from spin time
 		bpl.s	.chksparkle						; if time remains, branch
-		move.w	#60,spintime(a0)				; set spin cycle time to 1 second
+		move.w	#60,obSign_SpinTime(a0)			; set spin cycle time to 1 second
 		addq.b	#1,obAnim(a0)					; next spin cycle
 		cmpi.b	#3,obAnim(a0)					; have 3 spin cycles completed?
 		bne.s	.chksparkle						; if not, branch
-	if EndLevelFadeMusic=1
+
+	if EndLevelFadeMusic
 		move.b	#bgm_Fade,d0
 		jsr		(QueueSound2).w			; fade out music (RetroKoH)
 	endif
+
 		addq.b	#2,obRoutine(a0)
 
 .chksparkle:
-		subq.w	#1,sparkletime(a0)				; subtract 1 from time delay
+		subq.w	#1,obSign_SparkleTime(a0)		; subtract 1 from time delay
 		bpl.s	.fail							; if time remains, branch
-		move.w	#$B,sparkletime(a0)				; set time between sparkles to $B frames
+		move.w	#$B,obSign_SparkleTime(a0)		; set time between sparkles to $B frames
 		moveq	#0,d0
-		move.b	sparkle_id(a0),d0				; get sparkle id
-		addq.b	#2,sparkle_id(a0)				; increment sparkle counter
-		andi.b	#$E,sparkle_id(a0)
+		move.b	obSign_SparkleCount(a0),d0		; get sparkle id
+		addq.b	#2,obSign_SparkleCount(a0)		; increment sparkle counter
+		andi.b	#$E,obSign_SparkleCount(a0)
 		lea		Sign_SparkPos(pc,d0.w),a2		; load sparkle position data
 		bsr.w	FindFreeObj
 		bne.s	.fail
@@ -181,7 +178,7 @@ Sign_Spin:	; Routine 4
 		move.l	#Map_Ring,obMap(a1)
 		move.w	#make_art_tile(ArtTile_RingSparkles,1,0),obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.w	#priority2,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
+		move.w	#priority2,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#8,obDispWid(a1)
 
 .fail:
@@ -225,6 +222,7 @@ Sign_SonicRun:	; Routine 6
 		tst.b	(v_player+obID).w			; Check if Sonic's object has been deleted (because he entered the giant ring)
 		beq.s	loc_EC86
 	endif
+
 		move.w	(v_player+obX).w,d0
 		move.w	(v_limitright).w,d1
 		addi.w	#$128,d1
@@ -267,9 +265,6 @@ GotThrough_UncList:
 ; ---------------------------------------------------------------------------
 ; Subroutine to	set up bonuses at the end of an	act
 ; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
 
 GotThroughAct:
 		tst.b	(v_endcard).w
@@ -335,8 +330,8 @@ GotThroughAct:
 		jmp		(QueueSound2).w							; play "Sonic got through" music
 	endif
 ; End of function GotThroughAct
-
 ; ===========================================================================
+
 TimeBonuses:
 		dc.w 5000, 5000, 1000, 500, 400, 400, 300, 300,	200, 200
 		dc.w 200, 200, 100, 100, 100, 100, 50, 50, 50, 50, 0
@@ -349,10 +344,10 @@ TimeBonuses:
 Signpost_LoadGfx:
 		moveq	#0,d0
 		move.b	obFrame(a0),d0			; load frame number
-		cmp.b	objoff_3F(a0),d0		; has frame changed?
+		cmp.b	obSign_PrevFrame(a0),d0		; has frame changed?
 		beq.s	.nochange				; if not, branch and exit
 
-		move.b	d0,objoff_3F(a0)		; update frame number for next check
+		move.b	d0,obSign_PrevFrame(a0)		; update frame number for next check
 		lea		SignpostDynPLC(pc),a2
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2
@@ -380,3 +375,4 @@ Signpost_LoadGfx:
 
 .nochange:
 		rts
+; ===========================================================================

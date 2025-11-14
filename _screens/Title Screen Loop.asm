@@ -223,7 +223,7 @@ Tit_NoLevSel:
 
 Tit_MenuChoice:
 		moveq	#0,d0
-		move.b	(v_pressstart+objoff_30).w,d0
+		move.b	(v_pressstart+obPSB_MenuOption).w,d0
 		bne.w	PlayLevel_Load					; load previous game
 		bra.w	PlayLevel						; start new game
 

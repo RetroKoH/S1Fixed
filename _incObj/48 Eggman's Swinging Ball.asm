@@ -11,190 +11,177 @@ BossBall:
 GBall_Index:	offsetTable
 		offsetTableEntry.w GBall_Main
 		offsetTableEntry.w GBall_Base
-		offsetTableEntry.w GBall_Display2
-		offsetTableEntry.w loc_17C68
-		offsetTableEntry.w GBall_ChkVanish
-
-;swing_angle = $10		; precise rotation angle (2 bytes)
-	; ^^^ We need this so that obShieldProp isn't overwritten, otherwise
-	; Insta-Shield negates its collision property. Upper byte written to obAngle.
-	; See Obj15 for more details.
+		offsetTableEntry.w GBall_Base2
+		offsetTableEntry.w GBall_Link
+		offsetTableEntry.w GBall_Ball
 ; ===========================================================================
 
 GBall_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)
-		move.w	#$4080,swing_angle(a0)
-		move.b	swing_angle(a0),obAngle(a0)
-		move.w	#-$200,objoff_3E(a0)
+		addq.b	#2,obRoutine(a0)			; -> GBall_Base
+		move.w	#$4080,obSwing_Angle(a0)
+		move.b	obSwing_Angle(a0),obAngle(a0)
+		move.w	#-$200,obBossBall_Speed(a0)
 		move.l	#Map_BossItems,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Eggman_Weapons,0,0),obGfx(a0)
 		lea		obSubtype(a0),a2
 		clr.b	(a2)+
-		moveq	#5,d1
-		movea.l	a0,a1
-		bra.s	loc_17B60
+		moveq	#5,d1						; load 5 additional objects
+		movea.l	a0,a1						; replace current object with chain base
+		bra.s	.chain_base
 ; ===========================================================================
 
-GBall_MakeLinks:
-		jsr		(FindNextFreeObj).l
-		bne.s	GBall_MakeBall
+	.loop:
+		jsr		(FindNextFreeObj).l			; find free object slot
+		bne.s	.make_ball					; branch if not found
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		_move.b	#id_BossBall,obID(a1) ; load chain link object
+		_move.b	#id_BossBall,obID(a1)		; load chain link object
 		move.b	#6,obRoutine(a1)
 		move.l	#Map_Swing_GHZ,obMap(a1)
 		move.w	#make_art_tile(ArtTile_GHZ_MZ_Swing,0,0),obGfx(a1)
 		move.b	#1,obFrame(a1)
 		addq.b	#1,obSubtype(a0)
 
-loc_17B60:
-		move.w	a1,d5
+	.chain_base:
+		move.w	a1,d5						; address of current object
 		subi.w	#v_objspace&$FFFF,d5
 		lsr.w	#object_size_bits,d5
-		andi.w	#$7F,d5
-		move.b	d5,(a2)+
+		andi.w	#$7F,d5						; convert address to object index
+		move.b	d5,(a2)+					; add to list in parent object
 		move.b	#4,obRender(a1)
 		move.b	#8,obDispWid(a1)
-		move.w	#priority6,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
-		move.l	objoff_34(a0),objoff_34(a1)
-		dbf		d1,GBall_MakeLinks				; repeat sequence 5 more times
+		move.w	#priority6,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
+		move.l	obBossBall_Parent(a0),obBossBall_Parent(a1)
+		dbf		d1,.loop					; repeat sequence 5 more times
 
-GBall_MakeBall:
+	.make_ball:
 		move.b	#8,obRoutine(a1)
 		move.l	#Map_GBall,obMap(a1)			; load different mappings for final link
-		move.w	#make_art_tile(ArtTile_GHZ_Giant_Ball,2,0),obGfx(a1) ; use different graphics
+		move.w	#make_art_tile(ArtTile_GHZ_Giant_Ball,2,0),obGfx(a1)	; use different graphics
 		move.b	#1,obFrame(a1)
 		move.w	#priority5,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#(colHarmful|colSz_20x20),obColType(a1)	; make object hurt Sonic
-		move.w	a0,objoff_30(a1)				; store address of head chain object to transfer angle to the ball
+		move.b	#(colHarmful|colSz_20x20),obColType(a1)		; make object hurt Sonic
+		move.w	a0,obBossBall_ChainHead(a1)				; store address of head chain object to transfer angle to the ball
 		rts	
 ; ===========================================================================
 
-GBall_PosData:	dc.b 0,	$10, $20, $30, $40, $60	; y-position data for links and	giant ball
-
+GBall_PosData:	; distances of objects from base
+		dc.b 0						; base
+		dc.b $10, $20, $30, $40		; chain links
+		dc.b $60					; ball
 ; ===========================================================================
 
 GBall_Base:	; Routine 2
 		lea		(GBall_PosData).l,a3
 		lea		obSubtype(a0),a2
 		moveq	#0,d6
-		move.b	(a2)+,d6
+		move.b	(a2)+,d6					; get number of child objects
 
-loc_17BC6:
+	.loop:
 		moveq	#0,d4
-		move.b	(a2)+,d4
+		move.b	(a2)+,d4					; get child object object index
 		lsl.w	#object_size_bits,d4
 		addi.l	#v_objspace&$FFFFFF,d4
-		movea.l	d4,a1
-		move.b	(a3)+,d0
-		cmp.b	objoff_3C(a1),d0
-		beq.s	loc_17BE0
-		addq.b	#1,objoff_3C(a1)
+		movea.l	d4,a1						; convert to RAM address
+		move.b	(a3)+,d0					; get target distance from base
+		cmp.b	obBossBall_Radius(a1),d0	; has object reached target?
+		beq.s	.reached_dist				; if yes, branch
+		addq.b	#1,obBossBall_Radius(a1)
 
-loc_17BE0:
-		dbf		d6,loc_17BC6
+	.reached_dist:
+		dbf		d6,.loop					; repeat for all children
 
-		cmp.b	objoff_3C(a1),d0
-		bne.s	loc_17BFA
-		movea.l	objoff_34(a0),a1			; a1 = Eggman
-		cmpi.b	#6,ob2ndRout(a1)
-		bne.s	loc_17BFA
+		cmp.b	obBossBall_Radius(a1),d0	; has final object (ball) reached target?
+		bne.s	.not_finished				; if not, branch
+		movea.l	obBossBall_Parent(a0),a1	; a1 = Eggman
+		cmpi.b	#6,ob2ndRout(a1)			; is boss in back-and-forth phase?
+		bne.s	.not_finished				; if not, branch
 		addq.b	#2,obRoutine(a0)
 
 	if GHZBossDelay
 		st.b	ghzboss_battleflag(a1)		; once lowered, Eggman can be hit
 	endif
 
-loc_17BFA:
-		cmpi.w	#$20,objoff_32(a0)
-		beq.s	GBall_Display
-		addq.w	#1,objoff_32(a0)
+	.not_finished:
+		cmpi.w	#$20,obBossBall_BossDist(a0)	; has base moved an additional 32px? (aligned with bottom of ship)
+		beq.s	.display					; if yes, branch
+		addq.w	#1,obBossBall_BossDist(a0)		; increment distance
 
-GBall_Display:
-		bsr.w	sub_17C2A
+	.display:
+		bsr.w	GBall_UpdateBase			; update base animation/position
 		move.b	obAngle(a0),d0
-		jsr		(Swing_Move2).l
+		jsr		(Swing_MoveAll).l			; update positions of all chain links & ball
 		jmp		(DisplayAndCollision).l		; S3K TouchResponse
 ; ===========================================================================
 
-GBall_Display2:	; Routine 4
-		bsr.w	sub_17C2A
-		jsr		(Obj48_Move).l
+GBall_Base2:	; Routine 4
+		bsr.w	GBall_UpdateBase			; update base animation/position
+		jsr		(GBall_Move).l				; update angle and positions of child objects
 		jmp		(DisplayAndCollision).l		; S3K TouchResponse
+; ===========================================================================
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+; ---------------------------------------------------------------------------
+; Subroutine to animate, update position and destroy base
+; ---------------------------------------------------------------------------
 
+GBall_UpdateBase:
+		movea.l	obBossBall_Parent(a0),a1	; get address of parent
+		addi.b	#$20,obAniFrame(a0)			; increment frame counter
+		bcc.s	.no_chg						; branch if byte doesn't wrap from $C0 to 0
+		bchg	#0,obFrame(a0)				; alternate blinking light every 8th frame
 
-sub_17C2A:
-		movea.l	objoff_34(a0),a1
-		addi.b	#$20,obAniFrame(a0)
-		bcc.s	loc_17C3C
-		bchg	#0,obFrame(a0)				; alternate blinking light
-
-loc_17C3C:
-		move.w	obX(a1),objoff_3A(a0)
+	.no_chg:
+		move.w	obX(a1),obBossBall_BaseX(a0)	; get position from parent (ship)
 		move.w	obY(a1),d0
-		add.w	objoff_32(a0),d0
-		move.w	d0,objoff_38(a0)
+		add.w	obBossBall_BossDist(a0),d0
+		move.w	d0,obBossBall_BaseY(a0)
 		move.b	obStatus(a1),obStatus(a0)
-		tst.b	obStatus(a1)
-		bpl.s	locret_17C66				; if bit 7 is clear, branch
-		_move.b	#id_ExplosionBomb,obID(a0)
+		tst.b	obStatus(a1)					; has boss been beaten?
+		bpl.s	.not_beaten						; if not, branch
+		_move.b	#id_ExplosionBomb,obID(a0)		; replace base with explosion object
 		clr.b	obRoutine(a0)
 
-locret_17C66:
+	.not_beaten:
 		rts	
-; End of function sub_17C2A
-
+; End of function GBall_UpdateBase
 ; ===========================================================================
 
-loc_17C68:	; Routine 6
-		movea.l	objoff_34(a0),a1
-		tst.b	obStatus(a1)
-		bpl.s	GBall_Display3				; if bit 7 is clear, branch
-		_move.b	#id_ExplosionBomb,obID(a0)
+GBall_Link:	; Routine 6
+		movea.l	obBossBall_Parent(a0),a1		; get address of OST of parent (ship)
+		tst.b	obStatus(a1)					; has boss been beaten?
+		bpl.s	.not_beaten						; if not, branch
+		_move.b	#id_ExplosionBomb,obID(a0)		; replace chain with explosion object
 		clr.b	obRoutine(a0)
 
-GBall_Display3:
-		jmp		(DisplayAndCollision).l		; S3K TouchResponse
+.not_beaten:
+		jmp		(DisplayAndCollision).l			; S3K TouchResponse
 ; ===========================================================================
 
-GBall_ChkVanish:	; Routine 8
+GBall_Ball:	; Routine 8
 		moveq	#0,d0
 		tst.b	obFrame(a0)				; is ball showing checkered?
 		bne.s	GBall_Vanish			; if yes, branch to alt frame (frame 0)
 	; RetroKoH angled ball mod
-		movea.w	objoff_30(a0),a2		; store chain head address in a2
+		movea.w	obBossBall_ChainHead(a0),a2	; store chain head address in a2
 		move.b	obAngle(a2),d0			; fetch chain's current angle; store it in d0
 		subq.b	#1,d0					; subtract 1, because it ranges from 1-$81
 		lsr.b	#1,d0					; cut range down to 0-$40
 		move.b	GBall_Angles(pc,d0.w),d0
 	; angled ball mod end
-;		subi.b	#$40,d0
-;		bcc.s	.notnegative			; if ball is on the left side, branch
-;		neg.b	d0						; negate angle
-;		lsr.b	#1,d0
-;		move.b	GBall_Angles2(pc,d0.w),d0
-;		bra.s	GBall_Vanish
-
-;.notnegative:
-;		lsr.b	#1,d0
-;		move.b	GBall_Angles(pc,d0.w),d0
-	; angled ball mod end
 
 GBall_Vanish:
-		move.b	d0,obFrame(a0)
-		movea.l	objoff_34(a0),a1
-		tst.b	obStatus(a1)
-		bpl.s	GBall_Display4				; if bit 7 is clear, branch
-		clr.b	obColType(a0)
-		bsr.w	BossDefeated
-		subq.b	#1,objoff_3C(a0)
-		bpl.s	GBall_Display4
-		move.b	#id_ExplosionBomb,obID(a0)
+		move.b	d0,obFrame(a0)				; set ball frame
+		movea.l	obBossBall_Parent(a0),a1	; get address of OST of parent (ship)
+		tst.b	obStatus(a1)				; has boss been beaten?
+		bpl.s	.display					; if not, branch
+		clr.b	obColType(a0)				; make ball harmless
+		bsr.w	BossDefeated				; spawn explosions
+		subq.b	#1,obBossBall_Radius(a0)	; use radius as timer, decrements from 96
+		bpl.s	.display					; branch if time remains
+		move.b	#id_ExplosionBomb,obID(a0)	; replace ball with explosion after 1.5 seconds
 		clr.b	obRoutine(a0)
 
-GBall_Display4:
+.display:
 		jmp		(DisplayAndCollision).l		; S3K TouchResponse
 ; ===========================================================================
 
@@ -204,3 +191,4 @@ GBall_Angles:
 		dc.b	1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2		; $20 - $2F
 		dc.b	2,2,2,2,3,3,3,3,3,3,3,3,1,1,1,1,1	; $30 - $40
 		even
+; ===========================================================================

@@ -22,7 +22,7 @@ TSon_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Title_Sonic,1,0),obGfx(a0)
 		move.w	#priority7,obPriority(a0)	; Kilo: Change to #7 -- RetroKoH/Devon S3K+ Priority Manager
 		move.b	#29,obDelayAni(a0)			; set time delay to 0.5 seconds
-		move.b	#$FF,objoff_3F(a0)			; Added for DPLC frame check
+		move.b	#$FF,obTitlSon_PrevFrame(a0)	; Added for DPLC frame check
 		lea		Ani_TSon(pc),a1
 		bsr.w	AnimateSprite
 
@@ -60,11 +60,11 @@ TSon_Animate:	; Routine 6
 
 TSon_LoadGfx:
 		moveq	#0,d0
-		move.b	obFrame(a0),d0			; load frame number
-		cmp.b	objoff_3F(a0),d0		; has frame changed?
-		beq.s	.nochange				; if not, branch and exit
+		move.b	obFrame(a0),d0				; load frame number
+		cmp.b	obTitlSon_PrevFrame(a0),d0	; has frame changed?
+		beq.s	.nochange					; if not, branch and exit
 
-		move.b	d0,objoff_3F(a0)		; update frame number for next check
+		move.b	d0,obTitlSon_PrevFrame(a0)	; update frame number for next check
 		lea		TSonDynPLC(pc),a2
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2
