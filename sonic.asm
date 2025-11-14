@@ -1828,6 +1828,11 @@ Sync4:
 ; Queue ring frame graphics loading
 ; ---------------------------------------------------------------------------
 LoadRingFrame:
+	if ~~ActiveDeathSequence				; RetroKoH Active Death Sequence Mod
+		cmpi.b	#6,(v_player+obRoutine).w	; has Sonic just died?
+		bhs.s	RingFrame_End				; if yes, branch
+	endif
+
 		moveq	#0,d1				; Get ring frame offset for regular rings
 		move.b	(v_ani1_frame).w,d1
 		cmp.b	(v_DPLCframe1_buf).w,d1
