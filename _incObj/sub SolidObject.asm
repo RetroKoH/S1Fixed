@@ -12,11 +12,13 @@
 
 
 SolidObject:
+		lea		(v_player).w,a1				; moved this to the start to prevent some issues
+	; I'll consult S1Squared and S.C.E. for how to rework this.
+
 		btst	#staSonicOnObj,obStatus(a0)	; is Sonic standing on the object? -- Removed obSolid
 		beq.w	Solid_ChkEnter				; if not, branch
 		move.w	d1,d2
 		add.w	d2,d2
-		lea		(v_player).w,a1
 		btst	#staAir,obStatus(a1)		; is Sonic in the air?
 		bne.s	.leave						; if yes, branch
 		move.w	obX(a1),d0
