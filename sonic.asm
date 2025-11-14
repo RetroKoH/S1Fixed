@@ -3358,14 +3358,14 @@ ExecuteObjects:
 
 RunObject:
 		move.b	obID(a0),d0					; load object number from RAM
-		beq.s	.noObject
+		beq.s	.next_object
 		add.w	d0,d0
 		add.w	d0,d0
 		movea.l	Obj_Index-4(pc,d0.w),a1
 		jsr		(a1)						; run the object's code
 		moveq	#0,d0
 
-	.noObject:
+	.next_object:
 		lea		object_size(a0),a0			; next object
 		dbf		d7,RunObject
 		rts	
@@ -3390,27 +3390,20 @@ ObjectsDisplayOnly:
 		bsr.s	RunObject
 		moveq	#v_lvlobjcount,d7			; Run through level obj space
 
-loc_D368:
+	.display:
 		tst.b	obID(a0)					; get the object's ID
-		beq.s	loc_D378					; if there's no object, branch
+		beq.s	RunObject.next_object		; if there's no object, branch
 		tst.b	obRender(a0)				; was the object displayed on the previous frame?
-		bpl.s	loc_D378					; if not, skip it
+		bpl.s	RunObject.next_object		; if not, skip it
 
 	; If this is a multi-sprite object, then we cannot use its 'priority'
 	; value to display it as it's being used for coordinate data.
 	; This fix is applied from s2disasm.
-		pea		loc_D378(pc)				; This is an optimisation to avoid the need for extra branches: it makes it so loc_D378 will be executed after a return
+		pea		RunObject.next_object(pc)	; This is an optimisation to avoid the need for extra branches: it makes it so .next_object will be executed after a return
 		btst	#6,obRender(a0)				; Is this a multi-sprite object?
 		beq.w	DisplaySprite				; If not, display using the object's 'priority' value.
 		move.w	#priority4,d0				; If not, display using a hardcoded priority of 4.
 		bra.w	DisplaySprite2
-
-loc_D378:
-		lea		object_size(a0),a0
-
-loc_D37C:
-		dbf		d7,loc_D368
-		rts
 	endif
 ; End of function ExecuteObjects
 ; ===========================================================================

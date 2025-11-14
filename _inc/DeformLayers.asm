@@ -8,7 +8,9 @@
 DeformLayers:
 		tst.b	(f_nobgscroll).w
 		beq.s	.bgscroll
-		rts	
+
+	.noscroll:
+		rts
 ; ===========================================================================
 
 	.bgscroll:
@@ -16,16 +18,15 @@ DeformLayers:
 		clr.w	(v_bg1_scroll_flags).w
 		clr.w	(v_bg2_scroll_flags).w
 		clr.w	(v_bg3_scroll_flags).w
-		bsr.w	ScrollHoriz
 
-; Adding this causes a LZ bug. Removing this causes a game-wide bug
+; TO-DO: This prevents a bug where the camera follows Sonic upon death, but it also doesn't allow GHZ clouds to scroll
 	if ActiveDeathSequence				; RetroKoH Active Death Sequence Mod
 		cmpi.b	#6,(v_player+obRoutine).w	; has Sonic just died?
-		bhs.s	.novertical					; if yes, branch and deform only
+		bhs.s	.noscroll					; if yes, branch and deform only
 	endif
-		bsr.w	ScrollVertical
 
-	.novertical:
+		bsr.w	ScrollHoriz
+		bsr.w	ScrollVertical
 		bsr.w	DynamicLevelEvents
 		move.w	(v_screenposy).w,(v_scrposy_vdp).w
 		move.w	(v_bgscreenposy).w,(v_bgscrposy_vdp).w
