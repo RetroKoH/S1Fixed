@@ -570,22 +570,22 @@ KillSonic:
 
 React_Special:
 		moveq	#$3F,d1
-		and.b	obColType(a1),d1	; get collision size
-		cmpi.b	#$B,d1				; is collision type $CB	?
+		and.b	obColType(a1),d1	; get collision size (bits 0-5)
+		cmpi.b	#$B,d1				; is collision type $CB (caterkiller)?
 		beq.w	React_Caterkiller	; if yes, branch
-		cmpi.b	#$C,d1				; is collision type $CC	?
+		cmpi.b	#$C,d1				; is collision type $CC	(yadrin)?
 		beq.s	.yadrin				; if yes, branch
-		cmpi.b	#$17,d1				; is collision type $D7	?
-		beq.s	.D7orE1				; if yes, branch
-		cmpi.b	#$21,d1				; is collision type $E1	?
-		beq.s	.D7orE1				; if yes, branch
+		cmpi.b	#$17,d1				; is collision type $D7	(SYZ bumper)?
+		beq.s	._D7				; if yes, branch
+		cmpi.b	#$21,d1				; is collision type $E1	(LZ pole)?
+		beq.s	._E1				; if yes, branch
 		rts	
 ; ===========================================================================
 
 .yadrin:
-		sub.w	d0,d5
+		sub.w	d0,d5				; d5 = Sonic's height, minus y dist between Sonic & yadrin
 		cmpi.w	#8,d5
-		bhs.w	React_Enemy			; .normalenemy
+		bhs.w	React_Enemy			; branch if Sonic is below spike level
 		move.w	obX(a1),d0
 		subq.w	#4,d0
 		btst	#staFlipX,obStatus(a1)
@@ -593,20 +593,26 @@ React_Special:
 		subi.w	#16,d0
 
 .noflip:
-		sub.w	d2,d0
-		bcc.s	.loc_1B13C
+		sub.w	d2,d0				; d0 = x pos of yadrin's face, minus x pos of Sonic's left edge
+		bcc.s	.sonic_left			; branch if Sonic is left of the yadrin
 		addi.w	#24,d0
-		bcs.w	React_ChkHurt
-		bra.w	React_Enemy			; .normalenemy
+		bcs.w	React_ChkHurt		; branch if Sonic is inside the yadrin
+		bra.w	React_Enemy
 ; ===========================================================================
 
-.loc_1B13C:
+.sonic_left:
 		cmp.w	d4,d0
-		bhi.w	React_Enemy			; .normalenemy
+		bhi.w	React_Enemy
 		bra.w	React_ChkHurt
 ; ===========================================================================
 
-.D7orE1:
-		addq.b	#1,obColProp(a1)
-		rts	
+._D7:
+		addq.b	#1,obColProp(a1)	; set flag for Sonic touching bumper
+		rts
+; ===========================================================================
+
+._E1:
+		addq.b	#2,obRoutine(a1)	; increment routine counter when touching the pole
+		rts
 ; End of function React_Special
+; ===========================================================================

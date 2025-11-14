@@ -274,9 +274,6 @@ DynWater_SBZ3:
 ; Labyrinth Zone "wind tunnels"	subroutine
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
 LZWindTunnels:
 		tst.w	(v_debuguse).w	; is debug mode	being used?
 		bne.w	.quit			; if yes, branch
@@ -288,6 +285,7 @@ LZWindTunnels:
 		moveq	#0,d1
 		tst.b	(v_act).w		; is act number 1?
 		bne.s	.notact1		; if not, branch
+
 		moveq	#1,d1
 		subq.w	#8,a2			; use different data for act 1
 
