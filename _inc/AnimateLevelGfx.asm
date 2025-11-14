@@ -31,6 +31,7 @@ AnimateLevelGfx:
 		tst.b	(f_pause).w					; is the game paused?
 		bne.s	.ispaused					; if yes, branch
 
+	; This was not in the original game (could be optional)
 	if ~~ActiveDeathSequence				; RetroKoH Active Death Sequence Mod
 		cmpi.b	#6,(v_player+obRoutine).w	; has Sonic just died?
 		bhs.s	.ispaused					; if yes, branch

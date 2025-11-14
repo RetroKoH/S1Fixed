@@ -242,8 +242,6 @@ GHZForeverPal: = 0						; if set to 1, GHZ is set to Sonic 1 Forever's palette
 ; Credit: RetroKoH
 ; Function: Active elements will not freeze when the player dies.
 ActiveDeathSequence: = 0				; if set to 1, active elements don't freeze on death a la Sonic CD
-; NOTE (Bugs when enabled):
-; Causes Labyrinth Zone BG to scroll vertically; (Skipping DeformLayers fixes this, but causes the GHZ clouds to not scroll)
 
 ; Name: End-of-Level Music Fade
 ; Credit: RetroKoH
