@@ -62,9 +62,9 @@ PSB_Menu:	; Routine 4
 		move.b	(v_jpadpressed_actual).w,d0
 		andi.b	#btnUp|btnDn,d0
 		beq.s	.end
-		bchg	#0,objoff_30(a0)
+		bchg	#0,obPSB_MenuOption(a0)
 		moveq	#0,d2
-		move.b	objoff_30(a0),d2
+		move.b	obPSB_MenuOption(a0),d2
 		addq.b	#4,d2
 		move.b	d2,obFrame(a0)
 		move.b	#sfx_Switch,d0 ; selection blip sound
@@ -72,4 +72,5 @@ PSB_Menu:	; Routine 4
 
 	.end:
 		bra.w	DisplaySprite
+; ===========================================================================
 	endif

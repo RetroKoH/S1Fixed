@@ -26,7 +26,7 @@ GM_Title:
 		clr.b	(f_levelstarted).w		; clear flag -- RetroKoH S3K Rings Manager
 	endif
 
-	if SaveProgressMod=1
+	if SaveProgressMod
 		clr.b	(f_levsel_active).w
 	endif
 
@@ -179,7 +179,7 @@ PlayLevel:
 		move.b	#id_Level,(v_gamemode).w	; set screen mode to $0C (level)
 		bsr.s	ResetLevel					; Reset level variables
 
-	if SaveProgressMod=1
+	if SaveProgressMod
 		tst.b	(f_levsel_active).w
 		bne.s	.nosaving
 
@@ -234,7 +234,7 @@ ResetLevel:
 		rts
 ; ===========================================================================
 
-	if SaveProgressMod=1
+	if SaveProgressMod
 PlayLevel_Load:
 		gotoSRAM							; Enable SRAM writing
 	if AddressSRAM=3

@@ -1,24 +1,22 @@
 ; ---------------------------------------------------------------------------
 ; Object 11 - GHZ bridge - Ported from Sonic 2 (Credit: DeltaWooloo)
 ; ---------------------------------------------------------------------------
-; OST Variables:
-obBriChild1		= objoff_30	; pointer to first set of bridge segments
-obBriChild2		= objoff_32	; pointer to second set of bridge segments, if applicable
-; ===========================================================================
 
 Bridge:
-		btst	#6,obRender(a0)		; Is this object set to render sub sprites?
-		bne.s	.SubSprs			; If so, branch
+		btst	#6,obRender(a0)			; Is this object set to render sub sprites?
+		beq.s	.normal					; If so, branch
+
+		move.w	#priority3,d0			; RetroKoH/Devon S3K+ Priority Manager
+		bra.w	DisplaySprite2			; Display sprites
+; ===========================================================================
+
+	.normal:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Bri_Index(pc,d0.w),d1
 		jmp		Bri_Index(pc,d1.w)
 ; ===========================================================================
-.SubSprs:
-	; child sprite objects only need to be drawn
-		move.w	#priority3,d0			; RetroKoH/Devon S3K+ Priority Manager
-		bra.w	DisplaySprite2			; Display sprites
-; ===========================================================================
+
 Bri_Index:	offsetTable
 		offsetTableEntry.w	Bri_Main
 		offsetTableEntry.w	Bri_Action
@@ -33,7 +31,7 @@ Bri_Main:	; Routine 0
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$80,obDispWid(a0)
 		move.w	obY(a0),d2
-		move.w	d2,objoff_3C(a0)
+		move.w	d2,obBridge_StartY(a0)
 		move.w	obX(a0),d3
 		moveq	#0,d1
 		move.b	obSubtype(a0),d1	; copy subtype (bridge length) to d1
@@ -47,14 +45,14 @@ Bri_Main:	; Routine 0
 		move.w	sub6_x_pos(a1),d0
 		subq.w	#8,d0
 		move.w	d0,obX(a1)			; center of first subsprite object
-		move.w	a1,obBriChild1(a0)	; pointer to first subsprite object
+		move.w	a1,obBridge_ChildObj1(a0)	; pointer to first subsprite object
 		swap	d1					; retrieve subtype
 		subq.w	#8,d1
 		bls.s	.nomore				; branch, if subtype <= 8 (bridge has no more than 8 logs)
 	; else, create a second subsprite object for the rest of the bridge
 		move.w	d1,d4
 		bsr.s	Bri_MakeSegment
-		move.w	a1,obBriChild2(a0)	; pointer to second subsprite object
+		move.w	a1,obBridge_ChildObj2(a0)	; pointer to second subsprite object
 		move.w	d4,d0
 		add.w	d0,d0
 		add.w	d4,d0	; d0*3
@@ -90,22 +88,21 @@ Bri_MakeSegment:
 
 .return:
 		rts
-
 ; ===========================================================================
 
 Bri_Action:	; Routine 2
 		move.b	obStatus(a0),d0
 		andi.b	#maskSonicOnObj,d0
 		bne.s	.standing
-		tst.b	objoff_3E(a0)
+		tst.b	obBridge_BendPixels(a0)
 		beq.s	.solid
-		subq.b	#4,objoff_3E(a0)
+		subq.b	#4,obBridge_BendPixels(a0)
 		bra.s	.bend
 		
 .standing:
-		cmpi.b	#$40,objoff_3E(a0)
+		cmpi.b	#$40,obBridge_BendPixels(a0)
 		beq.s	.bend
-		addq.b	#4,objoff_3E(a0)
+		addq.b	#4,obBridge_BendPixels(a0)
 
 .bend:
 		bsr.w	Bri_Bend
@@ -123,13 +120,11 @@ Bri_Action:	; Routine 2
 
 .display:
 		bra.w	Bri_ChkDel	; Clownacy DisplaySprite Fix
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
+; ===========================================================================
 
 Bri_Solid:
 		lea		(v_player).w,a1
-		moveq	#objoff_3F,d5
+		moveq	#obBridge_CurrentLog,d5
 		btst	#staSonicOnObj,obStatus(a0)	; For single player, we don't need to load the standing bit to d6, as there's only one.
 		beq.s	loc_F8F0					; Plat_Exit???
 		btst	#staAir,obStatus(a1)
@@ -148,13 +143,14 @@ Bri_Solid:
 		moveq	#0,d4
 		rts
 ; ===========================================================================
+
 .inX:
 		lsr.w	#4,d0
 		move.b	d0,(a0,d5.w)
-		movea.w	obBriChild1(a0),a2 ; Get child object
+		movea.w	obBridge_ChildObj1(a0),a2 ; Get child object
 		cmpi.w	#8,d0
 		blo.s	.firstsubsprite
-		movea.w	obBriChild2(a0),a2 ; Get child object
+		movea.w	obBridge_ChildObj2(a0),a2 ; Get child object
 		subq.w	#8,d0
 
 .firstsubsprite:
@@ -202,11 +198,8 @@ PlatformBridge_cont:
 		bra.w	loc_19DD8;Plat_NoXCheck
 ; ===========================================================================
 
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
 Bri_Bend:
-		move.b	objoff_3E(a0),d0
+		move.b	obBridge_BendPixels(a0),d0
 		bsr.w	CalcSine
 		move.w	d0,d4
 		lea		Obj11_BendData2(pc),a4
@@ -214,7 +207,7 @@ Bri_Bend:
 		move.b	obSubtype(a0),d0
 		lsl.w	#4,d0
 		moveq	#0,d3
-		move.b	objoff_3F(a0),d3
+		move.b	obBridge_CurrentLog(a0),d3
 		move.w	d3,d2
 		add.w	d0,d3
 		moveq	#0,d5
@@ -223,7 +216,7 @@ Bri_Bend:
 		andi.w	#$F,d3
 		lsl.w	#4,d3
 		lea		(a4,d3.w),a3
-		movea.w	obBriChild1(a0),a1
+		movea.w	obBridge_ChildObj1(a0),a1
 		lea		sub9_y_pos+next_subspr(a1),a2
 		lea		sub2_y_pos(a1),a1
 
@@ -234,12 +227,12 @@ Bri_Bend:
 		mulu.w	d5,d0
 		mulu.w	d4,d0
 		swap	d0
-		add.w	objoff_3C(a0),d0
+		add.w	obBridge_StartY(a0),d0
 		move.w	d0,(a1)
 		addq.w	#6,a1
 		cmpa.w	a2,a1
 		bne.s	.skiploopafter
-		movea.w	obBriChild2(a0),a1 ; a1=object
+		movea.w	obBridge_ChildObj2(a0),a1 ; a1=object
 		lea		sub2_y_pos(a1),a1
 
 .skiploopafter:
@@ -248,7 +241,7 @@ Bri_Bend:
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
 		moveq	#0,d3
-		move.b	objoff_3F(a0),d3
+		move.b	obBridge_CurrentLog(a0),d3
 		addq.b	#1,d3
 		sub.b	d0,d3
 		neg.b	d3
@@ -267,12 +260,12 @@ Bri_Bend:
 		mulu.w	d5,d0
 		mulu.w	d4,d0
 		swap	d0
-		add.w	objoff_3C(a0),d0
+		add.w	obBridge_StartY(a0),d0
 		move.w	d0,(a1)
 		addq.w	#6,a1
 		cmpa.w	a2,a1
 		bne.s	.skiploopbefore
-		movea.w	obBriChild2(a0),a1 ; a1=object
+		movea.w	obBridge_ChildObj2(a0),a1 ; a1=object
 		lea		sub2_y_pos(a1),a1
 
 .skiploopbefore:
@@ -281,8 +274,8 @@ Bri_Bend:
 .ret:
 		rts	
 ; End of function Bri_Bend
-
 ; ===========================================================================
+
 ; ---------------------------------------------------------------------------
 ; GHZ bridge-bending data
 ; (Defines how the bridge bends	when Sonic walks across	it)
@@ -301,11 +294,11 @@ Bri_Display:	; Routine 4
 ; ===========================================================================
 
 Bri_Delete:
-		movea.w	obBriChild1(a0),a1	; a1=object
+		movea.w	obBridge_ChildObj1(a0),a1	; a1=object
 		bsr.w	DeleteChild
 		cmpi.b	#8,obSubtype(a0)
 		bls.s	.delete2nd			; if bridge has more than 8 logs, delete second subsprite object
-		movea.w	obBriChild2(a0),a1	; a1=object
+		movea.w	obBridge_ChildObj2(a0),a1	; a1=object
 		bsr.w	DeleteChild
 
 .delete2nd:
@@ -320,9 +313,6 @@ Bri_Delete:
 ; Subroutine to collide Sonic with the top of a bridge
 ; Ported from Sonic 2 (Credit: DeltaW)
 ; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
-
 
 loc_19DD8:
 		move.w	obY(a0),d0
@@ -376,3 +366,4 @@ RideObject_NotInAir:
 
 return_19E8E:
 		rts
+; ===========================================================================
