@@ -16,16 +16,6 @@ Swing_Index:	offsetTable
 		offsetTableEntry.w	Swing_Delete
 		offsetTableEntry.w	Swing_Display
 		offsetTableEntry.w	Swing_Action
-
-swing_origX = objoff_3A		; original x-axis position
-swing_origY = objoff_38		; original y-axis position
-
-swing_angle = $10		; precise rotation angle (2 bytes)
-	; ^^^ We need this so that obShieldProp isn't overwritten, otherwise
-	; Insta-Shield negates its collision property. Upper byte written to obAngle.
-	; Unlike other similar objects, I set this to $10 because the GHZ boss chain
-	; uses up much of its scratch RAM, and that object uses this object's movement
-	; routines.
 ; ===========================================================================
 
 Swing_Main:	; Routine 0
@@ -36,8 +26,8 @@ Swing_Main:	; Routine 0
 		move.w	#priority3,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$18,obDispWid(a0)
 		move.b	#8,obHeight(a0)
-		move.w	obY(a0),swing_origY(a0)
-		move.w	obX(a0),swing_origX(a0)
+		move.w	obY(a0),obSwing_StartY(a0)
+		move.w	obX(a0),obSwing_StartX(a0)
 		cmpi.b	#id_SLZ,(v_zone).w			; check if level is SLZ
 		bne.s	.notSLZ
 
@@ -69,8 +59,8 @@ Swing_Main:	; Routine 0
 		move.w	d1,d3				; d3 = number of chain links
 		lsl.w	#4,d3				; # of chain links * $10
 	; RetroKoH Optimization(?) Edit
-		move.b	d3,objoff_3C(a0)	; result stored in $3C(a0)
-		addq.b	#8,objoff_3C(a0)	; maybe slightly faster than adding, setting, then subtracting d3
+		move.b	d3,obSwing_Radius(a0)	; result stored in $3C(a0)
+		addq.b	#8,obSwing_Radius(a0)	; maybe slightly faster than adding, setting, then subtracting d3
 	; Optimization(?) Edit End
 		tst.b	obFrame(a0)			; is this the platform?
 		beq.s	.startloop			; if yes, branch ahead
@@ -108,7 +98,7 @@ Swing_Main:	; Routine 0
 		move.w	#priority4,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#8,obDispWid(a1)
 		move.b	#1,obFrame(a1)
-		move.b	d3,objoff_3C(a1)
+		move.b	d3,obSwing_Radius(a1)
 		subi.b	#$10,d3
 		bcc.s	.notanchor
 		move.b	#2,obFrame(a1)
@@ -119,14 +109,14 @@ Swing_Main:	; Routine 0
 		dbf		d1,.makechain			; repeat d1 times (chain length)
 
 .fail:
-		move.w	a0,d5
+		move.w	a0,d5					; get parent OST address
 		subi.w	#v_objspace&$FFFF,d5
 		lsr.w	#object_size_bits,d5
-		andi.w	#$7F,d5
-		move.b	d5,(a2)+
-		move.w	#$4080,swing_angle(a0)
-		move.b	swing_angle(a0),obAngle(a0)
-		move.w	#-$200,objoff_3E(a0)
+		andi.w	#$7F,d5					; convert to index
+		move.b	d5,(a2)+				; save to end of child OST list
+		move.w	#$4080,obSwing_Angle(a0)
+		move.b	obSwing_Angle(a0),obAngle(a0)
+;		move.w	#-$200,obSwing_Unk(a0)		; unused (obBossBall_Speed in Obj48)
 		move.w	(sp)+,d1
 		btst	#4,d1						; is object type $1X ?
 		beq.s	.not1X						; if not, branch
@@ -145,10 +135,10 @@ Swing_SetSolid:	; Routine 2
 		move.b	obDispWid(a0),d1
 		moveq	#0,d3
 		move.b	obHeight(a0),d3
-		bsr.w	Swing_Solid
+		bsr.w	Swing_Solid			; detect collision with Sonic, goto Swing_Action2 in that case
 
 Swing_Action:	; Routine $A
-		bsr.w	Swing_Move
+		bsr.w	Swing_Move			; update positions of chainlinks and platform
 		bra.w	Swing_ChkDel		; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
@@ -157,7 +147,7 @@ Swing_Action2:	; Routine 4
 		move.b	obDispWid(a0),d1
 		bsr.w	ExitPlatform
 		move.w	obX(a0),-(sp)
-		bsr.w	Swing_Move
+		bsr.w	Swing_Move			; update positions of chainlinks and platform
 		move.w	(sp)+,d2
 		moveq	#0,d3
 		move.b	obHeight(a0),d3
@@ -166,73 +156,80 @@ Swing_Action2:	; Routine 4
 		bra.w	Swing_ChkDel		; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
+; ---------------------------------------------------------------------------
+; Subroutine to update positions of all chainlinks and platform
+; ---------------------------------------------------------------------------
 
 Swing_Move:
 		move.b	(v_oscillate+$1A).w,d0
 		move.w	#$80,d1
 		btst	#staFlipX,obStatus(a0)
-		beq.s	Swing_Move2
-		neg.w	d0
-		add.w	d1,d0
-		bra.s	Swing_Move2
+		beq.s	Swing_MoveAll
+		neg.w	d0								; invert if xflipped
+		add.w	d1,d0							; d0 = oscillating value, same for all platforms
+
+		bra.s	Swing_MoveAll
 ; End of function Swing_Move
-
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
-Obj48_Move:
-		tst.b	objoff_3D(a0)
-		bne.s	loc_7B9C
-		move.w	objoff_3E(a0),d0
-		addq.w	#8,d0
-		move.w	d0,objoff_3E(a0)
-		add.w	d0,swing_angle(a0)
-		move.b	swing_angle(a0),obAngle(a0)
-		cmpi.w	#$200,d0
-		bne.s	loc_7BB6
-		move.b	#1,objoff_3D(a0)
-		bra.s	loc_7BB6
 ; ===========================================================================
 
-loc_7B9C:
-		move.w	objoff_3E(a0),d0
+; ---------------------------------------------------------------------------
+; Subroutine to update swinging angle and positions for chain links and boss ball
+; (Belongs to Obj48: BossBall)
+; ---------------------------------------------------------------------------
+
+GBall_Move:
+		tst.b	obBossBall_Side(a0)				; is ball on the left side of the screen?
+		bne.s	.left_side						; if yes, branch
+		move.w	obBossBall_Speed(a0),d0
+		addq.w	#8,d0
+		move.w	d0,obBossBall_Speed(a0)			; increase swing speed
+		add.w	d0,obSwing_Angle(a0)			; update angle
+		move.b	obSwing_Angle(a0),obAngle(a0)
+		cmpi.w	#$200,d0						; is speed at max?
+		bne.s	.not_at_highest					; if not, branch
+		move.b	#1,obBossBall_Side(a0)			; switch side flag
+		bra.s	.not_at_highest
+; ===========================================================================
+
+	.left_side:
+		move.w	obBossBall_Speed(a0),d0
 		subq.w	#8,d0
-		move.w	d0,objoff_3E(a0)
-		add.w	d0,swing_angle(a0)
-		move.b	swing_angle(a0),obAngle(a0)
-		cmpi.w	#-$200,d0
-		bne.s	loc_7BB6
-		clr.b	objoff_3D(a0)
+		move.w	d0,obBossBall_Speed(a0)			; decrease swing speed
+		add.w	d0,obSwing_Angle(a0)			; update angle
+		move.b	obSwing_Angle(a0),obAngle(a0)
+		cmpi.w	#-$200,d0						; is speed at max?
+		bne.s	.not_at_highest					; if not, branch
+		clr.b	obBossBall_Side(a0)				; switch side flag
 
-loc_7BB6:
-		move.b	obAngle(a0),d0
-; End of function Obj48_Move
+	.not_at_highest:
+		move.b	obAngle(a0),d0					; get latest angle
+; End of function GBall_Move
 
+; ---------------------------------------------------------------------------
+; Subroutine to convert angle to position for all chain links
+;
+; input:
+;	d0 = current swing angle
+; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+;Swing_Move2:
+Swing_MoveAll:
+		calcsine_direct							; convert d0 to sine
 
-
-Swing_Move2:
-		calcsine_direct
-
-		move.w	swing_origY(a0),d2
-		move.w	swing_origX(a0),d3
-		lea		obSubtype(a0),a2
+		move.w	obSwing_StartY(a0),d2
+		move.w	obSwing_StartX(a0),d3
+		lea		obSubtype(a0),a2				; (a2) = chain length, followed by child OST index list
 		moveq	#0,d6
-		move.b	(a2)+,d6
+		move.b	(a2)+,d6						; get chain length
 
-loc_7BCE:
+	.loop:
 		moveq	#0,d4
-		move.b	(a2)+,d4
+		move.b	(a2)+,d4						; get child OST index
 		lsl.w	#object_size_bits,d4
-		addi.l	#v_objspace&$FFFFFF,d4
+		addi.l	#v_objspace&$FFFFFF,d4			; convert to RAM address
 		movea.l	d4,a1
 		moveq	#0,d4
-		move.b	objoff_3C(a1),d4
+		move.b	obSwing_Radius(a1),d4			; get distance of object from anchor
 		move.l	d4,d5
 		muls.w	d0,d4
 		asr.l	#8,d4
@@ -240,12 +237,11 @@ loc_7BCE:
 		asr.l	#8,d5
 		add.w	d2,d4
 		add.w	d3,d5
-		move.w	d4,obY(a1)
+		move.w	d4,obY(a1)						; update position
 		move.w	d5,obX(a1)
-		dbf		d6,loc_7BCE
+		dbf		d6,.loop						; repeat for all chainlinks and platform
 		rts	
-; End of function Swing_Move2
-
+; End of function Swing_MoveAll
 ; ===========================================================================
 
 Swing_ChkDel:
@@ -265,7 +261,7 @@ Swing_DelLoop:
 		addi.l	#v_objspace&$FFFFFF,d0
 		movea.l	d0,a1
 		bsr.w	DeleteChild
-		dbf		d2,Swing_DelLoop ; repeat for length of	chain
+		dbf		d2,Swing_DelLoop				; repeat for length of	chain
 		rts	
 ; ===========================================================================
 
@@ -279,12 +275,13 @@ Swing_Display:	; Routine $A
 
 		cmpi.b	#(colHarmful|colSz_20x20),obColType(a0)		; is this the wrecking ball (1X)
 		bne.s	.notwreckingball
+
 ; The following only applies to the wrecking ball
 		moveq	#0,d0
 		tst.b	obFrame(a0)				; is ball showing checkered?
 		bne.s	.vanish					; if yes, branch to alt frame (frame 0)
 
-	; RetroKoH angled ball mod (Incomplete)
+	; RetroKoH angled ball mod
 		move.b	(v_oscillate+$1A).w,d0	; fetch chain's current angle; store it in d0
 		; no subtraction, as this value already ranges from 0-$80
 		lsr.b	#1,d0					; cut range down to 0-$40
@@ -295,7 +292,7 @@ Swing_Display:	; Routine $A
 	; angled ball mod end
 
 .vanish:
-		move.b	d0,obFrame(a0)
+		move.b	d0,obFrame(a0)			; set ball frame
 
 ; The following is used by all swinging hazards
 .notwreckingball:
