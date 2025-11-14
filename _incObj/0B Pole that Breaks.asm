@@ -1,17 +1,22 @@
 ; ---------------------------------------------------------------------------
 ; Object 0B - pole that	breaks (LZ)
+; Optimized by Hivebrain (S1Squared)
 ; ---------------------------------------------------------------------------
 
-pole_time = objoff_30		; time between grabbing the pole & breaking
-pole_grabbed = objoff_32		; flag set when Sonic grabs the pole
-
 Pole:
-	; RetroKoH/LavaGaming Object Routine Optimization
+		moveq	#0,d0
 		move.b	obRoutine(a0),d0
-		subq.b	#2,d0
-		beq.s	Pole_Action
-		bpl.w	RememberState
-	; Object Routine Optimization End
+		move.w	Pole_Index(pc,d0.w),d1
+		jmp		Pole_Index(pc,d1.w)
+; ===========================================================================
+
+Pole_Index:	offsetTable
+		offsetTableEntry.w Pole_Main
+		offsetTableEntry.w Pole_Action
+		offsetTableEntry.w Pole_Grab		; +++ Hivebrain added routine
+		offsetTableEntry.w Pole_Hang		; +++ Hivebrain added routine
+		offsetTableEntry.w Pole_Display
+; ===========================================================================
 
 Pole_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -28,71 +33,68 @@ Pole_Main:	; Routine 0
 		move.w	d0,d1
 		lsl.w	#4,d0
 		sub.w	d1,d0
-		move.w	d0,pole_time(a0)			; set breakage time
+		move.w	d0,obPole_GrabTime(a0)		; set breakage time
 
 Pole_Action:	; Routine 2
-		lea		(v_player).w,a1				; to be used in the next block of code
-		tst.b	pole_grabbed(a0)			; has pole already been grabbed?
-		beq.s	.grab						; if not, branch
-		tst.w	pole_time(a0)
-		beq.s	.moveup
-		subq.w	#1,pole_time(a0)			; decrement time until break
-		bne.s	.moveup
-		move.b	#1,obFrame(a0)				; break	the pole
-		bra.s	.release
-; ===========================================================================
-
-.moveup:
-		move.w	obY(a0),d0
-		subi.w	#$18,d0
-		btst	#bitUp,(v_jpadheld_actual).w	; is "up" pressed?
-		beq.s	.movedown				; if not, branch
-		subq.w	#1,obY(a1)				; move Sonic up
-		cmp.w	obY(a1),d0
-		blo.s	.movedown
-		move.w	d0,obY(a1)
-
-.movedown:
-		addi.w	#$24,d0
-		btst	#bitDn,(v_jpadheld_actual).w	; is "down" pressed?
-		beq.s	.letgo					; if not, branch
-		addq.w	#1,obY(a1)				; move Sonic down
-		cmp.w	obY(a1),d0
-		bhs.s	.letgo
-		move.w	d0,obY(a1)
-
-.letgo:
-		move.b	(v_jpadpressed_dup).w,d0
-		andi.w	#btnABC,d0				; is A/B/C pressed?
-		beq.w	RememberState			; if not, branch
-
-.release:
-		clr.b	obColType(a0)
-		addq.b	#2,obRoutine(a0)		; goto RememberState next
-		clr.b	obCtrlLock(a1)
-		clr.b	(f_wtunnelallow).w
-		clr.b	pole_grabbed(a0)
 		bra.w	RememberState
 ; ===========================================================================
 
-.grab:
-		tst.b	obColProp(a0)			; has Sonic touched the	pole?
-		beq.w	RememberState			; if not, branch
-		move.w	obX(a0),d0
-		addi.w	#$14,d0
-		cmp.w	obX(a1),d0
-		bhs.w	RememberState
-		clr.b	obColProp(a0)
-		cmpi.b	#4,obRoutine(a1)
-		bhs.w	RememberState
+Pole_Grab:	; Routine 4
+		clr.b	obColType(a0)
+		lea		(v_player).w,a1
+		cmpi.b	#4,obRoutine(a1)		; is Sonic hurt or dead?
+		bhs.w	RememberState			; if yes, branch
 		clr.l	obVelX(a1)				; stop all movement (obVelX and obVelY)
 		move.w	obX(a0),d0
 		addi.w	#$14,d0
-		move.w	d0,obX(a1)
+		move.w	d0,obX(a1)				; align Sonic to pole
 		bclr	#staFacing,obStatus(a1)
 		move.b	#aniID_Hang,obAnim(a1)	; set Sonic's animation to "hanging"
 		move.b	#1,obCtrlLock(a1)		; lock controls
 		move.b	#1,(f_wtunnelallow).w	; disable wind tunnel
-		move.b	#1,pole_grabbed(a0)		; begin countdown to breakage
+		addq.b	#2,obRoutine(a0)		; -> Pole_Hang
+	; begin countdown to breakage
+
+Pole_Hang:	; Routine 6
+		lea		(v_player).w,a1
+		subq.w	#1,obPole_GrabTime(a0)	; decrement time until break
+		bmi.s	Pole_Break
+
+; .moveup:
+		move.w	obY(a0),d0
+		subi.w	#$18,d0					; d0 = y position for top of pole
+		move.b	(v_jpadheld_actual).w,d2
+		btst	#bitUp,d2				; is "up" pressed?
+		beq.s	.movedown				; if not, branch
+		subq.w	#1,obY(a1)				; move Sonic up
+		cmp.w	obY(a1),d0
+		blo.s	.movedown
+		move.w	d0,obY(a1)				; keep Sonic from moving beyond top of pole
+
+.movedown:
+		btst	#bitDn,d2				; is "down" pressed?
+		beq.s	.letgo					; if not, branch
+		addi.w	#$24,d0					; d0 = y position for bottom of pole
+		addq.w	#1,obY(a1)				; move Sonic down
+		cmp.w	obY(a1),d0
+		bhs.s	.letgo
+		move.w	d0,obY(a1)				; keep Sonic from moving beyond bottom of pole
+
+.letgo:
+		move.b	(v_jpadpressed_dup).w,d0
+		andi.w	#btnABC,d0				; is A/B/C pressed?
+		bne.s	Pole_Release			; if yes, branch
+		bra.w	RememberState
+; ===========================================================================
+
+Pole_Break:
+		move.b	#1,obFrame(a0)			; break	the pole
+
+Pole_Release:
+		addq.b	#2,obRoutine(a0)		; -> Pole_Display
+		clr.b	obCtrlLock(a1)			; enable controls
+		clr.b	(f_wtunnelallow).w		; enable water tunnel
+
+Pole_Display:	; Routine 8
 		bra.w	RememberState
 ; ===========================================================================

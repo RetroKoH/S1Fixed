@@ -120,7 +120,6 @@ obDrown_DelayTime:		equ objoff_3A		; 2 bytes | delay between bubbles
 
 ; Obj0B - LZ Breakable Pole
 obPole_GrabTime:		equ objoff_30		; 2 bytes | time between grabbing the pole & breaking
-obPole_GrabFlag:		equ objoff_32		; 1 byte  | flag set when Sonic grabs the pole
 ; ---------------------------------------------------------------------------
 
 ; Obj0C - LZ Flapping Door
