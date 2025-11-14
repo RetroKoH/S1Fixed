@@ -500,10 +500,11 @@ Level_MainLoop:
 		bne.w	GM_Level
 		jsr		(RingsManager).l			; RetroKoH S3K Rings Manager
 
-	if ~~ActiveDeathSequence				; RetroKoH Active Death Sequence Mod
+	; I want to remove this when ActiveDeathSequence is on, so clouds can scroll
+	; but it causes a myriad of issues, so I'm leaving it alone for right now.
 		cmpi.b	#6,(v_player+obRoutine).w	; has Sonic just died?
 		bhs.s	Level_SkipDeform			; if yes, branch
-	endif
+
 		bsr.w	DeformLayers
 
 Level_SkipDeform:
