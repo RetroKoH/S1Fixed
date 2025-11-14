@@ -311,6 +311,7 @@ Touch_Ring_AttractRing:
 ; ---------------------------------------------------------------------------
 ; Subroutine to draw on-screen rings
 ; Partial adaptation of optimizations by Malachi
+; Further optimized and fixed by Devon (see notes)
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
@@ -332,32 +333,38 @@ BuildRings:
 		move.w	(a0),d3				; get ring X pos
 		sub.w	(a3),d3				; subtract camera X pos
 		addi.w	#128,d3				; screen top is 128x128 not 0x0
+
+; NOTE: Removed one of the prior checks, which was a proto remnant,
+; otherwise, if a ring was offscreen by 8 pixels on top, then it'll disappear
+
 		move.w	2(a0),d2			; get ring Y pos
 		sub.w	4(a3),d2			; subtract camera Y pos
-		andi.w	#$7FF,d2
 		addq.w	#8,d2
-		bmi.s	.noren				; dunno how this check is supposed to work
-		cmpi.w	#240,d2
-		bge.s	.noren				; if the ring is not on-screen, branch
+		andi.w	#$7FF,d2
+		cmpi.w	#224+16,d2
+		bhs.s	.noren				; if the ring is not on-screen, branch
 		addi.w	#128-8,d2
-		move.b	d1,d6				; extract stored ring frame value
-		add.b	d6,d6				; this will only affect d6 on a sparkle frame
 
-		move.b	#-8,d0				; get Y offset
-		ext.w	d0
-		add.w	d2,d0				; add Y offset to Y pos
-		move.w	d0,(a2)+			; set Y pos
+; NOTE: Instead of using d6, we can directly modify d1 to clear out the upper byte
+; and just use that when indexing CMap_Ring, since it's really never gonna be a negative value.
+
+		ext.w	d1					; extract stored ring frame value
+		add.b	d1,d1				; d1 *= 2 (this will only affect d1 on a sparkle frame)
+
+; NOTE: Since d2 and d3 are only set for each ring being drawn and are not global values for every ring,
+; you can just directly subtract 8 from them and you won't get any problems.
+
+		subq.w	#8,d2				; get Y pos - Y offset (Optimized by Devon)
+		move.w	d2,(a2)+			; set Y pos
 
 		move.b	#5,(a2)+			; set size (2x2)
 		addq.b	#1,d5
 		move.b	d5,(a2)+			; set link field
 
-		move.w	CMap_Ring(pc,d6.w),(a2)+	; set art tile and flags
+		move.w	CMap_Ring(pc,d1.w),(a2)+	; set art tile and flags
 
-		move.b	#-8,d0				; get X offset
-		ext.w	d0
-		add.w	d3,d0				; add Y offset to Y pos
-		move.w	d0,(a2)+			; set Y pos
+		subq.w	#8,d3				; get X pos - X offset (Optimized by Devon)
+		move.w	d3,(a2)+			; set X pos
 
 	.noren:
 		addq.w	#4,a0				; load next ring from ROM
