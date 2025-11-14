@@ -1,15 +1,25 @@
 ; ---------------------------------------------------------------------------
 ; Object 0C - flapping door (LZ)
+; Rewritten by Hivebrain to work when x-flipped; now solid from both sides
 ; ---------------------------------------------------------------------------
 
-flap_wait = objoff_30		; time until change
-flap_time = objoff_32		; time between opening/closing
-
 FlapDoor:
-	; LavaGaming Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.s	Flap_OpenClose
-	; Object Routine Optimization End
+		moveq	#0,d0
+		move.b	obRoutine(a0),d0
+		move.w	Flap_Index(pc,d0.w),d1
+		jmp		Flap_Index(pc,d1.w)
+; ===========================================================================
+
+Flap_Index:	offsetTable
+		offsetTableEntry.w Flap_Main
+	; New open/close routines
+		offsetTableEntry.w Flap_Opening
+		offsetTableEntry.w Flap_Open
+		offsetTableEntry.w Flap_Open2
+		offsetTableEntry.w Flap_Closing
+		offsetTableEntry.w Flap_Closed
+		offsetTableEntry.w Flap_Closed2
+; ===========================================================================
 
 Flap_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -25,33 +35,76 @@ Flap_Main:	; Routine 0
 		move.w	d0,d1
 		lsl.w	#4,d0
 		sub.w	d1,d0
-		move.w	d0,flap_time(a0)			; set flap delay time
+		move.w	d0,obFlap_Time(a0)			; set flap delay time
 
-Flap_OpenClose:	; Routine 2
-		subq.w	#1,flap_wait(a0)			; decrement time delay
-		bpl.s	.wait						; if time remains, branch
-		move.w	flap_time(a0),flap_wait(a0) ; reset time delay
-		bchg	#0,obAnim(a0)				; open/close door
-		tst.b	obRender(a0)
-		bpl.s	.nosound
-		move.w	#sfx_Door,d0
-		jsr		(QueueSound2).w		; play door sound
-
-.wait:
-.nosound:
+Flap_Opening:	; Routine 2
+Flap_Closing:	; Routine 8
 		lea		Ani_Flap(pc),a1
-		jsr		(AnimateSprite).w
+		jsr		(AnimateSprite).w			; only animate on opening/closing routines
 		clr.b	(f_wtunnelallow).w			; enable wind tunnel
-		tst.b	obFrame(a0)					; is the door open?
-		bne.w	RememberState				; if yes, branch
-		move.w	(v_player+obX).w,d0
-		cmp.w	obX(a0),d0					; has Sonic passed through the door?
-		bhs.w	RememberState				; if yes, branch
-		move.b	#1,(f_wtunnelallow).w		; disable wind tunnel
+		cmpi.b	#2,obFrame(a0)				; is the door open?
+		beq.s	.open						; branch if fully open
 		move.w	#$13,d1
 		move.w	#$20,d2
 		move.w	d2,d3
 		addq.w	#1,d3
 		move.w	obX(a0),d4
-		bsr.w	SolidObject					; make the door	solid
+		bsr.w	SolidObject
+		move.w	obX(a0),d0
+		sub.w	obX(a1),d0
+		bmi.w	RememberState				; branch if Sonic is to the right
+		move.b	#1,(f_wtunnelallow).w		; disable water tunnel
 		bra.w	RememberState
+; ===========================================================================
+
+	.open:
+		lea		(v_player).w,a1
+		bclr	#staSonicOnObj,obStatus(a0)
+		beq.s	.skip_top					; branch if Sonic isn't standing on the object
+		bclr	#staOnObj,obStatus(a1)		; remove platform effect
+		bset	#staAir,obStatus(a1)		; make Sonic airborne
+
+	.skip_top:
+		bclr	#staSonicPush,obStatus(a0)
+		beq.w	RememberState				; branch if Sonic isn't pushing the object
+		bclr	#staPush,obStatus(a1)		; remove pushing effect
+		bra.w	RememberState
+; ===========================================================================
+
+Flap_Open:	; Routine 4
+		move.w	obFlap_Time(a0),obFlap_Wait(a0) ; reset time delay
+		addq.b	#2,obRoutine(a0)				; -> Flap_Open2
+
+Flap_Open2:	; Routine 6
+		subq.w	#1,obFlap_Wait(a0)				; decrement time delay
+		bpl.w	RememberState					; branch if time remains
+		move.b	#1,obAnim(a0)					; closing animation
+		addq.b	#2,obRoutine(a0)				; -> Flap_Closing
+		tst.b	obRender(a0)
+		bpl.w	RememberState					; branch if not on screen
+		move.w	#sfx_Door,d0
+		jsr		(QueueSound2).w					; play door sound
+		bra.w	RememberState
+; ===========================================================================
+
+Flap_Closed:	; Routine $A
+		move.w	obFlap_Time(a0),obFlap_Wait(a0) ; reset time delay
+		addq.b	#2,obRoutine(a0)				; -> Flap_Closed2
+
+Flap_Closed2:	; Routine $C
+		move.w	#$13,d1
+		move.w	#$20,d2
+		move.w	d2,d3
+		addq.w	#1,d3
+		move.w	obX(a0),d4
+		bsr.w	SolidObject
+		subq.w	#1,obFlap_Wait(a0)				; decrement time delay
+		bpl.w	RememberState					; branch if time remains
+		move.b	#0,obAnim(a0)
+		move.b	#2,obRoutine(a0)				; -> Flap_Opening
+		tst.b	obRender(a0)
+		bpl.w	RememberState					; branch if not on screen
+		move.w	#sfx_Door,d0
+		jsr		(QueueSound2).w					; play door sound
+		bra.w	RememberState
+; ===========================================================================
