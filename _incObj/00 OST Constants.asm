@@ -173,7 +173,8 @@ obSwing_Unk:			equ objoff_3E		; 2 bytes | unused (obBossBall_Speed)
 ; ---------------------------------------------------------------------------
 
 ; Obj16 - LZ Harpoon
-obHarpoon_Time:			equ objoff_30		; 1 byte  | time between stabbing/retracting
+obHarp_Time:			equ objoff_30		; 2 bytes | time between stabbing/retracting
+obHarp_TimeMaster:		equ objoff_32		; 2 bytes | stored time when resetting timer
 ; ---------------------------------------------------------------------------
 
 ; Obj17 - GHZ Spiked Log Helix
