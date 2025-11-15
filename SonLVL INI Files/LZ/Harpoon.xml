@@ -11,7 +11,6 @@
     </ImageFromMappings>
   </Images>
   <Subtypes>
-    <Subtype id="00" name="Horizontal" image="horizontal"/>
     <Subtype id="00" name="Horizontal (0.5)" image="horizontal"/>
     <Subtype id="02" name="Vertical (0.5)" image="vertical"/>
     <Subtype id="10" name="Horizontal (1.0)" image="horizontal"/>
@@ -21,13 +20,16 @@
     <Subtype id="30" name="Horizontal (2.0)" image="horizontal"/>
     <Subtype id="32" name="Vertical (2.0)" image="vertical"/>
   </Subtypes>
+  <Properties>
     <BitsProperty name="Direction" type="Direction" startbit="1" length="1" />
     <BitsProperty name="Speed" type="Speed" startbit="4" length="3" />
   </Properties>
+  <Enums>
     <Enum name="Direction">
       <EnumMember name="Horizontal" />
       <EnumMember name="Vertical" />
     </Enum>
+    <Enum name="Speed">
       <EnumMember name="0.5 s" />
       <EnumMember name="1.0 s" />
       <EnumMember name="1.5 s" />
