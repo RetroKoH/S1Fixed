@@ -3,9 +3,15 @@
 ; Rewritten by Hivebrain to now have customisable stab rate
 ;
 ; subtypes:
-;	%00RR 00AA
+;	%S0RR 00AA
+;	S - 1 for forced synchronisation (ignores RR, changes every 64 frames instead)
 ;	RR - time between animations (+1, *30 for ost_obHarpoon_TimeMaster)
 ;	AA - starting animation (0/1 = horizontal; 2/3 = vertical)
+;
+; TO-DO: Allow RR to dictate how many frames in sequence, OR use RR to determine a timing offset
+; for sync movement, so we can have sequential Harpoons.
+; ALSO: Can we fix collision to only run from the base to the point? if placed in air, on on thin ground,
+; it can hurt Sonic from the opposite end.
 ; ---------------------------------------------------------------------------
 
 Harpoon:
@@ -20,11 +26,11 @@ Harp_Index:	offsetTable
 		offsetTableEntry.w Harp_Move
 		offsetTableEntry.w Harp_Wait
 		offsetTableEntry.w Harp_Move2	; +++
-		offsetTableEntry.w Harp_Wait	; +++
+		offsetTableEntry.w Harp_Wait2	; +++
 ; ===========================================================================
 
 Harp_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)
+		addq.b	#2,obRoutine(a0)				; -> Harp_Move
 		move.l	#Map_Harp,obMap(a0)
 		move.w	#make_art_tile(ArtTile_LZ_Harpoon,0,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
@@ -35,6 +41,13 @@ Harp_Main:	; Routine 0
 		andi.b	#%11,d0							; read bits 0-1 of subtype
 		move.b	d0,obAnim(a0)					; get type (vert/horiz)
 		move.b	#$14,obDispWid(a0)
+
+		tst.b	d1								; is harpoon on synchronized time?
+		bpl.s	.no_sync						; if not, branch
+		addq.b	#4,obRoutine(a0)				; -> Harp_Move2
+		bra.s	Harp_Move2
+		
+	.no_sync:
 		lsr.b	#4,d1							; read high nybble of subtype
 		andi.b	#3,d1							; cap value at 0-3
 		addq.b	#1,d1							; (1-4; max duration = 120 fr)
@@ -49,6 +62,7 @@ Harp_Main:	; Routine 0
 		move.w	d1,obHarp_TimeMaster(a0)
 
 Harp_Move:	; Routine 2
+Harp_Move2:	; Routine 6
 		lea		Ani_Harp(pc),a1
 		jsr		(AnimateSprite).w				; animate and goto Harp_Wait next
 		cmpi.b	#3,obTimeFrame(a0)
@@ -75,5 +89,25 @@ Harp_Wait:	; Routine 4
 		move.w	obHarp_TimeMaster(a0),obHarp_Time(a0)	; reset timer
 		subq.b	#2,obRoutine(a0)						; run "Harp_Move" subroutine
 		bchg	#0,obAnim(a0)							; reverse animation
+		bra.w	RememberState
+; ===========================================================================
+
+Harp_Wait2:	; Routine 8
+		move.b	(v_framebyte).w,d0
+		move.b	d0,d2
+		andi.b	#%00111111,d0
+		bne.w	RememberState				; branch if not on 64th frame
+		subq.b	#2,obRoutine(a0)			; -> Harp_Move2
+		btst	#0,obSubtype(a0)
+		beq.s	.not_inverted
+		not.b	d2							; stab/retract are reversed
+		
+	.not_inverted:
+		andi.b	#%01000000,d2
+		lsr.b	#6,d2						; get bit 6 from frame counter
+		move.b	obAnim(a0),d0
+		andi.b	#%01111110,d0				; clear bits 0 and 7 of anim id
+		or.b	d2,d0						; combine with bit from frame counter
+		move.b	d0,obAnim(a0)				; next animation
 		bra.w	RememberState
 ; ===========================================================================

@@ -19,15 +19,22 @@
     <Subtype id="22" name="Vertical (1.5)" image="vertical"/>
     <Subtype id="30" name="Horizontal (2.0)" image="horizontal"/>
     <Subtype id="32" name="Vertical (2.0)" image="vertical"/>
+    <Subtype id="80" name="Horizontal (Sync)" image="horizontal"/>
+    <Subtype id="82" name="Vertical (Sync)" image="vertical"/>
   </Subtypes>
   <Properties>
     <BitsProperty name="Direction" type="Direction" startbit="1" length="1" />
+	<BitsProperty name="Synchronized" type="Synchronized" startbit="7" length="1" />
     <BitsProperty name="Speed" type="Speed" startbit="4" length="3" />
   </Properties>
   <Enums>
     <Enum name="Direction">
       <EnumMember name="Horizontal" />
       <EnumMember name="Vertical" />
+    </Enum>
+    <Enum name="Synchronized">
+      <EnumMember name="No" />
+      <EnumMember name="Yes" />
     </Enum>
     <Enum name="Speed">
       <EnumMember name="0.5 s" />
