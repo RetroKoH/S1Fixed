@@ -94,12 +94,26 @@ LevSz_ChkLamp:
 ; ===========================================================================
 
 LevSz_StartLoc:
+	; Selbi Title Screen Positioning Fix
+        cmpi.b    #id_Title,(v_gamemode).w    ; is this the title screen?
+        bne.s     LevSz_NotTitle              ; if not, branch
+        move.w    #$0050,d1                   ; X coordinate (this also dictates the little delay before the title screen starts scrolling)
+        move.w    #$03B0,d0                   ; Y coordinate
+        move.w    d1,(v_player+obX).w         ; set X coordinate
+        move.w    d0,(v_player+obY).w         ; set Y coordinate
+        bra.s     LevSz_SkipStartPos          ; skip normal logic
+
+LevSz_NotTitle:
+	; Title Screen Positioning Fix End
+
 		move.w	(v_zone).w,d0
 		ror.b	#2,d0							; lsl.b	#6,d0 > Filter Optimized Shifting
 		lsr.w	#4,d0
-		;lea		StartLocArray(pc,d0.w),a1	; MJ: load Sonic's start location address
+
+		;lea	StartLocArray(pc,d0.w),a1		; MJ: load Sonic's start location address (If the table were close enough, you could do this)
 		lea		StartLocArray,a1
-		adda.w	d0,a1 							; MJ: load Sonic's start location address
+		adda.w	d0,a1 							; MJ: load Sonic's start location address (But we will do this instead)
+
 		tst.w	(f_demo).w	; is ending demo mode on?
 		bpl.s	LevSz_SonicPos	; if not, branch
 
