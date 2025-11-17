@@ -20,10 +20,6 @@ Hel_Index:		offsetTable
 		offsetTableEntry.w Hel_Main
 		offsetTableEntry.w Hel_Action
 		offsetTableEntry.w Hel_Delete
-
-obHelChild		= objoff_30		; pointer to the helix subsprite object
-obOffsetX		= objoff_38		; x-offset amount to ensure proper rendering
-obHelOrigX		= objoff_3A		; origin x-position (obX+OffsetX)
 ; ===========================================================================
 ; Number of spikes determines our offset.
 ; These are byte values, but we use words to avoid repeatedly clearing d0
@@ -39,13 +35,13 @@ Hel_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colHarmful|colSz_4x16),obColType(a0)	; make object harmful
-		move.w	obX(a0),obHelOrigX(a0)		; save xpos
+		move.w	obX(a0),obHel_StartX(a0)		; save xpos
 		andi.b	#7,obSubtype(a0)			; cap at 8 spikes
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
 		move.b	Hel_XOffsets(pc,d0.w),d0	; number of spikes determines the x-offset applied
-		move.w	d0,obOffsetX(a0)
-		addi.w	d0,obHelOrigX(a0)
+		move.w	d0,obHel_OffsetX(a0)
+		addi.w	d0,obHel_StartX(a0)
 		
 Hel_MakeSubsprite:
 		bsr.w	FindFreeObj
@@ -78,9 +74,9 @@ Hel_MakeSubsprite:
 		dbf		d4,.loop					; repeat for d4 spikes
 
 .done:
-		move.w	obOffsetX(a0),d0
+		move.w	obHel_OffsetX(a0),d0
 		addi.w	d0,obX(a1)					; x-offset from above (still in d0)
-		move.w	a1,obHelChild(a0)			; pointer to subsprite object
+		move.w	a1,obHel_ChildObj(a0)			; pointer to subsprite object
 		
 	; Spiked Log Helix is finished
 
@@ -92,7 +88,7 @@ Hel_Action:	; Routine 2
 
 
 Hel_RotateSpikes:
-		movea.w	obHelChild(a0),a1 ; a1=object
+		movea.w	obHel_ChildObj(a0),a1 ; a1=object
 		moveq	#0,d0
 		move.b	(v_ani0_frame).w,d0
 		moveq	#7,d1						; max spikes frames
@@ -138,12 +134,12 @@ Hel_RotateSpikes:
 ; ===========================================================================
 
 Hel_ChkDel:
-		offscreen.s	Hel_Delete,obHelOrigX(a0)	; ProjectFM S3K Objects Manager
+		offscreen.s	Hel_Delete,obHel_StartX(a0)	; ProjectFM S3K Objects Manager
 		rts
 ; ===========================================================================
 
 Hel_Delete:	; Routine 4
-		movea.w	obHelChild(a0),a1 ; a1=object
+		movea.w	obHel_ChildObj(a0),a1 ; a1=object
 		bsr.w	DeleteChild
 		bra.w	DeleteObject
 ; ===========================================================================
