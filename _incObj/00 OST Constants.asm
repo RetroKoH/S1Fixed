@@ -187,15 +187,16 @@ obHel_StartX:			equ objoff_3A		; 2 bytes | starting X-axis offset position (obX+
 obPlat_Unk:				equ objoff_25		; 1 byte  | unused; it gets cleared once, and that's it...
 obPlat_Movement:		equ objoff_26		; 1 byte  | Type 01 platform movement variable
 obPlat_YPosActual:		equ objoff_2C		; 2 bytes | y position ignoring dip when Sonic is on the platform
+obPlat_BaseY:			equ objoff_2C		; 2 bytes | y position ignoring dip when Sonic is on the platform
 obPlat_StartX:			equ objoff_32		; 2 bytes | starting X-axis position
 obPlat_StartY:			equ objoff_34		; 2 bytes | starting Y-axis position
 obPlat_NudgeY:			equ objoff_38		; 1 byte  | amount of dip when Sonic is on the platform
 obPlat_WaitTime:		equ objoff_3A		; 2 bytes | time delay for platform moving when stood on
 ; ---------------------------------------------------------------------------
 
-; Obj1A - GHZ Collapsing Ledge
+; Obj1A - GHZ Collapsing Ledge (Shared with Obj53)
 obLedge_WaitTime:		equ objoff_38		; 1 byte  | time between touching the ledge and it collapsing
-obLedge_CollapseFlag:	equ objoff_3A		; 1 byte  | flag set when ledge is stood on
+obLedge_TouchFlag:		equ objoff_3A		; 1 byte  | flag set when ledge is stood on
 ; ---------------------------------------------------------------------------
 
 ; Obj1B - LZ Water Surface
@@ -418,7 +419,7 @@ obMBlock_WaitTime:		equ objoff_34		; 2 bytes | time delay before moving platform
 obMBlock_MoveFlag:		equ objoff_36		; 2 bytes | 1 = move platform back to its original position - subtype x9/xA only
 ; ---------------------------------------------------------------------------
 
-; Obj53 - MZ, LZ, SBZ Collapsing Floors
+; Obj53 - MZ, LZ, SBZ Collapsing Floors (Shared with Obj1A)
 obCFloor_WaitTime:		equ objoff_38		; 2 bytes | time delay for collapsing floor
 obCFloor_TouchFlag:		equ objoff_3A		; 2 bytes | 1 = Sonic has touched the floor
 ; ---------------------------------------------------------------------------
