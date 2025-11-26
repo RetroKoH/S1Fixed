@@ -184,9 +184,6 @@ obHel_StartX:			equ objoff_3A		; 2 bytes | starting X-axis offset position (obX+
 ; ---------------------------------------------------------------------------
 
 ; Obj18 - GHZ, SYZ, SLZ Platforms
-obPlat_Unk:				equ objoff_25		; 1 byte  | unused; it gets cleared once, and that's it...
-obPlat_Movement:		equ objoff_26		; 1 byte  | Type 01 platform movement variable
-obPlat_YPosActual:		equ objoff_2C		; 2 bytes | y position ignoring dip when Sonic is on the platform
 obPlat_BaseY:			equ objoff_2C		; 2 bytes | y position ignoring dip when Sonic is on the platform
 obPlat_StartX:			equ objoff_32		; 2 bytes | starting X-axis position
 obPlat_StartY:			equ objoff_34		; 2 bytes | starting Y-axis position
