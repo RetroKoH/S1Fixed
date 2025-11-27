@@ -683,10 +683,16 @@ obEndEgg_WaitTime:		equ objoff_30		; 2 bytes | time to wait between events
 ; ---------------------------------------------------------------------------
 
 ; Obj8C - Try Again Emeralds
-obECTry_StartX:			equ objoff_38		; 2 bytes | x-axis centre of emerald circle
-obECTry_StartY:			equ objoff_3A		; 2 bytes | y-axis centre of emerald circle
-obECTry_Radius:			equ objoff_3C		; 1 byte  | radius
-obECTry_Speed:			equ objoff_3E		; 2 bytes | speed at which emeralds rotate around central point
+obTChaos_Parent:		equ objoff_30		; 2 bytes |
+obTChaos_TimeMaster:	equ objoff_37		; 1 byte  | replacing obDelayAni
+obTChaos_StartX:		equ objoff_38		; 2 bytes | x-axis centre of emerald circle
+obTChaos_StartY:		equ objoff_3A		; 2 bytes | y-axis centre of emerald circle
+obTChaos_Radius:		equ objoff_3C		; 1 byte  | radius
+obTChaos_Speed:			equ objoff_3E		; 2 bytes | speed at which emeralds rotate around central point
+; ---------------------------------------------------------------------------
+
+; Obj8F - Goggles
+obGoggle_PrevFrame:		equ objoff_3F		; 1 byte  | stored frame for DPLC handling
 ; ---------------------------------------------------------------------------
 ; ---------------------------------------------------------------------------
 
