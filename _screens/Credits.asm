@@ -76,6 +76,9 @@ EndingDemoLoad:
 		add.w	d0,d0
 		move.w	EndDemo_Levels(pc,d0.w),d0	; load level array
 		move.w	d0,(v_zone).w				; set level from level array
+		addq.w	#1,(v_creditsnum).w
+		cmpi.w	#9,(v_creditsnum).w			; have credits finished?
+		bhs.s	EndDemo_Exit				; if yes, branch
 
 	if DynamicArt
 ; -----------------------------------------------------------------------
@@ -101,9 +104,6 @@ EndingDemoLoad:
 		lsl.w	#4,d0
 		move.w	d0,(v_levelheader_id).w		; store level header ID (reduce calculations w/ Level Loading -- RetroKoH)
 
-		addq.w	#1,(v_creditsnum).w
-		cmpi.w	#9,(v_creditsnum).w			; have credits finished?
-		bhs.s	EndDemo_Exit				; if yes, branch
 		move.w	#$8001,(f_demo).w			; set demo+ending mode
 		move.b	#id_Demo,(v_gamemode).w		; set game mode to 8 (demo)
 		move.b	#3,(v_lives).w				; set lives to 3
@@ -127,8 +127,8 @@ EndDemo_LampLoad:
 EndDemo_Exit:
 		rts	
 ; End of function EndingDemoLoad
-
 ; ===========================================================================
+
 ; ---------------------------------------------------------------------------
 ; Lamppost variables in the end sequence demo (Star Light Zone)
 ; ---------------------------------------------------------------------------
