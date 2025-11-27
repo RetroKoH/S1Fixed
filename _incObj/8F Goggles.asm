@@ -3,15 +3,8 @@
 ; ---------------------------------------------------------------------------
 
 GogglesItem:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Goggles_Index(pc,d0.w),d1
-		jmp		Goggles_Index(pc,d1.w)
-; ===========================================================================
-Goggles_Index:		offsetTable
-		offsetTableEntry.w	Goggles_Main
-		offsetTableEntry.w	Goggles_Display
-; ===========================================================================
+		tst.b	obRoutine(a0)
+		bne.s	Goggles_Display
 
 Goggles_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -36,7 +29,7 @@ Goggles_Display:	; Routine 2
 ; ===========================================================================
 
 ; Remove the Goggles (Will be removed upon exiting water)
-.delete:
+	.delete:
 		jmp		(DeleteObject).l
 ; ===========================================================================
 
@@ -46,11 +39,11 @@ Goggles_Display:	; Routine 2
 
 Goggles_LoadGfx:
 		moveq	#0,d0
-		move.b	obFrame(a0),d0			; load frame number
-		cmp.b	objoff_3F(a0),d0		; has frame changed?
-		beq.s	.nochange				; if not, branch and exit
+		move.b	obFrame(a0),d0				; load frame number
+		cmp.b	obGoggle_PrevFrame(a0),d0	; has frame changed?
+		beq.s	.nochange					; if not, branch and exit
 
-		move.b	d0,objoff_3F(a0)		; update frame number for next check
+		move.b	d0,obGoggle_PrevFrame(a0)	; update frame number for next check
 		lea		GogglesDynPLC(pc),a2
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2
@@ -60,7 +53,7 @@ Goggles_LoadGfx:
 		bmi.s	.nochange					; if zero, branch
 		move.w	#(ArtTile_Goggles*$20),d4
 
-.readentry:
+	.readentry:
 		moveq	#0,d1
 		move.w	(a2)+,d1	; S3K .b to .w
 		move.w	d1,d3		; S3K
