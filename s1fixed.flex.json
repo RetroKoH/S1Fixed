@@ -1,7 +1,7 @@
 {
     "Flex": 2,
     "name": "S1 Fixed",
-    "node": "da472ab9-f363-45e6-8ee3-a83fd70d6d9c",
+    "node": "167f6ee0-3e38-42de-af6f-8ecaa4b165ac",
     "objects": [
         {
             "name": "Common",
@@ -416,7 +416,7 @@
                 }
             ],
             "isDirectory": true,
-            "expanded": true,
+            "expanded": false,
             "uuid": "14da472a-b9f3-4355-a6ce-e3a83fd70d6d"
         },
         {
@@ -1353,7 +1353,7 @@
                         }
                     ],
                     "art": {
-                        "path": "artunc\\LZ Wheel.bin",
+                        "path": "artnem\\LZ Conveyor Platform.nem",
                         "compression": "Nemesis",
                         "offset": 0
                     },
