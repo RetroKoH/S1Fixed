@@ -102,6 +102,8 @@ Sto_Action:	; Routine 2
 		move.w	(sp)+,d4					; retrieve x pos from stack
 		tst.b	obRender(a0)
 		bpl.s	.chkdel
+
+		; solid
 		moveq	#0,d1
 		move.b	obDispWid(a0),d1
 		addi.w	#$B,d1
@@ -114,10 +116,11 @@ Sto_Action:	; Routine 2
 	.chkdel:
 		offscreen.s	.chkgone,obStomp_StartX(a0)
 		jmp	(DisplaySprite).l
+; ---------------------------------------------------------------------------
 
 	.chkgone:
-		cmpi.b	#id_LZ,(v_zone).w
-		bne.s	.delete
+		cmpi.b	#id_LZ,(v_zone).w		; check if level is LZ
+		bne.s	.delete					; if not, branch
 		clr.b	(v_obj6B).w
 		move.w	obRespawnAddr(a0),d0	; get address in respawn table
 		beq.s	.delete					; if it's zero, don't remember object
@@ -314,6 +317,7 @@ Sto_SlideDiagonal:
 		beq.s	.update_pos					; if it's zero, don't remember object
 		movea.w	d0,a2						; load address into a2
 		bclr	#7,(a2)						; clear respawn table entry, so object can be loaded again
+; S1 SCE uses 	bset	#0,(a2) here
 
 .update_pos:
 		subi.l	#$10000,obX(a0)				; move left 1px
