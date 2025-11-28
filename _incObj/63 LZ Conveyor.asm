@@ -31,7 +31,6 @@ LCon_Index:	offsetTable
 		offsetTableEntry.w LCon_Main
 		offsetTableEntry.w loc_124B2
 		offsetTableEntry.w loc_124C2
-		offsetTableEntry.w LCon_Wheel
 
 lcon_spawnertype = objoff_2F	; saved subtype
 lcon_origx = objoff_30			; original x-position (2 bytes)
@@ -54,19 +53,9 @@ LCon_Main:	; Routine 0
 		ori.b	#4,obRender(a0)
 		move.b	#$10,obDispWid(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		cmpi.b	#$7F,obSubtype(a0)			; is this the static conveyor wheel?
-		bne.s	LCon_Platform				; if not, branch
-		addq.b	#4,obRoutine(a0)			; jump straight to display routine
-		move.w	#make_art_tile(ArtTile_LZ_Conveyor_Wheel,0,0),obGfx(a0)
-		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 
-LCon_Wheel:
-		addq.l	#4,sp
-		bra.w	RememberState
-; ===========================================================================
+	; Conveyor Wheel is now part of the Scenery Object (Obj1C)
 
-LCon_Platform:
-		move.b	#1,obFrame(a0)				; Platform frame
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0			; get platform subtype assigned by spawner (based on 3rd word in ObjPosLZPlatform_Index)
 		move.w	d0,d1						; copy to d1
