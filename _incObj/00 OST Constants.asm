@@ -601,7 +601,6 @@ obVanPtfm_SyncBitMask:	equ objoff_38		; 2 bytes | bitmask for synchronising
 obFlame_WaitTime:		equ objoff_30		; 2 bytes | time until current action is complete
 obFlame_OnTime:			equ objoff_32		; 2 bytes | time flame is on
 obFlame_OffTime:		equ objoff_34		; 2 bytes | time flame is off
-obFlame_LastFrame:		equ objoff_36		; 1 byte  | last frame of animation
 ; ---------------------------------------------------------------------------
 
 ; Obj6E - SBZ Electric Orb
