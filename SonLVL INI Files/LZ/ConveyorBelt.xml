@@ -5,6 +5,10 @@
       <ArtFile filename="../artnem/LZ Conveyor Platform.nem"/>
       <MapFile type="ASM" filename="../_maps/LZ Conveyor.asm" frame="0" startpal="2"/>
     </ImageFromMappings>
+    <ImageFromMappings id="wheel">
+      <ArtFile filename="../artunc/LZ Wheel.bin" compression="Uncompressed"/>
+      <MapFile type="ASM" filename="../_maps/LZ Conveyor.asm" frame="1" startpal="0"/>
+    </ImageFromMappings>
   </Images>
   <Subtypes>
     <Subtype id="80" name="Spawner (Group 0)"  image="platform"/>
