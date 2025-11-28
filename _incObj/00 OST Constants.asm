@@ -556,15 +556,14 @@ obJun_ButtonNum:		equ objoff_38		; 1 byte  | which button will reverse the disc
 ; Obj67 - SBZ Running Disc
 obDisc_StartY:			equ objoff_30		; 2 bytes | starting Y-axis position
 obDisc_StartX:			equ objoff_32		; 2 bytes | starting X-axis position
-obDisc_RadiusInner:		equ objoff_34		; 1 byte  | distance of small circle from centre
-obDisc_Rotation:		equ objoff_36		; 2 bytes | rate/direction of small circle rotation
-obDisc_RadiusOuter:		equ objoff_38		; 1 byte  | distance of Sonic from centre
-obDisc_SonicAttached:	equ objoff_3A		; 1 byte  | flag set when Sonic lands on the disc
+obDisc_Rotation:		equ objoff_34		; 2 bytes | rate/direction of small circle rotation
+obDisc_RadiusInner:		equ objoff_36		; 1 byte  | distance of small circle from centre
+obDisc_RadiusOuter:		equ objoff_37		; 1 byte  | distance of Sonic from centre
+obDisc_SonicAttached:	equ objoff_38		; 1 byte  | flag set when Sonic lands on the disc
 ; ---------------------------------------------------------------------------
 
 ; Obj68 - SBZ Conveyor Belt
 obConv_Speed:			equ objoff_36		; 2 bytes | speed - can also be negative
-obConv_Width:			equ objoff_38		; 1 byte  | width/2
 ; ---------------------------------------------------------------------------
 
 ; Obj69 - SBZ Spinning Conveyor Platform
