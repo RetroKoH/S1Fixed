@@ -503,12 +503,12 @@ obBomb_Parent:			equ objoff_3E		; 2 bytes | address of parent object (unused?)
 ; ---------------------------------------------------------------------------
 
 ; Obj60 - Orbinaut Badnik
-
 	if SLZOrbinautBehaviourMod	; Mercury SLZ Orbinaut Behaviour Mod
 obOrb_OrbDist:			equ objoff_2A		; 1 byte  | distance of child orbs
+obOrb_OrbTimer:			equ objoff_2E		; 1 byte  | frame timer for child orbs
 	endif
 
-obOrb_direction:		equ objoff_36		; 1 byte  | direction orbs rotate: 1 = clockwise; -1 = anticlockwise
+obOrb_Direction:		equ objoff_36		; 1 byte  | direction orbs rotate: 1 = clockwise; -1 = anticlockwise
 obOrb_ObjCount:			equ objoff_37		; 1 byte  | number of child objects
 obOrb_ChildObjs:		equ objoff_38		; 4 bytes | object RAM indices of child objects (4 bytes - 1 byte per ball)
 obOrb_Parent:			equ objoff_3E		; 2 bytes | address of parent object
@@ -524,15 +524,15 @@ obLBlock_ColFlag:		equ objoff_3F		; 1 byte  | 0 = none; 1 = side collision; -1 =
 ; ---------------------------------------------------------------------------
 
 ; Obj63 - LZ Conveyor Platforms
-LCon_SpawnType:			equ objoff_2F		; 1 byte  | saved subtype
-LCon_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
+LCon_SpawnerType:		equ objoff_2F		; 1 byte  | saved subtype
+LCon_CenterX:			equ objoff_30		; 2 bytes | approximate x position of center of conveyor
 LCon_TargetX:			equ objoff_34		; 2 bytes | target X-axis position to move platform towards
 LCon_TargetY:			equ objoff_36		; 2 bytes | target Y-axis position to move platform towards
-LCon_PosNext:			equ objoff_38		; 1 byte  | index of next corner position
-LCon_PosCount:			equ objoff_39		; 1 byte  | total number of corners +1, times 4
-LCon_PosInc:			equ objoff_3A		; 1 byte  | amount to add to corner index (4 or -4)
+LCon_CornerNext:		equ objoff_38		; 1 byte  | index of next corner position
+LCon_CornerCount:		equ objoff_39		; 1 byte  | total number of corners +1, times 4
+LCon_CornerInc:			equ objoff_3A		; 1 byte  | amount to add to corner index (4 or -4)
 LCon_Reverse:			equ objoff_3B		; 1 byte  | 1 = conveyors run in reverse
-LCon_PosPtr:			equ objoff_3C		; 4 bytes | address where platform's position data is located
+LCon_DataAddr:			equ objoff_3C		; 4 bytes | address where platform's position data is located
 ; ---------------------------------------------------------------------------
 
 ; Obj64 - LZ Bubbles
@@ -606,28 +606,29 @@ obFlame_OffTime:		equ objoff_34		; 2 bytes | time flame is off
 obElecOrb_ZapRate:		equ objoff_34		; 2 bytes | zap rate - applies bitmask to frame counter
 ; ---------------------------------------------------------------------------
 
-; Obj6F - SBZ Spinning Conveyor Platform (Nearly identical to Obj63)
-SpinCon_SpawnType:		equ objoff_2F		; 1 byte  | saved subtype
+; Obj6F - SBZ Spinning Conveyor Platform (Identical to Obj63)
+SpinCon_SpawnerType:	equ objoff_2F		; 1 byte  | saved subtype
 SpinCon_CenterX:		equ objoff_30		; 2 bytes | approximate X-axis position of center of conveyor
 SpinCon_TargetX:		equ objoff_34		; 2 bytes | target X-axis position to move platform towards
 SpinCon_TargetY:		equ objoff_36		; 2 bytes | target Y-axis position to move platform towards
-SpinCon_PosNext:		equ objoff_38		; 1 byte  | index of next corner position
-SpinCon_PosCount:		equ objoff_39		; 1 byte  | total number of corners +1, times 4
-SpinCon_PosInc:			equ objoff_3A		; 1 byte  | amount to add to corner index (4 or -4)
+SpinCon_CornerNext:		equ objoff_38		; 1 byte  | index of next corner position
+SpinCon_CornerCount:	equ objoff_39		; 1 byte  | total number of corners +1, times 4
+SpinCon_CornerInc:		equ objoff_3A		; 1 byte  | amount to add to corner index (4 or -4)
 SpinCon_Reverse:		equ objoff_3B		; 1 byte  | 1 = conveyors run in reverse
-SpinCon_PosPtr:			equ objoff_3C		; 4 bytes | address where platform's position data is located
+SpinCon_DataAddr:		equ objoff_3C		; 4 bytes | address where platform's position data is located
 ; ---------------------------------------------------------------------------
 
 ; Obj70 - SBZ Girder Block
-obGird_StartY:			equ objoff_30		; 2 bytes | starting Y-axis position
-obGird_StartX:			equ objoff_32		; 2 bytes | starting X-axis position
-obGird_MoveTime:		equ objoff_34		; 2 bytes | duration for movement in a direction
-obGird_MoveSetting:		equ objoff_38		; 1 byte  | which movement settings to use (0/8/16/24)
-obGird_MoveDelay:		equ objoff_3A		; 2 bytes | delay for movement
+obGird_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
+obGird_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position
+obGird_PrevX:			equ objoff_34		; 2 bytes | previous X-axis position (used instead of pushing to the stack)
+obGird_MoveTime:		equ objoff_36		; 2 bytes | duration for movement in a direction
+obGird_MoveDelay:		equ objoff_38		; 1 byte  | delay for movement
+obGird_MoveSetting:		equ objoff_39		; 1 byte  | which movement settings to use (0/8/16/24)
 ; ---------------------------------------------------------------------------
 
 ; Obj72 - SBZ Teleporter
-obTele_MoveTime:		equ objoff_2E		; 2 bytes | travel time between each bend (2 bytes; only high byte is read)
+obTele_MoveTime:		equ objoff_30		; 2 bytes | travel time between each bend (2 bytes; only high byte is read)
 obTele_DelayTime:		equ objoff_32		; 1 byte  | time to wait before starting teleportation
 obTele_TargetX:			equ objoff_36		; 2 bytes | target X-axis position to send Sonic to
 obTele_TargetY:			equ objoff_38		; 2 bytes | target Y-axis position to send Sonic to
