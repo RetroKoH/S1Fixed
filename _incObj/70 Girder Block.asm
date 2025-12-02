@@ -2,12 +2,6 @@
 ; Object 70 - large girder block (SBZ)
 ; ---------------------------------------------------------------------------
 
-gird_origX = objoff_32		; original x-axis position
-gird_origY = objoff_30		; original y-axis position
-gird_time = objoff_34		; duration for movement in a direction
-gird_set = objoff_38		; which movement settings to use (0/8/16/24)
-gird_delay = objoff_3A		; delay for movement
-
 Girder:
 	; LavaGaming Object Routine Optimization
 		tst.b	obRoutine(a0)
@@ -22,27 +16,28 @@ Gird_Main:	; Routine 0
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$60,obDispWid(a0)
 		move.b	#$18,obHeight(a0)
-		move.w	obX(a0),gird_origX(a0)
-		move.w	obY(a0),gird_origY(a0)
-		bsr.w	Gird_ChgMove
+		move.w	obX(a0),obGird_StartX(a0)
+		move.w	obY(a0),obGird_StartY(a0)
+		bsr.w	Gird_ChgDir					; set initial speed & direction
+; ---------------------------------------------------------------------------
 
 Gird_Action:	; Routine 2
-		move.w	obX(a0),-(sp)
-		tst.w	gird_delay(a0)
-		beq.s	.beginmove
-		subq.w	#1,gird_delay(a0)
-		bne.s	.solid
+		move.w	obX(a0),obGird_PrevX(a0)
+		tst.b	obGird_MoveDelay(a0)		; has time delay hit 0?
+		beq.s	.begin_move					; if yes, branch
+		subq.b	#1,obGird_MoveDelay(a0)		; decrement delay timer
+		bne.s	.skip_movement				; skip movement update
 
-.beginmove:
+	.begin_move:
 		jsr		(SpeedToPos).l
-		subq.w	#1,gird_time(a0) ; decrement movement duration
-		bne.s	.solid		; if time remains, branch
-		bsr.w	Gird_ChgMove	; if time is zero, branch
+		subq.w	#1,obGird_MoveTime(a0)		; decrement movement duration
+		bne.s	.skip_movement				; if time remains, branch
+		bsr.w	Gird_ChgDir					; if time is zero, branch
 
-.solid:
-		move.w	(sp)+,d4
-		tst.b	obRender(a0)
-		bpl.s	.chkdel
+	.skip_movement:
+		move.w	obGird_PrevX(a0),d4
+		tst.b	obRender(a0)				; is object on-screen?
+		bpl.s	.chkdel						; if not, branch
 		moveq	#0,d1
 		move.b	obDispWid(a0),d1
 		addi.w	#$B,d1
@@ -52,27 +47,34 @@ Gird_Action:	; Routine 2
 		addq.w	#1,d3
 		jsr		(SolidObject).l
 
-.chkdel:
-		offscreen.s	.delete,gird_origX(a0)	; ProjectFM
+	.chkdel:
+		offscreen.s	.delete,obGird_StartX(a0)	; ProjectFM
 		jmp	(DisplaySprite).l
 
-.delete:
+	.delete:
 		jmp	(DeleteObject).l
 ; ===========================================================================
 
-Gird_ChgMove:
-		move.b	gird_set(a0),d0
+; ---------------------------------------------------------------------------
+; Subroutine to change the speed/direction the girder is moving
+; ---------------------------------------------------------------------------
+
+Gird_ChgDir:
+		move.b	obGird_MoveSetting(a0),d0		; get current setting
 		andi.w	#$18,d0
 		lea		(.settings).l,a1
-		lea		(a1,d0.w),a1
-		move.l	(a1)+,obVelX(a0)	; move the data contained in the array to obVelX and obVelY, and increment the address in a1
-		move.w	(a1)+,gird_time(a0)
-		addq.b	#8,gird_set(a0)		; use next settings
-		move.w	#7,gird_delay(a0)
+		lea		(a1,d0.w),a1					; jump to relevant settings
+		move.l	(a1)+,obVelX(a0)				; move the data contained in the array to obVelX and obVelY, and increment the address in a1
+		move.w	(a1)+,obGird_MoveTime(a0)		; how long to move in that direction
+		addq.b	#8,obGird_MoveSetting(a0)		; use next settings
+		move.b	#7,obGird_MoveDelay(a0)			; set time until it starts moving again
 		rts	
 ; ===========================================================================
-.settings:	;   x-speed, y-speed, duration
-		dc.w   $100,	 0,   $60,     0 ; right
-		dc.w	  0,  $100,   $30,     0 ; down
-		dc.w  -$100,  -$40,   $60,     0 ; up/left
-		dc.w	  0, -$100,   $18,     0 ; up
+
+	.settings:
+			;   x vel,   y vel, duration
+		dc.w   $100,	 0,   $60,     0		; right
+		dc.w	  0,  $100,   $30,     0		; down
+		dc.w  -$100,  -$40,   $60,     0		; up/left
+		dc.w	  0, -$100,   $18,     0		; up
+; ===========================================================================

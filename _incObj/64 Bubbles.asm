@@ -19,11 +19,6 @@ Bub_Index:	offsetTable
 		offsetTableEntry.w Bub_Display
 		offsetTableEntry.w Bub_Delete
 		offsetTableEntry.w Bub_BblMaker
-
-bub_inhalable = objoff_2E	; flag set when bubble is collectable
-bub_origX = objoff_30		; original x-axis position
-bub_time = objoff_32		; time until next bubble spawn
-bub_freq = objoff_33		; frequency of bubble spawn
 ; ===========================================================================
 
 Bub_Main:	; Routine 0
@@ -38,15 +33,15 @@ Bub_Main:	; Routine 0
 
 		addq.b	#8,obRoutine(a0)				; goto Bub_BblMaker next
 		andi.w	#$7F,d0							; read only last 7 bits	(deduct	$80)
-		move.b	d0,bub_time(a0)
-		move.b	d0,bub_freq(a0)					; set bubble frequency
+		move.b	d0,obBubble_WaitTime(a0)
+		move.b	d0,obBubble_WaitMaster(a0)		; set bubble frequency
 		move.b	#6,obAnim(a0)
 		bra.w	Bub_BblMaker
 ; ===========================================================================
 
 	.bubble:
 		move.b	d0,obAnim(a0)					; use animation 0/1/2 (small/medium/large)
-		move.w	obX(a0),bub_origX(a0)
+		move.w	obX(a0),obBubble_StartX(a0)
 		move.w	#-$88,obVelY(a0)				; float bubble upwards
 		jsr		(RandomNumber).w
 		move.b	d0,obAngle(a0)					; set high byte of ost_angle as random number
@@ -57,7 +52,7 @@ Bub_Animate:	; Routine 2
 		cmpi.b	#6,obFrame(a0)					; is bubble full-size?
 		bne.s	Bub_ChkWater					; if not, branch
 
-		move.b	#1,bub_inhalable(a0)			; set "inhalable" flag
+		move.b	#1,obBubble_Inhalable(a0)		; set "inhalable" flag
 
 Bub_ChkWater:	; Routine 4
 		move.w	(v_waterpos_actual).w,d0
@@ -77,9 +72,9 @@ Bub_ChkWater:	; Routine 4
 		lea		(Drown_WobbleData).l,a1
 		move.b	(a1,d0.w),d0					; get byte from wobble array (see "Objects\LZ Drowning Numbers.asm")
 		ext.w	d0
-		add.w	bub_origX(a0),d0
+		add.w	obBubble_StartX(a0),d0
 		move.w	d0,obX(a0)						; change bubble's x-axis position
-		tst.b	bub_inhalable(a0)				; can bubble be inhaled?
+		tst.b	obBubble_Inhalable(a0)			; can bubble be inhaled?
 		beq.s	.display						; if not, branch
 		bsr.w	Bub_ChkSonic					; has Sonic touched the	bubble?
 		beq.s	.display						; if not, branch
@@ -137,16 +132,16 @@ Bub_Delete:	; Routine 8
 ; ===========================================================================
 
 Bub_BblMaker:	; Routine $A
-		tst.w	objoff_36(a0)					; any flags set?
+		tst.w	obBubble_Flag(a0)				; any flags set?
 		bne.s	.chk_time						; if yes, branch
 		move.w	(v_waterpos_actual).w,d0
 		cmp.w	obY(a0),d0						; is bubble maker underwater?
 		bhs.w	.chkdel							; if not, branch
 		tst.b	obRender(a0)					; is bubble maker on-screen?
 		bpl.w	.chkdel							; if not, branch
-		subq.w	#1,objoff_38(a0)				; decrement timer
+		subq.w	#1,obBubble_RandomTime(a0)		; decrement timer
 		bpl.w	.animate						; branch if time remains
-		move.w	#1,objoff_36(a0)				; set flag for bubble spawn
+		move.w	#1,obBubble_Flag(a0)			; set flag for bubble spawn
 
 	.tryagain:
 		jsr		(RandomNumber).w
@@ -155,26 +150,26 @@ Bub_BblMaker:	; Routine $A
 		cmpi.w	#6,d0							; random number over 6?
 		bhs.s	.tryagain						; if yes, branch and loop back
 
-		move.b	d0,objoff_34(a0)				; set number of small/medium bubbles to spawn (0-5)
+		move.b	d0,obBubble_MiniCount(a0)		; set number of small/medium bubbles to spawn (0-5)
 		andi.w	#$C,d1							; read only bits 2-3 of random number
 		lea		(Bub_BblTypes).l,a1
 		adda.w	d1,a1							; jump to multiple of 4 within type array
-		move.l	a1,objoff_3C(a0)
-		subq.b	#1,bub_time(a0)					; decrement timer
+		move.l	a1,obBubble_TypeList(a0)
+		subq.b	#1,obBubble_WaitTime(a0)		; decrement timer
 		bpl.s	.spawn_bubble					; branch if time remains
-		move.b	bub_freq(a0),bub_time(a0)		; reset timer (based on original subtype)
-		bset	#7,objoff_36(a0)				; allow large bubble in current sequence
+		move.b	obBubble_WaitMaster(a0),obBubble_WaitTime(a0)	; reset timer (based on original subtype)
+		bset	#7,obBubble_Flag(a0)			; allow large bubble in current sequence
 		bra.s	.spawn_bubble
 ; ===========================================================================
 
 	.chk_time:
-		subq.w	#1,objoff_38(a0)				; decrement timer
+		subq.w	#1,obBubble_RandomTime(a0)		; decrement timer
 		bpl.w	.animate						; branch if time remains
 
 	.spawn_bubble:
 		jsr		(RandomNumber).w
 		andi.w	#$1F,d0
-		move.w	d0,objoff_38(a0)				; set next random time (max 32 frames)
+		move.w	d0,obBubble_RandomTime(a0)		; set next random time (max 32 frames)
 		bsr.w	FindFreeObj
 		bne.s	.fail							; branch if obj slot not found
 		_move.b	#id_Bubble,obID(a1)				; load bubble object
@@ -185,33 +180,33 @@ Bub_BblMaker:	; Routine $A
 		add.w	d0,obX(a1)						; randomise initial x pos
 		move.w	obY(a0),obY(a1)
 		moveq	#0,d0
-		move.b	objoff_34(a0),d0				; get number of bubbles to spawn
-		movea.l	objoff_3C(a0),a2				; get address of type array
+		move.b	obBubble_MiniCount(a0),d0		; get number of bubbles to spawn
+		movea.l	obBubble_TypeList(a0),a2		; get address of type array
 		move.b	(a2,d0.w),obSubtype(a1)			; load type from array
-		btst	#7,objoff_36(a0)
+		btst	#7,obBubble_Flag(a0)
 		beq.s	.fail
 		jsr		(RandomNumber).w
 		andi.w	#3,d0							; are either lowest 2 bits of random number set?
 		bne.s	.skip_large						; if yes, branch
-		bset	#6,objoff_36(a0)				; set large bubble flag
+		bset	#6,obBubble_Flag(a0)			; set large bubble flag
 		bne.s	.fail							; branch if already set
 		move.b	#2,obSubtype(a1)				; make bubble large
 
 	.skip_large:
-		tst.b	objoff_34(a0)					; is this the last bubble in the current sequence?
+		tst.b	obBubble_MiniCount(a0)			; is this the last bubble in the current sequence?
 		bne.s	.fail							; if not, branch
-		bset	#6,objoff_36(a0)				; set large bubble flag
+		bset	#6,obBubble_Flag(a0)			; set large bubble flag
 		bne.s	.fail							; branch if already set
 		move.b	#2,obSubtype(a1)				; make bubble large
 
 	.fail:
-		subq.b	#1,objoff_34(a0)				; decrement bubble count
+		subq.b	#1,obBubble_MiniCount(a0)		; decrement bubble count
 		bpl.s	.animate						; branch if positive
 		jsr		(RandomNumber).w
 		andi.w	#$7F,d0
 		addi.w	#$80,d0
-		add.w	d0,objoff_38(a0)				; set timer for next sequence
-		clr.w	objoff_36(a0)					; clear all flags
+		add.w	d0,obBubble_RandomTime(a0)		; set timer for next sequence
+		clr.w	obBubble_Flag(a0)				; clear all flags
 
 	.animate:
 		lea		Ani_Bub(pc),a1
