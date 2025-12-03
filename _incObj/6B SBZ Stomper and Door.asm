@@ -35,7 +35,7 @@ Sto_Main:	; Routine 0
 		move.l	#Map_Stomp,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Moving_Block_Short,1,0),obGfx(a0)
 		cmpi.b	#id_LZ,(v_zone).w		; check if level is LZ/SBZ3
-		bne.s	.is_SBZ_12				; if not, branch
+		bne.s	.skip_sbz3_init			; if not, branch
 		bset	#0,(v_obj6B).w			; flag object as loaded
 		beq.s	.sbz3_init				; branch if not previously loaded
 
@@ -62,7 +62,6 @@ Sto_Main:	; Routine 0
 		bra.s	.chkdel
 ; ===========================================================================
 
-	.is_SBZ_12:
 	.skip_sbz3_init:
 		ori.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
