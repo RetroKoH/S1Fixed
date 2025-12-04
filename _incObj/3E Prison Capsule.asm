@@ -173,10 +173,10 @@ Pri_Explosion:	; Routine 6, 8, $A
 		move.w	d5,objoff_36(a1)
 		subq.w	#8,d5
 ; RetroKoH End-of-Level optimization
-		move.w	a0,anml_capsule(a1)	; set capsule as parent
-		addq.b	#1,pri_animalCt(a0)		; increment animal counter
+		move.w	a0,obAnimal_CapsuleAddr(a1)	; set capsule as parent
+		addq.b	#1,pri_animalCt(a0)			; increment animal counter
 ; End-of-Level optimization end
-		dbf		d6,.loop				; repeat 7 more	times
+		dbf		d6,.loop					; repeat 7 more	times
 
 .fail:
 	; Clownacy DisplaySprite Fix (Alt method by RetroKoH)
@@ -190,12 +190,12 @@ Pri_Animals:	; Routine $C
 		bne.s	.noanimal
 		jsr		(FindFreeObj).l
 		bne.s	.noanimal
-		_move.b	#id_Animals,obID(a1)	; load animal object
+		_move.b	#id_Animals,obID(a1)		; load animal object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 ; RetroKoH End-of-Level optimization
-		move.w	a0,anml_capsule(a1)	; set capsule as parent
-		addq.b	#1,pri_animalCt(a0)		; increment animal counter
+		move.w	a0,obAnimal_CapsuleAddr(a1)	; set capsule as parent
+		addq.b	#1,pri_animalCt(a0)			; increment animal counter
 ; End-of-Level optimization end
 		jsr		(RandomNumber).w
 		andi.w	#$1F,d0

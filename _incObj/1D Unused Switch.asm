@@ -3,8 +3,6 @@
 ; (this	is not used anywhere in	the game)
 ; ---------------------------------------------------------------------------
 
-swi_origY = objoff_30		; original y-axis position
-
 MagicSwitch:
 	; LavaGaming Object Routine Optimization
 		move.b	obRoutine(a0),d0
@@ -20,56 +18,61 @@ Swi_Main:	; Routine 0
 		move.l	#Map_Swi,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.w	obY(a0),swi_origY(a0)		; save position on y-axis
+		move.w	obY(a0),obSwi_StartY(a0)	; save position on y-axis
 		move.b	#$10,obDispWid(a0)
 		move.w	#priority5,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
+; ---------------------------------------------------------------------------
 
 Swi_Action:	; Routine 2
-		move.w	swi_origY(a0),obY(a0)		; restore position on y-axis
-		move.w	#$10,d1
+		move.w	obSwi_StartY(a0),obY(a0)	; restore position on y-axis
+		moveq	#$10,d1						; width
 		bsr.w	Swi_ChkTouch				; check if Sonic touches the switch
-		beq.s	Swi_ChkDel					; if not, branch
+		beq.s	.display					; if not, branch
 
-		addq.w	#2,obY(a0)					; move object 2	pixels
+		addq.w	#2,obY(a0)					; move object down 2 pixels
 		moveq	#1,d0
 		move.w	d0,(f_switch).w				; set switch 0 as "pressed"
 
-Swi_ChkDel:
+	.display:
 		offscreen.w	DeleteObject			; ProjectFM S3K Objects Manager
 		bra.w	DisplaySprite				; Clownacy DisplaySprite Fix	
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	check if Sonic touches the object
+;
+; input:
+;	d1 = width of object
+;
+; output:
+;	d0 = collision flag: 0 = none; -1 = touched
 ; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
 
 Swi_ChkTouch:
 		lea	(v_player).w,a1
 		move.w	obX(a1),d0
 		sub.w	obX(a0),d0
 		add.w	d1,d0
-		bmi.s	Swi_NoTouch
+		bmi.s	.not_touched	; branch if Sonic is to the left
 		add.w	d1,d1
 		cmp.w	d1,d0
-		bhs.s	Swi_NoTouch
+		bhs.s	.not_touched
 		move.w	obY(a1),d2
 		move.b	obHeight(a1),d1
 		ext.w	d1
-		add.w	d2,d1
+		add.w	d2,d1			; take Sonic's height into account
 		move.w	obY(a0),d0
 		subi.w	#$10,d0
 		sub.w	d1,d0
-		bhi.s	Swi_NoTouch
+		bhi.s	.not_touched	; branch if Sonic is above it
 		cmpi.w	#-$10,d0
-		blo.s	Swi_NoTouch
-		moveq	#-1,d0		; Sonic has touched it
+		blo.s	.not_touched	; branch if Sonic is below it
+		moveq	#-1,d0			; Sonic has touched it
 		rts	
 ; ===========================================================================
 
-Swi_NoTouch:
-		moveq	#0,d0		; Sonic hasn't touched it
+.not_touched:
+		moveq	#0,d0			; Sonic hasn't touched it
 		rts	
 ; End of function Swi_ChkTouch
+; ===========================================================================

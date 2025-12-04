@@ -2,8 +2,6 @@
 ; Object 1E - Ball Hog enemy (SBZ)
 ; ---------------------------------------------------------------------------
 
-hog_launchflag = objoff_32		; 0 to launch a cannonball
-
 BallHog:
 	; LavaGaming Object Routine Optimization
 		tst.b	obRoutine(a0)
@@ -22,45 +20,46 @@ Hog_Main:	; Routine 0
 		jsr		(ObjFloorDist).l			; find floor
 		tst.w	d1
 		bpl.s	.floornotfound
-		add.w	d1,obY(a0)
+		add.w	d1,obY(a0)					; align to floor
 		clr.w	obVelY(a0)
-		addq.b	#2,obRoutine(a0)
+		addq.b	#2,obRoutine(a0)			; -> Hog_Action
 
-.floornotfound:
+	.floornotfound:
 		rts	
 ; ===========================================================================
 
 Hog_Action:	; Routine 2
 		lea		Ani_Hog(pc),a1
 		bsr.w	AnimateSprite
-		cmpi.b	#1,obFrame(a0)	; is final frame (01) displayed?
-		bne.s	.setlaunchflag	; if not, branch
-		tst.b	hog_launchflag(a0)	; is it	set to launch cannonball?
-		beq.s	.makeball	; if yes, branch
+		cmpi.b	#1,obFrame(a0)				; is final frame (01) displayed?
+		bne.s	.setlaunchflag				; if not, branch
+		tst.b	obHog_LaunchFlag(a0)		; is it	set to launch cannonball?
+		beq.s	.makeball					; if yes, branch
 		bra.w	RememberState
 ; ===========================================================================
 
 .setlaunchflag:
-		clr.b	hog_launchflag(a0)	; set to launch	cannonball
+		clr.b	obHog_LaunchFlag(a0)		; set to launch	cannonball
 		bra.w	RememberState
 ; ===========================================================================
 
 .makeball:
-		move.b	#1,hog_launchflag(a0)
+		move.b	#1,obHog_LaunchFlag(a0)
 		bsr.w	FindFreeObj
 		bne.w	RememberState
-		_move.b	#id_Cannonball,obID(a1) ; load cannonball object ($20)
+		_move.b	#id_Cannonball,obID(a1)		; load cannonball object ($20)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		move.l	#$FF000000,obVelX(a1)	; cannonball bounces to the left (-$100) and clear obYVel
+		move.l	#$FF000000,obVelX(a1)		; cannonball bounces to the left (-$100) and clear obYVel
 		moveq	#-4,d0
-		btst	#staFlipX,obStatus(a0)	; is Ball Hog facing right?
-		beq.s	.noflip					; if not, branch
+		btst	#staFlipX,obStatus(a0)		; is Ball Hog facing right?
+		beq.s	.noflip						; if not, branch
 		neg.w	d0
-		neg.w	obVelX(a1)				; cannonball bounces to	the right
+		neg.w	obVelX(a1)					; cannonball bounces to	the right
 
 .noflip:
 		add.w	d0,obX(a1)
 		addi.w	#$C,obY(a1)
-		move.b	obSubtype(a0),obSubtype(a1) ; copy object type from Ball Hog
+		move.b	obSubtype(a0),obSubtype(a1)	; copy object type from Ball Hog
 		bra.w	RememberState
+; ===========================================================================

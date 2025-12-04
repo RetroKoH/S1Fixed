@@ -20,9 +20,6 @@ id_Crab_Action = ptr_Crab_Action-Crab_Index	; 2
 id_Crab_Delete = ptr_Crab_Delete-Crab_Index	; 4
 id_Crab_BallMain = ptr_Crab_BallMain-Crab_Index	; 6
 id_Crab_BallMove = ptr_Crab_BallMove-Crab_Index	; 8
-
-crab_timedelay = objoff_30
-crab_mode = objoff_32
 ; ===========================================================================
 
 Crab_Main:	; Routine 0
@@ -33,54 +30,54 @@ Crab_Main:	; Routine 0
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colEnemy|colSz_16x16),obColType(a0)
 		move.b	#$15,obDispWid(a0)
-		bsr.w	ObjectFall_YOnly
+		bsr.w	ObjectFall_YOnly			; immediately make crabmeat fall
 		jsr		(ObjFloorDist).l			; find floor
-		tst.w	d1
-		bpl.s	.floornotfound
-		add.w	d1,obY(a0)
-		move.b	d3,obAngle(a0)
-		clr.w	obVelY(a0)
-		addq.b	#2,obRoutine(a0)
+		tst.w	d1							; has crabmeat hit floor?
+		bpl.s	.floornotfound				; if not, branch (repeat until floor is found)
+		add.w	d1,obY(a0)					; align to floor
+		move.b	d3,obAngle(a0)				; copy floor angle
+		clr.w	obVelY(a0)					; stop falling
+		addq.b	#2,obRoutine(a0)			; -> Crab_Action
 
-.floornotfound:
+	.floornotfound:
 		rts	
 ; ===========================================================================
 
 Crab_Action:	; Routine 2
 	; LavaGaming Object Routine Optimization
 		tst.b	ob2ndRout(a0)
-		bne.w	.walkonfloor
+		bne.w	CrabAct_Walk
 	; Object Routine Optimization End
 
-.waittofire:
-		subq.w	#1,crab_timedelay(a0) ; subtract 1 from time delay
-		bpl.s	.dontmove
-		tst.b	obRender(a0)
-		bpl.s	.movecrab
-		bchg	#1,crab_mode(a0)
-		bne.s	.fire
+CrabAct_WaitFire:
+		subq.w	#1,obCrab_WaitTime(a0)		; decrement timer
+		bpl.s	.dontmove					; branch if time remains
+		tst.b	obRender(a0)				; is crabmeat on-screen?
+		bpl.s	.movecrab					; if not, branch
+		bchg	#1,obCrab_Mode(a0)			; set mode to firing
+		bne.s	.fire						; branch if previously set
 
-.movecrab:
-		addq.b	#2,ob2ndRout(a0)
-		move.w	#127,crab_timedelay(a0) ; set time delay to approx 2 seconds
-		move.w	#$80,obVelX(a0)	; move Crabmeat	to the right
-		bsr.w	Crab_SetAni
-		addq.b	#3,d0
+	.movecrab:
+		addq.b	#2,ob2ndRout(a0)			; -> CrabAct_Walk next
+		move.w	#127,obCrab_WaitTime(a0)	; set time delay to approx 2 seconds
+		move.w	#$80,obVelX(a0)				; move Crabmeat	to the right
+		bsr.w	Crab_SetAni					; select animation based on floor angle
+		addq.b	#3,d0						; use walking animation
 		move.b	d0,obAnim(a0)
 		bchg	#staFlipX,obStatus(a0)
 		bne.s	.noflip
-		neg.w	obVelX(a0)	; change direction
+		neg.w	obVelX(a0)					; change direction
 
-.dontmove:
-.noflip:
+	.dontmove:
+	.noflip:
 		lea		Ani_Crab(pc),a1
 		bsr.w	AnimateSprite
 		bra.w	RememberState	
 ; ===========================================================================
 
-.fire:
-		move.w	#59,crab_timedelay(a0)
-		move.b	#6,obAnim(a0)	; use firing animation
+	.fire:
+		move.w	#59,obCrab_WaitTime(a0)
+		move.b	#6,obAnim(a0)				; use firing animation
 
 	; RetroKoH Mass Object Load Optimization; Built off of Spirituinsanum's Ring Loss Optimization
 	; Here we begin what's replacing FindFreeObj/SingleObjLoad
@@ -115,111 +112,114 @@ Crab_Action:	; Routine 2
 		move.w	obY(a0),obY(a1)
 		move.w	#$100,obVelX(a1)
 
-.fail:
+	.fail:
 		lea		Ani_Crab(pc),a1
 		bsr.w	AnimateSprite
 		bra.w	RememberState	
 ; ===========================================================================
 
-.walkonfloor:
-		subq.w	#1,crab_timedelay(a0)
-		bmi.s	loc_966E
+CrabAct_Walk:
+		subq.w	#1,obCrab_WaitTime(a0)		; decrement timer
+		bmi.s	.stop						; branch if -1
 		bsr.w	SpeedToPos_XOnly
-		bchg	#0,crab_mode(a0)
-		bne.s	loc_9654
+		bchg	#0,obCrab_Mode(a0)			; set mode to floor check
+		bne.s	.findfloor_here				; branch if previously set
 		move.w	obX(a0),d3
-		addi.w	#$10,d3
+		addi.w	#16,d3						; find floor 16px to the right
 		btst	#staFlipX,obStatus(a0)
-		beq.s	loc_9640
-		subi.w	#$20,d3
+		beq.s	.noflip
+		subi.w	#32,d3						; find floor 16px to the left
 
-loc_9640:
+	.noflip:
 		jsr		(ObjFloorDist2).l
-		cmpi.w	#-8,d1
-		blt.s	loc_966E
-		cmpi.w	#$C,d1
-		bge.s	loc_966E
+		cmpi.w	#-8,d1						; is there a wall ahead?
+		blt.s	.stop						; if yes, branch
+		cmpi.w	#$C,d1						; is there a drop ahead?
+		bge.s	.stop						; if yes, branch
 		lea		Ani_Crab(pc),a1
 		bsr.w	AnimateSprite
 		bra.w	RememberState	
 ; ===========================================================================
 
-loc_9654:
-		jsr		(ObjFloorDist).l
-		add.w	d1,obY(a0)
-		move.b	d3,obAngle(a0)
-		bsr.s	Crab_SetAni
-		addq.b	#3,d0
+	.findfloor_here:
+		jsr		(ObjFloorDist).l			; find floor at current position
+		add.w	d1,obY(a0)					; align to floor
+		move.b	d3,obAngle(a0)				; update angle
+		bsr.s	Crab_SetAni					; set animation based on angle
+		addq.b	#3,d0						; use walking animation
 		move.b	d0,obAnim(a0)
 		lea		Ani_Crab(pc),a1
 		bsr.w	AnimateSprite
 		bra.w	RememberState	
 ; ===========================================================================
 
-loc_966E:
-		subq.b	#2,ob2ndRout(a0)
-		move.w	#59,crab_timedelay(a0)
+	.stop:
+		subq.b	#2,ob2ndRout(a0)			; -> CrabAct_WaitFire
+		move.w	#59,obCrab_WaitTime(a0)
 		clr.w	obVelX(a0)
-		bsr.s	Crab_SetAni
-		move.b	d0,obAnim(a0)
+		bsr.s	Crab_SetAni					; set animation based on angle
+		move.b	d0,obAnim(a0)				; use standing animation
 		lea		Ani_Crab(pc),a1
 		bsr.w	AnimateSprite
-		bra.w	RememberState	
+		bra.w	RememberState
+; ===========================================================================
+
 ; ---------------------------------------------------------------------------
 ; Subroutine to	set the	correct	animation for a	Crabmeat
+;
+; output:
+;	d0 = animation id (0 = flat; 1 = slope; 2 = xflip slope)
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
 Crab_SetAni:
-		moveq	#0,d0
-		move.b	obAngle(a0),d3
-		bmi.s	loc_96A4
-		cmpi.b	#6,d3
-		blo.s	locret_96A2
-		moveq	#1,d0
+		moveq	#0,d0						; use standing flat animation by default
+		move.b	obAngle(a0),d3				; get floor angle
+		bmi.s	.slope_up_right				; branch if sloping up-right
+		cmpi.b	#6,d3						; is slope at least 6?
+		blo.s	.nearly_flat				; if not, branch
+		moveq	#1,d0						; use standing up-left slope animation
 		btst	#staFlipX,obStatus(a0)
-		bne.s	locret_96A2
-		moveq	#2,d0
+		bne.s	.nearly_flat
+		moveq	#2,d0						; use x-flip animation
 
-locret_96A2:
+	.nearly_flat:
 		rts	
 ; ===========================================================================
 
-loc_96A4:
-		cmpi.b	#-6,d3
-		bhi.s	locret_96B6
-		moveq	#2,d0
+	.slope_up_right:
+		cmpi.b	#-6,d3						; is slope at least 6?
+		bhi.s	.nearly_flat2				; if not, branch
+		moveq	#2,d0						; use standing up-right slope animation
 		btst	#staFlipX,obStatus(a0)
-		bne.s	locret_96B6
-		moveq	#1,d0
+		bne.s	.nearly_flat2
+		moveq	#1,d0						; use x-flip animation
 
-locret_96B6:
+	.nearly_flat2:
 		rts	
 ; End of function Crab_SetAni
-
 ; ===========================================================================
 
 Crab_Delete:	; Routine 4
 		bra.w	DeleteObject
 ; ===========================================================================
+
 ; ---------------------------------------------------------------------------
 ; Sub-object - missile that the	Crabmeat throws
 ; ---------------------------------------------------------------------------
 
 Crab_BallMain:	; Routine 6
-		addq.b	#2,obRoutine(a0)
+		addq.b	#2,obRoutine(a0)				; -> Crab_BallMove
 		move.l	#Map_Crab,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Crabmeat,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
+		move.w	#priority3,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colHarmful|colSz_6x6),obColType(a0)
 		move.b	#8,obDispWid(a0)
 		move.w	#-$400,obVelY(a0)
 		move.b	#7,obAnim(a0)
 		
 		bset	#shPropReflect,obShieldProp(a0)	; Reflected by Elemental Shields
+; ---------------------------------------------------------------------------
 
 Crab_BallMove:	; Routine 8
 		lea		Ani_Crab(pc),a1
@@ -227,6 +227,7 @@ Crab_BallMove:	; Routine 8
 		bsr.w	ObjectFall
 		move.w	(v_limitbtm).w,d0
 		addi.w	#$E0,d0
-		cmp.w	obY(a0),d0				; has object moved below the level boundary?
+		cmp.w	obY(a0),d0						; has object moved below the level boundary?
 		blo.w	DeleteObject
-		jmp		(DisplayAndCollision).l	; Clownacy DisplaySprite Fix; S3K TouchResponse
+		jmp		(DisplayAndCollision).l			; Clownacy DisplaySprite Fix; S3K TouchResponse
+; ===========================================================================

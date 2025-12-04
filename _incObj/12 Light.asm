@@ -18,7 +18,7 @@ Light_Main:	; Routine 0
 
 Light_Animate:	; Routine 2 (Replaced with global sync animation)
 		move.b	(v_ani2_frame).w,d0
-		move.b	d0,obFrame(a0)	; change current frame
+		move.b	d0,obFrame(a0)		; change current frame
 
 .chkdel:
 		offscreen.w	DeleteObject	; ProjectFM S3K Object Manager

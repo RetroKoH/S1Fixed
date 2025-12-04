@@ -14,14 +14,12 @@ Msl_Index:	offsetTable
 		offsetTableEntry.w Msl_FromBuzz
 		offsetTableEntry.w Msl_Delete
 		offsetTableEntry.w Msl_FromNewt
-
-msl_parent = objoff_3E
 ; ===========================================================================
 
 Msl_Main:	; Routine 0
-		subq.w	#1,buzz_timedelay(a0)
-		bpl.s	Msl_ChkCancel
-		addq.b	#2,obRoutine(a0)
+		subq.w	#1,obMissile_WaitTime(a0)		; decrement timer
+		bpl.s	Msl_ChkCancel					; branch if time remains
+		addq.b	#2,obRoutine(a0)				; -> Msl_Animate
 		move.l	#Map_Missile,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Buzz_Bomber,1,0),obGfx(a0)
 		move.b	#4,obRender(a0)
@@ -32,7 +30,7 @@ Msl_Main:	; Routine 0
 		tst.b	obSubtype(a0)					; was object created by	a Newtron?
 		beq.s	Msl_Animate						; if not, branch
 
-		move.b	#8,obRoutine(a0)				; run "Msl_FromNewt" routine
+		move.b	#8,obRoutine(a0)				; -> "Msl_FromNewt"
 		move.b	#(colHarmful|colSz_6x6),obColType(a0)
 		move.b	#1,obAnim(a0)
 		bra.s	Msl_Animate2
@@ -52,17 +50,16 @@ Msl_Animate:	; Routine 2
 		lea		Ani_Missile(pc),a1
 		bsr.w	AnimateSprite
 		jmp		(DisplayAndCollision).l		; S3K TouchResponse
+; ===========================================================================
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	check if the Buzz Bomber which fired the missile has been
 ; destroyed, and if it has, then cancel	the missile
 ; ---------------------------------------------------------------------------
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
 
 Msl_ChkCancel:
-		movea.w	msl_parent(a0),a1
-		_cmpi.b	#id_ExplosionItem,obID(a1) ; has Buzz Bomber been destroyed?
+		movea.w	obMissile_Parent(a0),a1
+		_cmpi.b	#id_ExplosionItem,obID(a1)	; has Buzz Bomber been destroyed?
 		; This adds a return value so that we know if the object has
 		; been freed. -- Clownacy DisplaySprite Fix
 		bne.s	.return
@@ -72,12 +69,11 @@ Msl_ChkCancel:
 .return:
 		rts	
 ; End of function Msl_ChkCancel
-
 ; ===========================================================================
 
 Msl_FromBuzz:	; Routine 4
-		btst	#7,obStatus(a0)
-		bne.s	.explode
+		btst	#7,obStatus(a0)		; is high bit of status set? (it never is)
+		bne.s	.explode			; if yes, branch
 		move.b	#(colHarmful|colSz_6x6),obColType(a0)
 		move.b	#1,obAnim(a0)
 		bsr.w	SpeedToPos
@@ -109,3 +105,4 @@ Msl_Animate2:
 		lea		Ani_Missile(pc),a1
 		bsr.w	AnimateSprite
 		bra.w	DisplayAndCollision	; S3K TouchResponse
+; ===========================================================================
