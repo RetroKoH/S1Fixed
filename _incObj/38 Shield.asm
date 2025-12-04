@@ -583,13 +583,13 @@ Stars_LoadGfx:
 		move.w	(a2)+,d5					; read "number of entries" value -- S3k: .b to .w
 		subq.w	#1,d5
 		bmi.s	.nochange					; if zero, branch
-		move.w	#(ArtTile_Shield*$20),d4
+		move.w	#(ArtTile_Shield*tile_size),d4
 
 .readentry:
 		moveq	#0,d1
-		move.w	(a2)+,d1	; S3K .b to .w
-		move.w	d1,d3		; S3K
-		lsr.w	#8,d3		; S3K
+		move.w	(a2)+,d1					; S3K .b to .w
+		move.w	d1,d3						; S3K
+		lsr.w	#8,d3						; S3K
 		andi.w	#$F0,d3
 		addi.w	#$10,d3
 		andi.w	#$FFF,d1
@@ -599,7 +599,7 @@ Stars_LoadGfx:
 		add.w	d3,d4
 		add.w	d3,d4
 		jsr		(QueueDMATransfer).w
-		dbf		d5,.readentry		; repeat for number of entries
+		dbf		d5,.readentry				; repeat for number of entries
 
 .nochange:
 		rts

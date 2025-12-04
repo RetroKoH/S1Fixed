@@ -3149,13 +3149,13 @@ CollapseObject:
 		move.b	obRender(a0),d3					; ++DeltaW change
 		move.w	obGfx(a0),d4					; ++DeltaW addition
 		move.w	obPriority(a0),d5				; ++DeltaW addition
-		move.b	obDispWid(a0),d6					; ++DeltaW addition
+		move.b	obDispWid(a0),d6				; ++DeltaW addition
 
 	; RetroKoH Mass Object Load Optimization; Built off of Spirituinsanum's Ring Loss Optimization
 	; Init the first fragment right away (which is already created)
 		move.b	#6,obRoutine(a0)
 		move.l	a3,obMap(a0)					; Set appropriate mapping
-		move.b	(a4)+,ledge_timedelay(a0)
+		move.b	(a4)+,obLedge_WaitTime(a0)
 
 	; Here we begin what's replacing SingleObjLoad.
 	; Slight improvement by Malachi
@@ -3181,7 +3181,7 @@ CollapseObject:
 		move.w	d4,obGfx(a1)
 		move.w	d5,obPriority(a1)				; RetroKoH/Devon S3K+ Priority Manager
 		move.b	d6,obDispWid(a1)
-		move.b	(a4)+,ledge_timedelay(a1)
+		move.b	(a4)+,obLedge_WaitTime(a1)
 		bsr.w	DisplaySprite1
 		dbf		d1,.loop						; repeat for number of fragments (space permitting)
 

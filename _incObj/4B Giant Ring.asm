@@ -129,10 +129,10 @@ GRing_LoadGfx:
 		move.w	(a2)+,d5				; read "number of entries" value -- S3k: .b to .w
 		subq.w	#1,d5
 		bmi.s	.nochange				; if zero, branch
-		move.w	#(ArtTile_Giant_Ring*$20),d4
+		move.w	#(ArtTile_Giant_Ring*tile_size),d4
 		cmpi.b	#8,d1					; are we drawing a ring flash?
 		blo.s	.readentry				; if not, skip ahead
-		move.w	#(ArtTile_Giant_Ring_Flash*$20),d4
+		move.w	#(ArtTile_Giant_Ring_Flash*tile_size),d4
 
 .readentry:
 		moveq	#0,d1

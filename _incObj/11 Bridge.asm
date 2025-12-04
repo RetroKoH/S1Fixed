@@ -4,7 +4,7 @@
 
 Bridge:
 		btst	#6,obRender(a0)			; Is this object set to render sub sprites?
-		beq.s	.normal					; If so, branch
+		beq.s	.normal					; If not, branch
 
 		move.w	#priority3,d0			; RetroKoH/Devon S3K+ Priority Manager
 		bra.w	DisplaySprite2			; Display sprites

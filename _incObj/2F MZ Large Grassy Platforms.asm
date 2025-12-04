@@ -2,9 +2,6 @@
 ; Object 2F - large grass-covered platforms (MZ)
 ; ---------------------------------------------------------------------------
 
-lgrass_origX = objoff_2A
-lgrass_origY = objoff_2C
-
 ; ===========================================================================
 LGrass_Data:
 		dc.w LGrass_Data1-LGrass_Data 	; collision angle data
@@ -22,243 +19,253 @@ LargeGrass:
 	; Object Routine Optimization End
 
 LGrass_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)
+		addq.b	#2,obRoutine(a0)			; -> LGrass_Action
 		move.l	#Map_LGrass,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Level,2,1),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority5,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.w	obY(a0),lgrass_origY(a0)
-		move.w	obX(a0),lgrass_origX(a0)
+		move.w	obY(a0),obLGrass_StartY(a0)
+		move.w	obX(a0),obLGrass_StartX(a0)
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
 		lsr.w	#2,d0
-		andi.w	#$1C,d0
+		andi.w	#$1C,d0						; d0 = high nybble of subtype, multiplied by 4
 		lea		LGrass_Data(pc,d0.w),a1
-		move.w	(a1)+,d0
+		move.w	(a1)+,d0					; get pointer to heightmap data
 		lea		LGrass_Data(pc,d0.w),a2
-		move.l	a2,objoff_30(a0)
+		move.l	a2,obLGrass_ColPtr(a0)		; get pointer to heightmap data again
 		move.b	(a1)+,obFrame(a0)
 		move.b	(a1),obDispWid(a0)
-		andi.b	#$F,obSubtype(a0)
+		andi.b	#$F,obSubtype(a0)			; clear high nybble of subtype
 		move.b	#$40,obHeight(a0)
 		bset	#4,obRender(a0)
 
 LGrass_Action:	; Routine 2
 		bsr.w	LGrass_Types
-		btst	#staSonicOnObj,obStatus(a0)	; removed obSolid
-		beq.s	LGrass_Solid
+		btst	#staSonicOnObj,obStatus(a0)	; is platform being stood on? removed obSolid
+		beq.s	LGrass_Solid				; if not, branch
 		moveq	#0,d1
 		move.b	obDispWid(a0),d1
 		addi.w	#$B,d1
-		bsr.w	ExitPlatform
-		btst	#staOnObj,obStatus(a1)		; is Sonic on the object?
+		bsr.w	ExitPlatform				; update flags if Sonic leaves plaform
+		btst	#staOnObj,obStatus(a1)		; is Sonic still on the platform?
 		bne.w	LGrass_Slope				; if yes, branch
 		bclr	#staSonicOnObj,obStatus(a0)	; removed obSolid
-		bra.s	LGrass_Display
+		bra.w	LGrass_ChkDel
 ; ===========================================================================
 
 LGrass_Slope:
 		moveq	#0,d1
 		move.b	obDispWid(a0),d1
 		addi.w	#$B,d1
-		movea.l	objoff_30(a0),a2
+		movea.l	obLGrass_ColPtr(a0),a2
 		move.w	obX(a0),d2
 		bsr.w	SlopeObject2
-		bra.s	LGrass_Display
+		bra.w	LGrass_ChkDel
 ; ===========================================================================
 
 LGrass_Solid:
 		moveq	#0,d1
 		move.b	obDispWid(a0),d1
-		addi.w	#$B,d1
-		move.w	#$20,d2
-		cmpi.b	#2,obFrame(a0)
-		bne.s	loc_AF8E
-		move.w	#$30,d2
+		addi.w	#$B,d1					; width
+		move.w	#$20,d2					; height
+		cmpi.b	#2,obFrame(a0)			; is this a narrow platform?
+		bne.s	.not_narrow				; if not, branch
+		move.w	#$30,d2					; use larger height
 
-loc_AF8E:
-		movea.l	objoff_30(a0),a2
-		bsr.w	SolidObject2F
-
-LGrass_Display:
+	.not_narrow:
+		movea.l	obLGrass_ColPtr(a0),a2
+		bsr.w	SolidObject2F			; SolidObject_Heightmap
 		bra.w	LGrass_ChkDel			; Clownacy DisplaySprite Fix
+; ===========================================================================
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
+; ---------------------------------------------------------------------------
+; Subroutine to update platform position and load burning grass object
+; ---------------------------------------------------------------------------
 
 LGrass_Types:
-		moveq	#0,d0
-		move.b	obSubtype(a0),d0
-		andi.w	#7,d0
+		moveq	#7,d0
+		and.b	obSubtype(a0),d0				; read low nybble of subtype (SCE Optimization)
+		beq.s	LGrass_Still					; skip if subtype 00
 		add.w	d0,d0
-		move.w	LGrass_TypeIndex(pc,d0.w),d1
-		jmp	LGrass_TypeIndex(pc,d1.w)
+		move.w	LGrass_TypeIndex-2(pc,d0.w),d1
+		jmp		LGrass_TypeIndex(pc,d1.w)
 ; End of function LGrass_Types
-
-; ===========================================================================
-LGrass_TypeIndex:
-		dc.w LGrass_Type00-LGrass_TypeIndex
-		dc.w LGrass_Type01-LGrass_TypeIndex
-		dc.w LGrass_Type02-LGrass_TypeIndex
-		dc.w LGrass_Type03-LGrass_TypeIndex
-		dc.w LGrass_Type04-LGrass_TypeIndex
-		dc.w LGrass_Type05-LGrass_TypeIndex
 ; ===========================================================================
 
-LGrass_Type00:
-		rts			; type 00 platform doesn't move
+LGrass_TypeIndex:		offsetTable
+		offsetTableEntry.w LGrass_Move32
+		offsetTableEntry.w LGrass_Move48
+		offsetTableEntry.w LGrass_Move64
+		offsetTableEntry.w LGrass_Move96	; unused
+		offsetTableEntry.w LGrass_Sinking
 ; ===========================================================================
 
-LGrass_Type01:
+; Type 0 - doesn't move
+LGrass_Still:
+		rts
+; ===========================================================================
+
+; Type 1 - moves up and down 32 pixels
+LGrass_Move32:
 		move.b	(v_oscillate+2).w,d0
-		move.w	#$20,d1
+		move.w	#32,d1
 		bra.s	LGrass_Move
 ; ===========================================================================
 
-LGrass_Type02:
+; Type 2 - moves up and down 48 pixels
+LGrass_Move48:
 		move.b	(v_oscillate+6).w,d0
-		move.w	#$30,d1
+		move.w	#48,d1
 		bra.s	LGrass_Move
 ; ===========================================================================
 
-LGrass_Type03:
+; Type 3 - moves up and down 64 pixels
+LGrass_Move64:
 		move.b	(v_oscillate+$A).w,d0
-		move.w	#$40,d1
+		move.w	#64,d1
 		bra.s	LGrass_Move
 ; ===========================================================================
 
-LGrass_Type04:
+; Type 4 - moves up and down 96 pixels (unused)
+LGrass_Move96:
 		move.b	(v_oscillate+$E).w,d0
-		move.w	#$60,d1
+		move.w	#96,d1
 
 LGrass_Move:
-		btst	#3,obSubtype(a0)
-		beq.s	loc_AFF2
-		neg.w	d0
+		btst	#3,obSubtype(a0)		; is bit 3 of subtype set? (+8)
+		beq.s	.no_rev					; if not, branch
+		neg.w	d0						; reverse direction
 		add.w	d1,d0
 
-loc_AFF2:
-		move.w	lgrass_origY(a0),d1
+	.no_rev:
+		move.w	obLGrass_StartY(a0),d1
 		sub.w	d0,d1
-		move.w	d1,obY(a0)	; update position on y-axis
+		move.w	d1,obY(a0)				; update y position
 		rts	
 ; ===========================================================================
 
-LGrass_Type05:
-		move.b	objoff_34(a0),d0
-		btst	#staSonicOnObj,obStatus(a0)	; removed obSolid
-		bne.s	loc_B010
-		subq.b	#2,d0
-		bcc.s	loc_B01C
-		moveq	#0,d0
-		bra.s	loc_B01C
+; Type 5 - sinks when stood on and catches fire
+LGrass_Sinking:
+		move.b	obLGrass_SinkPixels(a0),d0	; get current sink distance
+		btst	#staSonicOnObj,obStatus(a0)	; is platform being stood on? (removed obSolid)
+		bne.s	.stood_on					; if yes, branch
+		subq.b	#2,d0						; decrement sink distance
+		bcc.s	.update_sink				; branch if not < 0
+		moveq	#0,d0						; reset to 0
+		bra.s	.update_sink
 ; ===========================================================================
 
-loc_B010:
-		addq.b	#4,d0
-		cmpi.b	#$40,d0
-		blo.s	loc_B01C
-		move.b	#$40,d0
+	.stood_on:
+		addq.b	#4,d0						; add 4 to sink distance
+		cmpi.b	#64,d0						; has it reached 64px?
+		blo.s	.update_sink				; if not, branch
+		move.b	#64,d0						; max = 64px
 
-loc_B01C:
-		move.b	d0,objoff_34(a0)
-		jsr	(CalcSine).w
+	.update_sink:
+		move.b	d0,obLGrass_SinkPixels(a0)	; update sink distance
+		jsr		(CalcSine).w
 		lsr.w	#4,d0
 		move.w	d0,d1
-		add.w	lgrass_origY(a0),d0
-		move.w	d0,obY(a0)
-		cmpi.b	#$20,objoff_34(a0)
-		bne.s	loc_B07A
-		tst.b	objoff_35(a0)
-		bne.s	loc_B07A
-		move.b	#1,objoff_35(a0)
+		add.w	obLGrass_StartY(a0),d0
+		move.w	d0,obY(a0)					; update position
+		cmpi.b	#32,obLGrass_SinkPixels(a0)
+		bne.s	.skip_fire					; branch if not at 32px
+		tst.b	obLGrass_BurnFlag(a0)
+		bne.s	.skip_fire					; branch if already burning
+		move.b	#1,obLGrass_BurnFlag(a0)	; set burning flag
 		bsr.w	FindNextFreeObj
-		bne.s	loc_B07A
-		_move.b	#id_GrassFire,obID(a1) ; load sitting flame object
+		bne.s	.skip_fire					; branch if object slot not found
+
+		_move.b	#id_GrassFire,obID(a1)		; load sitting flame object (this spreads itself)
 		move.w	obX(a0),obX(a1)
-		move.w	lgrass_origY(a0),lgrass_origY(a1)
-		addq.w	#8,lgrass_origY(a1)
-		subq.w	#3,lgrass_origY(a1)
-		subi.w	#$40,obX(a1)
-		move.l	objoff_30(a0),objoff_30(a1)
-		move.l	a0,objoff_38(a1)
+		move.w	obLGrass_StartY(a0),obLGrass_StartY(a1)
+		addq.w	#8,obLGrass_StartY(a1)
+		subq.w	#3,obLGrass_StartY(a1)
+		subi.w	#$40,obX(a1)				; start at left side of platform
+		move.l	obLGrass_ColPtr(a0),obLGrass_ColPtr(a1)
+		move.w	a0,obGFire_Parent(a1)		; save parent OST address
 		movea.l	a0,a2
-		bsr.s	sub_B09C
+		bsr.s	LGrass_AddChildToList		; save first flame OST index to list in parent OST
 
-loc_B07A:
+	.skip_fire:
 		moveq	#0,d2
-		lea	objoff_36(a0),a2
-		move.b	(a2)+,d2
+		lea		obLGrass_Children(a0),a2	; get address of child list
+		move.b	(a2)+,d2					; get quantity
 		subq.b	#1,d2
-		bcs.s	locret_B09A
+		bcs.s	.skip_fire_sink				; branch if 0
 
-loc_B086:
+	.loop_fire_sink:
 		moveq	#0,d0
 		move.b	(a2)+,d0
 		lsl.w	#object_size_bits,d0
-		addi.w	#v_objspace&$FFFF,d0
+		addi.w	#v_objspace&$FFFF,d0		; convert child OST index to address
 		movea.w	d0,a1
-		move.w	d1,objoff_3C(a1)
-		dbf	d2,loc_B086
+		move.w	d1,obGFire_SinkPixels(a1)	; copy parent sink distance to child
+		dbf		d2,.loop_fire_sink			; repeat for all children
 
-locret_B09A:
-		rts	
+	.skip_fire_sink:
+		rts
+; ===========================================================================
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+; ---------------------------------------------------------------------------
+; Subroutine to add child to list in parent OST
+;
+; input:
+;	a1 = address of OST of child fire
+;	a2 = address of OST of parent platform
+; ---------------------------------------------------------------------------
 
-
-sub_B09C:
-		lea	objoff_36(a2),a2
+LGrass_AddChildToList:
+		lea		obLGrass_Children(a2),a2	; load list of child objects
 		moveq	#0,d0
-		move.b	(a2),d0
-		addq.b	#1,(a2)
-		lea	1(a2,d0.w),a2
-		move.w	a1,d0
+		move.b	(a2),d0						; get child count
+		addq.b	#1,(a2)						; increment child counter
+		lea		1(a2,d0.w),a2				; go to end of list
+		move.w	a1,d0						; get child object RAM address
 		subi.w	#v_objspace&$FFFF,d0
 		lsr.w	#object_size_bits,d0
-		andi.w	#$7F,d0
-		move.b	d0,(a2)
+		andi.w	#$7F,d0						; d0 = obj RAM index of child
+		move.b	d0,(a2)						; copy d0 to end of list
 		rts	
-; End of function sub_B09C
-
+; End of function LGrass_AddChildToList
 ; ===========================================================================
 
 LGrass_ChkDel:
-		tst.b	objoff_35(a0)
-		beq.s	loc_B0C6
-		tst.b	obRender(a0)
-		bpl.s	LGrass_DelFlames
+		tst.b	obLGrass_BurnFlag(a0)		; is platform burning?
+		beq.s	.not_burning				; if not, branch
+		tst.b	obRender(a0)				; is platform off screen?
+		bpl.s	LGrass_DelFlames			; if yes, branch
 
-loc_B0C6:
-		offscreen.w	DeleteObject,lgrass_origX(a0)	; ProjectFM S3K Objects Manager
+	.not_burning:
+		offscreen.w	DeleteObject,obLGrass_StartX(a0)	; ProjectFM S3K Objects Manager
 		bra.w	DisplaySprite						; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 LGrass_DelFlames:
 		moveq	#0,d2
-
-loc_B0E8:
-		lea		objoff_36(a0),a2
-		move.b	(a2),d2
-		clr.b	(a2)+
+		lea		obLGrass_Children(a0),a2	; load list of child objects
+		move.b	(a2),d2						; get quantity
+		clr.b	(a2)+						; clear quantity
 		subq.b	#1,d2
-		bcs.s	locret_B116
+		bcs.w	DisplaySprite				; branch if 0
 
-loc_B0F4:
+	.loop_del:
 		moveq	#0,d0
 		move.b	(a2),d0
 		clr.b	(a2)+
 		lsl.w	#object_size_bits,d0
-		addi.w	#v_objspace&$FFFF,d0
+		addi.w	#v_objspace&$FFFF,d0		; convert child obj index to address
 		movea.w	d0,a1
-		bsr.w	DeleteChild
-		dbf		d2,loc_B0F4
-		clr.b	objoff_35(a0)
-		clr.b	objoff_34(a0)
+		bsr.w	DeleteChild					; delete child object
+		dbf		d2,.loop_del				; repeat for all children
+		clr.b	obLGrass_BurnFlag(a0)
+		clr.b	obLGrass_SinkPixels(a0)
 
-locret_B116:
-		bra.w	DisplaySprite	; Clownacy DisplaySprite Fix
+	.no_fire:
+		bra.w	DisplaySprite				; Clownacy DisplaySprite Fix
 ; ===========================================================================
+
 ; ---------------------------------------------------------------------------
 ; Collision data for large moving platforms (MZ)
 ; ---------------------------------------------------------------------------
@@ -268,3 +275,4 @@ LGrass_Data2:	binclude	"misc/mz_pfm2.bin"
 		even
 LGrass_Data3:	binclude	"misc/mz_pfm3.bin"
 		even
+; ===========================================================================

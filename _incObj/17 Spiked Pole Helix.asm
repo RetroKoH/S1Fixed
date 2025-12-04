@@ -6,6 +6,8 @@
 Helix:
 		btst	#6,obRender(a0)		; Is this object set to render sub sprites?
 		bne.s	.SubSprs			; If so, branch
+; ---------------------------------------------------------------------------
+
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Hel_Index(pc,d0.w),d1
@@ -76,7 +78,7 @@ Hel_MakeSubsprite:
 .done:
 		move.w	obHel_OffsetX(a0),d0
 		addi.w	d0,obX(a1)					; x-offset from above (still in d0)
-		move.w	a1,obHel_ChildObj(a0)			; pointer to subsprite object
+		move.w	a1,obHel_ChildObj(a0)		; pointer to subsprite object
 		
 	; Spiked Log Helix is finished
 
@@ -139,7 +141,7 @@ Hel_ChkDel:
 ; ===========================================================================
 
 Hel_Delete:	; Routine 4
-		movea.w	obHel_ChildObj(a0),a1 ; a1=object
+		movea.w	obHel_ChildObj(a0),a1			; a1=object
 		bsr.w	DeleteChild
 		bra.w	DeleteObject
 ; ===========================================================================

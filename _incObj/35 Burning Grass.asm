@@ -11,17 +11,15 @@ GrassFire:
 ; ===========================================================================
 GFire_Index:	offsetTable
 		offsetTableEntry.w GFire_Main
-		offsetTableEntry.w loc_B238
+		offsetTableEntry.w GFire_Spread
 		offsetTableEntry.w GFire_Move
-
-gfire_origX = objoff_2A
 ; ===========================================================================
 
 GFire_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)
+		addq.b	#2,obRoutine(a0)				; -> GFire_Spread
 		move.l	#Map_Fire,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Fireball,0,0),obGfx(a0)
-		move.w	obX(a0),gfire_origX(a0)
+		move.w	obX(a0),obGFire_StartX(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority1,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colHarmful|colSz_8x8),obColType(a0)
@@ -30,17 +28,17 @@ GFire_Main:	; Routine 0
 
 		move.b	#8,obDispWid(a0)
 		move.w	#sfx_Burning,d0
-		jsr		(QueueSound2).w	 		; play burning sound
+		jsr		(QueueSound2).w	 				; play burning sound
 		tst.b	obSubtype(a0)
-		beq.s	loc_B238
+		beq.s	GFire_Spread
 		addq.b	#2,obRoutine(a0)
 		bra.w	GFire_Move
 ; ===========================================================================
 
-loc_B238:	; Routine 2
+GFire_Spread:	; Routine 2
 		movea.l	objoff_30(a0),a1
 		move.w	obX(a0),d1
-		sub.w	gfire_origX(a0),d1
+		sub.w	obGFire_StartX(a0),d1
 		addi.w	#$C,d1
 		move.w	d1,d0
 		lsr.w	#1,d0
@@ -67,7 +65,7 @@ loc_B238:	; Routine 2
 		move.w	objoff_3C(a0),objoff_3C(a1)
 		move.b	#1,obSubtype(a1)
 		movea.w	objoff_38(a0),a2
-		bsr.w	sub_B09C
+		bsr.w	LGrass_AddChildToList
 
 loc_B2B0:
 		bra.s	GFire_Animate

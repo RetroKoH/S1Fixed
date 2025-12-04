@@ -310,14 +310,14 @@ Level_TtlCardLoop:
 		beq.s	.nocard							; if not, branch
 
 		move.w	(v_ttlcardact+obX).w,d0
-		cmp.w	(v_ttlcardact+card_mainX).w,d0	; has title card sequence finished?
-		bne.s	Level_TtlCardLoop				; if not, branch
+		cmp.w	(v_ttlcardact+obTCard_DisplayX).w,d0	; has title card sequence finished?
+		bne.s	Level_TtlCardLoop						; if not, branch
 
 	.nocard:
 	else
 		move.w	(v_ttlcardact+obX).w,d0
-		cmp.w	(v_ttlcardact+card_mainX).w,d0	; has title card sequence finished?
-		bne.s	Level_TtlCardLoop				; if not, branch
+		cmp.w	(v_ttlcardact+obTCard_DisplayX).w,d0	; has title card sequence finished?
+		bne.s	Level_TtlCardLoop						; if not, branch
 	endif
 		tst.l	(v_plc_buffer).w				; are there any items in the pattern load cue?
 		bne.s	Level_TtlCardLoop				; if yes, branch

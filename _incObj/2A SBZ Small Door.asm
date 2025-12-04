@@ -7,6 +7,7 @@ AutoDoor:
 		tst.b	obRoutine(a0)
 		bne.s	ADoor_OpenShut
 	; Object Routine Optimization End
+; ---------------------------------------------------------------------------
 
 ADoor_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -17,36 +18,38 @@ ADoor_Main:	; Routine 0
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 
 ADoor_OpenShut:	; Routine 2
-		move.w	#$40,d1		; set range for door detection
-		clr.b	obAnim(a0)	; use "closing"	animation
+		move.w	#64,d1					; set range for door detection
+		clr.b	obAnim(a0)				; use "closing"	animation
 		move.w	(v_player+obX).w,d0
-		add.w	d1,d0
-		cmp.w	obX(a0),d0
-		blo.s	ADoor_Animate
+		add.w	d1,d0					; d0 = 64px right of Sonic
+		cmp.w	obX(a0),d0				; is Sonic > 64px left of door?
+		blo.s	ADoor_Animate			; if yes, branch
 		sub.w	d1,d0
-		sub.w	d1,d0
-		cmp.w	obX(a0),d0	; is Sonic > $40 pixels from door?
-		bhs.s	ADoor_Animate	; close door
-		add.w	d1,d0
-		cmp.w	obX(a0),d0	; is Sonic left of the door?
-		bhs.s	loc_899A	; if yes, branch
+		sub.w	d1,d0					; d0 = 64px left of Sonic
+		cmp.w	obX(a0),d0				; is Sonic > 64px right of door?
+		bhs.s	ADoor_Animate			; if yes, branch
+
+		add.w	d1,d0					; d0 = Sonic's x position
+		cmp.w	obX(a0),d0				; is Sonic left of the door?
+		bhs.s	.sonic_is_left			; if yes, branch
 		btst	#staFlipX,obStatus(a0)
 		bne.s	ADoor_Animate
 		bra.s	ADoor_Open
 ; ===========================================================================
 
-loc_899A:
+	.sonic_is_left:
 		btst	#staFlipX,obStatus(a0)
 		beq.s	ADoor_Animate
+; ---------------------------------------------------------------------------
 
 ADoor_Open:
-		move.b	#1,obAnim(a0)	; use "opening"	animation
+		move.b	#1,obAnim(a0)			; use "opening" animation if Sonic is on active side of door
 
 ADoor_Animate:
 		lea		Ani_ADoor(pc),a1
 		bsr.w	AnimateSprite
-		tst.b	obFrame(a0)	; is the door open?
-		bne.w	RememberState	; if yes, branch
+		tst.b	obFrame(a0)				; is the door open?
+		bne.w	RememberState			; if yes, branch
 		move.w	#$11,d1
 		move.w	#$20,d2
 		move.w	d2,d3

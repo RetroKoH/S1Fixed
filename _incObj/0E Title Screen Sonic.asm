@@ -33,15 +33,15 @@ TSon_Delay:	;Routine 2
 		addq.b	#2,obRoutine(a0)			; go to next routine
 		bra.w	DisplaySprite
 
-.wait:
+	.wait:
 		rts	
 ; ===========================================================================
 
 TSon_Move:	; Routine 4
 		bsr.s	TSon_LoadGfx
-		subq.w	#8,obScreenY(a0)	; move Sonic up
-		cmpi.w	#$96,obScreenY(a0)	; has Sonic reached final position?
-		bne.w	DisplaySprite		; if not, branch
+		subq.w	#8,obScreenY(a0)			; move Sonic up
+		cmpi.w	#$96,obScreenY(a0)			; has Sonic reached final position?
+		bne.w	DisplaySprite				; if not, branch
 		addq.b	#2,obRoutine(a0)
 		bra.w	DisplaySprite
 ; ===========================================================================
@@ -69,16 +69,16 @@ TSon_LoadGfx:
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2
 		moveq	#0,d5
-		move.w	(a2)+,d5				; read "number of entries" value -- S3k: .b to .w
+		move.w	(a2)+,d5					; read "number of entries" value -- S3k: .b to .w
 		subq.w	#1,d5
-		bmi.s	.nochange				; if zero, branch
-		move.w	#(ArtTile_Title_Sonic*$20),d4
+		bmi.s	.nochange					; if zero, branch
+		move.w	#(ArtTile_Title_Sonic*tile_size),d4
 
-.readentry:
+	.readentry:
 		moveq	#0,d1
-		move.w	(a2)+,d1	; S3K .b to .w
-		move.w	d1,d3		; S3K
-		lsr.w	#8,d3		; S3K
+		move.w	(a2)+,d1					; S3K .b to .w
+		move.w	d1,d3						; S3K
+		lsr.w	#8,d3						; S3K
 		andi.w	#$F0,d3
 		addi.w	#$10,d3
 		andi.w	#$FFF,d1
@@ -88,7 +88,8 @@ TSon_LoadGfx:
 		add.w	d3,d4
 		add.w	d3,d4
 		jsr		(QueueDMATransfer).w
-		dbf		d5,.readentry	; repeat for number of entries
+		dbf		d5,.readentry				; repeat for number of entries
 
-.nochange:
+	.nochange:
 		rts
+; ===========================================================================

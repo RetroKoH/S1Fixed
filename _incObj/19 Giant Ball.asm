@@ -21,7 +21,7 @@ GHZBall_Main:
 		bsr.w	ObjectFall
 		jsr		(ObjFloorDist).l
 		tst.w	d1
-		bpl.s	locret_5CEC
+		bpl.s	.no_floor
 		add.w	d1,obY(a0)					; latch to the floor upon init
 		clr.w	obVelY(a0)
 		addq.b	#2,obRoutine(a0)
@@ -34,14 +34,14 @@ GHZBall_Main:
 		bsr.w	GHZBall_SetFrame
 		bra.w	RememberState
 
-locret_5CEC:
+	.no_floor:
 		rts
 ; ===========================================================================
 
 GHZBall_Idle:		; Routine 2
 		move.w	#$23,d1						; width
 		move.w	#$18,d2						; height (jumping)
-		move.w	#$18,d3						; height (walking)
+		move.w	d2,d3						; height (walking)
 		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject					; make the ball solid
 		btst	#staSonicPush,obStatus(a0)	; is Sonic pushing the ball?
@@ -67,7 +67,7 @@ GHZBall_Rolling:	; Routine 4
 		bsr.w	SpeedToPos
 		move.w	#$23,d1						; width
 		move.w	#$18,d2						; height (jumping)
-		move.w	#$18,d3						; height (walking)
+		move.w	d2,d3						; height (walking)
 		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject					; make the ball solid
 		btst	#staSonicPush,obStatus(a0)	; is Sonic pushing the ball?
@@ -110,7 +110,7 @@ GHZBall_InAir:		; Routine 6
 		bsr.w	SpeedToPos
 		move.w	#$23,d1						; width
 		move.w	#$18,d2						; height (jumping)
-		move.w	#$18,d3						; height (walking)
+		move.w	d2,d3						; height (walking)
 		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject					; make the ball solid
 		jsr		(ObjFloorDist).l
@@ -138,12 +138,12 @@ GHZBall_SetFrame:
 		rts
 ; ===========================================================================
 
-.isframe0:
+	.isframe0:
 		move.b	obInertia(a0),d0	; d0 = floor(inertia)
 		beq.s	.setframe			; if not moving, branch
 		bmi.s	.movingleft			; if moving left, branch
 
-;.movingright:
+	;.movingright:
 		subq.b	#1,obTimeFrame(a0)	; decrement frame timer
 		bpl.s	.setframe			; if time remains, branch
 		neg.b	d0					; make stored inertia negative
@@ -151,7 +151,7 @@ GHZBall_SetFrame:
 		bcs.s	.ispositive			; if positive, branch (I need to check this)
 		moveq	#0,d0
 
-.ispositive:
+	.ispositive:
 		move.b	d0,obTimeFrame(a0)	; set frame timer
 		move.b	obDelayAni(a0),d0
 		addq.b	#1,d0
@@ -159,29 +159,29 @@ GHZBall_SetFrame:
 		bne.s	.under4
 		moveq	#1,d0
 
-.under4:
+	.under4:
 		move.b	d0,obDelayAni(a0)
 
-.setframe:
+	.setframe:
 		move.b	obDelayAni(a0),obFrame(a0)
 		rts
 ; ===========================================================================
 
-.movingleft:
+	.movingleft:
 		subq.b	#1,obTimeFrame(a0)	; decrement frame timer
 		bpl.s	.setframe			; if time remains, branch
 		addq.b	#6,d0				; d0 = -(inertia) + 6
 		bcs.s	.ispositive2		; if positive, branch (I need to check this)
 		moveq	#0,d0
 
-.ispositive2:
+	.ispositive2:
 		move.b	d0,obTimeFrame(a0)	; set frame timer
 		move.b	obDelayAni(a0),d0
 		subq.b	#1,d0
 		bne.s	.setframe2
 		moveq	#3,d0
 
-.setframe2:
+	.setframe2:
 		move.b	d0,obDelayAni(a0)
 		move.b	obDelayAni(a0),obFrame(a0)
 		rts
