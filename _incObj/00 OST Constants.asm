@@ -185,8 +185,9 @@ obHel_StartX:			equ objoff_3A		; 2 bytes | starting X-axis offset position (obX+
 
 ; Obj18 - GHZ, SYZ, SLZ Platforms
 obPlat_BaseY:			equ objoff_2C		; 2 bytes | y position ignoring dip when Sonic is on the platform
-obPlat_StartX:			equ objoff_32		; 2 bytes | starting X-axis position
-obPlat_StartY:			equ objoff_34		; 2 bytes | starting Y-axis position
+obPlat_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
+obPlat_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position
+obPlat_PrevX:			equ objoff_34		; 2 bytes | previous X-axis position (used instead of pushing to the stack)
 obPlat_NudgeY:			equ objoff_38		; 1 byte  | amount of dip when Sonic is on the platform
 obPlat_WaitTime:		equ objoff_3A		; 2 bytes | time delay for platform moving when stood on
 ; ---------------------------------------------------------------------------
@@ -201,7 +202,7 @@ obSurf_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
 obSurf_Freeze:			equ objoff_32		; 1 byte  | flag to freeze animation
 ; ---------------------------------------------------------------------------
 
-; Obj1D - LZ Water Surface
+; Obj1D - Unused Magic Switch
 obSwi_StartY:			equ objoff_30		; 2 bytes | starting Y-axis position
 ; ---------------------------------------------------------------------------
 
@@ -387,7 +388,6 @@ obVanish_Timer:			equ objoff_30		; 1 byte  | time for Sonic to disappear
 ; Obj4C - MZ Lava Geyser Maker
 obGMake_WaitTime:		equ objoff_32		; 2 bytes | current time remaining
 obGMake_WaitTotal:		equ objoff_34		; 2 bytes | time delay
-obGMake_Parent:			equ objoff_3E		; 2 bytes | RAM address of parent object
 ; ---------------------------------------------------------------------------
 
 ; Obj4D - MZ Lava Geyser / Lavafall

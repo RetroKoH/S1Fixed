@@ -7,6 +7,7 @@ MissileDissolve:
 		tst.b	obRoutine(a0)
 		bne.s	MDis_Animate
 	; Object Routine Optimization End
+; ---------------------------------------------------------------------------
 
 MDis_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -19,7 +20,7 @@ MDis_Main:	; Routine 0
 		move.b	#9,obTimeFrame(a0)
 		clr.b	obFrame(a0)
 		move.w	#sfx_A5,d0
-		jsr		(QueueSound2).w		; play sound
+		jsr		(QueueSound2).w				; play sound
 
 MDis_Animate:	; Routine 2
 		subq.b	#1,obTimeFrame(a0)			; subtract 1 from frame duration
@@ -29,7 +30,7 @@ MDis_Animate:	; Routine 2
 		cmpi.b	#4,obFrame(a0)				; has animation completed?
 		beq.w	DeleteObject				; if yes, branch
 
-.display:
+	.display:
 		bra.w	DisplaySprite
 ; ===========================================================================
 
@@ -46,11 +47,12 @@ ExplosionItem:
 		tst.b	d0
 		bne.s	ExItem_Main
 	; Object Routine Optimization End
+; ---------------------------------------------------------------------------
 
 ExItem_Animal:	; Routine 0
-		addq.b	#2,obRoutine(a0)
+		addq.b	#2,obRoutine(a0)			; -> ExItem_Main
 		bsr.w	FindFreeObj
-		bne.s	ExItem_Main
+		bne.s	ExItem_Main					; branch if no free object slot is found
 
 	; RetroKoH/DeltaW Enemies Drop Rings Mod
 	if EnemiesDropRings
@@ -78,7 +80,7 @@ ExItem_Main:	; Routine 2
 		move.b	#7,obTimeFrame(a0)			; set frame duration to 7 frames
 		clr.b	obFrame(a0)
 		move.w	#sfx_BreakItem,d0
-		jsr		(QueueSound2).w		; play breaking enemy sound
+		jsr		(QueueSound2).w				; play breaking enemy sound
 
 ExItem_Animate:	; Routine 4 (2 for ExplosionBomb)
 		subq.b	#1,obTimeFrame(a0)			; subtract 1 from frame duration
@@ -100,6 +102,7 @@ ExplosionBomb:
 		tst.b	obRoutine(a0)
 		bne.s	ExItem_Animate
 	; Object Routine Optimization End
+; ---------------------------------------------------------------------------
 
 ExBom_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -112,5 +115,5 @@ ExBom_Main:	; Routine 0
 		move.b	#7,obTimeFrame(a0)
 		clr.b	obFrame(a0)
 		move.w	#sfx_Bomb,d0
-		jmp		(QueueSound2).w		; play exploding bomb sound
+		jmp		(QueueSound2).w				; play exploding bomb sound
 ; ===========================================================================

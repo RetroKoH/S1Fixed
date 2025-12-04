@@ -24,6 +24,7 @@ Scen_Main:	; Routine 0
 		move.b	(a1)+,obFrame(a0)
 		move.b	(a1)+,obDispWid(a0)
 		move.w	(a1)+,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
+; ---------------------------------------------------------------------------
 
 Scen_ChkDel:	; Routine 2
 		offscreen.w	DeleteObject		; ProjectFM S3K Objects Manager

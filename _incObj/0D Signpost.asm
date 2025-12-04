@@ -23,6 +23,7 @@ Signpost:
 		cmpi.b	#6,obRoutine(a0)
 		bgt.s	.skip
 		bsr.w	Signpost_LoadGfx
+
 	.skip:
 	; VRAM Overhaul Edit End
 		offscreen.w	DeleteObject	; ProjectFM S3K Object Manager
@@ -44,6 +45,7 @@ Sign_Main:	; Routine 0
 		move.b	#$18,obDispWid(a0)
 		move.w	#priority4,obPriority(a0)			; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$FF,obSign_PrevFrame(a0)			; Added for DPLC frame check
+; ---------------------------------------------------------------------------
 
 Sign_Touch:	; Routine 2
 		tst.b	(f_bigring).w						; did Sonic collect the Giant Ring?
@@ -75,24 +77,24 @@ Sign_Touch:	; Routine 2
 		beq.s	.notinair							; if not, branch
 		move.b	obVelX(a1),d0						; horizontal air speed
 
-.notinair:
+	.notinair:
 		tst.b	d0									; is speed already negative (we somehow triggered from the left)
 		bpl.s	.notnegative						; if not, branch
 		neg.b	d0									; we don't want a negative value just yet
 
-.notnegative:
+	.notnegative:
 		cmpi.b	#4,d0
 		ble.s	.tooslow							; if under 4, don't let the sign fly
 		cmpi.b	#$A,d0
 		ble.s	.dontcap
 		move.b	#$A,d0								; set max cap of $A
 
-.dontcap:
+	.dontcap:
 		lsr.b	#1,d0								; vel / 2
 		neg.b	d0									; make value negative
 		move.b	d0,obVelY(a0)						; set y speed of signpost
 
-.tooslow:
+	.tooslow:
 		move.w	obY(a0),obSign_StartY(a0)			; store starting y-position so we know when to land
 		move.w	#60,obSign_SpinTime(a0)				; set spin cycle time to 1 second
 		addq.b	#1,obAnim(a0)						; set to first spin cycle early
@@ -103,7 +105,7 @@ Sign_Touch:	; Routine 2
 		move.w	(v_limitright).w,(v_limitleft).w	; lock screen position
 		addq.b	#2,obRoutine(a0)
 
-.notouch:
+	.notouch:
 		rts	
 ; ===========================================================================
 
@@ -112,23 +114,23 @@ Sign_Spin:	; Routine 4
 ; RetroKoH Floating Signpost Mechanic
 	if FloatingSignposts
 		tst.b	ob2ndRout(a0)
-		bne.s	.onground
+		bne.s	.on_ground
 		bsr.w	SpeedToPos_YOnly
 		move.w	obSign_StartY(a0),d1
 		sub.w	obY(a0),d1
-		bpl.s	.inair
+		bpl.s	.in_air
 		add.w	d1,obY(a0)						; latch to the floor
 		clr.w	obVelY(a0)
 		move.b	#1,ob2ndRout(a0)
-		bra.s	.onground
+		bra.s	.on_ground
 
-.inair:
+	.in_air:
 		addi.w	#$28,obVelY(a0)
 		cmpi.b	#$E,obSign_SparkleTime(a0)
-		bne.s	.skipreset
+		bne.s	.skip_reset
 		clr.b	obSign_SparkleTime(a0)
 
-.skipreset:
+	.skip_reset:
 		subq.w	#1,obSign_SpinTime(a0)			; subtract 1 from spin time
 		bpl.s	.chksparkle						; if time remains, branch
 		move.w	#60,obSign_SpinTime(a0)			; set spin cycle time to 1 second
@@ -137,7 +139,7 @@ Sign_Spin:	; Routine 4
 		addq.b	#1,obAnim(a0)					; next spin cycle
 		bra.s	.chksparkle
 
-.onground:
+	.on_ground:
 	endif
 
 		subq.w	#1,obSign_SpinTime(a0)			; subtract 1 from spin time
@@ -149,12 +151,12 @@ Sign_Spin:	; Routine 4
 
 	if EndLevelFadeMusic
 		move.b	#bgm_Fade,d0
-		jsr		(QueueSound2).w			; fade out music (RetroKoH)
+		jsr		(QueueSound2).w					; fade out music (RetroKoH)
 	endif
 
 		addq.b	#2,obRoutine(a0)
 
-.chksparkle:
+	.chksparkle:
 		subq.w	#1,obSign_SparkleTime(a0)		; subtract 1 from time delay
 		bpl.s	.fail							; if time remains, branch
 		move.w	#$B,obSign_SparkleTime(a0)		; set time between sparkles to $B frames
@@ -167,10 +169,10 @@ Sign_Spin:	; Routine 4
 		bne.s	.fail
 		_move.b	#id_Rings,obID(a1)				; load rings object
 		move.b	#id_Ring_Sparkle,obRoutine(a1)	; jump to ring sparkle subroutine
-		move.b	(a2)+,d0
+		move.b	(a2)+,d0						; get relative x position
 		ext.w	d0
-		add.w	obX(a0),d0
-		move.w	d0,obX(a1)
+		add.w	obX(a0),d0						; add to signpost x position
+		move.w	d0,obX(a1)						; update sparkle position
 		move.b	(a2)+,d0
 		ext.w	d0
 		add.w	obY(a0),d0
@@ -181,7 +183,7 @@ Sign_Spin:	; Routine 4
 		move.w	#priority2,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#8,obDispWid(a1)
 
-.fail:
+	.fail:
 		rts	
 ; ===========================================================================
 Sign_SparkPos:
@@ -205,35 +207,36 @@ Sign_SonicRun:	; Routine 6
 	; possible for the player to avoid having their controls locked by
 	; jumping at the right side of the screen just as the score tally
 	; appears.
-		tst.b	(v_player+obID).w			; Check if Sonic's object has been deleted (because he entered the giant ring)
-		beq.s	loc_EC86
+		tst.b	(v_player).w					; has Sonic's object been deleted (because he entered the giant ring)
+		beq.s	Sign_GotThrough					; if yes, branch
 		btst	#staAir,(v_player+obStatus).w
 		bne.s	Sign_Exit
 	; Signpost Routine Fix End
-		move.b	#1,(f_lockctrl).w			; lock controls
-		move.w	#btnR<<8,(v_jpadheld_dup).w	; make Sonic run to the right
+		move.b	#1,(f_lockctrl).w				; lock controls
+		move.w	#btnR<<8,(v_jpadheld_dup).w		; make Sonic run to the right
 	; Old check moved to above -- Signpost Routine Fix
 	else
-		btst	#staAir,(v_player+obStatus).w
-		bne.s	.skiplockcontrols
-		move.b	#1,(f_lockctrl).w			; lock controls
-		move.w	#btnR<<8,(v_jpadheld_dup).w	; make Sonic run to the right
-.skiplockcontrols:
-		tst.b	(v_player+obID).w			; Check if Sonic's object has been deleted (because he entered the giant ring)
-		beq.s	loc_EC86
+		btst	#staAir,(v_player+obStatus).w	; is Sonic in the air?
+		bne.s	.skiplockcontrols				; if yes, branch
+		move.b	#1,(f_lockctrl).w				; lock controls
+		move.w	#btnR<<8,(v_jpadheld_dup).w		; make Sonic run to the right
+
+	.skiplockcontrols:
+		tst.b	(v_player+obID).w				; Check if Sonic's object has been deleted (because he entered the giant ring)
+		beq.s	Sign_GotThrough
 	endif
 
 		move.w	(v_player+obX).w,d0
 		move.w	(v_limitright).w,d1
-		addi.w	#$128,d1
-		cmp.w	d1,d0
-		bhs.s	loc_EC86
+		addi.w	#296,d1
+		cmp.w	d1,d0							; has Sonic passed 296px outside right level boundary?
+		bhs.s	Sign_GotThrough					; if yes, branch
 
 Sign_Exit:	; Routine 8 -- ; Moved this rts label to optimize some branches.
 		rts
 ; ===========================================================================
 
-loc_EC86:
+Sign_GotThrough:
 		addq.b	#2,obRoutine(a0)
 		bra.s	GotThroughAct		; Added a short branch so I could include the table below
 ; ===========================================================================
@@ -267,37 +270,41 @@ GotThrough_UncList:
 ; ---------------------------------------------------------------------------
 
 GotThroughAct:
-		tst.b	(v_endcard).w
-		bne.s	Sign_Exit
+		tst.b	(v_endcard).w							; has "Sonic Has Passed" title card loaded?
+		bne.s	Sign_Exit								; if yes, branch
 		move.w	(v_limitright).w,(v_limitleft).w
 		bclr	#sta2ndInvinc,(v_player+obStatus2nd).w	; disable invincibility
 		clr.b	(f_timecount).w							; stop time counter
-		move.b	#id_GotThroughCard,(v_endcard).w
+		move.b	#id_GotThroughCard,(v_endcard).w		; load "Sonic Has Passed" title card
 
 	; TheBlad768/AURORA☆FIELDS/RetroKoH Title Card Optimization
         lea    GotThrough_UncList(pc),a1
         locVRAM    ArtTile_Title_Card*tile_size,d1
-        jsr    (LoadUncArt2).w
+        jsr    (LoadUncArt2).w							; load title card patterns
 	; Title Card Optimization End
 
 		move.b	#1,(f_endactbonus).w
 		moveq	#0,d0
 		move.b	(v_timemin).w,d0
-		add.w	d0,d0				; multiply by 60 (1 second)
-		add.w	d0,d0				; Optimization from S1 in S.C.E.
+		add.w	d0,d0									; multiply by 60 (1 second)
+		add.w	d0,d0									; Optimization from S1 in S.C.E.
 		move.w	d0,d1
 		lsl.w	#4,d0
 		sub.w	d1,d0
 		moveq	#0,d1
 		move.b	(v_timesec).w,d1
-		add.w	d1,d0		; add up your time
-		divu.w	#15,d0		; divide by 15
-		moveq	#$14,d1
-		cmp.w	d1,d0		; is time 5 minutes or higher?
-		blo.s	.hastimebonus	; if not, branch
-		move.w	d1,d0		; use minimum time bonus (0)
+		add.w	d1,d0									; add up your time in total seconds
 
-.hastimebonus:
+; Optimizing this is certainly possible, but it carries a significant enough margin of error
+; that it's not a change worth making, if you care about accuracy with bonuses
+		divu.w	#15,d0									; divide total seconds by 15
+
+		moveq	#$14,d1
+		cmp.w	d1,d0									; is time 5 minutes or higher?
+		blo.s	.hastimebonus							; if not, branch
+		move.w	d1,d0									; use minimum time bonus (0)
+
+	.hastimebonus:
 		add.w	d0,d0
 		move.w	TimeBonuses(pc,d0.w),(v_timebonus).w	; set time bonus
 		move.w	(v_rings).w,d0							; load number of rings
@@ -320,7 +327,7 @@ GotThroughAct:
 		bne.s	.noperfect
 		move.w	#PerfectScore,(v_perfectbonus).w		; set perfect bonus
 		
-.noperfect:		
+	.noperfect:		
 	endif
 
 	if AmbienceMode
@@ -332,9 +339,30 @@ GotThroughAct:
 ; End of function GotThroughAct
 ; ===========================================================================
 
+; Each time bonus value corresponds to a # of seconds elapsed; in multiples of 15
 TimeBonuses:
-		dc.w 5000, 5000, 1000, 500, 400, 400, 300, 300,	200, 200
-		dc.w 200, 200, 100, 100, 100, 100, 50, 50, 50, 50, 0
+		dc.w   5000					; < 0:15 = 50000
+		dc.w   5000					; < 0:30
+		dc.w   1000					; < 0:45 = 10000
+		dc.w    500					; < 1:00 = 5000
+		dc.w    400					; < 1:15 = 4000
+		dc.w    400					; < 1:30
+		dc.w    300					; < 1:45 = 3000
+		dc.w    300					; < 2:00
+		dc.w    200					; < 2:15 = 2000
+		dc.w    200					; < 2:30
+		dc.w    200					; < 2:45
+		dc.w    200					; < 3:00
+		dc.w    100					; < 3:15 = 1000
+		dc.w    100					; < 3:30
+		dc.w    100					; < 3:45
+		dc.w    100					; < 4:00
+		dc.w     50					; < 4:15 = 500
+		dc.w     50					; < 4:30
+		dc.w     50					; < 4:45
+		dc.w     50					; < 5:00
+WorstTime:
+		dc.w      0					; 5:00+ = 0
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------

@@ -9,6 +9,7 @@ SwingingPlatform:
 		move.w	Swing_Index(pc,d0.w),d1
 		jmp		Swing_Index(pc,d1.w)
 ; ===========================================================================
+
 Swing_Index:	offsetTable
 		offsetTableEntry.w	Swing_Main
 		offsetTableEntry.w	Swing_SetSolid
@@ -20,35 +21,43 @@ Swing_Index:	offsetTable
 
 Swing_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
-		move.l	#Map_Swing_GHZ,obMap(a0)	; GHZ and MZ specific code
+
+	; GHZ and MZ specific code
+		move.l	#Map_Swing_GHZ,obMap(a0)
 		move.w	#make_art_tile(ArtTile_GHZ_MZ_Swing,2,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.w	#priority3,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
+		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$18,obDispWid(a0)
 		move.b	#8,obHeight(a0)
 		move.w	obY(a0),obSwing_StartY(a0)
 		move.w	obX(a0),obSwing_StartX(a0)
+; ---------------------------------------------------------------------------
+
 		cmpi.b	#id_SLZ,(v_zone).w			; check if level is SLZ
 		bne.s	.notSLZ
 
-		move.l	#Map_Swing_SLZ,obMap(a0)	; SLZ specific code
+	; SLZ specific code
+		move.l	#Map_Swing_SLZ,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SLZ_Swing,2,0),obGfx(a0)
 		move.b	#$20,obDispWid(a0)
-		move.b	#$10,obHeight(a0)
+		addq.b	#8,obHeight(a0)			; set height to $10
 		move.b	#(colHarmful|colSz_32x8),obColType(a0)
+		bra.s	.length
+; ---------------------------------------------------------------------------
 
-.notSLZ:
+	.notSLZ:
 		cmpi.b	#id_SBZ,(v_zone).w		; check if level is SBZ
 		bne.s	.length
 
-		move.l	#Map_BBall,obMap(a0)	; SBZ specific code
+	; SBZ specific code
+		move.l	#Map_BBall,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SYZ_Big_Spikeball,0,0),obGfx(a0)
-		move.b	#$18,obDispWid(a0)
 		move.b	#$18,obHeight(a0)
 		move.b	#(colHarmful|colSz_16x16),obColType(a0)
 		move.b	#$A,obRoutine(a0)		; goto Swing_Action next
+; ---------------------------------------------------------------------------
 
-.length:
+	.length:
 		_move.b	obID(a0),d4			; d4 = object index
 		moveq	#0,d1
 		lea		obSubtype(a0),a2	; move address of object subtype to a2
@@ -70,19 +79,18 @@ Swing_Main:	; Routine 0
 	; RetroKoH Mass Object Load Optimization; Built off of Spirituinsanum's Ring Loss Optimization
 	; Instead of calling FindNextFreeObj, we're going to loop directly here.
 	; Slight improvement by Malachi
-.startloop
+	.startloop:
 		lea		(v_lvlobjspace-object_size).w,a1
 		move.w	#v_lvlobjcount,d0
 
-.makechain:
+	.makechain:
 	; REMOVE FindFreeObj. It's the routine that causes such slowdown
 		lea		object_size(a1),a1
 		tst.b	obID(a1)				; is object RAM	slot empty?
 		dbeq	d0,.makechain			; Branch correction again.
 		bne.s	.fail					; We're moving this line here.
-
-.cont
 	; Mass Object Load Optimization End
+
 		addq.b	#1,obSubtype(a0)
 		move.w	a1,d5
 		subi.w	#v_objspace&$FFFF,d5
@@ -105,10 +113,10 @@ Swing_Main:	; Routine 0
 		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		bset	#gfxPalUpper,obGfx(a1)
 
-.notanchor:
+	.notanchor:
 		dbf		d1,.makechain			; repeat d1 times (chain length)
 
-.fail:
+	.fail:
 		move.w	a0,d5					; get parent OST address
 		subi.w	#v_objspace&$FFFF,d5
 		lsr.w	#object_size_bits,d5
@@ -126,9 +134,10 @@ Swing_Main:	; Routine 0
 		move.w	#priority2,obPriority(a0)				; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colHarmful|colSz_20x20),obColType(a0)	; make object hurt when touched
 
-.not1X:
+	.not1X:
 		cmpi.b	#id_SBZ,(v_zone).w	; is zone SBZ?
 		beq.s	Swing_Action		; if yes, branch
+; ---------------------------------------------------------------------------
 
 Swing_SetSolid:	; Routine 2
 		moveq	#0,d1
@@ -240,6 +249,7 @@ Swing_MoveAll:
 		move.w	d4,obY(a1)						; update position
 		move.w	d5,obX(a1)
 		dbf		d6,.loop						; repeat for all chainlinks and platform
+
 		rts	
 ; End of function Swing_MoveAll
 ; ===========================================================================
@@ -291,11 +301,11 @@ Swing_Display:	; Routine $A
 		move.b	(a2),d0
 	; angled ball mod end
 
-.vanish:
+	.vanish:
 		move.b	d0,obFrame(a0)			; set ball frame
 
 ; The following is used by all swinging hazards
-.notwreckingball:
+	.notwreckingball:
 		lea		(v_col_response_list).w,a1
 		cmpi.w	#$7E,(a1)		; Is list full?
 		bhs.w	DisplaySprite	; If so, return

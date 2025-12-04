@@ -25,7 +25,6 @@ id_Ring_Delete = ptr_Ring_Delete-Ring_Index	; 8
 
 Ring_Main:	; Routine 0 -- Stripped down init routine -- RetroKoH S3K Rings Manager
 		addq.b	#2,obRoutine(a0)
-		move.w	obX(a0),objoff_32(a0)
 		move.l	#Map_Ring,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Ring,1,0),obGfx(a0)
 		move.b	#4,obRender(a0)
@@ -35,7 +34,7 @@ Ring_Main:	; Routine 0 -- Stripped down init routine -- RetroKoH S3K Rings Manag
 
 Ring_Animate:	; Routine 2
 	; ProjectFM S3K Objects Manager
-		move.w	objoff_32(a0),d0
+		move.w	obX(a0),d0					; removed the x-pos buffer
 		bra.w	RememberState
 	; S3K Objects Manager End
 ; ===========================================================================

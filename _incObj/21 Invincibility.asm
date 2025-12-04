@@ -2,8 +2,6 @@
 ; Object 21 - Invincibility Stars (Moved from Shield to its own object)
 ; ---------------------------------------------------------------------------
 
-stars_trackdata = objoff_30
-
 Stars_Delete:
 		jmp		(DeleteObject).l
 ; ===========================================================================
@@ -23,13 +21,13 @@ Stars_Main:	; Routine 0
 		move.l	#Art_Stars,obArtLoc(a0)
 		move.l	#ShieldDynPLC,obDPLCLoc(a0)
 
-		clr.b	mainspr_routine(a0)			; use this to increment every single star frame using the data table
+		clr.b	mainspr_routine(a0)						; use this to increment every single star frame using the data table
 		moveq	#$10,d0
 		move.b	d0,mainspr_width(a0)
 		move.b	d0,mainspr_height(a0)
 		move.b	#3,mainspr_childsprites(a0)
 	; fallthrough to Routine 2
-
+; ---------------------------------------------------------------------------
 
 Stars_Next:	; Routine 2
 	if SuperMod
@@ -45,12 +43,12 @@ Stars_Next:	; Routine 2
 		lea		Star_main(pc),a3						; starting address for animations
 		move.b	mainspr_routine(a0),d4					; d4 = current animation frame
 		lea		(a3,d4.w),a3							; a3 = location of mapping frame
-		lea		stars_trackdata(a0),a4					; previous tracking data for each subsprite
+		lea		obStars_TrackData(a0),a4					; previous tracking data for each subsprite
 		move.b	(v_player+obStatus).w,obStatus(a0)		; set status early (we'll need it for position adjustment later
 		move.b	(v_player+obAnim).w,d5					; more efficient to store this once and compare 4-8 times later
 
 ; loop to set track position
-.trail:
+	.trail:
 		move.w	(v_trackpos).w,d0		; get index value for tracking data
 		move.l	d3,d1					; d1 = subframe/anim number
 		lsl.b	#3,d1					; multiply animation number by 8
@@ -66,7 +64,7 @@ Stars_Next:	; Routine 2
 		blo.s	.a
 		moveq	#0,d1
 
-.a:
+	.a:
 		move.b	d1,(a4)+
 		lea		(v_tracksonic).w,a1
 		lea		(a1,d0.w),a1
@@ -88,35 +86,37 @@ Stars_Next:	; Routine 2
 		bne.s	.noshift
 	endif
 		
-.shift:
+	.shift:
 		sub.w	d1,d4
 		btst	#staFlipX,d0		; X-Flip sprite bit
 		beq.s	.noshift
 		add.w	d1,d1
 		add.w	d1,d4
-.noshift:
+
+	.noshift:
 	; Shield/Invincibility Positioning Fix End
 		tst.b	d3						; is this the main anim?
 		bne.s	.subanims
 
-.anim0:
+	.anim0:
 		move.w	d4,obX(a0)
 		move.w	(a1)+,obY(a0)
 		move.b	(a3),mainspr_mapframe(a0)
 		bra.s	.skipsubanims
 
-.subanims:
+	.subanims:
 		move.w	d4,(a2)+				; sub?_x_pos
 		move.w	(a1)+,(a2)+				; sub?_y_pos
 		adda.w	#$18,a3
 		move.b	(a3),1(a2)				; sub?_mapframe
 		addq.w	#2,a2					; skip to next sub data
 
-.skipsubanims:
+	.skipsubanims:
 		addq.b	#1,d3
 		cmpi.b	#4,d3
 		blo.w	.trail					; if 0-3, loop back
 	; loop end
+
 		moveq	#0,d0
 		move.b	mainspr_mapframe(a0),d0
 		bsr.w	Stars_LoadGfx			; RetroKoH VRAM Overhaul
@@ -127,7 +127,7 @@ Stars_Next:	; Routine 2
 		blo.b	.setframe
 		moveq	#0,d0
 
-.setframe:
+	.setframe:
 		move.b	d0,mainspr_routine(a0)	; set animation frame
 		move.w	#priority1,d0			; RetroKoH/Devon S3K+ Priority Manager
 		jmp		(DisplaySprite2).l

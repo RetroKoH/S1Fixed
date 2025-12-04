@@ -2,8 +2,6 @@
 ; Object 20 - cannonball that Ball Hog throws (SBZ)
 ; ---------------------------------------------------------------------------
 
-cbal_time = objoff_30		; time until the cannonball explodes (2 bytes)
-
 Cannonball:
 	; LavaGaming Object Routine Optimization
 		tst.b	obRoutine(a0)
@@ -26,8 +24,9 @@ Cbal_Main:	; Routine 0
 		move.w	d0,d1
 		lsl.w	#4,d0
 		sub.w	d1,d0
-		move.w	d0,cbal_time(a0)	; set explosion time
+		move.w	d0,obCBall_Time(a0)	; set explosion time
 		move.b	#4,obFrame(a0)
+; ---------------------------------------------------------------------------
 
 Cbal_Bounce:	; Routine 2
 		jsr		(ObjectFall).l
@@ -37,28 +36,29 @@ Cbal_Bounce:	; Routine 2
 		tst.w	d1					; has ball hit the floor?
 		bpl.s	Cbal_ChkExplode		; if not, branch
 
-		add.w	d1,obY(a0)
+		add.w	d1,obY(a0)			; align to floor
 		move.w	#-$300,obVelY(a0)	; bounce
-		tst.b	d3
-		beq.s	Cbal_ChkExplode
-		bmi.s	loc_8CA4
+		tst.b	d3					; test floor angle
+		beq.s	Cbal_ChkExplode		; branch if perfectly flat
+		bmi.s	.down_left			; branch if sloping up-right or down-left
+
+	;.down_right:
 		tst.w	obVelX(a0)
-		bpl.s	Cbal_ChkExplode
-		neg.w	obVelX(a0)
+		bpl.s	Cbal_ChkExplode		; branch if ball is moving right
+		neg.w	obVelX(a0)			; reverse direction (ball hits down-right slope while moving left)
 		bra.s	Cbal_ChkExplode
 ; ===========================================================================
 
-loc_8CA4:
+	.down_left:
 		tst.w	obVelX(a0)
-		bmi.s	Cbal_ChkExplode
-		neg.w	obVelX(a0)
+		bmi.s	Cbal_ChkExplode		; branch if ball is moving left
+		neg.w	obVelX(a0)			; reverse direction (ball hits down-left slope while moving right)
 
 Cbal_ChkExplode:
-		subq.w	#1,cbal_time(a0)			; subtract 1 from explosion time
-		bpl.s	Cbal_Animate				; if time is > 0, branch
+		subq.w	#1,obCBall_Time(a0)	; subtract 1 from explosion time
+		bpl.s	Cbal_Animate		; if time is > 0, branch
 
 Cbal_Explode:
-		_move.b	#id_MissileDissolve,obID(a0)
 		_move.b	#id_ExplosionBomb,obID(a0)	; change object	to an explosion	($3F)
 		clr.b	obRoutine(a0)				; reset routine counter
 		bra.w	ExplosionBomb				; jump to explosion code
@@ -76,3 +76,4 @@ Cbal_Display:
 		cmp.w	obY(a0),d0			; has object fallen off	the level?
 		blo.w	DeleteObject		; if yes, branch
 		bra.w	DisplayAndCollision	; Clownacy DisplaySprite Fix
+; ===========================================================================

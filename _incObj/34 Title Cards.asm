@@ -2,59 +2,57 @@
 ; Object 34 - zone title cards
 ; ---------------------------------------------------------------------------
 
-card_mainX = objoff_30		; position for card to display on
-card_finalX = objoff_32		; position for card to finish on
-
 TitleCard:
 	; RetroKoH/LavaGaming Object Routine Optimization
 		move.b	obRoutine(a0),d0
 		subq.b	#2,d0
-		beq.w	Card_ChkPos
+		beq.w	Card_Move
 		bpl.w	Card_Wait		; Routines 4/6
 	; Object Routine Optimization End
+; ---------------------------------------------------------------------------
 
 Card_CheckSBZ3:	; Routine 0
-		movea.l	a0,a1
+		movea.l	a0,a1						; replace current object with 1st item in list
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
-		cmpi.w	#(id_LZ<<8)+3,(v_zone).w ; check if level is SBZ 3
-		bne.s	Card_CheckFZ
-		moveq	#5,d0		; load title card number 5 (SBZ)
+		cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; check if level is SBZ3
+		bne.s	.not_sbz3					; if not, branch
+		moveq	#5,d0						; load title card number 5 (SBZ)
 
-Card_CheckFZ:
+	.not_sbz3:
 		move.w	d0,d2
-		cmpi.w	#(id_SBZ<<8)+2,(v_zone).w ; check if level is FZ
-		bne.s	Card_LoadConfig
-		moveq	#6,d0		; load title card number 6 (FZ)
-		moveq	#$B,d2		; use "FINAL" mappings
+		cmpi.w	#(id_SBZ<<8)+2,(v_zone).w	; check if level is FZ
+		bne.s	.load_config				; if not, branch
+		moveq	#6,d0						; load title card number 6 (FZ)
+		moveq	#$B,d2						; use "FINAL" mappings
 
-Card_LoadConfig:
-		lea		(Card_ConData).l,a3
-		lsl.w	#4,d0
-		adda.w	d0,a3
-		lea		(Card_ItemData).l,a2
-		moveq	#3,d1
+	.load_config:
+		lea		(Card_ConData).l,a3			; x/y pos data for all items
+		lsl.w	#4,d0						; multiply zone by 16
+		adda.w	d0,a3						; jump to relevant data
+		lea		(Card_ItemData).l,a2		; y pos/routine/frame for each item
+		moveq	#3,d1						; there are 4 items (minus 1 for 1st loop)
 
-Card_Loop:
+	.loop:
 		_move.b	#id_TitleCard,obID(a1)
-		move.w	(a3),obX(a1)			; load start x-position
-		move.w	(a3)+,card_finalX(a1)	; load finish x-position (same as start)
-		move.w	(a3)+,card_mainX(a1)	; load main x-position
-		move.w	(a2)+,obScreenY(a1)
-		move.b	(a2)+,obRoutine(a1)
-		move.b	(a2)+,d0
-		bne.s	Card_ActNumber
-		move.b	d2,d0
+		move.w	(a3),obX(a1)				; load start x-position
+		move.w	(a3)+,obTCard_FinalX(a1)	; load finish x-position (same as start)
+		move.w	(a3)+,obTCard_DisplayX(a1)	; load main x-position
+		move.w	(a2)+,obScreenY(a1)			; set y position
+		move.b	(a2)+,obRoutine(a1)			; -> Card_Move
+		move.b	(a2)+,d0					; get frame number
+		bne.s	.act_number					; branch if not 00 (zone name)
+		move.b	d2,d0						; use zone number instead (or $B for FZ)
 
-Card_ActNumber:
-		cmpi.b	#7,d0
-		bne.s	Card_MakeSprite
-		add.b	(v_act).w,d0
-		cmpi.b	#3,(v_act).w
-		bne.s	Card_MakeSprite
-		subq.b	#1,d0
+	.act_number:
+		cmpi.b	#7,d0						; is sprite the act number?
+		bne.s	.make_sprite				; if not, branch
+		add.b	(v_act).w,d0				; add act number to frame
+		cmpi.b	#3,(v_act).w				; is this act 4? (SBZ3 only)
+		bne.s	.make_sprite				; if not, branch
+		subq.b	#1,d0						; use act 3 frame if act 4 (for SBZ3)
 
-Card_MakeSprite:
+	.make_sprite:
 		move.b	d0,obFrame(a1)				; display frame	number d0
 		move.l	#Map_Card,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Title_Card,0,1),obGfx(a1)
@@ -63,87 +61,93 @@ Card_MakeSprite:
 		move.w	#priority0,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.w	#60,obTimeFrame(a1)			; set time delay to 1 second
 		lea		object_size(a1),a1			; next object
-		dbf		d1,Card_Loop				; repeat sequence another 3 times
+		dbf		d1,.loop					; repeat sequence another 3 times
+; ---------------------------------------------------------------------------
 
-Card_ChkPos:	; Routine 2
-		moveq	#$10,d1		; set horizontal speed
-		move.w	card_mainX(a0),d0
-		cmp.w	obX(a0),d0	; has item reached the target position?
-		beq.s	Card_NoMove	; if yes, branch
-		bge.s	Card_Move
-		neg.w	d1
+Card_Move:	; Routine 2
+		moveq	#$10,d1						; set horizontal speed to 16px right
+		move.w	obTCard_DisplayX(a0),d0
+		cmp.w	obX(a0),d0					; has item reached the target position?
+		beq.s	.at_target					; if yes, branch
+		bge.s	.is_left					; branch if item is left of target
+		neg.w	d1							; move left instead
 
-Card_Move:
-		add.w	d1,obX(a0)	; change item's position
+	.is_left:
+		add.w	d1,obX(a0)					; update position
 
-Card_NoMove:
+	.at_target:
 		move.w	obX(a0),d0
-		bmi.s	locret_C3D8
-		cmpi.w	#$200,d0	; has item moved beyond	$200 on	x-axis?
-		bhs.s	locret_C3D8	; if yes, branch
+		bmi.s	.no_display					; branch if item is outside left of screen
+		cmpi.w	#$200,d0					; has item moved beyond	$200 on	x-axis?
+		bhs.s	.no_display					; if yes, branch
 		bra.w	DisplaySprite
 ; ===========================================================================
 
-locret_C3D8:
+	.no_display:
 		rts	
 ; ===========================================================================
 
 Card_Wait:	; Routine 4/6
-		tst.w	obTimeFrame(a0)	; is time remaining zero?
-		beq.s	Card_ChkPos2	; if yes, branch
-		subq.w	#1,obTimeFrame(a0) ; subtract 1 from time
+	; title cards are instructed to jump here by GM_Level
+		tst.w	obTimeFrame(a0)				; is time remaining zero?
+		beq.s	Card_MoveBack				; if yes, branch
+		subq.w	#1,obTimeFrame(a0)			; subtract 1 from time
 		bra.w	DisplaySprite
 ; ===========================================================================
 
-Card_ChkPos2:
-		tst.b	obRender(a0)
-		bpl.s	Card_ChangeArt
-		moveq	#$20,d1
-		move.w	card_finalX(a0),d0
-		cmp.w	obX(a0),d0	; has item reached the finish position?
-		beq.s	Card_ChangeArt	; if yes, branch
-		bge.s	Card_Move2
-		neg.w	d1
+Card_MoveBack:
+		tst.b	obRender(a0)				; is item on-screen?
+		bpl.s	Card_ChangeArt				; if not, branch
 
-Card_Move2:
-		add.w	d1,obX(a0)	; change item's position
+		moveq	#32,d1						; set to move 32px right
+		move.w	obTCard_FinalX(a0),d0
+		cmp.w	obX(a0),d0					; has item reached the finish position?
+		beq.s	Card_ChangeArt				; if yes, branch
+		bge.s	.is_left					; branch if item is left of target
+		neg.w	d1							; move left instead
+
+	.is_left:
+		add.w	d1,obX(a0)					; update position
 		move.w	obX(a0),d0
-		bmi.s	locret_C412
-		cmpi.w	#$200,d0	; has item moved beyond	$200 on	x-axis?
-		bhs.s	locret_C412	; if yes, branch
+		bmi.s	.no_display					; branch if item is outside left of screen
+		cmpi.w	#$200,d0					; has item moved beyond	$200 on	x-axis?
+		bhs.s	.no_display					; if yes, branch
 		bra.w	DisplaySprite
 ; ===========================================================================
 
-locret_C412:
+	.no_display:
 		rts	
 ; ===========================================================================
 
 Card_ChangeArt:
-		cmpi.b	#4,obRoutine(a0)
-		bne.s	Card_Delete
+		cmpi.b	#4,obRoutine(a0)			; is this the main object? (routine 4)
+		bne.w	DeleteObject				; if not, branch
+
 		moveq	#plcid_Explode,d0
-		jsr		(AddPLC).w	; load explosion patterns
+		jsr		(AddPLC).w					; load explosion patterns
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
 		addi.w	#plcid_GHZAnimals,d0
-		jsr		(AddPLC).w	; load animal patterns
+		jsr		(AddPLC).w					; load animal patterns
 
 Card_Delete:
 		bra.w	DeleteObject
 ; ===========================================================================
 Card_ItemData:
-		dc.w $D0	; y-axis position
-		dc.b 2,	0	; routine number, frame	number (changes)
+	; y-axis position
+	; routine number, frame	number (changes)
+		dc.w $D0
+		dc.b 2,	0		; zone name (frame number changes)
 		dc.w $E4
-		dc.b 2,	6
+		dc.b 2,	6		; "ZONE"
 		dc.w $EA
-		dc.b 2,	7
+		dc.b 2,	7		; act number (frame number changes)
 		dc.w $E0
-		dc.b 2,	$A
+		dc.b 2,	$A		; oval
 ; ---------------------------------------------------------------------------
 ; Title	card configuration data
 ; Format:
-; 4 bytes per item (AAAA BBBB); AAAA < obX and card_finalX; BBBB < card_mainX
+; 4 bytes per item (AAAA BBBB); AAAA < obX and obTCard_FinalX; BBBB < obTCard_DisplayX
 ; 4 items per level (GREEN HILL, ZONE, ACT X, oval)
 ; ---------------------------------------------------------------------------
 TitleCardMap:    macro    x
