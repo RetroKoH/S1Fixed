@@ -77,12 +77,11 @@ Stair_Solid:	; Routine 4
 		move.b	(a2,d0.w),d0
 		add.w	stair_origY(a0),d0
 		move.w	d0,obY(a0)
-		moveq	#0,d1
-		move.b	obDispWid(a0),d1
-		addi.w	#$B,d1
-		move.w	#$10,d2
-		move.w	#$11,d3
-		move.w	obX(a0),d4
+		moveq	#11,d1
+		add.b	obDispWid(a0),d1		; width; save 8 cycles
+		moveq	#16,d2					; height (jumping); save 4 cycles - Filter
+		moveq	#17,d3					; height (walking); save 4 cycles - Filter
+		move.w	obX(a0),d4				; axis position
 		bsr.w	SolidObject
 		tst.b	d4
 		bpl.s	loc_10F92

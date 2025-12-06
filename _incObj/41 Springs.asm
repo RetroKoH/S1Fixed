@@ -65,10 +65,10 @@ loc_DB72:
 ; ===========================================================================
 
 Spring_Up:	; Routine 2
-		move.w	#$1B,d1
-		move.w	#8,d2
-		move.w	#$10,d3
-		move.w	obX(a0),d4
+		moveq	#27,d1						; width; save 4 cycles - Filter
+		moveq	#8,d2						; height (jumping); save 4 cycles - Filter
+		moveq	#16,d3						; height (walking); save 4 cycles - Filter
+		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject
 		btst	#staSonicOnObj,obStatus(a0)	; removed obSolid
 		bne.s	Spring_BounceUp				; if Sonic is on top of the spring, branch
@@ -106,10 +106,10 @@ Spring_ResetUp:	; Routine 6
 ; ===========================================================================
 
 Spring_LR:	; Routine 8
-		move.w	#$13,d1
-		move.w	#$E,d2
-		move.w	#$F,d3
-		move.w	obX(a0),d4
+		moveq	#19,d1						; width; save 4 cycles - Filter
+		moveq	#14,d2						; height (jumping); save 4 cycles - Filter
+		moveq	#15,d3						; height (walking); save 4 cycles - Filter
+		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject
 		cmpi.b	#2,obRoutine(a0)
 		bne.s	loc_DC0C
@@ -163,10 +163,10 @@ Spring_ResetLR:	; Routine $C
 ; ===========================================================================
 
 Spring_Dwn:	; Routine $E
-		move.w	#$1B,d1
-		move.w	#8,d2
-		move.w	#$10,d3
-		move.w	obX(a0),d4
+		moveq	#27,d1						; width; save 4 cycles - Filter
+		moveq	#8,d2						; height (jumping); save 4 cycles - Filter
+		moveq	#16,d3						; height (walking); save 4 cycles - Filter
+		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject
 		cmpi.b	#2,obRoutine(a0)
 		bne.s	loc_DCA4

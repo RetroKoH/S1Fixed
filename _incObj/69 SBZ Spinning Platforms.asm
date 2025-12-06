@@ -73,11 +73,10 @@ Spin_Trapdoor:	; Routine 2
 		jsr		(AnimateSprite).w
 		tst.b	obFrame(a0)					; is frame number 0 displayed?
 		bne.s	.notsolid					; if not, branch
-		move.w	#$4B,d1
-		move.w	#$C,d2
-		move.w	d2,d3
-		addq.w	#1,d3
-		move.w	obX(a0),d4
+		moveq	#75,d1						; width; save 4 cycles - Filter
+		moveq	#12,d2						; height (jumping); save 4 cycles - Filter
+		moveq	#13,d3						; height (walking); save 4 cycles - Filter
+		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject
 		bra.w	RememberState
 ; ===========================================================================
@@ -110,11 +109,10 @@ Spin_Spinner:	; Routine 4
 		jsr		(AnimateSprite).w
 		tst.b	obFrame(a0)					; check	if frame number	0 is displayed
 		bne.s	.notsolid2					; if not, branch
-		move.w	#$1B,d1
-		move.w	#7,d2
-		move.w	d2,d3
-		addq.w	#1,d3
-		move.w	obX(a0),d4
+		moveq	#27,d1						; width; save 4 cycles - Filter
+		moveq	#7,d2						; height (jumping); save 4 cycles - Filter
+		moveq	#8,d3						; height (walking); save 4 cycles - Filter
+		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject
 		bra.w	RememberState
 ; ===========================================================================

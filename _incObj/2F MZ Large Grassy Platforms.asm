@@ -5,7 +5,7 @@
 ; ===========================================================================
 LGrass_Data:
 		dc.w LGrass_Data1-LGrass_Data 	; collision angle data
-		dc.b 0,	$40			; frame	number,	platform width
+		dc.b 0,	$40						; frame	number,	platform width
 		dc.w LGrass_Data3-LGrass_Data
 		dc.b 1,	$40
 		dc.w LGrass_Data2-LGrass_Data
@@ -44,9 +44,8 @@ LGrass_Action:	; Routine 2
 		bsr.w	LGrass_Types
 		btst	#staSonicOnObj,obStatus(a0)	; is platform being stood on? removed obSolid
 		beq.s	LGrass_Solid				; if not, branch
-		moveq	#0,d1
-		move.b	obDispWid(a0),d1
-		addi.w	#$B,d1
+		moveq	#11,d1
+		add.b	obDispWid(a0),d1			; width; save 8 cycles
 		bsr.w	ExitPlatform				; update flags if Sonic leaves plaform
 		btst	#staOnObj,obStatus(a1)		; is Sonic still on the platform?
 		bne.w	LGrass_Slope				; if yes, branch
@@ -55,23 +54,21 @@ LGrass_Action:	; Routine 2
 ; ===========================================================================
 
 LGrass_Slope:
-		moveq	#0,d1
-		move.b	obDispWid(a0),d1
-		addi.w	#$B,d1
-		movea.l	obLGrass_ColPtr(a0),a2
-		move.w	obX(a0),d2
+		moveq	#11,d1
+		add.b	obDispWid(a0),d1		; width; save 8 cycles
+		movea.l	obLGrass_ColPtr(a0),a2	; pointer to heightmap
+		move.w	obX(a0),d2				; axis position
 		bsr.w	SlopeObject2
 		bra.w	LGrass_ChkDel
 ; ===========================================================================
 
 LGrass_Solid:
-		moveq	#0,d1
-		move.b	obDispWid(a0),d1
-		addi.w	#$B,d1					; width
-		move.w	#$20,d2					; height
+		moveq	#11,d1
+		add.b	obDispWid(a0),d1		; width; save 8 cycles
+		moveq	#32,d2					; height
 		cmpi.b	#2,obFrame(a0)			; is this a narrow platform?
 		bne.s	.not_narrow				; if not, branch
-		move.w	#$30,d2					; use larger height
+		moveq	#48,d2					; use larger height
 
 	.not_narrow:
 		movea.l	obLGrass_ColPtr(a0),a2
@@ -179,11 +176,11 @@ LGrass_Sinking:
 
 		_move.b	#id_GrassFire,obID(a1)		; load sitting flame object (this spreads itself)
 		move.w	obX(a0),obX(a1)
-		move.w	obLGrass_StartY(a0),obLGrass_StartY(a1)
-		addq.w	#8,obLGrass_StartY(a1)
-		subq.w	#3,obLGrass_StartY(a1)
+		move.w	obLGrass_StartY(a0),obGFire_StartY(a1)
+		addq.w	#8,obGFire_StartY(a1)
+		subq.w	#3,obGFire_StartY(a1)
 		subi.w	#$40,obX(a1)				; start at left side of platform
-		move.l	obLGrass_ColPtr(a0),obLGrass_ColPtr(a1)
+		move.l	obLGrass_ColPtr(a0),obGFire_ColPtr(a1)
 		move.w	a0,obGFire_Parent(a1)		; save parent OST address
 		movea.l	a0,a2
 		bsr.s	LGrass_AddChildToList		; save first flame OST index to list in parent OST

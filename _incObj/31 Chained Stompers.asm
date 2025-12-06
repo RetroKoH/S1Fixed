@@ -119,12 +119,11 @@ CStom_Var2:
 CStom_Block:	; Routine 2
 		bsr.w	CStom_Types
 		move.w	obY(a0),(v_obj31ypos).w			; store y position for pushable green block interaction
-		moveq	#0,d1
-		move.b	obDispWid(a0),d1
-		addi.w	#$B,d1
-		move.w	#$C,d2
-		move.w	#$D,d3
-		move.w	obX(a0),d4
+		moveq	#11,d1
+		add.b	obDispWid(a0),d1				; width; save 8 cycles
+		moveq	#12,d2							; height (jumping); save 4 cycles - Filter
+		moveq	#13,d3							; height (walking); save 4 cycles - Filter
+		move.w	obX(a0),d4						; axis position
 		bsr.w	SolidObject
 		btst	#staSonicOnObj,obStatus(a0)		; is Sonic standing on it?
 		beq.s	.chkdel							; if not, branch
@@ -195,7 +194,7 @@ CStom_Type00:
 		tst.w	obCStom_ChainLength(a0)
 		beq.s	.stop
 		moveq	#$F,d0
-		and.b	(v_vbla_byte).w,d0				; read low nybble of byte that increments every frame						; 
+		and.b	(v_vbla_byte).w,d0				; read low nybble of byte that increments every frame
 		bne.s	.skip_sound						; branch if not 0
 		tst.b	obRender(a0)
 		bpl.s	.skip_sound

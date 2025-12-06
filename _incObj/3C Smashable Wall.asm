@@ -27,13 +27,14 @@ Smash_Main:	; Routine 0
 		move.b	#$10,obDispWid(a0)
 		move.w	#priority4,obPriority(a0)			; RetroKoH/Devon S3K+ Priority Manager
 		move.b	obSubtype(a0),obFrame(a0)
+; ---------------------------------------------------------------------------
 
 Smash_Solid:	; Routine 2
 		move.w	(v_player+obVelX).w,d6				; store Sonic's horizontal speed
-		moveq	#$1B,d1								; save 4 cycles - Filter
-		moveq	#$20,d2								; save 4 cycles - Filter
-		move.w	d2,d3								; save 4 cycles - Filter
-		move.w	obX(a0),d4
+		moveq	#27,d1								; width; save 4 cycles - Filter
+		moveq	#32,d2								; height (jumping); save 4 cycles - Filter
+		moveq	#32,d3								; height (walking); save 4 cycles - Filter
+		move.w	obX(a0),d4							; axis position
 		bsr.w	SolidObject
 
 	if ShieldsMode

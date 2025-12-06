@@ -28,10 +28,10 @@ But_NotMZ:
 But_Pressed:	; Routine 2
 		tst.b	obRender(a0)					; is button on screen?
 		bpl.s	But_Display						; if not, branch
-		move.w	#$1B,d1							; width
-		move.w	#5,d2							; height
-		move.w	d2,d3							; height
-		move.w	obX(a0),d4
+		moveq	#27,d1							; width; save 4 cycles - Filter
+		moveq	#5,d2							; height (jumping); save 4 cycles - Filter
+		moveq	#5,d3							; height (walking); save 4 cycles - Filter
+		move.w	obX(a0),d4						; axis position
 		bsr.w	SolidObject
 		bclr	#0,obFrame(a0)					; use "unpressed" frame
 		moveq	#$F,d0

@@ -51,11 +51,10 @@ Jun_Action:	; Routine 2
 		bsr.w	Jun_Update					; check if button is pressed and animate the junction
 		tst.b	obRender(a0)				; is object on-screen?
 		bpl.w	Jun_Display					; if not, branch
-		move.w	#$30,d1
-		move.w	d1,d2
-		move.w	d2,d3
-		addq.w	#1,d3
-		move.w	obX(a0),d4
+		moveq	#48,d1						; width; save 4 cycles - Filter
+		moveq	#48,d2						; height (jumping); save 4 cycles - Filter
+		moveq	#49,d3						; height (walking); save 4 cycles - Filter
+		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject
 		btst	#staSonicPush,obStatus(a0)	; is Sonic pushing against the disc?
 		beq.w	Jun_Display					; if not, branch

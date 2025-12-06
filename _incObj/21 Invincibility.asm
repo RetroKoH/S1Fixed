@@ -18,8 +18,8 @@ Stars_Main:	; Routine 0
 		bset	#6,obRender(a0)
 		move.w	#make_art_tile(ArtTile_Shield,0,0),obGfx(a0)
 		move.l	#Map_Shield,obMap(a0)
-		move.l	#Art_Stars,obArtLoc(a0)
-		move.l	#ShieldDynPLC,obDPLCLoc(a0)
+		move.l	#Art_Stars,obShield_ArtLoc(a0)
+		move.l	#ShieldDynPLC,obShield_DPLCLoc(a0)
 
 		clr.b	mainspr_routine(a0)						; use this to increment every single star frame using the data table
 		moveq	#$10,d0

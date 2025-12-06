@@ -79,16 +79,15 @@ LWall_Action:	; Routine 4
 		subq.b	#2,obRoutine(a0)
 
 LWall_Solid:	; Routine 2
-		move.w	#$2B,d1
-		move.w	#$18,d2
-		move.w	d2,d3
-		addq.w	#1,d3
-		move.w	obX(a0),d4
-		move.b	obRoutine(a0),d0
+		moveq	#43,d1				; width; save 4 cycles - Filter
+		moveq	#24,d2				; height (jumping); save 4 cycles - Filter
+		moveq	#25,d3				; height (walking); save 4 cycles - Filter
+		move.w	obX(a0),d4			; axis position
+		move.b	obRoutine(a0),d0	; store current routine
 		move.w	d0,-(sp)
 		bsr.w	SolidObject
 		move.w	(sp)+,d0
-		move.b	d0,obRoutine(a0)
+		move.b	d0,obRoutine(a0)	; restore current routine
 		cmpi.w	#$6A0,obX(a0)		; has object reached $6A0 on the x-axis?
 		bne.s	.animate			; if not, branch
 		clr.w	obVelX(a0)			; stop object moving

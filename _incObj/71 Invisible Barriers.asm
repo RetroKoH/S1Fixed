@@ -29,14 +29,13 @@ Invis_Main:	; Routine 0
 Invis_Solid:	; Routine 2
 		bsr.w	ChkSizedObjVisible			; is object off screen? (Devon Checking For Solids Fix)
 		bne.s	.chkdel						; if yes, branch
-		moveq	#0,d1
-		move.b	obDispWid(a0),d1
-		addi.w	#$B,d1
+		moveq	#11,d1
+		add.b	obDispWid(a0),d1			; width; save 8 cycles
 		moveq	#0,d2
-		move.b	obHeight(a0),d2
+		move.b	obHeight(a0),d2				; height (jumping)
 		move.w	d2,d3
-		addq.w	#1,d3
-		move.w	obX(a0),d4
+		addq.w	#1,d3						; height (walking)
+		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject71				; SolidObject_NoRenderChk
 
 	.chkdel:

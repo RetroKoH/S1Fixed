@@ -3,10 +3,6 @@
 ; Invincibility Stars have been removed and moved to their own object ($21)
 ; ---------------------------------------------------------------------------
 
-; w/ DPLCs and dynamic pointers -- RetroKoH VRAM Overhaul
-obArtLoc	equ	$38
-obDPLCLoc	equ	$3C
-
 ShieldItem:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
@@ -69,8 +65,8 @@ Shi_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		clr.b	obAnim(a0)					; Blue Shield Animation
 		move.l	#Map_Shield,obMap(a0)
-		move.l	#Art_Shield,obArtLoc(a0)	; load correct art location (for DPLCs)
-		move.l	#ShieldDynPLC,obDPLCLoc(a0)	; load correct DPLC location
+		move.l	#Art_Shield,obShield_ArtLoc(a0)	; load correct art location (for DPLCs)
+		move.l	#ShieldDynPLC,obShield_DPLCLoc(a0)	; load correct DPLC location
 		rts
 	
 	else	; RetroKoH Shield Optimization
@@ -85,8 +81,8 @@ Shi_Main:	; Routine 0
 		move.l	(a1)+,d0			; load the first longword, but we'll only use the lowest byte
 		move.b	d0,obAnim(a0)		; load correct animation
 		move.l	(a1)+,obMap(a0)		; load correct mappings
-		move.l	(a1)+,obArtLoc(a0)	; load correct art location (for DPLCs)
-		move.l	(a1)+,obDPLCLoc(a0)	; load correct DPLC location
+		move.l	(a1)+,obShield_ArtLoc(a0)	; load correct art location (for DPLCs)
+		move.l	(a1)+,obShield_DPLCLoc(a0)	; load correct DPLC location
 	
 		if ShieldsMode
 			cmpi.b	#id_Shi_Bubble,obRoutine(a0)	; bubble shield check
@@ -499,6 +495,7 @@ Lightning_CreateSpark:
 		rts
 ; End of function Lightning_CreateSpark
 ; ===========================================================================
+
 ; ---------------------------------------------------------------------------
 SparkVelocities:
 		dc.w  $FE00, $FE00
@@ -576,7 +573,7 @@ Shield_LoadGfx:
 		move.b	(v_shieldobj+obFrame).w,d0	; load frame number
 
 Stars_LoadGfx:
-		movea.l	obDPLCLoc(a0),a2
+		movea.l	obShield_DPLCLoc(a0),a2
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2
 		moveq	#0,d5
@@ -594,7 +591,7 @@ Stars_LoadGfx:
 		addi.w	#$10,d3
 		andi.w	#$FFF,d1
 		lsl.l	#5,d1
-		add.l	obArtLoc(a0),d1
+		add.l	obShield_ArtLoc(a0),d1
 		move.w	d4,d2
 		add.w	d3,d4
 		add.w	d3,d4
@@ -603,7 +600,8 @@ Stars_LoadGfx:
 
 .nochange:
 		rts
-	
+; ===========================================================================
+
 	if S3KDoubleJump
 ; ===========================================================================
 ; Shield variables

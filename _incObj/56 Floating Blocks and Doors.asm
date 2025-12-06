@@ -107,25 +107,24 @@ FBlock_Main:	; Routine 0
 		clr.w	fb_height(a0)
 
 FBlock_Action:	; Routine 2
-		move.w	obX(a0),-(sp)
-		moveq	#$F,d0				; get last digit of subtype
-		and.b	obSubtype(a0),d0	; SCE optimization
-		beq.s	.type00				; skip if subtype 00 (doesn't move)
+		move.w	obX(a0),-(sp)				; store current pre-movement x-position to the stack 
+		moveq	#$F,d0						; get last digit of subtype
+		and.b	obSubtype(a0),d0			; SCE optimization
+		beq.s	.type00						; skip if subtype 00 (doesn't move)
 		add.w	d0,d0
 		move.w	FBlock_Index-2(pc,d0.w),d1
 		jsr		FBlock_Index(pc,d1.w)		; move block subroutines
 
 .type00:
-		move.w	(sp)+,d4
+		move.w	(sp)+,d4					; pre-movement axis position (restored from the stack)
 		tst.b	obRender(a0)
 		bpl.s	.chkdel
-		moveq	#0,d1
-		move.b	obDispWid(a0),d1
-		addi.w	#$B,d1
+		moveq	#11,d1
+		add.b	obDispWid(a0),d1			; width; save 8 cycles
 		moveq	#0,d2
-		move.b	obHeight(a0),d2
+		move.b	obHeight(a0),d2				; height (jumping)
 		move.w	d2,d3
-		addq.w	#1,d3
+		addq.w	#1,d3						; height (walking)
 		bsr.w	SolidObject
 
 .chkdel:

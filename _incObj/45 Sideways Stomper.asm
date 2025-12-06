@@ -74,12 +74,12 @@ SStom_Main:	; Routine 0
 		move.b	#$10,obDispWid(a0)
 
 SStom_Solid:	; Routine 2
-		move.w	obX(a0),-(sp)
+		move.w	obX(a0),-(sp)	; save axis position to the stack
 		bsr.w	SStom_Move
-		move.w	#$17,d1
-		move.w	#$20,d2
-		move.w	#$20,d3
-		move.w	(sp)+,d4
+		moveq	#23,d1			; width; save 4 cycles - Filter
+		moveq	#32,d2			; height (jumping); save 4 cycles - Filter
+		moveq	#32,d3			; height (walking); save 4 cycles - Filter
+		move.w	(sp)+,d4		; axis position (pulled from stack)
 		bsr.w	SolidObject
 		bra.w	SStom_ChkDel	; Clownacy DisplaySprite Fix
 ; ===========================================================================
