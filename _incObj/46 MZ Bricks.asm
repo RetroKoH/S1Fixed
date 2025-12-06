@@ -28,13 +28,13 @@ Brick_Action:	; Routine 2
 		and.b	obSubtype(a0),d0			; SCE optimization
 		beq.s	.solid						; skip if subtype 00
 		add.w	d0,d0
-		jsr		Brick_Index-2(pc,d0.w)	; SCE optimization
+		jsr		Brick_Index-2(pc,d0.w)		; SCE optimization
 
 .solid:
-		move.w	#$1B,d1
-		move.w	#$10,d2
-		move.w	#$11,d3
-		move.w	obX(a0),d4
+		moveq	#27,d1				; width; save 4 cycles - Filter
+		moveq	#16,d2				; height (jumping); save 4 cycles - Filter
+		moveq	#17,d3				; height (walking); save 4 cycles - Filter
+		move.w	obX(a0),d4			; axis position
 		bsr.w	SolidObject
 
 .chkdel:

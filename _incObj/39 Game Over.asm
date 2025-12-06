@@ -15,19 +15,19 @@ Over_Index:		offsetTable
 ; ===========================================================================
 
 Over_ChkPLC:	; Routine 0
-		tst.l	(v_plc_buffer).w	; are the pattern load cues empty?
-		beq.s	Over_Main			; if yes, branch
+		tst.l	(v_plc_buffer).w			; are the pattern load cues empty?
+		beq.s	Over_Main					; if yes, branch
 		rts	
 ; ===========================================================================
 
 Over_Main:
-		addq.b	#2,obRoutine(a0)
-		move.w	#$50,obX(a0)	; set x-position
-		btst	#0,obFrame(a0)	; is the object	"OVER"?
-		beq.s	Over_1stWord	; if not, branch
-		move.w	#$1F0,obX(a0)	; set x-position for "OVER"
+		addq.b	#2,obRoutine(a0)			; -> Over_Move
+		move.w	#$50,obX(a0)				; set x-position
+		btst	#0,obFrame(a0)				; is the object	"OVER"?
+		beq.s	.not_over					; if not, branch
+		move.w	#$1F0,obX(a0)				; set x-position for "OVER"
 
-Over_1stWord:
+	.not_over:
 		move.w	#$F0,obScreenY(a0)
 		move.l	#Map_Over,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Game_Over,0,1),obGfx(a0)
@@ -35,8 +35,8 @@ Over_1stWord:
 		move.w	#priority0,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 
 	; Load TI - RetroKoH VRAM Overhaul
-		cmpi.b	#2,obFrame(a0)	; is the object	"TIME"?
-		bne.s	Over_Move		; if not, branch
+		cmpi.b	#2,obFrame(a0)				; is the object	"TIME"?
+		bne.s	Over_Move					; if not, branch
 
 		move.l	a0,-(sp)
 		lea		(Art_TimeOver).l,a0									; load TI art to a0
@@ -45,47 +45,49 @@ Over_1stWord:
 		jsr		(LoadUncArt).w
 		move.l	(sp)+,a0
 
+; ---------------------------------------------------------------------------
 Over_Move:	; Routine 2
-		moveq	#$10,d1		; set horizontal speed
-		cmpi.w	#$120,obX(a0)	; has item reached its target position?
-		beq.s	Over_SetWait	; if yes, branch
-		bcs.s	Over_UpdatePos
-		neg.w	d1
+		moveq	#16,d1						; set horizontal speed
+		cmpi.w	#$120,obX(a0)				; has item reached its target position?
+		beq.s	.next						; if yes, branch
+		bcs.s	.not_over					; branch if object is left of target (GAME/TIME)
+		neg.w	d1							; move left instead
 
-Over_UpdatePos:
-		add.w	d1,obX(a0)	; change item's position
+	.not_over:
+		add.w	d1,obX(a0)					; change item's position
 		bra.w	DisplaySprite
 ; ===========================================================================
 
-Over_SetWait:
-		move.w	#720,obTimeFrame(a0)	; set time delay to 12 seconds
-		addq.b	#2,obRoutine(a0)
-		bra.w	DisplaySprite			; RetroKoH GAME OVER Flicker fix	
+	.next:
+		move.w	#720,obTimeFrame(a0)		; set time delay to 12 seconds
+		addq.b	#2,obRoutine(a0)			; -> Over_Wait
+		bra.w	DisplaySprite				; RetroKoH GAME OVER Flicker fix	
 ; ===========================================================================
 
 Over_Wait:	; Routine 4
 		move.b	(v_jpadpressed_actual).w,d0
-		andi.b	#btnABC,d0	; is button A, B or C pressed?
-		bne.s	Over_ChgMode	; if yes, branch
-		btst	#0,obFrame(a0)
-		bne.w	DisplaySprite
-		tst.w	obTimeFrame(a0)	; has time delay reached zero?
-		beq.s	Over_ChgMode	; if yes, branch
-		subq.w	#1,obTimeFrame(a0) ; subtract 1 from time delay
+		andi.b	#btnABC,d0					; is button A, B or C pressed?
+		bne.s	Over_ChgMode				; if yes, branch
+		btst	#0,obFrame(a0)				; is object "OVER"?
+		bne.w	DisplaySprite				; if yes, branch
+		tst.w	obTimeFrame(a0)				; has time delay reached zero?
+		beq.s	Over_ChgMode				; if yes, branch
+		subq.w	#1,obTimeFrame(a0)			; subtract 1 from time delay
 		bra.w	DisplaySprite
 ; ===========================================================================
 
 Over_ChgMode:
-		tst.b	(f_timeover).w	; is time over flag set?
-		bne.s	Over_ResetLvl	; if yes, branch
-		move.b	#id_Continue,(v_gamemode).w ; set mode to $14 (continue screen)
-		tst.b	(v_continues).w	; do you have any continues?
-		bne.w	DisplaySprite	; if yes, branch
-		move.b	#id_Sega,(v_gamemode).w ; set mode to 0 (Sega screen)
+		tst.b	(f_timeover).w				; is time over flag set?
+		bne.s	Over_ResetLvl				; if yes, branch
+		move.b	#id_Continue,(v_gamemode).w	; set mode to $14 (continue screen)
+		tst.b	(v_continues).w				; do you have any continues?
+		bne.w	DisplaySprite				; if yes, branch
+		move.b	#id_Sega,(v_gamemode).w		; set mode to 0 (Sega screen)
 		bra.w	DisplaySprite
 ; ===========================================================================
 
 Over_ResetLvl:
-		clr.l	(v_lamp_time).w		; reset lamp time
-		move.b	#1,(f_restart).w	; restart level
+		clr.l	(v_lamp_time).w				; reset lamp time
+		move.b	#1,(f_restart).w			; restart level
 		bra.w	DisplaySprite
+; ===========================================================================

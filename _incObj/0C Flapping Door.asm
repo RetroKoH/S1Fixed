@@ -44,11 +44,10 @@ Flap_Closing:	; Routine 8
 		clr.b	(f_wtunnelallow).w			; enable wind tunnel
 		cmpi.b	#2,obFrame(a0)				; is the door open?
 		beq.s	.open						; branch if fully open
-		move.w	#$13,d1
-		move.w	#$20,d2
-		move.w	d2,d3
-		addq.w	#1,d3
-		move.w	obX(a0),d4
+		moveq	#19,d1						; width; save 4 cycles - Filter
+		moveq	#32,d2						; height (jumping); save 4 cycles - Filter
+		moveq	#33,d3						; height (walking); save 4 cycles - Filter
+		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject
 		move.w	obX(a0),d0
 		sub.w	obX(a1),d0
@@ -92,11 +91,10 @@ Flap_Closed:	; Routine $A
 		addq.b	#2,obRoutine(a0)				; -> Flap_Closed2
 
 Flap_Closed2:	; Routine $C
-		move.w	#$13,d1
-		move.w	#$20,d2
-		move.w	d2,d3
-		addq.w	#1,d3
-		move.w	obX(a0),d4
+		moveq	#19,d1							; width; save 4 cycles - Filter
+		moveq	#32,d2							; height (jumping); save 4 cycles - Filter
+		moveq	#33,d3							; height (walking); save 4 cycles - Filter
+		move.w	obX(a0),d4						; axis position
 		bsr.w	SolidObject
 		subq.w	#1,obFlap_Wait(a0)				; decrement time delay
 		bpl.w	RememberState					; branch if time remains

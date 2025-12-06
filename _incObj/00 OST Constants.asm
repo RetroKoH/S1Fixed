@@ -221,6 +221,8 @@ obCBall_Time:			equ objoff_30		; 2 bytes | time until the cannonball explodes
 
 ; Obj21 - Invincibility Stars
 obStars_TrackData:		equ objoff_30		; 4 bytes | tracking data for stars
+;obShield_ArtLoc		equ	objoff_38		; 4 bytes | pointer to art data (Shared with Obj38)
+;obShield_DPLCLoc		equ	objoff_3C		; 4 bytes | pointer to DPLC data (Shared with Obj38)
 ; ---------------------------------------------------------------------------
 
 ; Obj22 - Buzz Bomber Badnik
@@ -272,7 +274,6 @@ obLGrass_ColPtr:		equ objoff_30		; 4 bytes | pointer to collision data
 obLGrass_SinkPixels:	equ objoff_34		; 1 byte  | pixels the platform has sunk when stood on
 obLGrass_BurnFlag:		equ objoff_35		; 1 byte  | 0 = not burning; 1 = burning
 obLGrass_Children:		equ objoff_36		; 8 bytes | OST indices of child objects
-;TO-DO Make the Children use word-length pointers
 ; ---------------------------------------------------------------------------
 
 ; Obj30 - MZ Large Green Glass Blocks
@@ -307,7 +308,7 @@ obTCard_DisplayX:		equ objoff_30		; 2 bytes | position for card to display on
 obTCard_FinalX:			equ objoff_32		; 2 bytes | position for card to finish on
 ; ---------------------------------------------------------------------------
 
-; Obj35 - MZ Burning Grass
+; Obj35 - MZ Burning Grass (locations align with Obj2F)
 obGFire_StartX:			equ objoff_2A		; 2 bytes | starting X-axis position
 obGFire_StartY:			equ objoff_2C		; 2 bytes | starting Y-axis position
 obGFire_ColPtr:			equ objoff_30		; 4 bytes | pointer to collision data
@@ -323,7 +324,7 @@ obSpike_MoveFlag:		equ objoff_36		; 2 bytes | 0 = original position; 1 = moved p
 obSpike_MoveTime:		equ objoff_38		; 2 bytes | time until object moves again
 ; ---------------------------------------------------------------------------
 
-; Obj38 - Shields
+; Obj38 - Shields (w/ DPLCs and dynamic pointers -- RetroKoH VRAM Overhaul)
 obShield_ArtLoc			equ	objoff_38		; 4 bytes | pointer to art data
 obShield_DPLCLoc		equ	objoff_3C		; 4 bytes | pointer to DPLC data
 ; ---------------------------------------------------------------------------

@@ -50,11 +50,10 @@ ADoor_Animate:
 		bsr.w	AnimateSprite
 		tst.b	obFrame(a0)				; is the door open?
 		bne.w	RememberState			; if yes, branch
-		move.w	#$11,d1
-		move.w	#$20,d2
-		move.w	d2,d3
-		addq.w	#1,d3
-		move.w	obX(a0),d4
+		moveq	#17,d1					; width; save 4 cycles - Filter
+		moveq	#32,d2					; height (jumping); save 4 cycles - Filter
+		moveq	#33,d3					; height (walking); save 4 cycles - Filter
+		move.w	obX(a0),d4				; axis position
 		bsr.w	SolidObject
 		bra.w	RememberState
 ; ===========================================================================
