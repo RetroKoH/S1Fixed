@@ -39,9 +39,9 @@ GHZBall_Main:
 ; ===========================================================================
 
 GHZBall_Idle:		; Routine 2
-		move.w	#$23,d1						; width
-		move.w	#$18,d2						; height (jumping)
-		move.w	d2,d3						; height (walking)
+		moveq	#35,d1						; width; save 4 cycles - Filter
+		moveq	#24,d2						; height (jumping); save 4 cycles - Filter
+		moveq	#24,d3						; height (walking); save 4 cycles - Filter
 		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject					; make the ball solid
 		btst	#staSonicPush,obStatus(a0)	; is Sonic pushing the ball?
@@ -65,9 +65,9 @@ GHZBall_Rolling:	; Routine 4
 		bsr.w	GHZBall_ReactToItem			; check to destroy objects while rolling
 		bsr.w	GHZBall_SetRollSpeeds		; apply momentum to rolling
 		bsr.w	SpeedToPos
-		move.w	#$23,d1						; width
-		move.w	#$18,d2						; height (jumping)
-		move.w	d2,d3						; height (walking)
+		moveq	#35,d1						; width; save 4 cycles - Filter
+		moveq	#24,d2						; height (jumping); save 4 cycles - Filter
+		moveq	#24,d3						; height (walking); save 4 cycles - Filter
 		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject					; make the ball solid
 		btst	#staSonicPush,obStatus(a0)	; is Sonic pushing the ball?
@@ -108,9 +108,9 @@ GHZBall_InAir:		; Routine 6
 		bsr.w	GHZBall_ReactToItem
 		bsr.w	GHZBall_SetFrame
 		bsr.w	SpeedToPos
-		move.w	#$23,d1						; width
-		move.w	#$18,d2						; height (jumping)
-		move.w	d2,d3						; height (walking)
+		moveq	#35,d1						; width; save 4 cycles - Filter
+		moveq	#24,d2						; height (jumping); save 4 cycles - Filter
+		moveq	#24,d3						; height (walking); save 4 cycles - Filter
 		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject					; make the ball solid
 		jsr		(ObjFloorDist).l

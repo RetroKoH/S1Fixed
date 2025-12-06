@@ -25,10 +25,10 @@ Smab_Main:	; Routine 0
 Smab_Solid:	; Routine 2
 		move.w	(v_itembonus).w,objoff_34(a0)
 		move.b	(v_player+obAnim).w,sonicAniFrame(a0) ; load Sonic's animation number
-		move.w	#$1B,d1
-		move.w	#$10,d2
-		move.w	#$11,d3
-		move.w	obX(a0),d4
+		moveq	#27,d1						; width; save 4 cycles - Filter
+		moveq	#16,d2						; height (jumping); save 4 cycles - Filter
+		moveq	#17,d3						; height (walking); save 4 cycles - Filter
+		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject
 		btst	#staSonicOnObj,obStatus(a0)	; has Sonic landed on the block?
 		bne.s	.smash						; if yes, branch

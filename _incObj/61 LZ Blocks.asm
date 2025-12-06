@@ -46,26 +46,25 @@ LBlk_Main:	; Routine 0
 		move.b	#1,lblk_untouched(a0)
 
 LBlk_Action:	; Routine 2
-		move.w	obX(a0),-(sp)
+		move.w	obX(a0),-(sp)				; store current pre-movement x-position to the stack 
 	;(it does this next part EVERY frame. Can we optimize this?)
-		moveq	#$F,d0				; get last digit of subtype
-		and.b	obSubtype(a0),d0	; SCE optimization
-		beq.s	.type00				; skip if subtype 00
+		moveq	#$F,d0						; get last digit of subtype
+		and.b	obSubtype(a0),d0			; SCE optimization
+		beq.s	.type00						; skip if subtype 00
 		add.w	d0,d0
 		move.w	LBlk_Index-2(pc,d0.w),d1
 		jsr		LBlk_Index(pc,d1.w)
 
 .type00:
-		move.w	(sp)+,d4
+		move.w	(sp)+,d4					; pre-movement axis position (restored from the stack)
 		tst.b	obRender(a0)
 		bpl.s	.chkdel
-		moveq	#0,d1
-		move.b	obDispWid(a0),d1
-		addi.w	#$B,d1
+		moveq	#11,d1
+		add.b	obDispWid(a0),d1			; width; save 8 cycles
 		moveq	#0,d2
-		move.b	obHeight(a0),d2
+		move.b	obHeight(a0),d2				; height (jumping)
 		move.w	d2,d3
-		addq.w	#1,d3
+		addq.w	#1,d3						; height (walking)
 		bsr.w	SolidObject
 		move.b	d4,objoff_3F(a0)
 		bsr.w	loc_12180
