@@ -15,248 +15,263 @@ GotThroughCard:
 		jmp		Got_Index(pc,d1.w)
 ; ===========================================================================
 Got_Index:	offsetTable
-		offsetTableEntry.w Got_ChkPLC
+		offsetTableEntry.w Got_Main
 		offsetTableEntry.w Got_Move
 		offsetTableEntry.w Got_Wait
-		offsetTableEntry.w Got_TimeBonus
+		offsetTableEntry.w Got_Bonus
 		offsetTableEntry.w Got_Wait
 		offsetTableEntry.w Got_NextLevel
 		offsetTableEntry.w Got_Wait
-		offsetTableEntry.w Got_Move2
-		offsetTableEntry.w loc_C766
-
-got_mainX = objoff_30		; position for card to display on
-got_finalX = objoff_32		; position for card to finish on
+		offsetTableEntry.w Got_MoveBack
+		offsetTableEntry.w Got_Boundary
 ; ===========================================================================
 
-Got_ChkPLC:	; Routine 0
-		tst.l	(v_plc_buffer).w		; are the pattern load cues empty?
-		beq.s	Got_Main				; if yes, branch
+Got_Main:	; Routine 0
+		tst.l	(v_plc_buffer).w				; are the pattern load cues empty?
+		beq.s	.plc_free						; if yes, branch
 		rts	
 ; ===========================================================================
 
-Got_Main:
+	.plc_free:
 		movea.l	a0,a1
 		lea		(Got_Config).l,a2
 		moveq	#got_pieces,d1
 		
 	if PerfectBonusEnabled
-		tst.w	(v_perfectringsleft).w	; did you score a Perfect?
-		bne.s	Got_Loop
-		addq.w	#1,d1					; if yes, add 1	to d1 (number of sprites)
+		tst.w	(v_perfectringsleft).w			; did you score a Perfect?
+		bne.s	.loop
+		addq.w	#1,d1							; if yes, add 1	to d1 (number of sprites)
 	endif
 
-Got_Loop:
+	.loop:
 		_move.b	#id_GotThroughCard,obID(a1)
-		move.w	(a2),obX(a1)			; load start x-position
-		move.w	(a2)+,got_finalX(a1)	; load finish x-position (same as start)
-		move.w	(a2)+,got_mainX(a1)		; load main x-position
-		move.w	(a2)+,obScreenY(a1)		; load y-position
-		move.b	(a2)+,obRoutine(a1)
-		move.b	(a2)+,d0
-		cmpi.b	#got_pieces,d0
-		bne.s	loc_C5CA
-		add.b	(v_act).w,d0			; add act number to frame number
+		move.w	(a2),obX(a1)					; load start x-position
+		move.w	(a2)+,obEoLCard_FinalX(a1)		; load finish x-position (same as start)
+		move.w	(a2)+,obEoLCard_DisplayX(a1)	; load main x-position
+		move.w	(a2)+,obScreenY(a1)				; load y-position
+		move.b	(a2)+,obRoutine(a1)				; -> Has_Move
+		move.b	(a2)+,d0						; get frame number
+		cmpi.b	#got_pieces,d0					; is object the act number?
+		bne.s	.not_act						; if not, branch
+		add.b	(v_act).w,d0					; add act number to frame number
 
-loc_C5CA:
-		move.b	d0,obFrame(a1)
+	.not_act:
+		move.b	d0,obFrame(a1)					; set frame number
 		move.l	#Map_Got,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Title_Card,0,1),obGfx(a1)
 		clr.b	obRender(a1)
-		move.w	#priority0,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
+		move.w	#priority0,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
 		lea		object_size(a1),a1
-		dbf		d1,Got_Loop				; repeat [got_pieces] times
+		dbf		d1,.loop						; repeat [got_pieces] times
+; ---------------------------------------------------------------------------
 
 Got_Move:	; Routine 2
-		moveq	#$10,d1					; set horizontal speed
-		move.w	got_mainX(a0),d0
-		cmp.w	obX(a0),d0				; has item reached its target position?
-		beq.s	loc_C61A				; if yes, branch
-		bge.s	Got_ChgPos
-		neg.w	d1
+		moveq	#16,d1							; set horizontal speed
+		move.w	obEoLCard_DisplayX(a0),d0
+		cmp.w	obX(a0),d0						; has item reached its target position?
+		beq.s	.at_target						; if yes, branch
+		bge.s	.is_left						; branch if object is left of target position
+		neg.w	d1								; move left instead
 
-Got_ChgPos:
-		add.w	d1,obX(a0)				; change item's position
+	.is_left:
+		add.w	d1,obX(a0)						; change item's position
 
-loc_C5FE:
+	.chk_visible:
 		move.w	obX(a0),d0
-		bmi.s	locret_C60E
-		cmpi.w	#$200,d0				; has item moved beyond	$200 on	x-axis?
-		bhs.s	locret_C60E				; if yes, branch
+		bmi.s	.exit							; branch if object is at -ve x pos
+		cmpi.w	#$200,d0						; has item moved beyond	$200 on	x-axis?
+		bhs.s	.exit							; if yes, branch
 		bra.w	DisplaySprite
 ; ===========================================================================
 
-locret_C60E:
+	.exit:
 		rts	
 ; ===========================================================================
 
-loc_C610:
-		move.b	#$E,obRoutine(a0)
-		bra.w	Got_Move2
+	.sbz2_ending:
+		move.b	#$E,obRoutine(a0)				; -> Got_MoveBack
+		bra.w	Got_MoveBack
 ; ===========================================================================
 
-loc_C61A:
-		cmpi.b	#$E,(v_endcardring+obRoutine).w
-		beq.s	loc_C610
-		cmpi.b	#4,obFrame(a0)
-		bne.s	loc_C5FE
-		addq.b	#2,obRoutine(a0)
-		move.w	#180,obTimeFrame(a0) ; set time delay to 3 seconds
+	.at_target:
+		cmpi.b	#$E,(v_endcardring+obRoutine).w	; is ring bonus object on routine Has_MoveBack?
+		beq.s	.sbz2_ending					; if yes, branch
+		cmpi.b	#4,obFrame(a0)					; is object the ring bonus?
+		bne.s	.chk_visible					; if not, branch
+
+		addq.b	#2,obRoutine(a0)				; goto Has_Wait next, and then Has_Bonus
+		move.w	#180,obTimeFrame(a0)			; set time delay to 3 seconds
+; ---------------------------------------------------------------------------
 
 Got_Wait:	; Routine 4, 8, $C
-		subq.w	#1,obTimeFrame(a0) ; subtract 1 from time delay
-		bne.s	Got_Display
-		addq.b	#2,obRoutine(a0)
-
-Got_Display:
+		subq.w	#1,obTimeFrame(a0)				; decrement timer
+		bne.w	DisplaySprite					; branch if time remains
+		addq.b	#2,obRoutine(a0)				; goto Has_Bonus/Has_NextLevel/Has_MoveBack next
 		bra.w	DisplaySprite
 ; ===========================================================================
 
-	if SpeedUpScoreTally<>2
+	switch SpeedUpScoreTally
+	case 2
 ; ---------------------------------------------------------------------------
-	if SpeedUpScoreTally=1	; Mercury Speed Up Score Tally
-Got_TimeBonus:	; Routine 6
-		bsr.w	DisplaySprite
-		moveq	#10,d1					; set score decrement to 10
-		move.b	(v_jpadheld_actual).w,d0
-		andi.b	#btnABC,d0				; is A, B or C pressed?
-		beq.w	.dontspeedup			; if not, branch
-		move.b	#100,d1					; increase score decrement to 100
-		
-.dontspeedup:
-		move.b	#1,(f_endactbonus).w	; set time/ring bonus update flag
-		moveq	#0,d0
-		tst.w	(v_timebonus).w			; is time bonus	= zero?
-		beq.s	Got_RingBonus			; if yes, branch
-		cmp.w	(v_timebonus).w,d1		; compare time bonus to score decrement
-		blt.s	.skip					; if it's greater or equal, branch
-		move.w	(v_timebonus).w,d1		; else, set the decrement to the remaining bonus
-.skip:
-		add.w	d1,d0					; add decrement to score
-		sub.w	d1,(v_timebonus).w		; subtract decrement from time bonus
-
-Got_RingBonus:
-		tst.w	(v_ringbonus).w			; is ring bonus	= zero?
-		beq.s	.afterrings				; if yes, branch (We must use a temp label to ensure potential mods are branched to)
-		cmp.w	(v_ringbonus).w,d1		; compare ring bonus to score decrement
-		blt.s	.skip					; if it's greater or equal, branch
-		move.w	(v_ringbonus).w,d1		; else, set the decrement to the remaining bonus
-.skip:
-		add.w	d1,d0					; add decrement to score
-		sub.w	d1,(v_ringbonus).w		; subtract decrement from ring bonus
-	
-.afterrings:
-		if CoolBonusEnabled
-	Got_CoolBonus:
-		tst.w	(v_coolbonus).w			; is cool bonus = zero?
-		beq.s	.aftercool				; if yes, branch (We must use a temp label to ensure potential mods are branched to)
-		cmp.w	(v_coolbonus).w,d1		; compare cool bonus to score decrement
-		blt.s	.skip					; if it's greater or equal, branch
-		move.w	(v_coolbonus).w,d1		; else, set the decrement to the remaining bonus
-.skip:
-		add.w	d1,d0					; add decrement to score
-		sub.w	d1,(v_coolbonus).w		; subtract decrement from cool bonus
-	.aftercool:
-		endif
-
-		if PerfectBonusEnabled
-	Got_PerfectBonus:
-		tst.w	(v_perfectbonus).w		; is perfect bonus = zero?
-		beq.s	Got_ChkBonus			; if yes, branch (We must use a temp label to ensure potential mods are branched to)
-		cmp.w	(v_perfectbonus).w,d1	; compare perfect bonus to score decrement
-		blt.s	.skip					; if it's greater or equal, branch
-		move.w	(v_perfectbonus).w,d1	; else, set the decrement to the remaining bonus
-.skip:
-		add.w	d1,d0					; add decrement to score
-		sub.w	d1,(v_perfectbonus).w	; subtract decrement from perfect bonus
-		endif
-
-	else
-
-Got_TimeBonus:	; Routine 6
-		bsr.w	DisplaySprite
-		move.b	#1,(f_endactbonus).w	; set time/ring bonus update flag
-		moveq	#0,d0
-		tst.w	(v_timebonus).w			; is time bonus	= zero?
-		beq.s	Got_RingBonus			; if yes, branch
-		addi.w	#10,d0					; add 10 to score
-		subi.w	#10,(v_timebonus).w		; subtract 10 from time bonus
-
-Got_RingBonus:
-		tst.w	(v_ringbonus).w			; is ring bonus	= zero?
-		beq.s	.afterrings				; if yes, branch (We must use a temp label to ensure potential mods are branched to)
-		addi.w	#10,d0					; add 10 to score
-		subi.w	#10,(v_ringbonus).w		; subtract 10 from ring bonus
-
-	.afterrings:
-		if CoolBonusEnabled
-	Got_CoolBonus:
-			tst.w	(v_coolbonus).w			; is cool bonus	= zero?
-			beq.s	.aftercool				; if yes, branch (We must use a temp label to ensure potential mods are branched to)
-			addi.w	#10,d0					; add 10 to score
-			subi.w	#10,(v_coolbonus).w		; subtract 10 from cool bonus
-	.aftercool:
-		endif
-
-		if PerfectBonusEnabled
-	Got_PerfectBonus:
-			tst.w	(v_perfectbonus).w		; is perfect bonus = zero?
-			beq.s	Got_ChkBonus			; if yes, branch
-			addi.w	#10,d0					; add 10 to score
-			subi.w	#10,(v_perfectbonus).w	; subtract 10 from perfect bonus
-		endif
-
-	endif	; Speed Up Score Tally End
+; INSTANT SCORE TALLY
 ; ---------------------------------------------------------------------------
 
-Got_ChkBonus:
-		tst.w	d0						; is there any bonus?
-		bne.s	Got_AddBonus			; if yes, branch
-
-	else	; RetroKoH Instant Score Tally
-; ---------------------------------------------------------------------------
-Got_TimeBonus:	; Routine 6
+Got_Bonus:	; Routine 6
 		bsr.w	DisplaySprite
-		move.b	#1,(f_endactbonus).w	; set time/ring bonus update flag
+		move.b	#1,(f_endactbonus).w		; set time/ring bonus update flag
 		moveq	#0,d0
-		move.w	(v_timebonus).w,d0		; load time bonus to d0
-		clr.w	(v_timebonus).w			; clear time bonus
-		add.w	(v_ringbonus).w,d0		; load ring bonus to d0
-		clr.w	(v_ringbonus).w			; clear ring bonus
+		move.w	(v_timebonus).w,d0			; load time bonus to d0
+		clr.w	(v_timebonus).w				; clear time bonus
+		add.w	(v_ringbonus).w,d0			; load ring bonus to d0
+		clr.w	(v_ringbonus).w				; clear ring bonus
 	if CoolBonusEnabled
-		add.w	(v_coolbonus).w,d0		; load cool bonus to d0
-		clr.w	(v_coolbonus).w			; clear cool bonus
+		add.w	(v_coolbonus).w,d0			; load cool bonus to d0
+		clr.w	(v_coolbonus).w				; clear cool bonus
 	endif
 	if PerfectBonusEnabled
-		add.w	(v_perfectbonus).w,d0	; load cool bonus to d0
-		clr.w	(v_perfectbonus).w		; clear cool bonus
+		add.w	(v_perfectbonus).w,d0		; load cool bonus to d0
+		clr.w	(v_perfectbonus).w			; clear cool bonus
 	endif
-		jsr		(AddPoints).l			; add to score
-
-	endif	;end Instant Score Tally
+		jsr		(AddPoints).l				; add to score
+; ---------------------------------------------------------------------------
+; ---------------------------------------------------------------------------
+	case 1
+; ---------------------------------------------------------------------------
+; FASTER SCORE TALLY
 ; ---------------------------------------------------------------------------
 
+Got_Bonus:	; Routine 6
+		bsr.w	DisplaySprite
+		moveq	#10,d1						; set score decrement to 10
+		move.b	(v_jpadheld_actual).w,d0
+		andi.b	#btnABC,d0					; is A, B or C pressed?
+		beq.w	.dontspeedup				; if not, branch
+		move.b	#100,d1						; increase score decrement to 100
+		
+	.dontspeedup:
+		move.b	#1,(f_endactbonus).w		; set time/ring bonus update flag
+		moveq	#0,d0
+		tst.w	(v_timebonus).w				; is time bonus	= zero?
+		beq.s	.no_timebonus				; if yes, branch
+		cmp.w	(v_timebonus).w,d1			; compare time bonus to score decrement
+		blt.s	.skip_time					; if it's greater or equal, branch
+		move.w	(v_timebonus).w,d1			; else, set the decrement to the remaining bonus
+
+	.skip_time:
+		add.w	d1,d0						; add decrement to score
+		sub.w	d1,(v_timebonus).w			; subtract decrement from time bonus
+
+	.no_timebonus:
+		tst.w	(v_ringbonus).w				; is ring bonus	= zero?
+		beq.s	.afterrings					; if yes, branch (We must use a temp label to ensure potential mods are branched to)
+		cmp.w	(v_ringbonus).w,d1			; compare ring bonus to score decrement
+		blt.s	.skip_rings					; if it's greater or equal, branch
+		move.w	(v_ringbonus).w,d1			; else, set the decrement to the remaining bonus
+
+	.skip_rings:
+		add.w	d1,d0						; add decrement to score
+		sub.w	d1,(v_ringbonus).w			; subtract decrement from ring bonus
+	
+	.no_ringbonus:
+		if CoolBonusEnabled
+			tst.w	(v_coolbonus).w			; is cool bonus = zero?
+			beq.s	.no_coolbonus			; if yes, branch (We must use a temp label to ensure potential mods are branched to)
+			cmp.w	(v_coolbonus).w,d1		; compare cool bonus to score decrement
+			blt.s	.skip_cool				; if it's greater or equal, branch
+			move.w	(v_coolbonus).w,d1		; else, set the decrement to the remaining bonus
+
+		.skip_cool:
+			add.w	d1,d0					; add decrement to score
+			sub.w	d1,(v_coolbonus).w		; subtract decrement from cool bonus
+
+		.no_coolbonus:
+		endif
+
+		if PerfectBonusEnabled
+			tst.w	(v_perfectbonus).w		; is perfect bonus = zero?
+			beq.s	.no_perfectbonus		; if yes, branch (We must use a temp label to ensure potential mods are branched to)
+			cmp.w	(v_perfectbonus).w,d1	; compare perfect bonus to score decrement
+			blt.s	.skip					; if it's greater or equal, branch
+			move.w	(v_perfectbonus).w,d1	; else, set the decrement to the remaining bonus
+
+	.skip_perfect:
+			add.w	d1,d0					; add decrement to score
+			sub.w	d1,(v_perfectbonus).w	; subtract decrement from perfect bonus
+
+		.no_perfectbonus:
+		endif
+
+		tst.w	d0							; is there any bonus?
+		bne.s	Got_AddBonus				; if yes, branch
+; ---------------------------------------------------------------------------
+; ---------------------------------------------------------------------------
+	elsecase
+; ---------------------------------------------------------------------------
+; NORMAL SCORE TALLY
+; ---------------------------------------------------------------------------
+
+Got_Bonus:	; Routine 6
+		bsr.w	DisplaySprite
+		move.b	#1,(f_endactbonus).w		; set time/ring bonus update flag
+		moveq	#0,d0
+		tst.w	(v_timebonus).w				; is time bonus	= zero?
+		beq.s	.no_timebonus				; if yes, branch
+		addi.w	#10,d0						; add 10 to score
+		subi.w	#10,(v_timebonus).w			; subtract 10 from time bonus
+
+	.no_timebonus:
+		tst.w	(v_ringbonus).w				; is ring bonus	= zero?
+		beq.s	.no_ringbonus				; if yes, branch
+		addi.w	#10,d0						; add 10 to score
+		subi.w	#10,(v_ringbonus).w			; subtract 10 from ring bonus
+
+	.no_ringbonus:
+		if CoolBonusEnabled
+			tst.w	(v_coolbonus).w			; is cool bonus	= zero?
+			beq.s	.no_coolbonus			; if yes, branch
+			addi.w	#10,d0					; add 10 to score
+			subi.w	#10,(v_coolbonus).w		; subtract 10 from cool bonus
+
+	.no_coolbonus:
+		endif
+
+		if PerfectBonusEnabled
+			tst.w	(v_perfectbonus).w		; is perfect bonus = zero?
+			beq.s	.no_perfectbonus		; if yes, branch
+			addi.w	#10,d0					; add 10 to score
+			subi.w	#10,(v_perfectbonus).w	; subtract 10 from perfect bonus
+
+	.no_perfectbonus:
+		endif
+
+		tst.w	d0							; is there any bonus?
+		bne.s	.add_bonus					; if yes, branch
+; ---------------------------------------------------------------------------
+; ---------------------------------------------------------------------------
+	endcase
+
 		move.w	#sfx_Cash,d0
-		jsr		(QueueSound2).w	; play "ker-ching" sound
-		addq.b	#2,obRoutine(a0)
-		cmpi.w	#(id_SBZ<<8)+1,(v_zone).w
-		bne.s	Got_SetDelay
-		addq.b	#4,obRoutine(a0)		; SBZ2 specific routine
+		jsr		(QueueSound2).w				; play "ker-ching" sound
+		addq.b	#2,obRoutine(a0)			; goto Has_Wait next, and then Has_NextLevel
+		cmpi.w	#(id_SBZ<<8)+1,(v_zone).w	; is current level SBZ2?
+		bne.s	.not_sbz2					; if not, branch
+		addq.b	#4,obRoutine(a0)			; if yes, goto Has_Wait next, and then Has_MoveBack for SBZ2
 
-Got_SetDelay:
-		move.w	#180,obTimeFrame(a0)	; set time delay to 3 seconds
+	.not_sbz2:
+		move.w	#180,obTimeFrame(a0)		; set time delay to 3 seconds
 
-locret_C692:
+	.exit:
 		rts	
 ; ===========================================================================
+
 	if SpeedUpScoreTally<>2
-Got_AddBonus:
-		jsr		(AddPoints).l
-		move.b	(v_vbla_byte).w,d0
-		andi.b	#3,d0
-		bne.s	locret_C692
+	.add_bonus:
+		jsr		(AddPoints).l				; add d0 to score and update counter
+		move.b	(v_vbla_byte).w,d0			; get byte that increments every frame
+		andi.b	#3,d0						; read bits 0-1
+		bne.s	.exit						; branch if either are set
 		move.w	#sfx_Switch,d0
-		jmp		(QueueSound2).w	; play "blip" sound
+		jmp		(QueueSound2).w				; play "blip" sound
 	endif
 ; ===========================================================================
 
@@ -267,33 +282,32 @@ Got_NextLevel:	; Routine $A
 		move.b	(v_act).w,d1
 		andi.w	#3,d1
 		add.w	d1,d1
-		add.w	d1,d0
+		add.w	d1,d0						; combine zone/act numbers into single value
 		move.w	LevelOrder(pc,d0.w),d0		; load level from level order array
 		move.w	d0,(v_zone).w				; set level number
 		tst.w	d0
-		bne.s	Got_ChkSS
+		bne.s	.valid_level				; branch if not 0
 		move.b	#id_Sega,(v_gamemode).w		; if no next level is set, return to the SEGA screen
-		bra.s	Got_Display2				; display sprite for one more frame before returning to SEGA
+		bra.w	DisplaySprite				; display sprite for one more frame before returning to SEGA
 ; ===========================================================================
 
-Got_ChkSS:
+	.valid_level:
 	if CoolBonusEnabled
 		move.b	#CoolBonusHits,(v_hitscount).w	; set hits count for next cool bonus
 	endif
 
 		clr.b	(v_lastlamp).w				; clear	lamppost counter
 		tst.b	(f_bigring).w				; has Sonic jumped into	a giant	ring?
-		beq.s	loc_C6EA					; if not, branch
+		beq.s	.restart					; if not, branch
 		move.b	#id_Special,(v_gamemode).w	; set game mode to Special Stage (10)
-		bra.s	Got_Display2
-; ===========================================================================
-
-loc_C6EA:
-		move.b	#1,(f_restart).w			; restart level
-
-Got_Display2:
 		bra.w	DisplaySprite
 ; ===========================================================================
+
+	.restart:
+		move.b	#1,(f_restart).w			; restart level
+		bra.w	DisplaySprite
+; ===========================================================================
+
 ; ---------------------------------------------------------------------------
 ; Level	order array
 ; ---------------------------------------------------------------------------
@@ -377,9 +391,9 @@ LevelOrder:
 	endif
 ; ===========================================================================
 
-Got_Move2:	; Routine $E
+Got_MoveBack:	; Routine $E
 		moveq	#$20,d1		; set horizontal speed
-		move.w	got_finalX(a0),d0
+		move.w	obEoLCard_FinalX(a0),d0
 		cmp.w	obX(a0),d0	; has item reached its finish position?
 		beq.s	Got_SBZ2	; if yes, branch
 		bge.s	Got_ChgPos2
@@ -413,7 +427,7 @@ Got_SBZ2:
 	endif
 ; ===========================================================================
 
-loc_C766:	; Routine $10
+Got_Boundary:	; Routine $10
 		addq.w	#2,(v_limitright).w
 		cmpi.w	#$2100,(v_limitright).w
 		beq.w	DeleteObject
