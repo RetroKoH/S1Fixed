@@ -125,6 +125,11 @@ AfterImagesOn: = 0
 ; Function: All monitors are randomized a la Sonic 2 (2P)
 RandomMonitors: = 0
 
+; Name: Green Newtrons reappear
+; Credit: RetroKoH
+; Function: Green Newtrons reappear if you re-approach them after going away.
+GreenNewtronReappears: = 1
+
 ; Name: GHZ Boss Battle Delay
 ; Credit: RetroKoH
 ; Function: You cannot hit Eggman until he lowers the wrecking ball, per the 2013 remake and Origins
