@@ -8,10 +8,11 @@ SideStomp:
 		move.w	SStom_Index(pc,d0.w),d1
 		jmp		SStom_Index(pc,d1.w)
 ; ===========================================================================
+
 SStom_Index:	offsetTable
 		offsetTableEntry.w SStom_Main
 		offsetTableEntry.w SStom_Solid
-		offsetTableEntry.w loc_BA8E
+		offsetTableEntry.w SStom_Spikes
 		offsetTableEntry.w SStom_Display
 		offsetTableEntry.w SStom_Pole
 
@@ -54,11 +55,11 @@ SStom_Main:	; Routine 0
 		move.l	#Map_SStom,obMap(a1)
 		move.w	#make_art_tile(ArtTile_MZ_Spike_Stomper,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)
-		move.w	obX(a1),objoff_30(a1)
-		move.w	obX(a0),objoff_3A(a1)
+		move.w	obX(a1),obSStom_StartX(a1)
+		move.w	obX(a0),obSStom_StartY(a1)
 		move.b	obSubtype(a0),obSubtype(a1)
 		move.b	#$20,obDispWid(a1)
-		move.w	d2,objoff_34(a1)
+		move.w	d2,obSStom_PoleMax(a1)
 		move.w	#priority4,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
 		cmpi.b	#1,(a2)							; is subobject spikes?
 		bne.s	.notspikes						; if not, branch
@@ -66,12 +67,13 @@ SStom_Main:	; Routine 0
 
 .notspikes:
 		move.b	(a2)+,obFrame(a1)
-		move.w	a0,objoff_3C(a1)
+		move.w	a0,obSStom_Parent(a1)
 		dbf		d1,.loop					; repeat 3 times
 		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 
 .fail:
 		move.b	#$10,obDispWid(a0)
+; ---------------------------------------------------------------------------
 
 SStom_Solid:	; Routine 2
 		move.w	obX(a0),-(sp)	; save axis position to the stack
@@ -81,74 +83,77 @@ SStom_Solid:	; Routine 2
 		moveq	#32,d3			; height (walking); save 4 cycles - Filter
 		move.w	(sp)+,d4		; axis position (pulled from stack)
 		bsr.w	SolidObject
-		bra.w	SStom_ChkDel	; Clownacy DisplaySprite Fix
+		bra.w	SStom_Display	; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 SStom_Pole:	; Routine 8
-		movea.w	objoff_3C(a0),a1
-		move.b	objoff_32(a1),d0
+		movea.w	obSStom_Parent(a0),a1			; get parent object slot
+		move.b	obSStom_PoleLength(a1),d0		; get current pole length
 		addi.b	#$10,d0
-		lsr.b	#5,d0
-		addq.b	#3,d0
-		move.b	d0,obFrame(a0)
+		lsr.b	#5,d0							; divide by $20
+		addq.b	#3,d0							; first pole frame (3)
+		move.b	d0,obFrame(a0)					; update frame
 
-loc_BA8E:	; Routine 4
-		movea.w	objoff_3C(a0),a1
+SStom_Spikes:	; Routine 4
+		movea.w	obSStom_Parent(a0),a1			; get parent object slot
 		moveq	#0,d0
-		move.b	objoff_32(a1),d0
-		neg.w	d0
-		add.w	objoff_30(a0),d0
-		move.w	d0,obX(a0)
+		move.b	obSStom_PoleLength(a1),d0		; get current pole length
+		neg.w	d0								; make it negative
+		add.w	obSStom_StartX(a0),d0			; add to initial x pos
+		move.w	d0,obX(a0)						; update x pos
 
 SStom_Display:	; Routine 6
-SStom_ChkDel:
-		offscreen.w	DeleteObject,objoff_3A(a0)	; ProjectFM S3K Objects Manager
+		offscreen.w	DeleteObject,obSStom_StartY(a0)	; ProjectFM S3K Objects Manager
 		cmpi.b	#1,obFrame(a0)
 		bne.s	.notSpikes
 		bra.w	DisplayAndCollision
+
 	.notSpikes:
 		bra.w	DisplaySprite					; Clownacy DisplaySprite Fix
+; ===========================================================================
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
+; ---------------------------------------------------------------------------
+; Subroutine to move the main metal block
+; ---------------------------------------------------------------------------
 
 SStom_Move:
 	; Removed offset table -- Clownacy Sideways Stomper Fix
-		tst.w	objoff_36(a0)
-		beq.s	loc_BB08
-		tst.w	objoff_38(a0)
-		beq.s	loc_BAEC
-		subq.w	#1,objoff_38(a0)
-		bra.s	loc_BB3C
+		tst.w	obSStom_RetractFlag(a0)		; is flag set to retract?
+		beq.s	.extend						; if not, branch
+		tst.w	obSStom_DelayTime(a0)		; has time delay run out?
+		beq.s	.retract					; if yes, branch
+		subq.w	#1,obSStom_DelayTime(a0)	; decrement timer
+		bra.s	.update_pos
 ; ===========================================================================
 
-loc_BAEC:
-		subi.w	#$80,objoff_32(a0)
-		bcc.s	loc_BB3C
-		clr.w	objoff_32(a0)
+	.retract:
+		subi.w	#$80,obSStom_PoleLength(a0)	; retract
+		bcc.s	.update_pos					; branch if at least $80 is left on length
+		clr.w	obSStom_PoleLength(a0)		; set to 0
 		clr.w	obVelX(a0)
-		clr.w	objoff_36(a0)
-		bra.s	loc_BB3C
+		clr.w	obSStom_RetractFlag(a0)		; reset flag to extend
+		bra.s	.update_pos
 ; ===========================================================================
 
-loc_BB08:
-		move.w	objoff_34(a0),d1
-		cmp.w	objoff_32(a0),d1
-		beq.s	loc_BB3C
+	.extend:
+		move.w	obSStom_PoleMax(a0),d1
+		cmp.w	obSStom_PoleLength(a0),d1	; is pole fully extended?
+		beq.s	.update_pos					; if yes, branch
 		move.w	obVelX(a0),d0
-		addi.w	#$70,obVelX(a0)
-		add.w	d0,objoff_32(a0)
-		cmp.w	objoff_32(a0),d1
-		bhi.s	loc_BB3C
-		move.w	d1,objoff_32(a0)
-		clr.w	obVelX(a0)
-		move.w	#1,objoff_36(a0)
-		move.w	#$3C,objoff_38(a0)
+		addi.w	#$70,obVelX(a0)				; increase speed
+		add.w	d0,obSStom_PoleLength(a0)
+		cmp.w	obSStom_PoleLength(a0),d1	; is pole fully extended?
+		bhi.s	.update_pos					; if not, branch
+		move.w	d1,obSStom_PoleLength(a0)
+		clr.w	obVelX(a0)					; stop
+		move.w	#1,obSStom_RetractFlag(a0)	; set flag to retract
+		move.w	#$3C,obSStom_DelayTime(a0)	; set delay to 1 second
 
-loc_BB3C:
+	.update_pos:
 		moveq	#0,d0
-		move.b	objoff_32(a0),d0
+		move.b	obSStom_PoleLength(a0),d0
 		neg.w	d0
-		add.w	objoff_30(a0),d0
+		add.w	obSStom_StartX(a0),d0
 		move.w	d0,obX(a0)
 		rts	
+; ===========================================================================

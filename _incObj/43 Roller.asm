@@ -7,31 +7,32 @@ Roller:
 		tst.b	obRoutine(a0)
 		bne.s	Roll_Action
 	; Object Routine Optimization End
+; ---------------------------------------------------------------------------
 
 Roll_Main:	; Routine 0
 		move.w	#$E08,obHeight(a0)			; Height and Width
 		bsr.w	ObjectFall_YOnly
 		jsr		(ObjFloorDist).l
-		tst.w	d1
-		bpl.s	locret_E052
-		add.w	d1,obY(a0)					; match	roller's position with the floor
-		clr.w	obVelY(a0)
-		addq.b	#2,obRoutine(a0)
+		tst.w	d1							; has roller hit the floor?
+		bpl.s	.no_floor					; if not, branch
+		add.w	d1,obY(a0)					; align to floor
+		clr.w	obVelY(a0)					; stop falling
+		addq.b	#2,obRoutine(a0)			; -> Roll_Action
 		move.l	#Map_Roll,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Roller,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH S3K Priority Manager
 		move.b	#$10,obDispWid(a0)
 
-locret_E052:
+	.no_floor:
 		rts	
 ; ===========================================================================
 
 Roll_Action:	; Routine 2
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
-		move.w	Roll_Index2(pc,d0.w),d1
-		jsr		Roll_Index2(pc,d1.w)
+		move.w	RollAct_Index(pc,d0.w),d1
+		jsr		RollAct_Index(pc,d1.w)
 		lea		Ani_Roll(pc),a1
 		jsr		(AnimateSprite).w
 		move.w	obX(a0),d0
@@ -42,112 +43,116 @@ Roll_Action:	; Routine 2
 		sub.w	d1,d0
 		cmpi.w	#$280,d0
 		bgt.w	Roll_ChkGone
-		bra.w	DisplayAndCollision		; S3K TouchResponse
+		bra.w	DisplayAndCollision			; S3K TouchResponse
 ; ===========================================================================
 
 Roll_ChkGone:
 	; ProjectFM S3K Object Manager
 		move.w	obRespawnAddr(a0),d0		; get address in respawn table
-		beq.w	DeleteObject			; if it's zero, don't remember object
-		movea.w	d0,a2					; load address into a2
-		bclr	#7,(a2)					; clear respawn table entry, so object can be loaded again
+		beq.w	DeleteObject				; if it's zero, don't remember object
+		movea.w	d0,a2						; load address into a2
+		bclr	#7,(a2)						; clear respawn table entry, so object can be loaded again
 	; S3K Object Manager End
 		bra.w	DeleteObject
 ; ===========================================================================
-Roll_Index2:
-		dc.w Roll_RollChk-Roll_Index2
-		dc.w Roll_RollNoChk-Roll_Index2
-		dc.w Roll_ChkJump-Roll_Index2
-		dc.w Roll_MatchFloor-Roll_Index2
+
+RollAct_Index:		offsetTable
+		offsetTableEntry.w Roll_RollChk
+		offsetTableEntry.w Roll_Stopped
+		offsetTableEntry.w Roll_ChkJump
+		offsetTableEntry.w Roll_JumpLand
 ; ===========================================================================
 
 Roll_RollChk:
 		move.w	(v_player+obX).w,d0
-		subi.w	#$100,d0
-		bcs.s	loc_E0D2
-		sub.w	obX(a0),d0	; check	distance between Roller	and Sonic
-		bcs.s	loc_E0D2
-		addq.b	#4,ob2ndRout(a0)
-		move.b	#2,obAnim(a0)
-		move.w	#$700,obVelX(a0) ; move Roller horizontally
+		subi.w	#256,d0						; d0 = Sonic's x position minus 256
+		bcs.s	.exit						; branch if Sonic is < 256px from left edge of level
+		sub.w	obX(a0),d0					; is Sonic > 256px left of the roller?
+		bcs.s	.exit						; if not, branch
+		addq.b	#4,ob2ndRout(a0)			; -> Roll_ChkJump
+		move.b	#2,obAnim(a0)				; use roller's rolling animation
+		move.w	#$700,obVelX(a0)			; move Roller horizontally
 		move.b	#(colHarmful|colSz_16x14),obColType(a0) ; make Roller invincible
 
-loc_E0D2:
+	.exit:
 		addq.l	#4,sp
 		rts	
 ; ===========================================================================
 
-Roll_RollNoChk:
-		cmpi.b	#2,obAnim(a0)
-		beq.s	loc_E0F8
-		subq.w	#1,objoff_30(a0)
-		bpl.s	locret_E0F6
-		move.b	#1,obAnim(a0)
-		move.w	#$700,obVelX(a0)
-		move.b	#(colHarmful|colSz_16x14),obColType(a0)
+Roll_Stopped:
+		cmpi.b	#2,obAnim(a0)				; is roller still rolling?
+		beq.s	.is_rolling					; if yes, branch
+		subq.w	#1,obRoller_OpenTime(a0)	; decrement timer
+		bpl.s	.wait						; branch if time remains
+		move.b	#1,obAnim(a0)				; use curling animation
+		move.w	#$700,obVelX(a0)			; move roller right
+		move.b	#(colHarmful|colSz_16x14),obColType(a0) ; make roller invincible
 
-locret_E0F6:
+	.wait:
 		rts	
 ; ===========================================================================
 
-loc_E0F8:
-		addq.b	#2,ob2ndRout(a0)
+	.is_rolling:
+		addq.b	#2,ob2ndRout(a0)			; -> Roll_ChkJump
 		rts	
 ; ===========================================================================
 
 Roll_ChkJump:
-		bsr.w	Roll_Stop
+		bsr.w	Roll_Stop					; stop rolling if it's within range of Sonic
 		bsr.w	SpeedToPos
 		jsr		(ObjFloorDist).l
 		cmpi.w	#-8,d1
-		blt.s	Roll_Jump
+		blt.s	Roll_Jump					; branch if more than 8px below floor
 		cmpi.w	#$C,d1
-		bge.s	Roll_Jump
-		add.w	d1,obY(a0)
+		bge.s	Roll_Jump					; branch if more than 11px above floor (also detects a ledge)
+		add.w	d1,obY(a0)					; align to floor
 		rts	
 ; ===========================================================================
 
 Roll_Jump:
-		addq.b	#2,ob2ndRout(a0)
-		bset	#0,objoff_32(a0)
-		beq.s	locret_E12E
-		move.w	#-$600,obVelY(a0)	; move Roller vertically
+		addq.b	#2,ob2ndRout(a0)			; -> Roll_JumpLand
+		bset	#0,obRoller_Mode(a0)		; set jump flag
+		beq.s	.dont_jump					; branch if previously 0 (jumps on next frame instead)
+		move.w	#-$600,obVelY(a0)			; move roller upwards
 
-locret_E12E:
+	.dont_jump:
 		rts	
 ; ===========================================================================
 
-Roll_MatchFloor:
+Roll_JumpLand:
 		bsr.w	ObjectFall
 		tst.w	obVelY(a0)
-		bmi.s	locret_E150
+		bmi.s	.exit						; branch if moving upwards
 		jsr		(ObjFloorDist).l
-		tst.w	d1
-		bpl.s	locret_E150
-		add.w	d1,obY(a0)	; match	Roller's position with the floor
-		subq.b	#2,ob2ndRout(a0)
-		clr.w	obVelY(a0)
+		tst.w	d1							; has roller hit the floor?
+		bpl.s	.exit						; if not, branch
+		add.w	d1,obY(a0)					; align to floor
+		subq.b	#2,ob2ndRout(a0)			; -> Roll_ChkJump
+		clr.w	obVelY(a0)					; stop falling
 
-locret_E150:
-		rts	
+.exit:
+		rts
+; ===========================================================================
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
+; ---------------------------------------------------------------------------
+; Subroutine to stop Roller if it's within range
+; ---------------------------------------------------------------------------
 
 Roll_Stop:
-		tst.b	objoff_32(a0)
-		bmi.s	locret_E188
+		tst.b	obRoller_Mode(a0)			; has roller already stopped?
+		bmi.s	.exit						; if yes, branch
 		move.w	(v_player+obX).w,d0
-		subi.w	#$30,d0
+		subi.w	#48,d0
 		sub.w	obX(a0),d0
-		bcc.s	locret_E188
+		bcc.s	.exit						; branch if Sonic is > 48px left of the roller
 		clr.b	obAnim(a0)
 		move.b	#(colEnemy|colSz_16x14),obColType(a0)
-		clr.w	obVelX(a0)
-		move.w	#120,objoff_30(a0)	; set waiting time to 2	seconds
-		move.b	#2,ob2ndRout(a0)
-		bset	#7,objoff_32(a0)
+		clr.w	obVelX(a0)					; stop roller moving
+		move.w	#120,obRoller_OpenTime(a0)	; set waiting time to 2	seconds
+		move.b	#2,ob2ndRout(a0)			; -> Roll_Stopped
+		bset	#7,obRoller_Mode(a0)		; set flag for roller stopped
 
-locret_E188:
+.exit:
 		rts	
 ; End of function Roll_Stop
+; ===========================================================================

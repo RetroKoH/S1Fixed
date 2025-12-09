@@ -359,9 +359,9 @@ obRoller_Mode:			equ objoff_32		; 1 byte  | +1 = roller has jumped; +$80 = rolle
 
 ; Obj45 - MZ Unused Sideways Stomper (Similar to obobCStom, but not identical)
 obSStom_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
-obSStom_ChainLength:	equ objoff_32		; 2 bytes | current pole length
-obSStom_ChainMax:		equ objoff_34		; 2 bytes | maximum pole length
-obSStom_RiseFlag:		equ objoff_36		; 2 bytes | 1 = retract
+obSStom_PoleLength:		equ objoff_32		; 2 bytes | current pole length
+obSStom_PoleMax:		equ objoff_34		; 2 bytes | maximum pole length
+obSStom_RetractFlag:	equ objoff_36		; 2 bytes | 1 = retract
 obSStom_DelayTime:		equ objoff_38		; 2 bytes | time to wait while fully extended
 obSStom_StartY:			equ objoff_3A		; 2 bytes | starting Y-axis position
 obSStom_Parent:			equ objoff_3E		; 2 bytes | RAM address of parent object
@@ -369,6 +369,7 @@ obSStom_Parent:			equ objoff_3E		; 2 bytes | RAM address of parent object
 
 ; Obj46 - MZ Brick (some fall from above)
 obBrick_StartY:			equ objoff_30		; 2 bytes | starting Y-axis position
+;objoff_32 was assigned a word-length value, but never used.
 ; ---------------------------------------------------------------------------
 
 ; Obj48 - GHZ Boss Swinging Ball

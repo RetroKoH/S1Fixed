@@ -9,9 +9,10 @@ EdgeWalls:
 		beq.s	Edge_Solid
 		bpl.w	Edge_Display
 	; Object Routine Optimization End
+; ---------------------------------------------------------------------------
 
 Edge_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)
+		addq.b	#2,obRoutine(a0)			; -> Edge_Solid
 		move.l	#Map_Edge,obMap(a0)
 		move.w	#make_art_tile(ArtTile_GHZ_Edge_Wall,2,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
@@ -19,122 +20,125 @@ Edge_Main:	; Routine 0
 		move.w	#priority6,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	obSubtype(a0),obFrame(a0)	; copy object type number to frame number
 		bclr	#4,obFrame(a0)				; clear	4th bit	(deduct	$10)
-		beq.s	Edge_Solid					; make object solid if 4th bit = 0
-		addq.b	#2,obRoutine(a0)
-		bra.s	Edge_Display				; don't make it solid if 4th bit = 1
+		beq.s	Edge_Solid					; branch if already clear (subtype 0/1/2 is solid)
+
+		addq.b	#2,obRoutine(a0)			; -> Edge_Display
+		bra.s	Edge_Display				; bit 4 was already set (subtype $10/$11/$12 is not solid)
 ; ===========================================================================
 
 Edge_Solid:	; Routine 2
-		move.w	#$13,d1
-		move.w	#$28,d2
-		bsr.s	Obj44_SolidWall
+		moveq	#19,d1						; width; save 4 cycles -- Filter
+		moveq	#40,d2						; height; save 4 cycles -- Filter
+		bsr.s	Edge_SolidWall
 
 Edge_Display:	; Routine 4
-		offscreen.w	DeleteObject	; ProjectFM S3K Object Manager
-		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix
+		offscreen.w	DeleteObject			; ProjectFM S3K Object Manager
+		bra.w	DisplaySprite				; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
-Obj44_SolidWall:
-		bsr.w	Obj44_SolidWall2
-		beq.s	loc_8AA8
-		bmi.w	loc_8AC4
+Edge_SolidWall:
+		bsr.w	Edge_ChkCollision
+		beq.s	.no_collision				; branch if no collision
+		bmi.w	.topbottom					; branch if top/bottom collision
 
 	if WallJumpEnabled	; Mercury Wall Jump
 		moveq	#0,d1
 	endif	; Wall Jump end	
 
-		tst.w	d0
-		beq.w	loc_8A92
-		bmi.s	loc_8A7C
-		tst.w	obVelX(a1)
-		bmi.s	loc_8A92
+		tst.w	d0							; where is Sonic?
+		beq.w	.center						; if inside the object, branch
+		bmi.s	.right						; if right of the object, branch
+		tst.w	obVelX(a1)					; is Sonic moving left?
+		bmi.s	.center						; if yes, branch
 
 	if WallJumpEnabled	; Mercury Wall Jump
 		move.b	#btnR,d1
 	endif	; Wall Jump end	
 
-		bra.s	loc_8A82
+		bra.s	.left
 ; ===========================================================================
 
-loc_8A7C:
-		tst.w	obVelX(a1)
-		bpl.s	loc_8A92
+	.right:
+		tst.w	obVelX(a1)					; is Sonic moving right?
+		bpl.s	.center						; if yes, branch
 
 	if WallJumpEnabled	; Mercury Wall Jump
 		move.b	#btnL,d1
 	endif	; Wall Jump end	
 
-loc_8A82:
+	.left:
 		sub.w	d0,obX(a1)
 		clr.w	obInertia(a1)
-		clr.w	obVelX(a1)
+		clr.w	obVelX(a1)					; stop Sonic moving
 
-loc_8A92:
-		btst	#staAir,obStatus(a1)
-		bne.s	loc_8AB6
-		bset	#staPush,obStatus(a1)
-		bset	#staSonicPush,obStatus(a0)
+	.center:
+		btst	#staAir,obStatus(a1)		; is Sonic in the air?
+		bne.s	.air						; if yes, branch
+		bset	#staPush,obStatus(a1)		; make Sonic push object
+		bset	#staSonicPush,obStatus(a0)	; make object be pushed
 		rts	
 ; ===========================================================================
 
-loc_8AA8:
-		btst	#staSonicPush,obStatus(a0)
-		beq.s	locret_8AC2
+	.no_collision:
+		btst	#staSonicPush,obStatus(a0)	; is Sonic pushing?
+		beq.s	.exit						; if not, branch
 		; Removed line -- Mercury Walking In Air Fix
 
 	if WallJumpEnabled	; Mercury Wall Jump
-		bra.s	loc_8AB6_PushClear
+		bra.s	.air_PushClear
 
-loc_8AB6:
+	.air:
 		move.l	a0,-(sp)
 		movea.l	a1,a0
 		jsr		Sonic_WallJump
 		movea.l	(sp)+,a0
 
-loc_8AB6_PushClear:
+	.air_PushClear:
 
 	else
 
-	loc_8AB6:
+	.air:
 
 	endif	; Wall Jump end
 
-		bclr	#staSonicPush,obStatus(a0)
-		bclr	#staPush,obStatus(a1)
+		bclr	#staSonicPush,obStatus(a0)	; clear pushing flag
+		bclr	#staPush,obStatus(a1)		; clear Sonic's pushing flag
 
-locret_8AC2:
+	.exit:
 		rts	
 ; ===========================================================================
 
-loc_8AC4:
-		tst.w	obVelY(a1)
-		bpl.s	locret_8AD8
-		tst.w	d3
-		bpl.s	locret_8AD8
-		sub.w	d3,obY(a1)
-		clr.w	obVelY(a1)
+	.topbottom:
+		tst.w	obVelY(a1)					; is Sonic moving downwards?
+		bpl.s	.exit2						; if yes, branch
+		tst.w	d3							; is Sonic above the object?
+		bpl.s	.exit2						; if yes, branch
+		sub.w	d3,obY(a1)					; correct Sonic's position
+		clr.w	obVelY(a1)					; stop Sonic moving
 
-locret_8AD8:
+	.exit2:
 		rts	
-; End of function Obj44_SolidWall
+; End of function Edge_SolidWall
+; ===========================================================================
 
+; ---------------------------------------------------------------------------
+; Subroutine to check for collision with EdgeWall
+; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
-Obj44_SolidWall2:
+Edge_ChkCollision:
 		lea		(v_player).w,a1
 		move.w	obX(a1),d0
-		sub.w	obX(a0),d0
-		add.w	d1,d0
-		bmi.s	loc_8B48
+		sub.w	obX(a0),d0					; d0: positive if Sonic is right; negative if Sonic is left
+		add.w	d1,d0						; add width of object
+		bmi.s	.ignore						; branch if Sonic is outside left boundary
 		move.w	d1,d3
 		add.w	d3,d3
 		cmp.w	d3,d0
-		bhi.s	loc_8B48
+		bhi.s	.ignore						; branch if Sonic is outside right boundary
+
 		move.b	obHeight(a1),d3
 		ext.w	d3
-		add.w	d3,d2
+		add.w	d3,d2						; add obHeight to stated height of 40px
 		move.w	obY(a1),d3
 
 	; Mercury Ducking Size Fix	
@@ -152,49 +156,50 @@ Obj44_SolidWall2:
 .skip:
 	; Ducking Size Fix end
 
-		sub.w	obY(a0),d3
-		add.w	d2,d3
-		bmi.s	loc_8B48
+		sub.w	obY(a0),d3					; d3: positive if Sonic is below; negative if Sonic is above
+		add.w	d2,d3						; add total height of object
+		bmi.s	.ignore						; branch if Sonic is outside upper boundary
 		move.w	d2,d4
 		add.w	d4,d4
 		cmp.w	d4,d3
-		bhs.s	loc_8B48
-		tst.b	obCtrlLock(a1)		; are collisions disabled for Sonic?
-		bmi.s	loc_8B48			; if yes, branch
-		cmpi.b	#6,obRoutine(a1)	; is Sonic dead?
-		bhs.s	loc_8B48			; if yes, branch
-		tst.w	(v_debuguse).w		; is debug mode being used?	
-		bne.s	loc_8B48			; if yes, branch
+		bhs.s	.ignore						; branch if Sonic is outside lower boundary
+
+		tst.b	obCtrlLock(a1)				; are controls locked (and collisions disabled for Sonic)?
+		bmi.s	.ignore						; if yes, branch
+		cmpi.b	#6,obRoutine(a1)			; is Sonic dead?
+		bhs.s	.ignore						; if yes, branch
+		tst.w	(v_debuguse).w				; is debug mode being used?	
+		bne.s	.ignore						; if yes, branch
 		move.w	d0,d5
-		cmp.w	d0,d1
-		bhs.s	loc_8B30
+		cmp.w	d0,d1						; is Sonic right of centre of object?
+		bhs.s	.isright					; if yes, branch
 		add.w	d1,d1
 		sub.w	d1,d0
 		move.w	d0,d5
 		neg.w	d5
 
-loc_8B30:
+	.isright:
 		move.w	d3,d1
-		cmp.w	d3,d2
-		bhs.s	loc_8B3C
+		cmp.w	d3,d2						; is Sonic below centre of object?
+		bhs.s	.isbelow					; if yes, branch
 		sub.w	d4,d3
 		move.w	d3,d1
 		neg.w	d1
 
-loc_8B3C:
+	.isbelow:
 		cmp.w	d1,d5
-		bhi.s	loc_8B44
-		moveq	#1,d4
+		bhi.s	.topbottom
+		moveq	#1,d4						; register side collision
 		rts	
 ; ===========================================================================
 
-loc_8B44:
-		moveq	#-1,d4
+	.topbottom:
+		moveq	#-1,d4						; register top/bottom collision
 		rts	
 ; ===========================================================================
 
-loc_8B48:
-		moveq	#0,d4
+	.ignore:
+		moveq	#0,d4						; register no collision
 		rts	
-; End of function Obj44_SolidWall2
+; End of function Edge_ChkCollision
 ; ===========================================================================
