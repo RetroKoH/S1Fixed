@@ -35,19 +35,19 @@ Splats_1:	; Routine 2
 		move.w	#$E0,d2
 
 loc_D24A:
-		move.w	#$100,d1
+		move.w	#$100,d1				; move right
 		bset	#0,obRender(a0)
 		move.w	(v_objspace+obX).w,d0
 		sub.w	obX(a0),d0
 		bcc.s	loc_D268
 		neg.w	d0
-		neg.w	d1
+		neg.w	d1						; move left
 		bclr	#0,obRender(a0)
 
 loc_D268:
 		cmp.w	d2,d0
 		bcc.s	Splats_2
-		move.w	d1,obVelX(a0)
+		move.w	d1,obVelX(a0)			; apply movement
 		addq.b	#2,obRoutine(a0)
 
 Splats_2:	; Routine 4
@@ -116,3 +116,4 @@ loc_D2FE:
 loc_D308:
 		moveq	#0,d0
 		rts
+; ===========================================================================

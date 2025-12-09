@@ -12,32 +12,32 @@ GRing_Index:	offsetTable
 		offsetTableEntry.w GRing_Main
 		offsetTableEntry.w GRing_Animate
 		offsetTableEntry.w GRing_Collect
-		offsetTableEntry.w GRing_Flash		; Formerly the Ring Flash Object ($7C)
+		offsetTableEntry.w GRing_Flash			; Formerly the Ring Flash Object ($7C)
 		offsetTableEntry.w GRing_Delete
 ; ===========================================================================
 
 GRing_Main:	; Routine 0
 
 	if ~~GiantRingsInSBZ	; Mercury Giant Rings In SBZ
-		cmpi.b	#id_SBZ,(v_zone).w			; is this Scrap Brain?
-		beq.w	DeleteObject				; if so, no Special Rings here
+		cmpi.b	#id_SBZ,(v_zone).w				; is this Scrap Brain?
+		beq.w	DeleteObject					; if so, no Special Rings here
 	endif	; Giant Rings In SBZ end
 
 		move.l	#Map_GRing,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Giant_Ring,1,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
-		move.w	#priority2,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager - Moved here to fix a bug caused by the new manager
+		move.w	#priority2,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager - Moved here to fix a bug caused by the new manager
 		move.b	#$40,obDispWid(a0)
 		tst.b	obRender(a0)
 		bpl.s	GRing_Animate
 
 	if ~~SpecialStagesWithAllEmeralds	; Mercury Special Stages Still Appear With All Emeralds
-		cmpi.b	#emldCount,(v_emeralds).w	; do you have all emeralds?
-		beq.w	DeleteObject				; if yes, branch
+		cmpi.b	#emldCount,(v_emeralds).w		; do you have all emeralds?
+		beq.w	DeleteObject					; if yes, branch
 	endif	; Special Stages Still Appear With All Emeralds End
 
-		cmpi.w	#50,(v_rings).w				; do you have at least 50 rings?
-		bhs.s	GRing_Okay					; if yes, branch
+		cmpi.w	#50,(v_rings).w					; do you have at least 50 rings?
+		bhs.s	GRing_Okay						; if yes, branch
 		rts	
 ; ===========================================================================
 
@@ -58,22 +58,22 @@ GRing_Animate:	; Routine 2
 ; ===========================================================================
 
 GRing_Collect:	; Routine 4
-		addq.b	#2,obRoutine(a0)		; Routine -> GRing_Flash
+		addq.b	#2,obRoutine(a0)				; -> GRing_Flash
 		move.w	#make_art_tile(ArtTile_Giant_Ring_Flash,1,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
-		move.w	#priority0,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
+		move.w	#priority0,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$20,obDispWid(a0)
 
-		move.b	#7,obFrame(a0)			; this will be incremented soon
+		move.b	#7,obFrame(a0)					; this will be incremented soon
 		clr.b	obColType(a0)
 		move.w	(v_player+obX).w,d0
-		cmp.w	obX(a0),d0				; has Sonic come from the left?
-		blo.s	GRing_PlaySnd			; if yes, branch
-		bset	#0,obRender(a1)			; reverse flash	object
+		cmp.w	obX(a0),d0						; has Sonic come from the left?
+		blo.s	.play_sound						; if yes, branch
+		bset	#0,obRender(a1)					; reverse flash	object
 
-GRing_PlaySnd:
+	.play_sound:
 		move.w	#sfx_GiantRing,d0
-		jsr		(QueueSound2).w	; play giant ring sound
+		jsr		(QueueSound2).w					; play giant ring sound
 ; ===========================================================================
 
 GRing_Flash:	; Routine 6
@@ -81,27 +81,26 @@ GRing_Flash:	; Routine 6
 		bpl.s	.skip
 		move.b	#1,obTimeFrame(a0)
 		addq.b	#1,obFrame(a0)
-		cmpi.b	#$10,obFrame(a0)		; has animation	finished?
-		bhs.s	Flash_End				; if yes, branch
-		cmpi.b	#$B,obFrame(a0)			; is 3rd flash frame displayed?
-		bne.s	.skip					; if not, branch
-		clr.b	(v_player+obAnim).w		; make Sonic invisible
-		move.b	#1,(f_bigring).w		; stop Sonic getting bonuses
+		cmpi.b	#$10,obFrame(a0)				; has animation	finished?
+		bhs.s	.end							; if yes, branch
+		cmpi.b	#$B,obFrame(a0)					; is 3rd flash frame displayed?
+		bne.s	.skip							; if not, branch
+		clr.b	(v_player+obAnim).w				; make Sonic invisible
+		move.b	#1,(f_bigring).w				; stop Sonic getting bonuses
 		andi.b	#~(mask2ndShield+mask2ndInvinc),(v_player+obStatus2nd).w	; Should clear Shield and Invincibility ($FC)
-;		bsr.w	GotThroughAct			; Red2010 softlock fix
+;		bsr.w	GotThroughAct					; Red2010 softlock fix
 ; ^ This might be ideal in some cases, but you'll probably want to make some edits to Obj0D Signpost to ensure
 ; everything works properly. I applied an alternative softlock fix in the Signpost object itself.
 
-.skip:
-		bsr.s	GRing_LoadGfx			; RetroKoH VRAM Overhaul
-		offscreen.w	DeleteObject		; ProjectFM S3K Objects Manager
+	.skip:
+		bsr.s	GRing_LoadGfx					; RetroKoH VRAM Overhaul
+		offscreen.w	DeleteObject				; ProjectFM S3K Objects Manager
 		bra.w	DisplaySprite
 ; ===========================================================================
 
-Flash_End:
-		addq.b	#2,obRoutine(a0)
-		clr.w	(v_player).w 			; remove Sonic object (clears both ID and render flags)
-	;	addq.l	#4,sp
+	.end:
+		addq.b	#2,obRoutine(a0)				; -> GRing_Delete
+		clr.w	(v_player).w 					; remove Sonic object (clears both ID and render flags)
 		rts
 ; ===========================================================================
 
@@ -152,3 +151,4 @@ GRing_LoadGfx:
 
 .nochange:
 		rts
+; ===========================================================================
