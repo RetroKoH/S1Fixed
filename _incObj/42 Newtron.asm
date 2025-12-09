@@ -9,6 +9,7 @@ Newtron:
 		beq.s	Newt_Action
 		bpl.w	DeleteObject
 	; Object Routine Optimization End
+; ---------------------------------------------------------------------------
 
 Newt_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)			; -> Newt_Action
@@ -25,6 +26,7 @@ Newt_Action:	; Routine 2
 		move.w	NewtAct_Index(pc,d0.w),d1
 		jmp		NewtAct_Index(pc,d1.w)
 ; ===========================================================================
+
 NewtAct_Index:		offsetTable
 		offsetTableEntry.w Newt_ChkDist
 		offsetTableEntry.w Newt_Type0
@@ -139,6 +141,7 @@ Newt_Type1:
 		bne.s	.not_hidden
 		clr.b	obColType(a0)
 		bra.w	RememberState
+; ===========================================================================
 
 	.not_hidden:
 	endif
