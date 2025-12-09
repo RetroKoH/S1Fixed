@@ -8,6 +8,7 @@ BossBall:
 		move.w	GBall_Index(pc,d0.w),d1
 		jmp		GBall_Index(pc,d1.w)
 ; ===========================================================================
+
 GBall_Index:	offsetTable
 		offsetTableEntry.w GBall_Main
 		offsetTableEntry.w GBall_Base

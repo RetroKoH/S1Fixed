@@ -101,8 +101,7 @@ loc_8402:
 		beq.s	loc_842E
 		tst.b	cflo_timedelay(a0)
 		bne.s	locret_843A
-		bclr	#staOnObj,obStatus(a1)
-		bclr	#staPush,obStatus(a1)
+		andi.b	#~(maskOnObj+maskPush),obStatus(a1)	; Clear OnObj and Push flags ($D7)
 		move.b	#aniID_Run,obPrevAni(a1) ; restart Sonic's animation
 
 loc_842E:
