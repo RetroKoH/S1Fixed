@@ -64,7 +64,7 @@ Plat_Solid:	; Routine 2
 
 	.no_dip:
 		moveq	#0,d1
-		move.b	obDispWid(a0),d1
+		move.b	obDispWid(a0),d1				; width
 		bsr.w	PlatformObject					; detect collision, update flags, goto Plat_StoodOn next if stood on
 ; ---------------------------------------------------------------------------
 

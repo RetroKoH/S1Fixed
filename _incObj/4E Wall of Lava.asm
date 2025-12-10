@@ -68,12 +68,12 @@ LWall_Action:	; Routine 4
 	.rangechk2:
 		cmpi.w	#96,d0						; is Sonic within 96px on y-axis?
 		bhs.s	.movewall					; if not, branch
-		move.b	#1,obLWall_BackHalfFlag(a0) ; set object to move
+		move.b	#1,obLWall_MoveFlag(a0)		; set object to move
 		bra.s	LWall_Solid
 ; ===========================================================================
 
 	.movewall:
-		tst.b	obLWall_BackHalfFlag(a0)	; is object set	to move?
+		tst.b	obLWall_MoveFlag(a0)		; is object set	to move?
 		beq.s	LWall_Solid					; if not, branch
 		move.w	#$180,obVelX(a0)			; set object speed
 		subq.b	#2,obRoutine(a0)			; -> LWall_Solid
@@ -92,7 +92,7 @@ LWall_Solid:	; Routine 2
 		cmpi.w	#$6A0,obX(a0)				; has object reached $6A0 on the x-axis?
 		bne.s	.animate					; if not, branch
 		clr.w	obVelX(a0)					; stop object moving
-		clr.b	obLWall_BackHalfFlag(a0)
+		clr.b	obLWall_MoveFlag(a0)
 
 	.animate:
 		lea		Ani_LWall(pc),a1
@@ -102,7 +102,7 @@ LWall_Solid:	; Routine 2
 		bsr.w	SpeedToPos_XOnly
 
 	.rangechk:
-		tst.b	obLWall_BackHalfFlag(a0)	; is wall already moving?
+		tst.b	obLWall_MoveFlag(a0)		; is wall already moving?
 		bne.s	.moving						; if yes, branch
 		out_of_range.s	.chkgone			; retain old macro
 

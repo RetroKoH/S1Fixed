@@ -2,11 +2,6 @@
 ; Object 56 - floating blocks (SYZ/SLZ), large doors (LZ)
 ; ---------------------------------------------------------------------------
 
-fb_origX = objoff_34		; original x-axis position
-fb_origY = objoff_30		; original y-axis position
-fb_height = objoff_3A		; total object height
-fb_type = objoff_3C			; subtype (2nd digit only)
-
 ; ===========================================================================
 FBlock_Var:	; width/2, height/2
 		dc.b  $10, $10	; subtype 0x/8x ($0)
@@ -31,477 +26,492 @@ FBlock_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_FBlock,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a0)		; SYZ/SLZ code
-		cmpi.b	#id_LZ,(v_zone).w ; check if level is LZ
+		cmpi.b	#id_LZ,(v_zone).w				; check if level is LZ
 		bne.s	.notLZ
 		move.w	#make_art_tile(ArtTile_LZ_Door,2,0),obGfx(a0)	; LZ specific code
 
-.notLZ:
+	.notLZ:
 		move.b	#4,obRender(a0)
-		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
+		move.w	#priority3,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		moveq	#0,d0
-		move.b	obSubtype(a0),d0			; get subtype
+		move.b	obSubtype(a0),d0				; get subtype
 		lsr.w	#3,d0
-		andi.w	#$E,d0						; Example: Subtype $F8 >> 3 = $1F. $1F & $E = $E.
-		lea		FBlock_Var(pc,d0.w),a2		; get size data
+		andi.w	#$E,d0							; Example: Subtype $F8 >> 3 = $1F. $1F & $E = $E.
+		lea		FBlock_Var(pc,d0.w),a2			; get size data
 		move.b	(a2)+,obDispWid(a0)
-		move.b	(a2),obHeight(a0)
 		lsr.w	#1,d0
-		move.b	d0,obFrame(a0)
-		move.w	obX(a0),fb_origX(a0)		; store starting positions
-		move.w	obY(a0),fb_origY(a0)
+		move.b	d0,obFrame(a0)					; set frame as high nybble of subtype
+		move.w	obX(a0),obFBlock_StartX(a0)		; store starting positions
+		move.w	obY(a0),obFBlock_StartY(a0)
 		moveq	#0,d0
-		move.b	(a2),d0
+		move.b	(a2),d0							; get height from size list
+		move.b	d0,obHeight(a0)					; loading height from d0 here saves cycles
 		add.w	d0,d0
-		move.w	d0,fb_height(a0)			; store full height (from top to bottom)
+		move.w	d0,obFBlock_MoveDist(a0)		; store full height (from top to bottom)
 		cmpi.b	#$37,obSubtype(a0)
-		bne.s	.dontdelete					; Branch if subtype /= $37
+		bne.s	.dontdelete						; Branch if subtype /= $37
 	; Only applies to subtype $37
-		cmpi.w	#$1BB8,obX(a0)
-		bne.s	.notatpos					; if not in position, branch
-		tst.b	(f_obj56).w
-		beq.s	.dontdelete					; if delete flag isn't set, branch
+		cmpi.w	#$1BB8,obX(a0)					; is object in its start position?
+		bne.s	.notatpos						; if not branch
+		tst.b	(f_obj56).w						; has similar object reached its destination?
+		beq.s	.dontdelete						; if delete flag isn't set, branch
 		jmp		(DeleteObject).l
+; ===========================================================================
 
-.notatpos:
-		clr.b	obSubtype(a0)				; clear subtype for obj $5637
+	.notatpos:
+		clr.b	obSubtype(a0)					; clear subtype for obj $5637
 		tst.b	(f_obj56).w
 		bne.s	.dontdelete
 		jmp		(DeleteObject).l
+; ===========================================================================
 
-.dontdelete:
+	.dontdelete:
 		moveq	#0,d0
-		cmpi.b	#id_LZ,(v_zone).w			; check if level is LZ
-		beq.s	.isLZ
-		move.b	obSubtype(a0),d0			; SYZ/SLZ specific code
-		andi.w	#$F,d0
+		cmpi.b	#id_LZ,(v_zone).w				; check if level is LZ
+		beq.s	.isLZ							; if yes, branch
+
+		moveq	#$F,d0							; SYZ/SLZ specific code
+		and.b	obSubtype(a0),d0				; read low nybble of subtype
+		move.b	d0,d1							; copy value to set obFBlock_ButtonNum later
 		subq.w	#8,d0
-		bcs.s	.isLZ
-		lsl.w	#2,d0
+		bcs.s	.isLZ							; branch if low nybble was > 8
+		lsl.w	#2,d0							; multiply by 4
 		lea		(v_oscillate+$2C).w,a2
-		lea		(a2,d0.w),a2
+		lea		(a2,d0.w),a2					; read oscillating value
 		tst.w	(a2)
-		bpl.s	.isLZ
-		bchg	#staFlipX,obStatus(a0)
+		bpl.s	.isLZ							; branch if not negative
+		bchg	#staFlipX,obStatus(a0)			; otherwise, xflip object
 
-.isLZ:
-		move.b	obSubtype(a0),d0
-		bpl.s	FBlock_Action
-		andi.b	#$F,d0
-		move.b	d0,fb_type(a0)				; set switch index
-		move.b	#5,obSubtype(a0)			; subtype is now $05
-		cmpi.b	#7,obFrame(a0)
-		bne.s	.chkstate
-		move.b	#$C,obSubtype(a0)			; long horizontal doors have subtype of $0C instead
-		move.w	#$80,fb_height(a0)
+	.isLZ:
+		tst.b	obSubtype(a0)
+		bpl.s	FBlock_Action					; if subtype is 0-$7F, branch
+		move.b	d1,obFBlock_ButtonNum(a0)		; set low nybble of subtype as switch index
+		move.b	#5,obSubtype(a0)				; force subtype to 5 (moves up when button is pressed)
+		cmpi.b	#7,obFrame(a0)					; is object a large horizontal LZ door?
+		bne.s	.chkstate						; if not, branch
+		move.b	#$C,obSubtype(a0)				; force subtype to $C (moves left when button is pressed)
+		move.w	#128,obFBlock_MoveDist(a0)
 
-.chkstate:
+	.chkstate:
 	; ProjectFM S3K Object Manager
-		move.w	obRespawnAddr(a0),d0	; get address in respawn table
-		beq.s	FBlock_Action		; if it's zero, don't remember object
-		movea.w	d0,a2				; load address into a2
-		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again
+		move.w	obRespawnAddr(a0),d0			; get address in respawn table
+		beq.s	FBlock_Action					; if it's zero, don't remember object
+		movea.w	d0,a2							; load address into a2
+		bclr	#7,(a2)							; clear respawn table entry, so object can be loaded again
 		btst	#0,(a2)
 	; End
 		beq.s	FBlock_Action
-		addq.b	#1,obSubtype(a0)	; increment to $06 (or $0D for long horizontal doors)
-		clr.w	fb_height(a0)
+		addq.b	#1,obSubtype(a0)				; increment to $06 (or $0D for long horizontal doors) if previously activated
+		clr.w	obFBlock_MoveDist(a0)
+; ---------------------------------------------------------------------------
 
 FBlock_Action:	; Routine 2
-		move.w	obX(a0),-(sp)				; store current pre-movement x-position to the stack 
-		moveq	#$F,d0						; get last digit of subtype
-		and.b	obSubtype(a0),d0			; SCE optimization
-		beq.s	.type00						; skip if subtype 00 (doesn't move)
+		move.w	obX(a0),obFBlock_PrevX(a0)		; store current pre-movement x-position
+		moveq	#$F,d0							; get low nybble of subtype  (changed if original was $80+)
+		and.b	obSubtype(a0),d0				; SCE optimization
+		beq.s	.type00							; skip if subtype 00 (doesn't move)
 		add.w	d0,d0
 		move.w	FBlock_Index-2(pc,d0.w),d1
-		jsr		FBlock_Index(pc,d1.w)		; move block subroutines
+		jsr		FBlock_Index(pc,d1.w)			; move block subroutines
 
-.type00:
-		move.w	(sp)+,d4					; pre-movement axis position (restored from the stack)
+	.type00:
+		move.w	obFBlock_PrevX(a0),d4			; pre-movement axis position
 		tst.b	obRender(a0)
 		bpl.s	.chkdel
 		moveq	#11,d1
-		add.b	obDispWid(a0),d1			; width; save 8 cycles
+		add.b	obDispWid(a0),d1				; width; save 8 cycles
 		moveq	#0,d2
-		move.b	obHeight(a0),d2				; height (jumping)
+		move.b	obHeight(a0),d2					; height (jumping)
 		move.w	d2,d3
-		addq.w	#1,d3						; height (walking)
+		addq.w	#1,d3							; height (walking)
 		bsr.w	SolidObject
 
-.chkdel:
-		offscreen.s	.chkdel2,fb_origX(a0)	; ProjectFM S3K Object Manager
+	.chkdel:
+		offscreen.s	.chkdel2,obFBlock_StartX(a0)	; ProjectFM S3K Object Manager
 
-.display:
+	.display:
 		bra.w	DisplaySprite
 
-.chkdel2:
+	.chkdel2:
 		cmpi.b	#$37,obSubtype(a0)
 		bne.s	.delete
-		tst.b	objoff_38(a0)
+		tst.b	obFBlock_MoveFlag(a0)
 		bne.w	DisplaySprite
 
-.delete:
-		jmp	(DeleteObject).l
-; ===========================================================================
-FBlock_Index:	offsetTable
-		offsetTableEntry.w	FBlock_Type01
-		offsetTableEntry.w	FBlock_Type02
-		offsetTableEntry.w	FBlock_Type03
-		offsetTableEntry.w	FBlock_Type04
-		offsetTableEntry.w	FBlock_Type05
-		offsetTableEntry.w	FBlock_Type06
-		offsetTableEntry.w	FBlock_Type07
-		offsetTableEntry.w	FBlock_Type08
-		offsetTableEntry.w	FBlock_Type09
-		offsetTableEntry.w	FBlock_Type0A
-		offsetTableEntry.w	FBlock_Type0B
-		offsetTableEntry.w	FBlock_Type0C
-		offsetTableEntry.w	FBlock_Type0D
+	.delete:
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
-FBlock_Type01:
-; moves side-to-side
-		move.w	#$40,d1		; set move distance
+FBlock_Index:	offsetTable
+		offsetTableEntry.w	FBlock_LeftRight		; Type 01 - moves side-to-side
+		offsetTableEntry.w	FBlock_LeftRightWide	; Type 02 - moves side-to-side
+		offsetTableEntry.w	FBlock_UpDown			; Type 03 - moves up/down
+		offsetTableEntry.w	FBlock_UpDownWide		; Type 04 - moves up/down (wide distance)
+		offsetTableEntry.w	FBlock_UpButton			; Type 05 - moves up when a button is pressed
+		offsetTableEntry.w	FBlock_DownButton		; Type 06 - moves down when button is pressed
+		offsetTableEntry.w	FBlock_FarRightButton	; Type 07 - moves far right when button $F is pressed
+		offsetTableEntry.w	FBlock_SquareSmall		; Type 08 - moves around in a small square
+		offsetTableEntry.w	FBlock_SquareMedium		; Type 09 - moves around in a medium square
+		offsetTableEntry.w	FBlock_SquareBig		; Type $0A - moves around in a large square
+		offsetTableEntry.w	FBlock_SquareBiggest	; Type $0B - moves around in the largest square
+		offsetTableEntry.w	FBlock_LeftButton		; Type $0C - moves left when button is pressed
+		offsetTableEntry.w	FBlock_RightButton		; Type $0D - moves right when button is pressed
+; ===========================================================================
+
+; Type 01 - moves side-to-side
+FBlock_LeftRight:
+		moveq	#64,d1						; set move distance
 		moveq	#0,d0
 		move.b	(v_oscillate+$A).w,d0
-		bra.s	FBlock_Type02.moveLR
+		bra.s	FBlock_LeftRightWide.moveLR
 ; ===========================================================================
 
-FBlock_Type02:
-; moves side-to-side
-		move.w	#$80,d1		; set move distance
+; Type 02 - moves side-to-side
+FBlock_LeftRightWide:
+		move.w	#128,d1						; set move distance
 		moveq	#0,d0
 		move.b	(v_oscillate+$1E).w,d0
 
-.moveLR:
+	.moveLR:
 		btst	#staFlipX,obStatus(a0)
 		beq.s	.noflip
 		neg.w	d0
 		add.w	d1,d0
 
-.noflip:
-		move.w	fb_origX(a0),d1
+	.noflip:
+		move.w	obFBlock_StartX(a0),d1
 		sub.w	d0,d1
-		move.w	d1,obX(a0)	; move object horizontally
+		move.w	d1,obX(a0)					; move object horizontally
 		rts		
 ; ===========================================================================
 
-FBlock_Type03:
-; moves up/down
-		move.w	#$40,d1		; set move distance
+; Type 03 - moves up/down
+FBlock_UpDown:
+		moveq	#64,d1						; set move distance
 		moveq	#0,d0
 		move.b	(v_oscillate+$A).w,d0
-		bra.s	FBlock_Type04.moveUD
+		bra.s	FBlock_UpDownWide.moveUD
 ; ===========================================================================
 
-FBlock_Type04:
-; moves up/down
-		move.w	#$80,d1		; set move distance
+; Type 04 - moves up/down (wide distance)
+FBlock_UpDownWide:
+		move.w	#128,d1						; set move distance
 		moveq	#0,d0
 		move.b	(v_oscillate+$1E).w,d0
 
-.moveUD:
+	.moveUD:
 		btst	#staFlipX,obStatus(a0)
 		beq.s	.noflip04
 		neg.w	d0
 		add.w	d1,d0
 
-.noflip04:
-		move.w	fb_origY(a0),d1
+	.noflip04:
+		move.w	obFBlock_StartY(a0),d1
 		sub.w	d0,d1
-		move.w	d1,obY(a0)	; move object vertically
+		move.w	d1,obY(a0)					; move object vertically
 		rts	
 ; ===========================================================================
 
-FBlock_Type05:
-; moves up when a switch is pressed
-		tst.b	objoff_38(a0)
-		bne.s	.loc_104A4
-		cmpi.w	#(id_LZ<<8)+0,(v_zone).w ; is level LZ1 ?
-		bne.s	.aaa		; if not, branch
-		cmpi.b	#3,fb_type(a0)
-		bne.s	.aaa
-		clr.b	(f_wtunnelallow).w
+; Type 05 - moves up when a button is pressed
+FBlock_UpButton:
+		tst.b	obFBlock_MoveFlag(a0)		; is object moving?
+		bne.s	.chk_distance				; if yes, branch
+		cmpi.w	#(id_LZ<<8)+0,(v_zone).w	; is level LZ1?
+		bne.s	.not_lz1					; if not, branch
+		cmpi.b	#3,obFBlock_ButtonNum(a0)	; is object linked to button 3?
+		bne.s	.not_lz1					; if not, branch
+		clr.b	(f_wtunnelallow).w			; enable water tunnels
 		move.w	(v_player+obX).w,d0
-		cmp.w	obX(a0),d0
-		bhs.s	.aaa
-		move.b	#1,(f_wtunnelallow).w
+		cmp.w	obX(a0),d0					; is Sonic to the right?
+		bhs.s	.not_lz1					; if yes, branch
+		move.b	#1,(f_wtunnelallow).w		; disable water tunnels if Sonic is to the left
 
-.aaa:
-		lea	(f_switch).w,a2
+	.not_lz1:
+		lea		(f_switch).w,a2
 		moveq	#0,d0
-		move.b	fb_type(a0),d0
-		btst	#0,(a2,d0.w)
-		beq.s	.loc_104AE
-		cmpi.w	#(id_LZ<<8)+0,(v_zone).w ; is level LZ1 ?
-		bne.s	.loc_1049E	; if not, branch
-		cmpi.b	#3,d0
-		bne.s	.loc_1049E
-		clr.b	(f_wtunnelallow).w
+		move.b	obFBlock_ButtonNum(a0),d0
+		btst	#0,(a2,d0.w)				; check status of linked button
+		beq.s	.not_pressed				; branch if not pressed
+		cmpi.w	#(id_LZ<<8)+0,(v_zone).w	; is level LZ1 ?
+		bne.s	.set_moveflag				; if not, branch
+		cmpi.b	#3,d0						; is object linked to button 3?
+		bne.s	.set_moveflag				; if not, branch
+		clr.b	(f_wtunnelallow).w			; enable water tunnels
 
-.loc_1049E:
-		move.b	#1,objoff_38(a0)
+	.set_moveflag:
+		move.b	#1,obFBlock_MoveFlag(a0)	; flag object as moving
 
-.loc_104A4:
-		tst.w	fb_height(a0)
-		beq.s	.loc_104C8
-		subq.w	#2,fb_height(a0)
+	.chk_distance:
+		tst.w	obFBlock_MoveDist(a0)		; is remaining distance = 0?
+		beq.s	.finish						; if yes, branch
+		subq.w	#2,obFBlock_MoveDist(a0)	; decrement distance
 
-.loc_104AE:
-		move.w	fb_height(a0),d0
+	.not_pressed:
+		move.w	obFBlock_MoveDist(a0),d0
 		btst	#staFlipX,obStatus(a0)
-		beq.s	.loc_104BC
-		neg.w	d0
+		beq.s	.no_xflip
+		neg.w	d0							; invert if xflipped
 
-.loc_104BC:
-		move.w	fb_origY(a0),d1
-		add.w	d0,d1
-		move.w	d1,obY(a0)
+	.no_xflip:
+		move.w	obFBlock_StartY(a0),d1
+		add.w	d0,d1						; add distance to start position
+		move.w	d1,obY(a0)					; update y pos
 		rts	
 ; ===========================================================================
 
-.loc_104C8:
-		addq.b	#1,obSubtype(a0)
-		clr.b	objoff_38(a0)
+	.finish:
+		addq.b	#1,obSubtype(a0)			; convert to type 6
+		clr.b	obFBlock_MoveFlag(a0)		; clear movement flag
 	; ProjectFM S3K Object Manager
-		move.w	obRespawnAddr(a0),d0	; get address in respawn table
-		beq.s	.loc_104AE			; if it's zero, don't remember object
-		movea.w	d0,a2				; load address into a2
+		move.w	obRespawnAddr(a0),d0		; get address in respawn table
+		beq.s	.not_pressed				; if it's zero, don't remember object
+		movea.w	d0,a2						; load address into a2
 		bset	#0,(a2)
 	; End
-		bra.s	.loc_104AE
+		bra.s	.not_pressed
 ; ===========================================================================
 
-FBlock_Type06:
-		tst.b	objoff_38(a0)
-		bne.s	.loc_10500
-		lea	(f_switch).w,a2
+; Type 06 - moves down when button is pressed
+FBlock_DownButton:
+		tst.b	obFBlock_MoveFlag(a0)		; is object moving?
+		bne.s	.chk_distance				; if yes, branch
+		lea		(f_switch).w,a2
 		moveq	#0,d0
-		move.b	fb_type(a0),d0
-		tst.b	(a2,d0.w)
-		bpl.s	.loc_10512
-		move.b	#1,objoff_38(a0)
+		move.b	obFBlock_ButtonNum(a0),d0
+		tst.b	(a2,d0.w)					; check status of linked button (unused button subtype $4x)
+		bpl.s	.not_pressed				; branch if not pressed
+		move.b	#1,obFBlock_MoveFlag(a0)
 
-.loc_10500:
+	.chk_distance:
 		moveq	#0,d0
 		move.b	obHeight(a0),d0
 		add.w	d0,d0
-		cmp.w	fb_height(a0),d0
-		beq.s	.loc_1052C
-		addq.w	#2,fb_height(a0)
+		cmp.w	obFBlock_MoveDist(a0),d0	; has object moved distance equal to its height?
+		beq.s	.finish						; if yes, branch
+		addq.w	#2,obFBlock_MoveDist(a0)	; increment distance
 
-.loc_10512:
-		move.w	fb_height(a0),d0
+	.not_pressed:
+		move.w	obFBlock_MoveDist(a0),d0
 		btst	#staFlipX,obStatus(a0)
-		beq.s	.loc_10520
-		neg.w	d0
+		beq.s	.no_xflip
+		neg.w	d0							; invert if xflipped
 
-.loc_10520:
-		move.w	fb_origY(a0),d1
-		add.w	d0,d1
-		move.w	d1,obY(a0)
+	.no_xflip:
+		move.w	obFBlock_StartY(a0),d1
+		add.w	d0,d1						; add distance to start position
+		move.w	d1,obY(a0)					; update y pos
 		rts	
 ; ===========================================================================
 
-.loc_1052C:
-		subq.b	#1,obSubtype(a0)
-		clr.b	objoff_38(a0)
+	.finish:
+		subq.b	#1,obSubtype(a0)			; convert to type 5
+		clr.b	obFBlock_MoveFlag(a0)		; clear movement flag
 	; ProjectFM S3K Obj Manager
-		move.w	obRespawnAddr(a0),d0	; get address in respawn table
-		beq.s	.loc_10512			; if it's zero, don't remember object
-		movea.w	d0,a2				; load address into a2
+		move.w	obRespawnAddr(a0),d0		; get address in respawn table
+		beq.s	.not_pressed				; if it's zero, don't remember object
+		movea.w	d0,a2						; load address into a2
 		bclr	#0,(a2)
 	; End
-		bra.s	.loc_10512
+		bra.s	.not_pressed
 ; ===========================================================================
 
-FBlock_Type07:
-		tst.b	objoff_38(a0)
-		bne.s	.loc_1055E
-		tst.b	(f_switch+$F).w	; has switch number $F been pressed?
-		beq.s	.locret_10578
-		move.b	#1,objoff_38(a0)
-		clr.w	fb_height(a0)
+; Type 07 - moves far right when button $F is pressed
+FBlock_FarRightButton:
+		tst.b	obFBlock_MoveFlag(a0)		; is object moving already?
+		bne.s	.chk_distance				; if yes, branch
+		tst.b	(f_switch+$F).w				; has button number $F been pressed?
+		beq.s	.end						; if not, branch
+		move.b	#1,obFBlock_MoveFlag(a0)
+		clr.w	obFBlock_MoveDist(a0)
 
-.loc_1055E:
-		addq.w	#1,obX(a0)
-		move.w	obX(a0),fb_origX(a0)
-		addq.w	#1,fb_height(a0)
-		cmpi.w	#$380,fb_height(a0)
-		bne.s	.locret_10578
+	.chk_distance:
+		addq.w	#1,obX(a0)					; move object right
+		move.w	obX(a0),obFBlock_StartX(a0)
+		addq.w	#1,obFBlock_MoveDist(a0)	; increment movement counter
+		cmpi.w	#896,obFBlock_MoveDist(a0)	; has object moved 896 ($380) pixels?
+		bne.s	.end						; if not, branch
 		move.b	#1,(f_obj56).w
-		clr.b	objoff_38(a0)
-		clr.b	obSubtype(a0)
+		clr.b	obFBlock_MoveFlag(a0)
+		clr.b	obSubtype(a0)				; stop object moving
 
-.locret_10578:
+	.end:
 		rts	
 ; ===========================================================================
 
-FBlock_Type0C:
-		tst.b	objoff_38(a0)
-		bne.s	.loc_10598
-		lea	(f_switch).w,a2
-		moveq	#0,d0
-		move.b	fb_type(a0),d0
-		btst	#0,(a2,d0.w)
-		beq.s	.loc_105A2
-		move.b	#1,objoff_38(a0)
-
-.loc_10598:
-		tst.w	fb_height(a0)
-		beq.s	.loc_105C0
-		subq.w	#2,fb_height(a0)
-
-.loc_105A2:
-		move.w	fb_height(a0),d0
-		btst	#staFlipX,obStatus(a0)
-		beq.s	.loc_105B4
-		neg.w	d0
-		addi.w	#$80,d0
-
-.loc_105B4:
-		move.w	fb_origX(a0),d1
-		add.w	d0,d1
-		move.w	d1,obX(a0)
-		rts	
-; ===========================================================================
-
-.loc_105C0:
-		addq.b	#1,obSubtype(a0)
-		clr.b	objoff_38(a0)
-	; ProjectFM S3K Obj Manager
-		move.w	obRespawnAddr(a0),d0	; get address in respawn table
-		beq.s	.loc_105A2			; if it's zero, don't remember object
-		movea.w	d0,a2				; load address into a2
-		bset	#0,(a2)
-	; End
-		bra.s	.loc_105A2
-; ===========================================================================
-
-FBlock_Type0D:
-		tst.b	objoff_38(a0)
-		bne.s	.loc_105F8
+; Type $0C - moves left when button is pressed
+FBlock_LeftButton:
+		tst.b	obFBlock_MoveFlag(a0)		; is object moving?
+		bne.s	.chk_distance				; if yes, branch
 		lea		(f_switch).w,a2
 		moveq	#0,d0
-		move.b	fb_type(a0),d0
-		tst.b	(a2,d0.w)
-		bpl.s	.wtf
-		move.b	#1,objoff_38(a0)
+		move.b	obFBlock_ButtonNum(a0),d0
+		btst	#0,(a2,d0.w)				; check status of linked button
+		beq.s	.not_pressed				; branch if not pressed
+		move.b	#1,obFBlock_MoveFlag(a0)	; flag object as moving
 
-.loc_105F8:
-		move.w	#$80,d0
-		cmp.w	fb_height(a0),d0
-		beq.s	.loc_10624
-		addq.w	#2,fb_height(a0)
+	.chk_distance:
+		tst.w	obFBlock_MoveDist(a0)		; is remaining distance = 0?
+		beq.s	.finish						; if yes, branch
+		subq.w	#2,obFBlock_MoveDist(a0)	; decrement distance
 
-.wtf:
-		move.w	fb_height(a0),d0
+	.not_pressed:
+		move.w	obFBlock_MoveDist(a0),d0
 		btst	#staFlipX,obStatus(a0)
-		beq.s	.loc_10618
-		neg.w	d0
+		beq.s	.no_xflip
+		neg.w	d0							; invert if xflipped
 		addi.w	#$80,d0
 
-.loc_10618:
-		move.w	fb_origX(a0),d1
-		add.w	d0,d1
-		move.w	d1,obX(a0)
+	.no_xflip:
+		move.w	obFBlock_StartX(a0),d1
+		add.w	d0,d1						; add distance to start position
+		move.w	d1,obX(a0)					; update x pos
 		rts	
 ; ===========================================================================
 
-.loc_10624:
-		subq.b	#1,obSubtype(a0)
-		clr.b	objoff_38(a0)
+	.finish:
+		addq.b	#1,obSubtype(a0)			; convert to type $D
+		clr.b	obFBlock_MoveFlag(a0)		; clear movement flag
 	; ProjectFM S3K Obj Manager
-		move.w	obRespawnAddr(a0),d0	; get address in respawn table
-		beq.s	.wtf				; if it's zero, don't remember object
-		movea.w	d0,a2				; load address into a2
-		bclr	#0,(a2)
+		move.w	obRespawnAddr(a0),d0		; get address in respawn table
+		beq.s	.not_pressed				; if it's zero, don't remember object
+		movea.w	d0,a2						; load address into a2
+		bset	#0,(a2)
 	; End
-		bra.s	.wtf
+		bra.s	.not_pressed
 ; ===========================================================================
 
-FBlock_Type08:
-		move.w	#$10,d1
+; Type $0D - moves right when button is pressed
+FBlock_RightButton:
+		tst.b	obFBlock_MoveFlag(a0)		; is object moving?
+		bne.s	.chk_distance				; if yes, branch
+		lea		(f_switch).w,a2
+		moveq	#0,d0
+		move.b	obFBlock_ButtonNum(a0),d0
+		tst.b	(a2,d0.w)					; check status of linked button (unused button subtype $4x)
+		bpl.s	.not_pressed				; branch if not pressed
+		move.b	#1,obFBlock_MoveFlag(a0)
+
+	.chk_distance:
+		move.w	#128,d0
+		cmp.w	obFBlock_MoveDist(a0),d0	; has object moved 128 ($80) px?
+		beq.s	.finish						; if yes, branch
+		addq.w	#2,obFBlock_MoveDist(a0)	; increment distance
+
+	.not_pressed:
+		move.w	obFBlock_MoveDist(a0),d0
+		btst	#staFlipX,obStatus(a0)
+		beq.s	.no_xflip
+		neg.w	d0							; invert if xflipped
+		addi.w	#$80,d0
+
+	.no_xflip:
+		move.w	obFBlock_StartX(a0),d1
+		add.w	d0,d1						; add distance to start position
+		move.w	d1,obX(a0)					; update x pos
+		rts	
+; ===========================================================================
+
+	.finish:
+		subq.b	#1,obSubtype(a0)			; convert to type $C
+		clr.b	obFBlock_MoveFlag(a0)		; clear movement flag
+	; ProjectFM S3K Obj Manager
+		move.w	obRespawnAddr(a0),d0		; get address in respawn table
+		beq.s	.not_pressed				; if it's zero, don't remember object
+		movea.w	d0,a2						; load address into a2
+		bclr	#0,(a2)
+	; End
+		bra.s	.not_pressed
+; ===========================================================================
+
+; Type 08 - moves around in a small square
+FBlock_SquareSmall:
+		moveq	#16,d1
 		moveq	#0,d0
 		move.b	(v_oscillate+$2A).w,d0
 		lsr.w	#1,d0
 		move.w	(v_oscillate+$2C).w,d3
-		bra.s	FBlock_Type0B.square
+		bra.s	FBlock_Square_Move
 ; ===========================================================================
 
-FBlock_Type09:
-		move.w	#$30,d1
+; Type 09 - moves around in a medium square
+FBlock_SquareMedium:
+		moveq	#48,d1
 		moveq	#0,d0
 		move.b	(v_oscillate+$2E).w,d0
 		move.w	(v_oscillate+$30).w,d3
-		bra.s	FBlock_Type0B.square
+		bra.s	FBlock_Square_Move
 ; ===========================================================================
 
-FBlock_Type0A:
-		move.w	#$50,d1
+; Type $0A - moves around in a large square
+FBlock_SquareBig:
+		moveq	#80,d1
 		moveq	#0,d0
 		move.b	(v_oscillate+$32).w,d0
 		move.w	(v_oscillate+$34).w,d3
-		bra.s	FBlock_Type0B.square
+		bra.s	FBlock_Square_Move
 ; ===========================================================================
 
-FBlock_Type0B:
-		move.w	#$70,d1
+; Type $0B - moves around in the largest square
+FBlock_SquareBiggest:
+		moveq	#112,d1
 		moveq	#0,d0
 		move.b	(v_oscillate+$36).w,d0
 		move.w	(v_oscillate+$38).w,d3
+; ---------------------------------------------------------------------------
 
-.square:
-		tst.w	d3
-		bne.s	.loc_1068E
-		addq.b	#1,obStatus(a0)
-		andi.b	#(maskFlipX+maskFlipY),obStatus(a0)
+FBlock_Square_Move:
+		tst.w	d3		; is oscillating value rate currently 0? (i.e. at peak or nadir of oscillation)
+		bne.s	.keep_going								; if not, branch
+		addq.b	#1,obStatus(a0)							; change direction
+		andi.b	#(maskFlipX+maskFlipY),obStatus(a0)		; prevent bit overflow
 
-.loc_1068E:
-		move.b	obStatus(a0),d2
-		andi.b	#(maskFlipX+maskFlipY),d2
-		bne.s	.loc_106AE
+	.keep_going:
+		moveq	#(maskFlipX+maskFlipY),d2
+		and.b	obStatus(a0),d2							; read xflip and yflip bits (SCE Optimization)
+		bne.s	.xflip									; branch if either are set
 		sub.w	d1,d0
-		add.w	fb_origX(a0),d0
-		move.w	d0,obX(a0)
+		add.w	obFBlock_StartX(a0),d0
+		move.w	d0,obX(a0)								; update position
 		neg.w	d1
-		add.w	fb_origY(a0),d1
+		add.w	obFBlock_StartY(a0),d1
 		move.w	d1,obY(a0)
 		rts	
 ; ===========================================================================
 
-.loc_106AE:
+	.xflip:
 		subq.b	#1,d2
-		bne.s	.loc_106CC
+		bne.s	.yflip									; branch if yflip bit is set
 		subq.w	#1,d1
 		sub.w	d1,d0
 		neg.w	d0
-		add.w	fb_origY(a0),d0
-		move.w	d0,obY(a0)
+		add.w	obFBlock_StartY(a0),d0
+		move.w	d0,obY(a0)								; update position
 		addq.w	#1,d1
-		add.w	fb_origX(a0),d1
+		add.w	obFBlock_StartX(a0),d1
 		move.w	d1,obX(a0)
 		rts	
 ; ===========================================================================
 
-.loc_106CC:
+	.yflip:
 		subq.b	#1,d2
-		bne.s	.loc_106EA
+		bne.s	.xflip_and_yflip						; branch if xflip and yflip bits are set
 		subq.w	#1,d1
 		sub.w	d1,d0
 		neg.w	d0
-		add.w	fb_origX(a0),d0
-		move.w	d0,obX(a0)
+		add.w	obFBlock_StartX(a0),d0
+		move.w	d0,obX(a0)								; update position
 		addq.w	#1,d1
-		add.w	fb_origY(a0),d1
+		add.w	obFBlock_StartY(a0),d1
 		move.w	d1,obY(a0)
 		rts	
 ; ===========================================================================
 
-.loc_106EA:
+	.xflip_and_yflip:
 		sub.w	d1,d0
-		add.w	fb_origY(a0),d0
-		move.w	d0,obY(a0)
+		add.w	obFBlock_StartY(a0),d0
+		move.w	d0,obY(a0)								; update position
 		neg.w	d1
-		add.w	fb_origX(a0),d1
+		add.w	obFBlock_StartX(a0),d1
 		move.w	d1,obX(a0)
 		rts	
+; ===========================================================================
