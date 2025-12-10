@@ -77,7 +77,7 @@ VanP_StoodOn:	; Routine 4
 		cmpi.b	#2,obRoutine(a0)			; is platform being stood on?
 		bne.s	.stood_on					; if yes, branch
 		moveq	#0,d1
-		move.b	obDispWid(a0),d1
+		move.b	obDispWid(a0),d1			; width
 		jsr		(PlatformObject).l			; detect collision and goto VanP_StoodOn next if true
 		jmp		(RememberState).l
 ; ===========================================================================

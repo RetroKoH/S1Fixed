@@ -3,7 +3,11 @@
 ; ---------------------------------------------------------------------------
 
 ; ===========================================================================
-LTag_ColTypes:	dc.b (colHarmful|colSz_32x32), (colHarmful|colSz_64x32), (colHarmful|colSz_128x32)
+
+LTag_ColTypes:
+		dc.b (colHarmful|colSz_32x32)
+		dc.b (colHarmful|colSz_64x32)
+		dc.b (colHarmful|colSz_128x32)
 		even
 ; ===========================================================================
 
@@ -12,6 +16,7 @@ LavaTag:
 		tst.b	obRoutine(a0)
 		bne.s	LTag_ChkDel
 	; Object Routine Optimization End
+; ---------------------------------------------------------------------------
 
 LTag_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -22,6 +27,7 @@ LTag_Main:	; Routine 0
 		move.b	#$84,obRender(a0)
 
 		bset	#shPropFlame,obShieldProp(a0)	; Negated by Flame Shield
+; ---------------------------------------------------------------------------
 
 LTag_ChkDel:	; Routine 2
 		move.w	obX(a0),d0
@@ -41,3 +47,4 @@ LTag_ChkDel:	; Routine 2
 
 LTag_NoDel:
 		jmp  	Add_SpriteToCollisionResponseList	; S3K TouchResponse
+; ===========================================================================

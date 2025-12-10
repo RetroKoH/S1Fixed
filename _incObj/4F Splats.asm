@@ -11,9 +11,9 @@ Splats:
 ; ===========================================================================
 Splats_Index:	offsetTable
 		offsetTableEntry.w Splats_Main
-		offsetTableEntry.w Splats_1
-		offsetTableEntry.w Splats_2
-		offsetTableEntry.w Splats_3
+		offsetTableEntry.w Splats_ChkDist
+		offsetTableEntry.w Splats_Move
+		offsetTableEntry.w Splats_Fall
 ; ===========================================================================
 
 Splats_Main:	; Routine 0
@@ -26,53 +26,53 @@ Splats_Main:	; Routine 0
 		move.b	#$14,obHeight(a0)
 		move.b	#(colEnemy|colSz_12x20),obColType(a0)
 		tst.b	obSubtype(a0)
-		beq.s	Splats_1
+		beq.s	Splats_ChkDist
 		move.w	#$300,d2
 		bra.s	loc_D24A
 ; ===========================================================================
 
-Splats_1:	; Routine 2
+Splats_ChkDist:	; Routine 2
 		move.w	#$E0,d2
 
 loc_D24A:
 		move.w	#$100,d1				; move right
-		bset	#0,obRender(a0)
+		bset	#0,obRender(a0)			; face right
 		move.w	(v_objspace+obX).w,d0
 		sub.w	obX(a0),d0
 		bcc.s	loc_D268
 		neg.w	d0
 		neg.w	d1						; move left
-		bclr	#0,obRender(a0)
+		bclr	#0,obRender(a0)			; face left
 
 loc_D268:
 		cmp.w	d2,d0
-		bcc.s	Splats_2
+		bcc.s	Splats_Move
 		move.w	d1,obVelX(a0)			; apply movement
-		addq.b	#2,obRoutine(a0)
+		addq.b	#2,obRoutine(a0)		; -> Splats_Move
 
-Splats_2:	; Routine 4
+Splats_Move:	; Routine 4
 		bsr.w	ObjectFall
 		move.b	#1,obFrame(a0)
 		tst.w	obVelY(a0)
-		bmi.s	loc_D2AE
+		bmi.s	.chk_walls				; branch if Splats is moving up
 		move.b	#0,obFrame(a0)
 		bsr.w	ObjFloorDist
 		tst.w	d1
-		bpl.s	loc_D2AE
+		bpl.s	.chk_walls				; branch if Splats is above the floor
 		move.w	(a1),d0
 		andi.w	#$3FF,d0
 		cmpi.w	#$2D2,d0
-		bcs.s	loc_D2A4
+		bcs.s	.bounce
 		addq.b	#2,obRoutine(a0)
-		bra.s	loc_D2AE
+		bra.s	.chk_walls
 ; ===========================================================================
 
-loc_D2A4:
-		add.w	d1,obY(a0)
-		move.w	#-$400,obVelY(a0)
+	.bounce:
+		add.w	d1,obY(a0)				; align to floor
+		move.w	#-$400,obVelY(a0)		; bounce
 
-loc_D2AE:
-		bsr.w	sub_D2DA
+	.chk_walls:
+		bsr.w	Splats_ChkWalls
 		beq.s	loc_D2C4
 		neg.w	obVelX(a0)
 		bchg	#0,obRender(a0)
@@ -82,38 +82,46 @@ loc_D2C4:
 		bra.w	RememberState
 ; ===========================================================================
 
-Splats_3:	; Routine 6
+Splats_Fall:	; Routine 6
 		bsr.w	ObjectFall
 		tst.b	obRender(a0)
 		bpl.w	DeleteObject
 		bra.w	RememberState
 ; ===========================================================================
 
-sub_D2DA:
+; ---------------------------------------------------------------------------
+; Subroutine to detect collision with walls
+;
+; output:
+;	d0.l = 1 when wall is found; 0 otherwise
+;	d1.w = distance to wall
+; ---------------------------------------------------------------------------
+
+Splats_ChkWalls:
 		move.w	(v_framecount).w,d0
 		add.w	d7,d0
-		andi.w	#3,d0
-		bne.s	loc_D308
+		andi.w	#3,d0					; subroutine only runs every 4th frame (different for each Splats)
+		bne.s	.no_wall				; branch if not on specific frame
 		moveq	#0,d3
 		move.b	obDispWid(a0),d3
 		tst.w	obVelX(a0)
-		bmi.s	loc_D2FE
+		bmi.s	.moving_left
 		bsr.w	ObjHitWallRight
 		tst.w	d1
-		bpl.s	loc_D308
+		bpl.s	.no_wall				; branch if Splats hasn't hit wall
 
-loc_D2FA:
+	.found_wall:
 		moveq	#1,d0
 		rts
 ; ===========================================================================
 
-loc_D2FE:
+	.moving_left:
 		not.w	d3
 		bsr.w	ObjHitWallLeft
 		tst.w	d1
-		bmi.s	loc_D2FA
+		bmi.s	.found_wall
 
-loc_D308:
+	.no_wall:
 		moveq	#0,d0
 		rts
 ; ===========================================================================
