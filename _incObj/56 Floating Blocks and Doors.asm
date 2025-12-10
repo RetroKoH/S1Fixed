@@ -3,12 +3,13 @@
 ; ---------------------------------------------------------------------------
 
 ; ===========================================================================
+
 FBlock_Var:	; width/2, height/2
 		dc.b  $10, $10	; subtype 0x/8x ($0)
 		dc.b  $20, $20	; subtype 1x/9x ($2)
 		dc.b  $10, $20	; subtype 2x/Ax ($4)
 		dc.b  $20, $1A	; subtype 3x/Bx ($6)
-		dc.b  $10, $27	; subtype 4x/Cx ($8)
+		dc.b  $10, $27	; subtype 4x/Cx ($8) - unused
 		dc.b  $10, $10	; subtype 5x/Dx ($A)
 		dc.b	8, $20	; subtype 6x/Ex ($C)
 		dc.b  $40, $10	; subtype 7x/Fx ($E)
@@ -21,13 +22,14 @@ FloatingBlock:
 		tst.b	obRoutine(a0)
 		bne.w	FBlock_Action
 	; Object Routine Optimization End
+; ---------------------------------------------------------------------------
 
 FBlock_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_FBlock,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a0)		; SYZ/SLZ code
 		cmpi.b	#id_LZ,(v_zone).w				; check if level is LZ
-		bne.s	.notLZ
+		bne.s	.notLZ							; if not, branch
 		move.w	#make_art_tile(ArtTile_LZ_Door,2,0),obGfx(a0)	; LZ specific code
 
 	.notLZ:
@@ -59,7 +61,7 @@ FBlock_Main:	; Routine 0
 ; ===========================================================================
 
 	.notatpos:
-		clr.b	obSubtype(a0)					; clear subtype for obj $5637
+		clr.b	obSubtype(a0)					; clear subtype for obj $5637 (stop object moving)
 		tst.b	(f_obj56).w
 		bne.s	.dontdelete
 		jmp		(DeleteObject).l
@@ -71,8 +73,7 @@ FBlock_Main:	; Routine 0
 		beq.s	.isLZ							; if yes, branch
 
 		moveq	#$F,d0							; SYZ/SLZ specific code
-		and.b	obSubtype(a0),d0				; read low nybble of subtype
-		move.b	d0,d1							; copy value to set obFBlock_ButtonNum later
+		and.b	obSubtype(a0),d0				; read low nybble of subtype (SCE Optimization)
 		subq.w	#8,d0
 		bcs.s	.isLZ							; branch if low nybble was > 8
 		lsl.w	#2,d0							; multiply by 4
@@ -83,9 +84,10 @@ FBlock_Main:	; Routine 0
 		bchg	#staFlipX,obStatus(a0)			; otherwise, xflip object
 
 	.isLZ:
-		tst.b	obSubtype(a0)
+		move.b	obSubtype(a0),d0
 		bpl.s	FBlock_Action					; if subtype is 0-$7F, branch
-		move.b	d1,obFBlock_ButtonNum(a0)		; set low nybble of subtype as switch index
+		andi.b	#$F,d0							; read low nybble
+		move.b	d0,obFBlock_ButtonNum(a0)		; set low nybble of subtype as switch index
 		move.b	#5,obSubtype(a0)				; force subtype to 5 (moves up when button is pressed)
 		cmpi.b	#7,obFrame(a0)					; is object a large horizontal LZ door?
 		bne.s	.chkstate						; if not, branch
