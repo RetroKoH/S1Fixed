@@ -152,7 +152,7 @@ LCon_Spawner:
 
 LCon_Platform:	; Routine 2
 		moveq	#0,d1
-		move.b	obDispWid(a0),d1
+		move.b	obDispWid(a0),d1			; width
 		jsr		(PlatformObject).l			; goto LCon_OnPlatform next if Sonic stands on platform
 		bra.w	LCon_PlatformUpdate
 ; ===========================================================================

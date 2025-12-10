@@ -30,8 +30,8 @@ Circ_Main:	; Routine 0
 
 Circ_Platform:	; Routine 2
 		moveq	#0,d1
-		move.b	obDispWid(a0),d1
-		jsr		(PlatformObject).l
+		move.b	obDispWid(a0),d1			; width
+		jsr		(PlatformObject).l			; check for collision & goto Circ_Action next if stood on
 		bra.w	Circ_Types
 ; ===========================================================================
 

@@ -2,8 +2,6 @@
 ; Object 50 - Yadrin enemy (SYZ)
 ; ---------------------------------------------------------------------------
 
-yad_timedelay = objoff_30
-
 Yadrin:
 	; LavaGaming Object Routine Optimization
 		tst.b	obRoutine(a0)
@@ -20,14 +18,14 @@ Yad_Main:	; Routine 0
 		move.b	#(colSpecial|colSz_20x16),obColType(a0)
 		bsr.w	ObjectFall_YOnly
 		bsr.w	ObjFloorDist
-		tst.w	d1
-		bpl.s	locret_F89E
-		add.w	d1,obY(a0)					; match	object's position with the floor
-		clr.w	obVelY(a0)
-		addq.b	#2,obRoutine(a0)
+		tst.w	d1							; has yadrin hit the floor?
+		bpl.s	.keep_falling				; if not, branch
+		add.w	d1,obY(a0)					; align to floor
+		clr.w	obVelY(a0)					; stop falling
+		addq.b	#2,obRoutine(a0)			; goto Yad_Action
 		bchg	#staFlipX,obStatus(a0)
 
-locret_F89E:
+	.keep_falling:
 		rts	
 ; ===========================================================================
 
@@ -38,16 +36,16 @@ Yad_Action:	; Routine 2
 	; Object Routine Optimization End
 
 Yad_Move:
-		subq.w	#1,yad_timedelay(a0)	; subtract 1 from pause time
-		bpl.s	Yad_Animate				; if time remains, branch
-		addq.b	#2,ob2ndRout(a0)
-		move.w	#-$100,obVelX(a0)		; move object
+		subq.w	#1,obYadrin_WaitTime(a0)	; decrement timer
+		bpl.s	.animate					; if time remains, branch
+		addq.b	#2,ob2ndRout(a0)			; -> Yad_FixToFloor
+		move.w	#-$100,obVelX(a0)			; move object left
 		move.b	#1,obAnim(a0)
 		bchg	#staFlipX,obStatus(a0)
-		bne.s	Yad_Animate
-		neg.w	obVelX(a0)				; change direction
+		bne.s	.animate
+		neg.w	obVelX(a0)					; change direction
 
-Yad_Animate:
+	.animate:
 		lea		Ani_Yad(pc),a1
 		jsr		(AnimateSprite).w
 		bra.w	RememberState	
@@ -57,12 +55,12 @@ Yad_FixToFloor:
 		bsr.w	SpeedToPos_XOnly
 		bsr.w	ObjFloorDist
 		cmpi.w	#-8,d1
-		blt.s	Yad_Pause
+		blt.s	Yad_Pause					; branch if > 8px below floor
 		cmpi.w	#$C,d1
-		bge.s	Yad_Pause
-		add.w	d1,obY(a0)	; match	object's position to the floor
-		bsr.s	Yad_ChkWall
-		bne.s	Yad_Pause
+		bge.s	Yad_Pause					; branch if > 11px above floor (also detects a ledge)
+		add.w	d1,obY(a0)					; align to floor
+		bsr.s	Yad_ChkWall					; detect wall
+		bne.s	Yad_Pause					; branch if wall is hit
 	; Animate
 		lea		Ani_Yad(pc),a1
 		jsr		(AnimateSprite).w
@@ -70,10 +68,10 @@ Yad_FixToFloor:
 ; ===========================================================================
 
 Yad_Pause:
-		subq.b	#2,ob2ndRout(a0)
-		move.w	#59,yad_timedelay(a0) ; set pause time to 1 second
-		clr.w	obVelX(a0)
-		clr.b	obAnim(a0)
+		subq.b	#2,ob2ndRout(a0)			; goto Yad_Move
+		move.w	#59,obYadrin_WaitTime(a0)	; set pause time to 1 second
+		clr.w	obVelX(a0)					; stop moving
+		clr.b	obAnim(a0)					; use standing animation
 	; Animate
 		lea		Ani_Yad(pc),a1
 		jsr		(AnimateSprite).w
@@ -84,35 +82,32 @@ Yad_Pause:
 ; Subroutine to have Yadrin check for a wall
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
 Yad_ChkWall:
-		move.w	(v_framecount).w,d0
-		add.w	d7,d0
-		andi.w	#3,d0
-		bne.s	loc_F836
+		move.w	(v_framecount).w,d0			; get word that increments every frame
+		add.w	d7,d0						; add OST id (so that multiple yadrins don't do wall check on the same frame)
+		andi.w	#3,d0						; read only bits 0-1
+		bne.s	.no_collision				; branch if either are set
 		moveq	#0,d3
 		move.b	obDispWid(a0),d3
-		tst.w	obVelX(a0)
-		bmi.s	loc_F82C
+		tst.w	obVelX(a0)					; is yadrin moving to the left?
+		bmi.s	.moving_left				; if yes, branch
 		bsr.w	ObjHitWallRight
-		tst.w	d1
-		bpl.s	loc_F836
+		tst.w	d1							; has yadrin hit wall to the right?
+		bpl.s	.no_collision				; if not, branch
 
-loc_F828:
-		moveq	#1,d0
+	.collision:
+		moveq	#1,d0						; set collision flag
 		rts	
 ; ===========================================================================
 
-loc_F82C:
-		not.w	d3
+	.moving_left:
+		not.w	d3							; flip width
 		bsr.w	ObjHitWallLeft
-		tst.w	d1
-		bmi.s	loc_F828
+		tst.w	d1							; has yadrin hit wall to the left?
+		bmi.s	.collision					; if yes, branch
 
-loc_F836:
-		moveq	#0,d0
+	.no_collision:
+		moveq	#0,d0						; clear collision flag
 		rts	
 ; End of function Yad_ChkWall
 ; ===========================================================================

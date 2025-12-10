@@ -416,6 +416,7 @@ obMBlock_StartX:		equ objoff_30		; 2 bytes | starting X-axis position
 obMBlock_StartY:		equ objoff_32		; 2 bytes | starting Y-axis position
 obMBlock_WaitTime:		equ objoff_34		; 2 bytes | time delay before moving platform back - subtype x9/xA only
 obMBlock_MoveFlag:		equ objoff_36		; 2 bytes | 1 = move platform back to its original position - subtype x9/xA only
+obMBlock_PrevX:			equ objoff_38		; 2 bytes | previous X-axis position (used instead of pushing to the stack)
 ; ---------------------------------------------------------------------------
 
 ; Obj53 - MZ, LZ, SBZ Collapsing Floors (Shared with Obj1A)
@@ -428,11 +429,12 @@ obBas_SonicPosY:		equ objoff_36		; 2 bytes | Sonic's Y-axis position
 ; ---------------------------------------------------------------------------
 
 ; Obj56 - Floating Blocks (SYZ/SLZ), Large Doors (LZ)
-obFBlock_StartY:		equ objoff_30		; 2 bytes | starting Y-axis position
-obFBlock_StartX:		equ objoff_34		; 2 bytes | starting X-axis position
+obFBlock_StartX:		equ objoff_30		; 2 bytes | starting X-axis position
+obFBlock_StartY:		equ objoff_32		; 2 bytes | starting Y-axis position
+obFBlock_PrevX:			equ objoff_34		; 2 bytes | previous X-axis position (used instead of pushing to the stack)
 obFBlock_MoveFlag:		equ objoff_38		; 1 byte  | 1 = block/door is moving
 obFBlock_MoveDist:		equ objoff_3A		; 2 bytes | distance to move
-obFBlock_ButtonNum:		equ objoff_3C		; 1 byte  | which button the block is linked to
+obFBlock_ButtonNum:		equ objoff_3C		; 1 byte  | which button the block is linked to (2nd digit of subtype)
 ; ---------------------------------------------------------------------------
 
 ; Obj57 - Spiked Balls (SYZ, LZ)

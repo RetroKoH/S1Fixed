@@ -77,8 +77,8 @@ Elev_Main:	; Routine 0
 
 Elev_Platform:	; Routine 2
 		moveq	#0,d1
-		move.b	obDispWid(a0),d1
-		jsr	(PlatformObject).l
+		move.b	obDispWid(a0),d1			; width
+		jsr		(PlatformObject).l			; detect collision & goto Elev_Action next if stood on
 		bra.w	Elev_Types
 ; ===========================================================================
 
