@@ -125,10 +125,41 @@ Burro_Jump:
 ; ===========================================================================
 
 Burro_ChkSonic:
-		move.w	#96,d2
+		moveq	#96,d2
+		bsr.w	Burro_ChkDist			; is Sonic < 96px from burrobot?
+		bcc.s	.exit					; if not, branch
+
+	; TO-DO: THIS part is bugged at the end of LZ3
+		move.w	(v_player+obY).w,d0
+		sub.w	obY(a0),d0
+		bcc.s	.exit					; branch is Sonic is right of burrobot
+		cmpi.w	#-128,d0
+		bcs.s	.exit					; branch if Sonic is more than 128px away
+		tst.w	(v_debuguse).w			; is debug mode	on?
+		bne.s	.exit					; if yes, branch
+		subq.b	#2,ob2ndRout(a0)		; goto Burro_Jump next
+		move.w	d1,obVelX(a0)
+		move.w	#-$400,obVelY(a0)		; burrobot jumps
+
+	.exit:
+		lea		Ani_Burro(pc),a1
+		bsr.w	AnimateSprite
+		bra.w	RememberState
+; ===========================================================================
+
+; ---------------------------------------------------------------------------
+; Subroutine to check Sonic's distance from the burrobot
+
+; input:
+;	d2 = distance to compare
+
+; output:
+;	d0 = distance between Sonic and burrobot (abs negative value)
+;	d1 = speed/direction for burrobot to move
+; ---------------------------------------------------------------------------
 
 Burro_ChkDist:
-		move.w	#128,d1
+		move.w	#$80,d1
 		bset	#staFlipX,obStatus(a0)
 		move.w	(v_player+obX).w,d0
 		sub.w	obX(a0),d0
@@ -138,23 +169,6 @@ Burro_ChkDist:
 		bclr	#staFlipX,obStatus(a0)
 
 	.right:
-		cmp.w	d2,d0					; is Sonic < 96px from burrobot?
-		bcc.s	.exit					; if not, branch
-	
-	; TO-DO: THIS part is bugged at the end of LZ3
-		move.w	(v_player+obY).w,d0
-		sub.w	obY(a0),d0
-		bcc.s	.exit					; branch is Sonic is right of burrobot
-		cmpi.w	#-128,d0
-		blo.s	.exit					; branch if Sonic is more than 128px away
-		tst.w	(v_debuguse).w			; is debug mode	on?
-		bne.s	.exit					; if yes, branch
-		subq.b	#2,ob2ndRout(a0)		; -> Burro_Jump
-		move.w	d1,obVelX(a0)
-		move.w	#-$400,obVelY(a0)		; burrobot jumps
-
-	.exit:
-		lea		Ani_Burro(pc),a1
-		bsr.w	AnimateSprite
-		bra.w	RememberState
+		cmp.w	d2,d0
+		rts
 ; ===========================================================================
