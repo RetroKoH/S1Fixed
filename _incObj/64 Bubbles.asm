@@ -12,6 +12,7 @@ Bubble:
 		move.w	Bub_Index(pc,d0.w),d1
 		jmp		Bub_Index(pc,d1.w)
 ; ===========================================================================
+
 Bub_Index:	offsetTable
 		offsetTableEntry.w Bub_Main
 		offsetTableEntry.w Bub_Animate
@@ -45,6 +46,7 @@ Bub_Main:	; Routine 0
 		move.w	#-$88,obVelY(a0)				; float bubble upwards
 		jsr		(RandomNumber).w
 		move.b	d0,obAngle(a0)					; set high byte of ost_angle as random number
+; ---------------------------------------------------------------------------
 
 Bub_Animate:	; Routine 2
 		lea		Ani_Bub(pc),a1
@@ -53,6 +55,7 @@ Bub_Animate:	; Routine 2
 		bne.s	Bub_ChkWater					; if not, branch
 
 		move.b	#1,obBubble_Inhalable(a0)		; set "inhalable" flag
+; ---------------------------------------------------------------------------
 
 Bub_ChkWater:	; Routine 4
 		move.w	(v_waterpos_actual).w,d0
@@ -101,7 +104,7 @@ Bub_ChkWater:	; Routine 4
 	.in_air:
 		; Standing Bubble Animation End
 
-		move.b	#$23,obLRLock(a1)				; lock controls for 35 frames
+		move.b	#35,obLRLock(a1)				; lock controls for 35 frames
 		move.b	d0,obJumping(a1)				; cancel jump
 		andi.b	#~(maskRollJump+maskPush),obStatus(a1)	; clear RollJump and Push flags ($CF)
 		btst	#staSpin,obStatus(a1)

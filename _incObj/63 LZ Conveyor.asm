@@ -14,14 +14,14 @@ LCon_Display:
 ; ===========================================================================
 
 LCon_ChkDel:
-		cmpi.b	#2,(v_act).w			; is this LZ Act 3?
-		bne.s	.not_act3				; if not, branch
-		cmpi.w	#-$80,d0				; is object to the right?
-		bhs.s	LCon_Display			; if yes, branch
+		cmpi.b	#2,(v_act).w				; is this LZ Act 3?
+		bne.s	.not_act3					; if not, branch
+		cmpi.w	#-$80,d0					; is object to the right?
+		bhs.s	LCon_Display				; if yes, branch
 
 	.not_act3:
-		move.b	LCon_SpawnerType(a0),d0	; get original subtype
-		bpl.w	DeleteObject			; branch if not the parent object
+		move.b	LCon_SpawnerType(a0),d0		; get original subtype
+		bpl.w	DeleteObject				; branch if not the parent object
 		andi.w	#$7F,d0
 		lea		(v_conveyactive).w,a2
 		bclr	#0,(a2,d0.w)

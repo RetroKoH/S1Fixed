@@ -20,6 +20,7 @@ ScrapStomp:
 		tst.b	obRoutine(a0)
 		bne.w	Sto_Action
 	; Object Routine Optimization End
+; ---------------------------------------------------------------------------
 
 Sto_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)		; -> Sto_Action

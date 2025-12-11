@@ -25,6 +25,7 @@ BossSpikeball:
 BossStarLight_NoDel:
 		jmp		(DisplayAndCollision).l	; S3K TouchResponse
 ; ===========================================================================
+
 BossSpikeball_Index:	offsetTable
 		offsetTableEntry.w BossSpikeball_Main
 		offsetTableEntry.w BossSpikeball_Fall
