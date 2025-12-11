@@ -9,10 +9,12 @@ Teleport:
 		jsr		Tele_Index(pc,d1.w)
 		offscreen.s	.delete
 		rts	
+; ===========================================================================
 
 .delete:
 		jmp	(DeleteObject).l
 ; ===========================================================================
+
 Tele_Index:		offsetTable
 		offsetTableEntry.w	Tele_Main
 		offsetTableEntry.w	Tele_ChkSonic
@@ -235,6 +237,7 @@ Tele_Move_X:
 ; End of function Tele_SetMovementTimer
 
 ; ===========================================================================
+
 Tele_Data:		offsetTable
 		offsetTableEntry.w	Teleporter00
 		offsetTableEntry.w	Teleporter01

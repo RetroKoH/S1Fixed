@@ -99,6 +99,6 @@ VanP_StoodOn:	; Routine 4
 		bclr	#staSonicOnObj,obStatus(a0)	; Removed obSolid
 		move.b	#2,obRoutine(a0)			; -> VanP_Detect
 
-.display:
+	.display:
 		jmp		(RememberState).l
 ; ===========================================================================

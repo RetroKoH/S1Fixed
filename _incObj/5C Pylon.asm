@@ -7,20 +7,23 @@ Pylon:
 		tst.b	obRoutine(a0)
 		bne.s	Pyl_Display
 	; Object Routine Optimization End
+; ---------------------------------------------------------------------------
 
 Pyl_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)
+		addq.b	#2,obRoutine(a0)			; -> Pyl_Display
 		move.l	#Map_Pylon,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SLZ_Pylon,0,1),obGfx(a0)
 		move.w	#priority0,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$10,obDispWid(a0)
+; ---------------------------------------------------------------------------
 
+; TO-DO: could I use a modified version of this for MZ UFOs somehow?
 Pyl_Display:	; Routine 2
-		move.l	(v_screenposx).w,d1
-		add.l	d1,d1
-		swap	d1
-		neg.w	d1
-		move.w	d1,obX(a0)
+		move.l	(v_screenposx).w,d1			; get camera x pos (in high word)
+		add.l	d1,d1						; double it
+		swap	d1							; move into low word
+		neg.w	d1							; invert
+		move.w	d1,obX(a0)					; update x position of pylon
 		move.l	(v_screenposy).w,d1
 		add.l	d1,d1
 		swap	d1
@@ -29,3 +32,4 @@ Pyl_Display:	; Routine 2
 		addi.w	#$100,d1
 		move.w	d1,obScreenY(a0)
 		bra.w	DisplaySprite
+; ===========================================================================

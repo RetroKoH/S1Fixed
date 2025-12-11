@@ -20,6 +20,7 @@ RunningDisc:
 		tst.b	obRoutine(a0)
 		bne.s	Disc_Action
 	; Object Routine Optimization End
+; ---------------------------------------------------------------------------
 
 Disc_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)					; -> Disc_Action
@@ -48,6 +49,7 @@ Disc_Main:	; Routine 0
 		ror.b	#2,d0								; move x/yflip bits to top
 		andi.b	#$C0,d0								; read only those
 		move.b	d0,obAngle(a0)						; use as starting angle
+; ---------------------------------------------------------------------------
 
 Disc_Action:	; Routine 2
 		bsr.s	Disc_MoveSonic

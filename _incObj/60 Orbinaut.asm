@@ -287,3 +287,4 @@ Orb_ChkDel2Skip:
 		tst.b	obRender(a0)		; is orb on-screen?
 		bpl.w	DeleteObject		; if not, branch
 		bra.w	DisplayAndCollision	; S3K TouchResponse
+; ===========================================================================
