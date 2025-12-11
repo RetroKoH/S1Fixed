@@ -8,6 +8,7 @@ Junction:
 		move.w	Jun_Index(pc,d0.w),d1
 		jmp		Jun_Index(pc,d1.w)
 ; ===========================================================================
+
 Jun_Index:		offsetTable
 		offsetTableEntry.w Jun_Main
 		offsetTableEntry.w Jun_Action
@@ -46,6 +47,7 @@ Jun_Main:	; Routine 0
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#1,obJun_Direction(a0)		; set default direction (anticlockwise)
 		move.b	obSubtype(a0),obJun_ButtonNum(a0)
+; ---------------------------------------------------------------------------
 
 Jun_Action:	; Routine 2
 		bsr.w	Jun_Update					; check if button is pressed and animate the junction
@@ -94,6 +96,7 @@ Jun_Action:	; Routine 2
 		add.w	d3,obY(a1)
 		asr		obX(a1)
 		asr		obY(a1)
+; ---------------------------------------------------------------------------
 
 Jun_Display:	; Routine 4
 		bra.w	RememberState

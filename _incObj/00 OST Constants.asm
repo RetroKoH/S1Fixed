@@ -455,25 +455,30 @@ obSBall_Speed:			equ objoff_3E		; 2 bytes | rate of spin
 ; ---------------------------------------------------------------------------
 
 ; Obj58 - SYZ Giant Spiked Ball
-obBBall_StartY:			equ objoff_38		; 2 bytes | starting Y-axis position
-obBBall_StartX:			equ objoff_3A		; 2 bytes | starting X-axis position
+obBBall_Angle:			equ objoff_36		; 2 bytes | precise rotation angle
+	; ^^^ We need this so that obShieldProp isn't overwritten, otherwise
+	; Insta-Shield negates its collision property. Upper byte written to obAngle.
+
+obBBall_StartX:			equ objoff_38		; 2 bytes | starting X-axis position
+obBBall_StartY:			equ objoff_3A		; 2 bytes | starting Y-axis position
 obBBall_Radius:			equ objoff_3C		; 1 byte  | radius of circular movement
 obBBall_Speed:			equ objoff_3E		; 2 bytes | speed
 ; ---------------------------------------------------------------------------
 
 ; Obj59 - SLZ Elevator
-obElev_StartY:			equ objoff_30		; 2 bytes | starting Y-axis position
-obElev_StartX:			equ objoff_32		; 2 bytes | starting X-axis position
-obElev_DistMoved:		equ objoff_34		; 4 bytes | distance moved
-obElev_AccelRate:		equ objoff_38		; 2 bytes | acceleration - i.e. its movement is not linear
-obElev_DecelFlag:		equ objoff_3A		; 1 byte  | 1 = decelerate
+obElev_DecelFlag:		equ objoff_2F		; 1 byte  | 1 = decelerate
+obElev_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
+obElev_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position
+obElev_PrevX:			equ objoff_34		; 2 bytes | previous X-axis position (used instead of pushing to the stack)
+obElev_DistMoved:		equ objoff_36		; 4 bytes | distance moved
+obElev_AccelRate:		equ objoff_3A		; 2 bytes | acceleration - i.e. its movement is not linear
 obElev_Dist:			equ objoff_3C		; 2 bytes | half distance to move
 obElev_DistCopy:		equ objoff_3E		; 2 bytes | master copy of obElev_Dist
 ; ---------------------------------------------------------------------------
 
 ; Obj5A - SLZ Circular Platform
-obCirc_StartY:			equ objoff_30		; 2 bytes | starting Y-axis position
-obCirc_StartX:			equ objoff_32		; 2 bytes | starting X-axis position
+obCirc_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
+obCirc_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position
 ; ---------------------------------------------------------------------------
 
 ; Obj5B - SLZ Staircase
@@ -494,7 +499,7 @@ obFan_Switch:			equ objoff_32		; 1 byte  | on/off switch
 ; Obj5E - SLZ Seesaw
 obSeesaw_StartX:		equ objoff_30		; 2 bytes | starting X-axis position
 obSeesaw_StartY:		equ objoff_34		; 2 bytes | starting Y-axis position
-obSeesaw_Impact:		equ objoff_38		; 2 bytes | speed Sonic hits the seesaw
+obSeesaw_HitSpeed:		equ objoff_38		; 2 bytes | speed Sonic hits the seesaw
 obSeesaw_State:			equ objoff_3A		; 1 byte  | seesaw: 0 = left raised; 2 = right raised; 1 = flat
 										; spikeball: 0 = on/launched from right side; 2 = on/launched from left side
 obSeesaw_Parent:		equ objoff_3E		; 2 bytes | address of parent object
@@ -519,8 +524,9 @@ obOrb_Parent:			equ objoff_3E		; 2 bytes | address of parent object
 ; ---------------------------------------------------------------------------
 
 ; Obj61 - LZ Blocks
-obLBlock_StartY:		equ objoff_30		; 2 bytes | starting Y-axis position
-obLBlock_StartX:		equ objoff_34		; 2 bytes | starting X-axis position
+obLBlock_StartX:		equ objoff_30		; 2 bytes | starting X-axis position
+obLBlock_StartY:		equ objoff_32		; 2 bytes | starting Y-axis position
+obLBlock_PrevX:			equ objoff_34		; 2 bytes | previous X-axis position (used instead of pushing to the stack)
 obLBlock_WaitTime:		equ objoff_36		; 2 bytes | time delay for block movement
 obLBlock_Flag:			equ objoff_38		; 1 byte  | 1 = untouched; 0 = touched
 obLBlock_SinkPixels:	equ objoff_3E		; 1 byte  | pixels the platform has sunk when stood on
@@ -641,15 +647,27 @@ obTele_TotalCoords:		equ objoff_3B		; 1 byte  | total number of coord pairs in t
 obTele_CoordPtr:		equ objoff_3C		; 4 bytes | address of coord pairs data
 ; ---------------------------------------------------------------------------
 
+; Obj74 - MZ Boss Fire
+obBossFire_DelayTime:	equ objoff_29		; 1 byte  | delay timer for various actions
+obBossFire_BufferX:		equ objoff_30		; 2 bytes | stored X-position
+obBossFire_BufferX2:	equ objoff_32		; 2 bytes | second stored X-position
+obBossFire_BufferY:		equ objoff_38		; 2 bytes | stored Y-position
+; ---------------------------------------------------------------------------
+
+; Obj76 - SYZ Boss Block
+obBossFire_Mode:		equ objoff_29		; 1 byte  | if same as subtype = solid; $FF = lifted; $A = breaking
+obBossFire_Parent:		equ objoff_34		; 4 bytes | object RAM address of main boss object
+; ---------------------------------------------------------------------------
+
 ; Obj78 - Caterkiller Badnik
-obCat_Intertia:			equ obVelY			; 2 bytes | formerly obInertia. Needed to change after shifting SSTs for the Priority Manager.
+obCat_Inertia:			equ obVelY			; 2 bytes | formerly obInertia. Needed to change after shifting SSTs for the Priority Manager.
 										; Caterkiller uses obXVel but doesn't use obYVel (unless broken), and this causes no glitches.
 
 obCat_WaitTime:			equ objoff_2A		; 1 byte  | time to wait between actions
 obCat_Mode:				equ objoff_2B		; 1 byte  | bit 4 (+$10) = mouth is open/segment moving up; bit 7 (+$80) = update animation
 obCat_FloorMap:			equ objoff_2C		; 16 bytes| height map of floor beneath caterkiller (16 bytes)
-obCat_Parent:			equ objoff_3C		; 4 bytes | address of OST of parent object (4 bytes - high byte is obCat_segment_pos)
-obCat_SegmentPos:		equ obCat_Parent	; 1 byte  | segment position - starts as 0/4/8/$A, increments as it moves
+obCat_SegmentPos:		equ objoff_3C		; 1 byte  | segment position - starts as 0/4/8/$A, increments as it moves
+obCat_Parent:			equ objoff_3E		; 2 bytes | address of OST of parent object (4 bytes - high byte is obCat_segment_pos)
 ; ---------------------------------------------------------------------------
 
 ; Obj79 - Lamppost

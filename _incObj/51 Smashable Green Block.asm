@@ -9,6 +9,7 @@ SmashBlock:
 		beq.s	Smab_Solid
 		bpl.w	Smab_Points
 	; Object Routine Optimization End
+; ---------------------------------------------------------------------------
 
 Smab_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)				; -> Smab_Solid

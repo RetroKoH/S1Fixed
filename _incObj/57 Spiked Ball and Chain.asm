@@ -110,8 +110,8 @@ SBall_Main:	; Routine 0
 
 SBall_Move:	; Routine 2
 ; branches removed. We just call the code directly.
-		move.w	obSBall_Speed(a0),d0
-		add.w	d0,obSBall_Angle(a0)			; add spin speed to angle
+		move.w	obSBall_Speed(a0),d0			; get rotation speed
+		add.w	d0,obSBall_Angle(a0)			; add speed to angle
 		move.b	obSBall_Angle(a0),obAngle(a0)	; load high byte here (to prevent insta-shield bug).
 		move.b	obAngle(a0),d0					; get updated angle
 

@@ -7,6 +7,7 @@ Saws:
 		tst.b	obRoutine(a0)
 		bne.s	Saw_Action
 	; Object Routine Optimization End
+; ---------------------------------------------------------------------------
 
 Saw_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)

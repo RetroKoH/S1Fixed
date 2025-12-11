@@ -19,6 +19,7 @@ Conveyor:
 		tst.b	obRoutine(a0)
 		bne.s	Conv_Action
 	; Object Routine Optimization End
+; ---------------------------------------------------------------------------
 
 Conv_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
@@ -63,6 +64,7 @@ Conv_Action:	; Routine 2
 	.chkdel:
 		offscreen.s	.delete				; PFM S3K OBJ
 		rts	
+; ===========================================================================
 
 	.delete:
 		jmp		(DeleteObject).l

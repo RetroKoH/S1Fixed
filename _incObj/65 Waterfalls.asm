@@ -8,6 +8,7 @@ Waterfall:
 		move.w	WFall_Index(pc,d0.w),d1
 		jmp		WFall_Index(pc,d1.w)
 ; ===========================================================================
+
 WFall_Index:	offsetTable
 		offsetTableEntry.w WFall_Main
 		offsetTableEntry.w WFall_Animate
@@ -44,10 +45,12 @@ WFall_Main:	; Routine 0
 		btst	#5,obSubtype(a0)			; is object type $A9?
 		beq.s	WFall_Animate				; if not, branch
 		move.b	#8,obRoutine(a0)			; -> WFall_Priority
+; ---------------------------------------------------------------------------
 
 WFall_Animate:	; Routine 2
 		lea		Ani_WFall(pc),a1
 		jsr		(AnimateSprite).w
+; ---------------------------------------------------------------------------
 
 WFall_ChkDel:	; Routine 4
 		bra.w	RememberState

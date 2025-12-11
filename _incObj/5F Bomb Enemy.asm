@@ -32,20 +32,18 @@ Bom_Main:	; Routine 0
 	.type00:
 		move.b	#(colHarmful|colSz_12x12),obColType(a0)
 		bchg	#staFlipX,obStatus(a0)
+; ---------------------------------------------------------------------------
 
 Bom_Action:	; Routine 2
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
-		move.w	Bom_ActionIndex(pc,d0.w),d1
-		jsr		Bom_ActionIndex(pc,d1.w)
-		lea		Ani_Bomb(pc),a1
-		jsr		(AnimateSprite).w
-		bra.w	RememberState
+		jmp		Bom_ActionIndex(pc,d0.w)	; LavaGaming/RetroKoH Routine Optimization
 ; ===========================================================================
+
 Bom_ActionIndex:	offsetTable
-		offsetTableEntry.w	Bom_Action_Walk
-		offsetTableEntry.w	Bom_Action_Wait
-		offsetTableEntry.w	Bom_Action_Explode
+		bra.s	Bom_Action_Walk
+		bra.s	Bom_Action_Wait
+		bra.s	Bom_Action_Explode
 ; ===========================================================================
 
 Bom_Action_Walk:
@@ -61,14 +59,19 @@ Bom_Action_Walk:
 		neg.w	obVelX(a0)						; change direction
 
 	.noflip:
-		rts	
+		lea		Ani_Bomb(pc),a1
+		jsr		(AnimateSprite).w
+		bra.w	RememberState
 ; ===========================================================================
 
 Bom_Action_Wait:
 		bsr.w	Bom_ChkDistToSonic
 		subq.w	#1,obBomb_FuseTime(a0)			; subtract 1 from time delay
 		bmi.s	.stopwalking					; if time expires, branch
-		bra.w	SpeedToPos_XOnly
+		bsr.w	SpeedToPos_XOnly
+		lea		Ani_Bomb(pc),a1
+		jsr		(AnimateSprite).w
+		bra.w	RememberState
 ; ===========================================================================
 
 	.stopwalking:
@@ -76,7 +79,9 @@ Bom_Action_Wait:
 		move.w	#179,obBomb_FuseTime(a0)		; set time delay to 3 seconds
 		clr.w	obVelX(a0)						; stop walking
 		clr.b	obAnim(a0)						; use waiting animation
-		rts	
+		lea		Ani_Bomb(pc),a1
+		jsr		(AnimateSprite).w
+		bra.w	RememberState
 ; ===========================================================================
 
 Bom_Action_Explode:
@@ -86,7 +91,9 @@ Bom_Action_Explode:
 		clr.b	obRoutine(a0)
 
 	.noexplode:
-		rts	
+		lea		Ani_Bomb(pc),a1
+		jsr		(AnimateSprite).w
+		bra.w	RememberState
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
@@ -99,7 +106,7 @@ Bom_ChkDistToSonic:
 		bcc.s	.isleft
 		neg.w	d0
 
-.isleft:
+	.isleft:
 		cmpi.w	#$60,d0							; is Sonic within $60 pixels?
 		bhs.s	.outofrange						; if not, branch
 		move.w	(v_player+obY).w,d0
@@ -107,7 +114,7 @@ Bom_ChkDistToSonic:
 		bcc.s	.isabove
 		neg.w	d0
 
-.isabove:
+	.isabove:
 		cmpi.w	#$60,d0							; is Sonic within $60 pixels?
 		bhs.s	.outofrange						; if not, branch
 		tst.w	(v_debuguse).w					; is Debug Mode Active?
@@ -131,11 +138,11 @@ Bom_ChkDistToSonic:
 		beq.s	.normal							; if not, branch
 		neg.w	obVelY(a1)						; reverse direction for fuse
 
-.normal:
+	.normal:
 		move.w	#143,obBomb_FuseTime(a1)		; set fuse time
 		move.w	a0,obBomb_Parent(a1)
 
-.outofrange:
+	.outofrange:
 		rts	
 ; ===========================================================================
 
