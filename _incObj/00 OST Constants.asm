@@ -679,7 +679,7 @@ obLamp_SpinTime:		equ objoff_36		; 2 bytes | length of time to twirl the lamp
 ; Obj7B - MZ Boss Spike
 obBossSpike_StartX:		equ objoff_30		; 1 byte  | delay timer for various actions
 obBossSpike_StartY:		equ objoff_34		; 2 bytes | stored X-position
-obBossSpike_State:		equ objoff_3A		; 2 bytes | second stored X-position
+obBossSpike_State:		equ objoff_3A		; 1 byte  | second stored X-position
 obBossSpike_Seesaw:		equ objoff_3C		; 2 bytes | address of corresponding seesaw
 obBossSpike_Parent:		equ objoff_3E		; 2 bytes | address of parent boss object
 ; ---------------------------------------------------------------------------
