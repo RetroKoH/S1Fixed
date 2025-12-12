@@ -36,10 +36,10 @@ BossStarLight_Main:
 		move.w	obX(a0),boss_bufferX(a0)
 		move.w	obY(a0),boss_bufferY(a0)
 		move.b	#(colEnemy|colSz_24x24),obColType(a0)
-		move.b	#8,obColProp(a0)	; set number of hits to 8
-		lea		BossStarLight_ObjData(pc),a2
-		movea.l	a0,a1
-		moveq	#3,d1
+		move.b	#8,obColProp(a0)				; set number of hits to 8
+		lea		BossStarLight_ObjData(pc),a2	; get data for routine number, animation & priority
+		movea.l	a0,a1							; replace current object with 1st in list
+		moveq	#3,d1							; 3 additional objects
 		bra.s	BossStarLight_LoadBoss
 ; ===========================================================================
 
@@ -108,13 +108,13 @@ BossStarLight_ShipIndex:	offsetTable
 ; ===========================================================================
 
 BossStarLight_ShipStart:		; Secondary Routine 0
-		move.w	#-$100,obVelX(a0)
-		cmpi.w	#boss_slz_x+$120,boss_bufferX(a0)
-		bhs.s	loc_189CA
+		move.w	#-$100,obVelX(a0)					; move ship left
+		cmpi.w	#boss_slz_x+$120,boss_bufferX(a0)	; has ship reached right side of screen?
+		bhs.s	BossStarLight_Update				; if not, branch
 		addq.b	#2,ob2ndRout(a0)
 
-loc_189CA:
-		bsr.w	BossMove
+BossStarLight_Update:
+		bsr.w	BossMove							; update parent position
 		move.b	boss_hoverangle(a0),d0
 		addq.b	#2,boss_hoverangle(a0)
 		jsr		(CalcSine).w
@@ -122,7 +122,7 @@ loc_189CA:
 		add.w	boss_bufferY(a0),d0
 		move.w	d0,obY(a0)
 		move.w	boss_bufferX(a0),obX(a0)
-		bra.s	BossStarLight_ChkHit
+		bra.s	BossStarLight_ChkHit				; check for hit
 ; ===========================================================================
 
 BossStarLight_ApplyMovement:
@@ -159,10 +159,10 @@ BossStarLight_AwardPoints:
 
 BossStarLight_ShipMove:		; Secondary Routine 2
 		move.w	boss_bufferX(a0),d0
-		move.w	#$200,obVelX(a0)
+		move.w	#$200,obVelX(a0)			; move ship right
 		btst	#staFlipX,obStatus(a0)
 		bne.s	loc_18A7C
-		neg.w	obVelX(a0)
+		neg.w	obVelX(a0)					; move ship left
 		cmpi.w	#boss_slz_x+8,d0
 		bgt.s	loc_18A88
 		bra.s	loc_18A82
@@ -175,60 +175,61 @@ loc_18A7C:
 loc_18A82:
 		bchg	#staFlipX,obStatus(a0)
 
+; find seesaw
 loc_18A88:
 		move.w	obX(a0),d0
 		moveq	#-1,d1
-		moveq	#2,d2
-		lea		objoff_2A(a0),a2
-		moveq	#$28,d4
+		moveq	#2,d2					; number of seesaws
+		lea		objoff_2A(a0),a2		; get OST addresses for the 3 seesaws
+		moveq	#$28,d4					; dist from center to right side of seesaw
 		tst.w	obVelX(a0)
-		bpl.s	loc_18A9E
-		neg.w	d4
+		bpl.s	loc_18A9E				; branch if ship is moving righ
+		neg.w	d4						; dist from centre to left side of seesaw
 
 loc_18A9E:
 		move.w	(a2)+,d1
-		movea.l	d1,a3
-		btst	#staSonicOnObj,obStatus(a3)
-		bne.s	loc_18AB4
+		movea.l	d1,a3					; a3 = address of seesaw OST
+		btst	#staSonicOnObj,obStatus(a3)	; is Sonic on the seesaw?
+		bne.s	loc_18AB4				; if yes, branch
 		move.w	obX(a3),d3
-		add.w	d4,d3
+		add.w	d4,d3					; d3 = x position of left/right side of seesaw
 		sub.w	d0,d3
-		beq.s	loc_18AC0
+		beq.s	loc_18AC0				; branch if ship is directly over side of seesaw
 
 loc_18AB4:
 		dbf		d2,loc_18A9E
 
-		move.b	d2,obSubtype(a0)
-		bra.w	loc_189CA
+		move.b	d2,obSubtype(a0)		; set subtype to -1 if no seesaw is found
+		bra.w	BossStarLight_Update	; update position, check for hit
 ; ===========================================================================
 
 loc_18AC0:
-		move.b	d2,obSubtype(a0)
-		addq.b	#2,ob2ndRout(a0)
-		move.b	#$28,boss_delaytime(a0)
-		bra.w	loc_189CA
+		move.b	d2,obSubtype(a0)		; number of seesaw the ship is above (0/1/2)
+		addq.b	#2,ob2ndRout(a0)		; goto BSLZ_MakeBall next
+		move.b	#$28,boss_delaytime(a0)	; set timer to 40 frames
+		bra.w	BossStarLight_Update	; update position, check for hit
 ; ===========================================================================
 
 BossStarLight_ShipMakeBall:		; Secondary Routine 4
-		cmpi.b	#$28,boss_delaytime(a0)
-		bne.s	loc_18B36
+		cmpi.b	#$28,boss_delaytime(a0)		; has timer started counting down yet?
+		bne.s	loc_18B36					; if yes, branch
 		moveq	#-1,d0
-		move.b	obSubtype(a0),d0
+		move.b	obSubtype(a0),d0			; get number of seesaw the ship is above (0/1/2)
 		ext.w	d0
-		bmi.s	loc_18B40
+		bmi.s	loc_18B40					; branch if no seesaw found (-1)
 		subq.w	#2,d0
-		neg.w	d0
+		neg.w	d0							; switch between 0 and 2
 		add.w	d0,d0
 		lea		objoff_2A(a0),a1
 		move.w	(a1,d0.w),d0
-		movea.l	d0,a2
+		movea.l	d0,a2						; get address of OST of seesaw
 		lea		(v_lvlobjspace).w,a1		; FixBugs -- Formerly (v_objspace+object_size*1)
 		moveq	#v_lvlobjcount,d1			; FixBugs: Normally only covered the first half of object RAM.
 		moveq	#object_size,d2
 
 loc_18AFA:
-		cmp.l	boss_delaytime(a1),d0
-		beq.s	loc_18B40
+		cmp.w	obBossSpike_Seesaw(a1),d0	; does seesaw already have a spikeball?
+		beq.s	loc_18B40					; if yes, branch
 		adda.w	d2,a1						; check next object slot (save 4 cycles -- KoH)
 		dbf		d1,loc_18AFA
 
@@ -253,7 +254,7 @@ loc_18B36:
 
 loc_18B40:
 		subq.b	#2,ob2ndRout(a0)
-		bra.w	loc_189CA
+		bra.w	BossStarLight_Update
 ; ===========================================================================
 
 BossStarLight_ShipExplode:		; Secondary Routine 6
@@ -344,7 +345,7 @@ loc_18BE0:
 
 loc_18BE8:
 		bsr.w	BossMove
-		bra.w	loc_189CA
+		bra.w	BossStarLight_Update
 
 BossStarLight_PopAndDelete:
 		; Avoid returning to BossStarLight_ShipMain to prevent a

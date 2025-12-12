@@ -95,7 +95,7 @@ BossSpikeball_Bounce:	; Routine 4
 		movea.w	obBossSpike_Seesaw(a0),a1		; get object RAM address of seesaw below
 		moveq	#0,d0
 		move.b	obBossSpike_State(a0),d0
-		sub.b	obBossSpike_State(a1),d0
+		sub.b	obSeesaw_State(a1),d0
 		beq.s	.no_change						; branch if seesaw and spikeball have same state
 		bcc.s	.on_left						; branch if spikeball lands on left side
 		neg.b	d0								; make d0 positive
@@ -263,7 +263,7 @@ BossSpikeball_HitBoss:	; Routine 6
 ; ---------------------------------------------------------------------------
 
 BossSpikeball_Update:
-		move.b	d1,obBossSpike_State(a1)	; set new state for seesaw (0 or 2)
+		move.b	d1,obSeesaw_State(a1)		; set new state for seesaw (0 or 2)
 		move.b	d1,obBossSpike_State(a0)
 		cmp.b	obFrame(a1),d1				; was seesaw in a different state previously?
 		beq.s	.no_change					; if not, branch
