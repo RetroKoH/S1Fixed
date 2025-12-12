@@ -7,11 +7,12 @@
 # Credits
  RetroKoH - S1Fixed  
  DeltaW - Backporting Assistance  
- Filter - Code Optimizations  
- Mercury - Original ReadySonic  
+ Filter, TheBlad768 - Code Optimizations  
+ Hivebrain - Annotations, Code Rewrites
  Clownacy - Updated S1 One Two-Eight Base  
  MarkeyJester - Original S1 One Two-Eight Base  
- Mods/Fixes w/ Additional Credits [here](https://github.com/RetroKoH/S1Fixed/blob/main/Assets/Changelog.md)  
+ Mercury - Original ReadySonic  
+ Additional Credits for Mods/Fixes to be noted
 
 # To-Do for Feature Release
  S3KBuildSprites (DeltaW)  
