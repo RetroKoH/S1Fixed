@@ -222,13 +222,14 @@ BossStarLight_ShipMakeBall:		; Secondary Routine 4
 		lea		objoff_2A(a0),a1
 		move.w	(a1,d0.w),d0
 		movea.l	d0,a2
-		lea		(v_lvlobjspace).w,a1	; FixBugs -- Formerly (v_objspace+object_size*1)
-		moveq	#v_lvlobjcount,d1		; FixBugs: Normally only covered the first half of object RAM.
+		lea		(v_lvlobjspace).w,a1		; FixBugs -- Formerly (v_objspace+object_size*1)
+		moveq	#v_lvlobjcount,d1			; FixBugs: Normally only covered the first half of object RAM.
+		moveq	#object_size,d2
 
 loc_18AFA:
 		cmp.l	boss_delaytime(a1),d0
 		beq.s	loc_18B40
-		adda.w	#object_size,a1
+		adda.w	d2,a1						; check next object slot (save 4 cycles -- KoH)
 		dbf		d1,loc_18AFA
 
 		move.l	a0,-(sp)
@@ -236,12 +237,13 @@ loc_18AFA:
 		jsr		(FindNextFreeObj).l
 		movea.l	(sp)+,a0
 		bne.s	loc_18B40
-		move.b	#id_BossSpikeball,obID(a1) ; load spiked ball object
+		move.b	#id_BossSpikeball,obID(a1)	; load spiked ball object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		addi.w	#$20,obY(a1)
 		move.b	obStatus(a2),obStatus(a1)
-		move.l	a2,boss_delaytime(a1)
+		move.w	a2,obBossSpike_Seesaw(a1)	; set address of seesaw below
+		move.w	a0,obBossSpike_Parent(a1)	; set address of parent object
 
 loc_18B36:
 		subq.b	#1,boss_delaytime(a0)

@@ -276,8 +276,7 @@ See_SpikeFall:	; Routine $A
 		jsr		(QueueSound2).w				; play spring sound
 
 	.skip_spring:
-		clr.w	obVelX(a0)
-		clr.w	obVelY(a0)
+		clr.l	obVelX(a0)					; stop x/y speeds
 		subq.b	#2,obRoutine(a0)			; -> See_SpikeAction
 
 	.exit:
