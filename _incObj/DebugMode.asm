@@ -24,8 +24,7 @@ Debug_Main:	; Routine 0
 		move.b	#aniID_Walk,obAnim(a0)
 
 	; Mercury Debug Improvements
-		clr.w	obVelX(a0)
-		clr.w	obVelY(a0)
+		clr.l	obVelX(a0)					; clear x/y speeds
 		clr.w	obInertia(a0)
 
 	if SpinDashEnabled	

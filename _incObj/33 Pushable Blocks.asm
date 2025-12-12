@@ -107,8 +107,7 @@ PushB_ChkVisible:	; Routine 4
 		beq.s	.visible				; if yes, branch
 		move.b	#2,obRoutine(a0)
 		clr.b	obPushB_LavaFlag(a0)
-		clr.w	obVelX(a0)
-		clr.w	obVelY(a0)
+		clr.l	obVelX(a0)				; clear x/y speeds
 
 	.visible:
 		rts	
