@@ -420,7 +420,7 @@ RAttract_Main:
 
 
 AttractedRing_Move:
-		move.w	#$30,d1
+		moveq	#$30,d1
 		move.w	(v_player+obX).w,d0
 		cmp.w	obX(a0),d0
 		bcc.s	.branch1
@@ -440,7 +440,7 @@ AttractedRing_Move:
 
 .branch2:
 		add.w	d1,obVelX(a0)
-		move.w	#$30,d1
+		moveq	#$30,d1
 		move.w	(v_player+obY).w,d0
 		cmp.w	obY(a0),d0
 		bcc.s	.branch3

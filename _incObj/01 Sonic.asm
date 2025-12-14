@@ -1615,7 +1615,7 @@ Reset_Sonic_Position_Array:
 		swap	d1						; move obX to the upper word -- RetroKoH optimization
 		move.w	obY(a0),d1				; move obY to the lower word -- RetroKoH optimization
 		lea		(v_tracksonic).w,a1
-		move.w	#$3F,d0
+		moveq	#$3F,d0
 
 	.loop:
 		move.l	d1,(a1)+				; move obX and obY to v_tracksonic -- RetroKoH optimization

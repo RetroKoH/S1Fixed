@@ -78,10 +78,10 @@ Glass_Main:	; Routine 0
 
 Glass_Block012:	; Routine 2
 		bsr.w	Glass_Types				; update position
-		move.w	#$2B,d1
-		move.w	#$48,d2
-		move.w	#$49,d3
-		move.w	obX(a0),d4
+		moveq	#43,d1					; width; save 4 cycles -- Filter
+		moveq	#72,d2					; height (jumping); save 4 cycles -- Filter
+		moveq	#73,d3					; height (walking); save 4 cycles -- Filter
+		move.w	obX(a0),d4				; axis position
 		bra.w	SolidObject
 ; ===========================================================================
 
@@ -94,10 +94,10 @@ Glass_Reflect012:
 
 Glass_Block34:	; Routine 6
 		bsr.w	Glass_Types				; update position
-		move.w	#$2B,d1
-		move.w	#$38,d2
-		move.w	#$39,d3
-		move.w	obX(a0),d4
+		moveq	#43,d1					; width; save 4 cycles -- Filter
+		moveq	#56,d2					; height (jumping); save 4 cycles -- Filter
+		moveq	#57,d3					; height (walking); save 4 cycles -- Filter
+		move.w	obX(a0),d4				; axis position
 		bra.w	SolidObject
 ; ===========================================================================
 
@@ -138,14 +138,14 @@ Glass_Still:
 ; Type 1 - moves up and down
 Glass_UpDown:
 		move.b	(v_oscillate+$12).w,d0
-		move.w	#$40,d1
+		moveq	#$40,d1
 		bra.s	Glass_UpDown_Reflect
 ; ===========================================================================
 
 ; Type 2 - moves up and down, reversed
 Glass_UpDown_Rev:
 		move.b	(v_oscillate+$12).w,d0
-		move.w	#$40,d1
+		moveq	#$40,d1
 		neg.w	d0					; reverse direction of movement
 		add.w	d1,d0
 

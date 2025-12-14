@@ -173,13 +173,12 @@ SpinC_Rout2:
 		jsr		(AnimateSprite).w
 		tst.b	obFrame(a0)					; is platform on a spinning frame?
 		bne.s	.spinning					; if yes, branch
-		move.w	obX(a0),-(sp)
+		move.w	obX(a0),SpinCon_PrevX(a0)	; store pre-movement axis position
 		bsr.w	SpinC_PlatformUpdate
-		move.w	#$1B,d1
-		move.w	#7,d2
-		move.w	d2,d3
-		addq.w	#1,d3
-		move.w	(sp)+,d4
+		moveq	#$1B,d1						; width; save 4 cycles -- Filter
+		moveq	#7,d2						; height (jumping); save 4 cycles -- Filter
+		moveq	#8,d3						; height (walking); save 4 cycles -- Filter
+		move.w	SpinCon_PrevX(a0),d4		; pre-movement axis position
 		jmp		(SolidObject).l				; make platform solid on flat frame
 ; ===========================================================================
 

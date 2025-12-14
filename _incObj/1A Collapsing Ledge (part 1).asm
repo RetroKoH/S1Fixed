@@ -38,7 +38,7 @@ Ledge_Touch:	; Routine 2
 		subq.b	#1,obLedge_WaitTime(a0)		; subtract 1 from time
 
 .slope:
-		move.w	#$30,d1						; width
+		moveq	#48,d1						; width
 		lea		(Ledge_SlopeData).l,a2		; heightmap
 		bsr.w	SlopeObject					; detect collision with Sonic, update relevant flags & goto Ledge_Collapse next
 		jmp		(RememberState).l
@@ -56,9 +56,9 @@ Ledge_Collapse:	; Routine 4
 ; ---------------------------------------------------------------------------
 
 Ledge_WalkOff:	; Routine $A
-		move.w	#$30,d1						; width
+		moveq	#48,d1						; width
 		bsr.w	ExitPlatform				; allow Sonic to walk off the ledge
-		move.w	#$30,d1						; width
+		moveq	#48,d1						; width
 		lea		(Ledge_SlopeData).l,a2		; heightmap
 		move.w	obX(a0),d2
 		bsr.w	SlopeObject2				; update Sonic's y position

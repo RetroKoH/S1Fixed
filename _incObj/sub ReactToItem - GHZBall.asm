@@ -15,7 +15,7 @@ GHZBall_ReactToItem:
 		move.b	obHeight(a0),d5			; load ball's height
 		subq.b	#3,d5
 		sub.w	d5,d3
-		move.w	#$10,d4
+		moveq	#$10,d4
 		add.w	d5,d5
 
 .chkobjecttype:
