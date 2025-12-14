@@ -92,8 +92,8 @@ But_MZPushBlock:
 		move.w	obY(a0),d3
 		subi.w	#$10,d2					; d2 = x pos. of button left edge
 		subq.w	#8,d3					; d3 = y pos. of button top edge
-		move.w	#$20,d4					; d4 = x detection range
-		move.w	#$10,d5					; d5 = y detection range
+		moveq	#$20,d4					; d4 = x detection range
+		moveq	#$10,d5					; d5 = y detection range
 		lea		(v_lvlobjspace).w,a1	; begin checking object RAM
 		move.w	#v_lvlobjcount,d6
 
@@ -111,6 +111,7 @@ But_MZPushBlock:
 		moveq	#0,d0
 		rts	
 ; ===========================================================================
+; TO-DO remove table lookup and load directly
 	.sizes:	dc.b $10, $10				; x and y radius of pushable block
 ; ===========================================================================
 

@@ -26,7 +26,7 @@ Ring_FindFloor:
 
 	.isblank:
 	; We won't do an extra check below for rings
-		move.w	#$10,d1				; return distance to floor
+		moveq	#$10,d1				; return distance to floor
 		rts
 ; ===========================================================================
 
@@ -88,7 +88,7 @@ FindFloor:
 		move.w	d2,d1			; MJ: load Y position
 		andi.w	#$F,d1			; MJ: get only within 10 pixels
 		add.w	d1,d0			; MJ: add to solid value
-		move.w	#$F,d1			; MJ: set F
+		moveq	#$F,d1			; MJ: set F
 		sub.w	d0,d1			; MJ: minus solid value from F
 		rts				; MJ: return
 ; ===========================================================================
@@ -121,7 +121,7 @@ FindFloor2:
 		bne.s	.issolid
 
 .isblank2:
-		move.w	#$F,d1
+		moveq	#$F,d1
 		move.w	d2,d0
 		andi.w	#$F,d0
 		sub.w	d0,d1
@@ -167,7 +167,7 @@ FindFloor2:
 		move.w	d2,d1
 		andi.w	#$F,d1
 		add.w	d1,d0
-		move.w	#$F,d1
+		moveq	#$F,d1
 		sub.w	d0,d1
 		rts	
 ; ===========================================================================

@@ -57,12 +57,11 @@ PushB_Main:	; Routine 0
 PushB_Action:	; Routine 2
 		tst.b	obPushB_LavaFlag(a0)		; is block on lava?
 		bne.w	PushB_OnLava				; if yes, branch
-		moveq	#0,d1
-		move.b	obDispWid(a0),d1
-		addi.w	#$B,d1
-		move.w	#$10,d2
-		move.w	#$11,d3
-		move.w	obX(a0),d4
+		moveq	#11,d1
+		add.b	obDispWid(a0),d1			; width; save 8 cycles
+		moveq	#16,d2						; jumping (jumping); save 4 cycles -- Filter
+		moveq	#17,d3						; jumping (walking); save 4 cycles -- Filter
+		move.w	obX(a0),d4					; axis position
 		bsr.w	PushB_Solid					; make block solid & update its position
 		cmpi.w	#(id_MZ<<8)+0,(v_zone).w	; is the level MZ act 1?
 		bne.s	PushB_Display				; if not, branch
@@ -114,7 +113,7 @@ PushB_ChkVisible:	; Routine 4
 ; ===========================================================================
 
 PushB_OnLava:
-		move.w	obX(a0),-(sp)
+		move.w	obX(a0),obPushB_PrevX(a0)	; store pre-movement axis position
 		cmpi.b	#4,ob2ndRout(a0)		; is block falling after being pushed?
 		bhs.s	.pushing				; if yes, branch if ob2ndRout = 4 or 6 (PushB_Solid_Lava/PushB_Solid_Push)
 		bsr.w	SpeedToPos
@@ -176,12 +175,11 @@ PushB_OnLava_Sink:
 		bhs.s	PushB_OnLava_Sunk		; if yes, branch
 
 PushB_OnLava_Solid:
-		moveq	#0,d1
-		move.b	obDispWid(a0),d1
-		addi.w	#$B,d1
-		move.w	#$10,d2
-		move.w	#$11,d3
-		move.w	(sp)+,d4
+		moveq	#11,d1
+		add.b	obDispWid(a0),d1		; width; save 8 cycles
+		moveq	#16,d2					; jumping (jumping); save 4 cycles -- Filter
+		moveq	#17,d3					; jumping (walking); save 4 cycles -- Filter
+		move.w	obPushB_PrevX(a0),d4	; pre-movement axis position
 		bsr.w	PushB_Solid				; make block solid & update its position
 		bsr.s	PushB_ChkGeyser
 		bra.w	PushB_Display
@@ -202,7 +200,7 @@ PushB_OnLava_Sunk:
 PushB_ChkGeyser:
 		cmpi.w	#(id_MZ<<8)+1,(v_zone).w	; is the level MZ act 2?
 		bne.s	.not_mz2					; if not, branch
-		move.w	#-$20,d2
+		move.w	#-$20,d2					; TO-DO: Can this be moveq?
 		cmpi.w	#$DD0,obX(a0)
 		beq.s	PushB_LoadLava
 		cmpi.w	#$CC0,obX(a0)
@@ -215,7 +213,7 @@ PushB_ChkGeyser:
 	.not_mz2:
 		cmpi.w	#(id_MZ<<8)+2,(v_zone).w	; is the level MZ act 3?
 		bne.s	.not_mz3					; if not, branch
-		move.w	#$20,d2
+		moveq	#$20,d2
 		cmpi.w	#$560,obX(a0)
 		beq.s	PushB_LoadLava
 		cmpi.w	#$5C0,obX(a0)
@@ -339,7 +337,7 @@ PushB_Solid_Side:
 		bmi.w	.locret						; if not, branch
 		addi.l	#$10000,obX(a0)				; move 1px right and clear subpixels
 		moveq	#1,d0
-		move.w	#$40,d1
+		moveq	#$40,d1
 		bra.s	PushB_Solid_Side_Sonic
 
 	.locret:

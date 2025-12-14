@@ -59,7 +59,7 @@ loc_14B7E:
 		move.w	d3,d1
 		andi.w	#$F,d1
 		add.w	d1,d0
-		move.w	#$F,d1
+		moveq	#$F,d1
 		sub.w	d0,d1
 		rts	
 ; ===========================================================================
@@ -92,7 +92,7 @@ FindWall2:
 		bne.s	loc_14BD4
 
 loc_14BC6:
-		move.w	#$F,d1
+		moveq	#$F,d1
 		move.w	d3,d0
 		andi.w	#$F,d0
 		sub.w	d0,d1
@@ -138,7 +138,7 @@ loc_14C26:
 		move.w	d3,d1
 		andi.w	#$F,d1
 		add.w	d1,d0
-		move.w	#$F,d1
+		moveq	#$F,d1
 		sub.w	d0,d1
 		rts	
 ; ===========================================================================
