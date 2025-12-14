@@ -52,7 +52,7 @@ Smab_Solid:	; Routine 2
 		bclr	#staSonicOnObj,obStatus(a0)		; removed obSolid
 		move.b	#1,obFrame(a0)
 		lea		(Smab_Speeds).l,a4				; load broken fragment speed data
-		move.w	#$38,d2							; set initial gravity speed
+		moveq	#$38,d2							; set initial gravity speed
 		bsr.w	SmashObject						; break object into fragments
 
 	; REMOVE FindFreeObj. We can pick up with a1 and d3 where we left off

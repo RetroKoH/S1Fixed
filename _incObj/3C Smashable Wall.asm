@@ -89,7 +89,7 @@ Smash_Solid:	; Routine 2
 		bclr	#staSonicPush,obStatus(a0)
 		bclr	#staPush,obStatus(a1)
 		moveq	#7,d1							; load 8 fragments
-		move.w	#$70,d2							; set initial gravity speed
+		moveq	#$70,d2							; set initial gravity speed
 		bsr.s	SmashObject						; break object into fragments
 
 Smash_FragMove:	; Routine 4

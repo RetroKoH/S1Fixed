@@ -112,7 +112,7 @@ MBlock_Index:	offsetTable
 ; Type 01 - moves side to side
 MBlock_LeftRight:
 		move.b	(v_oscillate+$E).w,d0
-		move.w	#$60,d1
+		moveq	#$60,d1
 		btst	#staFlipX,obStatus(a0)
 		beq.s	loc_FF26
 		neg.w	d0

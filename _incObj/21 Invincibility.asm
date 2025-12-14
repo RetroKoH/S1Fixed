@@ -72,7 +72,7 @@ Stars_Next:	; Routine 2
 
 	; Mercury Shield/Invincibility Positioning Fix
 		move.b	obStatus(a0),d0
-		move.w	#$A,d1
+		moveq	#10,d1
 
 	if CDBalancing
 		cmpi.b	#aniID_Balance2,d5
@@ -80,7 +80,7 @@ Stars_Next:	; Routine 2
 		cmpi.b	#aniID_Balance3,d5
 		bne.s	.noshift
 		bchg	#staFacing,d0
-		move.w	#4,d1
+		moveq	#4,d1
 	else	
 		cmpi.b	#aniID_Balance,d5
 		bne.s	.noshift

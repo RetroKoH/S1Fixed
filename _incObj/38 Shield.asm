@@ -94,7 +94,7 @@ Shi_Main:	; Routine 0
 			bne.s	.notLightning
 			move.l	#Art_Shield_L2,d1				; Load art for sparks
 			move.w	#ArtTile_LShield_Sparks*$20,d2	; load it just after the lightning shield art
-			move.w	#$50,d3
+			moveq	#$50,d3
 			jsr		(QueueDMATransfer).w
 
 	.notLightning:
@@ -121,7 +121,7 @@ Shi_Shield:	; Routine 2
 
 	; Mercury Shield/Invincibility Positioning Fix
 		move.b	obStatus(a0),d0
-		move.w	#$A,d1
+		moveq	#10,d1
 
 	if CDBalancing
 		cmpi.b	#aniID_Balance2,(v_player+obAnim).w
@@ -230,7 +230,7 @@ Shi_Flame:	; Routine 6
 
 	; Mercury Shield/Invincibility Positioning Fix
 		move.b	obStatus(a0),d0
-		move.w	#$A,d1
+		moveq	#10,d1
 
 	if CDBalancing
 		cmpi.b	#aniID_Balance2,(v_player+obAnim).w
@@ -320,7 +320,7 @@ Shi_Bubble:	; Routine 8
 
 	; Mercury Shield/Invincibility Positioning Fix
 		move.b	obStatus(a0),d0
-		move.w	#$A,d1
+		moveq	#10,d1
 
 		if CDBalancing
 			cmpi.b	#aniID_Balance2,(v_player+obAnim).w
@@ -394,7 +394,7 @@ Shi_Lightning:	; Routine $A
 
 	; Mercury Shield/Invincibility Positioning Fix
 		move.b	obStatus(a0),d0
-		move.w	#$A,d1
+		moveq	#10,d1
 
 		if CDBalancing
 			cmpi.b	#aniID_Balance2,(v_player+obAnim).w
@@ -463,7 +463,7 @@ Lightning_FlashWater:
 		andi.b	#mask2ndRmvShield,(v_player+obStatus2nd).w
 		lea		(v_palette_water).w,a1
 		lea		(v_palette_water_fading).w,a2
-		move.w	#$1F,d0
+		moveq	#$1F,d0
 
 .loop:
 		move.l	(a1),(a2)+
@@ -552,7 +552,7 @@ Shi_LightningDestroy: ; Routine $10
 .cont:
 		lea		(v_palette_water_fading).w,a1
 		lea		(v_palette_water).w,a2
-		move.w	#$1F,d0
+		moveq	#$1F,d0
 
 .loop:
 		move.l	(a1)+,(a2)+

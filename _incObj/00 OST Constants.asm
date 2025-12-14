@@ -301,6 +301,7 @@ obPushB_LavaSpeed:		equ objoff_30		; 2 bytes | x axis speed when block is on lav
 obPushB_LavaFlag:		equ objoff_32		; 1 byte  | 1 = block is on lava
 obPushB_StartX:			equ objoff_34		; 2 bytes | starting X-axis position
 obPushB_StartY:			equ objoff_36		; 2 bytes | starting Y-axis position
+obPushB_PrevX:			equ objoff_38		; 2 bytes | previous X-axis position (used instead of pushing to the stack)
 ; ---------------------------------------------------------------------------
 
 ; Obj34 - Title Cards
@@ -619,6 +620,7 @@ obElecOrb_ZapRate:		equ objoff_34		; 2 bytes | zap rate - applies bitmask to fra
 ; Obj6F - SBZ Spinning Conveyor Platform (Identical to Obj63)
 SpinCon_SpawnerType:	equ objoff_2F		; 1 byte  | saved subtype
 SpinCon_CenterX:		equ objoff_30		; 2 bytes | approximate X-axis position of center of conveyor
+SpinCon_PrevX:			equ objoff_32		; 2 bytes | previous X-axis position (used instead of pushing to the stack)
 SpinCon_TargetX:		equ objoff_34		; 2 bytes | target X-axis position to move platform towards
 SpinCon_TargetY:		equ objoff_36		; 2 bytes | target Y-axis position to move platform towards
 SpinCon_CornerNext:		equ objoff_38		; 1 byte  | index of next corner position

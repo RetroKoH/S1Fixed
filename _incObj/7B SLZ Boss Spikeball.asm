@@ -131,7 +131,7 @@ BossSpikeball_Bounce:	; Routine 4
 		lea		BossSpike_YPos(pc),a2
 		moveq	#0,d0
 		move.b	obFrame(a1),d0					; get seesaw frame
-		move.w	#$28,d2							; dist from seesaw center to edge
+		moveq	#$28,d2							; dist from seesaw center to edge
 		move.w	obX(a0),d1
 		sub.w	obBossSpike_StartX(a0),d1
 		bcc.s	.on_right2						; branch if spikeball is on right side

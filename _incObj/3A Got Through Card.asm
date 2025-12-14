@@ -110,13 +110,14 @@ Got_Wait:	; Routine 4, 8, $C
 		bra.w	DisplaySprite
 ; ===========================================================================
 
+Got_Bonus:	; Routine 6
+
 	switch SpeedUpScoreTally
 	case 2
 ; ---------------------------------------------------------------------------
 ; INSTANT SCORE TALLY
 ; ---------------------------------------------------------------------------
 
-Got_Bonus:	; Routine 6
 		bsr.w	DisplaySprite
 		move.b	#1,(f_endactbonus).w		; set time/ring bonus update flag
 		moveq	#0,d0
@@ -124,14 +125,17 @@ Got_Bonus:	; Routine 6
 		clr.w	(v_timebonus).w				; clear time bonus
 		add.w	(v_ringbonus).w,d0			; load ring bonus to d0
 		clr.w	(v_ringbonus).w				; clear ring bonus
+
 	if CoolBonusEnabled
-		add.w	(v_coolbonus).w,d0			; load cool bonus to d0
-		clr.w	(v_coolbonus).w				; clear cool bonus
+			add.w	(v_coolbonus).w,d0			; load cool bonus to d0
+			clr.w	(v_coolbonus).w				; clear cool bonus
 	endif
+
 	if PerfectBonusEnabled
-		add.w	(v_perfectbonus).w,d0		; load cool bonus to d0
-		clr.w	(v_perfectbonus).w			; clear cool bonus
+			add.w	(v_perfectbonus).w,d0		; load cool bonus to d0
+			clr.w	(v_perfectbonus).w			; clear cool bonus
 	endif
+
 		jsr		(AddPoints).l				; add to score
 ; ---------------------------------------------------------------------------
 ; ---------------------------------------------------------------------------
@@ -140,7 +144,6 @@ Got_Bonus:	; Routine 6
 ; FASTER SCORE TALLY
 ; ---------------------------------------------------------------------------
 
-Got_Bonus:	; Routine 6
 		bsr.w	DisplaySprite
 		moveq	#10,d1						; set score decrement to 10
 		move.b	(v_jpadheld_actual).w,d0
@@ -163,7 +166,7 @@ Got_Bonus:	; Routine 6
 
 	.no_timebonus:
 		tst.w	(v_ringbonus).w				; is ring bonus	= zero?
-		beq.s	.afterrings					; if yes, branch (We must use a temp label to ensure potential mods are branched to)
+		beq.s	.no_ringbonus				; if yes, branch (We must use a temp label to ensure potential mods are branched to)
 		cmp.w	(v_ringbonus).w,d1			; compare ring bonus to score decrement
 		blt.s	.skip_rings					; if it's greater or equal, branch
 		move.w	(v_ringbonus).w,d1			; else, set the decrement to the remaining bonus
@@ -191,7 +194,7 @@ Got_Bonus:	; Routine 6
 			tst.w	(v_perfectbonus).w		; is perfect bonus = zero?
 			beq.s	.no_perfectbonus		; if yes, branch (We must use a temp label to ensure potential mods are branched to)
 			cmp.w	(v_perfectbonus).w,d1	; compare perfect bonus to score decrement
-			blt.s	.skip					; if it's greater or equal, branch
+			blt.s	.skip_perfect			; if it's greater or equal, branch
 			move.w	(v_perfectbonus).w,d1	; else, set the decrement to the remaining bonus
 
 	.skip_perfect:
@@ -202,7 +205,7 @@ Got_Bonus:	; Routine 6
 		endif
 
 		tst.w	d0							; is there any bonus?
-		bne.s	Got_AddBonus				; if yes, branch
+		bne.s	.add_bonus					; if yes, branch
 ; ---------------------------------------------------------------------------
 ; ---------------------------------------------------------------------------
 	elsecase
@@ -210,7 +213,6 @@ Got_Bonus:	; Routine 6
 ; NORMAL SCORE TALLY
 ; ---------------------------------------------------------------------------
 
-Got_Bonus:	; Routine 6
 		bsr.w	DisplaySprite
 		move.b	#1,(f_endactbonus).w		; set time/ring bonus update flag
 		moveq	#0,d0
@@ -267,8 +269,8 @@ Got_Bonus:	; Routine 6
 	if SpeedUpScoreTally<>2
 	.add_bonus:
 		jsr		(AddPoints).l				; add d0 to score and update counter
-		move.b	(v_vbla_byte).w,d0			; get byte that increments every frame
-		andi.b	#3,d0						; read bits 0-1
+		moveq	#3,d0
+		and.b	(v_vbla_byte).w,d0			; read bits 0-1 of VBla byte -- SCE Optimization
 		bne.s	.exit						; branch if either are set
 		move.w	#sfx_Switch,d0
 		jmp		(QueueSound2).w				; play "blip" sound
@@ -464,14 +466,14 @@ Got_Config:
 ; ---------------------------------------------------------------------------
 	else
 	
-		dc.w $520,	$120,	$EC			; time bonus
+		dc.w $520,	$120,	$F0			; time bonus
 		dc.b 				2,	2
 
-		dc.w $540,	$120,	$FC			; ring bonus
+		dc.w $540,	$120,	$100		; ring bonus
 		dc.b 				2,	3
 
 		if CoolBonusEnabled
-			dc.w $560,	$120,	$10C	; cool bonus
+			dc.w $560,	$120,	$110	; cool bonus
 			dc.b 				2,	4
 		endif
 
@@ -479,7 +481,7 @@ Got_Config:
 		dc.b 				2,	(got_pieces-1)
 		
 		if PerfectBonusEnabled
-			dc.w $560+($20*CoolBonusEnabled),	$120,	$10C+($10*CoolBonusEnabled)		; perfect
+			dc.w $560+($20*CoolBonusEnabled),	$120,	$110+($10*CoolBonusEnabled)		; perfect
 			dc.b 				2,	got_pieces+3
 		endif
 

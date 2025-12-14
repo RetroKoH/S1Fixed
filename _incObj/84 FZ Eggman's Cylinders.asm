@@ -76,10 +76,10 @@ loc_1A514:
 		move.w	obX(a0),obX(a1)
 
 loc_1A524:
-		move.w	#$2B,d1
-		move.w	#$60,d2
-		move.w	#$61,d3
-		move.w	obX(a0),d4
+		moveq	#43,d1				; width; save 4 cycles -- Filter
+		moveq	#96,d2				; height (jumping); save 4 cycles -- Filter
+		moveq	#97,d3				; height (walking); save 4 cycles -- Filter
+		move.w	obX(a0),d4			; axis position
 		jsr		(SolidObject).l
 		moveq	#0,d0
 		move.w	objoff_3C(a0),d1

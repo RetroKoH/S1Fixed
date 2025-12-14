@@ -177,10 +177,10 @@ loc_19F10:
 		bset	#staFlipX,obStatus(a0)
 
 loc_19F2E:
-		move.w	#$2B,d1
-		move.w	#$14,d2
-		move.w	#$14,d3
-		move.w	obX(a0),d4
+		moveq	#43,d1				; width; save 4 cycles -- Filter
+		moveq	#20,d2				; height (jumping); save 4 cycles -- Filter
+		moveq	#20,d3				; height (walking); save 4 cycles -- Filter
+		move.w	obX(a0),d4			; axis position
 		jsr		(SolidObject).l
 		tst.w	d4
 		bgt.s	loc_19F50
@@ -382,10 +382,10 @@ loc_1A166:
 loc_1A172:
 		cmpi.b	#$C,objoff_34(a0)
 		bge.s	locret_1A190
-		move.w	#$1B,d1
-		move.w	#$70,d2
-		move.w	#$71,d3
-		move.w	obX(a0),d4
+		moveq	#27,d1				; width; save 4 cycles -- Filter
+		moveq	#112,d2				; height (jumping); save 4 cycles -- Filter
+		moveq	#113,d3				; height (walking); save 4 cycles -- Filter
+		move.w	obX(a0),d4			; axis position
 		jmp		(SolidObject).l
 ; ===========================================================================
 

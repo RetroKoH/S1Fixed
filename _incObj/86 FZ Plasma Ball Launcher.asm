@@ -51,10 +51,10 @@ loc_1A850:
 		move.b	#$3E,obSubtype(a0)
 
 BossPlasma_Solid:
-		move.w	#$13,d1
-		move.w	#8,d2
-		move.w	#$11,d3
-		move.w	obX(a0),d4
+		moveq	#19,d1						; width; save 4 cycles -- Filter
+		moveq	#8,d2						; height (jumping); save 4 cycles -- Filter
+		moveq	#17,d3						; height (walking); save 4 cycles -- Filter
+		move.w	obX(a0),d4					; axis position
 		jsr		(SolidObject).l
 		move.w	(v_player+obX).w,d0
 		sub.w	obX(a0),d0

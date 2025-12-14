@@ -85,7 +85,7 @@ Mon_Solid:	; Routine 2
 ; ===========================================================================
 
 .ontop:
-		move.w	#$10,d3
+		moveq	#$10,d3
 		move.w	obX(a0),d2
 		bsr.w	MvSonicOnPtfm
 		bra.w	Mon_Animate
@@ -103,8 +103,8 @@ Mon_Solid:	; Routine 2
 ; ===========================================================================
 
 .normal:	; 2nd Routine 0
-		move.w	#$1A,d1
-		move.w	#$F,d2
+		moveq	#$1A,d1
+		moveq	#$F,d2
 		bsr.w	Mon_SolidSides
 		beq.w	loc_A25C
 		tst.w	obVelY(a1)

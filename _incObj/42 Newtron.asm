@@ -164,7 +164,7 @@ Newt_Type1:
 		move.w	obY(a0),obY(a1)
 		subq.w	#8,obY(a1)
 		move.w	#$200,obVelX(a1)			; missile goes right
-		move.w	#$14,d0
+		moveq	#$14,d0
 		btst	#staFlipX,obStatus(a0)		; is newtron facing right?
 		bne.s	.noflip						; if yes, branch
 		neg.w	d0

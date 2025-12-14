@@ -8,8 +8,9 @@ SSResult:
 		move.w	SSR_Index(pc,d0.w),d1
 		jmp		SSR_Index(pc,d1.w)
 ; ===========================================================================
+
 SSR_Index:	offsetTable
-		offsetTableEntry.w SSR_ChkPLC
+		offsetTableEntry.w SSR_Main
 		offsetTableEntry.w SSR_Move
 		offsetTableEntry.w SSR_Wait
 		offsetTableEntry.w SSR_RingBonus
@@ -19,193 +20,250 @@ SSR_Index:	offsetTable
 		offsetTableEntry.w SSR_Continue
 		offsetTableEntry.w SSR_Wait
 		offsetTableEntry.w SSR_Exit
-		offsetTableEntry.w loc_C91A
-
-ssr_mainX = objoff_30		; position for card to display on
+		offsetTableEntry.w SSR_ContAni
 ; ===========================================================================
 
-SSR_ChkPLC:	; Routine 0
-		tst.l	(v_plc_buffer).w ; are the pattern load cues empty?
-		beq.s	SSR_Main	; if yes, branch
+SSR_Main:	; Routine 0
+		tst.l	(v_plc_buffer).w			; are the pattern load cues empty?
+		beq.s	.plc_free					; if yes, branch
 		rts	
 ; ===========================================================================
 
-SSR_Main:
-		movea.l	a0,a1
-		lea		(SSR_Config).l,a2
-		moveq	#3+(1*PerfectBonusEnabled),d1
+	.plc_free:
+		movea.l	a0,a1						; replace current object with 1st from list
+		lea		(SSR_Config).l,a2			; position, routine & frame settings
+		moveq	#3+(1*PerfectBonusEnabled),d1	; 3 (or 4) additional items
 
-	if SpecialStagesWithAllEmeralds=1	; Mercury Special Stages Still Appear With All Emeralds
+	if SpecialStagesWithAllEmeralds	; Mercury Special Stages Still Appear With All Emeralds
 		btst	#7,(v_continues).w
-		beq.s	SSR_Loop				; if no, branch
+		beq.s	.loop						; if no, branch
 	else
-		cmpi.w	#50,(v_rings).w			; do you have 50 or more rings?
-		blo.s	SSR_Loop				; if no, branch
+		cmpi.w	#50,(v_rings).w				; do you have 50 or more rings?
+		blo.s	.loop						; if no, branch
 	endif	; Special Stages Still Appear With All Emeralds	End
 
-		addq.w	#1,d1					; if yes, add 1	to d1 (number of sprites)
+		addq.w	#1,d1						; if yes, add 1	to d1 (number of sprites)
 
-SSR_Loop:
+	.loop:
 		_move.b	#id_SSResult,obID(a1)
-		move.w	(a2)+,obX(a1)			; load start x-position
-		move.w	(a2)+,ssr_mainX(a1)		; load main x-position
-		move.w	(a2)+,obScreenY(a1)		; load y-position
-		move.b	(a2)+,obRoutine(a1)
-		move.b	(a2)+,obFrame(a1)
+		move.w	(a2)+,obX(a1)				; load start x-position
+		move.w	(a2)+,obSSR_MainX(a1)		; load main x-position
+		move.w	(a2)+,obScreenY(a1)			; load y-position
+		move.b	(a2)+,obRoutine(a1)			; -> SSR_Move
+		move.b	(a2)+,obFrame(a1)			; set frame number
 		move.l	#Map_SSR,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Title_Card,0,1),obGfx(a1)
 		clr.b	obRender(a1)
 		move.w	#priority0,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		lea		object_size(a1),a1
-		dbf		d1,SSR_Loop				; repeat sequence 3 or 4 times
+		dbf		d1,.loop					; repeat sequence 3 or 4 times
 
 		moveq	#7,d0
 		move.b	(v_emeralds).w,d1
-		beq.s	loc_C842
-		moveq	#0,d0
-		cmpi.b	#emldCount,d1			; do you have all chaos	emeralds?
-		bne.s	loc_C842				; if not, branch
-		moveq	#8,d0					; load "Got Them All" text
+		beq.s	.skip_emeralds				; branch if you have no chaos emeralds
+		moveq	#0,d0						; use "CHAOS EMERALDS" text
+		cmpi.b	#emldCount,d1				; do you have all chaos	emeralds?
+		bne.s	.skip_emeralds				; if not, branch
+		moveq	#8,d0						; use "SONIC GOT THEM ALL" text
 		move.w	#$18,obX(a0)
-		move.w	#$118,ssr_mainX(a0) 	; change position of text
+		move.w	#$118,obSSR_MainX(a0) 		; change position of text
 
-loc_C842:
-		move.b	d0,obFrame(a0)
+	.skip_emeralds:
+		move.b	d0,obFrame(a0)				; set frame for 1st object
+; ---------------------------------------------------------------------------
 
 SSR_Move:	; Routine 2
-		moveq	#$10,d1		; set horizontal speed
-		move.w	ssr_mainX(a0),d0
-		cmp.w	obX(a0),d0	; has item reached its target position?
-		beq.s	loc_C86C	; if yes, branch
-		bge.s	SSR_ChgPos
-		neg.w	d1
+		moveq	#$10,d1						; set horizontal speed
+		move.w	obSSR_MainX(a0),d0
+		cmp.w	obX(a0),d0					; has item reached its target position?
+		beq.s	.at_target					; if yes, branch
+		bge.s	.is_left					; branch if object is left of target position
+		neg.w	d1							; move left instead
 
-SSR_ChgPos:
-		add.w	d1,obX(a0)	; change item's position
+	.is_left:
+		add.w	d1,obX(a0)					; change item's position
 
-loc_C85A:
+	.chk_visible:
 		move.w	obX(a0),d0
-		bmi.s	locret_C86A
-		cmpi.w	#$200,d0	; has item moved beyond	$200 on	x-axis?
-		bhs.s	locret_C86A	; if yes, branch
+		bmi.s	.exit						; branch if object is at negative x pos
+		cmpi.w	#$200,d0					; has item moved beyond	$200 on	x-axis?
+		bhs.s	.exit						; if yes, branch
 		bra.w	DisplaySprite
 ; ===========================================================================
 
-locret_C86A:
+	.exit:
 		rts	
 ; ===========================================================================
 
-loc_C86C:
-		cmpi.b	#2,obFrame(a0)
-		bne.s	loc_C85A
-		addq.b	#2,obRoutine(a0)
-		move.w	#180,obTimeFrame(a0) ; set time delay to 3 seconds
-		move.b	#id_SSRChaos,(v_ssresemeralds).w ; load chaos emerald object
+	.at_target:
+		cmpi.b	#2,obFrame(a0)				; is object the ring bonus?
+		bne.s	.chk_visible				; if not, branch
+
+		addq.b	#2,obRoutine(a0)			; goto SSR_Wait next, and then SSR_RingBonus
+		move.w	#180,obTimeFrame(a0)		; set time delay to 3 seconds
+		move.b	#id_SSRChaos,(v_ssresemeralds).w	; load chaos emerald object
 
 SSR_Wait:	; Routine 4, 8, $C, $10
-		subq.w	#1,obTimeFrame(a0) ; subtract 1 from time delay
-		bne.s	SSR_Display
-		addq.b	#2,obRoutine(a0)
-
-SSR_Display:
+		subq.w	#1,obTimeFrame(a0)			; decrement timer
+		bne.w	DisplaySprite				; branch if time remains
+		addq.b	#2,obRoutine(a0)			; goto SSR_RingBonus/SSR_Exit/SSR_Continue next
 		bra.w	DisplaySprite
 ; ===========================================================================
 
-	if SpeedUpScoreTally<>2
 SSR_RingBonus:	; Routine 6
-		bsr.w	DisplaySprite
-		move.b	#1,(f_endactbonus).w	; set ring bonus update flag
-		tst.w	(v_ringbonus).w			; is ring bonus	= zero?
-		beq.s	loc_C8C4				; if yes, branch
 
-	if SpeedUpScoreTally=1	; Mercury Speed Up Score Tally
-		moveq	#10,d1			; set score decrement to 10
-		move.b	(v_jpadheld_actual).w,d0
-		andi.b	#btnABC,d0		; is A, B or C pressed?
-		beq.w	.dontspeedup	; if not, branch
-		move.b	#100,d1			; increase score decrement to 100
-		
-.dontspeedup:
-		moveq	#0,d0
-		cmp.w	(v_ringbonus).w,d1	; compare ring bonus to score decrement
-		blt.s	.skip				; if it's greater or equal, branch
-		move.w	(v_ringbonus).w,d1	; else, set the decrement to the remaining bonus
-.skip:
-		add.w	d1,d0				; add decrement to score
-		sub.w	d1,(v_ringbonus).w	; subtract decrement from ring bonus
-	else
-		subi.w	#10,(v_ringbonus).w	; subtract 10 from ring bonus
-		moveq	#10,d0				; add 10 to score
-	endif	;end Speed Up Score Tally
+	switch SpeedUpScoreTally
+	case 2
 ; ---------------------------------------------------------------------------
+; INSTANT SCORE TALLY
+; ---------------------------------------------------------------------------
+		bsr.w	DisplaySprite
+		move.b	#1,(f_endactbonus).w		; set time/ring bonus update flag
+		moveq	#0,d0
+		move.w	(v_ringbonus).w,d0			; load ring bonus to d0
+		clr.w	(v_ringbonus).w				; clear ring bonus
+	
+		if PerfectBonusEnabled
+			add.w	(v_perfectbonus).w,d0		; add perfect bonus to d0
+			clr.w	(v_perfectbonus).w			; clear perfect bonus
+		endif
 
-		jsr		(AddPoints).l
-		move.b	(v_vbla_byte).w,d0
-		andi.b	#3,d0
-		bne.s	locret_C8EA
+		jsr		(AddPoints).l				; add to score
+; ---------------------------------------------------------------------------
+; ---------------------------------------------------------------------------
+	case 1
+; ---------------------------------------------------------------------------
+; FASTER SCORE TALLY
+; ---------------------------------------------------------------------------
+		bsr.w	DisplaySprite
+		moveq	#10,d1						; set score decrement to 10
+		move.b	(v_jpadheld_actual).w,d0
+		andi.b	#btnABC,d0					; is A, B or C pressed?
+		beq.w	.dontspeedup				; if not, branch
+		move.b	#100,d1						; increase score decrement to 100
+		
+	.dontspeedup:
+		move.b	#1,(f_endactbonus).w		; set bonus update flag
+		moveq	#0,d0
+		tst.w	(v_ringbonus).w				; is ring bonus	= zero?
+		beq.s	.no_ringbonus				; if yes, branch
+		cmp.w	(v_ringbonus).w,d1			; compare ring bonus to score decrement
+		blt.s	.skip_rings					; if it's greater or equal, branch
+		move.w	(v_ringbonus).w,d1			; else, set the decrement to the remaining bonus
+
+	.skip_rings:
+		add.w	d1,d0						; add decrement to score
+		sub.w	d1,(v_ringbonus).w			; subtract decrement from ring bonus
+
+	.no_ringbonus:
+		if PerfectBonusEnabled
+			tst.w	(v_perfectbonus).w		; is perfect bonus = zero?
+			beq.s	.no_perfectbonus		; if yes, branch (We must use a temp label to ensure potential mods are branched to)
+			cmp.w	(v_perfectbonus).w,d1	; compare perfect bonus to score decrement
+			blt.s	.skip_perfect			; if it's greater or equal, branch
+			move.w	(v_perfectbonus).w,d1	; else, set the decrement to the remaining bonus
+
+	.skip_perfect:
+			add.w	d1,d0					; add decrement to score
+			sub.w	d1,(v_perfectbonus).w	; subtract decrement from perfect bonus
+
+	.no_perfectbonus:
+		endif
+
+		tst.w	d0							; is there any bonus?
+		beq.s	.finish_bonus				; if not, branch
+
+	.add_bonus:
+		jsr		(AddPoints).l				; add d0 to score and update counter			
+		moveq	#3,d0
+		and.b	(v_vbla_byte).w,d0			; read bits 0-1 of VBla byte -- SCE Optimization
+		bne.s	.exit
+
 		move.w	#sfx_Switch,d0
-		jmp		(QueueSound2).w	; play "blip" sound
+		jmp		(QueueSound2).w				; play "blip" sound
 ; ===========================================================================
 
-loc_C8C4:
-	else	; RetroKoH Instant Score Tally
+	.finish_bonus:
 ; ---------------------------------------------------------------------------
-SSR_RingBonus:	; Routine 6
+; ---------------------------------------------------------------------------
+	elsecase
+; ---------------------------------------------------------------------------
+; NORMAL SCORE TALLY
+; ---------------------------------------------------------------------------
 		bsr.w	DisplaySprite
-		move.b	#1,(f_endactbonus).w	; set time/ring bonus update flag
+		move.b	#1,(f_endactbonus).w		; set ring bonus update flag
 		moveq	#0,d0
-		move.w	(v_ringbonus).w,d0		; load ring bonus to d0
-		clr.w	(v_ringbonus).w			; clear ring bonus
-	
-	if PerfectBonusEnabled
-		add.w	(v_perfectbonus).w,d0	; add perfect bonus to d0
-		clr.w	(v_perfectbonus).w		; clear perfect bonus
-	endif
+		tst.w	(v_ringbonus).w				; is ring bonus	= zero?
+		beq.s	.no_ringbonus				; if yes, branch
+		addi.w	#10,d0						; add 10 to score
+		subi.w	#10,(v_ringbonus).w			; subtract 10 from ring bonus
 
-		jsr		(AddPoints).l			; add to score
-	endif	;end Instant Score Tally
+	.no_ringbonus:
+		if PerfectBonusEnabled
+			tst.w	(v_perfectbonus).w		; is perfect bonus = zero?
+			beq.s	.no_perfectbonus		; if yes, branch
+			addi.w	#10,d0					; add 10 to score
+			subi.w	#10,(v_perfectbonus).w	; subtract 10 from perfect bonus
+
+	.no_perfectbonus:
+		endif
+
+		tst.w	d0							; is there any bonus?
+		beq.s	.finish_bonus				; if not, branch
+
+	.add_bonus:
+		jsr		(AddPoints).l				; add d0 to score and update counter			
+		moveq	#3,d0
+		and.b	(v_vbla_byte).w,d0			; read bits 0-1 of VBla byte -- SCE Optimization
+		bne.s	.exit
+
+		move.w	#sfx_Switch,d0
+		jmp		(QueueSound2).w				; play "blip" sound
+; ===========================================================================
+
+	.finish_bonus:
 ; ---------------------------------------------------------------------------
+; ---------------------------------------------------------------------------
+	endcase
 
 		move.w	#sfx_Cash,d0
-		jsr		(QueueSound2).w	; play "ker-ching" sound
+		jsr		(QueueSound2).w				; play "ker-ching" sound
 		addq.b	#2,obRoutine(a0)
-		move.w	#180,obTimeFrame(a0) ; set time delay to 3 seconds
-		cmpi.w	#50,(v_rings).w	; do you have at least 50 rings?
-		blo.s	locret_C8EA	; if not, branch
-		move.w	#60,obTimeFrame(a0) ; set time delay to 1 second
-		addq.b	#4,obRoutine(a0) ; goto "SSR_Continue" routine
+		move.w	#180,obTimeFrame(a0)		; set time delay to 3 seconds
+		cmpi.w	#50,(v_rings).w				; do you have at least 50 rings?
+		blo.s	.exit						; if not, branch
+		move.w	#60,obTimeFrame(a0)			; set time delay to 1 second
+		addq.b	#4,obRoutine(a0)			; goto "SSR_Continue" routine
 
-locret_C8EA:
+	.exit:
 		rts	
 ; ===========================================================================
 
 SSR_Exit:	; Routine $A, $12
-		move.b	#1,(f_restart).w ; restart level
+		move.b	#1,(f_restart).w			; set level restart flag
 		bra.w	DisplaySprite
 ; ===========================================================================
 
 SSR_Continue:	; Routine $E
-		move.b	#4,(v_ssrescontinue+obFrame).w
-		move.b	#$14,(v_ssrescontinue+obRoutine).w
+		move.b	#4,(v_ssrescontinue+obFrame).w	; make mini-Sonic sprite appear
+		move.b	#$14,(v_ssrescontinue+obRoutine).w	; "CONTINUE" object goto SSR_ContAni next
 		move.w	#sfx_Continue,d0
-		jsr	(QueueSound2).w	; play continues jingle
-		addq.b	#2,obRoutine(a0)
-		move.w	#360,obTimeFrame(a0) ; set time delay to 6 seconds
+		jsr	(QueueSound2).w					; play continues jingle
+		addq.b	#2,obRoutine(a0)			; goto SSR_Wait next, and then SSR_Exit
+		move.w	#360,obTimeFrame(a0)		; set time delay to 6 seconds
 		bra.w	DisplaySprite
 ; ===========================================================================
 
-loc_C91A:	; Routine $14
-		move.b	(v_vbla_byte).w,d0
-		andi.b	#$F,d0
-		bne.s	SSR_Display2
-		bchg	#0,obFrame(a0)
-
-SSR_Display2:
+SSR_ContAni:	; Routine $14
+		moveq	#$F,d0						; SCE Optimization
+		and.b	(v_vbla_byte).w,d0			; get bits 0-3 of byte that increments every frame
+		bne.w	DisplaySprite				; branch if any bits are set
+		bchg	#0,obFrame(a0)				; Sonic moves his foot every 16th frame
 		bra.w	DisplaySprite
 ; ===========================================================================
+
 		;    x-start,	x-main,	y-pos,
 		;				routine, frame number
-
 SSR_Config:
 		dc.w $20,	$120,	$C4		; "CHAOS EMERALDS"
 		dc.b 2,	0
@@ -221,3 +279,4 @@ SSR_Config:
 	endif
 		dc.w $3A0+($40*PerfectBonusEnabled),	$120,	$138+($10*PerfectBonusEnabled)	; CONTINUE
 		dc.b 2,	6
+; ===========================================================================

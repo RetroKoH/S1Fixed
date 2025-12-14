@@ -192,7 +192,7 @@ See_SpikeAction:	; Routine 8
 		lea		(obSeesaw_YPos).l,a2		; address for list of relative y positions
 		moveq	#0,d0
 		move.b	obFrame(a1),d0				; get frame of parent seesaw
-		move.w	#$28,d2						; x distance from centre
+		moveq	#$28,d2						; x distance from center
 		move.w	obX(a0),d1
 		sub.w	obSeesaw_StartX(a0),d1
 		bcc.s	.spike_from_left2			; branch if spikeball is left of its start position
