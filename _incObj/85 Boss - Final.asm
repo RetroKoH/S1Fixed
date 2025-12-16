@@ -12,14 +12,15 @@ BossFinal:
 		move.w	BossFinal_Index(pc,d0.w),d0
 		jmp		BossFinal_Index(pc,d0.w)
 ; ===========================================================================
+
 BossFinal_Index:	offsetTable
 		offsetTableEntry.w BossFinal_Main
 		offsetTableEntry.w BossFinal_Eggman
-		offsetTableEntry.w loc_1A38E
-		offsetTableEntry.w loc_1A346
-		offsetTableEntry.w loc_1A2C6
-		offsetTableEntry.w loc_1A3AC
-		offsetTableEntry.w loc_1A264
+		offsetTableEntry.w BossFinal_Panel
+		offsetTableEntry.w BossFinal_Legs
+		offsetTableEntry.w BossFinal_Cockpit
+		offsetTableEntry.w BossFinal_EmptyShip
+		offsetTableEntry.w BossFinal_Flame
 
 BossFinal_ObjData:
 		dc.w $100, $100, make_art_tile(ArtTile_FZ_Eggman_No_Vehicle,0,0)	; X pos, Y pos,	VRAM setting
@@ -55,17 +56,17 @@ BossFinal_ObjData2:
 BossFinal_Main:	; Routine 0
 		lea		BossFinal_ObjData(pc),a2
 		lea		BossFinal_ObjData2(pc),a3
-		movea.l	a0,a1
-		moveq	#5,d1
-		bra.s	BossFinal_LoadBoss
+		movea.l	a0,a1					; replace current object with 1st in list
+		moveq	#5,d1					; 5 additional objects
+		bra.s	.load_boss
 ; ===========================================================================
 
-BossFinal_Loop:
+	.loop:
 		jsr		(FindNextFreeObj).l
-		bne.s	loc_19E20
+		bne.s	.fail						; branch if not found
 
-BossFinal_LoadBoss:
-		move.b	#id_BossFinal,obID(a1)
+	.load_boss:
+		_move.b	#id_BossFinal,obID(a1)
 		move.w	(a2)+,obX(a1)
 		move.w	(a2)+,obY(a1)
 		move.w	(a2)+,obGfx(a1)
@@ -74,501 +75,515 @@ BossFinal_LoadBoss:
 		move.b	(a3)+,obAnim(a1)
 		move.b	(a3)+,obDispWid(a1)
 		move.b	(a3)+,obHeight(a1)
-		move.w	(a3)+,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
+		move.w	(a3)+,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#4,obRender(a1)
 		bset	#7,obRender(a0)
-		move.l	a0,objoff_34(a1)
-		dbf		d1,BossFinal_Loop
+		move.w	a0,obBFZ_Parent(a1)			; save obj RAM address of parent
+		dbf		d1,.loop					; repeat 5 more times
+; ---------------------------------------------------------------------------
 
-loc_19E20:
-		lea		objoff_36(a0),a2
+	.fail:
+		lea		obBFZ_ChildPlasma(a0),a2
 		jsr		(FindFreeObj).l
-		bne.s	loc_19E5A
-		move.b	#id_BossPlasma,obID(a1) ; load energy ball object
-		move.w	a1,(a2)
-		move.l	a0,objoff_34(a1)
-		lea		objoff_38(a0),a2
+		bne.s	.fail2						; branch if not found
+		_move.b	#id_BossPlasma,obID(a1)		; load energy ball object
+		move.w	a1,(a2)						; save obj address of plasma launcher in parent OST
+		move.w	a0,obPlasma_Parent(a1)		; save parent address in plasma OST
+
+		lea		obBFZ_ChildCylinder(a0),a2
 		moveq	#0,d2
-		moveq	#3,d1
+		moveq	#3,d1						; spawn 4 crushers
 
-loc_19E3E:
+	.loop_crushers:
 		jsr		(FindNextFreeObj).l
-		bne.s	loc_19E5A
-		move.w	a1,(a2)+
-		move.b	#id_EggmanCylinder,obID(a1) ; load crushing cylinder object
-		move.l	a0,objoff_34(a1)
-		move.b	d2,obSubtype(a1)
-		addq.w	#2,d2
-		dbf		d1,loc_19E3E
+		bne.s	.fail2						; branch if not found
+		move.w	a1,(a2)+					; save obj address of crusher in parent OST
+		_move.b	#id_EggmanCylinder,obID(a1)	; load crushing cylinder object
+		move.w	a0,obECyl_Parent(a1)		; save parent address in crusher OST
+		move.b	d2,obSubtype(a1)			; set subtype to 0/2/4/6
+		addq.w	#2,d2						; next subtype
+		dbf		d1,.loop_crushers			; repeat for all crushers
 
-loc_19E5A:
-		clr.w	objoff_34(a0)
-		move.b	#1,obColProp(a0) ; set number of hits to 8
-		move.w	#-1,objoff_30(a0)
+	.fail2:
+		clr.w	obBFZ_Mode(a0)				; -> BFZ_Eggman_Wait (and clear FlashNum)
+		move.b	#8,obColProp(a0)			; set number of hits to 8
+		move.w	#-1,obBFZ_CylFlag(a0)		; set crushers to activate
 
 BossFinal_Eggman:	; Routine 2
 		moveq	#0,d0
-		move.b	objoff_34(a0),d0
-		move.w	off_19E80(pc,d0.w),d0
-		jsr		off_19E80(pc,d0.w)
-		jmp		(DisplayAndCollision).l	; S3K TouchResponse
-; ===========================================================================
-off_19E80:		offsetTable
-		offsetTableEntry.w loc_19E90
-		offsetTableEntry.w loc_19EA8
-		offsetTableEntry.w loc_19FE6
-		offsetTableEntry.w loc_1A02A
-		offsetTableEntry.w loc_1A074
-		offsetTableEntry.w loc_1A112
-		offsetTableEntry.w loc_1A192
-		offsetTableEntry.w loc_1A1D4
+		move.b	obBFZ_Mode(a0),d0
+		move.w	BFZ_Eggman_Index(pc,d0.w),d0
+		jsr		BFZ_Eggman_Index(pc,d0.w)
+		jmp		(DisplayAndCollision).l		; S3K TouchResponse
 ; ===========================================================================
 
-loc_19E90:
-		tst.l	(v_plc_buffer).w
-		bne.s	loc_19EA2
-		cmpi.w	#boss_fz_x,(v_screenposx).w
-		blo.s	loc_19EA2
-		addq.b	#2,objoff_34(a0)
+BFZ_Eggman_Index:		offsetTable
+		offsetTableEntry.w BossFinal_EggWait
+		offsetTableEntry.w BossFinal_EggCrush
+		offsetTableEntry.w BossFinal_EggPlasma
+		offsetTableEntry.w BossFinal_EggFall
+		offsetTableEntry.w BossFinal_EggRun
+		offsetTableEntry.w BossFinal_EggJump
+		offsetTableEntry.w BossFinal_EggShip
+		offsetTableEntry.w BossFinal_EggEscape
+; ===========================================================================
 
-loc_19EA2:
-		addq.l	#1,(v_random).w
+BossFinal_EggWait:
+		tst.l	(v_plc_buffer).w			; is pattern load cue buffer empty?
+		bne.s	.wait						; if not, branch
+		cmpi.w	#boss_fz_x,(v_screenposx).w	; has camera reached boss arena?
+		blo.s	.wait						; if not, branch
+		addq.b	#2,obBFZ_Mode(a0)			; -> BossFinal_EggCrush
+
+	.wait:
+		addq.l	#1,(v_random).w				; increment random number
 		rts	
 ; ===========================================================================
 
-loc_19EA8:
-		tst.w	objoff_30(a0)
-		bpl.s	loc_19F10
-		clr.w	objoff_30(a0)
-		jsr		(RandomNumber).w
-		andi.w	#$C,d0
+BossFinal_EggCrush:
+		tst.w	obBFZ_CylFlag(a0)			; are crushers set to activate?
+		bpl.s	.skip_crushers				; if not, branch
+		clr.w	obBFZ_CylFlag(a0)
+		jsr		(RandomNumber).w			; get random number
+		andi.w	#$C,d0						; low word of d0 = 0/4/8/$C (high word is kept)
 		move.w	d0,d1
-		addq.w	#2,d1
+		addq.w	#2,d1						; add 2 to copy in d1
 		tst.l	d0
-		bpl.s	loc_19EC6
-		exg		d1,d0
+		bpl.s	.d0_is_pos					; branch if high word was positive
+		exg		d1,d0						; swap d0 and d1
 
-loc_19EC6:
-		lea		word_19FD6(pc),a1
-		move.w	(a1,d0.w),d0
-		move.w	(a1,d1.w),d1
-		move.w	d0,objoff_30(a0)
+	.d0_is_pos:
+		lea		BFZ_CylPattern(pc),a1
+		move.w	(a1,d0.w),d0				; get value for first cylinder (0/2/4/6)
+		move.w	(a1,d1.w),d1				; get value for second cylinder (0/2/4/6)
+		move.w	d0,obBFZ_CylFlag(a0)
 		moveq	#-1,d2
-		move.w	objoff_38(a0,d0.w),d2
-		movea.l	d2,a1
-		move.b	#-1,objoff_29(a1)
-		move.w	#-1,objoff_30(a1)
-		move.w	objoff_38(a0,d1.w),d2
-		movea.l	d2,a1
-		move.b	#1,objoff_29(a1)
-		clr.w	objoff_30(a1)
-		move.w	#1,objoff_32(a0)
-		clr.b	objoff_35(a0)
+		move.w	obBFZ_ChildCylinder(a0,d0.w),d2
+		movea.l	d2,a1						; a1 = OST address for first cylinder
+		move.b	#-1,obECyl_ExtendFlag(a1)	; activate that cylinder
+		move.w	#-1,obECyl_EggFlag(a1)
+		move.w	obBFZ_ChildCylinder(a0,d1.w),d2
+		movea.l	d2,a1						; a1 = OST address for second cylinder
+		move.b	#1,obECyl_ExtendFlag(a1)	; activate that cylinder
+		clr.w	obECyl_EggFlag(a1)
+		move.w	#1,obBFZ_PhaseState(a0)
+		clr.b	obBFZ_FlashNum(a0)
 		move.w	#sfx_Rumbling,d0
-		jsr		(QueueSound2).w	; play rumbling sound
+		jsr		(QueueSound2).w				; play rumbling sound
 
-loc_19F10:
-		tst.w	objoff_32(a0)
-		bmi.w	loc_19FA6
-		bclr	#staFlipX,obStatus(a0)
+	.skip_crushers:
+		tst.w	obBFZ_PhaseState(a0)
+		bmi.w	.crush_complete				; branch if cylinders have finished crushing process
+		bclr	#staFlipX,obStatus(a0)		; Eggman faces left
 		move.w	(v_player+obX).w,d0
 		sub.w	obX(a0),d0
-		bcs.s	loc_19F2E
-		bset	#staFlipX,obStatus(a0)
+		bcs.s	.sonic_is_left				; branch if Sonic is left of Eggman
+		bset	#staFlipX,obStatus(a0)		; Eggman faces right
 
-loc_19F2E:
-		moveq	#43,d1				; width; save 4 cycles -- Filter
-		moveq	#20,d2				; height (jumping); save 4 cycles -- Filter
-		moveq	#20,d3				; height (walking); save 4 cycles -- Filter
-		move.w	obX(a0),d4			; axis position
+	.sonic_is_left:
+		moveq	#43,d1						; width; save 4 cycles -- Filter
+		moveq	#20,d2						; height (jumping); save 4 cycles -- Filter
+		moveq	#20,d3						; height (walking); save 4 cycles -- Filter
+		move.w	obX(a0),d4					; axis position
 		jsr		(SolidObject).l
 		tst.w	d4
-		bgt.s	loc_19F50
+		bgt.s	.side_collision				; branch if Sonic touches the side of the cylinder with Eggman
 
-loc_19F48:
-		tst.b	objoff_35(a0)
-		bne.s	loc_19F88
-		bra.s	loc_19F96
+	.just_solid:
+		tst.b	obBFZ_FlashNum(a0)			; is boss flashing from hit?
+		bne.s	.flash						; if yes, branch
+		bra.s	.missed
 ; ===========================================================================
 
-loc_19F50:
+	.side_collision:
 		addq.w	#7,(v_random).w
-		cmpi.b	#aniID_Roll,(v_player+obAnim).w
-		bne.s	loc_19F48
-		move.w	#$300,d0
-		btst	#staFlipX,obStatus(a0)
-		bne.s	loc_19F6A
-		neg.w	d0
+		cmpi.b	#aniID_Roll,(v_player+obAnim).w	; is Sonic rolling/jumping?
+		bne.s	.just_solid					; if not, branch
+		move.w	#$300,d0					; rebound Sonic right
+		btst	#staFlipX,obStatus(a0)		; is Eggman facing right?
+		bne.s	.eggman_face_right			; if yes, branch
+		neg.w	d0							; rebound Sonic left
 
-loc_19F6A:
-		move.w	d0,(v_player+obVelX).w
-		tst.b	objoff_35(a0)
-		bne.s	loc_19F88
+	.eggman_face_right:
+		move.w	d0,(v_player+obVelX).w		; set rebound speed for Sonic
+		tst.b	obBFZ_FlashNum(a0)			; is boss flashing from hit?
+		bne.s	.flash						; if yes, branch
 	; Mercury FZ Boss Hitcount Fix
-		tst.b	obColProp(a0)	; has the boss been defeated?
-		beq.s	loc_19F9C		; if so, don't let it be hit again.
+		tst.b	obColProp(a0)				; has the boss been defeated?
+		beq.s	.animate					; if so, don't let it be hit again.
 	; FZ Boss Hitcount Fix End
 
-		subq.b	#1,obColProp(a0)
-		move.b	#$64,objoff_35(a0)
+		subq.b	#1,obColProp(a0)			; decrement hit counter
+		move.b	#100,obBFZ_FlashNum(a0)		; flash 100 times
 		move.w	#sfx_HitBoss,d0
-		jsr		(QueueSound2).w	; play boss damage sound
+		jsr		(QueueSound2).w				; play boss damage sound
 
-loc_19F88:
-		subq.b	#1,objoff_35(a0)
-		beq.s	loc_19F96
+	.flash:
+		subq.b	#1,obBFZ_FlashNum(a0)		; decrement flash counter
+		beq.s	.missed						; branch if 0
 		move.b	#3,obAnim(a0)
-		bra.s	loc_19F9C
+		bra.s	.animate
 ; ===========================================================================
 
-loc_19F96:
-		move.b	#1,obAnim(a0)
+	.missed:
+		move.b	#1,obAnim(a0)				; Eggman Laughing animation
 
-loc_19F9C:
+	.animate:
 		lea		Ani_SEgg(pc),a1
 		jmp		(AnimateSprite).w
 ; ===========================================================================
 
-loc_19FA6:
-		tst.b	obColProp(a0)
-		beq.s	loc_19FBC
-		addq.b	#2,objoff_34(a0)
-		move.w	#-1,objoff_30(a0)
-		clr.w	objoff_32(a0)
+	.crush_complete:
+		tst.b	obColProp(a0)				; has boss been beaten?
+		beq.s	.beaten						; if yes, branch
+		addq.b	#2,obBFZ_Mode(a0)			; -> BossFinal_EggPlasma
+		move.w	#-1,obBFZ_CylFlag(a0)
+		clr.w	obBFZ_PhaseState(a0)
 		rts	
 ; ===========================================================================
 
-loc_19FBC:
+	.beaten:
 		moveq	#100,d0
-		bsr.w	AddPoints
-		move.b	#6,objoff_34(a0)
+		bsr.w	AddPoints					; give Sonic 1000 points
+		move.b	#6,obBFZ_Mode(a0)			; -> BossFinal_EggFall
 		move.w	#boss_fz_x+$170,obX(a0)
 		move.w	#boss_fz_y+$2C,obY(a0)
 		move.b	#$14,obHeight(a0)
 		rts	
 ; ===========================================================================
-word_19FD6:	dc.w 0,	2, 2, 4, 4, 6, 6, 0
+
+BFZ_CylPattern:
+		dc.w cyl_bottom_left, cyl_bottom_right
+		dc.w cyl_bottom_right, cyl_top_left
+		dc.w cyl_top_left, cyl_top_right
+		dc.w cyl_top_right, cyl_bottom_left
+
+cyl_bottom_left:	equ 0
+cyl_bottom_right:	equ 2
+cyl_top_left:		equ 4
+cyl_top_right:		equ 6
 ; ===========================================================================
 
-loc_19FE6:
+BossFinal_EggPlasma:
 		moveq	#-1,d0
-		move.w	objoff_36(a0),d0
-		movea.l	d0,a1
-		tst.w	objoff_30(a0)
-		bpl.s	loc_1A000
-		clr.w	objoff_30(a0)
-		move.b	#-1,objoff_29(a1)
-		bsr.s	loc_1A020
+		move.w	obBFZ_ChildPlasma(a0),d0
+		movea.w	d0,a1						; get RAM address of plasma launcher
+		tst.w	obBFZ_CylFlag(a0)			; has crushing process just finished?
+		bpl.s	.skip_plasma				; if not, branch
+		clr.w	obBFZ_CylFlag(a0)
+		move.b	#-1,obPlasma_Enabled(a1)	; activate plasma launcher
+		bsr.s	.electric_sound
 
-loc_1A000:
+	.skip_plasma:
 		moveq	#$F,d0
-		and.w	(v_vbla_word).w,d0
-		bne.s	loc_1A00A
-		bsr.s	loc_1A020
+		and.w	(v_vbla_word).w,d0			; get word that increments every frame (already optimized)
+		bne.s	.skip_sound					; branch if any of bits 0-3 are set
+		bsr.s	.electric_sound				; play sound every 16th frame
 
-loc_1A00A:
-		tst.w	objoff_32(a0)
-		beq.s	locret_1A01E
-		subq.b	#2,objoff_34(a0)
-		move.w	#-1,objoff_30(a0)
-		clr.w	objoff_32(a0)
+	.skip_sound:
+		tst.w	obBFZ_PhaseState(a0)		; is plasma phase complete?
+		beq.s	.wait						; if not, branch
+		subq.b	#2,obBFZ_Mode(a0)			; goto BFZ_Eggman_Crush
+		move.w	#-1,obBFZ_CylFlag(a0)		; set flag to begin crushing phase
+		clr.w	obBFZ_PhaseState(a0)
 
-locret_1A01E:
+	.wait:
 		rts	
 ; ===========================================================================
 
-loc_1A020:
+	.electric_sound:
 		move.w	#sfx_Electric,d0
-		jmp		(QueueSound2).w	; play electricity sound
+		jmp		(QueueSound2).w				; play electricity sound
 ; ===========================================================================
 
-loc_1A02A:
+BossFinal_EggFall:
 		move.b	#$30,obDispWid(a0)
-		bset	#staFlipX,obStatus(a0)
-		jsr		(SpeedToPos).l
-		move.b	#6,obFrame(a0)
-		addi.w	#$10,obVelY(a0)
-		cmpi.w	#boss_fz_y+$8C,obY(a0)
-		blo.w	loc_1A166
-		move.w	#boss_fz_y+$8C,obY(a0)
-		addq.b	#2,objoff_34(a0)
+		bset	#staFlipX,obStatus(a0)		; Eggman faces right
+		jsr		(SpeedToPos).l				; update position
+		move.b	#6,obFrame(a0)				; use jumping frame
+		addi.w	#$10,obVelY(a0)				; apply gravity
+		cmpi.w	#boss_fz_y+$8C,obY(a0)		; has Eggman reached bottom of tube?
+		blo.w	BFZ_Eggman_Scroll			; if not, branch
+		move.w	#boss_fz_y+$8C,obY(a0)		; align to bottom of tube
+		addq.b	#2,obBFZ_Mode(a0)			; goto BFZ_Eggman_Run
 		move.b	#$20,obDispWid(a0)
-		move.w	#$100,obVelX(a0)
-		move.w	#-$100,obVelY(a0)
-		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 elsewhere -- Filter Optimized DLE Manager
-		bra.w	loc_1A166
+		move.w	#$100,obVelX(a0)			; move right
+		move.w	#-$100,obVelY(a0)			; bounce up
+		addq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 elsewhere -- Filter Optimized DLE Manager
+		bra.w	BFZ_Eggman_Scroll
 ; ===========================================================================
 
-loc_1A074:
-		bset	#staFlipX,obStatus(a0)
-		move.b	#4,obAnim(a0)
+BossFinal_EggRun:
+		bset	#staFlipX,obStatus(a0)		; Eggman faces right
+		move.b	#4,obAnim(a0)				; use running animation
 		jsr		(SpeedToPos).l
-		addi.w	#$10,obVelY(a0)
-		cmpi.w	#boss_fz_y+$93,obY(a0)
-		blo.s	loc_1A09A
-		move.w	#-$40,obVelY(a0)
+		addi.w	#$10,obVelY(a0)				; apply gravity
+		cmpi.w	#boss_fz_y+$93,obY(a0)		; has Eggman hit the floor?
+		blo.s	.keep_falling				; if not, branch
+		move.w	#-$40,obVelY(a0)			; bounce off floor
 
-loc_1A09A:
-		move.w	#$400,obVelX(a0)
+	.keep_falling:
+		move.w	#$400,obVelX(a0)			; move right
 		move.w	obX(a0),d0
 		sub.w	(v_player+obX).w,d0
-		bpl.s	loc_1A0B4
-		move.w	#$500,obVelX(a0)
-		bra.w	loc_1A0F2
+		bpl.s	.sonic_is_left				; branch if Sonic is left of Eggman
+		move.w	#$500,obVelX(a0)			; move right faster
+		bra.w	.chk_ship
 ; ===========================================================================
 
-loc_1A0B4:
+	.sonic_is_left:
 		subi.w	#$70,d0
-		bcs.s	loc_1A0F2
+		bcs.s	.chk_ship
+		subi.w	#$100,obVelX(a0)			; slow Eggman down the further Sonic is from him
+		subq.w	#8,d0
+		bcs.s	.chk_ship
 		subi.w	#$100,obVelX(a0)
 		subq.w	#8,d0
-		bcs.s	loc_1A0F2
-		subi.w	#$100,obVelX(a0)
-		subq.w	#8,d0
-		bcs.s	loc_1A0F2
+		bcs.s	.chk_ship
 		subi.w	#$80,obVelX(a0)
 		subq.w	#8,d0
-		bcs.s	loc_1A0F2
+		bcs.s	.chk_ship
 		subi.w	#$80,obVelX(a0)
 		subq.w	#8,d0
-		bcs.s	loc_1A0F2
+		bcs.s	.chk_ship
 		subi.w	#$80,obVelX(a0)
 		subi.w	#$38,d0
-		bcs.s	loc_1A0F2
+		bcs.s	.chk_ship
 		clr.w	obVelX(a0)
 
-loc_1A0F2:
-		cmpi.w	#boss_fz_x+$250,obX(a0)
-		blo.s	loc_1A15C
-		move.w	#boss_fz_x+$250,obX(a0)
-		move.w	#$240,obVelX(a0)
-		move.w	#-$4C0,obVelY(a0)
-		addq.b	#2,objoff_34(a0)
-		bra.s	loc_1A15C
+	.chk_ship:
+		cmpi.w	#boss_fz_x+$250,obX(a0)		; has Eggman reached his ship?
+		blo.s	BFZ_Eggman_AnimScroll		; if not, branch
+		move.w	#boss_fz_x+$250,obX(a0)		; align to position
+		move.w	#$240,obVelX(a0)			; move right
+		move.w	#-$4C0,obVelY(a0)			; jump up
+		addq.b	#2,obBFZ_Mode(a0)			; -> BFZ_Eggman_Jump
+		bra.s	BFZ_Eggman_AnimScroll
 ; ===========================================================================
 
-loc_1A112:
+BossFinal_EggJump:
 		jsr		(SpeedToPos).l
-		cmpi.w	#boss_fz_x+$290,obX(a0)
-		blo.s	loc_1A124
-		clr.w	obVelX(a0)
+		cmpi.w	#boss_fz_x+$290,obX(a0)		; is Eggman directly above his ship?
+		blo.s	.not_above_ship				; if not, branch
+		clr.w	obVelX(a0)					; stop moving right (drops vertically instead)
 
-loc_1A124:
-		addi.w	#$34,obVelY(a0)
+	.not_above_ship:
+		addi.w	#$34,obVelY(a0)				; apply gravity
 		tst.w	obVelY(a0)
-		bmi.s	loc_1A142
-		cmpi.w	#boss_fz_y+$82,obY(a0)
-		blo.s	loc_1A142
-		move.w	#boss_fz_y+$82,obY(a0)
-		clr.w	obVelY(a0)
+		bmi.s	.not_in_ship				; branch if moving upwards
+		cmpi.w	#boss_fz_y+$82,obY(a0)		; is Eggman in his ship?
+		blo.s	.not_in_ship				; if not, branch
+		move.w	#boss_fz_y+$82,obY(a0)		; align to ship
+		clr.w	obVelY(a0)					; stop falling
 
-loc_1A142:
+	.not_in_ship:
 		move.w	obVelX(a0),d0
 		or.w	obVelY(a0),d0
-		bne.s	loc_1A15C
-		addq.b	#2,objoff_34(a0)
-		move.w	#-$180,obVelY(a0)
-		move.b	#1,obColProp(a0)
+		bne.s	BFZ_Eggman_AnimScroll		; branch if Eggman is still moving/falling
+		addq.b	#2,obBFZ_Mode(a0)			; -> BFZ_Eggman_Ship
+		move.w	#-$180,obVelY(a0)			; move Eggman up
+		move.b	#1,obColProp(a0)			; give Eggman a single hit point
 
-loc_1A15C:
+BFZ_Eggman_AnimScroll:
 		lea		Ani_SEgg(pc),a1
 		jsr		(AnimateSprite).w
 
-loc_1A166:
-		cmpi.w	#boss_fz_end,(v_limitright).w
-		bge.s	loc_1A172
-		addq.w	#2,(v_limitright).w
+BFZ_Eggman_Scroll:
+		cmpi.w	#boss_fz_end,(v_limitright).w	; check for new boundary
+		bge.s	.chk_ship
+		addq.w	#2,(v_limitright).w			; expand right edge of level boundary
 
-loc_1A172:
-		cmpi.b	#$C,objoff_34(a0)
-		bge.s	locret_1A190
-		moveq	#27,d1				; width; save 4 cycles -- Filter
-		moveq	#112,d2				; height (jumping); save 4 cycles -- Filter
-		moveq	#113,d3				; height (walking); save 4 cycles -- Filter
-		move.w	obX(a0),d4			; axis position
-		jmp		(SolidObject).l
+	.chk_ship:
+		cmpi.b	#$C,obBFZ_Mode(a0)			; is Eggman in his ship?
+		bge.s	.not_solid					; if yes, branch
+		moveq	#27,d1						; width; save 4 cycles -- Filter
+		moveq	#112,d2						; height (jumping); save 4 cycles -- Filter
+		moveq	#113,d3						; height (walking); save 4 cycles -- Filter
+		move.w	obX(a0),d4					; axis position
+		jmp		(SolidObject).l				; make object solid
 ; ===========================================================================
 
-locret_1A190:
+	.not_solid:
 		rts	
 ; ===========================================================================
 
-loc_1A192:
-		move.l	#Map_Eggman,obMap(a0)
+BossFinal_EggShip:
+		move.l	#Map_Eggman,obMap(a0)		; use standard boss mappings
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
 		clr.b	obAnim(a0)
-		bset	#staFlipX,obStatus(a0)
+		bset	#staFlipX,obStatus(a0)		; ship faces right
 		jsr		(SpeedToPos).l
-		cmpi.w	#boss_fz_y+$34,obY(a0)
-		bhs.w	loc_1A15C
-		move.w	#$180,obVelX(a0)
-		move.w	#-$18,obVelY(a0)
-		move.b	#(colEnemy|colSz_24x24),obColType(a0)
-		addq.b	#2,objoff_34(a0)
-		bra.w	loc_1A15C
+		cmpi.w	#boss_fz_y+$34,obY(a0)		; has ship reached a certain height?
+		bhs.w	BFZ_Eggman_AnimScroll		; if not, branch
+		move.w	#$180,obVelX(a0)			; move right
+		move.w	#-$18,obVelY(a0)			; move up slowly
+		move.b	#(colEnemy|colSz_24x24),obColType(a0)	; enable collision
+		addq.b	#2,obBFZ_Mode(a0)			; -> BFZ_Eggman_Escape
+		bra.w	BFZ_Eggman_AnimScroll		; animate & scroll screen
 ; ===========================================================================
 
-loc_1A1D4:
-		bset	#staFlipX,obStatus(a0)
+BossFinal_EggEscape:
+		bset	#staFlipX,obStatus(a0)		; ship faces right
 		jsr		(SpeedToPos).l
-		tst.w	objoff_30(a0)
-		bne.s	loc_1A1FC
-		tst.b	obColType(a0)
-		bne.s	loc_1A216
-		move.w	#$1E,objoff_30(a0)
+		tst.w	obBFZ_CylFlag(a0)			; this flag is repurposed as a timer
+		bne.s	.skip_sound					; branch if time remains
+		tst.b	obColType(a0)				; has ship been hit?
+		bne.s	.chk_sonic					; if not, branch
+		move.w	#$1E,obBFZ_CylFlag(a0)		; set timer
 		move.w	#sfx_HitBoss,d0
-		jsr		(QueueSound2).w	; play boss damage sound
+		jsr		(QueueSound2).w				; play boss damage sound every 0.5 seconds
 
-loc_1A1FC:
-		subq.w	#1,objoff_30(a0)
-		bne.s	loc_1A216
-		tst.b	obStatus(a0)
-		bpl.s	loc_1A210
-		move.w	#$60,obVelY(a0)
-		bra.s	loc_1A216
+	.skip_sound:
+		subq.w	#1,obBFZ_CylFlag(a0)		; decrement timer
+		bne.s	.chk_sonic					; branch if time remains
+		tst.b	obStatus(a0)				; is ship on-screen?
+		bpl.s	.off_screen					; if not, branch
+		move.w	#$60,obVelY(a0)				; move ship down
+		bra.s	.chk_sonic
 ; ===========================================================================
 
-loc_1A210:
+	.off_screen:
 		move.b	#(colEnemy|colSz_24x24),obColType(a0)
 
-loc_1A216:
-		cmpi.w	#boss_fz_end+$90,(v_player+obX).w
-		blt.s	loc_1A23A
-		move.b	#1,(f_lockctrl).w
-		clr.w	(v_jpadheld_dup).w
-		clr.w	(v_player+obInertia).w
+	.chk_sonic:
+		cmpi.w	#boss_fz_end+$90,(v_player+obX).w	; is Sonic at ledge?
+		blt.s	.not_at_ledge						; if not, branch
+		move.b	#1,(f_lockctrl).w					; disable controls 
+		clr.w	(v_jpadheld_dup).w					; clear held input
+		clr.w	(v_player+obInertia).w				; stop Sonic moving
 		tst.w	obVelY(a0)
-		bpl.s	loc_1A248
-		move.w	#$100,(v_jpadheld_dup).w
+		bpl.s	.chk_ship							; branch if ship is moving down
+		move.w	#btnUp<<8,(v_jpadheld_dup).w		; force Sonic to look up
 
-loc_1A23A:
-		cmpi.w	#boss_fz_end+$E0,(v_player+obX).w
-		blt.s	loc_1A248
-		move.w	#boss_fz_end+$E0,(v_player+obX).w
+	.not_at_ledge:
+		cmpi.w	#boss_fz_end+$E0,(v_player+obX).w	; is Sonic on the outer edge?
+		blt.s	.chk_ship							; if not, branch
+		move.w	#boss_fz_end+$E0,(v_player+obX).w	; align to edge (doesn't work if he's jumping)
 
-loc_1A248:
-		cmpi.w	#boss_fz_end+$200,obX(a0)
-		blo.w	loc_1A15C
-		tst.b	obRender(a0)
-		bmi.w	loc_1A15C
-		move.b	#id_Ending,(v_gamemode).w
-		addq.l	#4,sp						; Clownacy DisplaySprite Fix
-		bra.w	BossFinal_Delete
+	.chk_ship:
+		cmpi.w	#boss_fz_end+$200,obX(a0)			; has ship moved off the screen?
+		blo.w	BFZ_Eggman_AnimScroll				; if not, branch
+		tst.b	obRender(a0)						; is ship on-screen?
+		bmi.w	BFZ_Eggman_AnimScroll				; if not, branch
+		move.b	#id_Ending,(v_gamemode).w			; goto ending sequence
+		addq.l	#4,sp								; Clownacy DisplaySprite Fix
+		bra.w	BossFinal_Delete					; delete ship
 ; ===========================================================================
 
-loc_1A264:	; Routine 4
-		movea.l	objoff_34(a0),a1
-		move.b	(a1),d0
-		cmp.b	(a0),d0
-		bne.w	BossFinal_Delete
-		move.b	#7,obAnim(a0)
-		cmpi.b	#$C,objoff_34(a1)
-		bge.s	loc_1A280
-		bra.s	loc_1A2A6
+BossFinal_Flame:	; Routine 4
+		movea.w	obBFZ_Parent(a0),a1					; get RAM address of parent object
+		move.b	obID(a1),d0
+		cmp.b	obID(a0),d0							; has parent been deleted?
+		bne.w	BossFinal_Delete					; if yes, branch
+		move.b	#7,obAnim(a0)						; invisible
+		cmpi.b	#$C,obBFZ_Mode(a1)					; is Eggman in his ship?
+		bge.s	.chk_moving							; if yes, branch
+		bra.s	BossFinal_Update_SkipPos
 ; ===========================================================================
 
-loc_1A280:
-		tst.w	obVelX(a1)
-		beq.s	loc_1A28C
-		move.b	#$B,obAnim(a0)
+	.chk_moving:
+		tst.w	obVelX(a1)							; is ship moving?
+		beq.s	.not_moving							; if not, branch
+		move.b	#$B,obAnim(a0)						; use large flame animation
 
-loc_1A28C:
+	.not_moving:
 		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
 
-loc_1A296:
-		movea.l	objoff_34(a0),a1
-		move.w	obX(a1),obX(a0)
+BossFinal_Update:
+		movea.w	obBFZ_Parent(a0),a1					; get address of parent object
+		move.w	obX(a1),obX(a0)						; match position with parent
 		move.w	obY(a1),obY(a0)
 
-loc_1A2A6:
-		movea.l	objoff_34(a0),a1
+BossFinal_Update_SkipPos:
+		movea.w	obBFZ_Parent(a0),a1					; get address of parent object
 		move.b	obStatus(a1),obStatus(a0)
 		moveq	#(maskFlipX+maskFlipY),d0
 		and.b	obStatus(a0),d0
-		andi.b	#$FC,obRender(a0)
-		or.b	d0,obRender(a0)
-		jmp		(DisplayAndCollision).l	; S3K TouchResponse
+		andi.b	#$FC,obRender(a0)					; ignore x/yflip bits
+		or.b	d0,obRender(a0)						; combine x/yflip bits from status instead
+		jmp		(DisplayAndCollision).l				; S3K TouchResponse
 ; ===========================================================================
 
-loc_1A2C6:	; Routine 6
-		movea.l	objoff_34(a0),a1
-		move.b	(a1),d0
-		cmp.b	(a0),d0
-		bne.w	BossFinal_Delete
-		cmpi.l	#Map_Eggman,obMap(a1)
-		beq.s	loc_1A2E4
-		move.b	#$A,obFrame(a0)
-		bra.s	loc_1A2A6
+BossFinal_Cockpit:	; Routine 6
+		movea.w	obBFZ_Parent(a0),a1					; get address of parent object
+		move.b	obID(a1),d0
+		cmp.b	obID(a0),d0							; has parent been deleted?
+		bne.w	BossFinal_Delete					; if yes, branch
+		cmpi.l	#Map_Eggman,obMap(a1)				; is Eggman in his ship?
+		beq.s	.chk_hit							; if yes, branch
+		move.b	#$A,obFrame(a0)						; use empty cockpit frame
+		bra.s	BossFinal_Update_SkipPos
 ; ===========================================================================
 
-loc_1A2E4:
+	.chk_hit:
 		move.b	#1,obAnim(a0)
-		tst.b	obColProp(a1)
-		ble.s	loc_1A312
-		move.b	#6,obAnim(a0)
-		move.l	#Map_Eggman,obMap(a0)
+		tst.b	obColProp(a1)						; has ship been hit?
+		ble.s	.explode							; if yes, branch
+		move.b	#6,obAnim(a0)						; use sweating animation
+		move.l	#Map_Eggman,obMap(a0)				; use standard boss mappings
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
 		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
-		bra.w	loc_1A296
+		bra.w	BossFinal_Update
 ; ===========================================================================
 
-loc_1A312:
-		tst.b	obRender(a0)
-		bpl.w	BossFinal_Delete
-		bsr.w	BossDefeated
-		move.w	#priority2,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
+	.explode:
+		tst.b	obRender(a0)						; is object on-screen?
+		bpl.w	BossFinal_Delete					; if not, branch
+		bsr.w	BossDefeated						; spawn explosions
+		move.w	#priority2,obPriority(a0)			; RetroKoH/Devon S3K+ Priority Manager
 		clr.b	obAnim(a0)
-		move.l	#Map_FZDamaged,obMap(a0)
+		move.l	#Map_FZDamaged,obMap(a0)			; use mappings for damaged ship
 		move.w	#make_art_tile(ArtTile_FZ_Eggman_Fleeing,0,0),obGfx(a0)
 		lea		Ani_FZEgg(pc),a1
 		jsr		(AnimateSprite).w
-		bra.w	loc_1A296
+		bra.w	BossFinal_Update
 ; ===========================================================================
 
-loc_1A346:	; Routine 8
+BossFinal_Legs:	; Routine 8
 		bset	#staFlipX,obStatus(a0)
-		movea.l	objoff_34(a0),a1
-		cmpi.l	#Map_Eggman,obMap(a1)
-		beq.s	loc_1A35E
-		bra.w	loc_1A2A6
+		movea.w	obBFZ_Parent(a0),a1					; get address of parent object
+		cmpi.l	#Map_Eggman,obMap(a1)				; is Eggman in his ship?
+		beq.s	.animate							; if yes, branch
+		bra.w	BossFinal_Update_SkipPos
 ; ===========================================================================
 
-loc_1A35E:
-		move.w	obX(a1),obX(a0)
+	.animate:
+		move.w	obX(a1),obX(a0)						; match position to ship
 		move.w	obY(a1),obY(a0)
 		tst.b	obTimeFrame(a0)
-		bne.s	loc_1A376
-		move.b	#$14,obTimeFrame(a0)
+		bne.s	.skip_reset							; branch if time remains for current frame
+		move.b	#20,obTimeFrame(a0)					; set timer to 0.3 seconds
 
-loc_1A376:
-		subq.b	#1,obTimeFrame(a0)
-		bgt.w	loc_1A296
-		addq.b	#1,obFrame(a0)
-		cmpi.b	#2,obFrame(a0)
-		bgt.w	BossFinal_Delete
-		bra.w	loc_1A296
+	.skip_reset:
+		subq.b	#1,obTimeFrame(a0)					; decrement timer
+		bgt.w	BossFinal_Update					; branch if time remains
+		addq.b	#1,obFrame(a0)						; next frame
+		cmpi.b	#2,obFrame(a0)						; was final frame displayed?
+		bgt.w	BossFinal_Delete					; if yes, branch
+		bra.w	BossFinal_Update
 ; ===========================================================================
 
-loc_1A38E:	; Routine $A
+BossFinal_Panel:	; Routine $A
 		move.b	#$B,obFrame(a0)
 		move.w	(v_player+obX).w,d0
 		sub.w	obX(a0),d0
-		bcs.s	loc_1A3A6
-		tst.b	obRender(a0)
-		bpl.w	BossFinal_Delete
+		bcs.s	.display							; branch if Sonic is left of the panel
+		tst.b	obRender(a0)						; is object on-screen?
+		bpl.w	BossFinal_Delete					; if not, branch
 
-loc_1A3A6:
-		jmp		(DisplayAndCollision).l	; S3K TouchResponse
+	.display:
+		jmp		(DisplayAndCollision).l				; S3K TouchResponse
 ; ===========================================================================
 
-loc_1A3AC:	; Routine $C
+BossFinal_EmptyShip:	; Routine $C
 		clr.b	obFrame(a0)
-		bset	#staFlipX,obStatus(a0)
-		movea.l	objoff_34(a0),a1
-		cmpi.b	#$C,objoff_34(a1)
-		bne.w	loc_1A2A6
-		cmpi.l	#Map_Eggman,obMap(a1)
-		beq.w	BossFinal_Delete
-		bra.w	loc_1A2A6
+		bset	#staFlipX,obStatus(a0)				; face right
+		movea.w	obBFZ_Parent(a0),a1					; get address of parent object
+		cmpi.b	#$C,obBFZ_Mode(a1)					; is Eggman in his ship? (pre-escaping)
+		bne.w	BossFinal_Update_SkipPos			; if not, branch
+		cmpi.l	#Map_Eggman,obMap(a1)				; is Eggman in his ship at all?
+		beq.w	BossFinal_Delete					; if yes, branch
+		bra.w	BossFinal_Update_SkipPos
+; ===========================================================================

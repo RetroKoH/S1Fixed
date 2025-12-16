@@ -15,7 +15,7 @@ CSon_Index:
 ; ===========================================================================
 
 CSon_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)
+		addq.b	#2,obRoutine(a0)			; -> CSon_ChkLand
 		move.w	#$A0,obX(a0)
 		move.w	#$C0,obY(a0)
 		move.l	#Map_Sonic,obMap(a0)
@@ -24,19 +24,21 @@ CSon_Main:	; Routine 0
 		move.w	#priority2,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#aniID_Float3,obAnim(a0)	; use "floating" animation
 		move.w	#$400,obVelY(a0)			; make Sonic fall from above
+; ---------------------------------------------------------------------------
 
 CSon_ChkLand:	; Routine 2
-		cmpi.w	#$1A0,obY(a0)	; has Sonic landed yet?
-		bne.s	CSon_ShowFall	; if not, branch
+		cmpi.w	#$1A0,obY(a0)				; has Sonic landed yet?
+		bne.s	.keep_falling				; if not, branch
 
-		addq.b	#2,obRoutine(a0)
-		clr.w	obVelY(a0)		; stop Sonic falling
+		addq.b	#2,obRoutine(a0)			; -> CSon_Animate
+		clr.w	obVelY(a0)					; stop Sonic falling
 		move.l	#Map_ContScr,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Continue_Sonic,0,1),obGfx(a0)
 		clr.b	obAnim(a0)
 		bra.s	CSon_Animate
+; ===========================================================================
 
-CSon_ShowFall:
+	.keep_falling:
 		jsr		(SpeedToPos_YOnly).l
 		jsr		(Sonic_Animate).l
 		jsr		(Sonic_LoadGfx).l
@@ -44,33 +46,36 @@ CSon_ShowFall:
 ; ===========================================================================
 
 CSon_Animate:	; Routine 4
-		tst.b	(v_jpadpressed_actual).w ; is Start button pressed?
-		bmi.s	CSon_GetUp	; if yes, branch
+		tst.b	(v_jpadpressed_actual).w	; is Start button pressed?
+		bmi.s	.start_pressed				; if yes, branch
 		lea		AniScript_CSon(pc),a1
 		jsr		(AnimateSprite).w
 		jmp		(DisplaySprite).l
 
-CSon_GetUp:
-		addq.b	#2,obRoutine(a0)
+	.start_pressed:
+		addq.b	#2,obRoutine(a0)			; -> CSon_Run
 		move.l	#Map_Sonic,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Sonic,0,0),obGfx(a0)
-		move.b	#aniID_Float4,obAnim(a0) ; use "getting up" animation
+		move.b	#aniID_Float4,obAnim(a0)	; use "getting up" animation
 		clr.w	obInertia(a0)
 		subq.w	#8,obY(a0)
 		move.b	#bgm_Fade,d0
-		bsr.w	QueueSound1 		; fade out music
+		bsr.w	QueueSound2					; fade out music
+; ---------------------------------------------------------------------------
 
 CSon_Run:	; Routine 6
-		cmpi.w	#$800,obInertia(a0)	; check Sonic's inertia
-		bne.s	CSon_AddInertia		; if too low, branch
-		move.w	#$1000,obVelX(a0)	; move Sonic to the right
+		cmpi.w	#$800,obInertia(a0)			; check Sonic's inertia
+		bne.s	CSon_AddInertia				; if too low, branch
+		move.w	#$1000,obVelX(a0)			; move Sonic to the right
 		bra.s	CSon_ShowRun
+; ===========================================================================
 
 CSon_AddInertia:
-		addi.w	#$20,obInertia(a0) ; increase inertia
+		addi.w	#$20,obInertia(a0)			; increase inertia
 
 CSon_ShowRun:
 		jsr		(SpeedToPos_XOnly).l
 		jsr		(Sonic_Animate).l
 		jsr		(Sonic_LoadGfx).l
 		jmp		(DisplaySprite).l
+; ===========================================================================
