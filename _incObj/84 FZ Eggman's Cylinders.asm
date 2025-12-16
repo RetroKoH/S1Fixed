@@ -2,34 +2,32 @@
 ; Object 84 - cylinder Eggman hides in (FZ)
 ; ---------------------------------------------------------------------------
 
-EggmanCylinder_Delete:
-		jmp	(DeleteObject).l
+ECyl_Delete:
+		jmp		(DeleteObject).l
+; ===========================================================================
+
+ECyl_PosData:
+		dc.w boss_fz_x+$80,  boss_fz_y+$110		; bottom left
+		dc.w boss_fz_x+$100, boss_fz_y+$110		; bottom right
+		dc.w boss_fz_x+$40,  boss_fz_y-$50		; top left
+		dc.w boss_fz_x+$C0,  boss_fz_y-$50		; top right
 ; ===========================================================================
 
 EggmanCylinder:
-		moveq	#0,d0
+	; RetroKoH/LavaGaming Object Routine Optimization
 		move.b	obRoutine(a0),d0
-		move.w	EggmanCylinder_Index(pc,d0.w),d0
-		jmp		EggmanCylinder_Index(pc,d0.w)
-; ===========================================================================
-EggmanCylinder_Index:	offsetTable
-		offsetTableEntry.w EggmanCylinder_Main
-		offsetTableEntry.w loc_1A4CE
-		offsetTableEntry.w loc_1A57E
+		subq.b	#2,d0
+		beq.w	ECyl_Action
+		bpl.w	ECyl_Move
+	; Object Routine Optimization End
+; ---------------------------------------------------------------------------
 
-EggmanCylinder_PosData:
-		dc.w boss_fz_x+$80,  boss_fz_y+$110
-		dc.w boss_fz_x+$100, boss_fz_y+$110
-		dc.w boss_fz_x+$40,  boss_fz_y-$50
-		dc.w boss_fz_x+$C0,  boss_fz_y-$50
-; ===========================================================================
-
-EggmanCylinder_Main:	; Routine 0
-		lea		EggmanCylinder_PosData(pc),a1
+ECyl_Main:	; Routine 0
+		lea		ECyl_PosData(pc),a1
 		moveq	#0,d0
-		move.b	obSubtype(a0),d0
+		move.b	obSubtype(a0),d0			; get subtype (0/2/4/6)
 		add.w	d0,d0
-		adda.w	d0,a1
+		adda.w	d0,a1						; jump to relevant address for x/y pos data
 		move.b	#4,obRender(a0)
 		bset	#7,obRender(a0)
 		bset	#4,obRender(a0)
@@ -37,155 +35,160 @@ EggmanCylinder_Main:	; Routine 0
 		move.l	#Map_EggCyl,obMap(a0)
 		move.w	(a1)+,obX(a0)
 		move.w	(a1),obY(a0)
-		move.w	(a1)+,objoff_38(a0)
+		move.w	(a1)+,obECyl_StartY(a0)
 		move.w	#$6060,obHeight(a0)			; Height and Width (Height was set to $20, then to $60)
 		move.b	#$20,obDispWid(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		addq.b	#2,obRoutine(a0)
+		addq.b	#2,obRoutine(a0)			; -> ECyl_Action
+; ---------------------------------------------------------------------------
 
-loc_1A4CE:	; Routine 2
-		cmpi.b	#2,obSubtype(a0)
-		ble.s	loc_1A4DC
-		bset	#1,obRender(a0)
+ECyl_Action:	; Routine 2
+		cmpi.b	#2,obSubtype(a0)			; is cylinder on ceiling?
+		ble.s	.not_ceiling				; if not, branch
+		bset	#1,obRender(a0)				; yflip
 
-loc_1A4DC:
-		clr.l	objoff_3C(a0)
-		tst.b	objoff_29(a0)
-		beq.s	loc_1A4EA
-		addq.b	#2,obRoutine(a0)
+	.not_ceiling:
+		clr.l	obECyl_MoveY(a0)
+		tst.b	obECyl_ExtendFlag(a0)		; is cylinder set to move?
+		beq.s	Cyl_Update					; if not, branch
+		addq.b	#2,obRoutine(a0)			; -> Cyl_Move
+; ---------------------------------------------------------------------------
 
-loc_1A4EA:
-		move.l	objoff_3C(a0),d0
-		move.l	objoff_38(a0),d1
-		add.l	d0,d1
-		swap	d1
-		move.w	d1,obY(a0)
-		cmpi.b	#4,obRoutine(a0)
-		bne.s	loc_1A524
-		tst.w	objoff_30(a0)
-		bpl.s	loc_1A524
+Cyl_Update:
+		move.l	obECyl_MoveY(a0),d0
+		move.l	obECyl_StartY(a0),d1
+		add.l	d0,d1						; add y diff to start position
+		swap	d1							; get upper word
+		move.w	d1,obY(a0)					; update y position
+		cmpi.b	#4,obRoutine(a0)			; is cylinder active (Cyl_Move)?
+		bne.s	.skip_eggman				; if not, branch
+		tst.w	obECyl_EggFlag(a0)			; does cylinder contain Eggman?
+		bpl.s	.skip_eggman				; if not, branch
 		moveq	#-$A,d0
-		cmpi.b	#2,obSubtype(a0)
-		ble.s	loc_1A514
+		cmpi.b	#2,obSubtype(a0)			; is cylinder on ceiling?
+		ble.s	.not_ceiling				; if not, branch
 		moveq	#$E,d0
 
-loc_1A514:
+	.not_ceiling:
 		add.w	d0,d1
-		movea.l	objoff_34(a0),a1
-		move.w	d1,obY(a1)
+		movea.w	obECyl_Parent(a0),a1		; get RAM address of parent object (Eggman)
+		move.w	d1,obY(a1)					; update Eggman position
 		move.w	obX(a0),obX(a1)
 
-loc_1A524:
-		moveq	#43,d1				; width; save 4 cycles -- Filter
-		moveq	#96,d2				; height (jumping); save 4 cycles -- Filter
-		moveq	#97,d3				; height (walking); save 4 cycles -- Filter
-		move.w	obX(a0),d4			; axis position
+	.skip_eggman:
+		moveq	#43,d1						; width; save 4 cycles -- Filter
+		moveq	#96,d2						; height (jumping); save 4 cycles -- Filter
+		moveq	#97,d3						; height (walking); save 4 cycles -- Filter
+		move.w	obX(a0),d4					; axis position
 		jsr		(SolidObject).l
 		moveq	#0,d0
-		move.w	objoff_3C(a0),d1
-		bpl.s	loc_1A550
-		neg.w	d1
+		move.w	obECyl_MoveY(a0),d1			; distance cylinder has moved
+		bpl.s	.moved_down					; branch if 0 or positive
+		neg.w	d1							; get absolute value
 		subq.w	#8,d1
-		bcs.s	loc_1A55C
+		bcs.s	.update_frame				; branch if it was more than 8px
 		addq.b	#1,d0
-		asr.w	#4,d1
+		asr.w	#4,d1						; divide by 16
 		add.w	d1,d0
-		bra.s	loc_1A55C
+		bra.s	.update_frame
 ; ===========================================================================
 
-loc_1A550:
-		subi.w	#$27,d1
-		bcs.s	loc_1A55C
+	.moved_down:
+		subi.w	#39,d1
+		bcs.s	.update_frame				; branch if cylinder moved more than 39px
 		addq.b	#1,d0
-		asr.w	#4,d1
+		asr.w	#4,d1						; divide by 16
 		add.w	d1,d0
 
-loc_1A55C:
-		move.b	d0,obFrame(a0)
+	.update_frame:
+		move.b	d0,obFrame(a0)				; set frame
 		move.w	(v_player+obX).w,d0
 		sub.w	obX(a0),d0
-		bmi.s	loc_1A578
-		subi.w	#$140,d0
-		bmi.s	loc_1A578
-		tst.b	obRender(a0)
-		bpl.w	EggmanCylinder_Delete
+		bmi.s	.display					; branch if Sonic is left of cylinder
+		subi.w	#320,d0
+		bmi.s	.display					; branch if Sonic is within 320px of cylinder
+		tst.b	obRender(a0)				; is object on-screen?
+		bpl.w	ECyl_Delete					; if not, branch
 
-loc_1A578:
+	.display:
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 
-loc_1A57E:	; Routine 4
+ECyl_Move:	; Routine 4
 	; LavaGaming Object Routine Optimization
 		cmpi.b	#2,obSubtype(a0)
-		bgt.s	loc_1A604
+		bgt.s	Cyl_Top
 	; Object Routine Optimization End
+; ---------------------------------------------------------------------------
 
-loc_1A598:	; Subtypes 00 and 02
-		tst.b	objoff_29(a0)
-		bne.s	loc_1A5D4
-		movea.l	objoff_34(a0),a1
-		tst.b	obColProp(a1)
-		bne.s	loc_1A5B4
-		bsr.w	BossDefeated
-		subi.l	#$10000,objoff_3C(a0)
+; Subtypes 00 (bottom left) and 02 (bottom right)
+Cyl_Bottom:
+		tst.b	obECyl_ExtendFlag(a0)			; is cylinder extending?
+		bne.s	.extend							; if yes, branch
+		movea.w	obECyl_Parent(a0),a1			; get RAM address of parent object (Eggman)
+		tst.b	obColProp(a1)					; has boss been beaten?
+		bne.s	.not_beaten						; if not, branch
+		bsr.w	BossDefeated					; spawn explosions
+		subi.l	#$10000,obECyl_MoveY(a0)
 
-loc_1A5B4:
-		addi.l	#$20000,objoff_3C(a0)
-		bcc.w	loc_1A4EA
-		clr.l	objoff_3C(a0)
-		movea.l	objoff_34(a0),a1
-		subq.w	#1,objoff_32(a1)
-		clr.w	objoff_30(a1)
-		subq.b	#2,obRoutine(a0)
-		bra.w	loc_1A4EA	
+	.not_beaten:
+		addi.l	#$20000,obECyl_MoveY(a0)		; retract downward by 2px
+		bcc.w	Cyl_Update						; branch if not fully retracted
+		clr.l	obECyl_MoveY(a0)				; reset to 0
+		movea.w	obECyl_Parent(a0),a1			; get RAM address of parent object (Eggman)
+		subq.w	#1,obBFZ_PhaseState(a1)
+		clr.w	obBFZ_CylFlag(a1)
+		subq.b	#2,obRoutine(a0)				; -> Cyl_Action
+		bra.w	Cyl_Update	
 ; ===========================================================================
 
-loc_1A5D4:
-		cmpi.w	#-$10,objoff_3C(a0)
-		bge.s	loc_1A5E4
-		subi.l	#$28000,objoff_3C(a0)
+	.extend:
+		cmpi.w	#-16,obECyl_MoveY(a0)			; has cylinder moved at least 16px?
+		bge.s	.after_16px						; if yes, branch
+		subi.l	#$28000,obECyl_MoveY(a0)		; move up by 2.5px
 
-loc_1A5E4:
-		subi.l	#$8000,objoff_3C(a0)
-		cmpi.w	#-$A0,objoff_3C(a0)
-		bgt.w	loc_1A4EA
-		clr.w	objoff_3E(a0)
-		move.w	#-$A0,objoff_3C(a0)
-		clr.b	objoff_29(a0)
-		bra.w	loc_1A4EA	
+	.after_16px:
+		subi.l	#$8000,obECyl_MoveY(a0)			; move up by 0.5px
+		cmpi.w	#-160,obECyl_MoveY(a0)			; has cylinder moved 160px?
+		bgt.w	Cyl_Update						; if yes, branch
+		clr.w	obECyl_MoveY+2(a0)				; clear subpixel
+		move.w	#-160,obECyl_MoveY(a0)			; align to 160px
+		clr.b	obECyl_ExtendFlag(a0)			; clear extending flag
+		bra.w	Cyl_Update	
 ; ===========================================================================
 
-loc_1A604:	; Subtypes 04 and 06
-		bset	#1,obRender(a0)
-		tst.b	objoff_29(a0)
-		bne.s	loc_1A646
-		movea.l	objoff_34(a0),a1
-		tst.b	obColProp(a1)
-		bne.s	loc_1A626
-		bsr.w	BossDefeated
-		addi.l	#$10000,objoff_3C(a0)
+Cyl_Top:	; Subtypes 04 (top left) and 06 (top right)
+		bset	#1,obRender(a0)					; flip sprite vertically
+		tst.b	obECyl_ExtendFlag(a0)			; is cylinder extending?
+		bne.s	.extend							; if yes, branch
+		movea.w	obECyl_Parent(a0),a1			; get RAM address of parent object (Eggman)
+		tst.b	obColProp(a1)					; has boss been beaten?
+		bne.s	.not_beaten						; if not, branch
+		bsr.w	BossDefeated					; spawn explosion
+		addi.l	#$10000,obECyl_MoveY(a0)
 
-loc_1A626:
-		subi.l	#$20000,objoff_3C(a0)
-		bcc.w	loc_1A4EA
-		clr.l	objoff_3C(a0)
-		movea.l	objoff_34(a0),a1
-		subq.w	#1,objoff_32(a1)
-		clr.w	objoff_30(a1)
-		subq.b	#2,obRoutine(a0)
-		bra.w	loc_1A4EA	
+	.not_beaten:
+		subi.l	#$20000,obECyl_MoveY(a0)		; retract upward by 2px
+		bcc.w	Cyl_Update						; branch if not fully retracted
+		clr.l	obECyl_MoveY(a0)				; reset to 0
+		movea.w	obECyl_Parent(a0),a1			; get RAM address of parent object (Eggman)
+		subq.w	#1,obBFZ_PhaseState(a1)
+		clr.w	obBFZ_CylFlag(a1)
+		subq.b	#2,obRoutine(a0)				; -> Cyl_Action
+		bra.w	Cyl_Update	
 ; ===========================================================================
 
-loc_1A646:
-		cmpi.w	#$10,objoff_3C(a0)
-		blt.s	loc_1A656
-		addi.l	#$28000,objoff_3C(a0)
+	.extend:
+		cmpi.w	#$10,obECyl_MoveY(a0)			; has cylinder moved at least 16px?
+		blt.s	.after_16px						; if yes, branch
+		addi.l	#$28000,obECyl_MoveY(a0)		; move down by 2.5px
 
-loc_1A656:
-		addi.l	#$8000,objoff_3C(a0)
-		cmpi.w	#$A0,objoff_3C(a0)
-		blt.w	loc_1A4EA
-		clr.w	objoff_3E(a0)
-		move.w	#$A0,objoff_3C(a0)
-		clr.b	objoff_29(a0)
-		bra.w	loc_1A4EA	
+	.after_16px:
+		addi.l	#$8000,obECyl_MoveY(a0)			; move down by 0.5px
+		cmpi.w	#160,obECyl_MoveY(a0)			; has cylinder moved 160px?
+		blt.w	Cyl_Update						; if yes, branch
+		clr.w	obECyl_MoveY+2(a0)				; clear subpixel
+		move.w	#160,obECyl_MoveY(a0)			; align to 160px
+		clr.b	obECyl_ExtendFlag(a0)			; clear extending flag
+		bra.w	Cyl_Update	
+; ===========================================================================
