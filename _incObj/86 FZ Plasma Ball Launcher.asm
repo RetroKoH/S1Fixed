@@ -126,8 +126,9 @@ BossPlasma_MakeBalls:	; Routine 4
 		addq.w	#1,obPlasma_Count(a0)				; next plasma ball
 		dbf		d2,.loop							; repeat sequence 3 more times
 
-	.skip_balls:
 		move.w	obPlasma_Count(a0),obPlasma_Count2(a0)	; call once when finished, instead of 4 times
+
+	.skip_balls:
 		tst.w	obPlasma_Count(a0)					; are plasma balls still loaded?
 		bne.w	Plasma_Update						; if yes, branch
 		addq.b	#2,obRoutine(a0)					; -> Plasma_Finish (while the plasma balls are active)
