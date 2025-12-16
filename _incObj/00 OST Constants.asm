@@ -694,6 +694,45 @@ obBonus_WaitTime:		equ objoff_30		; 2 bytes | length of time to display bonus sp
 obSSR_MainX:			equ objoff_30		; 2 bytes | position for card to display on
 ; ---------------------------------------------------------------------------
 
+; Obj82 - SBZ2 Eggman
+obSEgg_Parent:			equ objoff_30		; 2 bytes | object RAM address of parent (switch's parent is Eggman)
+obSEgg_WaitTime:		equ objoff_32		; 1 byte  | time delay between events
+; ---------------------------------------------------------------------------
+
+; Obj83 - SBZ2 Eggman's Floor
+obFFloor_Children:		equ objoff_30		; 16 bytes| addresses of OSTs of child objects
+; ---------------------------------------------------------------------------
+
+; Obj84 - Final Boss Cylinder
+obECyl_ExtendFlag:		equ objoff_29		; 1 byte  | flag set when extending
+obECyl_EggFlag:			equ objoff_30		; 2 bytes | -1 if cylinder contains Eggman
+obECyl_StartY:			equ objoff_34		; 4 bytes | original y position (low word always 0)
+obECyl_MoveY:			equ objoff_38		; 4 bytes | amount the cylinder has moved
+
+obECyl_Parent:			equ objoff_3E		; 2 bytes | address of OST of parent object
+; ---------------------------------------------------------------------------
+
+; Obj85 - Final Boss Eggman
+obBFZ_CylFlag:			equ objoff_30		; 2 bytes | -1 when cylinders activate; id of cylinder Eggman is in when crushing
+obBFZ_PhaseState:		equ objoff_32		; 2 bytes | 1 = crushing; 0 = plasma; -1 = crushing/plasma complete
+obBFZ_Mode:				equ objoff_34		; 2 bytes | action being performed, increments of 2
+obBFZ_FlashNum:			equ objoff_35		; 1 byte  | number of times to make boss flash when hit
+obBFZ_ChildPlasma:		equ objoff_36		; 2 bytes | Obj RAM addresses of plasma object
+obBFZ_ChildCylinder:	equ objoff_38		; 8 bytes | Obj RAM addresses of cylinder objects
+
+obBFZ_Parent:			equ objoff_3E		; 2 bytes | address of OST of parent object - children only
+; ---------------------------------------------------------------------------
+
+; Obj86 - Final Boss Plasma
+obPlasma_Timer:			equ obSubtype		; 2 bytes | timer used during movement routines
+obPlasma_Enabled:		equ objoff_29		; 1 byte  | flag noting when to spawn plasma balls
+obPlasma_TargetX:		equ objoff_30		; 2 bytes | target x-position for the plasma ball to move toward
+obPlasma_Count:			equ objoff_32		; 2 bytes | plasma ball count
+obPlasma_Count2:		equ objoff_34		; 2 bytes | copy of plasma ball count
+
+obPlasma_Parent:		equ objoff_3E		; 2 bytes | address of OST of parent object
+; ---------------------------------------------------------------------------
+
 ; Obj87 - Ending Sequence Sonic
 obESonic_WaitTime:		equ objoff_30		; 1 byte  | time to wait between events
 ; ---------------------------------------------------------------------------

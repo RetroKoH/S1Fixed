@@ -225,12 +225,11 @@ BossStarLight_ShipMakeBall:		; Secondary Routine 4
 		movea.l	d0,a2						; get address of OST of seesaw
 		lea		(v_lvlobjspace).w,a1		; FixBugs -- Formerly (v_objspace+object_size*1)
 		moveq	#v_lvlobjcount,d1			; FixBugs: Normally only covered the first half of object RAM.
-		moveq	#object_size,d2
 
 loc_18AFA:
 		cmp.w	obBossSpike_Seesaw(a1),d0	; does seesaw already have a spikeball?
 		beq.s	loc_18B40					; if yes, branch
-		adda.w	d2,a1						; check next object slot (save 4 cycles -- KoH)
+		lea		object_size(a1),a1			; check next object slot
 		dbf		d1,loc_18AFA
 
 		move.l	a0,-(sp)
