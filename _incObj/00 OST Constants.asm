@@ -674,6 +674,10 @@ obBossBlock_Mode:		equ objoff_29		; 1 byte  | if same as subtype = solid; $FF = 
 obBossBlock_Parent:		equ objoff_34		; 2 bytes | object RAM address of main boss object
 ; ---------------------------------------------------------------------------
 
+; Obj77 - LZ Boss
+obBossLZ_Defeated:		equ objoff_3D		; 1 byte  | $FF = boss is defeated
+; ---------------------------------------------------------------------------
+
 ; Obj78 - Caterkiller Badnik
 obCat_Inertia:			equ obVelY			; 2 bytes | formerly obInertia. Needed to change after shifting SSTs for the Priority Manager.
 										; Caterkiller uses obXVel but doesn't use obYVel (unless broken), and this causes no glitches.

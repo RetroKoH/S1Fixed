@@ -8,6 +8,7 @@ BossSpringYard:
 		move.w	BossSpringYard_Index(pc,d0.w),d1
 		jmp		BossSpringYard_Index(pc,d1.w)
 ; ===========================================================================
+
 BossSpringYard_Index:	offsetTable
 		offsetTableEntry.w BossSpringYard_Main
 		offsetTableEntry.w BossSpringYard_ShipMain
