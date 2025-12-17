@@ -39,9 +39,16 @@ obColProp:				equ $21				; 1 byte  | collision extra property
 ob2ndRout:				equ $25				; 1 byte  | secondary routine number
 obShieldProp:			equ $27				; 1 byte  | How object responds to shields {Reflect-Lightning-Bubble-Flame 0-0-0-0}
 obSubtype:				equ $28				; 1 byte  | object subtype
-obBossX:				equ $30				; 2 bytes | 
-obBossY:				equ $38				; 2 bytes | 
-obParent:				equ $3E				; 2 bytes | 
+obParent:				equ $3E				; 2 bytes | parent address
+; ---------------------------------------------------------------------------
+; Boss variables (Any unique variables are found within the object file itself)
+obBoss_3rdRout:			equ obSubtype		; 1 byte  | bosses may use this OST as a tertiary routine counter
+obBoss_BufferX:			equ objoff_30		; 2 bytes | stored X-axis position
+obBoss_Parent:			equ objoff_34		; 2 bytes | parent address (Used by face, flame, and weapon)
+obBoss_BufferY:			equ objoff_38		; 2 bytes | stored Y-axis position
+obBoss_DelayTime:		equ objoff_3C		; 2 bytes | delay timer
+obBoss_FlashFrames:		equ objoff_3E		; 1 byte  | # of frames to flash white when hit
+obBoss_HoverAngle:		equ objoff_3F		; 1 byte  | Used w/ CalcSine for the ship's hover effect
 ; ---------------------------------------------------------------------------
 
 ; ---------------------------------------------------------------------------
@@ -656,9 +663,15 @@ obBossFire_BufferX2:	equ objoff_32		; 2 bytes | second stored X-position
 obBossFire_BufferY:		equ objoff_38		; 2 bytes | stored Y-position
 ; ---------------------------------------------------------------------------
 
+; Obj75 - SYZ Boss
+obBossSYZ_Mode:			equ objoff_29		; 1 byte  | $FF = lifting block
+obBossSYZ_BlockNum:		equ	objoff_36		; 1 byte  | number of block Eggman is above (0-9) - parent only
+obBossSYZ_BlockAddr:	equ obBoss_Parent	; 2 bytes | address of block Eggman is above - parent only
+; ---------------------------------------------------------------------------
+
 ; Obj76 - SYZ Boss Block
-obBossFire_Mode:		equ objoff_29		; 1 byte  | if same as subtype = solid; $FF = lifted; $A = breaking
-obBossFire_Parent:		equ objoff_34		; 4 bytes | object RAM address of main boss object
+obBossBlock_Mode:		equ objoff_29		; 1 byte  | if same as subtype = solid; $FF = lifted; $A = breaking
+obBossBlock_Parent:		equ objoff_34		; 2 bytes | object RAM address of main boss object
 ; ---------------------------------------------------------------------------
 
 ; Obj78 - Caterkiller Badnik
@@ -764,16 +777,6 @@ obTChaos_Speed:			equ objoff_3E		; 2 bytes | speed at which emeralds rotate arou
 ; Obj8F - Goggles
 obGoggle_PrevFrame:		equ objoff_3F		; 1 byte  | stored frame for DPLC handling
 ; ---------------------------------------------------------------------------
-; ---------------------------------------------------------------------------
-
-; Boss variables (Any unique variables are found within the object file itself)
-obBoss_3rdRout:			equ obSubtype		; 1 byte  | bosses may use this OST as a tertiary routine counter
-obBoss_BufferX:			equ objoff_30		; 2 bytes | stored X-axis position
-obBoss_Parent:			equ objoff_34		; 2 bytes | parent address (Used by face, flame, and weapon)
-obBoss_BufferY:			equ objoff_38		; 2 bytes | stored Y-axis position
-obBoss_DelayTime:		equ objoff_3C		; 2 bytes | delay timer
-obBoss_FlashTime:		equ objoff_3E		; 1 byte  | # of frames to flash white when hit
-obBoss_HoverAngle:		equ objoff_3F		; 1 byte  | Used w/ CalcSine for the ship's hover effect
 ; ---------------------------------------------------------------------------
 
 ; Marble Zone Boss
