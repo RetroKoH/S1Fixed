@@ -45,7 +45,7 @@ BossBlock_Main:	; Routine 0
 ; ===========================================================================
 
 BossBlock_Action:	; Routine 2
-		move.b	obBossFire_Mode(a0),d0		; check mode (changed by SYZ boss when lifted)
+		move.b	obBossBlock_Mode(a0),d0		; check mode (changed by SYZ boss when lifted)
 		cmp.b	obSubtype(a0),d0
 		beq.s	.is_solid					; branch if same as subtype
 		tst.b	d0
@@ -57,7 +57,7 @@ BossBlock_Action:	; Routine 2
 ; ===========================================================================
 
 	.lifting:
-		movea.l	obBossFire_Parent(a0),a1	; get address of boss object
+		movea.w	obBossBlock_Parent(a0),a1	; get address of boss object
 		tst.b	obColProp(a1)				; has boss been hit 8 times?
 		beq.s	.break_block				; if yes, branch
 
