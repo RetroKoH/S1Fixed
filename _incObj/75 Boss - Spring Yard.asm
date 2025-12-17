@@ -24,48 +24,46 @@ BossSpringYard_ObjData:
 		dc.b 6,	aniID_Blank
 	; Spike
 		dc.b 8,	0				; does not animate
-
-syzboss_target = objoff_34		; block column currently targeted by Eggman (1 byte)
-syzboss_block = objoff_36		; address of located block (2 bytes)
 ; ===========================================================================
 
 BossSpringYard_Main:	; Routine 0
 		move.w	#boss_syz_x+$1B0,obX(a0)
 		move.w	#boss_syz_y+$E,obY(a0)
-		move.w	obX(a0),boss_bufferX(a0)
-		move.w	obY(a0),boss_bufferY(a0)
+		move.w	obX(a0),obBoss_BufferX(a0)
+		move.w	obY(a0),obBoss_BufferY(a0)
 		move.b	#(colEnemy|colSz_24x24),obColType(a0)
-		move.b	#8,obColProp(a0) ; set number of hits to 8
-		lea		BossSpringYard_ObjData(pc),a2
-		movea.l	a0,a1
-		moveq	#3,d1
-		bra.s	BossSpringYard_LoadBoss
+		move.b	#8,obColProp(a0)					; set number of hits to 8
+		lea		BossSpringYard_ObjData(pc),a2		; get routine number, animation & priority
+		movea.l	a0,a1								; replace current object with 1st in list
+		moveq	#3,d1								; 3 additional objects
+		bra.s	.load_boss
 ; ===========================================================================
 
-BossSpringYard_Loop:
+	.loop:
 		jsr	(FindNextFreeObj).l
 		bne.s	BossSpringYard_ShipMain
 		move.b	#id_BossSpringYard,obID(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 
-BossSpringYard_LoadBoss:
+	.load_boss:
 		bclr	#staFlipX,obStatus(a0)
 		clr.b	ob2ndRout(a1)
-		move.b	(a2)+,obRoutine(a1)
+		move.b	(a2)+,obRoutine(a1)					; goto BSYZ_ShipMain/BSYZ_FaceMain/BSYZ_FlameMain/BSYZ_SpikeMain next
 		move.b	(a2)+,obAnim(a1)
-		move.w	#priority5,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
+		move.w	#priority5,obPriority(a1)			; RetroKoH/Devon S3K+ Priority Manager
 		move.l	#Map_Eggman,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.b	#$20,obDispWid(a1)
-		move.l	a0,boss_parent(a1)
-		dbf		d1,BossSpringYard_Loop	; repeat sequence 3 more times
+		move.w	a0,obBoss_Parent(a1)				; save address of parent
+		dbf		d1,.loop							; repeat sequence 3 more times
 
 	; Set data for Spike
 		move.l	#Map_BossItems,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman_Weapons,1,0),obGfx(a1)
 		move.b	#5,obFrame(a1)
+; ---------------------------------------------------------------------------
 
 BossSpringYard_ShipMain:	; Routine 2
 		moveq	#0,d0
@@ -76,9 +74,9 @@ BossSpringYard_ShipMain:	; Routine 2
 		jsr		(AnimateSprite).w
 		moveq	#(maskFlipX+maskFlipY),d0
 		and.b	obStatus(a0),d0
-		andi.b	#$FC,obRender(a0)
-		or.b	d0,obRender(a0)
-		jmp		(DisplayAndCollision).l	; S3K TouchResponse
+		andi.b	#$FC,obRender(a0)					; ignore x/yflip bits
+		or.b	d0,obRender(a0)						; combine x/yflip bits from status instead
+		jmp		(DisplayAndCollision).l				; S3K TouchResponse
 ; ===========================================================================
 BossSpringYard_ShipIndex:	offsetTable
 		offsetTableEntry.w BossSpringYard_ShipStart
@@ -90,190 +88,190 @@ BossSpringYard_ShipIndex:	offsetTable
 ; ===========================================================================
 
 BossSpringYard_ShipStart:	; Secondary Routine 0
-		move.w	#-$100,obVelX(a0)
-		cmpi.w	#boss_syz_x+$138,boss_bufferX(a0)
-		bhs.s	BossSpringYard_ShipHover
-		addq.b	#2,ob2ndRout(a0)
+		move.w	#-$100,obVelX(a0)					; move ship left
+		cmpi.w	#boss_syz_x+$138,obBoss_BufferX(a0)	; has ship appeared from the right yet?
+		bhs.s	BossSpringYard_ShipHover			; if not, branch
+		addq.b	#2,ob2ndRout(a0)					; -> BossSpringYard_ShipMove
 
 BossSpringYard_ShipHover:
-		move.b	boss_hoverangle(a0),d0
-		addq.b	#2,boss_hoverangle(a0)
-		jsr		(CalcSine).w
-		asr.w	#2,d0
-		move.w	d0,obVelY(a0)
+		move.b	obBoss_HoverAngle(a0),d0			; get wobble byte
+		addq.b	#2,obBoss_HoverAngle(a0)			; increment wobble (wraps to 0 after $FE)
+		jsr		(CalcSine).w						; convert to sine
+		asr.w	#2,d0								; divide by 4
+		move.w	d0,obVelY(a0)						; set as y speed
 
 BossSpringYard_ApplyMovement:
-		bsr.w	BossMove
-		move.w	boss_bufferY(a0),obY(a0)
-		move.w	boss_bufferX(a0),obX(a0)
+		bsr.w	BossMove							; update parent position
+		move.w	obBoss_BufferY(a0),obY(a0)			; update actual position
+		move.w	obBoss_BufferX(a0),obX(a0)
 
 BossSpringYard_ChkHit:
 		move.w	obX(a0),d0
-		subi.w	#boss_syz_x,d0
-		lsr.w	#5,d0
-		move.b	d0,syzboss_target(a0)		; set target column based on current x-position
-		cmpi.b	#6,ob2ndRout(a0)
-		bhs.s	locret_19256
-		tst.b	obStatus(a0)
-		bmi.s	BossSpringYard_AwardPoints	; if bit 7 is set, branch
-		tst.b	obColType(a0)
-		bne.s	locret_19256
-		tst.b	boss_flashframes(a0)
-		bne.w	BossFlash
-		move.b	#$20,boss_flashframes(a0)	; set number of	times for ship to flash
+		subi.w	#boss_syz_x,d0						; subtract x pos of first block
+		lsr.w	#5,d0								; divide by 32
+		move.b	d0,obBossSYZ_BlockNum(a0)			; id of block the ship is above
+		cmpi.b	#6,ob2ndRout(a0)					; Exploding, Destroyed, or Fleeing?
+		bcc.s	.exit								; if yes, branch
+		tst.b	obStatus(a0)						; has boss been beaten (bit 7 is set)?
+		bmi.s	.defeated							; if yes, branch
+		tst.b	obColType(a0)						; is ship collision clear?
+		bne.s	.exit								; if not, branch
+		tst.b	obBoss_FlashFrames(a0)				; is ship flashing?
+		bne.w	BossFlash							; if yes, branch
+		move.b	#32,obBoss_FlashFrames(a0)			; set ship to flash 32 times
 		move.w	#sfx_HitBoss,d0
-		jsr		(QueueSound2).w		; play boss damage sound
+		jsr		(QueueSound2).w						; play boss damage sound
 		bra.w	BossFlash
+; ===========================================================================
 
-locret_19256:
+	.exit:
 		rts	
 ; ===========================================================================
 
-BossSpringYard_AwardPoints:
+	.defeated:
 		moveq	#100,d0
-		bsr.w	AddPoints			; award 1000 points
-		move.b	#6,ob2ndRout(a0)	; set ship to exploding routine
-		move.w	#$B4,boss_delaytime(a0)
-		clr.w	obVelX(a0)
+		bsr.w	AddPoints							; award 1000 points
+		move.b	#6,ob2ndRout(a0)					; set ship to exploding routine
+		move.w	#180,obBoss_DelayTime(a0)			; set timer to 3 seconds
+		clr.w	obVelX(a0)							; stop boss moving
 		rts	
 ; ===========================================================================
 
 BossSpringYard_ShipMove:	; Secondary Routine 2
-		move.w	boss_bufferX(a0),d0
-		move.w	#$140,obVelX(a0)
-		btst	#staFlipX,obStatus(a0)
-		bne.s	loc_1928E
-		neg.w	obVelX(a0)
-		cmpi.w	#boss_syz_x+8,d0
-		bgt.s	loc_1929E
-		bra.s	loc_19294
+		move.w	obBoss_BufferX(a0),d0
+		move.w	#$140,obVelX(a0)					; move ship right
+		btst	#staFlipX,obStatus(a0)				; is ship facing left?
+		bne.s	.face_right							; if not, branch
+		neg.w	obVelX(a0)							; move left instead
+		cmpi.w	#boss_syz_x+8,d0					; is ship at left edge of screen?
+		bgt.s	.inside_boundary					; if not, branch
+		bra.s	.chg_dir
 ; ===========================================================================
 
-loc_1928E:
-		cmpi.w	#boss_syz_x+$138,d0
-		blt.s	loc_1929E
+	.face_right:
+		cmpi.w	#boss_syz_x+$138,d0					; is ship at right edge of screen?
+		blt.s	.inside_boundary					; if not, branch
 
-loc_19294:
-		bchg	#staFlipX,obStatus(a0)
-		clr.b	objoff_3D(a0)
+	.chg_dir:
+		bchg	#staFlipX,obStatus(a0)				; change direction
+		clr.b	obBoss_DelayTime+1(a0)				; clear low byte of timer
 
-loc_1929E:
-		subi.w	#boss_syz_x+$10,d0
-		andi.w	#$1F,d0
+	.inside_boundary:
+		subi.w	#boss_syz_x+$10,d0					; get x pos of ship relative to left edge
+		andi.w	#$1F,d0								; read only bits 0-4
 		subi.w	#$1F,d0
-		bpl.s	loc_192AE
-		neg.w	d0
+		bpl.s	.d0_is_0							; branch if all those bits were set
+		neg.w	d0									; make d0 positive
 
-loc_192AE:
+	.d0_is_0:
 		subq.w	#1,d0
-		bgt.s	loc_192E8
-		tst.b	objoff_3D(a0)
-		bne.s	loc_192E8
+		bgt.w	BossSpringYard_ShipHover
+		tst.b	obBoss_DelayTime+1(a0)				; is low byte of timer 0?
+		bne.w	BossSpringYard_ShipHover			; if not, branch
 		move.w	(v_player+obX).w,d1
-		subi.w	#boss_syz_x,d1
-		asr.w	#5,d1
-		cmp.b	syzboss_target(a0),d1
-		bne.s	loc_192E8
-		moveq	#0,d0
-		move.b	syzboss_target(a0),d0
-		asl.w	#5,d0
-		addi.w	#boss_syz_x+$10,d0
-		move.w	d0,boss_bufferX(a0)
-		bsr.w	BossSpringYard_FindBlocks
-		addq.b	#2,ob2ndRout(a0)
-		clr.w	obSubtype(a0)
-		clr.w	obVelX(a0)
+		subi.w	#boss_syz_x,d1						; get x pos of Sonic relative to left edge
+		asr.w	#5,d1								; divide by 32
+		cmp.b	obBossSYZ_BlockNum(a0),d1			; is ship above Sonic?
+		bne.w	BossSpringYard_ShipHover			; if not, branch
 
-loc_192E8:
+		moveq	#0,d0
+		move.b	obBossSYZ_BlockNum(a0),d0
+		asl.w	#5,d0
+		addi.w	#boss_syz_x+$10,d0					; get x pos of block below ship
+		move.w	d0,obBoss_BufferX(a0)				; align ship to block
+		bsr.w	BossSpringYard_FindBlocks			; save obj address of block to obBossSYZ_BlockAddr
+		addq.b	#2,ob2ndRout(a0)					; -> BSYZ_Attack
+		clr.w	obBoss_3rdRout(a0)					; -> BSYZ_Descend
+		clr.w	obVelX(a0)							; stop moving horizontally
 		bra.w	BossSpringYard_ShipHover
 ; ===========================================================================
 
 BossSpringYard_ShipSpike:	; Secondary Routine 4
 		moveq	#0,d0
-		move.b	obSubtype(a0),d0
+		move.b	obBoss_3rdRout(a0),d0
 		move.w	BSYZSpike_Index(pc,d0.w),d0
 		jmp		BSYZSpike_Index(pc,d0.w)
 ; ===========================================================================
 BSYZSpike_Index:	offsetTable
-		offsetTableEntry.w BSYZSpike_Lowering
+		offsetTableEntry.w BSYZSpike_Descending
 		offsetTableEntry.w BSYZSpike_CaughtBlock
 		offsetTableEntry.w BSYZSpike_LiftingBlock
 		offsetTableEntry.w BSYZSpike_BreakingBlock
 ; ===========================================================================
 
-BSYZSpike_Lowering:		; Tertiary Routine 0
-		move.w	#$180,obVelY(a0)
-		move.w	boss_bufferY(a0),d0
-		cmpi.w	#boss_syz_y+$8A,d0
-		blo.w	BossSpringYard_ApplyMovement
-		move.w	#boss_syz_y+$8A,boss_bufferY(a0)
-		clr.w	boss_delaytime(a0)
+BSYZSpike_Descending:		; Tertiary Routine 0
+		move.w	#$180,obVelY(a0)					; move ship down
+		move.w	obBoss_BufferY(a0),d0
+		cmpi.w	#boss_syz_y+$8A,d0					; has ship reached block?
+		blo.w	BossSpringYard_ApplyMovement		; if not, branch
+		move.w	#boss_syz_y+$8A,obBoss_BufferY(a0)	; align to block
+		clr.w	obBoss_DelayTime(a0)
 		moveq	#-1,d0
-		move.w	syzboss_block(a0),d0
-		beq.s	loc_1933C					; if Eggman doesn't have a block, branch (and don't set delay timer)
-		movea.l	d0,a1						; a1 = address of targeted block
-		move.b	#-1,objoff_29(a1)
-		move.b	#-1,objoff_29(a0)
-		move.l	a0,boss_parent(a1)			; assign main boss object as brick's "parent"
-		move.w	#$32,boss_delaytime(a0)		; set delay timer
+		move.w	obBossSYZ_BlockAddr(a0),d0			; get obj address of block
+		beq.s	.no_block							; if Eggman doesn't have a block, branch (and don't set delay timer)
+		movea.l	d0,a1								; a1 = address of targeted block
+		move.b	#-1,obBossBlock_Mode(a1)			; set block lifting flag
+		move.b	#-1,obBossSYZ_Mode(a0)
+		move.w	a0,obBossBlock_Parent(a1)			; assign main boss object as brick's "parent"
+		move.w	#$32,obBoss_DelayTime(a0)			; set delay timer
 
-loc_1933C:
+	.no_block:
 		clr.w	obVelY(a0)
-		addq.b	#2,obSubtype(a0)			; advance to next tertiary routine (_CaughtBlock)
+		addq.b	#2,obBoss_3rdRout(a0)				; advance to next tertiary routine (_CaughtBlock)
 		bra.w	BossSpringYard_ApplyMovement
 ; ===========================================================================
 
 BSYZSpike_CaughtBlock:		; Tertiary Routine 2
-		subq.w	#1,boss_delaytime(a0)		; is delay timer expired?
-		bpl.s	loc_19366					; if not, branch and wait
-		addq.b	#2,obSubtype(a0)			; advance to next tertiary routine (_LiftingBlock)
-		move.w	#-$800,obVelY(a0)			; rise at a speed of -8
-		tst.w	syzboss_block(a0)			; is Eggman carrying a block?
-		bne.s	loc_19362					; if yes, branch
-		asr		obVelY(a0)					; if not, halve to -4 instead
+		subq.w	#1,obBoss_DelayTime(a0)			; is delay timer expired?
+		bpl.s	.shake							; if not, branch and wait
+		addq.b	#2,obBoss_3rdRout(a0)			; advance to next tertiary routine (_LiftingBlock)
+		move.w	#-$800,obVelY(a0)				; rise at a speed of -8
+		tst.w	obBossSYZ_BlockAddr(a0)			; is Eggman carrying a block?
+		bne.s	.lifting						; if yes, branch
+		asr		obVelY(a0)						; if not, halve to -4 instead
 
-loc_19362:
-		moveq	#0,d0
-		bra.s	loc_1937C
+	.lifting:
+		moveq	#0,d0							; no shake
+		bra.s	.update
 ; ===========================================================================
 
-loc_19366:
+	.shake:
 		moveq	#0,d0
-		cmpi.w	#$1E,boss_delaytime(a0)
-		bgt.s	loc_1937C
-		moveq	#2,d0
-		btst	#1,objoff_3D(a0)
-		beq.s	loc_1937C
-		neg.w	d0
+		cmpi.w	#30,obBoss_DelayTime(a0)		; have 20 frames passed since making contact with the block?
+		bgt.s	.update							; if not, branch
+		moveq	#2,d0							; shake 2px
+		btst	#1,obBoss_DelayTime+1(a0)		; test bit 1 of timer (changes every 2nd frame)
+		beq.s	.update							; branch if 0
+		neg.w	d0								; shake -2px
 
-loc_1937C:
-		add.w	boss_bufferY(a0),d0
-		move.w	d0,obY(a0)					; apply juddering effect as Eggman lifts the block
-		move.w	boss_bufferX(a0),obX(a0)
+	.update:
+		add.w	obBoss_BufferY(a0),d0				; add parent y pos to shake
+		move.w	d0,obY(a0)						; update actual y pos to apply juddering effect as Eggman lifts the block
+		move.w	obBoss_BufferX(a0),obX(a0)
 		bra.w	BossSpringYard_ChkHit
 ; ===========================================================================
 
 BSYZSpike_LiftingBlock:		; Tertiary Routine 4
 		move.w	#boss_syz_y+$E,d0
-		tst.w	syzboss_block(a0)			; is Eggman carrying a block?
-		beq.s	loc_1939C					; if not, branch
+		tst.w	obBossSYZ_BlockAddr(a0)			; is Eggman carrying a block?
+		beq.s	.no_block						; if not, branch
 		subi.w	#$18,d0
 
-loc_1939C:
-		cmp.w	boss_bufferY(a0),d0
-		blt.s	loc_193BE
-		move.w	#8,boss_delaytime(a0)
-		tst.w	syzboss_block(a0)			; is Eggman carrying a block?
-		beq.s	loc_193B4					; if not, branch
-		move.w	#$2D,boss_delaytime(a0)
+	.no_block:
+		cmp.w	obBoss_BufferY(a0),d0				; has ship reached top of the screen?
+		blt.s	.not_at_top						; if not, branch
+		move.w	#8,obBoss_DelayTime(a0)
+		tst.w	obBossSYZ_BlockAddr(a0)			; is Eggman carrying a block?
+		beq.s	.no_block2						; if not, branch
+		move.w	#45,obBoss_DelayTime(a0)
 
-loc_193B4:
-		addq.b	#2,obSubtype(a0)
-		clr.w	obVelY(a0)
+	.no_block2:
+		addq.b	#2,obBoss_3rdRout(a0)			; goto BSYZ_BreakBlock
+		clr.w	obVelY(a0)						; stop moving up
 		bra.w	BossSpringYard_ApplyMovement
 ; ===========================================================================
 
-loc_193BE:
+	.not_at_top:
 		cmpi.w	#-$40,obVelY(a0)
 		bge.w	BossSpringYard_ApplyMovement
 		addi.w	#$C,obVelY(a0)
@@ -281,83 +279,86 @@ loc_193BE:
 ; ===========================================================================
 
 BSYZSpike_BreakingBlock:		; Tertiary Routine 6
-		subq.w	#1,boss_delaytime(a0)
-		bgt.s	loc_19406
-		bmi.s	loc_193EE
+		subq.w	#1,obBoss_DelayTime(a0)			; decrement timer
+		bgt.s	.shake
+		bmi.s	.reset_to_hover					; branch if below 0
 		moveq	#-1,d0
-		move.w	syzboss_block(a0),d0
-		beq.s	loc_193E8					; if Eggman doesn't have a block, branch 
-		movea.l	d0,a1
-		move.b	#$A,objoff_29(a1)
+		move.w	obBossSYZ_BlockAddr(a0),d0		; get RAM address of block
+		beq.s	.no_block						; if Eggman doesn't have a block, branch 
+		movea.l	d0,a1							; load block to a1
+		move.b	#$A,obBossBlock_Mode(a1)		; signal block to break
 
-loc_193E8:
-		clr.w	syzboss_block(a0)			; clear block address
-		bra.s	loc_19406
+	.no_block:
+		clr.w	obBossSYZ_BlockAddr(a0)			; clear block address
+		bra.s	.shake
 ; ===========================================================================
 
-loc_193EE:
-		cmpi.w	#-$1E,boss_delaytime(a0)
-		bne.s	loc_19406
-		clr.b	objoff_29(a0)
-		subq.b	#2,ob2ndRout(a0)
-		move.b	#-1,objoff_3D(a0)
+	.reset_to_hover:
+		cmpi.w	#-$1E,obBoss_DelayTime(a0)
+		bne.s	.shake
+		clr.b	obBossSYZ_Mode(a0)
+		subq.b	#2,ob2ndRout(a0)				; -> BSYZ_ShipMove
+		move.b	#-1,obBoss_DelayTime+1(a0)
 		bra.w	BossSpringYard_ChkHit
 ; ===========================================================================
 
-loc_19406:
+	.shake:
 		moveq	#1,d0
-		tst.w	syzboss_block(a0)			; is Eggman carrying a block?
-		beq.s	loc_19410					; if not, branch
-		moveq	#2,d0
+		tst.w	obBossSYZ_BlockAddr(a0)			; is Eggman carrying a block?
+		beq.s	.no_block2						; if not, branch
+		moveq	#2,d0							; shake value
 
-loc_19410:
-		cmpi.w	#boss_syz_y+$E,boss_bufferY(a0)
-		beq.s	loc_19424
-		blt.s	loc_1941C
-		neg.w	d0
+	.no_block2:
+		cmpi.w	#boss_syz_y+$E,obBoss_BufferY(a0)	; is ship at top of screen?
+		beq.s	.skip_shake						; if yes, branch
+		blt.s	.above_top						; branch if above top
+		neg.w	d0								; invert shake
 
-loc_1941C:
-		tst.w	syzboss_block(a0)			; why is this test here???
-		add.w	d0,boss_bufferY(a0)
+	.above_top:
+		tst.w	obBossSYZ_BlockAddr(a0)			; why is this test here???
+		add.w	d0,obBoss_BufferY(a0)
 
-loc_19424:
+	.skip_shake:
 		moveq	#0,d0
-		tst.w	syzboss_block(a0)			; is Eggman carrying a block?
-		beq.s	loc_19438					; if not, branch
+		tst.w	obBossSYZ_BlockAddr(a0)			; is Eggman carrying a block?
+		beq.s	.skip_shake2					; if not, branch
 		moveq	#2,d0
-		btst	#0,objoff_3D(a0)
-		beq.s	loc_19438
+		btst	#0,obBoss_DelayTime+1(a0)
+		beq.s	.skip_shake2
 		neg.w	d0
 
-loc_19438:
-		add.w	boss_bufferY(a0),d0
-		move.w	d0,obY(a0)
-		move.w	boss_bufferX(a0),obX(a0)
+	.skip_shake2:
+		add.w	obBoss_BufferY(a0),d0
+		move.w	d0,obY(a0)						; update actual y pos
+		move.w	obBoss_BufferX(a0),obX(a0)
 		bra.w	BossSpringYard_ChkHit
 ; ===========================================================================
 
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
+; ---------------------------------------------------------------------------
+; Subroutine to find the OST address of the block Eggman is above
+;
+; output:
+;	a1 = address of OST of block Eggman is above
+; ---------------------------------------------------------------------------
 
 BossSpringYard_FindBlocks:
-		clr.w	syzboss_block(a0)		; clear stored block address
-		lea		(v_lvlobjspace).w,a1	; Fixed from (v_objspace+object_size*1)
-		moveq	#v_lvlobjcount,d0		; Fixed. Originally only covered the first half of object RAM.
+		clr.w	obBossSYZ_BlockAddr(a0)					; clear stored block address
+		lea		(v_lvlobjspace).w,a1					; Fixed from (v_objspace+object_size*1)
+		moveq	#v_lvlobjcount,d0						; Fixed. Originally only covered the first half of object RAM.
 		moveq	#id_BossBlock,d1
-		move.b	boss_parent(a0),d2
+		move.b	obBossSYZ_BlockNum(a0),d2
 
 	.loop:
-		cmp.b	obID(a1),d1				; is object a SYZ boss block?
-		bne.s	.nextObj				; if not, branch
+		cmp.b	obID(a1),d1								; is object a SYZ boss block?
+		bne.s	.nextObj								; if not, branch
 		cmp.b	obSubtype(a1),d2
 		bne.s	.nextObj
-		move.w	a1,syzboss_block(a0)
+		move.w	a1,obBossSYZ_BlockAddr(a0)
 		bra.s	.endloop
 ; ===========================================================================
 
 	.nextObj:
-		lea		object_size(a1),a1		; next object RAM entry
+		lea		object_size(a1),a1						; next object RAM entry
 		dbf		d0,.loop
 
 	.endloop:
@@ -366,59 +367,59 @@ BossSpringYard_FindBlocks:
 ; ===========================================================================
 
 BossSpringYard_ShipExplode:		; Secondary Routine 6
-		subq.w	#1,boss_delaytime(a0)
-		bmi.s	loc_1947E
-		bra.w	BossDefeated		; Make explosion in a random spot on the ship
+		subq.w	#1,obBoss_DelayTime(a0)					; decrement timer
+		bmi.s	.stop_exploding							; branch if below 0
+		bra.w	BossDefeated							; make explosion in a random spot on the ship
 ; ===========================================================================
 
-loc_1947E:
-		addq.b	#2,ob2ndRout(a0)
-		clr.w	obVelY(a0)
-		bset	#staFlipX,obStatus(a0)
+	.stop_exploding:
+		addq.b	#2,ob2ndRout(a0)						; -> BossSpringYard_ShipDestroyed
+		clr.w	obVelY(a0)								; stop moving
+		bset	#staFlipX,obStatus(a0)					; ship face right
 		bclr	#7,obStatus(a0)
 		clr.w	obVelX(a0)
-		move.w	#-1,boss_delaytime(a0)
+		move.w	#-1,obBoss_DelayTime(a0)					; set timer (counts up)
 		tst.b	(v_bossstatus).w
 		bne.w	BossSpringYard_ChkHit
-		move.b	#1,(v_bossstatus).w
+		move.b	#1,(v_bossstatus).w						; set boss beaten flag
 		bra.w	BossSpringYard_ChkHit
 ; ===========================================================================
 
 BossSpringYard_ShipDestroyed:		; Secondary Routine 8
-		addq.w	#1,boss_delaytime(a0)
-		beq.s	loc_194BC
-		bpl.s	loc_194C2
-		addi.w	#$18,obVelY(a0)
+		addq.w	#1,obBoss_DelayTime(a0)					; increment timer
+		beq.s	.stop_falling							; branch if 0
+		bpl.s	.ship_recovers							; branch if 1 or more
+		addi.w	#$18,obVelY(a0)							; apply gravity (falls)
 		bra.w	BossSpringYard_ApplyMovement
 ; ===========================================================================
 
-loc_194BC:
-		clr.w	obVelY(a0)
+	.stop_falling:
+		clr.w	obVelY(a0)								; stop falling
 		bra.w	BossSpringYard_ApplyMovement
 ; ===========================================================================
 
-loc_194C2:
-		cmpi.w	#$20,boss_delaytime(a0)
-		blo.s	loc_194DA
-		beq.s	loc_194E0
-		cmpi.w	#$2A,boss_delaytime(a0)
-		blo.w	BossSpringYard_ApplyMovement
-		addq.b	#2,ob2ndRout(a0)
-		move.l	#$0400FFC0,obVelX(a0)	; (xVel: $400, yVel: -$40); move ship to the right, and upward slightly
+	.ship_recovers:
+		cmpi.w	#32,obBoss_DelayTime(a0)					; have 32 frames passed since ship stopped falling?
+		blo.s	.ship_rises								; if not, branch
+		beq.s	.stop_rising							; if exactly 32, branch
+		cmpi.w	#42,obBoss_DelayTime(a0)					; have 42 frames passed since ship stopped falling?
+		blo.w	BossSpringYard_ApplyMovement			; if not, branch
+		addq.b	#2,ob2ndRout(a0)						; -> BossSpringYard_ShipFlee
+;		move.l	#$0400FFC0,obVelX(a0)					; (xVel: $400, yVel: -$40); move ship to the right, and upward slightly
 
 	if PostBossScreenUnlock
-		move.w	#boss_syz_end,(v_limitright).w
+		move.w	#boss_syz_end,(v_limitright).w			; immediately extend right-side level boundary
 	endif
 
 		bra.w	BossSpringYard_ApplyMovement
 ; ===========================================================================
 
-loc_194DA:
-		subq.w	#8,obVelY(a0)
+	.ship_rises:
+		subq.w	#8,obVelY(a0)							; move ship upwards
 		bra.w	BossSpringYard_ApplyMovement
 ; ===========================================================================
 
-loc_194E0:
+	.stop_rising:
 		clr.w	obVelY(a0)
 
 	if ~~AmbienceMode
@@ -428,112 +429,113 @@ loc_194E0:
 			move.w	#bgm_SYZ,d0
 		endif
 
-			jsr		(QueueSound1).w			; play SYZ music
-			move.b	d0,(v_lastbgmplayed).w	; store last played music
+			jsr		(QueueSound1).w						; play SYZ music
+			move.b	d0,(v_lastbgmplayed).w				; store last played music
 	endif
 
-		bra.w	BossSpringYard_ApplyMovement
+		bra.w	BossSpringYard_ApplyMovement			; update actual position, check for hits
 ; ===========================================================================
 
 BossSpringYard_ShipFlee:		; Secondary Routine $A
+		move.l	#$0400FFC0,obVelX(a0)					; (xVel: $400, yVel: -$40); move ship to the right, and upward slightly
 	if ~~PostBossScreenUnlock
-		cmpi.w	#boss_syz_end,(v_limitright).w
-		bhs.s	loc_1950C
-		addq.w	#2,(v_limitright).w
-		bra.s	loc_19512
+		cmpi.w	#boss_syz_end,(v_limitright).w			; check for new boundary
+		bhs.s	.chkdel
+		addq.w	#2,(v_limitright).w						; expand right edge of level boundary
+		bra.s	.update
 ; ===========================================================================
 	endif
 
-loc_1950C:
-		tst.b	obRender(a0)
-		bpl.s	BossSpringYard_ShipDelete
+	.chkdel:
+		tst.b	obRender(a0)							; is ship on-screen?
+		bpl.s	BossSpringYard_ShipDelete				; if not, branch
 
-loc_19512:
-		bsr.w	BossMove
-		bra.w	BossSpringYard_ShipHover
+.update:
+		bsr.w	BossMove								; update parent position
+		bra.w	BossSpringYard_ShipHover				; update actual position
 ; ===========================================================================
 
 BossSpringYard_ShipDelete:
 		; Avoid returning to BossSpringYard_ShipMain to prevent a
-		; display-and-delete bug.
-		addq.l	#4,sp			; Clownacy DisplaySprite Fix
+		; display-and-delete bug. (Clownacy DisplaySprite Fix)
+		addq.l	#4,sp
 		jmp		(DeleteObject).l
 ; ===========================================================================
 
 BossSpringYard_FaceMain:	; Routine 4
-		movea.l	boss_parent(a0),a1
+		movea.w	obBoss_Parent(a0),a1					; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.b	#id_BossSpringYard,obID(a1)			; is the boss still loaded?
-		bne.w	BossSpringYard_Delete				; if not, delete object
+		cmpi.b	#id_BossSpringYard,obID(a1)				; is the boss still loaded?
+		bne.w	BossSpringYard_Delete					; if not, delete object
 	; Boss Object Fix End
 
 		moveq	#0,d0
 		moveq	#aniID_NormalFace1,d1
 		move.b	ob2ndRout(a1),d0
 		move.w	BossSpringYard_FaceRoutines(pc,d0.w),d0
-		jsr		BossSpringYard_FaceRoutines(pc,d0.w)
-		move.b	d1,obAnim(a0)
+		jsr		BossSpringYard_FaceRoutines(pc,d0.w)	; set d1 as animation number
+		move.b	d1,obAnim(a0)							; set animation
 		move.b	(a0),d0
-		cmp.b	(a1),d0
-		bne.s	BossSpringYard_Delete
+		cmp.b	(a1),d0									; has ship been destroyed? (objects no longer match id)
+		bne.s	BossSpringYard_Delete					; if yes, branch
 		bra.s	BossSpringYard_Display
 ; ===========================================================================
 
 BossSpringYard_FaceRoutines:	offsetTable
-		offsetTableEntry.w loc_19574
-		offsetTableEntry.w loc_19574
-		offsetTableEntry.w loc_1955A
-		offsetTableEntry.w loc_19552
-		offsetTableEntry.w loc_19552
-		offsetTableEntry.w loc_19556
+		offsetTableEntry.w BSYZ_Face_ChkHit
+		offsetTableEntry.w BSYZ_Face_ChkHit
+		offsetTableEntry.w BSYZ_Face_Attack
+		offsetTableEntry.w BSYZ_Face_Defeat
+		offsetTableEntry.w BSYZ_Face_Defeat
+		offsetTableEntry.w BSYZ_Face_Escape
 ; ===========================================================================
 
-loc_19552:
-		moveq	#aniID_DefeatFace,d1
+BSYZ_Face_Defeat:
+		moveq	#aniID_DefeatFace,d1					; use defeated animation
 		rts	
 ; ===========================================================================
 
-loc_19556:
-		moveq	#aniID_PanicFace,d1
+BSYZ_Face_Escape:
+		moveq	#aniID_PanicFace,d1						; use sweating animation
 		rts	
 ; ===========================================================================
 
-loc_1955A:
-		cmpi.b	#2,obSubtype(a1)
-		beq.s	loc_19574
-		moveq	#aniID_PanicFace,d1
+BSYZ_Face_Attack:
+		cmpi.b	#2,obSubtype(a1)						; is the ship lifting a block or ascending?
+		beq.s	BSYZ_Face_ChkHit						; if yes, branch
+		moveq	#aniID_PanicFace,d1						; if not, load sweating animation first
 
-loc_19574:
-		tst.b	obColType(a1)
-		bne.s	loc_1957E
-		moveq	#aniID_HurtFace,d1
+BSYZ_Face_ChkHit:
+		tst.b	obColType(a1)							; was Eggman recently hit and is flashing?
+		bne.s	.not_hit								; if not, branch
+		moveq	#aniID_HurtFace,d1						; use hit animation
 		rts	
 ; ===========================================================================
 
-loc_1957E:
-		cmpi.b	#4,(v_player+obRoutine).w
-		blo.s	locret_19588
-		moveq	#aniID_LaughFace,d1
+	.not_hit:
+		cmpi.b	#4,(v_player+obRoutine).w				; is Sonic hurt or dead?
+		blo.s	.sonic_ok								; if not, branch
+		moveq	#aniID_LaughFace,d1						; use laughing animation
 
-locret_19588:
+	.sonic_ok:
 		rts	
 ; ===========================================================================
 
 BossSpringYard_FlameMain:; Routine 6
-		movea.l	boss_parent(a0),a1
+		movea.w	obBoss_Parent(a0),a1					; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.b	#id_BossSpringYard,obID(a1)			; is the boss still loaded?
-		bne.w	BossSpringYard_Delete				; if not, delete object
+		cmpi.b	#id_BossSpringYard,obID(a1)				; is the boss still loaded?
+		bne.w	BossSpringYard_Delete					; if not, delete object
 	; Boss Object Fix End
 
 		move.b	#aniID_Blank,obAnim(a0)
-		cmpi.b	#$A,ob2ndRout(a1)
-		bne.s	loc_195AA
-		move.b	#aniID_EscapeFlame,obAnim(a0)
-		tst.b	obRender(a0)
-		bpl.s	BossSpringYard_Delete
+		cmpi.b	#$A,ob2ndRout(a1)						; is ship on BSYZ_Escape?
+		bne.s	BossSpringYard_ChkMoving				; if not, branch
+		move.b	#aniID_EscapeFlame,obAnim(a0)			; use big flame animation
+		tst.b	obRender(a0)							; is object on-screen?
+		bpl.s	BossSpringYard_Delete					; if not, branch
 		bra.s	BossSpringYard_Display
 ; ===========================================================================
 
@@ -541,77 +543,77 @@ BossSpringYard_Delete:
 		jmp		(DeleteObject).l
 ; ===========================================================================
 
-loc_195AA:
+BossSpringYard_ChkMoving:
 		tst.w	obVelX(a1)
-		beq.s	BossSpringYard_Display
+		beq.s	BossSpringYard_Display					; branch if ship isn't moving
 		move.b	#aniID_Flame1,obAnim(a0)
 
 BossSpringYard_Display:
 		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
-		movea.l	boss_parent(a0),a1
+		movea.w	obBoss_Parent(a0),a1					; get address of parent object (ship)
 		move.w	obX(a1),obX(a0)
 		move.w	obY(a1),obY(a0)
 
-loc_195DA:
+BSYZ_Display_SkipAnim:
 		move.b	obStatus(a1),obStatus(a0)
 		moveq	#(maskFlipX+maskFlipY),d0
 		and.b	obStatus(a0),d0
-		andi.b	#$FC,obRender(a0)
-		or.b	d0,obRender(a0)
+		andi.b	#$FC,obRender(a0)						; ignore x/yflip bits
+		or.b	d0,obRender(a0)							; combine x/yflip bits from status instead
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 
 BossSpringYard_SpikeMain:	; Routine 8
-		movea.l	boss_parent(a0),a1
+		movea.w	obBoss_Parent(a0),a1					; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.b	#id_BossSpringYard,obID(a1)			; is the boss still loaded?
-		bne.w	BossSpringYard_Delete				; if not, delete object
+		cmpi.b	#id_BossSpringYard,obID(a1)				; is the boss still loaded?
+		bne.w	BossSpringYard_Delete					; if not, delete object
 	; Boss Object Fix End
 
-		cmpi.b	#$A,ob2ndRout(a1)
-		bne.s	loc_1961C
-		tst.b	obRender(a0)
-		bpl.s	BossSpringYard_Delete
+		cmpi.b	#$A,ob2ndRout(a1)						; is ship on BSYZ_Escape?
+		bne.s	.not_escaping							; if not, branch
+		tst.b	obRender(a0)							; is object on-screen?
+		bpl.s	BossSpringYard_Delete					; if not, branch
 
-loc_1961C:
+	.not_escaping:
 		move.w	obX(a1),obX(a0)
 		move.w	obY(a1),obY(a0)
-		move.w	boss_delaytime(a0),d0
-		cmpi.b	#4,ob2ndRout(a1)
-		bne.s	loc_19652
-		cmpi.b	#6,obSubtype(a1)
-		beq.s	loc_1964C
-		tst.b	obSubtype(a1)
-		bne.s	loc_19658
+		move.w	obBoss_DelayTime(a0),d0
+		cmpi.b	#4,ob2ndRout(a1)						; is ship descending or lifting a block?
+		bne.s	.not_attacking							; if not, branch
+		cmpi.b	#6,obSubtype(a1)						; is block being broken right now?
+		beq.s	.breaking_block							; if yes, branch
+		tst.b	obSubtype(a1)							; is ship descending?
+		bne.s	.set_spike								; if not branch
 		cmpi.w	#$94,d0
-		bge.s	loc_19658
+		bge.s	.set_spike
 		addq.w	#7,d0
-		bra.s	loc_19658
+		bra.s	.set_spike
 ; ===========================================================================
 
-loc_1964C:
-		tst.w	boss_delaytime(a1)
-		bpl.s	loc_19658
+	.breaking_block:
+		tst.w	obBoss_DelayTime(a1)
+		bpl.s	.set_spike
 
-loc_19652:
+	.not_attacking:
 		tst.w	d0
-		ble.s	loc_19658
+		ble.s	.set_spike
 		subq.w	#5,d0
 
-loc_19658:
-		move.w	d0,boss_delaytime(a0)
+	.set_spike:
+		move.w	d0,obBoss_DelayTime(a0)					; set timer
 		asr.w	#2,d0
-		add.w	d0,obY(a0)
+		add.w	d0,obY(a0)								; extend or retract spike
 		move.b	#8,obDispWid(a0)
 		move.b	#$C,obHeight(a0)
 		clr.b	obColType(a0)
-		movea.l	boss_parent(a0),a1
-		tst.b	obColType(a1)
-		beq.w	loc_195DA
-		tst.b	objoff_29(a1)
-		bne.w	loc_195DA
-		move.b	#(colHarmful|colSz_4x16),obColType(a0)
-		bra.w	loc_195DA
+		movea.w	obBoss_Parent(a0),a1					; get address of parent object
+		tst.b	obColType(a1)							; has ship been hit recently?
+		beq.w	BSYZ_Display_SkipAnim					; if yes, branch
+		tst.b	obBossSYZ_Mode(a1)						; is block being lifted?
+		bne.w	BSYZ_Display_SkipAnim					; if yes, branch
+		move.b	#(colHarmful|colSz_4x16),obColType(a0)	; make spike harmful
+		bra.w	BSYZ_Display_SkipAnim
 ; ===========================================================================
