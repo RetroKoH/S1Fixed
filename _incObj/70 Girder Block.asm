@@ -63,7 +63,7 @@ Gird_ChgDir:
 		move.b	obGird_MoveSetting(a0),d0		; get current setting
 		andi.w	#$18,d0
 		lea		(.settings).l,a1
-		lea		(a1,d0.w),a1					; jump to relevant settings
+		adda.w	d0,a1							; jump to relevant settings (HAME: Replace lea instruction)
 		move.l	(a1)+,obVelX(a0)				; move the data contained in the array to obVelX and obVelY, and increment the address in a1
 		move.w	(a1)+,obGird_MoveTime(a0)		; how long to move in that direction
 		addq.b	#8,obGird_MoveSetting(a0)		; use next settings
