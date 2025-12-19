@@ -34,7 +34,7 @@ GM_Credits:
 		moveq	#0,d0
 		move.w	(v_levelheader_id).w,d0
 		lea		(LevelHeaders).l,a2		; a2 = LevelHeaders address
-		lea		(a2,d0.w),a2			; a2 = LevelHeaders + zone offset
+		adda.w	d0,a2					; a2 = LevelHeaders + zone offset (HAME: Replace lea instruction)
 		moveq	#0,d0
 		move.b	(a2),d0
 		bsr.w	AddLevelPLC				; load object graphics (removed beq branch, since GHZ is now index 0)

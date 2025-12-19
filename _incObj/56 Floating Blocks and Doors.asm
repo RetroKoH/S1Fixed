@@ -78,7 +78,7 @@ FBlock_Main:	; Routine 0
 		bcs.s	.isLZ							; branch if low nybble was > 8
 		lsl.w	#2,d0							; multiply by 4
 		lea		(v_oscillate+$2C).w,a2
-		lea		(a2,d0.w),a2					; read oscillating value
+		adda.w	d0,a2							; read oscillating value (HAME: Replace lea instruction)
 		tst.w	(a2)
 		bpl.s	.isLZ							; branch if not negative
 		bchg	#staFlipX,obStatus(a0)			; otherwise, xflip object

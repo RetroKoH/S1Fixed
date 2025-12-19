@@ -33,7 +33,7 @@ AfterImages_Display:
 		move.w	(v_trackpos).w,d0
 		lea		(v_tracksonic).w,a1
 		sub.b	d1,d0
-		lea		(a1,d0.w),a1
+		adda.w	d0,a1							; jump to current index (HAME: Replace lea instruction)
 		move.w	(a1)+,obX(a0)					; Use previous player x_pos
 		move.w	(a1)+,obY(a0)					; Use previous player y_pos
 

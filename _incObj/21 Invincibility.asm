@@ -67,8 +67,8 @@ Stars_Next:	; Routine 2
 	.a:
 		move.b	d1,(a4)+
 		lea		(v_tracksonic).w,a1
-		lea		(a1,d0.w),a1
-		move.w	(a1)+,d4			; current x-position, pre-adjustment
+		adda.w	d0,a1					; jump to current index (HAME: Replace lea instruction)
+		move.w	(a1)+,d4				; current x-position, pre-adjustment
 
 	; Mercury Shield/Invincibility Positioning Fix
 		move.b	obStatus(a0),d0
