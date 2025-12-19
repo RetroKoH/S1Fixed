@@ -42,7 +42,7 @@ GHZBall_ReactToItem:
 		andi.w	#$3F,d0
 		add.w	d0,d0
 		lea		Touch_Sizes-2,a2
-		lea		(a2,d0.w),a2
+		adda.w	d0,a2				; (HAME: Replace lea instruction)
 		moveq	#0,d1
 		move.b	(a2)+,d1
 		move.w	obX(a1),d0

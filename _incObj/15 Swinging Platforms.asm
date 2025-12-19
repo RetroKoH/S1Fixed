@@ -297,7 +297,8 @@ Swing_Display:	; Routine $A
 		lsr.b	#1,d0					; cut range down to 0-$40
 		
 		lea		(GBall_Angles).l,a2		; a2 = GBall_Angles address
-		lea		(a2,d0.w),a2			; a2 = GBall_Angles + angle offset
+		adda.w	d0,a2					; a2 = GBall_Angles + angle offset (HAME: Replace lea instruction)
+;		lea		(a2,d0.w),a2			; a2 = GBall_Angles + angle offset (TO-DO: is it possible to load this directly to d0 instead?)
 		move.b	(a2),d0
 	; angled ball mod end
 

@@ -389,7 +389,7 @@ LevelSelect_DrawSoundNumber:
 LevelSelect_DrawIcon:
 		move.w	(v_levselzone).w,d0		; Get selected zone/menu option
 		lea		(LevSel_IconTable).l,a3
-		lea		(a3,d0.w),a3			; Get respective icon frame
+		adda.w	d0,a3					; Get respective icon frame (HAME: Replace lea instruction)
 		lea		($FF08C0).l,a1			; Chunk_Table + $C80
 		moveq	#0,d0
 		move.b	(a3),d0					; load icon frame # to d0
@@ -398,7 +398,7 @@ LevelSelect_DrawIcon:
 		add.w	d0,d0
 		add.w	d1,d0					; d0=(d0<<3)*3;
 ;		copyTilemap (a1,d0.w), $4B360003, 3, 2
-		lea		(a1,d0.w),a1			; Go to respective area in Chunk table
+		adda.w	d0,a1					; Go to respective area in Chunk table (HAME: Replace lea instruction)
 		move.l	#$4BB60003,d0
 		moveq	#3,d1
 		moveq	#2,d2
@@ -407,7 +407,7 @@ LevelSelect_DrawIcon:
 		moveq	#0,d0
 		move.b	(a3),d0					; Get respective icon frame
 		lsl.w	#5,d0
-		lea		(a1,d0.w),a1
+		adda.w	d0,a1					; (HAME: Replace lea instruction)
 		lea		(v_palette+$40).w,a2	
 		move.l  #$C0400000,vdp_control_port-vdp_data_port(a6)	; fixing delay with palette updating when changing icons (Clownacy)
 		moveq	#7,d1

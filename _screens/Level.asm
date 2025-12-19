@@ -100,7 +100,7 @@ Level_NoMusicFade:
 		lsl.w	#3,d0						; zone * 8
 .cont:
 		lea		(Art_TitleCardZones).l,a2	; a2 = Art_TitleCardZones address
-		lea		(a2,d0.w),a2				; a2 = Art_TitleCardZones + zone offset
+		adda.w	d0,a2						; a2 = Art_TitleCardZones + zone offset (HAME: Replace lea instruction)
 		movea.l	(a2)+,a0					; a0 = zone's art file movea.l?
 		move.l	(a2),d0						; # of tiles
 .load:
@@ -162,7 +162,7 @@ LoadLevelArt:
 		lsl.w	#4,d0
 		move.w	d0,(v_levelheader_id).w			; store level header ID (reduce calculations w/ Level Loading -- RetroKoH)
 		lea		(LevelHeaders).l,a2				; a2 = LevelHeaders address
-		lea		(a2,d0.w),a2					; a2 = LevelHeaders + zone offset
+		adda.w	d0,a2							; a2 = LevelHeaders + zone offset (HAME: Replace lea instruction)
 		moveq	#0,d0
 		move.b	(a2),d0							; get 2nd level PLC index (Removed conditional branch, as 0 now points to GHZ)
 		bsr.w	AddLevelPLC						; load level patterns

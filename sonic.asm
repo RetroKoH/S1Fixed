@@ -1194,7 +1194,7 @@ NewPLC:
 		lea		(ArtLoadCues).l,a1
 		add.w	d0,d0
 		move.w	(a1,d0.w),d0
-		lea		(a1,d0.w),a1	; jump to relevant PLC
+		adda.w	d0,a1			; jump to relevant PLC (HAME: Replace lea instruction)
 		bsr.s	ClearPLC		; erase any data in PLC buffer space
 		lea		(v_plc_buffer).w,a2
 		move.w	(a1)+,d0		; get length of PLC
@@ -2712,7 +2712,7 @@ LevelDataLoad:
 		moveq	#0,d0
 		move.w	(v_levelheader_id).w,d0		; load previously stored level header ID -- RetroKoH
 		lea		(LevelHeaders).l,a2			; a2 = LevelHeaders address
-		lea		(a2,d0.w),a2				; a2 = LevelHeaders + zone offset
+		adda.w	d0,a2						; a2 = LevelHeaders + zone offset (HAME: Replace lea instruction)
 		move.l	a2,-(sp)					; store LevelHeader location for future use (Data Load)
 
 		move.l	(a2)+,d0					; d0 = 1st longword of data that a2 points to, (zone's first PLC ID and art address).
@@ -4581,7 +4581,7 @@ loc_1B350:
 		moveq	#0,d0
 		move.b	(v_ani0_frame).w,d0
 		add.w	d0,d0
-		lea		(a0,d0.w),a0
+		adda.w	d0,a0					; (HAME: Replace lea instruction)
 		move.w	(a0),(a1)
 		move.w	2(a0),8(a1)
 		move.w	4(a0),$10(a1)

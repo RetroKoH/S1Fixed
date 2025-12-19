@@ -340,7 +340,7 @@ Sonic_Display:
 Sonic_RecordPosition:
 		move.w	(v_trackpos).w,d0		; position tracker index
 		lea		(v_tracksonic).w,a1		; address to record data to
-		lea		(a1,d0.w),a1			; jump to current index
+		adda.w	d0,a1					; jump to current index (HAME: Replace lea instruction)
 		move.w	obX(a0),(a1)+			; save Sonic's x position
 		move.w	obY(a0),(a1)+			; save Sonic's y position
 		addq.b	#4,(v_trackbyte).w		; next index (wraps to 0 after $FC)

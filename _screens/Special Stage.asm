@@ -406,7 +406,7 @@ loc_4992:
 		move.b	(a0)+,d0
 		move.w	d0,(v_ssbganim).w
 		lea		(byte_4ABC).l,a1
-		lea		(a1,d0.w),a1
+		adda.w	d0,a1					; (HAME: Replace lea instruction)
 
 	; FG VRAM
 		move.w	#$8200,d0
