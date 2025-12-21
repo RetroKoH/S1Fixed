@@ -33,8 +33,8 @@ BossStarLight_ObjData:
 BossStarLight_Main:
 		move.w	#boss_slz_x+$188,obX(a0)
 		move.w	#boss_slz_y+$18,obY(a0)
-		move.w	obX(a0),boss_bufferX(a0)
-		move.w	obY(a0),boss_bufferY(a0)
+		move.w	obX(a0),obBoss_BufferX(a0)
+		move.w	obY(a0),obBoss_BufferY(a0)
 		move.b	#(colEnemy|colSz_24x24),obColType(a0)
 		move.b	#8,obColProp(a0)				; set number of hits to 8
 		lea		BossStarLight_ObjData(pc),a2	; get data for routine number, animation & priority
@@ -60,7 +60,7 @@ BossStarLight_LoadBoss:
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.b	#$20,obDispWid(a1)
-		move.l	a0,boss_parent(a1)
+		move.w	a0,obBoss_Parent(a1)
 		dbf		d1,BossStarLight_Loop	; repeat sequence 3 more times
 
 	; Set data for Tube
@@ -109,26 +109,26 @@ BossStarLight_ShipIndex:	offsetTable
 
 BossStarLight_ShipStart:		; Secondary Routine 0
 		move.w	#-$100,obVelX(a0)					; move ship left
-		cmpi.w	#boss_slz_x+$120,boss_bufferX(a0)	; has ship reached right side of screen?
+		cmpi.w	#boss_slz_x+$120,obBoss_BufferX(a0)	; has ship reached right side of screen?
 		bhs.s	BossStarLight_Update				; if not, branch
 		addq.b	#2,ob2ndRout(a0)
 
 BossStarLight_Update:
 		bsr.w	BossMove							; update parent position
-		move.b	boss_hoverangle(a0),d0
-		addq.b	#2,boss_hoverangle(a0)
+		move.b	obBoss_HoverAngle(a0),d0
+		addq.b	#2,obBoss_HoverAngle(a0)
 		jsr		(CalcSine).w
 		asr.w	#6,d0
-		add.w	boss_bufferY(a0),d0
+		add.w	obBoss_BufferY(a0),d0
 		move.w	d0,obY(a0)
-		move.w	boss_bufferX(a0),obX(a0)
+		move.w	obBoss_BufferX(a0),obX(a0)
 		bra.s	BossStarLight_ChkHit				; check for hit
 ; ===========================================================================
 
 BossStarLight_ApplyMovement:
 		bsr.w	BossMove
-		move.w	boss_bufferY(a0),obY(a0)
-		move.w	boss_bufferX(a0),obX(a0)
+		move.w	obBoss_BufferY(a0),obY(a0)
+		move.w	obBoss_BufferX(a0),obX(a0)
 
 BossStarLight_ChkHit:
 		cmpi.b	#6,ob2ndRout(a0)
@@ -137,9 +137,9 @@ BossStarLight_ChkHit:
 		bmi.s	BossStarLight_AwardPoints	; if bit 7 is set, branch
 		tst.b	obColType(a0)
 		bne.s	locret_18A44
-		tst.b	boss_flashframes(a0)
+		tst.b	obBoss_FlashFrames(a0)
 		bne.w	BossFlash
-		move.b	#$20,boss_flashframes(a0)	; set number of	times for ship to flash
+		move.b	#$20,obBoss_FlashFrames(a0)	; set number of	times for ship to flash
 		move.w	#sfx_HitBoss,d0
 		jsr		(QueueSound2).w		; play boss damage sound
 		bra.w	BossFlash
@@ -152,13 +152,13 @@ BossStarLight_AwardPoints:
 		moveq	#100,d0
 		bsr.w	AddPoints			; award 1000 points
 		move.b	#6,ob2ndRout(a0)	; set ship to exploding routine
-		move.b	#$78,boss_delaytime(a0)
+		move.b	#$78,obBoss_DelayTime(a0)
 		clr.w	obVelX(a0)
 		rts	
 ; ===========================================================================
 
 BossStarLight_ShipMove:		; Secondary Routine 2
-		move.w	boss_bufferX(a0),d0
+		move.w	obBoss_BufferX(a0),d0
 		move.w	#$200,obVelX(a0)			; move ship right
 		btst	#staFlipX,obStatus(a0)
 		bne.s	loc_18A7C
@@ -206,12 +206,12 @@ loc_18AB4:
 loc_18AC0:
 		move.b	d2,obSubtype(a0)		; number of seesaw the ship is above (0/1/2)
 		addq.b	#2,ob2ndRout(a0)		; goto BSLZ_MakeBall next
-		move.b	#$28,boss_delaytime(a0)	; set timer to 40 frames
+		move.b	#$28,obBoss_DelayTime(a0)	; set timer to 40 frames
 		bra.w	BossStarLight_Update	; update position, check for hit
 ; ===========================================================================
 
 BossStarLight_ShipMakeBall:		; Secondary Routine 4
-		cmpi.b	#$28,boss_delaytime(a0)		; has timer started counting down yet?
+		cmpi.b	#$28,obBoss_DelayTime(a0)		; has timer started counting down yet?
 		bne.s	loc_18B36					; if yes, branch
 		moveq	#-1,d0
 		move.b	obSubtype(a0),d0			; get number of seesaw the ship is above (0/1/2)
@@ -246,7 +246,7 @@ loc_18AFA:
 		move.w	a0,obBossSpike_Parent(a1)	; set address of parent object
 
 loc_18B36:
-		subq.b	#1,boss_delaytime(a0)
+		subq.b	#1,obBoss_DelayTime(a0)
 		beq.s	loc_18B40
 		bra.w	BossStarLight_ChkHit
 ; ===========================================================================
@@ -257,7 +257,7 @@ loc_18B40:
 ; ===========================================================================
 
 BossStarLight_ShipExplode:		; Secondary Routine 6
-		subq.b	#1,boss_delaytime(a0)
+		subq.b	#1,obBoss_DelayTime(a0)
 		bmi.s	loc_18B52
 		bra.w	BossDefeated		; Make explosion in a random spot on the ship
 ; ===========================================================================
@@ -268,7 +268,7 @@ loc_18B52:
 		bset	#staFlipX,obStatus(a0)
 		bclr	#7,obStatus(a0)
 		clr.w	obVelX(a0)
-		move.b	#-$18,boss_delaytime(a0)
+		move.b	#-$18,obBoss_DelayTime(a0)
 		tst.b	(v_bossstatus).w
 		bne.s	loc_18B7C
 		move.b	#1,(v_bossstatus).w
@@ -278,7 +278,7 @@ loc_18B7C:
 ; ===========================================================================
 
 BossStarLight_ShipDestroyed:		; Secondary Routine 8
-		addq.b	#1,boss_delaytime(a0)
+		addq.b	#1,obBoss_DelayTime(a0)
 		beq.s	loc_18B90					; if timer has ticked up to 0, branch
 		bpl.s	loc_18B96					; if timer is greater than zero, branch
 		addi.w	#$18,obVelY(a0)				; while timer is negative, the ship should sink down
@@ -291,10 +291,10 @@ loc_18B90:
 ; ===========================================================================
 
 loc_18B96:
-		cmpi.b	#$20,boss_delaytime(a0)
+		cmpi.b	#$20,obBoss_DelayTime(a0)
 		blo.s	loc_18BAE					; for about half a second, the ship will rise back up
 		beq.s	loc_18BB4					; if timer == $30, the ship stops rising and music resets
-		cmpi.b	#$2A,boss_delaytime(a0)
+		cmpi.b	#$2A,obBoss_DelayTime(a0)
 		blo.w	BossStarLight_ApplyMovement
 		addq.b	#2,ob2ndRout(a0)
 		move.l	#$0400FFC0,obVelX(a0)		; (xVel: $400, yVel: -$40); move ship to the right, and upward slightly
@@ -354,7 +354,7 @@ BossStarLight_PopAndDelete:
 ; ===========================================================================
 
 BossStarLight_FaceMain:	; Routine 4
-		movea.l	boss_parent(a0),a1
+		movea.w	obBoss_Parent(a0),a1
 
 	; Devon Boss Object Fix
 		cmpi.b	#id_BossStarLight,obID(a1)			; is the boss still loaded?
@@ -393,7 +393,7 @@ loc_18C1A:
 ; ===========================================================================
 
 BossStarLight_FlameMain:; Routine 6
-		movea.l	boss_parent(a0),a1
+		movea.w	obBoss_Parent(a0),a1
 
 	; Devon Boss Object Fix
 		cmpi.b	#id_BossStarLight,obID(a1)			; is the boss still loaded?
@@ -421,7 +421,7 @@ BossStarLight_Animate:
 		jsr		(AnimateSprite).w
 
 BossStarLight_Display:
-		movea.l	boss_parent(a0),a1
+		movea.w	obBoss_Parent(a0),a1
 		move.w	obX(a1),obX(a0)
 		move.w	obY(a1),obY(a0)
 		move.b	obStatus(a1),obStatus(a0)
@@ -433,7 +433,7 @@ BossStarLight_Display:
 ; ===========================================================================
 
 BossStarLight_TubeMain:	; Routine 8
-		movea.l	boss_parent(a0),a1
+		movea.w	obBoss_Parent(a0),a1
 
 	; Devon Boss Object Fix
 		cmpi.b	#id_BossStarLight,obID(a1)			; is the boss still loaded?

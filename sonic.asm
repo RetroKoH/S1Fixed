@@ -4285,11 +4285,11 @@ locret_178A2:
 
 BossMove:
 	; DeltaW Optimized Object Movement
-		movem.w	obVelX(a0),d0/d2	; load horizontal speed (d0) and vertical speed (d2)
-		lsl.l	#8,d0				; multiply by $100 (combine ext and asl to become lsl)
-		add.l	d0,boss_bufferX(a0)	; apply to stored x-axis position
-		lsl.l	#8,d2				; multiply by $100 (combine ext and asl to become lsl)
-		add.l	d2,boss_bufferY(a0)	; apply to stored y-axis position
+		movem.w	obVelX(a0),d0/d2		; load horizontal speed (d0) and vertical speed (d2)
+		lsl.l	#8,d0					; multiply by $100 (combine ext and asl to become lsl)
+		add.l	d0,obBoss_BufferX(a0)	; apply to stored x-axis position
+		lsl.l	#8,d2					; multiply by $100 (combine ext and asl to become lsl)
+		add.l	d2,obBoss_BufferY(a0)	; apply to stored y-axis position
 		rts
 ; End of function BossMove
 ; ===========================================================================
@@ -4310,7 +4310,7 @@ BossFlash:
 
 	.notBlack:
 		move.w	d0,(a1)					; load colour stored in	d0
-		subq.b	#1,boss_flashframes(a0)	; decrement number of times to flash
+		subq.b	#1,obBoss_FlashFrames(a0)	; decrement number of times to flash
 		bne.s	.stillFlashing
 		move.b	#(colEnemy|colSz_24x24),obColType(a0)	; reset collision after flashing
 
@@ -4318,16 +4318,6 @@ BossFlash:
 		rts	
 ; End of function BossFlash
 ; ===========================================================================
-
-	; Boss variables (Any unique variables are found within the object file itself)
-ob3rdRout = obSubtype			; bosses may use this OST as a tertiary routine counter
-
-boss_bufferX = objoff_30		; stored X-position (2 bytes)
-boss_parent = objoff_34			; parent address (4 bytes) -- Used by face, flame, and weapon
-boss_bufferY = objoff_38		; stored Y-position (2 bytes)
-boss_delaytime = objoff_3C		; delay timer (1/2 bytes)
-boss_flashframes = objoff_3E	; # of frames to flash white when hit (1 byte)
-boss_hoverangle = objoff_3F		; Used w/ CalcSine for the ship's hover effect (1 byte)
 
 	; Zone bosses
 		include	"_anim/Eggman.asm"
