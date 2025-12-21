@@ -5,18 +5,18 @@
 BossGreenHill:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
-		move.w	BossGreenHill_Index(pc,d0.w),d1
-		jmp		BossGreenHill_Index(pc,d1.w)
+		move.w	BossGHZ_Index(pc,d0.w),d1
+		jmp		BossGHZ_Index(pc,d1.w)
 ; ===========================================================================
 
-BossGreenHill_Index:		offsetTable
-		offsetTableEntry.w BossGreenHill_Main
-		offsetTableEntry.w BossGreenHill_ShipMain
-		offsetTableEntry.w BossGreenHill_FaceMain
-		offsetTableEntry.w BossGreenHill_FlameMain
+BossGHZ_Index:		offsetTable
+		offsetTableEntry.w BossGHZ_Main
+		offsetTableEntry.w BossGHZ_ShipMain
+		offsetTableEntry.w BossGHZ_FaceMain
+		offsetTableEntry.w BossGHZ_FlameMain
 		; The wrecking ball is its own object (Obj48)
 
-BossGreenHill_ObjData:
+BossGHZ_ObjData:
 	; Ship
 		dc.b 2,	aniID_Ship		; routine counter, animation
 	; Face
@@ -25,8 +25,8 @@ BossGreenHill_ObjData:
 		dc.b 6,	aniID_Blank
 ; ===========================================================================
 
-BossGreenHill_Main:	; Routine 0
-		lea		(BossGreenHill_ObjData).l,a2	; get data for routine number & animation
+BossGHZ_Main:	; Routine 0
+		lea		(BossGHZ_ObjData).l,a2			; get data for routine number & animation
 		movea.l	a0,a1							; replace current object with 1st in list
 		moveq	#2,d1							; 2 additional objects
 		bra.s	.loadboss
@@ -42,94 +42,94 @@ BossGreenHill_Main:	; Routine 0
 	.loadboss:
 		bclr	#staFlipX,obStatus(a1)
 		clr.b	ob2ndRout(a1)
-		move.b	(a2)+,obRoutine(a1)			; -> BGHZ_ShipMain/BGHZ_FaceMain/BGHZ_FlameMain next
+		move.b	(a2)+,obRoutine(a1)				; -> BGHZ_ShipMain/BGHZ_FaceMain/BGHZ_FlameMain next
 		move.b	(a2)+,obAnim(a1)
-		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
+		move.w	#priority3,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
 		move.l	#Map_Eggman,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.b	#$20,obDispWid(a1)
-		move.w	a0,obBoss_Parent(a1)		; save address of OST of parent
-		dbf		d1,.loop					; repeat sequence 2 more times
+		move.w	a0,obBoss_Parent(a1)			; save address of OST of parent
+		dbf		d1,.loop						; repeat sequence 2 more times
 
 	.notfound:
 		move.w	obX(a0),obBoss_BufferX(a0)
 		move.w	obY(a0),obBoss_BufferY(a0)
 		move.b	#(colEnemy|colSz_24x24),obColType(a0)
-		move.b	#8,obColProp(a0)			; set number of hits to 8
-		move.w	#$100,obVelY(a0)			; start moving ship down -- movement applied here, instead of EVERY frame in 2ndRout 0
+		move.b	#8,obColProp(a0)				; set number of hits to 8
+		move.w	#$100,obVelY(a0)				; start moving ship down -- movement applied here, instead of EVERY frame in 2ndRout 0
 ; ---------------------------------------------------------------------------
 
-BossGreenHill_ShipMain:	; Routine 2
+BossGHZ_ShipMain:	; Routine 2
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
-		move.w	BossGreenHill_ShipIndex(pc,d0.w),d1
-		jsr		BossGreenHill_ShipIndex(pc,d1.w)
+		move.w	BossGHZ_ShipIndex(pc,d0.w),d1
+		jsr		BossGHZ_ShipIndex(pc,d1.w)
 		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
 		move.b	obStatus(a0),d0
 		andi.b	#(maskFlipX+maskFlipY),d0
-		andi.b	#$FC,obRender(a0)
-		or.b	d0,obRender(a0)
+		andi.b	#$FC,obRender(a0)				; ignore x/y flip bits
+		or.b	d0,obRender(a0)					; combine x/y flip bits from status instead
 
 	if GHZBossDelay
 		tst.b	obBossGHZ_Active(a0)
-		beq.s	.nohit						; skip hit check if boss isn't ready
-		jmp		(DisplayAndCollision).l		; S3K TouchResponse
+		beq.s	.nohit							; skip hit check if boss isn't ready
+		jmp		(DisplayAndCollision).l			; S3K TouchResponse
 
 	.nohit:
 		jmp		(DisplaySprite).l
 	else
-		jmp		(DisplayAndCollision).l		; S3K TouchResponse
+		jmp		(DisplayAndCollision).l			; S3K TouchResponse
 	endif
 ; ===========================================================================
 
-BossGreenHill_ShipIndex:		offsetTable
-ptr_GHZB_DropDown:	offsetTableEntry.w BossGreenHill_ShipDropDown
-ptr_GHZB_MakeBall:	offsetTableEntry.w BossGreenHill_MakeBall
-ptr_GHZB_Wait:		offsetTableEntry.w BossGreenHill_ShipWait
-ptr_GHZB_Move:		offsetTableEntry.w BossGreenHill_ShipMove
-ptr_GHZB_Explode:	offsetTableEntry.w BossGreenHill_ShipExplode
-ptr_GHZB_Destroyed:	offsetTableEntry.w BossGreenHill_ShipDestroyed
-ptr_GHZB_Flee:		offsetTableEntry.w BossGreenHill_ShipFlee
+BossGHZ_ShipIndex:		offsetTable
+ptr_GHZB_DropDown:	offsetTableEntry.w BossGHZ_ShipDropDown
+ptr_GHZB_MakeBall:	offsetTableEntry.w BossGHZ_MakeBall
+ptr_GHZB_Wait:		offsetTableEntry.w BossGHZ_ShipWait
+ptr_GHZB_Move:		offsetTableEntry.w BossGHZ_ShipMove
+ptr_GHZB_Explode:	offsetTableEntry.w BossGHZ_ShipExplode
+ptr_GHZB_Destroyed:	offsetTableEntry.w BossGHZ_ShipDestroyed
+ptr_GHZB_Flee:		offsetTableEntry.w BossGHZ_ShipFlee
 
-id_ghzb_drop = ptr_GHZB_DropDown-BossGreenHill_ShipIndex		; 0
-id_ghzb_makeball = ptr_GHZB_MakeBall-BossGreenHill_ShipIndex	; 2
-id_ghzb_wait = ptr_GHZB_Wait-BossGreenHill_ShipIndex			; 4
-id_ghzb_move = ptr_GHZB_Move-BossGreenHill_ShipIndex			; 6
-id_ghzb_explode = ptr_GHZB_Explode-BossGreenHill_ShipIndex		; 8
-id_ghzb_destroyed = ptr_GHZB_Destroyed-BossGreenHill_ShipIndex	; $A
-id_ghzb_flee = ptr_GHZB_Flee-BossGreenHill_ShipIndex			; $C
+id_ghzb_drop = ptr_GHZB_DropDown-BossGHZ_ShipIndex		; 0
+id_ghzb_makeball = ptr_GHZB_MakeBall-BossGHZ_ShipIndex	; 2
+id_ghzb_wait = ptr_GHZB_Wait-BossGHZ_ShipIndex			; 4
+id_ghzb_move = ptr_GHZB_Move-BossGHZ_ShipIndex			; 6
+id_ghzb_explode = ptr_GHZB_Explode-BossGHZ_ShipIndex		; 8
+id_ghzb_destroyed = ptr_GHZB_Destroyed-BossGHZ_ShipIndex	; $A
+id_ghzb_flee = ptr_GHZB_Flee-BossGHZ_ShipIndex			; $C
 ; ===========================================================================
 
-BossGreenHill_ShipDropDown:	; Secondary Routine 0
+BossGHZ_ShipDropDown:	; Secondary Routine 0
 		bsr.w	BossMove
 		cmpi.w	#boss_ghz_y+$38,obBoss_BufferY(a0)	; has Eggman finished lowering down?
-		bne.s	BossGreenHill_ChkHit				; if not, branch ahead
+		bne.s	BossGHZ_ChkHit						; if not, branch ahead
 	; movement applied here, instead of EVERY frame in 2ndRout 2
 		move.l	#$FF00FFC0,obVelX(a0)				; (xVel: -$100, yVel: -$40); move ship to the left, and upward slightly
 		addq.b	#2,ob2ndRout(a0)					; go to next routine
 
-BossGreenHill_ChkHit:
-		move.b	obBoss_HoverAngle(a0),d0
-		jsr		(CalcSine).w
-		asr.w	#6,d0
-		add.w	obBoss_BufferY(a0),d0
-		move.w	d0,obY(a0)
-		move.w	obBoss_BufferX(a0),obX(a0)
-		addq.b	#2,obBoss_HoverAngle(a0)
+BossGHZ_ChkHit:
+		move.b	obBoss_HoverAngle(a0),d0			; get wobble byte
+		jsr		(CalcSine).w						; convert to sine
+		asr.w	#6,d0								; divide by 64
+		add.w	obBoss_BufferY(a0),d0				; add y pos
+		move.w	d0,obY(a0)							; update actual y pos
+		move.w	obBoss_BufferX(a0),obX(a0)			; update actual x pos
+		addq.b	#2,obBoss_HoverAngle(a0)			; increment wobble (wraps to 0 after $FE)
 
 	if GHZBossDelay
 		tst.b	obBossGHZ_Active(a0)
-		beq.s	.end								; skip hit check if boss isn't ready
+		beq.s	.exit								; skip hit check if boss isn't ready
 	endif
 
 		cmpi.b	#id_ghzb_explode,ob2ndRout(a0)
-		bhs.s	.end								; skip hit check if boss has been defeated
+		bhs.s	.exit								; skip hit check if boss has been defeated
 		tst.b	obStatus(a0)
-		bmi.s	.awardPoints						; if bit 7 is set, branch
+		bmi.s	.defeated							; if bit 7 is set, branch
 		tst.b	obColType(a0)
-		bne.s	.end								; skip hit check if boss has no collision at the moment
+		bne.s	.exit								; skip hit check if boss has no collision at the moment
 		tst.b	obBoss_FlashFrames(a0)				; should the boss still be flashing?
 		bne.w	BossFlash							; if yes, branch and flash
 		move.b	#$20,obBoss_FlashFrames(a0)			; set number of	times for ship to flash
@@ -137,22 +137,22 @@ BossGreenHill_ChkHit:
 		jsr		(QueueSound2).w						; play boss damage sound
 		bra.w	BossFlash							; apply flash effect
 
-	.end:
+	.exit:
 		rts
 ; ===========================================================================
 
-	.awardPoints:
+	.defeated:
 		moveq	#100,d0
-		bsr.w	AddPoints
+		bsr.w	AddPoints							; give Sonic 1000 points
 		move.b	#id_ghzb_explode,ob2ndRout(a0)
-		move.w	#$B3,obBoss_DelayTime(a0)
+		move.w	#179,obBoss_DelayTime(a0)			; set timer to 3 seconds
 		rts
 ; ===========================================================================
 
-BossGreenHill_MakeBall:	; Secondary Routine 2
+BossGHZ_MakeBall:	; Secondary Routine 2
 		bsr.w	BossMove
 		cmpi.w	#boss_ghz_x+$A0,obBoss_BufferX(a0)	; has Eggman reached the center of the field?
-		bne.w	BossGreenHill_ChkHit				; if not, branch
+		bne.w	BossGHZ_ChkHit						; if not, branch
 		clr.l	obVelX(a0)							; stop ship movement (clear both X and Y velocities)
 		addq.b	#2,ob2ndRout(a0)					; go to next routine
 		jsr		(FindNextFreeObj).l
@@ -163,11 +163,11 @@ BossGreenHill_MakeBall:	; Secondary Routine 2
 		move.w	a0,obBossBall_Parent(a1)
 
 	.notfound:
-		move.w	#$77,obBoss_DelayTime(a0)			; set wait timer (Eggman won't move until this timer is up)
-		bra.w	BossGreenHill_ChkHit
+		move.w	#119,obBoss_DelayTime(a0)			; set wait timer to 2 seconds (Eggman won't move until this timer is up)
+		bra.w	BossGHZ_ChkHit
 ; ===========================================================================
 
-BossGreenHill_ShipWait:	; Secondary Routine 4
+BossGHZ_ShipWait:	; Secondary Routine 4
 		subq.w	#1,obBoss_DelayTime(a0)
 		bpl.s	.reverse
 		addq.b	#2,ob2ndRout(a0)
@@ -180,16 +180,16 @@ BossGreenHill_ShipWait:	; Secondary Routine 4
 
 	.reverse:
 		btst	#staFlipX,obStatus(a0)
-		bne.w	BossGreenHill_ChkHit
+		bne.w	BossGHZ_ChkHit
 		neg.w	obVelX(a0)							; reverse direction of the ship
-		bra.w	BossGreenHill_ChkHit
+		bra.w	BossGHZ_ChkHit
 ; ===========================================================================
 
-BossGreenHill_ShipMove:	; Secondary Routine 6
+BossGHZ_ShipMove:	; Secondary Routine 6
 		subq.w	#1,obBoss_DelayTime(a0)
 		bmi.s	.timeup
 		bsr.w	BossMove
-		bra.w	BossGreenHill_ChkHit
+		bra.w	BossGHZ_ChkHit
 ; ===========================================================================
 
 	.timeup:
@@ -197,13 +197,13 @@ BossGreenHill_ShipMove:	; Secondary Routine 6
 		move.w	#$40-1,obBoss_DelayTime(a0)
 		subq.b	#2,ob2ndRout(a0)
 		clr.w	obVelX(a0)
-		bra.w	BossGreenHill_ChkHit
+		bra.w	BossGHZ_ChkHit
 ; ===========================================================================
 
-BossGreenHill_ShipExplode:	; Secondary Routine 8
+BossGHZ_ShipExplode:	; Secondary Routine 8
 		subq.w	#1,obBoss_DelayTime(a0)
 		bmi.s	.timeup
-		bra.w	BossDefeated		; Make explosion in a random spot on the ship
+		bra.w	BossDefeated			; Make explosion in a random spot on the ship
 ; ===========================================================================
 
 	.timeup:
@@ -220,7 +220,7 @@ BossGreenHill_ShipExplode:	; Secondary Routine 8
 		rts	
 ; ===========================================================================
 
-BossGreenHill_ShipDestroyed:	; Secondary Routine $A
+BossGHZ_ShipDestroyed:	; Secondary Routine $A
 		addq.w	#1,obBoss_DelayTime(a0)
 		beq.s	.stopsinking			; if timer has ticked up to 0, branch
 		bpl.s	.checkrising			; if timer is greater than zero, branch
@@ -265,16 +265,16 @@ BossGreenHill_ShipDestroyed:	; Secondary Routine $A
 			move.w	#bgm_GHZ,d0
 		endif
 
-			jsr		(QueueSound1).w			; play GHZ music
-			move.b	d0,(v_lastbgmplayed).w	; store last played music
+			jsr		(QueueSound1).w					; play GHZ music
+			move.b	d0,(v_lastbgmplayed).w			; store last played music
 	endif
 
 	.applymovement:
 		bsr.w	BossMove
-		bra.w	BossGreenHill_ChkHit		; we call this solely for the hover effect
+		bra.w	BossGHZ_ChkHit						; we call this solely for the hover effect
 ; ===========================================================================
 
-BossGreenHill_ShipFlee:	; Secondary Routine $C
+BossGHZ_ShipFlee:	; Secondary Routine $C
 	if ~~PostBossScreenUnlock
 		cmpi.w	#boss_ghz_end,(v_limitright).w
 		beq.s	.limitreached
@@ -285,27 +285,27 @@ BossGreenHill_ShipFlee:	; Secondary Routine $C
 
 	.limitreached:
 		tst.b	obRender(a0)
-		bpl.s	BossGreenHill_ShipDel
+		bpl.s	BossGHZ_ShipDel
 
 	.moveboss:
 		bsr.w	BossMove
-		bra.w	BossGreenHill_ChkHit	; we call this solely for the hover effect
+		bra.w	BossGHZ_ChkHit						; we call this solely for the hover effect
 ; ===========================================================================
 
-BossGreenHill_ShipDel:
-		; We do not want to return to BossGreenHill_ShipMain, as objects
+BossGHZ_ShipDel:
+		; We do not want to return to BossGHZ_ShipMain, as objects
 		; should not queue themselves for display while also being
 		; deleted.
-		addq.l	#4,sp					; Clownacy DisplaySprites Fix
+		addq.l	#4,sp								; Clownacy DisplaySprites Fix
 		jmp		(DeleteObject).l
 ; ===========================================================================
 
-BossGreenHill_FaceMain:	; Routine 4
-		movea.w	obBoss_Parent(a0),a1				; load the parent object (ship) to a1
+BossGHZ_FaceMain:	; Routine 4
+		movea.w	obBoss_Parent(a0),a1				; get address of parent object (ship)
 
 	; Devon Boss Object Fix
 		cmpi.b	#id_BossGreenHill,obID(a1)			; is the boss still loaded?
-		bne.w	BossGreenHill_Delete				; if not, delete object
+		bne.s	BossGHZ_Delete						; if not, delete object
 	; Boss Object Fix End
 
 		moveq	#0,d0
@@ -339,37 +339,41 @@ BossGreenHill_FaceMain:	; Routine 4
 	.setAnim:
 		move.b	d1,obAnim(a0)						; set next face animation
 		subq.b	#2,d0								; is Eggman fleeing?
-		bne.s	BossGreenHill_Display				; if not, branch
+		bne.s	BossGHZ_Display						; if not, branch
 		move.b	#aniID_PanicFace,obAnim(a0)			; set panicking face
 		tst.b	obRender(a0)
-		bpl.s	BossGreenHill_Delete
-		bra.s	BossGreenHill_Display				; Face display
+		bpl.s	BossGHZ_Delete
+		bra.s	BossGHZ_Display						; Face display
 ; ===========================================================================
 
-BossGreenHill_FlameMain:	; Routine 6
-		movea.w	obBoss_Parent(a0),a1				; load the parent object (ship) to a1
+BossGHZ_Delete:
+		jmp		(DeleteObject).l
+; ===========================================================================
+
+BossGHZ_FlameMain:	; Routine 6
+		movea.w	obBoss_Parent(a0),a1				; get address of parent object (ship)
 
 	; Devon Boss Object Fix
 		cmpi.b	#id_BossGreenHill,obID(a1)			; is the boss still loaded?
-		bne.s	BossGreenHill_Delete				; if not, delete object
+		bne.s	BossGHZ_Delete						; if not, delete object
 	; Boss Object Fix End
 
 		move.b	#aniID_Blank,obAnim(a0)
 		cmpi.b	#$C,ob2ndRout(a1)					; has Eggman begun fleeing?
 		bne.s	.notfleeing							; if not, branch
 		move.b	#aniID_EscapeFlame,obAnim(a0)		; use the escape animation for the flame
-		tst.b	obRender(a0)
-		bpl.s	BossGreenHill_Delete
-		bra.s	BossGreenHill_Display				; Flame Display
+		tst.b	obRender(a0)						; is object on-screen?
+		bpl.s	BossGHZ_Delete						; if not, branch
+		bra.s	BossGHZ_Display						; Flame Display
 ; ===========================================================================
 
 	.notfleeing:
 		move.w	obVelX(a1),d0
-		beq.s	BossGreenHill_Display				; Flame display
+		beq.s	BossGHZ_Display						; Flame display
 		move.b	#aniID_Flame1,obAnim(a0)			; only show the flame if Eggman is moving
 
-BossGreenHill_Display:
-		movea.w	obBoss_Parent(a0),a1
+BossGHZ_Display:
+		movea.w	obBoss_Parent(a0),a1				; get address of parent object (ship)
 		move.w	obX(a1),obX(a0)
 		move.w	obY(a1),obY(a0)
 		move.b	obStatus(a1),obStatus(a0)
@@ -377,11 +381,7 @@ BossGreenHill_Display:
 		jsr		(AnimateSprite).w
 		move.b	obStatus(a0),d0
 		andi.b	#(maskFlipX+maskFlipY),d0
-		andi.b	#$FC,obRender(a0)
-		or.b	d0,obRender(a0)
+		andi.b	#$FC,obRender(a0)					; ignore x/yflip bits
+		or.b	d0,obRender(a0)						; combine x/yflip bits from status instead
 		jmp		(DisplaySprite).l
-; ===========================================================================
-
-BossGreenHill_Delete:
-		jmp		(DeleteObject).l
 ; ===========================================================================
