@@ -70,7 +70,7 @@ Fan_Delay:	; Routine 2
 	.blows_left:
 		add.w	d0,obX(a1)					; push Sonic left or right, away from the fan
 	
-	if SpinDashEnabled
+	if CameraDashLag	; Camera Lag applied when dashing
 		clr.b	(v_cameralag).w				; Spin Dash Enabled
 	endif
 

@@ -1604,10 +1604,9 @@ Sonic_TurnSuper:
 ; ===========================================================================
 	endif
 
-	if (ShieldsMode|DropDashEnabled)
+	if CameraDashLag	; Camera Lag applied when dashing
 ; ---------------------------------------------------------------------------
 ; Subroutine to reset Sonic's position array
-; Added for S3K Shields and Drop Dash; Also used in Debug Mode.
 ; ---------------------------------------------------------------------------
 
 Reset_Sonic_Position_Array:
@@ -1732,6 +1731,7 @@ Sonic_DashLaunch:
 	.notSuper:
 	endif
 
+	if CameraDashLag	; Camera Lag applied when dashing
 		move.w	obInertia(a0),d0
 		subq.b	#$8,d0
 		add.b	d0,d0
@@ -1739,6 +1739,8 @@ Sonic_DashLaunch:
 		neg.b	d0
 		addi.b	#$20,d0
 		move.b	d0,(v_cameralag).w			; use it to set the camera lag
+	endif
+
 		btst	#staFacing,obStatus(a0)
 		beq.s	.dontflip
 		neg.w	obInertia(a0)
@@ -1837,17 +1839,17 @@ Sonic_UpdateSpinDash:
 		move.b	obSpinDashCounter(a0),d0
 		add.w	d0,d0
 		move.w	#1,obVelX(a0)				; force X speed to nonzero for camera lag's benefit
-		move.w	SpinDashSpeeds(pc,d0.w),obInertia(a0)
+		move.w	.speeds(pc,d0.w),obInertia(a0)
 
 	if SuperMod
 		btst	#sta2ndSuper,obStatus2nd(a0)
 		beq.s	.notSuper
-		move.w	SpindashSpeedsSuper(pc,d0.w),obInertia(a0)
+		move.w	.speeds_super(pc,d0.w),obInertia(a0)
 
 	.notSuper:
 	endif
 
-	; Use inertia to set camera lag effect
+	if CameraDashLag	; Camera Lag applied when dashing
 		move.b	obInertia(a0),d0
 		subq.b	#$8,d0
 		add.b	d0,d0
@@ -1855,7 +1857,8 @@ Sonic_UpdateSpinDash:
 		neg.b	d0
 		addi.b	#$20,d0
 		move.b	d0,(v_cameralag).w
-	; Camera lag effect end
+	endif
+
 		btst	#staFacing,obStatus(a0)
 		beq.s	.dontflip
 		neg.w	obInertia(a0)
@@ -1878,7 +1881,7 @@ Sonic_UpdateSpinDash:
 		bra.w	.reset_screen
 ; ===========================================================================
 
-SpinDashSpeeds:
+	.speeds:
 		dc.w  $800		; 0
 		dc.w  $880		; 1
 		dc.w  $900		; 2
@@ -1891,7 +1894,7 @@ SpinDashSpeeds:
 ; ===========================================================================
 
 	if SuperMod
-SpindashSpeedsSuper:
+	.speeds_super:
 		dc.w  $B00		; 0
 		dc.w  $B80		; 1
 		dc.w  $C00		; 2
@@ -2012,7 +2015,7 @@ Sonic_SpinDashLaunch:
 .notSuper:
 	endif
 
-; This part copied from the Peelout code 1:1
+	if CameraDashLag	; Camera Lag applied when dashing
 		move.w	obInertia(a0),d0
 		subq.b	#$8,d0
 		add.b	d0,d0
@@ -2020,6 +2023,8 @@ Sonic_SpinDashLaunch:
 		neg.b	d0
 		addi.b	#$20,d0
 		move.b	d0,(v_cameralag).w			; use it to set the camera lag
+	endif
+
 		btst	#staFacing,obStatus(a0)
 		beq.s	.dontflip
 		neg.w	obInertia(a0)
@@ -2592,15 +2597,17 @@ Sonic_ResetOnFloor:
 			bra.w	DropDash_Release
 
 		.noability:
-			clr.b	obDoubleJumpFlag(a0)
-			clr.b	obDoubleJumpProp(a0)
+		endif
+
+		if (InstashieldEnabled|DropDashEnabled)
+			clr.w	obDoubleJumpFlag(a0)		; clear Flag and Property
 		endif
 
 		.ret:
 			rts
 ; End of function Sonic_ResetOnFloor
 ; ===========================================================================
-	else				; Mode 2+
+	else
 
 		tst.b	obDoubleJumpFlag(a0)
 		beq.s	.ret
@@ -2632,14 +2639,13 @@ Sonic_ResetOnFloor:
 		.noflame:
 		endif
 
-		clr.b	obDoubleJumpFlag(a0)
-		clr.b	obDoubleJumpProp(a0)
+		clr.w	obDoubleJumpFlag(a0)		; clear Flag and Property
 
 		.ret:
 			rts	
 	; End of function Sonic_ResetOnFloor
 ; ===========================================================================
-	endif				; Mode 1+
+	endif
 
 
 	if ShieldsMode
@@ -2766,14 +2772,16 @@ DropDash_Release:
 	.setspeed:	
 		move.w	d4,obInertia(a0)			; move dash speed into inertia	
 
+	if CameraDashLag	; Camera Lag applied when dashing
 		move.b	#$10,(v_cameralag).w
 		bsr.w	Reset_Sonic_Position_Array
+	endif
+
 		move.w	#$E07,obHeight(a0)			; Height and Width
 		move.b	#aniID_Roll,obAnim(a0)
 		bset	#staSpin,obStatus(a0)
 		addq.w	#5,obY(a0)					; add the difference between Sonic's rolling and standing heights
-		clr.b	obDoubleJumpFlag(a0)
-		clr.b	obDoubleJumpProp(a0)
+		clr.w	obDoubleJumpFlag(a0)		; clear Flag and Property
 
 	if DropDustEnabled
 	; Create drop dash dust
@@ -2821,7 +2829,7 @@ Sonic_Hurt:	; Routine 4
 Sonic_Hurt_Normal:
 	; Debug Mode Addition End
 
-	if SpinDashEnabled
+	if CameraDashLag	; Camera Lag applied when dashing
 		clr.b	(v_cameralag).w			; Spin Dash Enabled
 	endif
 
@@ -2883,7 +2891,7 @@ Sonic_Death:	; Routine 6
 Sonic_Death_Normal:
 	; Debug Mode Addition End
 
-	if SpinDashEnabled
+	if CameraDashLag	; Camera Lag applied when dashing
 		clr.b	(v_cameralag).w					; Spin Dash Enabled
 	endif
 

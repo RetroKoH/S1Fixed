@@ -476,7 +476,11 @@ v_spindashsfx3:		ds.b	1
 				ds.b	3		; unused
 	endif
 
-v_cameralag:		ds.b	1		; camera lag after launching Spin Dash (1 byte)
+	if CameraDashLag
+v_cameralag:		ds.b	1		; camera lag after launching Spin Dash, Drop Dash, Flame Dash, or Drop Dash (1 byte)
+	else
+				ds.b	1		; unused
+	endif
 v_scrolldelay:		ds.b	1		; scroll delay timer (1 byte)
 
 	if S3KUnderwaterPalette

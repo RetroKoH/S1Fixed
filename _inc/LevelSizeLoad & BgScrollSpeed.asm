@@ -143,7 +143,7 @@ LevSz_SonicPos:
 
 SetScreen:
 LevSz_SkipStartPos:
-	if SpinDashEnabled		; Spin Dash Enabled
+	if CameraDashLag	; Camera Lag applied when dashing
 		clr.b	(v_cameralag).w
 		clr.w	(v_trackpos).w			; reset Sonic's position tracking index
 		lea		(v_tracksonic).w,a2		; load the tracking array into a2
@@ -151,7 +151,7 @@ LevSz_SkipStartPos:
 	.looppoint:
 		move.l	d3,(a2)+				; fill in X and Y -- RetroKoH optimization
 		dbf		d2,.looppoint			; loop
-	endif					; Spin Dash Enabled End
+	endif
 
 		subi.w	#160,d1					; is Sonic more than 160px from left edge?
 		bcc.s	SetScr_WithinLeft		; if yes, branch
