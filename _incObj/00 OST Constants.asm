@@ -342,6 +342,10 @@ obEoLCard_DisplayX:	equ obTCard_DisplayX	; 2 bytes | position for card to displa
 obEoLCard_FinalX:	equ obTCard_FinalX		; 2 bytes | position for card to finish on
 ; ---------------------------------------------------------------------------
 
+; Obj3D - GHZ Boss
+obBossGHZ_Active:		equ objoff_2F		; 1 byte  | flag noting that the boss can be hit (GHZBossDelay mod)
+; ---------------------------------------------------------------------------
+
 ; Obj3E - Animal Prison
 obPrison_StartY:		equ objoff_30		; 2 bytes | starting Y-axis position
 obPrison_AnimalCount:	equ objoff_3F		; 1 byte  | number of animals spawned from the prison
