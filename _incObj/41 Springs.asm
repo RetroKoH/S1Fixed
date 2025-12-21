@@ -143,7 +143,7 @@ Spring_Flipped:
 		bclr	#staSonicPush,obStatus(a0)
 		bclr	#staPush,obStatus(a1)
 
-	if SpinDashEnabled
+	if CameraDashLag	; Camera Lag applied when dashing
 		clr.b	(v_cameralag).w 			; clear camera lag
 	endif
 

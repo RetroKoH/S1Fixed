@@ -753,7 +753,7 @@ ScrollHoriz:
 
 MoveScreenHoriz:
 
-	if SpinDashEnabled	; Spin Dash Enabled
+	if CameraDashLag	; Camera Lag applied when dashing
 		move.b	(v_cameralag).w,d1
 		beq.s	.cont1
 		tst.w	(v_player+obVelX).w		; is Sonic moving horizontally?

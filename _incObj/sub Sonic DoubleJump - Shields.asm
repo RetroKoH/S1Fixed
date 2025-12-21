@@ -81,8 +81,12 @@ Sonic_InstaShieldAttack:
 Sonic_FlameShieldAttack:
 		addq.b	#1,(v_shieldobj+obAnim).w				; Set animation to aniID_FlameDash
 		move.b	#1,obDoubleJumpFlag(a0)					; Set double jump flag
+
+	if CameraDashLag	; Camera Lag applied when dashing
 		move.b	#$20,(v_cameralag).w					; hard-coded camera lag
 		bsr.w	Reset_Sonic_Position_Array
+	endif
+
 		move.w	#$800,d0								; Set horizontal speed to 8
 		btst	#staFacing,obStatus(a0)					; is Sonic facing left?
 		beq.s	.noflip									; if not, branch
