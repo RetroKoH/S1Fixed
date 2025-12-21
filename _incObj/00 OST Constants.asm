@@ -61,6 +61,7 @@ obInertia:				equ $20				; 2 bytes | ground velocity
 ;						equ $28
 obAutoRollFlag:			equ $2A				; 1 byte  | auto-roll (pinball mode) flag
 ;						equ $2B
+;						equ $2E
 ;						equ $2F
 obInvuln:				equ $30				; 1 byte  | invulnerablity timer (blinking frames when hurt)
 obInvinc:				equ $31				; 1 byte  | invincibility stars timer
@@ -75,9 +76,9 @@ obJumping:				equ $3C				; 1 byte  | jumping flag
 obLRLock:				equ $3D				; 1 byte  | flag preventing left and right input
 obPlatformAddr:			equ $3E				; 2 bytes | address of object Sonic's on top of
 
-	if (ShieldsMode|DropDashEnabled)
-obDoubleJumpProp:		equ $25				; 1 byte  | Counter for Sonic's Drop Dash (if enabled). Can also be utilized for remaining frames of flight / 2 for Tails, gliding-related for Knuckles.
-obDoubleJumpFlag:		equ	$2F				; 1 byte  | Double jump status (0 - not triggered; 1 - triggered; 2 - post-instashield/drop dash revving; 3 - Drop Dash Cancelled)
+	if (S3KDoubleJump|DropDashEnabled)
+obDoubleJumpFlag:		equ	$2E				; 1 byte  | Double jump status (0 - not triggered; 1 - triggered; 2 - post-instashield/drop dash revving; 3 - Drop Dash Cancelled)
+obDoubleJumpProp:		equ $2F				; 1 byte  | Counter for Sonic's Drop Dash (if enabled). Can also be utilized for remaining frames of flight / 2 for Tails, gliding-related for Knuckles.
 	endif
 
 	if WallJumpEnabled

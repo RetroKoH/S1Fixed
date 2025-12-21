@@ -104,10 +104,10 @@ Eff_SkidDust:
 Eff_LoadGfx:
 		moveq	#0,d0
 		move.b	obFrame(a0),d0			; load frame number
-		cmp.b	obEff_LastFrame(a0),d0	; has frame changed?
+		cmp.b	obEff_PrevFrame(a0),d0	; has frame changed?
 		beq.s	.nochange				; if not, branch and exit
 
-		move.b	d0,obEff_LastFrame(a0)	; update frame number for next check
+		move.b	d0,obEff_PrevFrame(a0)	; update frame number for next check
 		lea		DynPLC_Effects(pc),a2
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2

@@ -21,6 +21,7 @@ SpinDashEnabled: = 0	; if set to 1, the standard Spindash is enabled. If set to 
 ; Credit: DeltaW, Mercury
 ; Function: Enables the Sonic CD Peelout. Also enables the dashing animation while running.
 PeeloutEnabled: = 0
+; I do NOT recommend enabling this unless you disable the Ground Speed Cap.
 
 ; Name: Air Roll
 ; Credit: RetroKoH (Inspired by a guide by Inferno Gear)
@@ -44,6 +45,12 @@ InstashieldEnabled: = 0					; if set to 1, instashield is now enabled (Now split
 ShieldsMode: = 0						; 0 - Blue Shield only, 1 - Blue + Elementals, 2 - Elementals only.
 S3KDoubleJump: = (InstashieldEnabled|ShieldsMode)>0
 	RingMagnetRange: = $40				; The range of the lightning shield's ring magnetism
+
+; Name: Camera Lag
+; Credit: DeltaW
+; Function: Enables the Sonic 3K Camera Lag w/ Spin Dash, Peelout, Flame Dash, and Drop Dash
+CameraDashLag: = (SpinDashEnabled|PeeloutEnabled|DropDashEnabled|ShieldsMode)
+; Automatically toggled when any of the above elective mods are enabled.
 
 ; Name: Wall Jump (Incomplete -- Not fully compatible with all double jump mechanics)
 ; Credit: Mercury, RetroKoH
