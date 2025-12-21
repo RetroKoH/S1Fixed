@@ -52,7 +52,7 @@ GBall_Main:	; Routine 0
 		move.b	#4,obRender(a1)
 		move.b	#8,obDispWid(a1)
 		move.w	#priority6,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		move.l	obBossBall_Parent(a0),obBossBall_Parent(a1)
+		move.w	obBossBall_Parent(a0),obBossBall_Parent(a1)
 		dbf		d1,.loop					; repeat sequence 5 more times
 
 	.make_ball:
@@ -94,19 +94,19 @@ GBall_Base:	; Routine 2
 
 		cmp.b	obBossBall_Radius(a1),d0	; has final object (ball) reached target?
 		bne.s	.not_finished				; if not, branch
-		movea.l	obBossBall_Parent(a0),a1	; a1 = Eggman
+		movea.w	obBossBall_Parent(a0),a1	; a1 = Eggman
 		cmpi.b	#6,ob2ndRout(a1)			; is boss in back-and-forth phase?
 		bne.s	.not_finished				; if not, branch
 		addq.b	#2,obRoutine(a0)
 
 	if GHZBossDelay
-		st.b	ghzboss_battleflag(a1)		; once lowered, Eggman can be hit
+		st.b	obBossGHZ_Active(a1)		; once lowered, Eggman can be hit
 	endif
 
 	.not_finished:
 		cmpi.w	#$20,obBossBall_BossDist(a0)	; has base moved an additional 32px? (aligned with bottom of ship)
 		beq.s	.display					; if yes, branch
-		addq.w	#1,obBossBall_BossDist(a0)		; increment distance
+		addq.w	#1,obBossBall_BossDist(a0)	; increment distance
 
 	.display:
 		bsr.w	GBall_UpdateBase			; update base animation/position
@@ -126,7 +126,7 @@ GBall_Base2:	; Routine 4
 ; ---------------------------------------------------------------------------
 
 GBall_UpdateBase:
-		movea.l	obBossBall_Parent(a0),a1	; get address of parent
+		movea.w	obBossBall_Parent(a0),a1	; get address of parent
 		addi.b	#$20,obAniFrame(a0)			; increment frame counter
 		bcc.s	.no_chg						; branch if byte doesn't wrap from $C0 to 0
 		bchg	#0,obFrame(a0)				; alternate blinking light every 8th frame
@@ -148,7 +148,7 @@ GBall_UpdateBase:
 ; ===========================================================================
 
 GBall_Link:	; Routine 6
-		movea.l	obBossBall_Parent(a0),a1		; get address of OST of parent (ship)
+		movea.w	obBossBall_Parent(a0),a1		; get address of OST of parent (ship)
 		tst.b	obStatus(a1)					; has boss been beaten?
 		bpl.s	.not_beaten						; if not, branch
 		_move.b	#id_ExplosionBomb,obID(a0)		; replace chain with explosion object
@@ -172,7 +172,7 @@ GBall_Ball:	; Routine 8
 
 GBall_Vanish:
 		move.b	d0,obFrame(a0)				; set ball frame
-		movea.l	obBossBall_Parent(a0),a1	; get address of OST of parent (ship)
+		movea.w	obBossBall_Parent(a0),a1	; get address of OST of parent (ship)
 		tst.b	obStatus(a1)				; has boss been beaten?
 		bpl.s	.display					; if not, branch
 		clr.b	obColType(a0)				; make ball harmless
