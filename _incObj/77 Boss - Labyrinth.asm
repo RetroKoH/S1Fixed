@@ -5,17 +5,17 @@
 BossLabyrinth:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
-		move.w	BossLabyrinth_Index(pc,d0.w),d1
-		jmp		BossLabyrinth_Index(pc,d1.w)
+		move.w	BossLZ_Index(pc,d0.w),d1
+		jmp		BossLZ_Index(pc,d1.w)
 ; ===========================================================================
 
-BossLabyrinth_Index:	offsetTable
-		offsetTableEntry.w BossLabyrinth_Main
-		offsetTableEntry.w BossLabyrinth_ShipMain
-		offsetTableEntry.w BossLabyrinth_FaceMain
-		offsetTableEntry.w BossLabyrinth_FlameMain
+BossLZ_Index:	offsetTable
+		offsetTableEntry.w BossLZ_Main
+		offsetTableEntry.w BossLZ_ShipMain
+		offsetTableEntry.w BossLZ_FaceMain
+		offsetTableEntry.w BossLZ_FlameMain
 
-BossLabyrinth_ObjData:
+BossLZ_ObjData:
 	; Ship
 		dc.b 2,	aniID_Ship		; routine counter, animation
 	; Face
@@ -24,7 +24,7 @@ BossLabyrinth_ObjData:
 		dc.b 6,	aniID_Blank
 ; ===========================================================================
 
-BossLabyrinth_Main:	; Routine 0
+BossLZ_Main:	; Routine 0
 		move.w	#boss_lz_x+$30,obX(a0)
 		move.w	#boss_lz_y+$500,obY(a0)
 		move.w	obX(a0),obBoss_BufferX(a0)
@@ -32,20 +32,20 @@ BossLabyrinth_Main:	; Routine 0
 		move.b	#(colEnemy|colSz_24x24),obColType(a0)
 		move.b	#8,obColProp(a0)				; set number of hits to 8
 		move.w	#priority4,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
-		lea		BossLabyrinth_ObjData(pc),a2	; get data for routine number & animation
+		lea		BossLZ_ObjData(pc),a2			; get data for routine number & animation
 		movea.l	a0,a1							; replace current object with 1st in list
 		moveq	#2,d1							; 2 additional objects
-		bra.s	BossLabyrinth_LoadBoss
+		bra.s	.load_boss
 ; ===========================================================================
 
-BossLabyrinth_Loop:
+	.loop:
 		jsr		(FindNextFreeObj).l
-		bne.s	BossLabyrinth_ShipMain
+		bne.s	BossLZ_ShipMain
 		_move.b	#id_BossLabyrinth,obID(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 
-BossLabyrinth_LoadBoss:
+	.load_boss:
 		bclr	#staFlipX,obStatus(a0)
 		clr.b	ob2ndRout(a1)
 		move.b	(a2)+,obRoutine(a1)				; goto BLZ_ShipMain/BLZ_FaceMain/BLZ_FlameMain next
@@ -56,14 +56,15 @@ BossLabyrinth_LoadBoss:
 		move.b	#4,obRender(a1)
 		move.b	#$20,obDispWid(a1)
 		move.w	a0,obBoss_Parent(a1)			; save obj address of parent
-		dbf		d1,BossLabyrinth_Loop			; repeat sequence 2 more times
+		dbf		d1,.loop						; repeat sequence 2 more times
+; ---------------------------------------------------------------------------
 
-BossLabyrinth_ShipMain:	; Routine 2
+BossLZ_ShipMain:	; Routine 2
 		lea		(v_player).w,a1
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
-		move.w	BossLabyrinth_ShipIndex(pc,d0.w),d1
-		jsr		BossLabyrinth_ShipIndex(pc,d1.w)
+		move.w	BossLZ_ShipIndex(pc,d0.w),d1
+		jsr		BossLZ_ShipIndex(pc,d1.w)
 		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
 		moveq	#(maskFlipX+maskFlipY),d0
@@ -73,42 +74,42 @@ BossLabyrinth_ShipMain:	; Routine 2
 		jmp		(DisplayAndCollision).l			; S3K TouchResponse
 ; ===========================================================================
 
-BossLabyrinth_ShipIndex:	offsetTable
-		offsetTableEntry.w BossLabyrinth_ShipStart
-		offsetTableEntry.w BossLabyrinth_ShipMove
-		offsetTableEntry.w BossLabyrinth_ShipMove2
-		offsetTableEntry.w BossLabyrinth_ShipMove3
-		offsetTableEntry.w BossLabyrinth_ShipAtTop
-		offsetTableEntry.w BossLabyrinth_ShipWaitAtTop
-		offsetTableEntry.w BossLabyrinth_ShipTurnToFlee
-		offsetTableEntry.w BossLabyrinth_ShipFlee
+BossLZ_ShipIndex:	offsetTable
+		offsetTableEntry.w BossLZ_ShipStart
+		offsetTableEntry.w BossLZ_ShipMove
+		offsetTableEntry.w BossLZ_ShipMove2
+		offsetTableEntry.w BossLZ_ShipMove3
+		offsetTableEntry.w BossLZ_ShipAtTop
+		offsetTableEntry.w BossLZ_ShipWaitAtTop
+		offsetTableEntry.w BossLZ_ShipTurnToFlee
+		offsetTableEntry.w BossLZ_ShipFlee
 ; ===========================================================================
 
-BossLabyrinth_ShipStart:
+BossLZ_ShipStart:
 		move.w	obX(a1),d0
 		cmpi.w	#boss_lz_x-$40,d0				; has Sonic passed $1DA0 on x axis?
-		blo.s	BossLabyrinth_Update			; if not, branch
+		blo.s	BossLZ_Update					; if not, branch
 		move.w	#-$180,obVelY(a0)				; move ship up
 		move.w	#$60,obVelX(a0)					; move ship right
-		addq.b	#2,ob2ndRout(a0)				; -> BossLabyrinth_ShipMove
+		addq.b	#2,ob2ndRout(a0)				; -> BossLZ_ShipMove
 
-BossLabyrinth_Update:
+BossLZ_Update:
 		bsr.w	BossMove						; update parent position
 		move.w	obBoss_BufferY(a0),obY(a0)		; update actual position
 		move.w	obBoss_BufferX(a0),obX(a0)
 
-BossLabyrinth_Update_SkipPos:
-		tst.b	obBossLZ_Defeated(a0)		; has boss been defeated? (and points received)
-		bne.w	BossDefeated				; if yes, branch
-		tst.b	obStatus(a0)				; has boss been defeated (has bit 7 been set)?
-		bmi.s	.defeated					; if yes, branch
-		tst.b	obColType(a0)				; is ship collision clear?
-		bne.s	.exit						; if not, branch
-		tst.b	obBoss_FlashFrames(a0)		; is ship flashing?
-		bne.w	BossFlash					; if yes, branch
-		move.b	#32,obBoss_FlashFrames(a0)	; set ship to flash 32 times
+BossLZ_Update_SkipPos:
+		tst.b	obBossLZ_Defeated(a0)			; has boss been defeated? (and points received)
+		bne.w	BossDefeated					; if yes, branch
+		tst.b	obStatus(a0)					; has boss been defeated (has bit 7 been set)?
+		bmi.s	.defeated						; if yes, branch
+		tst.b	obColType(a0)					; is ship collision clear?
+		bne.s	.exit							; if not, branch
+		tst.b	obBoss_FlashFrames(a0)			; is ship flashing?
+		bne.w	BossFlash						; if yes, branch
+		move.b	#32,obBoss_FlashFrames(a0)		; set ship to flash 32 times
 		move.w	#sfx_HitBoss,d0
-		jsr		(QueueSound2).w				; play boss damage sound
+		jsr		(QueueSound2).w					; play boss damage sound
 		bra.w	BossFlash
 
 	.exit:
@@ -117,12 +118,12 @@ BossLabyrinth_Update_SkipPos:
 
 	.defeated:
 		moveq	#100,d0
-		bsr.w	AddPoints					; give Sonic 1000 points
-		move.b	#-1,obBossLZ_Defeated(a0)	; set defeated flag
+		bsr.w	AddPoints							; give Sonic 1000 points
+		move.b	#-1,obBossLZ_Defeated(a0)			; set defeated flag
 		rts	
 ; ===========================================================================
 
-BossLabyrinth_ShipMove:
+BossLZ_ShipMove:
 		moveq	#-2,d0
 		cmpi.w	#boss_lz_x+$68,obBoss_BufferX(a0)	; has ship reached x pos?
 		bcs.s	.continue_right						; if not, branch
@@ -138,14 +139,14 @@ BossLabyrinth_ShipMove:
 		addq.w	#1,d0
 
 	.continue_up:
-		bne.w	BossLabyrinth_Update				; branch if ship is still moving
+		bne.w	BossLZ_Update						; branch if ship is still moving
 		move.w	#$140,obVelX(a0)					; move ship right
 		move.w	#-$200,obVelY(a0)					; move ship up
-		addq.b	#2,ob2ndRout(a0)					; -> BossLabyrinth_ShipMove2 
-		bra.w	BossLabyrinth_Update
+		addq.b	#2,ob2ndRout(a0)					; -> BossLZ_ShipMove2 
+		bra.w	BossLZ_Update
 ; ===========================================================================
 
-BossLabyrinth_ShipMove2:
+BossLZ_ShipMove2:
 		moveq	#-2,d0
 		cmpi.w	#boss_lz_x+$90,obBoss_BufferX(a0)	; has ship reached x pos?
 		bcs.s	.continue_right						; if not, branch
@@ -161,14 +162,14 @@ BossLabyrinth_ShipMove2:
 		addq.w	#1,d0
 
 	.continue_up:
-		bne.w	BossLabyrinth_Update				; branch if ship is still moving
+		bne.w	BossLZ_Update						; branch if ship is still moving
 		move.w	#-$180,obVelY(a0)					; move ship up
-		addq.b	#2,ob2ndRout(a0)					; -> BossLabyrinth_ShipMove3
+		addq.b	#2,ob2ndRout(a0)					; -> BossLZ_ShipMove3
 		clr.b	obBoss_HoverAngle(a0)
-		bra.w	BossLabyrinth_Update
+		bra.w	BossLZ_Update
 ; ===========================================================================
 
-BossLabyrinth_ShipMove3:
+BossLZ_ShipMove3:
 		cmpi.w	#boss_lz_y+$40,obBoss_BufferY(a0)	; has ship reached y pos?
 		bgt.s	BossLZ_ShipWobble					; if not, branch
 		move.w	#boss_lz_y+$40,obBoss_BufferY(a0)	; align to y pos
@@ -181,7 +182,7 @@ BossLabyrinth_ShipMove3:
 
 	.not_beaten:
 		addq.b	#2,ob2ndRout(a0)
-		bra.w	BossLabyrinth_Update
+		bra.w	BossLZ_Update
 ; ===========================================================================
 
 BossLZ_ShipWobble:
@@ -224,10 +225,10 @@ BossLZ_ShipWobble:
 	.defeated:
 		add.l	d0,obBoss_BufferY(a0)
 		move.w	obBoss_BufferY(a0),obY(a0)			; update y position (moves slower if further from Sonic)
-		bra.w	BossLabyrinth_Update_SkipPos		; check for hit
+		bra.w	BossLZ_Update_SkipPos				; check for hit
 ; ===========================================================================
 
-BossLabyrinth_ShipAtTop:
+BossLZ_ShipAtTop:
 		moveq	#-2,d0
 		cmpi.w	#boss_lz_x+$16C,obBoss_BufferX(a0)	; has ship reached x pos?
 		blo.s	.continue_right						; if not, branch
@@ -243,19 +244,19 @@ BossLabyrinth_ShipAtTop:
 		addq.w	#1,d0
 
 	.continue_up:
-		bne.w	BossLabyrinth_Update				; branch if ship is still moving
-		addq.b	#2,ob2ndRout(a0)					; goto BossLabyrinth_ShipWaitAtTop
+		bne.w	BossLZ_Update						; branch if ship is still moving
+		addq.b	#2,ob2ndRout(a0)					; goto BossLZ_ShipWaitAtTop
 		bclr	#staFlipX,obStatus(a0)				; ship face left
-		bra.w	BossLabyrinth_Update				; update position, check for hit
+		bra.w	BossLZ_Update						; update position, check for hit
 ; ===========================================================================
 
-BossLabyrinth_ShipWaitAtTop:
+BossLZ_ShipWaitAtTop:
 		tst.b	obBossLZ_Defeated(a0)				; has boss been beaten?
 		bne.s	.beaten								; if yes, branch
 		cmpi.w	#boss_lz_x+$E8,obX(a1)				; has Sonic passed x pos?
-		blt.w	BossLabyrinth_Update				; if not, branch
+		blt.w	BossLZ_Update						; if not, branch
 		cmpi.w	#boss_lz_y+$30,obY(a1)
-		bgt.w	BossLabyrinth_Update
+		bgt.w	BossLZ_Update
 		move.b	#50,obBoss_DelayTime(a0)			; set timer for 50 frames
 
 	.beaten:
@@ -273,62 +274,59 @@ BossLabyrinth_ShipWaitAtTop:
 
 		clr.b	(f_lockscreen).w
 		bset	#staFlipX,obStatus(a0)				; ship face right
-		addq.b	#2,ob2ndRout(a0)					; goto BossLabyrinth_ShipTurnToFlee
-		bra.w	BossLabyrinth_Update				; update position, check for hit
+		addq.b	#2,ob2ndRout(a0)					; goto BossLZ_ShipTurnToFlee
+		bra.w	BossLZ_Update						; update position, check for hit
 ; ===========================================================================
 
-BossLabyrinth_ShipTurnToFlee:
+BossLZ_ShipTurnToFlee:
 		tst.b	obBossLZ_Defeated(a0)				; has boss been beaten?
 		bne.s	.beaten								; if yes, branch
 		subq.b	#1,obBoss_DelayTime(a0)				; decrement timer
-		bne.w	BossLabyrinth_Update				; branch if time remains
+		bne.w	BossLZ_Update						; branch if time remains
 
 	.beaten:
 		clr.b	obBoss_DelayTime(a0)
 		move.l	#$0400FFC0,obVelX(a0)				; (xVel: $400, yVel: -$40); move ship to the right, and upward slightly
 		clr.b	obBossLZ_Defeated(a0)
-		addq.b	#2,ob2ndRout(a0)					; goto BossLabyrinth_ShipFlee
+		addq.b	#2,ob2ndRout(a0)					; goto BossLZ_ShipFlee
 
 	if PostBossScreenUnlock
 		move.w	#boss_lz_end,(v_limitright).w
 	endif
 
-		bra.w	BossLabyrinth_Update				; update position
+		bra.w	BossLZ_Update						; update position
 ; ===========================================================================
 
-BossLabyrinth_ShipFlee:
+BossLZ_ShipFlee:
 	if ~~PostBossScreenUnlock
 		cmpi.w	#boss_lz_end,(v_limitright).w		; check for new boundary
 		bhs.s	.chkdel
 		addq.w	#2,(v_limitright).w					; expand right edge of level boundary
-		bra.w	BossLabyrinth_Update
+		bra.w	BossLZ_Update
 ; ===========================================================================
 
 	.chkdel:
 	endif
 
 		tst.b	obRender(a0)						; is ship on-screen?
-		bpl.s	BossLabyrinth_ShipDel				; if not, branch
-		bra.w	BossLabyrinth_Update				; update position
+		bpl.s	BossLZ_ShipDel						; if not, branch
+		bra.w	BossLZ_Update						; update position
 ; ===========================================================================
 
-BossLabyrinth_ShipDel:
-		; Avoid returning to BossLabyrinth_ShipMain to prevent a
+BossLZ_ShipDel:
+		; Avoid returning to BossLZ_ShipMain to prevent a
 		; display-and-delete bug.
 		addq.l	#4,sp			; Clownacy DisplaySprite Fix
 		jmp		(DeleteObject).l
 ; ===========================================================================
 
-BossLabyrinth_FaceMain:	; Routine 4
+BossLZ_FaceMain:	; Routine 4
 		movea.w	obBoss_Parent(a0),a1				; get address of parent object (ship)
 
 	; Devon Boss Object Fix
 		cmpi.b	#id_BossLabyrinth,obID(a1)			; is the boss still loaded?
-		bne.s	BossLabyrinth_Delete				; if not, delete object
-;		move.b	obID(a1),d0
-;		cmp.b	obID(a0),d0
-;		bne.s	BossLabyrinth_Delete				; branch if parent has been deleted
-	; Boss Object Fix End (The latter method uses identical cycles, but fewer bytes)
+		bne.s	BossLZ_Delete						; if not, delete object
+	; Boss Object Fix End
 
 		moveq	#0,d0
 		move.b	ob2ndRout(a1),d0
@@ -354,36 +352,33 @@ BossLabyrinth_FaceMain:	; Routine 4
 	.update:
 		move.b	d1,obAnim(a0)						; set animation
 		cmpi.b	#$E,d0								; is boss escaping?
-		bne.s	BossLabyrinth_Display				; if not, branch
+		bne.s	BossLZ_Display						; if not, branch
 		move.b	#aniID_PanicFace,obAnim(a0)			; use sweating animation
 		tst.b	obRender(a0)						; is object on-screen?
-		bpl.s	BossLabyrinth_Delete				; if not, branch
-		bra.s	BossLabyrinth_Display
+		bpl.s	BossLZ_Delete						; if not, branch
+		bra.s	BossLZ_Display
 ; ===========================================================================
 
-BossLabyrinth_Delete:
+BossLZ_Delete:
 		jmp		(DeleteObject).l
 ; ===========================================================================
 
-BossLabyrinth_FlameMain:; Routine 6
+BossLZ_FlameMain:; Routine 6
 		movea.w	obBoss_Parent(a0),a1				; get address of parent object (ship)
 
 	; Devon Boss Object Fix
 		cmpi.b	#id_BossLabyrinth,obID(a1)			; is the boss still loaded?
-		bne.s	BossLabyrinth_Delete				; if not, delete object
-;		move.b	obID(a1),d0
-;		cmp.b	obID(a0),d0
-;		bne.s	BossLabyrinth_Delete				; branch if parent has been deleted
-	; Boss Object Fix End (The latter method uses identical cycles, but fewer bytes)
+		bne.s	BossLZ_Delete						; if not, delete object
+	; Boss Object Fix End
 
-		move.b	#aniID_Blank,obAnim(a0)
+		move.b	#aniID_Blank,obAnim(a0)				; hide flame
 		cmpi.b	#$E,ob2ndRout(a1)					; is boss escaping?
-		bne.s	BossLabyrinth_Display				; if not, branch
+		bne.s	BossLZ_Display						; if not, branch
 		move.b	#aniID_EscapeFlame,obAnim(a0)		; use big flame animation
 		tst.b	obRender(a0)						; is object on-screen?
-		bpl.s	BossLabyrinth_Delete				; if not, branch
+		bpl.s	BossLZ_Delete						; if not, branch
 
-BossLabyrinth_Display:
+BossLZ_Display:
 		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
 		movea.w	obBoss_Parent(a0),a1				; get address of parent object (ship)

@@ -43,10 +43,10 @@ SSRC_Main:	; Routine 0
 		move.b	(v_emeralds).w,d1			; d1 is number of emeralds
 		subq.b	#1,d1						; subtract 1 from d1
 		bcs.w	DeleteObject				; if you have 0	emeralds, branch
-		move.b	(v_emldlist).w,d3			; d3 is the array stating which emeralds we have
+		lea		(v_emldlist).w,a3			; a3 = bitfield that tells which emeralds we do/don't have (loading to a3 instead of dx saves 4 cycles)
 
 	.loop:
-		btst	d2,d3						; did you get the emerald?
+		btst	d2,(a3)						; did you get the emerald? (Using a bitfield saves 8 cycles here)
 		beq.s   .noemerald					; if not, skip and check for the next emerald
 
 		_move.b	#id_SSRChaos,obID(a1)

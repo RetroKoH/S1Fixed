@@ -699,7 +699,11 @@ obLamp_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position
 obLamp_SpinTime:		equ objoff_36		; 2 bytes | length of time to twirl the lamp
 ; ---------------------------------------------------------------------------
 
-; Obj7B - MZ Boss Spike
+; Obj7A - SLZ Boss
+obBossSLZ_Seesaws:		equ objoff_2A		; 6 bytes | addresses of boss' seesaws (2 bytes * 3 seesaws)
+; ---------------------------------------------------------------------------
+
+; Obj7B - SLZ Boss Spike
 obBossSpike_StartX:		equ objoff_30		; 1 byte  | delay timer for various actions
 obBossSpike_StartY:		equ objoff_34		; 2 bytes | stored X-position
 obBossSpike_State:		equ objoff_3A		; 1 byte  | second stored X-position

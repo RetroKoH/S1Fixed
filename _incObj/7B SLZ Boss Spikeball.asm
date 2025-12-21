@@ -15,14 +15,14 @@ BossSpikeball:
 		sub.w	d1,d0
 		; Removed first call to _Delete
 		cmpi.w	#$280,d0
-		bls.s	BossStarLight_NoDel
+		bls.s	.display
 		move.w	obRespawnAddr(a0),d0			; get address in respawn table
-		beq.s	BossStarLight_Delete			; if it's zero, don't remember object
+		beq.s	BossSLZ_Delete					; if it's zero, don't remember object
 		movea.w	d0,a2							; load address into a2
 		bclr	#7,(a2)							; clear respawn table entry, so object can be loaded again
 		jmp		DeleteObject					; and delete object
 
-BossStarLight_NoDel:
+	.display:
 		jmp		(DisplayAndCollision).l			; S3K TouchResponse
 ; ===========================================================================
 

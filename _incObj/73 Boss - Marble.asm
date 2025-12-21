@@ -5,17 +5,17 @@
 BossMarble:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
-		move.w	BossMarble_Index(pc,d0.w),d1
-		jmp		BossMarble_Index(pc,d1.w)
+		move.w	BossMZ_Index(pc,d0.w),d1
+		jmp		BossMZ_Index(pc,d1.w)
 ; ===========================================================================
-BossMarble_Index:	offsetTable
-		offsetTableEntry.w BossMarble_Main
-		offsetTableEntry.w BossMarble_ShipMain
-		offsetTableEntry.w BossMarble_FaceMain
-		offsetTableEntry.w BossMarble_FlameMain
-		offsetTableEntry.w BossMarble_TubeMain
+BossMZ_Index:	offsetTable
+		offsetTableEntry.w BossMZ_Main
+		offsetTableEntry.w BossMZ_ShipMain
+		offsetTableEntry.w BossMZ_FaceMain
+		offsetTableEntry.w BossMZ_FlameMain
+		offsetTableEntry.w BossMZ_TubeMain
 
-BossMarble_ObjData:
+BossMZ_ObjData:
 	; Ship
 		dc.b 2,	aniID_Ship			; routine number, animation
 		dc.w priority4				; priority
@@ -30,96 +30,98 @@ BossMarble_ObjData:
 		dc.w priority3
 ; ===========================================================================
 
-BossMarble_Main:			; Routine 0
+BossMZ_Main:			; Routine 0
 		move.w	obX(a0),obBoss_BufferX(a0)
 		move.w	obY(a0),obBoss_BufferY(a0)
 		move.b	#(colEnemy|colSz_24x24),obColType(a0)
 		move.b	#8,obColProp(a0) 		; set number of hits to 8
-		lea		BossMarble_ObjData(pc),a2
+		lea		BossMZ_ObjData(pc),a2
 		movea.l	a0,a1
 		moveq	#3,d1
-		bra.s	BossMarble_LoadBoss
+		bra.s	.load_boss
 ; ===========================================================================
 
-BossMarble_Loop:
+	.loop:
 		jsr		(FindNextFreeObj).l
-		bne.s	BossMarble_ShipMain
+		bne.s	BossMZ_ShipMain
 		_move.b	#id_BossMarble,obID(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 
-BossMarble_LoadBoss:
+	.load_boss:
 		bclr	#staFlipX,obStatus(a0)
 		clr.b	ob2ndRout(a1)
 		move.b	(a2)+,obRoutine(a1)
 		move.b	(a2)+,obAnim(a1)
-		move.w	(a2)+,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
+		move.w	(a2)+,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
 		move.l	#Map_Eggman,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.b	#$20,obDispWid(a1)
 		move.w	a0,obBoss_Parent(a1)
-		dbf		d1,BossMarble_Loop		; repeat sequence 3 more times
+		dbf		d1,.loop					; repeat sequence 3 more times
 
 	; Set data for Tube
 		move.l	#Map_BossItems,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman_Weapons,1,0),obGfx(a1)
 		move.b	#4,obFrame(a1)
+; ---------------------------------------------------------------------------
 
-BossMarble_ShipMain:		; Routine 2
+BossMZ_ShipMain:		; Routine 2
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
-		move.w	BossMarble_ShipIndex(pc,d0.w),d1
-		jsr		BossMarble_ShipIndex(pc,d1.w)
+		move.w	BossMZ_ShipIndex(pc,d0.w),d1
+		jsr		BossMZ_ShipIndex(pc,d1.w)
 		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
 		moveq	#(maskFlipX+maskFlipY),d0
 		and.b	obStatus(a0),d0
-		andi.b	#$FC,obRender(a0)
-		or.b	d0,obRender(a0)
-		jmp		(DisplayAndCollision).l	; S3K TouchResponse
+		andi.b	#$FC,obRender(a0)			; ignore x/yflip bits
+		or.b	d0,obRender(a0)				; combine x/yflip bits from status instead
+		jmp		(DisplayAndCollision).l		; S3K TouchResponse
 ; ===========================================================================
-BossMarble_ShipIndex:	offsetTable
-ptr_MZB_Start:		offsetTableEntry.w BossMarble_ShipStart
-ptr_MZB_Move:		offsetTableEntry.w BossMarble_ShipMove
-ptr_MZB_Explode:	offsetTableEntry.w BossMarble_ShipExplode
-ptr_MZB_Destroyed:	offsetTableEntry.w BossMarble_ShipDestroyed
-ptr_MZB_Flee:		offsetTableEntry.w BossMarble_ShipFlee
+BossMZ_ShipIndex:	offsetTable
+ptr_MZB_Start:		offsetTableEntry.w BossMZ_ShipStart
+ptr_MZB_Move:		offsetTableEntry.w BossMZ_ShipMove
+ptr_MZB_Explode:	offsetTableEntry.w BossMZ_ShipExplode
+ptr_MZB_Destroyed:	offsetTableEntry.w BossMZ_ShipDestroyed
+ptr_MZB_Flee:		offsetTableEntry.w BossMZ_ShipFlee
 
-id_mzb_wait = ptr_MZB_Start-BossMarble_ShipIndex			; 0
-id_mzb_move = ptr_MZB_Move-BossMarble_ShipIndex				; 2
-id_mzb_explode = ptr_MZB_Explode-BossMarble_ShipIndex		; 4
-id_mzb_destroyed = ptr_MZB_Destroyed-BossMarble_ShipIndex	; 6
-id_mzb_flee = ptr_MZB_Flee-BossMarble_ShipIndex				; 8
+id_mzb_wait = ptr_MZB_Start-BossMZ_ShipIndex			; 0
+id_mzb_move = ptr_MZB_Move-BossMZ_ShipIndex				; 2
+id_mzb_explode = ptr_MZB_Explode-BossMZ_ShipIndex		; 4
+id_mzb_destroyed = ptr_MZB_Destroyed-BossMZ_ShipIndex	; 6
+id_mzb_flee = ptr_MZB_Flee-BossMZ_ShipIndex				; 8
 ; ===========================================================================
 
-BossMarble_ShipStart:		; Secondary Routine 0
-		move.b	obBoss_HoverAngle(a0),d0
-		addq.b	#2,obBoss_HoverAngle(a0)
-		jsr		(CalcSine).w
-		asr.w	#2,d0
-		move.w	d0,obVelY(a0)
-		move.w	#-$100,obVelX(a0)
-		bsr.w	BossMove
-		cmpi.w	#boss_mz_x+$110,obBoss_BufferX(a0)
-		bne.s	loc_18334
-		addq.b	#2,ob2ndRout(a0)
-		clr.b	obSubtype(a0)
-		clr.l	obVelX(a0)
+BossMZ_ShipStart:		; Secondary Routine 0
+		move.b	obBoss_HoverAngle(a0),d0			; get wobble byte
+		addq.b	#2,obBoss_HoverAngle(a0)			; increment wobble (wraps to 0 after $FE)
+		jsr		(CalcSine).w						; convert to sine
+		asr.w	#2,d0								; divide by 4
+		move.w	d0,obVelY(a0)						; set as y speed
+		move.w	#-$100,obVelX(a0)					; move ship left
+		bsr.w	BossMove							; update parent position
+		cmpi.w	#boss_mz_x+$110,obBoss_BufferX(a0)	; has boss reached target position?
+		bne.s	.not_at_pos							; if not, branch
+		addq.b	#2,ob2ndRout(a0)					; -> BossMZ_ShipMove
+		moveq	#0,d0
+		move.b	d0,obBoss_3rdRout(a0)
+		move.l	d0,obVelX(a0)						; stop moving
 
-loc_18334:
+	.not_at_pos:
 		jsr		(RandomNumber).w
 		move.b	d0,obMZBoss_FireBallTimer(a0)		; init timer to a random value between 00-FF
 
-BossMarble_ChkHit:
-		move.w	obBoss_BufferY(a0),obY(a0)
+BossMZ_Update:
+		move.w	obBoss_BufferY(a0),obY(a0)			; update actual position
 		move.w	obBoss_BufferX(a0),obX(a0)
 		cmpi.b	#4,ob2ndRout(a0)
-		bhs.s	.end								; skip hit check if boss has been defeated
+		bhs.s	.exit								; skip hit check if boss has been defeated
 		tst.b	obStatus(a0)
-		bmi.s	BossMarble_AwardPoints				; if bit 7 is set, branch
+		bmi.s	.defeated							; if bit 7 is set, branch
 		tst.b	obColType(a0)
-		bne.s	.end								; skip hit check if boss has no collision at the moment
+		bne.s	.exit								; skip hit check if boss has no collision at the moment
 		tst.b	obBoss_FlashFrames(a0)				; should the boss still be flashing?
 		bne.w	BossFlash							; if yes, branch and flash
 		move.b	#$28,obBoss_FlashFrames(a0)			; set number of	times for ship to flash
@@ -127,36 +129,36 @@ BossMarble_ChkHit:
 		jsr		(QueueSound2).w						; play boss damage sound
 		bra.w	BossFlash							; apply flash effect
 
-	.end:
+	.exit:
 		rts	
 ; ===========================================================================
 
-BossMarble_AwardPoints:
+	.defeated:
 		moveq	#100,d0
 		bsr.w	AddPoints							; award 1000 points
 		move.b	#4,ob2ndRout(a0)					; set ship to exploding routine
-		move.w	#$B4,obBoss_DelayTime(a0)
-		clr.w	obVelX(a0)
+		move.w	#180,obBoss_DelayTime(a0)			; set timer to 3 seconds
+		clr.w	obVelX(a0)							; stop boss moving
 		rts
 ; ===========================================================================
 
-BossMarble_ShipMove:		; Secondary Routine 2
+BossMZ_ShipMove:		; Secondary Routine 2
 		moveq	#0,d0
 		move.b	obBoss_3rdRout(a0),d0
 		move.w	BMZShip_MoveIndex(pc,d0.w),d0
 		jsr		BMZShip_MoveIndex(pc,d0.w)
-		andi.b	#6,obBoss_3rdRout(a0)					; clamp tertiary routine value to a range of 0-6
-		bra.w	BossMarble_ChkHit
+		andi.b	#6,obBoss_3rdRout(a0)				; clamp tertiary routine value to a range of 0-6
+		bra.w	BossMZ_Update						; update actual position, check for hits
 ; ===========================================================================
 
 BMZShip_MoveIndex:	offsetTable
-		offsetTableEntry.w BossMarble_MoveAcross	; Move from right to left
-		offsetTableEntry.w BossMarble_DropFire		; Drop fire onto the left side
-		offsetTableEntry.w BossMarble_MoveAcross	; Move from left to right
-		offsetTableEntry.w BossMarble_DropFire		; Drop fire onto the right side
+		offsetTableEntry.w BossMZ_MoveAcross	; Move from right to left
+		offsetTableEntry.w BossMZ_DropFire		; Drop fire onto the left side
+		offsetTableEntry.w BossMZ_MoveAcross	; Move from left to right
+		offsetTableEntry.w BossMZ_DropFire		; Drop fire onto the right side
 ; ===========================================================================
 
-BossMarble_MoveAcross:		; Tertiary Routine 0/4
+BossMZ_MoveAcross:		; Tertiary Routine 0/4
 		tst.w	obVelX(a0)							; is Eggman currently moving horizontally?
 		bne.s	.ismoving							; if yes, branch
 
@@ -164,7 +166,7 @@ BossMarble_MoveAcross:		; Tertiary Routine 0/4
 	; Eggman starts moving to the opposite side, OR
 	; Eggman has reached the opposite side of the field
 		moveq	#$40,d0
-		cmpi.w	#boss_mz_y+$1C,obBoss_BufferY(a0)		; Is Eggman in position to drop fire?
+		cmpi.w	#boss_mz_y+$1C,obBoss_BufferY(a0)	; Is Eggman in position to drop fire?
 		beq.s	.takeoff							; if yes, branch. He will take off to the other side.
 		bcs.s	.applymovement
 		neg.w	d0
@@ -175,8 +177,7 @@ BossMarble_MoveAcross:		; Tertiary Routine 0/4
 ; ===========================================================================
 
 	.takeoff:
-		move.w	#$200,obVelX(a0)					; set X-speed to 2 (to the right)
-		move.w	#$100,obVelY(a0)					; set Y-speed to 1
+		move.l	#$2000100,obVelX(a0)				; set X-speed to 2 (to the right); set Y-speed to 1
 		btst	#staFlipX,obStatus(a0)				; is Eggman facing left?
 		bne.s	.ismoving							; if not, branch
 		neg.w	obVelX(a0)							; set X-speed to -2 (to the left)
@@ -195,11 +196,12 @@ BossMarble_MoveAcross:		; Tertiary Routine 0/4
 		_move.b	#id_FireBall,obID(a1)				; load fireball object
 		move.w	#boss_mz_y+$D8,obY(a1)				; hardset fireball's Y-position
 		jsr		(RandomNumber).w
-		andi.l	#$FFFF,d0
-		divu.w	#$50,d0
-		swap	d0
-		addi.w	#boss_mz_x+$78,d0
-		move.w	d0,obX(a1)							; randomly set X-position
+		moveq	#0,d2								; We save 8 cycles with the first two lines below, instead of using andi.l #$FFFF,d0
+		move.w	d0,d2								; to make this work, we make use of d2
+		divu.w	#$50,d2
+		swap	d2
+		addi.w	#boss_mz_x+$78,d2
+		move.w	d2,obX(a1)							; randomly set X-position
 		lsr.b	#7,d1
 		move.w	#priority5,obPriority(a1)			; boss fireballs assume lower priority
 
@@ -237,12 +239,12 @@ BossMarble_MoveAcross:		; Tertiary Routine 0/4
 		rts	
 ; ===========================================================================
 
-BossMarble_DropFire:		; Tertiary Routine 2/6
+BossMZ_DropFire:		; Tertiary Routine 2/6
 		bsr.w	BossMove
 		move.w	obBoss_BufferY(a0),d0
 		subi.w	#boss_mz_y+$1C,d0					; Is Eggman in position to drop fire?
 		bgt.s	.end								; if not, branch
-		move.w	#boss_mz_y+$1C,d0					; ???
+		move.w	#boss_mz_y+$1C,d0
 		tst.w	obVelY(a0)							; is Eggman moving vertically?
 		beq.s	.countdown							; if not, branch. We've already fired the ball.
 		clr.w	obVelY(a0)							; stop moving vertically, and deploy that fire!
@@ -265,67 +267,67 @@ BossMarble_DropFire:		; Tertiary Routine 2/6
 		rts	
 ; ===========================================================================
 
-BossMarble_ShipExplode:			; Secondary Routine 4
-		subq.w	#1,obBoss_DelayTime(a0)
-		bmi.s	loc_18500
+BossMZ_ShipExplode:			; Secondary Routine 4
+		subq.w	#1,obBoss_DelayTime(a0)				; decrement timer
+		bmi.s	.stop_exploding						; branch if below 0
 		bra.w	BossDefeated						; Make explosion in a random spot on the ship
 ; ===========================================================================
 
-loc_18500:
-		bset	#staFlipX,obStatus(a0)
+	.stop_exploding:
+		bset	#staFlipX,obStatus(a0)				; ship face right
 		bclr	#7,obStatus(a0)
-		clr.w	obVelX(a0)
-		addq.b	#2,ob2ndRout(a0)
-		move.w	#-$26,obBoss_DelayTime(a0)
+		clr.w	obVelX(a0)							; stop moving
+		addq.b	#2,ob2ndRout(a0)					; goto BossMZ_ShipDestroyed next
+		move.w	#-$26,obBoss_DelayTime(a0)			; set timer (counts up)
 		tst.b	(v_bossstatus).w
-		bne.s	locret_1852A
-		move.b	#1,(v_bossstatus).w
+		bne.s	.exit
+		move.b	#1,(v_bossstatus).w					; set boss beaten flag
 		clr.w	obVelY(a0)
 
-locret_1852A:
+	.exit:
 		rts	
 ; ===========================================================================
 
-BossMarble_ShipDestroyed:		; Secondary Routine 6
-		addq.w	#1,obBoss_DelayTime(a0)
-		beq.s	loc_18544
-		bpl.s	loc_1854E
+BossMZ_ShipDestroyed:		; Secondary Routine 6
+		addq.w	#1,obBoss_DelayTime(a0)				; increment timer
+		beq.s	.stop_falling						; branch if 0
+		bpl.s	.ship_recovers						; branch if 1 or more
 		cmpi.w	#boss_mz_y+$60,obBoss_BufferY(a0)
-		bhs.s	loc_18544
+		bhs.s	.stop_falling
 		addi.w	#$18,obVelY(a0)						; while timer is negative, the ship should sink down
-		bra.s	loc_1857A							; branch to movement
+		bra.s	.update								; branch to movement
 ; ===========================================================================
 
-loc_18544:
+	.stop_falling:
 		moveq	#0,d0
 		move.w	d0,obVelY(a0)
 		move.w	d0,obBoss_DelayTime(a0)
-		bra.s	loc_1857A							; branch to movement
+		bra.s	.update								; branch to movement
 ; ===========================================================================
 
-loc_1854E:
+	.ship_recovers:
 		cmpi.w	#$30,obBoss_DelayTime(a0)
-		blo.s	loc_18566
-		beq.s	loc_1856C
+		blo.s	.ship_rises
+		beq.s	.stop_rising
 		cmpi.w	#$38,obBoss_DelayTime(a0)
-		blo.s	loc_1857A							; branch to movement
+		blo.s	.update								; branch to movement
 		addq.b	#2,ob2ndRout(a0)
 	; movement applied here, instead of EVERY frame in 2ndRout $C
-		move.l	#$0500FFC0,obVelX(a0)	; (xVel: $500, yVel: -$40); move ship to the right, and upward slightly
+		move.l	#$0500FFC0,obVelX(a0)				; (xVel: $500, yVel: -$40); move ship to the right, and upward slightly
 
 	if PostBossScreenUnlock
 		move.w	#boss_mz_end,(v_limitright).w
 	endif
 
-		bra.s	loc_1857A							; branch to movement
+		bra.s	.update								; branch to movement
 ; ===========================================================================
 
-loc_18566:
+	.ship_rises:
 		subq.w	#8,obVelY(a0)
-		bra.s	loc_1857A							; branch to movement
+		bra.s	.update								; branch to movement
 ; ===========================================================================
 
-loc_1856C:
+	.stop_rising:
 		clr.w	obVelY(a0)
 
 	if ~~AmbienceMode
@@ -339,139 +341,139 @@ loc_1856C:
 			move.b	d0,(v_lastbgmplayed).w			; store last played music
 	endif
 
-loc_1857A:
+	.update:
 		bsr.w	BossMove
-		bra.w	BossMarble_ChkHit					; we call this solely for the hover effect
+		bra.w	BossMZ_Update						; we call this solely for the hover effect
 ; ===========================================================================
 
-BossMarble_ShipFlee:			; Secondary Routine 8
+BossMZ_ShipFlee:			; Secondary Routine 8
 	if ~~PostBossScreenUnlock
 		cmpi.w	#boss_mz_end,(v_limitright).w
-		bhs.s	.limitreached
+		bhs.s	.chkdel
 		addq.w	#2,(v_limitright).w
-		bra.s	.moveboss
+		bra.s	.update
 ; ===========================================================================
 	endif
 
-	.limitreached:
+	.chkdel:
 		tst.b	obRender(a0)
-		bpl.s	BossMarble_ShipDel
+		bpl.s	BossMZ_ShipDel
 
-	.moveboss:
+	.update:
 		bsr.w	BossMove
-		bra.w	BossMarble_ChkHit					; we call this solely for the hover effect
+		bra.w	BossMZ_Update					; we call this solely for the hover effect
 ; ===========================================================================
 
-BossMarble_ShipDel:
+BossMZ_ShipDel:
 		; Objects should not queue themselves for display
 		; while also being deleted.
-		addq.l	#4,sp			; Clownacy DisplaySprites Fix
+		addq.l	#4,sp							; Clownacy DisplaySprites Fix
 		jmp		(DeleteObject).l
 ; ===========================================================================
 
-BossMarble_FaceMain:			; Routine 4
-		movea.w	obBoss_Parent(a0),a1				; load the parent object (ship) to a1
+BossMZ_FaceMain:			; Routine 4
+		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.b	#id_BossMarble,obID(a1)				; is the boss still loaded?
-		bne.w	BossMarble_Delete					; if not, delete object
+		cmpi.b	#id_BossMarble,obID(a1)			; is the boss still loaded?
+		bne.w	BossMZ_Delete					; if not, delete object
 	; Boss Object Fix End
 
 		moveq	#0,d0
 		moveq	#aniID_NormalFace1,d1
-		move.b	ob2ndRout(a1),d0					; get the ship's current routine
-		subq.w	#id_mzb_move,d0						; is ship in a movement phase?
-		bne.s	.notMoving							; if not, branch
+		move.b	ob2ndRout(a1),d0				; get the ship's current routine
+		subq.w	#id_mzb_move,d0					; is ship in a movement phase?
+		bne.s	.notMoving						; if not, branch
 		btst	#1,obSubtype(a1)
 		beq.s	.chkHurt
 		tst.w	obVelY(a1)
 		bne.s	.chkHurt
-		moveq	#aniID_LaughFace,d1					; use laughing animation
+		moveq	#aniID_LaughFace,d1				; use laughing animation
 		bra.s	.setAnim
 ; ===========================================================================
 
 	.notMoving:
 		subq.b	#2,d0
-		bmi.s	.chkHurt							; if not in Routine 6, branch
-		moveq	#aniID_DefeatFace,d1				; show defeated (burned) face
+		bmi.s	.chkHurt						; if not in Routine 6, branch
+		moveq	#aniID_DefeatFace,d1			; show defeated (burned) face
 		bra.s	.setAnim
 ; ===========================================================================
 
 	.chkHurt:
-		tst.b	obColType(a1)
+		tst.b	obColType(a1)					; is boss collision on?
 		bne.s	.chkLaughing
 		moveq	#aniID_HurtFace,d1
 		bra.s	.setAnim
 ; ===========================================================================
 
 	.chkLaughing:
-		cmpi.b	#4,(v_player+obRoutine).w			; is Sonic hurt (or dead)?
-		blo.s	.setAnim							; if not, branch
-		moveq	#aniID_LaughFace,d1					; use laughing animation
+		cmpi.b	#4,(v_player+obRoutine).w		; is Sonic hurt (or dead)?
+		blo.s	.setAnim						; if not, branch
+		moveq	#aniID_LaughFace,d1				; use laughing animation
 
 	.setAnim:
-		move.b	d1,obAnim(a0)						; set next face animation
-		subq.b	#4,d0								; is Eggman fleeing?
-		bne.s	BossMarble_Animate					; if not, branch
-		move.b	#aniID_PanicFace,obAnim(a0)			; set panicking face
+		move.b	d1,obAnim(a0)					; set next face animation
+		subq.b	#4,d0							; is Eggman fleeing?
+		bne.s	BossMZ_Animate					; if not, branch
+		move.b	#aniID_PanicFace,obAnim(a0)		; set panicking face
 		tst.b	obRender(a0)
-		bpl.s	BossMarble_Delete
-		bra.s	BossMarble_Animate					; Face display
+		bpl.s	BossMZ_Delete
+		bra.s	BossMZ_Animate					; Face display
 ; ===========================================================================
 
-BossMarble_FlameMain:			; Routine 6
-		movea.w	obBoss_Parent(a0),a1				; load the parent object (ship) to a1
+BossMZ_FlameMain:			; Routine 6
+		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.b	#id_BossMarble,obID(a1)				; is the boss still loaded?
-		bne.s	BossMarble_Delete					; if not, delete object
+		cmpi.b	#id_BossMarble,obID(a1)			; is the boss still loaded?
+		bne.s	BossMZ_Delete					; if not, delete object
 	; Boss Object Fix End
 
-		move.b	#aniID_Blank,obAnim(a0)
-		cmpi.b	#id_mzb_flee,ob2ndRout(a1)			; has Eggman begun fleeing?
-		blt.s	.notfleeing							; if not, branch
-		move.b	#aniID_EscapeFlame,obAnim(a0)		; use the escape animation for the flame
-		tst.b	obRender(a0)
-		bpl.s	BossMarble_Delete
-		bra.s	BossMarble_Animate					; Flame Display
+		move.b	#aniID_Blank,obAnim(a0)			; hide flame
+		cmpi.b	#id_mzb_flee,ob2ndRout(a1)		; has Eggman begun fleeing?
+		blt.s	.notfleeing						; if not, branch
+		move.b	#aniID_EscapeFlame,obAnim(a0)	; use the escape animation for the flame
+		tst.b	obRender(a0)					; is object on-screen?
+		bpl.s	BossMZ_Delete					; if not, branch
+		bra.s	BossMZ_Animate
 ; ===========================================================================
 
 	.notfleeing:
 		tst.w	obVelX(a1)
-		beq.s	BossMarble_Animate
+		beq.s	BossMZ_Animate
 		move.b	#aniID_Flame1,obAnim(a0)
 
-BossMarble_Animate:
+BossMZ_Animate:
 		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
 
-BossMarble_Display:
-		movea.w	obBoss_Parent(a0),a1
+BossMZ_Display:
+		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
 		move.w	obX(a1),obX(a0)
 		move.w	obY(a1),obY(a0)
 		move.b	obStatus(a1),obStatus(a0)
 		moveq	#(maskFlipX+maskFlipY),d0
 		and.b	obStatus(a0),d0
-		andi.b	#$FC,obRender(a0)
-		or.b	d0,obRender(a0)
+		andi.b	#$FC,obRender(a0)				; ignore x/y flip bits
+		or.b	d0,obRender(a0)					; combine x/y flip bits from status instead
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 
-BossMarble_Delete:
+BossMZ_Delete:
 		jmp	(DeleteObject).l
 ; ===========================================================================
 
-BossMarble_TubeMain:			; Routine 8
-		movea.w	obBoss_Parent(a0),a1				; a1 = Eggman's ship
+BossMZ_TubeMain:	; Routine 8
+		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.b	#id_BossMarble,obID(a1)				; is the boss still loaded?
-		bne.s	BossMarble_Delete					; if not, delete object
+		cmpi.b	#id_BossMarble,obID(a1)			; is the boss still loaded?
+		bne.s	BossMZ_Delete					; if not, delete object
 	; Boss Object Fix End
 
-		cmpi.b	#id_mzb_flee,ob2ndRout(a1)			; has Eggman begun fleeing?
-		bne.s	BossMarble_Display					; if not, branch
-		tst.b	obRender(a0)
-		bpl.s	BossMarble_Delete
-		bra.s	BossMarble_Display
+		cmpi.b	#id_mzb_flee,ob2ndRout(a1)		; has Eggman begun fleeing?
+		bne.s	BossMZ_Display					; if not, branch
+		tst.b	obRender(a0)					; is object on-screen?
+		bpl.s	BossMZ_Delete					; if not, branch
+		bra.s	BossMZ_Display
 ; ===========================================================================

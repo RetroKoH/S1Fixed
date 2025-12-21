@@ -4927,13 +4927,11 @@ SS_Load:
 SS_ChkEmldNum:
 		cmpi.b	#emldCount,(v_emeralds).w		; do you have all emeralds?
 		beq.s	SS_LoadData						; if yes, branch
-		moveq	#0,d1
 		tst.b	(v_emeralds).w					; check total # of emeralds
 		beq.s	SS_LoadData						; if no emeralds, skip emerald check
-		move.b	(v_emldlist).w,d1				; d1 = bitfield that tells which emeralds we do/don't have
+		lea		(v_emldlist).w,a3				; a3 = bitfield that tells which emeralds we do/don't have (loading to a3 instead of dx saves 4 cycles)
 
-	; 6(1/0) mine vs 14(3/0) original; and we save some RAM
-		btst	d0,d1							; Did you get this emerald?
+		btst	d0,(a3)							; did you get the emerald? (Using a bitfield saves 8 cycles here)
 		beq.s	SS_LoadData						; if not, branch
 		bra.s	SS_Load
 ; ===========================================================================

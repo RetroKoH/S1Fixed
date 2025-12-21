@@ -630,11 +630,13 @@ SpSon_ChkEmerald:
 
 	.no_slot:
 		cmpi.b	#emldCount,(v_emeralds).w		; do you have all the emeralds?
-		beq.s	.no_emerald					; if yes, branch
-		subi.b	#$3B,d4
+		beq.s	.no_emerald						; if yes, branch
+		subi.b	#SSBlock_Emld1,d4
 		bset	d4,(v_emldlist).w				; set the appropriate bit in the emerald bitfield
+		bne.s	.already_have					; if this emerald was already collected, branch
 		addq.b	#1,(v_emeralds).w				; add 1 to number of emeralds
 
+	.already_have:
 	if SpecialStageAdvancementMod	; Mercury Special Stage Index Increases Only If Won
 		addq.b	#1,(v_lastspecial).w			; increment SS index
 	endif
