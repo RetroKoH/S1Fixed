@@ -5,17 +5,17 @@
 BossStarLight:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
-		move.w	BossStarLight_Index(pc,d0.w),d1
-		jmp	BossStarLight_Index(pc,d1.w)
+		move.w	BossSLZ_Index(pc,d0.w),d1
+		jmp	BossSLZ_Index(pc,d1.w)
 ; ===========================================================================
-BossStarLight_Index:	offsetTable
-		offsetTableEntry.w BossStarLight_Main
-		offsetTableEntry.w BossStarLight_ShipMain
-		offsetTableEntry.w BossStarLight_FaceMain
-		offsetTableEntry.w BossStarLight_FlameMain
-		offsetTableEntry.w BossStarLight_TubeMain
+BossSLZ_Index:	offsetTable
+		offsetTableEntry.w BossSLZ_Main
+		offsetTableEntry.w BossSLZ_ShipMain
+		offsetTableEntry.w BossSLZ_FaceMain
+		offsetTableEntry.w BossSLZ_FlameMain
+		offsetTableEntry.w BossSLZ_TubeMain
 
-BossStarLight_ObjData:
+BossSLZ_ObjData:
 	; Ship
 		dc.b 2,	aniID_Ship		; routine number, animation
 		dc.w priority4			; priority
@@ -30,90 +30,92 @@ BossStarLight_ObjData:
 		dc.w priority3
 ; ===========================================================================
 
-BossStarLight_Main:
+BossSLZ_Main:
 		move.w	#boss_slz_x+$188,obX(a0)
 		move.w	#boss_slz_y+$18,obY(a0)
 		move.w	obX(a0),obBoss_BufferX(a0)
 		move.w	obY(a0),obBoss_BufferY(a0)
 		move.b	#(colEnemy|colSz_24x24),obColType(a0)
 		move.b	#8,obColProp(a0)				; set number of hits to 8
-		lea		BossStarLight_ObjData(pc),a2	; get data for routine number, animation & priority
+		lea		BossSLZ_ObjData(pc),a2			; get data for routine number, animation & priority
 		movea.l	a0,a1							; replace current object with 1st in list
 		moveq	#3,d1							; 3 additional objects
-		bra.s	BossStarLight_LoadBoss
+		bra.s	.load_boss
 ; ===========================================================================
 
-BossStarLight_Loop:
+	.loop:
 		jsr		(FindNextFreeObj).l
-		bne.s	loc_1895C
+		bne.s	.fail
 		_move.b	#id_BossStarLight,obID(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 
-BossStarLight_LoadBoss:
+	.load_boss:
 		bclr	#staFlipX,obStatus(a0)
 		clr.b	ob2ndRout(a1)
 		move.b	(a2)+,obRoutine(a1)
 		move.b	(a2)+,obAnim(a1)
-		move.w	(a2)+,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
+		move.w	(a2)+,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
 		move.l	#Map_Eggman,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.b	#$20,obDispWid(a1)
 		move.w	a0,obBoss_Parent(a1)
-		dbf		d1,BossStarLight_Loop	; repeat sequence 3 more times
+		dbf		d1,.loop					; repeat sequence 3 more times
 
 	; Set data for Tube
 		move.l	#Map_BossItems,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman_Weapons,1,0),obGfx(a1)
 		move.b	#3,obFrame(a1)
 
-loc_1895C:
-		lea		(v_lvlobjspace).w,a1	; FixBugs -- Formerly (v_objspace+object_size*1)
-		lea		objoff_2A(a0),a2
+	.fail:
+		lea		(v_lvlobjspace).w,a1		; FixBugs -- Formerly (v_objspace+object_size*1)
+		lea		obBossSLZ_Seesaws(a0),a2	; pointers to Eggman's seesaws
 		moveq	#id_Seesaw,d0
-		moveq	#v_lvlobjcount,d1		; FixBugs: Normally only covered the first half of object RAM.
+		moveq	#v_lvlobjcount,d1			; FixBugs: Normally only covered the first half of object RAM.
+		moveq	#object_size,d2
 
-loc_18968:
-		cmp.b	obID(a1),d0
-		bne.s	loc_18974
-		tst.b	obSubtype(a1)
-		beq.s	loc_18974
-		move.w	a1,(a2)+
+	.seesaw_loop:
+		cmp.b	obID(a1),d0					; is object a seesaw?
+		bne.s	.next						; if not, branch
+		tst.b	obSubtype(a1)				; is seesaw empty?
+		beq.s	.next						; if not, branch
+		move.w	a1,(a2)+					; set pointer to seesaw object RAM
 
-loc_18974:
-		adda.w	#object_size,a1
-		dbf		d1,loc_18968
+	.next:
+		adda.w	d2,a1						; next object slot
+		dbf		d1,.seesaw_loop				; repeat for remaining slots
+; ---------------------------------------------------------------------------
 
-BossStarLight_ShipMain:	; Routine 2
+BossSLZ_ShipMain:	; Routine 2
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
-		move.w	BossStarLight_ShipIndex(pc,d0.w),d0
-		jsr		BossStarLight_ShipIndex(pc,d0.w)
+		move.w	BossSLZ_ShipIndex(pc,d0.w),d0
+		jsr		BossSLZ_ShipIndex(pc,d0.w)
 		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
 		moveq	#(maskFlipX+maskFlipY),d0
 		and.b	obStatus(a0),d0
 		andi.b	#$FC,obRender(a0)
 		or.b	d0,obRender(a0)
-		jmp		(DisplayAndCollision).l	; S3K TouchResponse
+		jmp		(DisplayAndCollision).l		; S3K TouchResponse
 ; ===========================================================================
-BossStarLight_ShipIndex:	offsetTable
-		offsetTableEntry.w BossStarLight_ShipStart
-		offsetTableEntry.w BossStarLight_ShipMove
-		offsetTableEntry.w BossStarLight_ShipMakeBall
-		offsetTableEntry.w BossStarLight_ShipExplode
-		offsetTableEntry.w BossStarLight_ShipDestroyed
-		offsetTableEntry.w BossStarLight_ShipFlee
+BossSLZ_ShipIndex:	offsetTable
+		offsetTableEntry.w BossSLZ_ShipStart
+		offsetTableEntry.w BossSLZ_ShipMove
+		offsetTableEntry.w BossSLZ_ShipMakeBall
+		offsetTableEntry.w BossSLZ_ShipExplode
+		offsetTableEntry.w BossSLZ_ShipDestroyed
+		offsetTableEntry.w BossSLZ_ShipFlee
 ; ===========================================================================
 
-BossStarLight_ShipStart:		; Secondary Routine 0
+BossSLZ_ShipStart:		; Secondary Routine 0
 		move.w	#-$100,obVelX(a0)					; move ship left
 		cmpi.w	#boss_slz_x+$120,obBoss_BufferX(a0)	; has ship reached right side of screen?
-		bhs.s	BossStarLight_Update				; if not, branch
+		bhs.s	BossSLZ_Update						; if not, branch
 		addq.b	#2,ob2ndRout(a0)
 
-BossStarLight_Update:
+BossSLZ_Update:
 		bsr.w	BossMove							; update parent position
 		move.b	obBoss_HoverAngle(a0),d0
 		addq.b	#2,obBoss_HoverAngle(a0)
@@ -122,122 +124,123 @@ BossStarLight_Update:
 		add.w	obBoss_BufferY(a0),d0
 		move.w	d0,obY(a0)
 		move.w	obBoss_BufferX(a0),obX(a0)
-		bra.s	BossStarLight_ChkHit				; check for hit
+		bra.s	BossSLZ_ChkHit						; check for hit
 ; ===========================================================================
 
-BossStarLight_ApplyMovement:
-		bsr.w	BossMove
-		move.w	obBoss_BufferY(a0),obY(a0)
+BossSLZ_ApplyMovement:
+		bsr.w	BossMove							; update parent position
+		move.w	obBoss_BufferY(a0),obY(a0)			; update actual position
 		move.w	obBoss_BufferX(a0),obX(a0)
 
-BossStarLight_ChkHit:
+BossSLZ_ChkHit:
 		cmpi.b	#6,ob2ndRout(a0)
-		bhs.s	locret_18A44
-		tst.b	obStatus(a0)
-		bmi.s	BossStarLight_AwardPoints	; if bit 7 is set, branch
-		tst.b	obColType(a0)
-		bne.s	locret_18A44
-		tst.b	obBoss_FlashFrames(a0)
-		bne.w	BossFlash
-		move.b	#$20,obBoss_FlashFrames(a0)	; set number of	times for ship to flash
+		bhs.s	.exit
+		tst.b	obStatus(a0)						; has boss been beaten (bit 7 is set)?
+		bmi.s	.defeated							; if yes, branch
+		tst.b	obColType(a0)						; is ship collision clear?
+		bne.s	.exit								; if not, branch
+		tst.b	obBoss_FlashFrames(a0)				; is ship flashing?
+		bne.w	BossFlash							; if yes, branch
+		move.b	#$20,obBoss_FlashFrames(a0)			; set number of	times for ship to flash
 		move.w	#sfx_HitBoss,d0
-		jsr		(QueueSound2).w		; play boss damage sound
+		jsr		(QueueSound2).w						; play boss damage sound
 		bra.w	BossFlash
 
-locret_18A44:
+	.exit:
 		rts	
 ; ===========================================================================
 
-BossStarLight_AwardPoints:
+	.defeated:
 		moveq	#100,d0
-		bsr.w	AddPoints			; award 1000 points
-		move.b	#6,ob2ndRout(a0)	; set ship to exploding routine
-		move.b	#$78,obBoss_DelayTime(a0)
+		bsr.w	AddPoints							; award 1000 points
+		move.b	#6,ob2ndRout(a0)					; set ship to exploding routine
+		move.b	#120,obBoss_DelayTime(a0)			; set timer to 2 seconds
 		clr.w	obVelX(a0)
 		rts	
 ; ===========================================================================
 
-BossStarLight_ShipMove:		; Secondary Routine 2
+BossSLZ_ShipMove:		; Secondary Routine 2
 		move.w	obBoss_BufferX(a0),d0
 		move.w	#$200,obVelX(a0)			; move ship right
 		btst	#staFlipX,obStatus(a0)
-		bne.s	loc_18A7C
+		bne.s	.face_right
 		neg.w	obVelX(a0)					; move ship left
 		cmpi.w	#boss_slz_x+8,d0
-		bgt.s	loc_18A88
-		bra.s	loc_18A82
+		bgt.s	.find_seesaw
+		bra.s	.chg_dir
 ; ===========================================================================
 
-loc_18A7C:
-		cmpi.w	#boss_slz_x+$138,d0
-		blt.s	loc_18A88
+	.face_right:
+		cmpi.w	#boss_slz_x+$138,d0			; has ship reached right side of screen?
+		blt.s	.find_seesaw				; if not, branch
 
-loc_18A82:
-		bchg	#staFlipX,obStatus(a0)
+	.chg_dir:
+		bchg	#staFlipX,obStatus(a0)		; change direction
 
-; find seesaw
-loc_18A88:
+	.find_seesaw:
 		move.w	obX(a0),d0
 		moveq	#-1,d1
-		moveq	#2,d2					; number of seesaws
-		lea		objoff_2A(a0),a2		; get OST addresses for the 3 seesaws
-		moveq	#$28,d4					; dist from center to right side of seesaw
+		moveq	#2,d2						; number of seesaws (3)
+		lea		obBossSLZ_Seesaws(a0),a2	; get object addresses for the 3 seesaws
+		moveq	#$28,d4						; dist from center to right side of seesaw
 		tst.w	obVelX(a0)
-		bpl.s	loc_18A9E				; branch if ship is moving righ
-		neg.w	d4						; dist from centre to left side of seesaw
+		bpl.s	.seesaw_loop				; branch if ship is moving righ
+		neg.w	d4							; dist from centre to left side of seesaw
 
-loc_18A9E:
+	.seesaw_loop:
 		move.w	(a2)+,d1
-		movea.l	d1,a3					; a3 = address of seesaw OST
+		movea.l	d1,a3						; a3 = RAM address of seesaw
 		btst	#staSonicOnObj,obStatus(a3)	; is Sonic on the seesaw?
-		bne.s	loc_18AB4				; if yes, branch
+		bne.s	.sonic_on_seesaw			; if yes, branch
 		move.w	obX(a3),d3
-		add.w	d4,d3					; d3 = x position of left/right side of seesaw
+		add.w	d4,d3						; d3 = x position of left/right side of seesaw
 		sub.w	d0,d3
-		beq.s	loc_18AC0				; branch if ship is directly over side of seesaw
+		beq.s	.seesaw_found				; branch if ship is directly over side of seesaw
 
-loc_18AB4:
-		dbf		d2,loc_18A9E
+	.sonic_on_seesaw:
+		dbf		d2,.seesaw_loop
 
-		move.b	d2,obSubtype(a0)		; set subtype to -1 if no seesaw is found
-		bra.w	BossStarLight_Update	; update position, check for hit
+		move.b	d2,obSubtype(a0)			; set subtype to -1 if no seesaw is found
+		bra.w	BossSLZ_Update				; update position, check for hit
 ; ===========================================================================
 
-loc_18AC0:
-		move.b	d2,obSubtype(a0)		; number of seesaw the ship is above (0/1/2)
-		addq.b	#2,ob2ndRout(a0)		; goto BSLZ_MakeBall next
+	.seesaw_found:
+		move.b	d2,obSubtype(a0)			; number of seesaw the ship is above (0/1/2)
+		addq.b	#2,ob2ndRout(a0)			; goto BSLZ_MakeBall next
 		move.b	#$28,obBoss_DelayTime(a0)	; set timer to 40 frames
-		bra.w	BossStarLight_Update	; update position, check for hit
+		bra.w	BossSLZ_Update				; update position, check for hit
 ; ===========================================================================
 
-BossStarLight_ShipMakeBall:		; Secondary Routine 4
-		cmpi.b	#$28,obBoss_DelayTime(a0)		; has timer started counting down yet?
-		bne.s	loc_18B36					; if yes, branch
+BossSLZ_ShipMakeBall:		; Secondary Routine 4
+		cmpi.b	#$28,obBoss_DelayTime(a0)	; has timer started counting down yet?
+		bne.s	.wait_next					; if yes, branch
 		moveq	#-1,d0
 		move.b	obSubtype(a0),d0			; get number of seesaw the ship is above (0/1/2)
 		ext.w	d0
-		bmi.s	loc_18B40					; branch if no seesaw found (-1)
+		bmi.s	.exit						; branch if no seesaw found (-1)
 		subq.w	#2,d0
 		neg.w	d0							; switch between 0 and 2
 		add.w	d0,d0
-		lea		objoff_2A(a0),a1
+		lea		obBossSLZ_Seesaws(a0),a1
 		move.w	(a1,d0.w),d0
-		movea.l	d0,a2						; get address of OST of seesaw
+		movea.l	d0,a2						; get obj RAM address of seesaw
 		lea		(v_lvlobjspace).w,a1		; FixBugs -- Formerly (v_objspace+object_size*1)
 		moveq	#v_lvlobjcount,d1			; FixBugs: Normally only covered the first half of object RAM.
+		moveq	#object_size,d2
 
-loc_18AFA:
+	.loop:
 		cmp.w	obBossSpike_Seesaw(a1),d0	; does seesaw already have a spikeball?
-		beq.s	loc_18B40					; if yes, branch
-		lea		object_size(a1),a1			; check next object slot
-		dbf		d1,loc_18AFA
+		beq.s	.exit						; if yes, branch
+		adda.w	d2,a1						; next object slot
+		dbf		d1,.loop					; repeat for remaining slots
 
-		move.l	a0,-(sp)
-		lea		(a2),a0
-		jsr		(FindNextFreeObj).l
+		move.l	a0,-(sp)					; save current object address to stack
+		lea		(a2),a0						; temporarily load seesaw to a0
+		jsr		(FindNextFreeObj).l			; find free obj RAM slot after this one
 		movea.l	(sp)+,a0
-		bne.s	loc_18B40
-		move.b	#id_BossSpikeball,obID(a1)	; load spiked ball object
+		bne.s	.exit
+
+		_move.b	#id_BossSpikeball,obID(a1)	; load spiked ball object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		addi.w	#$20,obY(a1)
@@ -245,73 +248,73 @@ loc_18AFA:
 		move.w	a2,obBossSpike_Seesaw(a1)	; set address of seesaw below
 		move.w	a0,obBossSpike_Parent(a1)	; set address of parent object
 
-loc_18B36:
-		subq.b	#1,obBoss_DelayTime(a0)
-		beq.s	loc_18B40
-		bra.w	BossStarLight_ChkHit
+	.wait_next:
+		subq.b	#1,obBoss_DelayTime(a0)		; decrement timer
+		beq.s	.exit						; branch if 0
+		bra.w	BossSLZ_ChkHit				; check for hit
 ; ===========================================================================
 
-loc_18B40:
-		subq.b	#2,ob2ndRout(a0)
-		bra.w	BossStarLight_Update
+	.exit:
+		subq.b	#2,ob2ndRout(a0)			; -> BossSLZ_ShipMove
+		bra.w	BossSLZ_Update				; update position, check for hit
 ; ===========================================================================
 
-BossStarLight_ShipExplode:		; Secondary Routine 6
-		subq.b	#1,obBoss_DelayTime(a0)
-		bmi.s	loc_18B52
-		bra.w	BossDefeated		; Make explosion in a random spot on the ship
+BossSLZ_ShipExplode:		; Secondary Routine 6
+		subq.b	#1,obBoss_DelayTime(a0)		; decrement timer
+		bmi.s	.stop_exploding				; branch if below 0
+		bra.w	BossDefeated				; spawn explosions on the ship
 ; ===========================================================================
 
-loc_18B52:
-		addq.b	#2,ob2ndRout(a0)
-		clr.w	obVelY(a0)
-		bset	#staFlipX,obStatus(a0)
+	.stop_exploding:
+		addq.b	#2,ob2ndRout(a0)			; -> BossSLZ_ShipDestroyed
+		clr.w	obVelY(a0)					; stop moving
+		bset	#staFlipX,obStatus(a0)		; ship face right
 		bclr	#7,obStatus(a0)
 		clr.w	obVelX(a0)
-		move.b	#-$18,obBoss_DelayTime(a0)
+		move.b	#-$18,obBoss_DelayTime(a0)	; set timer (counts up)
 		tst.b	(v_bossstatus).w
-		bne.s	loc_18B7C
-		move.b	#1,(v_bossstatus).w
+		bne.s	.exit
+		move.b	#1,(v_bossstatus).w			; set boss beaten flag
 
-loc_18B7C:
-		bra.w	BossStarLight_ChkHit
+	.exit:
+		bra.w	BossSLZ_ChkHit
 ; ===========================================================================
 
-BossStarLight_ShipDestroyed:		; Secondary Routine 8
-		addq.b	#1,obBoss_DelayTime(a0)
-		beq.s	loc_18B90					; if timer has ticked up to 0, branch
-		bpl.s	loc_18B96					; if timer is greater than zero, branch
+BossSLZ_ShipDestroyed:		; Secondary Routine 8
+		addq.b	#1,obBoss_DelayTime(a0)		; increment timer
+		beq.s	.stop_falling				; branch if 0
+		bpl.s	.ship_recovers				; branch if 1 or more
 		addi.w	#$18,obVelY(a0)				; while timer is negative, the ship should sink down
-		bra.w	BossStarLight_ApplyMovement
+		bra.w	BossSLZ_ApplyMovement
 ; ===========================================================================
 
-loc_18B90:
+	.stop_falling:
 		clr.w	obVelY(a0)					; stop sinking
-		bra.w	BossStarLight_ApplyMovement
+		bra.w	BossSLZ_ApplyMovement
 ; ===========================================================================
 
-loc_18B96:
-		cmpi.b	#$20,obBoss_DelayTime(a0)
-		blo.s	loc_18BAE					; for about half a second, the ship will rise back up
-		beq.s	loc_18BB4					; if timer == $30, the ship stops rising and music resets
-		cmpi.b	#$2A,obBoss_DelayTime(a0)
-		blo.w	BossStarLight_ApplyMovement
-		addq.b	#2,ob2ndRout(a0)
+	.ship_recovers:
+		cmpi.b	#32,obBoss_DelayTime(a0)
+		bcs.s	.ship_rises					; for about half a second, the ship will rise back up
+		beq.s	.ship_rising				; if timer == $30, the ship stops rising and music resets
+		cmpi.b	#42,obBoss_DelayTime(a0)
+		bcs.w	BossSLZ_ApplyMovement
+		addq.b	#2,ob2ndRout(a0)			; -> BossSLZ_ShipFlee
 		move.l	#$0400FFC0,obVelX(a0)		; (xVel: $400, yVel: -$40); move ship to the right, and upward slightly
 
 	if PostBossScreenUnlock
 		move.w	#boss_slz_end,(v_limitright).w
 	endif
 
-		bra.w	BossStarLight_ApplyMovement
+		bra.w	BossSLZ_ApplyMovement
 ; ===========================================================================
 
-loc_18BAE:
+	.ship_rises:
 		subq.w	#8,obVelY(a0)
-		bra.w	BossStarLight_ApplyMovement
+		bra.w	BossSLZ_ApplyMovement
 ; ===========================================================================
 
-loc_18BB4:
+	.ship_rising:
 		clr.w	obVelY(a0)
 
 	if ~~AmbienceMode
@@ -321,132 +324,132 @@ loc_18BB4:
 			move.w	#bgm_SLZ,d0
 		endif
 
-			jsr		(QueueSound1).w				; play SLZ music
-			move.b	d0,(v_lastbgmplayed).w		; store last played music
+			jsr		(QueueSound1).w			; play SLZ music
+			move.b	d0,(v_lastbgmplayed).w	; store last played music
 	endif
 
-		bra.w	BossStarLight_ApplyMovement
+		bra.w	BossSLZ_ApplyMovement		; update position
 ; ===========================================================================
 
-BossStarLight_ShipFlee:		; Secondary Routine $A
+BossSLZ_ShipFlee:		; Secondary Routine $A
 	if ~~PostBossScreenUnlock
-		cmpi.w	#boss_slz_end,(v_limitright).w
-		bhs.s	loc_18BE0
-		addq.w	#2,(v_limitright).w
-		bra.s	loc_18BE8
+		cmpi.w	#boss_slz_end,(v_limitright).w	; check for new boundary
+		bhs.s	.chkdel
+		addq.w	#2,(v_limitright).w				; expand right edge of level boundary
+		bra.s	.update
 ; ===========================================================================
 
-loc_18BE0:
+	.chkdel:
 	endif
 
 		tst.b	obRender(a0)
-		bpl.s	BossStarLight_PopAndDelete	; Clownacy DisplaySprite Fix
+		bpl.s	.delete			; Clownacy DisplaySprite Fix
 
-loc_18BE8:
+	.update:
 		bsr.w	BossMove
-		bra.w	BossStarLight_Update
+		bra.w	BossSLZ_Update
 
-BossStarLight_PopAndDelete:
-		; Avoid returning to BossStarLight_ShipMain to prevent a
+	.delete:
+		; Avoid returning to BossSLZ_ShipMain to prevent a
 		; display-and-delete bug.
 		addq.l	#4,sp
 		jmp		(DeleteObject).l
 ; ===========================================================================
 
-BossStarLight_FaceMain:	; Routine 4
-		movea.w	obBoss_Parent(a0),a1
+BossSLZ_FaceMain:	; Routine 4
+		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.b	#id_BossStarLight,obID(a1)			; is the boss still loaded?
-		bne.w	BossStarLight_Delete				; if not, delete object
+		cmpi.b	#id_BossStarLight,obID(a1)		; is the boss still loaded?
+		bne.w	BossSLZ_Delete					; if not, delete object
 	; Boss Object Fix End
 
 		moveq	#0,d0
 		moveq	#aniID_NormalFace1,d1
 		move.b	ob2ndRout(a1),d0
 		cmpi.b	#6,d0
-		bmi.s	loc_18C06
+		bmi.s	.chk_hit
 		moveq	#aniID_DefeatFace,d1
-		bra.s	loc_18C1A
+		bra.s	.update
 ; ===========================================================================
 
-loc_18C06:
-		tst.b	obColType(a1)
-		bne.s	loc_18C10
-		moveq	#aniID_HurtFace,d1
-		bra.s	loc_18C1A
+	.chk_hit:
+		tst.b	obColType(a1)					; is boss collision on?
+		bne.s	.chk_sonic_hurt					; if yes, branch
+		moveq	#aniID_HurtFace,d1				; use hit animation
+		bra.s	.update
 ; ===========================================================================
 
-loc_18C10:
-		cmpi.b	#4,(v_player+obRoutine).w
-		blo.s	loc_18C1A
+	.chk_sonic_hurt:
+		cmpi.b	#4,(v_player+obRoutine).w		; is Sonic hurt or dead?
+		blo.s	.update							; if not, branch
 		moveq	#aniID_LaughFace,d1
 
-loc_18C1A:
-		move.b	d1,obAnim(a0)
-		cmpi.b	#$A,d0
-		bne.s	BossStarLight_Animate
-		move.b	#aniID_PanicFace,obAnim(a0)
-		tst.b	obRender(a0)
-		bpl.w	BossStarLight_Delete
-		bra.s	BossStarLight_Animate
+	.update:
+		move.b	d1,obAnim(a0)					; set animation
+		cmpi.b	#$A,d0							; is ship on BossSLZ_ShipFlee?
+		bne.s	BossSLZ_Animate					; if not, branch
+		move.b	#aniID_PanicFace,obAnim(a0)		; use sweating animation
+		tst.b	obRender(a0)					; is object on-screen?
+		bpl.s	BossSLZ_Delete					; if not, branch
+		bra.s	BossSLZ_Animate
 ; ===========================================================================
 
-BossStarLight_FlameMain:; Routine 6
-		movea.w	obBoss_Parent(a0),a1
+BossSLZ_FlameMain:; Routine 6
+		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.b	#id_BossStarLight,obID(a1)			; is the boss still loaded?
-		bne.w	BossStarLight_Delete				; if not, delete object
+		cmpi.b	#id_BossStarLight,obID(a1)		; is the boss still loaded?
+		bne.s	BossSLZ_Delete					; if not, delete object
 	; Boss Object Fix End
 
 		move.b	#aniID_Flame1,obAnim(a0)
-		cmpi.b	#$A,ob2ndRout(a1)
-		bne.s	loc_18C56
-		tst.b	obRender(a0)
-		bpl.s	BossStarLight_Delete
+		cmpi.b	#$A,ob2ndRout(a1)				; is ship on BossSLZ_ShipFlee?
+		bne.s	.chk_flame						; if not, branch
+		tst.b	obRender(a0)					; is object on-screen?
+		bpl.s	BossSLZ_Delete					; if not, branch
 		move.b	#aniID_EscapeFlame,obAnim(a0)
-		bra.s	BossStarLight_Animate
+		bra.s	BossSLZ_Animate
 ; ===========================================================================
 
-loc_18C56:
+	.chk_flame:
 		cmpi.b	#8,ob2ndRout(a1)
-		bgt.s	BossStarLight_Animate
+		bgt.s	BossSLZ_Animate
 		cmpi.b	#4,ob2ndRout(a1)
-		blt.s	BossStarLight_Animate
-		move.b	#aniID_Blank,obAnim(a0)
+		blt.s	BossSLZ_Animate
+		move.b	#aniID_Blank,obAnim(a0)			; hide flame
 
-BossStarLight_Animate:
+BossSLZ_Animate:
 		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
 
-BossStarLight_Display:
-		movea.w	obBoss_Parent(a0),a1
+BossSLZ_Display:
+		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
 		move.w	obX(a1),obX(a0)
 		move.w	obY(a1),obY(a0)
 		move.b	obStatus(a1),obStatus(a0)
 		moveq	#(maskFlipX+maskFlipY),d0
 		and.b	obStatus(a0),d0
-		andi.b	#$FC,obRender(a0)
-		or.b	d0,obRender(a0)
+		andi.b	#$FC,obRender(a0)				; ignore x/y flip bits
+		or.b	d0,obRender(a0)					; combine x/y flip bits from status instead
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 
-BossStarLight_TubeMain:	; Routine 8
-		movea.w	obBoss_Parent(a0),a1
-
-	; Devon Boss Object Fix
-		cmpi.b	#id_BossStarLight,obID(a1)			; is the boss still loaded?
-		bne.s	BossStarLight_Delete				; if not, delete object
-	; Boss Object Fix End
-
-		cmpi.b	#$A,ob2ndRout(a1)
-		bne.s	BossStarLight_Display
-		tst.b	obRender(a0)
-		bpl.s	BossStarLight_Delete
-		bra.s	BossStarLight_Display
+BossSLZ_Delete:
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
-BossStarLight_Delete:
-		jmp		(DeleteObject).l
+BossSLZ_TubeMain:	; Routine 8
+		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
+
+	; Devon Boss Object Fix
+		cmpi.b	#id_BossStarLight,obID(a1)		; is the boss still loaded?
+		bne.s	BossSLZ_Delete					; if not, delete object
+	; Boss Object Fix End
+
+		cmpi.b	#$A,ob2ndRout(a1)				; is ship on BossSLZ_ShipFlee?
+		bne.s	BossSLZ_Display					; if not, branch
+		tst.b	obRender(a0)					; is object on-screen?
+		bpl.s	BossSLZ_Delete					; if not, branch
+		bra.s	BossSLZ_Display
 ; ===========================================================================

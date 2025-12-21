@@ -23,35 +23,35 @@ TCha_Main:	; Routine 0
 		clr.b	obRender(a1)
 		move.w	#priority1,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 		move.w	#$104,obX(a1)
-		move.w	#$120,objoff_38(a1)
+		move.w	#$120,obTChaos_StartX(a1)
 		move.w	#$EC,obScreenY(a1)
-		move.w	obScreenY(a1),objoff_3A(a1)
-		move.b	#$1C,objoff_3C(a1)
-		move.b	(v_emldlist).w,d4		; d4 = bit field that tells which emeralds we do/don't have
+		move.w	obScreenY(a1),obTChaos_StartY(a1)
+		move.b	#$1C,obTChaos_Radius(a1)
+		lea		(v_emldlist).w,a3		; a3 = bitfield that tells which emeralds we do/don't have (loading to a3 instead of dx saves 4 cycles)
 		moveq	#0,d0
 		move.b	(v_emeralds).w,d0		; load # of total emeralds to d0
 		beq.s	.loc_5B42				; branch ahead if you have no emeralds
 
 	.chkemerald:
-		btst	d2,d4			; Did you get the emerald?
-		beq.s	.loc_5B42		; if not, branch ahead and set the mappings.
-		addq.b	#1,d2			; Check for the next emerald.
-		bra.s	.chkemerald		; Jump back and check again.
+		btst	d2,(a3)					; did you get the emerald? (Using a bitfield saves 8 cycles here)
+		beq.s	.loc_5B42				; if not, branch ahead and set the mappings.
+		addq.b	#1,d2					; Check for the next emerald.
+		bra.s	.chkemerald				; Jump back and check again.
 ; ===========================================================================
 
 .loc_5B42:
 		move.b	d2,obFrame(a1)
-		addq.b	#1,obFrame(a1)		; d2 + 1, as the first frame is the null frame. (Should set null frame to #7 to avoid this extra instruction)
-		addq.b	#1,d2				; Add 1 to d2, to check for the next missing emerald.
+		addq.b	#1,obFrame(a1)			; d2 + 1, as the first frame is the null frame. (Should set null frame to #7 to avoid this extra instruction)
+		addq.b	#1,d2					; Add 1 to d2, to check for the next missing emerald.
 		move.b	#$80,obAngle(a1)
 		move.b	d3,obTimeFrame(a1)
 		move.b	d3,obDelayAni(a1)
 		addi.w	#10,d3
 		lea		object_size(a1),a1
-		dbf		d1,.makeemerald		; repeat d1 times... for every emerald we don't have
+		dbf		d1,.makeemerald			; repeat d1 times... for every emerald we don't have
 
 TCha_Move:	; Routine 2
-		tst.w	objoff_3E(a0)
+		tst.w	obTChaos_Speed(a0)
 		beq.s	loc_5BBA
 		tst.b	obTimeFrame(a0)
 		beq.s	loc_5B78
@@ -59,7 +59,7 @@ TCha_Move:	; Routine 2
 		bne.s	loc_5B80
 
 loc_5B78:
-		move.w	objoff_3E(a0),d0
+		move.w	obTChaos_Speed(a0),d0
 		add.w	d0,obAngle(a0)
 
 loc_5B80:
@@ -69,21 +69,22 @@ loc_5B80:
 		bne.s	loc_5B96
 
 loc_5B8C:
-		clr.w	objoff_3E(a0)
+		clr.w	obTChaos_Speed(a0)
 		move.b	obDelayAni(a0),obTimeFrame(a0)
 
 loc_5B96:
 		jsr		(CalcSine).w
 		moveq	#0,d4
-		move.b	objoff_3C(a0),d4
+		move.b	obTChaos_Radius(a0),d4
 		muls.w	d4,d1
 		asr.l	#8,d1
 		muls.w	d4,d0
 		asr.l	#8,d0
-		add.w	objoff_38(a0),d1
-		add.w	objoff_3A(a0),d0
+		add.w	obTChaos_StartX(a0),d1
+		add.w	obTChaos_StartY(a0),d0
 		move.w	d1,obX(a0)
 		move.w	d0,obScreenY(a0)
 
 loc_5BBA:
 		jmp		(DisplaySprite).l	
+; ===========================================================================

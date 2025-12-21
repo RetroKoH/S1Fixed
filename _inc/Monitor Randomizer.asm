@@ -10,7 +10,12 @@ MonitorRandomizer:
 	; Get random factor for elemental shield (1, 2, 3)
 		move.l	d0,d1
 		swap	d1
-		andi.l	#$FFFF,d1	; Make sure division will always work
+
+;		andi.l	#$FFFF,d1	; Make sure division will always work
+		swap	d1
+		clr.w	d1			; saves 4 cycles
+		swap	d1
+
 		divu.w	#3,d1		; Divide by adjusted maximum number > #(MAX_NUM-MIN_NUM)+1,d0 MAX = 3; MIN = 1.
 		swap	d1
 		; This time we won't add 1, giving us a range of 0-2
@@ -18,6 +23,10 @@ MonitorRandomizer:
 
 	; randomize monitor icon (Add further randomness modification here before continuing)
 		andi.l	#$FFFF,d0	; Make sure division will always work
+		swap	d0
+		clr.w	d0			; saves 4 cycles
+		swap	d0
+
 		divu.w	#6,d0		; Divide by adjusted maximum number > #(MAX_NUM-MIN_NUM)+1,d0 MAX = 6; MIN = 1.
 		swap	d0			; Get remainder of division
 		addq.w	#1,d0		; Add minimum number
@@ -40,3 +49,4 @@ MonitorRandomizer:
 
 		move.b	d0,obAnim(a0)		; get subtype
 		rts
+; ===========================================================================
