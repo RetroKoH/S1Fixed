@@ -4366,24 +4366,23 @@ boss_hoverangle = objoff_3F		; Used w/ CalcSine for the ship's hover effect (1 b
 ; Subroutine to	show the special stage layout
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
 SS_ShowLayout:
 		bsr.w	SS_AniWallsRings
 		bsr.w	SS_AniItems
-		move.w	d5,-(sp)
-		lea		(v_ssbuffer3&$FFFFFF).l,a1
+
+; Calculate x/y positions of each cell in a 16x16 grid when rotated
+		move.w	d5,-(sp)						; save sprite count to stack
+		lea		(v_ssbuffer3&$FFFFFF).l,a1		; address to write grid coords
 		move.b	(v_ssangle).w,d0
 
 	if ~~SmoothSpecialStages	; Cinossu Smooth Special Stages
-		andi.b	#$FC,d0
+		andi.b	#$FC,d0							; round down angle to nearest 4 (disable this line for smoother rotation)
 	endif						; Smooth Special Stages End
 
-		jsr		(CalcSine).w
+		jsr		(CalcSine).w					; convert to sine/cosine
 		move.w	d0,d4
 		move.w	d1,d5
-		muls.w	#$18,d4
+		muls.w	#$18,d4							; ss_block_width
 		muls.w	#$18,d5
 		moveq	#0,d2
 		move.w	(v_screenposx).w,d2
@@ -4397,9 +4396,9 @@ SS_ShowLayout:
 		swap	d3
 		neg.w	d3
 		addi.w	#-$B4,d3
-		move.w	#$10-1,d7
+		move.w	#$F,d7							; grid is 16 cells high
 
-loc_1B19E:
+	.loop_gridrow:
 		movem.w	d0-d2,-(sp)
 		movem.w	d0-d1,-(sp)
 		neg.w	d0
@@ -4412,9 +4411,9 @@ loc_1B19E:
 		muls.w	d3,d1
 		add.l	d0,d1
 		move.l	d6,d2
-		move.w	#$F,d6
+		move.w	#$F,d6							; grid is 16 cells wide
 
-loc_1B1C0:
+	.loop_gridcell:
 		move.l	d2,d0
 		asr.l	#8,d0
 		move.w	d0,(a1)+
@@ -4423,70 +4422,71 @@ loc_1B1C0:
 		move.w	d0,(a1)+
 		add.l	d5,d2
 		add.l	d4,d1
-		dbf		d6,loc_1B1C0
+		dbf		d6,.loop_gridcell				; repeat for all cells in row
 
 		movem.w	(sp)+,d0-d2
 		addi.w	#$18,d3
-		dbf		d7,loc_1B19E
+		dbf		d7,.loop_gridrow				; repeat for all rows
 
+; Populate the 16x16 grid with sprites based on the level layout
 		move.w	(sp)+,d5
-		lea		(v_ssbuffer1&$FFFFFF).l,a0
+		lea		(v_ssbuffer1&$FFFFFF).l,a0		; v_ss_layout
 		moveq	#0,d0
-		move.w	(v_screenposy).w,d0
-		divu.w	#$18,d0
-		mulu.w	#$80,d0
-		adda.l	d0,a0
+		move.w	(v_screenposy).w,d0				; get camera y pos
+		divu.w	#$18,d0							; divide by size of wall sprite (24 pixels)
+		mulu.w	#$80,d0							; multiply by width of level ($80)
+		adda.l	d0,a0							; jump to correct row in level
 		moveq	#0,d0
-		move.w	(v_screenposx).w,d0
-		divu.w	#$18,d0
-		adda.w	d0,a0
-		lea		(v_ssbuffer3&$FFFFFF).l,a4
-		move.w	#$10-1,d7
+		move.w	(v_screenposx).w,d0				; get camera x pos
+		divu.w	#$18,d0							; divide by size of wall sprite (24 pixels)
+		adda.w	d0,a0							; jump to correct block in level
+		lea		(v_ssbuffer3&$FFFFFF).l,a4		; transformation grid (v_ss_sprite_grid_plot)
+		move.w	#$F,d7							; ss_visible_height-1
 
-	.layoutloop:
-		move.w	#$F,d6
+	.loop_spriterow:
+		move.w	#$F,d6							; ss_visible_width-1
 
-	.rowloop:
+	.loop_sprite:
 		moveq	#0,d0
-		move.b	(a0)+,d0				; load block to d0
-		beq.s	.nextblock				; if there is no block here, branch
-		cmpi.b	#SSBlock_GlassAni4,d0	; is the block ID higher than the last valid ID?
-		bhi.s	.nextblock				; if yes, branch
-		move.w	(a4),d3					; d3 = block's x-position
+		move.b	(a0)+,d0						; load block to d0
+		beq.s	.nextblock						; if there is no block here, branch
+		cmpi.b	#SSBlock_GlassAni4,d0			; is the block ID higher than the last valid ID?
+		bhi.s	.nextblock						; if ID is invalid, branch
+		move.w	(a4),d3							; d3 = block's x-position
 		addi.w	#$120,d3
-		cmpi.w	#$70,d3					; is the block to the left of the screen?
-		blo.s	.nextblock				; if it is, branch
-		cmpi.w	#$1D0,d3				; is the block to the right of the screen?
-		bhs.s	.nextblock				; if it is, branch
-		move.w	2(a4),d2				; d3 = block's y-position
+		cmpi.w	#$70,d3							; is the block to the left of the screen?
+		blo.s	.nextblock						; if it is, branch
+		cmpi.w	#$1D0,d3						; is the block to the right of the screen?
+		bhs.s	.nextblock						; if it is, branch
+		move.w	2(a4),d2						; d3 = block's y-position
 		addi.w	#$F0,d2
 		cmpi.w	#$70,d2
-		blo.s	.nextblock				; if the block is above the screen, branch
+		blo.s	.nextblock						; if the block is above the screen, branch
 		cmpi.w	#$170,d2
-		bhs.s	.nextblock				; if the block is below the screen, branch
+		bhs.s	.nextblock						; if the block is below the screen, branch
 
 ; .drawBlock:
-		lea		(v_ssblocktypes&$FFFFFF).l,a5
+		lea		(v_ssblocktypes&$FFFFFF).l,a5	; v_ss_sprite_info
 		lsl.w	#3,d0
 		lea		(a5,d0.w),a5
-		movea.l	(a5)+,a1				; load mappings (the block's equivalent of an object's obMap)
-		move.w	(a5)+,d1				; get mapping frame (the block's equivalent of an object's obFrame)
+		movea.l	(a5)+,a1						; load mappings (the block's equivalent of an object's obMap)
+		move.w	(a5)+,d1						; get mapping frame ID (the block's equivalent of an object's obFrame)
 		add.w	d1,d1
-		adda.w	(a1,d1.w),a1			; get mappings frame address
-		movea.w	(a5)+,a3
+		adda.w	(a1,d1.w),a1					; apply frame ID to mappings pointer
+		movea.w	(a5)+,a3						; get tile ID
 		; S2 BuildSprites Change
-		move.w	(a1)+,d1				; number of sprite pieces (S2 BuildSprites: loading .w, so no need to clear d1)
-		subq.w	#1,d1					; S2 BuildSprites Change .b > .w.
+		move.w	(a1)+,d1						; number of sprite pieces (S2 BuildSprites: loading .w, so no need to clear d1)
+		subq.w	#1,d1							; S2 BuildSprites Change .b > .w.
 		; S2 BuildSprites End
-		bmi.s	.nextblock				; if there are 0 pieces, branch
-		jsr		(BuildSpr_Normal).l
+		bmi.s	.nextblock						; if there are 0 pieces, branch
+		jsr		(BuildSpr_Normal).l				; build sprites from mappings
 
 	.nextblock:
-		addq.w	#4,a4					; advance to the next block in the row
-		dbf		d6,.rowloop				; repeat
+		addq.w	#4,a4							; advance to the next block in the row
+		dbf		d6,.loop_sprite					; repeat
 
-		lea		$70(a0),a0				; advance to the next row in the layout
-		dbf		d7,.layoutloop			; repeat
+		lea		$70(a0),a0						; advance to the next row in the layout
+		dbf		d7,.loop_spriterow				; repeat
 
 		move.b	d5,(v_spritecount).w
 	; If the sprite list is full, then set the link field of the last
@@ -4494,94 +4494,97 @@ loc_1B1C0:
 	; link field to 0. You might be thinking why this doesn't just do the
 	; first one no matter what. Well, think about what if the sprite list
 	; was empty: then it would access data before the start of the list.
-		cmpi.b	#80,d5					; has the sprite limit been reached?
-		beq.s	.spriteLimit			; if yes, branch
-		clr.l	(a2)					; set link field to 0
+		cmpi.b	#80,d5							; has the sprite limit been reached?
+		beq.s	.spriteLimit					; if yes, branch
+		clr.l	(a2)							; set link field to 0
 		rts	
 ; ===========================================================================
 
 	.spriteLimit:
-		clr.b	-5(a2)					; set last sprite link
+		clr.b	-5(a2)							; set last sprite link
 		rts	
 ; End of function SS_ShowLayout
+; ===========================================================================
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	animate	walls and rings	in the special stage
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
 SS_AniWallsRings:
 	if ~~DynamicSpecialStageWalls	; Mercury Dynamic Special Stage Walls
-		lea		((v_ssblocktypes+$C)&$FFFFFF).l,a1
+		lea		((v_ssblocktypes+$C)&$FFFFFF).l,a1		; frame id of first wall
 		moveq	#0,d0
-		move.b	(v_ssangle).w,d0
-		lsr.b	#2,d0
-		andi.w	#$F,d0
-		moveq	#$24-1,d1
+		move.b	(v_ssangle).w,d0						; get angle
+		lsr.b	#2,d0									; divide by 4
+		andi.w	#$F,d0									; read only low nybble
+		moveq	#$23,d1									; ((SS_ItemIndex_wall_end-SS_ItemIndex)/6)-1
 
-loc_1B2A4:
-		move.w	d0,(a1)
-		addq.w	#8,a1
-		dbf		d1,loc_1B2A4
+	.wall_loop:
+		move.w	d0,(a1)									; change frame id to appropriately rotated wall
+		addq.w	#8,a1									; jump to frame id for next wall block
+		dbf		d1,.wall_loop							; repeat for every wall block
 	endif	; Dynamic Special Stage Walls End
 
-		lea		((v_ssblocktypes+5)&$FFFFFF).l,a1
-		subq.b	#1,(v_ani1_time).w
-		bpl.s	loc_1B2C8
-		move.b	#3,(v_ani1_time).w		; Smooth Rings
-		addq.b	#1,(v_ani1_frame).w
-		andi.b	#7,(v_ani1_frame).w		; Smooth Rings
+		lea		((v_ssblocktypes+5)&$FFFFFF).l,a1		; frame id of first sprite (it's blank, but that doesn't matter)
+		subq.b	#1,(v_ani1_time).w						; decrement animation timer
+		bpl.s	.not0_1									; branch if time remains
+		move.b	#3,(v_ani1_time).w						; reset timer (Smooth Rings)
+		addq.b	#1,(v_ani1_frame).w						; increment frame
+		andi.b	#7,(v_ani1_frame).w						; there are 4 frames max (0/1/2/3) (Smooth Rings)
 	; $1D0(a1) no longer gets set. We only use one frame for spinning rings (LoadSSRingFrame).
 
-loc_1B2C8:
-		subq.b	#1,(v_ani2_time).w
-		bpl.s	loc_1B2E4
-		move.b	#7,(v_ani2_time).w
-		addq.b	#1,(v_ani2_frame).w
-		andi.b	#1,(v_ani2_frame).w
+	.not0_1:
+		subq.b	#1,(v_ani2_time).w						; decrement timer
+		bpl.s	.not0_2									; branch if time remains
+		move.b	#7,(v_ani2_time).w						; reset timer
+		addq.b	#1,(v_ani2_frame).w						; increment frame
+		andi.b	#1,(v_ani2_frame).w						; there are 2 frames only (0/1)
 
-loc_1B2E4:
+	.not0_2:
 		move.b	(v_ani2_frame).w,d0
-		move.b	d0,$138(a1)
-		move.b	d0,$160(a1)
-		move.b	d0,$148(a1)
-		move.b	d0,$150(a1)
-		move.b	d0,$1D8(a1)
-		move.b	d0,$1E0(a1)
-		move.b	d0,$1E8(a1)
-		move.b	d0,$1F0(a1)
-		move.b	d0,$1F8(a1)
-		move.b	d0,$200(a1)
+		move.b	d0,$138(a1)								; id_SS_Item_GOAL
+		move.b	d0,$160(a1)								; id_SS_Item_RedWhite
+		move.b	d0,$148(a1)								; id_SS_Item_Up
+		move.b	d0,$150(a1)								; id_SS_Item_Down
+		move.b	d0,$1D8(a1)								; id_SS_Item_Em1
+		move.b	d0,$1E0(a1)								; id_SS_Item_Em2
+		move.b	d0,$1E8(a1)								; id_SS_Item_Em3
+		move.b	d0,$1F0(a1)								; id_SS_Item_Em4
+		move.b	d0,$1F8(a1)								; id_SS_Item_Em5
+		move.b	d0,$200(a1)								; id_SS_Item_Em6
 	if SuperMod
-		move.b	d0,$208(a1)
+		move.b	d0,$208(a1)								; id_SS_Item_Em7
 	endif
+
 		subq.b	#1,(v_ani3_time).w
-		bpl.s	loc_1B326
+		bpl.s	.not0_3
 		move.b	#4,(v_ani3_time).w
 		addq.b	#1,(v_ani3_frame).w
-		andi.b	#3,(v_ani3_frame).w
+		andi.b	#3,(v_ani3_frame).w						; there are 4 frames (0/1/2/3)
 
-loc_1B326:
+	.not0_3:
 		move.b	(v_ani3_frame).w,d0
-		move.b	d0,$168(a1)
-		move.b	d0,$170(a1)
-		move.b	d0,$178(a1)
-		move.b	d0,$180(a1)
+		move.b	d0,$168(a1)								; id_SS_Item_Glass1
+		move.b	d0,$170(a1)								; id_SS_Item_Glass2
+		move.b	d0,$178(a1)								; id_SS_Item_Glass3
+		move.b	d0,$180(a1)								; id_SS_Item_Glass4
+
 		subq.b	#1,(v_ani0_time).w
-		bpl.s	loc_1B350
+		bpl.s	.not0_0
 		move.b	#7,(v_ani0_time).w
 		subq.b	#1,(v_ani0_frame).w
-		andi.b	#7,(v_ani0_frame).w
+		andi.b	#7,(v_ani0_frame).w						; there are 8 frames (0-7)
 
-loc_1B350:
-		lea		((v_ssblocktypes+$16)&$FFFFFF).l,a1
-		lea		SS_WaRiVramSet(pc),a0
+	.not0_0:
+		lea		((v_ssblocktypes+$16)&$FFFFFF).l,a1		; start with tile id of 2nd wall sprite
+		lea		SS_Wall_Vram_Settings(pc),a0			; new tile ids
 		moveq	#0,d0
-		move.b	(v_ani0_frame).w,d0
+		move.b	(v_ani0_frame).w,d0						; get current frame in animation
 		add.w	d0,d0
-		adda.w	d0,a0					; (HAME: Replace lea instruction)
+		adda.w	d0,a0									; jump ahead in sequence (HAME: Replace lea instruction)
+
+	; This code is executed 4 times
+		rept 4
 		move.w	(a0),(a1)
 		move.w	2(a0),8(a1)
 		move.w	4(a0),$10(a1)
@@ -4589,44 +4592,16 @@ loc_1B350:
 		move.w	8(a0),$20(a1)
 		move.w	$A(a0),$28(a1)
 		move.w	$C(a0),$30(a1)
-		move.w	$E(a0),$38(a1)
+		move.w	$E(a0),$38(a1)							; update tile ids for 8 sprites
 		adda.w	#$20,a0
-		adda.w	#$48,a1
-		move.w	(a0),(a1)
-		move.w	2(a0),8(a1)
-		move.w	4(a0),$10(a1)
-		move.w	6(a0),$18(a1)
-		move.w	8(a0),$20(a1)
-		move.w	$A(a0),$28(a1)
-		move.w	$C(a0),$30(a1)
-		move.w	$E(a0),$38(a1)
-		adda.w	#$20,a0
-		adda.w	#$48,a1
-		move.w	(a0),(a1)
-		move.w	2(a0),8(a1)
-		move.w	4(a0),$10(a1)
-		move.w	6(a0),$18(a1)
-		move.w	8(a0),$20(a1)
-		move.w	$A(a0),$28(a1)
-		move.w	$C(a0),$30(a1)
-		move.w	$E(a0),$38(a1)
-		adda.w	#$20,a0
-		adda.w	#$48,a1
-		move.w	(a0),(a1)
-		move.w	2(a0),8(a1)
-		move.w	4(a0),$10(a1)
-		move.w	6(a0),$18(a1)
-		move.w	8(a0),$20(a1)
-		move.w	$A(a0),$28(a1)
-		move.w	$C(a0),$30(a1)
-		move.w	$E(a0),$38(a1)
-		adda.w	#$20,a0
-		adda.w	#$48,a1
+		adda.w	#$48,a1									; next batch of 8 sprites
+		endr
+
 		rts	
 ; End of function SS_AniWallsRings
-
 ; ===========================================================================
-SS_WaRiVramSet:
+
+SS_Wall_Vram_Settings:
 		dc.w $142, $6142, $142,	$142, $142, $142, $142,	$6142
 		dc.w $142, $6142, $142,	$142, $142, $142, $142,	$6142
 		dc.w $2142, $142, $2142, $2142,	$2142, $2142, $2142, $142
@@ -4637,15 +4612,14 @@ SS_WaRiVramSet:
 		dc.w $6142, $4142, $6142, $6142, $6142,	$6142, $6142, $4142
 ; ===========================================================================
 
-
-	if DynamicSpecialStageWalls=1	; Mercury Dynamic Special Stage Walls
+	if DynamicSpecialStageWalls	; Mercury Dynamic Special Stage Walls
 SS_LoadWalls:
 		moveq	#0,d0
 		move.b	(v_ssangle).w,d0		; get the Special Stage angle
 		lsr.b	#2,d0					; modify so it can be used as a frame ID
 		andi.w	#$F,d0
 		cmp.b	(v_ssangleprev).w,d0	; does the modified angle match the recorded value?
-		beq.s	.spriteLimit					; if so, branch
+		beq.s	.spriteLimit			; if so, branch
 	
 		lea		(vdp_data_port).l,a6
 		lea		(Nem_SSWalls).l,a1		; load wall art
@@ -4660,8 +4634,9 @@ SS_LoadWalls:
 		bsr.s	LoadTiles
 		move.b	d0,(v_ssangleprev).w	; record the modified angle for comparison
 		
-.spriteLimit:
+	.spriteLimit:
 		rts
+; ===========================================================================
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	transfer graphics to VRAM
@@ -4671,9 +4646,6 @@ SS_LoadWalls:
 ;	a6 = vdp_data_port ($C00000)
 ;	d1 = number of tiles to load (minus one)
 ; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
 
 LoadTiles:
 		move.l	(a1)+,(a6)
@@ -4694,199 +4666,207 @@ LoadTiles:
 ; Subroutine to	remove items when you collect them in the special stage
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
 SS_RemoveCollectedItem:
-		lea		(v_ssitembuffer&$FFFFFF).l,a2
-		move.w	#(v_ssitembuffer_end-v_ssitembuffer)/8-1,d0
+		lea		(v_ssitembuffer&$FFFFFF).l,a2		; address of SS sprite update list
+		move.w	#(v_ssitembuffer_end-v_ssitembuffer)/8-1,d0	; up to $20 slots
 
-loc_1B4C4:
-		tst.b	(a2)
-		beq.s	locret_1B4CE
-		addq.w	#8,a2
-		dbf		d0,loc_1B4C4
+	.loop:
+		tst.b	(a2)						; is slot free?
+		beq.s	.free						; if yes, branch
+		addq.w	#8,a2						; try next slot
+		dbf		d0,.loop
 
-locret_1B4CE:
+	.free:
 		rts	
 ; End of function SS_RemoveCollectedItem
+; ===========================================================================
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	animate	special	stage items when you touch them
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
 SS_AniItems:
-		lea		(v_ssitembuffer&$FFFFFF).l,a0
-		move.w	#(v_ssitembuffer_end-v_ssitembuffer)/8-1,d7
+		lea		(v_ssitembuffer&$FFFFFF).l,a0		; address of SS sprite update list
+		move.w	#(v_ssitembuffer_end-v_ssitembuffer)/8-1,d7	; up to $20 slots
 
-loc_1B4DA:
+	.loop:
 		moveq	#0,d0
-		move.b	(a0),d0
-		beq.s	loc_1B4E8
+		move.b	(a0),d0						; read update id
+		beq.s	.no_update					; branch if 0
 		lsl.w	#2,d0
 		movea.l	SS_AniIndex-4(pc,d0.w),a1
-		jsr		(a1)
+		jsr		(a1)						; run appropriate routine
 
-loc_1B4E8:
-		addq.w	#8,a0
-
-loc_1B4EA:
-		dbf		d7,loc_1B4DA
+	.no_update:
+		addq.w	#8,a0						; next slot in list
+		dbf		d7,.loop
 
 		rts	
 ; End of function SS_AniItems
-
 ; ===========================================================================
+
 SS_AniIndex:
-		dc.l SS_AniRingSparks
-		dc.l SS_AniBumper
-		dc.l SS_Ani1Up
-		dc.l SS_AniReverse
-		dc.l SS_AniEmeraldSparks
-		dc.l SS_AniGlassBlock
+		dc.l SS_AniRingSparks				; 1
+		dc.l SS_AniBumper					; 2
+		dc.l SS_Ani1Up						; 3
+		dc.l SS_AniReverse					; 4
+		dc.l SS_AniEmeraldSparks			; 5
+		dc.l SS_AniGlassBlock				; 6
 ; ===========================================================================
 
 SS_AniRingSparks:
-		subq.b	#1,2(a0)
-		bpl.s	locret_1B530
-		move.b	#5,2(a0)
+		subq.b	#1,2(a0)					; decrement timer
+		bpl.s	.wait						; branch if positive
+		move.b	#5,2(a0)					; 5 frames until next update
 		moveq	#0,d0
-		move.b	3(a0),d0
-		addq.b	#1,3(a0)
-		movea.l	4(a0),a1
-		move.b	SS_AniRingData(pc,d0.w),d0
-		move.b	d0,(a1)
-		bne.s	locret_1B530
-		clr.l	(a0)
+		move.b	3(a0),d0					; get current frame
+		addq.b	#1,3(a0)					; increment frame
+		movea.l	4(a0),a1					; get pointer to level layout
+		move.b	SS_AniRingData(pc,d0.w),d0	; get new item id
+		move.b	d0,(a1)						; update level layout
+		bne.s	.wait						; branch if id isn't 0
+		clr.l	(a0)						; free slot in update list
 		clr.l	4(a0)
 
-locret_1B530:
+	.wait:
 		rts	
 ; ===========================================================================
-SS_AniRingData:	dc.b SSBlock_RingSparkle1, SSBlock_RingSparkle2, SSBlock_RingSparkle3, SSBlock_RingSparkle4, 0, 0
+
+SS_AniRingData:
+		dc.b SSBlock_RingSparkle1, SSBlock_RingSparkle2, SSBlock_RingSparkle3, SSBlock_RingSparkle4, 0
+		even
 ; ===========================================================================
 
 SS_AniBumper:
-		subq.b	#1,2(a0)
-		bpl.s	locret_1B566
-		move.b	#7,2(a0)
+		subq.b	#1,2(a0)					; decrement timer
+		bpl.s	.wait						; branch if positive
+		move.b	#7,2(a0)					; 7 frames until next update
 		moveq	#0,d0
-		move.b	3(a0),d0
-		addq.b	#1,3(a0)
-		movea.l	4(a0),a1
-		move.b	SS_AniBumpData(pc,d0.w),d0
-		bne.s	loc_1B564
-		clr.l	(a0)
+		move.b	3(a0),d0					; get current frame
+		addq.b	#1,3(a0)					; increment frame
+		movea.l	4(a0),a1					; get pointer to level layout
+		move.b	SS_AniBumpData(pc,d0.w),d0	; get new item id
+		bne.s	.update						; branch if id isn't 0
+		clr.l	(a0)						; free slot in update list
 		clr.l	4(a0)
-		move.b	#SSBlock_Bumper,(a1)	; Revert to the original bumper block
+		move.b	#SSBlock_Bumper,(a1)		; Revert to the original bumper block
 		rts	
 ; ===========================================================================
 
-loc_1B564:
-		move.b	d0,(a1)					; set animation frame
+	.update:
+		move.b	d0,(a1)						; update level layout
 
-locret_1B566:
+	.wait:
 		rts	
 ; ===========================================================================
-SS_AniBumpData:	dc.b SSBlock_BumperHit1, SSBlock_BumperHit2, SSBlock_BumperHit1, SSBlock_BumperHit2, 0, 0
+
+SS_AniBumpData:
+		dc.b SSBlock_BumperHit1, SSBlock_BumperHit2, SSBlock_BumperHit1, SSBlock_BumperHit2, 0
+		even
 ; ===========================================================================
 
 SS_Ani1Up:
-		subq.b	#1,2(a0)
-		bpl.s	locret_1B596
-		move.b	#5,2(a0)
+		subq.b	#1,2(a0)					; decrement timer
+		bpl.s	.wait						; branch if positive
+		move.b	#5,2(a0)					; 5 frames until next update
 		moveq	#0,d0
-		move.b	3(a0),d0
-		addq.b	#1,3(a0)
-		movea.l	4(a0),a1
-		move.b	SS_Ani1UpData(pc,d0.w),d0
-		move.b	d0,(a1)
-		bne.s	locret_1B596
-		clr.l	(a0)
+		move.b	3(a0),d0					; get current frame
+		addq.b	#1,3(a0)					; increment frame
+		movea.l	4(a0),a1					; get pointer to level layout
+		move.b	SS_Ani1UpData(pc,d0.w),d0	; get new item id
+		move.b	d0,(a1)						; update level layout
+		bne.s	.wait						; branch if id isn't 0
+		clr.l	(a0)						; free slot in update list
 		clr.l	4(a0)
 
-	if SpecialStagesWithAllEmeralds=1	; Mercury Special Stages Still Appear With All Emeralds
-		move.b	#4,($FFFFD024).w
+	if SpecialStagesWithAllEmeralds	; Mercury Special Stages Still Appear With All Emeralds
+		move.b	#4,(v_player+obRoutine).w	; advance player routine to end the special stage
 	endc	; Special Stages Still Appear With All Emeralds End
 
-locret_1B596:
+	.wait:
 		rts	
 ; ===========================================================================
-SS_Ani1UpData:	dc.b SSBlock_ItemSparkle1, SSBlock_ItemSparkle2, SSBlock_ItemSparkle3, SSBlock_ItemSparkle4, 0, 0
+
+SS_Ani1UpData:
+		dc.b SSBlock_ItemSparkle1, SSBlock_ItemSparkle2, SSBlock_ItemSparkle3, SSBlock_ItemSparkle4, 0
+		even
 ; ===========================================================================
 
 SS_AniReverse:
-		subq.b	#1,2(a0)
-		bpl.s	locret_1B5CC
-		move.b	#7,2(a0)
+		subq.b	#1,2(a0)					; decrement timer
+		bpl.s	.wait						; branch if positive
+		move.b	#7,2(a0)					; 7 frames until next update
 		moveq	#0,d0
-		move.b	3(a0),d0
-		addq.b	#1,3(a0)
-		movea.l	4(a0),a1
-		move.b	SS_AniRevData(pc,d0.w),d0
-		bne.s	loc_1B5CA
-		clr.l	(a0)
+		move.b	3(a0),d0					; get current frame
+		addq.b	#1,3(a0)					; increment frame
+		movea.l	4(a0),a1					; get pointer to level layout
+		move.b	SS_AniRevData(pc,d0.w),d0	; get new item id
+		bne.s	.update						; branch if id isn't 0
+		clr.l	(a0)						; free slot in update list
 		clr.l	4(a0)
-		move.b	#$2B,(a1)
+		move.b	#SSBlock_R,(a1)				; Revert to the original R block
 		rts	
 ; ===========================================================================
 
-loc_1B5CA:
-		move.b	d0,(a1)
+	.update:
+		move.b	d0,(a1)						; update level layout
 
-locret_1B5CC:
+	.wait:
 		rts	
 ; ===========================================================================
-SS_AniRevData:	dc.b SSBlock_R, SSBlock_R2, SSBlock_R, SSBlock_R2, 0, 0
+
+SS_AniRevData:
+		dc.b SSBlock_R, SSBlock_R2, SSBlock_R, SSBlock_R2, 0
+		even
 ; ===========================================================================
 
 SS_AniEmeraldSparks:
-		subq.b	#1,2(a0)
-		bpl.s	locret_1B60C
-		move.b	#5,2(a0)
+		subq.b	#1,2(a0)					; decrement timer
+		bpl.s	.wait						; branch if positive
+		move.b	#5,2(a0)					; 5 frames until next update
 		moveq	#0,d0
-		move.b	3(a0),d0
-		addq.b	#1,3(a0)
-		movea.l	4(a0),a1
-		move.b	SS_AniEmerData(pc,d0.w),d0
-		move.b	d0,(a1)
-		bne.s	locret_1B60C
-		clr.l	(a0)
+		move.b	3(a0),d0					; get current frame
+		addq.b	#1,3(a0)					; increment frame
+		movea.l	4(a0),a1					; get pointer to level layout
+		move.b	SS_AniEmerData(pc,d0.w),d0	; get new item id
+		move.b	d0,(a1)						; update level layout
+		bne.s	.wait						; branch if id isn't 0
+		clr.l	(a0)						; free slot in update list
 		clr.l	4(a0)
-		move.b	#4,(v_player+obRoutine).w
+		move.b	#4,(v_player+obRoutine).w	; advance player routine to end the special stage
 		move.w	#sfx_SSGoal,d0
-		jsr		(QueueSound2).w	; play special stage GOAL sound
+		jsr		(QueueSound2).w				; play special stage GOAL sound
 
-locret_1B60C:
+	.wait:
 		rts	
 ; ===========================================================================
-SS_AniEmerData:	dc.b SSBlock_ItemSparkle1, SSBlock_ItemSparkle2, SSBlock_ItemSparkle3, SSBlock_ItemSparkle4, 0, 0
+SS_AniEmerData:
+		dc.b SSBlock_ItemSparkle1, SSBlock_ItemSparkle2, SSBlock_ItemSparkle3, SSBlock_ItemSparkle4, 0
+		even
 ; ===========================================================================
 
 SS_AniGlassBlock:
-		subq.b	#1,2(a0)
-		bpl.s	locret_1B640
-		move.b	#1,2(a0)
+		subq.b	#1,2(a0)					; decrement timer
+		bpl.s	.wait						; branch if positive
+		move.b	#1,2(a0)					; 1 frame until next update
 		moveq	#0,d0
-		move.b	3(a0),d0
-		addq.b	#1,3(a0)
-		movea.l	4(a0),a1
-		move.b	SS_AniGlassData(pc,d0.w),d0
-		move.b	d0,(a1)
-		bne.s	locret_1B640
-		move.b	4(a0),(a1)
-		clr.l	(a0)
+		move.b	3(a0),d0					; get current frame
+		addq.b	#1,3(a0)					; increment frame
+		movea.l	4(a0),a1					; get pointer to level layout
+		move.b	SS_AniGlassData(pc,d0.w),d0	; get new item id
+		move.b	d0,(a1)						; update level layout
+		bne.s	.wait						; branch if id isn't 0
+		move.b	4(a0),(a1)					; replace glass with weaker glass
+		clr.l	(a0)						; free slot in update list
 		clr.l	4(a0)
 
-locret_1B640:
+	.wait:
 		rts	
 ; ===========================================================================
 SS_AniGlassData:
 		dc.b SSBlock_GlassAni1, SSBlock_GlassAni2, SSBlock_GlassAni3, SSBlock_GlassAni4
-		dc.b SSBlock_GlassAni1, SSBlock_GlassAni2, SSBlock_GlassAni3, SSBlock_GlassAni4, 0,	0
+		dc.b SSBlock_GlassAni1, SSBlock_GlassAni2, SSBlock_GlassAni3, SSBlock_GlassAni4, 0
+		even
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
@@ -4903,17 +4883,18 @@ SS_LayoutIndex:
 		dc.l SS_7
 	endif
 		even
+; ===========================================================================
 
 ; ---------------------------------------------------------------------------
 ; Special stage start locations
 ; ---------------------------------------------------------------------------
+
 SS_StartLoc:	include	"_inc/Start Location Array - Special Stages.asm"
+; ===========================================================================
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	load special stage layout
 ; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 	if SuperMod
 emldCount: = 7
@@ -4948,44 +4929,45 @@ SS_ChkEmldNum:
 		moveq	#0,d1
 		tst.b	(v_emeralds).w					; check total # of emeralds
 		beq.s	SS_LoadData						; if no emeralds, skip emerald check
-		move.b	(v_emldlist).w,d1				; d1 = bit field that tells which emeralds we do/don't have
+		move.b	(v_emldlist).w,d1				; d1 = bitfield that tells which emeralds we do/don't have
 
+	; 6(1/0) mine vs 14(3/0) original; and we save some RAM
 		btst	d0,d1							; Did you get this emerald?
 		beq.s	SS_LoadData						; if not, branch
-		bra.s	SS_Load							; infinite loop if emerald is already obtained
+		bra.s	SS_Load
 ; ===========================================================================
 
 SS_LoadData:
 		; Load player position data
 		lsl.w	#2,d0
 		lea		SS_StartLoc(pc,d0.w),a1
-		move.w	(a1)+,(v_player+obX).w
+		move.w	(a1)+,(v_player+obX).w			; set Sonic's start position
 		move.w	(a1)+,(v_player+obY).w
 
 		; Load layout data
 		movea.l	SS_LayoutIndex(pc,d0.w),a0
-		lea		(v_ssbuffer2&$FFFFFF).l,a1
+		lea		(v_ssbuffer2&$FFFFFF).l,a1		; load level layout (v_ss_layout_buffer)
 		move.w	#make_art_tile(ArtTile_SS_Background_Clouds,0,FALSE),d0
 		jsr		(EniDec).l
 
 		; Clear everything from v_ssbuffer1 to v_ssbuffer2
-		lea		(v_ssbuffer1&$FFFFFF).l,a1
+		lea		(v_ssbuffer1&$FFFFFF).l,a1		; v_ss_layout
 		move.w	#(v_ssbuffer2-v_ssbuffer1)/4-1,d0
 
-SS_ClrRAM3:
+	.clear_layout:
 		clr.l	(a1)+
-		dbf		d0,SS_ClrRAM3
+		dbf		d0,.clear_layout				; clear RAM (0-$3FFF)
 
 		; Copy $1000 of data from v_ssbuffer2 to v_ssblockbuffer,
 		; inserting $40 bytes of padding for every $40 bytes copied.
-		lea		(v_ssblockbuffer&$FFFFFF).l,a1
+		lea		(v_ssblockbuffer&$FFFFFF).l,a1	; start of actual data ($FF1020)
 		lea		(v_ssbuffer2&$FFFFFF).l,a0
-		moveq	#(v_ssblockbuffer_end-v_ssblockbuffer)/$80-1,d1
+		moveq	#(v_ssblockbuffer_end-v_ssblockbuffer)/$80-1,d1	; $40
 
-loc_1B6F6:
+	.loop_row:
 		moveq	#$40-1,d2
 
-loc_1B6F8:
+	.loop_bytes:
 	; Real-time layout altering and handling
 	if AlteredSpecialStages
 		move.b	(a0)+,d0						; load the layout item into d0
@@ -5023,37 +5005,36 @@ loc_1B6F8:
 		endif
 		
 	.loaditem:
-		move.b	d0,(a1)+				; load the item into memory
+		move.b	d0,(a1)+						; load the item into memory
 	else
-		move.b	(a0)+,(a1)+				; load the item into memory (called if we aren't counting rings or altering blocks)
+		move.b	(a0)+,(a1)+						; load the item into memory (called if we aren't counting rings or altering blocks)
 	endif
 
-		dbf		d2,loc_1B6F8
+		dbf		d2,.loop_bytes					; loop for all bytes in a row
 
-		lea		$40(a1),a1
-		dbf		d1,loc_1B6F6
+		lea		$40(a1),a1						; jump to next row (i.e. skip $40 bytes of padding)
+		dbf		d1,.loop_row					; loop for all rows in the layout
 
-		lea		((v_ssblocktypes+8)&$FFFFFF).l,a1
+		lea		((v_ssblocktypes+8)&$FFFFFF).l,a1	; start with sprite type 1 (0 is blank)
 		lea		(SS_MapIndex).l,a0
 		moveq	#(SS_MapIndex_End-SS_MapIndex)/6-1,d1
 
-loc_1B714:
-		move.l	(a0)+,(a1)+
-		clr.w	(a1)+
-		move.b	-4(a0),-1(a1)
-		move.w	(a0)+,(a1)+
-		dbf		d1,loc_1B714
+	.loop_map_ptrs:
+		move.l	(a0)+,(a1)+						; copy mappings pointer
+		clr.w	(a1)+							; create blank word
+		move.b	-4(a0),-1(a1)					; copy frame id to low byte of blank word
+		move.w	(a0)+,(a1)+						; copy tile id
+		dbf		d1,.loop_map_ptrs				; copy mappings pointers & VRAM settings to RAM
 
 		lea		(v_ssitembuffer&$FFFFFF).l,a1
 		move.w	#(v_ssitembuffer_end-v_ssitembuffer)/4-1,d1
 
-loc_1B730:
+	.loop_update_list:
 		clr.l	(a1)+
-		dbf		d1,loc_1B730
+		dbf		d1,.loop_update_list			; clear RAM ($4400-$44FF)
 
 		rts	
 ; End of function SS_Load
-
 ; ===========================================================================
 
 SS_MapIndex:
@@ -5072,9 +5053,6 @@ SS_MapIndex_End:
 ; ---------------------------------------------------------------------------
 ; Add points subroutine
 ; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
 
 AddPoints:
 		move.b	#1,(f_scorecount).w		; set score counter to update
