@@ -1,9 +1,13 @@
 ; ---------------------------------------------------------------------------
 ; Subroutine to react to obColType(a0)
+;
+; input:
+;	a0 = address of OST of Sonic
+;
+; output:
+;	d0 = -1 if Sonic touches an enemy or harmful object while invincible, or is hurt or killed
+;	a2 = address of OST of object hurting/killing Sonic
 ; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
 
 ReactToItem:
 		jsr		(Touch_Rings).l					; RetroKoH S3K Rings Manager
@@ -15,8 +19,8 @@ ReactToItem:
 ; By this point, we're focusing purely on the Insta-Shield
 		cmpi.b	#1,obDoubleJumpFlag(a0)			; is the insta-shield active?
 		bne.s	.noInstaShield					; if not, branch
-		move.b	obStatus2nd(a0),d0
-		move.w	d0,-(sp)
+		move.b	obStatus2nd(a0),d0				; store current invincibility status
+		move.w	d0,-(sp)						; store status to the stack
 		bset	#sta2ndInvinc,obStatus2nd(a0)	; Set invincibility
 		moveq	#-24,d2							; subtract width of Insta-Shield
 		add.w	obX(a0),d2						; get player's x_pos
@@ -25,24 +29,24 @@ ReactToItem:
 		move.w	#48,d4							; player's width
 		move.w	#48,d5							; player's height
 		bsr.s	.chkobjecttype					; check collision flags to see if object is negated by insta-shield
-		move.w	(sp)+,d0
-		btst	#sta2ndInvinc,d0
+		move.w	(sp)+,d0						; restore saved status
+		btst	#sta2ndInvinc,d0				; was invincibility status already active?
 		bne.s	.skipclr						; if yes, branch
 		bclr	#sta2ndInvinc,obStatus2nd(a0)	; otherwise, remove invincibility
 
-.skipclr:
+	.skipclr:
 		moveq	#0,d0
 		rts
 
-.noInstaShield
+	.noInstaShield
 	endif
 		move.w	obX(a0),d2						; load Sonic's x-axis position
 		move.w	obY(a0),d3						; load Sonic's y-axis position
-		subq.w	#8,d2
+		subq.w	#8,d2							; d2 = x pos of Sonic's left edge
 		moveq	#0,d5
 		move.b	obHeight(a0),d5					; load Sonic's height
-		subq.b	#3,d5
-		sub.w	d5,d3
+		subq.b	#3,d5							; d5 = Sonic's height minus 3
+		sub.w	d5,d3							; d3 = y pos of Sonic's top edge
 
 	; Mercury Ducking Size Fix
 	if SpinDashEnabled==1	; Mercury Spin Dash
@@ -52,37 +56,38 @@ ReactToItem:
 		cmpi.b	#aniID_Duck,obAnim(a0)			; is player ducking?
 		bne.s	.notducking						; if not, branch
 		
-.short:
-		addi.w	#$C,d3
-		moveq	#$A,d5
+	.short:
+		addi.w	#12,d3							; lower top edge when ducking (by 12px)
+		moveq	#10,d5							; use smaller height (10px)
 
-.notducking:
+	.notducking:
 	; Ducking Size Fix end
-		move.w	#16,d4							; player's collision width
-		add.w	d5,d5
+		move.w	#16,d4							; d4 = Sonic's total width (16px)
+		add.w	d5,d5							; d5 = Sonic's total height
 
-.chkobjecttype:
-		lea		(v_col_response_list).w,a4
-		move.w	(a4)+,d6						; Get number of objects queued
-		beq.s	.end							; If there are none, return
+	.chkobjecttype:
+		lea		(v_col_response_list).w,a4		; dynamic list of interactable objects
+		move.w	(a4)+,d6						; get number of objects queued
+		beq.s	.exit							; if there are none, return
 
-.loop:
-		movea.w	(a4)+,a1						; Get address of first object's RAM
-		move.b	obColType(a1),d0				; Get its collision_flags
-		bne.s	.proximity						; If it actually has collision, branch
+	.loop:
+		movea.w	(a4)+,a1						; get address of first object's RAM
+		move.b	obColType(a1),d0				; load collision type
+		bne.s	.proximity						; if it actually has collision, branch
 
-.next:
-		subq.w	#2,d6							; Count the object as done
-		bne.s	.loop							; If there are still objects left, loop
+	.next:
+		subq.w	#2,d6							; count the object as done
+		bne.s	.loop							; if there are still objects left, loop
 		moveq	#0,d0
-.end
+
+	.exit:
 		rts	
 ; ===========================================================================
 
 ; We must load (Touch_Sizes-2) to a2 because the first pair of values must be accessed by
 ; an index of $01. This is because an obColType value of $00 means no collision whatsoever.
-.proximity:
-		andi.w	#$3F,d0
+	.proximity:
+		andi.w	#$3F,d0							; read only bits 0-5 (size), ignore 6-7 (type)
 		add.w	d0,d0
 		lea		Touch_Sizes-2(pc,d0.w),a2
 		moveq	#0,d1
@@ -90,31 +95,31 @@ ReactToItem:
 		move.w	obX(a1),d0						; get object's x-position
 		sub.w	d1,d0							; subtract object's width
 		sub.w	d2,d0							; subtract player's left collision boundary
-		bcc.s	.outsidex						; if player's left side is to the left of the object (not touching), branch
+		bcc.s	.sonic_left						; if player's left side is to the left of the object (not touching), branch
 		add.w	d1,d1							; double object's width value
 		add.w	d1,d0							; add object's width*2 (now at right of object)
-		bcs.s	.withinx						; branch if touching
+		bcs.s	.within_x						; branch if touching
 		bra.s	.next							; if not, loop and check next object
 ; ===========================================================================
 
-.outsidex:
+	.sonic_left:
 		cmp.w	d4,d0							; is player's right side to the left of the object?
 		bhi.s	.next							; if so, loop and check next object
 
-.withinx:
+	.within_x:
 		moveq	#0,d1
 		move.b	(a2)+,d1						; get height value from Touch_Sizes
 		move.w	obY(a1),d0						; get object's y_pos
 		sub.w	d1,d0							; subtract object's height
 		sub.w	d3,d0							; subtract player's bottom collision boundary
-		bcc.s	.outsidey						; if bottom of player is under the object, branch
+		bcc.s	.sonic_above					; if bottom of player is under the object, branch
 		add.w	d1,d1							; double object's height value
 		add.w	d1,d0							; add object's height*2 (now at top of object)
 		bcs.s	Touch_ChkValue					; branch if touching
 		bra.s	.next							; if not, loop and check next object
 ; ===========================================================================
 
-.outsidey:
+	.sonic_above:
 		cmp.w	d5,d0							; is top of player under the object?
 		bhi.s	.next							; if so, loop and check next object
 		bra.s	Touch_ChkValue
@@ -170,7 +175,7 @@ Touch_Sizes:
 
 Touch_ChkValue:
 		moveq	#signextendB($C0),d1
-		and.b	obColType(a1),d1	; d1 = collision type
+		and.b	obColType(a1),d1	; d1 = collision type (bits 6-7)
 		beq.w	React_Enemy			; if $00 ($00-$3F), branch to enemy collision
 		cmpi.b	#$C0,d1
 		beq.w	React_Special		; if $C0 ($C0-$FF), branch to special collision
@@ -188,7 +193,7 @@ Touch_ChkValue:
 		bhs.s	.invulnerable		; if yes, branch
 		addq.b	#2,obRoutine(a1)	; advance the object's routine counter (CollectRing)
 
-.invulnerable:
+	.invulnerable:
 		rts	
 ; ===========================================================================
 
@@ -202,19 +207,19 @@ React_Monitor:
 		moveq	#-16,d0
 		add.w	obY(a0),d0			; get player's y_pos - monitor height
 		cmp.w	obY(a1),d0
-		blo.s	.movingdown			; branch instead of return to fix a touch collision issue (RHS)
+		bcs.s	.movingdown			; branch instead of return to fix a touch collision issue (RHS)
 
 	; If we've gotten this far, then Sonic has just jumped into the
 	; bottom of this monitor: knock it down.
 		neg.w	obVelY(a0)			; reverse Sonic's vertical speed
-		move.w	#-$180,obVelY(a1)
+		move.w	#-$180,obVelY(a1)	; move monitor upwards
 		tst.b	ob2ndRout(a1)
-		bne.s	.donothing
+		bne.s	.donothing			; branch if monitor is stood on or falling
 		addq.b	#4,ob2ndRout(a1)	; advance the monitor's routine counter
 		rts	
 ; ===========================================================================
 
-.movingdown:
+	.movingdown:
 	if DropDashEnabled	; RetroKoH Drop Dash
 		cmpi.b	#aniID_DropDash,obAnim(a0)	; is Sonic Drop Dashing? -- Fix to allow rebounding
 		beq.s	.spinning					; if yes, branch
@@ -223,27 +228,27 @@ React_Monitor:
 		cmpi.b	#aniID_Roll,obAnim(a0)		; is Sonic rolling/jumping?
 		bne.s	.donothing					; if not, branch
 
-.spinning:
+	.spinning:
         tst.w   obVelY(a0)					; is Sonic moving upwards?
 	
 	; RHS momentum fix (Fixes a minor issue resulting from RHS's earlier bugfix)
         blt.s   .movingup					; if so, branch, we want Sonic to carry on moving up.
 		neg.w	obVelY(a0)					; reverse Sonic's y-motion
 
-.movingup:
+	.movingup:
 	; momentum fix end
 
 	if ReboundMod	; Mercury Rebound Mod
 		tst.b	obJumping(a0)
 		bne.s	.isjumping
 		move.b	#1,obJumping(a0)
-		move.b	#3,obDoubleJumpFlag(a0)	; disable double jumps if we didn't jump
+		move.b	#3,obDoubleJumpFlag(a0)		; disable double jumps if we didn't jump
 
-.isjumping:
+	.isjumping:
 	endif	; end Rebound Mod
-		addq.b	#2,obRoutine(a1)		; advance the monitor's routine counter
+		addq.b	#2,obRoutine(a1)			; advance the monitor's routine counter
 
-.donothing:
+	.donothing:
 		rts	
 ; ===========================================================================
 
@@ -264,9 +269,9 @@ React_Enemy:
 		cmpi.b	#aniID_Roll,obAnim(a0)		; is Sonic rolling/jumping?
 		bne.w	React_ChkHurt				; if not, branch
 
-.donthurtsonic:
-		tst.b	obColProp(a1)
-		beq.s	.breakenemy
+	.donthurtsonic:
+		tst.b	obColProp(a1)				; is this a boss?
+		beq.s	.breakenemy					; if not, branch
 
 		neg.w	obVelX(a0)					; repel Sonic
 		neg.w	obVelY(a0)
@@ -277,63 +282,69 @@ React_Enemy:
 		asr		obVelY(a0)
 	endif
 
-		clr.b	obColType(a1)
-		subq.b	#1,obColProp(a1)
-		bne.s	.flagnotclear
-		bset	#7,obStatus(a1)
+		clr.b	obColType(a1)				; temporarily make boss harmless
+		subq.b	#1,obColProp(a1)			; decrement hit counter
+		bne.s	.flagnotclear				; branch if not 0
+		bset	#7,obStatus(a1)				; set flag for boss defeated
 
-.flagnotclear:
+	.flagnotclear:
 		rts	
 ; ===========================================================================
 
-.breakenemy:
-		bset	#7,obStatus(a1)
+	.breakenemy:
+		bset	#7,obStatus(a1)				; flag enemy as broken
 		moveq	#0,d0
 		move.w	(v_itembonus).w,d0
 		addq.w	#2,(v_itembonus).w			; add 2 to item bonus counter
 		cmpi.w	#6,d0
 		blo.s	.bonusokay
-		moveq	#6,d0						; max bonus is lvl6
+		moveq	#6,d0						; max bonus is #6 (1000 points)
 
-.bonusokay:
-		move.w	d0,objoff_3E(a1)
+	.bonusokay:
+		move.w	d0,obEnemy_Combo(a1)		; set frame for points object (spawned by animal object)
 		move.w	.points(pc,d0.w),d0
 		cmpi.w	#(16*2),(v_itembonus).w		; have 16 enemies been destroyed?
 		blo.s	.lessthan16					; if not, branch
 		move.w	#1000,d0					; fix bonus to 10000
-		move.w	#10,objoff_3E(a1)
+		move.w	#10,obEnemy_Combo(a1)
 
-.lessthan16:
+	.lessthan16:
 		bsr.w	AddPoints
-		_move.b	#id_ExplosionItem,obID(a1) ; change object to explosion
-		clr.b	obRoutine(a1)
+		_move.b	#id_ExplosionItem,obID(a1)	; change object to explosion
+		clr.b	obRoutine(a1)				; explosion also spawns an animal
 		tst.w	obVelY(a0)
-		bmi.s	.bouncedown
+		bmi.s	.bouncedown					; branch if Sonic is moving upwards
 		move.w	obY(a0),d0
 		cmp.w	obY(a1),d0
-		bhs.s	.bounceup
+		bhs.s	.bounceup					; branch if Sonic is below enemy
 		neg.w	obVelY(a0)
 	if ReboundMod	; Mercury Rebound Mod
 		tst.b	obJumping(a0)
 		bne.s	.isjumping
 		move.b	#1,obJumping(a0)
-		move.b	#3,obDoubleJumpFlag(a0)	; disable double jumps if we didn't jump
+		move.b	#3,obDoubleJumpFlag(a0)		; disable double jumps if we didn't jump
 
-.isjumping:
+	.isjumping:
 	endif	; end Rebound Mod
 		rts
 ; ===========================================================================
 
-.bouncedown:
+	.bouncedown:
 		addi.w	#$100,obVelY(a0)
 		rts
+; ===========================================================================
 
-.bounceup:
+	.bounceup:
 		subi.w	#$100,obVelY(a0)
 		rts
+; ===========================================================================
 
-.points:	dc.w 10, 20, 50, 100	; points awarded div 10
-
+; points awarded div 10
+	.points:
+		dc.w 10
+		dc.w 20
+		dc.w 50
+		dc.w 100
 ; ===========================================================================
 
 React_Caterkiller:
@@ -346,13 +357,13 @@ React_Caterkiller:
 	.skip:
 		move.b	obStatus(a1),d1
 		andi.b	#maskFlipX,d1
-		cmp.b	d0,d1					; are Sonic and the Caterkiller facing the same way?
-		bne.s	.hurt					; if not, branch
-		btst	#staAir,obStatus(a0)	; is Sonic in the air?
-		bne.s	.hurt					; if so, branch
-		btst	#staSpin,obStatus(a0)	; is Sonic spinning?
-		beq.s	.hurt					; if not, branch
-		moveq	#-1,d0					; else, he shouldn't be hurt
+		cmp.b	d0,d1						; are Sonic and the Caterkiller facing the same way?
+		bne.s	.hurt						; if not, branch
+		btst	#staAir,obStatus(a0)		; is Sonic in the air?
+		bne.s	.hurt						; if so, branch
+		btst	#staSpin,obStatus(a0)		; is Sonic spinning?
+		beq.s	.hurt						; if not, branch
+		moveq	#-1,d0						; else, he shouldn't be hurt
 		rts				
 	
 	.hurt:
@@ -364,15 +375,15 @@ React_ChkHurt:
 		btst	#sta2ndInvinc,obStatus2nd(a0)	; is Sonic invincible?
 		beq.s	.notinvincible					; if not, branch
 
-.isflashing:
+	.isflashing:
 		moveq	#-1,d0
 		rts	
 ; ===========================================================================
 
-.notinvincible:
+	.notinvincible:
 		nop	
-		tst.b	obInvuln(a0)	; is Sonic flashing? -- RetroKoH Sonic SST Compaction
-		bne.s	.isflashing		; if yes, branch
+		tst.b	obInvuln(a0)					; is Sonic flashing? -- RetroKoH Sonic SST Compaction
+		bne.s	.isflashing						; if yes, branch
 		movea.l	a1,a2
 ; End of function ReactToItem
 	else
@@ -384,14 +395,14 @@ React_ChkHurt:
 		bne.s	.nohurt							; if yes, branch and exit
 		bra.s	.checkreflect					; if not, check for reflecting
 
-.noelemental:
+	.noelemental:
 		btst	#sta2ndShield,obStatus2nd(a0)	; does Sonic have a Blue Shield?
 		bne.s	.chkhurt						; if yes, branch to hurt Sonic
 		cmpi.b	#1,obDoubleJumpFlag(a0)			; is instashield active?
 		bne.s	.chkhurt						; if not, branch to hurt Sonic
 
 ; Elementals and Instashield reflect
-.checkreflect:
+	.checkreflect:
 		move.b	obShieldProp(a1),d1
 		btst	#shPropReflect,d1		; is the object supposed to bounce off of shields?
 		beq.s	.chkhurt				; if not, branch
@@ -411,17 +422,18 @@ React_ChkHurt:
 		asr.l	#8,d0
 		move.w	d0,obVelY(a1)
 		clr.b	obColType(a1)
-.nohurt:
+
+	.nohurt:
 		moveq	#-1,d0
 		rts
 
-.chkhurt:
+	.chkhurt:
 		tst.b	obInvuln(a0)					; is Sonic flashing? -- RetroKoH Sonic SST Compaction
 		bne.s	.nohurt							; if yes, branch and exit
 		btst	#sta2ndInvinc,obStatus2nd(a0)	; is Sonic invincible?
 		bne.s	.nohurt							; if yes, branch and exit
 
-.gotohurt:
+	.gotohurt:
 		movea.l	a1,a2
 		;bra.s	HurtSonic						; if not, branch to standard routine
 ; End of function ReactToItem
@@ -431,20 +443,25 @@ React_ChkHurt:
 
 ; ---------------------------------------------------------------------------
 ; Hurting Sonic	subroutine
+;
+; input:
+;	a0 = address of OST of Sonic
+;	a2 = address of OST of object hurting Sonic
+;
+; output:
+;	d0 = -1 (for ReactToItem)
+;	a1 = address of OST of ring loss object (if Sonic had rings)
 ; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
 
 HurtSonic:
 	if CoolBonusEnabled
 		move.b	(v_hitscount).w,d0
-		tst.b	d0
-		beq.s	.notcool
-		subq.b	#1,d0							; set hits count for next cool bonus
-		move.b	d0,(v_hitscount).w
+		tst.b	d0								; does Sonic still have a cool bonus?
+		beq.s	.notcool						; if not, branch
+		subq.b	#1,d0
+		move.b	d0,(v_hitscount).w				; decrement and set hits count for next cool bonus
 
-.notcool:
+	.notcool:
 	endif
 
 		btst	#sta2ndShield,obStatus2nd(a0)	; does Sonic have a shield?
@@ -458,9 +475,9 @@ HurtSonic:
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 
-.hasshield:
+	.hasshield:
 		bclr	#sta2ndShield,obStatus2nd(a0)	; remove shield
-		move.b	#4,obRoutine(a0)
+		move.b	#4,obRoutine(a0)				; run hurt routine
 		jsr		(Sonic_ResetOnFloor).l
 		bset	#staAir,obStatus(a0)
 		move.l	#$FE00FC00,obVelX(a0)			; bounce player away (obVelX = -$200, obVelY = -$400)
@@ -469,59 +486,63 @@ HurtSonic:
 
 		move.l	#$FF00FE00,obVelX(a0)			; bounce player away (obVelX = -$100, obVelY = -$200)
 
-.isdry:
+	.isdry:
 		move.w	obX(a0),d0
 		cmp.w	obX(a2),d0
 		blo.s	.isleft							; if Sonic is left of the object, branch
 		neg.w	obVelX(a0)						; if Sonic is right of the object, reverse
 
-.isleft:
+	.isleft:
 	if SpinDashEnabled
 		clr.b	obSpinDashFlag(a0)
 	endif
 		clr.w	obInertia(a0)
 		move.b	#aniID_Hurt,obAnim(a0)
-		move.b	#120,obInvuln(a0)		; set temp invincible time to 2 seconds -- RetroKoH Sonic SST Compaction
-		move.w	#sfx_Death,d0			; load normal damage sound
-		cmpi.b	#id_Spikes,obID(a2)		; was damage caused by spikes?
+		move.b	#120,obInvuln(a0)				; set temp invincible time to 2 seconds -- RetroKoH Sonic SST Compaction
+		move.w	#sfx_Death,d0					; load normal damage sound
+		cmpi.b	#id_Spikes,obID(a2)				; was damage caused by spikes?
 	; Mercury Spike SFX Fix
-		beq.s	.setspikesound			; if so, branch
-		cmpi.b	#id_Harpoon,obID(a2)	; was damage caused by LZ harpoon?
-		bne.s	.sound					; if not, branch
+		beq.s	.setspikesound					; if so, branch
+		cmpi.b	#id_Harpoon,obID(a2)			; was damage caused by LZ harpoon?
+		bne.s	.sound							; if not, branch
 
-.setspikesound:
+	.setspikesound:
 	; Spike SFX Fix End
-		move.w	#sfx_HitSpikes,d0		; load spikes damage sound
+		move.w	#sfx_HitSpikes,d0				; load spikes damage sound
 
-.sound:
+	.sound:
 		jsr		(QueueSound2).w
 		moveq	#-1,d0
 		rts	
 ; ===========================================================================
 
-.norings:
-		tst.w	(f_debugmode).w			; is debug mode	cheat on?
-		bne.w	.hasshield				; if yes, branch
+	.norings:
+		tst.w	(f_debugmode).w					; is debug mode	cheat on?
+		bne.w	.hasshield						; if yes, branch
 	; otherwise, fall through to kill Sonic
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	kill Sonic
+;
+; input:
+;	a0 = address of OST of Sonic
+;	a2 = address of OST of object killing Sonic
+;
+; output:
+;	d0 = -1 (for ReactToItem)
 ; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
 
 KillSonic:
 		tst.w	(v_debuguse).w					; is debug mode	active?
 		bne.s	.dontdie						; if yes, branch
 
-	if HUDInSpecialStage=1	; Mercury Time Limit In Special Stage
+	if HUDInSpecialStage	; Mercury Time Limit In Special Stage
 		cmpi.b	#id_SonicSpecial,obID(a0)		; test if it's Special Stage Sonic that's trying to die
 		bne.s	.normal
 		
 		move.b	#4,obRoutine(a0)				; change Sonic to Special Stage dying routine
 		
-		;move.w	obY(a0),$38(a0)
+		;move.w	obY(a0),$38(a0)					; unused???
 		
 		bset	#staAir,obStatus(a0)
 		move.b	#aniID_Shrink,obAnim(a0)
@@ -539,80 +560,77 @@ KillSonic:
 	endif
 
 		bclr	#sta2ndInvinc,obStatus2nd(a0)	; remove invincibility
-		move.b	#6,obRoutine(a0)
+		move.b	#6,obRoutine(a0)				; run death routine
 		jsr		(Sonic_ResetOnFloor).l
 		bset	#staAir,obStatus(a0)
-		move.w	#-$700,obVelY(a0)
+		move.w	#-$700,obVelY(a0)				; move Sonic up
 		clr.w	obVelX(a0)
 		clr.w	obInertia(a0)
 		move.b	#aniID_Death,obAnim(a0)
 		bset	#gfxPriority,obGfx(a0)
 	; Mercury Spike SFX Fix
-		move.w	#sfx_HitSpikes,d0		; play spikes death sound
-		cmpi.b	#id_Spikes,obID(a2)		; check	if you were killed by spikes
+		move.w	#sfx_HitSpikes,d0				; play spikes death sound
+		cmpi.b	#id_Spikes,obID(a2)				; check	if you were killed by spikes
 		beq.s	.sound
-		cmpi.b	#id_Harpoon,obID(a2)	; check	if you were killed by a harpoon
+		cmpi.b	#id_Harpoon,obID(a2)			; check	if you were killed by a harpoon
 		beq.s	.sound
-		move.w	#sfx_Death,d0			; play normal death sound
+		move.w	#sfx_Death,d0					; play normal death sound
 	; Spike SFX Fix End
 
-.sound:
+	.sound:
 		jsr		(QueueSound2).w
 
-.dontdie:
+	.dontdie:
 		moveq	#-1,d0
 		rts	
 ; End of function KillSonic
-
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
+; ===========================================================================
 
 React_Special:
 		moveq	#$3F,d1
-		and.b	obColType(a1),d1	; get collision size (bits 0-5)
-		cmpi.b	#$B,d1				; is collision type $CB (caterkiller)?
-		beq.w	React_Caterkiller	; if yes, branch
-		cmpi.b	#$C,d1				; is collision type $CC	(yadrin)?
-		beq.s	.yadrin				; if yes, branch
-		cmpi.b	#$17,d1				; is collision type $D7	(SYZ bumper)?
-		beq.s	._D7				; if yes, branch
-		cmpi.b	#$21,d1				; is collision type $E1	(LZ pole)?
-		beq.s	._E1				; if yes, branch
+		and.b	obColType(a1),d1				; get collision size (bits 0-5)
+		cmpi.b	#$B,d1							; is collision type $CB (caterkiller)?
+		beq.w	React_Caterkiller				; if yes, branch
+		cmpi.b	#$C,d1							; is collision type $CC	(yadrin)?
+		beq.s	.yadrin							; if yes, branch
+		cmpi.b	#$17,d1							; is collision type $D7	(SYZ bumper)?
+		beq.s	._D7							; if yes, branch
+		cmpi.b	#$21,d1							; is collision type $E1	(LZ pole)?
+		beq.s	._E1							; if yes, branch
 		rts	
 ; ===========================================================================
 
-.yadrin:
-		sub.w	d0,d5				; d5 = Sonic's height, minus y dist between Sonic & yadrin
+	.yadrin:
+		sub.w	d0,d5							; d5 = Sonic's height, minus y dist between Sonic & yadrin
 		cmpi.w	#8,d5
-		bhs.w	React_Enemy			; branch if Sonic is below spike level
+		bhs.w	React_Enemy						; branch if Sonic is below spike level
 		move.w	obX(a1),d0
 		subq.w	#4,d0
 		btst	#staFlipX,obStatus(a1)
 		beq.s	.noflip
 		subi.w	#16,d0
 
-.noflip:
-		sub.w	d2,d0				; d0 = x pos of yadrin's face, minus x pos of Sonic's left edge
-		bcc.s	.sonic_left			; branch if Sonic is left of the yadrin
+	.noflip:
+		sub.w	d2,d0							; d0 = x pos of yadrin's face, minus x pos of Sonic's left edge
+		bcc.s	.sonic_left						; branch if Sonic is left of the yadrin
 		addi.w	#24,d0
-		bcs.w	React_ChkHurt		; branch if Sonic is inside the yadrin
+		bcs.w	React_ChkHurt					; branch if Sonic is inside the yadrin
 		bra.w	React_Enemy
 ; ===========================================================================
 
-.sonic_left:
+	.sonic_left:
 		cmp.w	d4,d0
-		bhi.w	React_Enemy
-		bra.w	React_ChkHurt
+		bhi.w	React_Enemy						; treat like a normal enemy if Sonic is outside the yadrin
+		bra.w	React_ChkHurt					; otherwise, check for invincibility, then hurt Sonic
 ; ===========================================================================
 
-._D7:
-		addq.b	#1,obColProp(a1)	; set flag for Sonic touching bumper
+	._D7:
+		addq.b	#1,obColProp(a1)				; set flag for Sonic touching bumper
 		rts
 ; ===========================================================================
 
-._E1:
-		addq.b	#2,obRoutine(a1)	; increment routine counter when touching the pole
+	._E1:
+		addq.b	#2,obRoutine(a1)				; increment routine counter when touching the LZ pole
 		rts
 ; End of function React_Special
 ; ===========================================================================
