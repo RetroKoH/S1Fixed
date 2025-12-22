@@ -333,6 +333,10 @@ obSpike_MoveFlag:		equ objoff_36		; 2 bytes | 0 = original position; 1 = moved p
 obSpike_MoveTime:		equ objoff_38		; 2 bytes | time until object moves again
 ; ---------------------------------------------------------------------------
 
+; Obj37 - Lost Rings
+obRLoss_BadnikFlag:		equ objoff_3D		; 1 byte  | flag set if the ring was spawned from a badnik
+; ---------------------------------------------------------------------------
+
 ; Obj38 - Shields (w/ DPLCs and dynamic pointers -- RetroKoH VRAM Overhaul)
 obShield_ArtLoc			equ	objoff_38		; 4 bytes | pointer to art data
 obShield_DPLCLoc		equ	objoff_3C		; 4 bytes | pointer to DPLC data
