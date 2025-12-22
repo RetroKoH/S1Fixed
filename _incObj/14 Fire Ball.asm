@@ -45,7 +45,7 @@ FBall_Main:		; Routine 0
 		move.w	#priority3,obPriority(a0)			; RetroKoH/Devon S3K+ Priority Manager
 
 	.keep_priority:
-		move.b	#(colHarmful|colSz_8x8),obColType(a0)
+		move.b	#colType_Harmful,obColType(a0)		; (colSz_8x8; Dynamic hitboxes)
 		
 		bset	#shPropFlame,obShieldProp(a0)		; Negated by Flame Shield
 		

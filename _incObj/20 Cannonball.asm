@@ -15,7 +15,7 @@ Cbal_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Ball_Hog,1,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#(colHarmful|colSz_6x6),obColType(a0)
+		move.b	#colType_Harmful,obColType(a0)	; (colSz_6x6; Dynamic hitboxes)
 		move.b	#8,obDispWid(a0)
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0	; move subtype to d0

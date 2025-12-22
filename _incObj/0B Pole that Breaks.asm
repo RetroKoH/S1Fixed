@@ -13,8 +13,8 @@ Pole:
 Pole_Index:	offsetTable
 		offsetTableEntry.w Pole_Main
 		offsetTableEntry.w Pole_Action
-		offsetTableEntry.w Pole_Grab		; +++ Hivebrain added routine
-		offsetTableEntry.w Pole_Hang		; +++ Hivebrain added routine
+		offsetTableEntry.w Pole_Grab			; +++ Hivebrain added routine
+		offsetTableEntry.w Pole_Hang			; +++ Hivebrain added routine
 		offsetTableEntry.w Pole_Display
 ; ===========================================================================
 
@@ -24,16 +24,16 @@ Pole_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_LZ_Pole,2,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.b	#8,obDispWid(a0)
-		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#(colSpecial|colSz_4x32),obColType(a0)
+		move.w	#priority4,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
+		move.b	#colType_Special,obColType(a0)	; (colSz_4x32; Dynamic hitboxes)
 		moveq	#$F,d0
-		and.b	obSubtype(a0),d0			; get object type (clamp at 0-F)
-		add.w	d0,d0						; multiply by 60 (1 second)
-		add.w	d0,d0						; Optimization from S1 in S.C.E.
+		and.b	obSubtype(a0),d0				; get object type (clamp at 0-F)
+		add.w	d0,d0							; multiply by 60 (1 second)
+		add.w	d0,d0							; Optimization from S1 in S.C.E.
 		move.w	d0,d1
 		lsl.w	#4,d0
 		sub.w	d1,d0
-		move.w	d0,obPole_GrabTime(a0)		; set breakage time
+		move.w	d0,obPole_GrabTime(a0)			; set breakage time
 
 Pole_Action:	; Routine 2
 		bra.w	RememberState

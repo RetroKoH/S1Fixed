@@ -733,45 +733,13 @@ SSBlock_GlassAni4:				ds.b 1		; not used in initial layouts (Only used in real-t
 
 ; obColType constants (See _incObj/sub ReactToItem.asm)
 ; collision flags
-colEnemy:						equ $00
-colPowerup:						equ $40
-colHarmful:						equ $80
-colSpecial:						equ $C0
-
-; collision sizes (WIDTHxHEIGHT)
-colSz_20x20:					equ $01		; Wrecking Balls
-colSz_12x20:					equ $02		; Splats badnik
-colSz_20x12:					equ $03		; unused?
-colSz_4x16:						equ $04		; GHZ Spiked Log, SYZ Boss Spike
-colSz_12x18:					equ $05		; Ballhog and Burrobot badniks
-colSz_16x16:					equ $06		; SBZ2 Spikeball, Crabmeat, Monitors, Prison Button, SYZ Big Spiked Ball
-colSz_6x6:						equ $07		; Badnik Missiles, Ball Hog's Cannonballs, Rings
-colSz_24x12:					equ $08		; Buzz Bomber badnik
-colSz_12x16:					equ $09		; Chopper badnik
-colSz_16x12:					equ $0A		; Jaws badnik
-colSz_8x8:						equ $0B		; Lava/Fire Balls, Basaran badnik, Chained Spike Ball, Seesaw spikeball, Orbinaut head, Caterkiller parts, SLZ Boss Spikeball
-colSz_20x16:					equ $0C		; Motobug, Newtron, and Yadrin badniks
-colSz_20x8:						equ $0D		; Newtron badnik
-colSz_16x14:					equ $0E		; Roller badnik
-colSz_24x24:					equ $0F		; Bosses
-colSz_40x16:					equ $10		; Chained Stompers
-colSz_16x24:					equ $11		; Sideways Stompers
-colSz_8x16:						equ $12		; Giant Ring
-colSz_32x112:					equ $13		; Lava Fall/Geyser
-colSz_64x32:					equ $14		; Lava Wall, Lava Tag
-colSz_128x32:					equ $15		; Lava Tag
-colSz_32x32:					equ $16		; Lava Tag
-colSz_8x8_2:					equ $17		; Bumper
-colSz_4x4:						equ $18		; SYZ Small Spike Chain, Bomb shrapnel, Orbinaut orbs, Gargoyle Fireball, SLZ Spikeball shrapnel
-colSz_32x8:						equ $19		; SLZ Spiked Platform
-colSz_12x12:					equ $1A		; Bomb badnik, and FZ Plasma Balls
-colSz_8x4:						equ $1B		; Harpoon
-colSz_24x4:						equ $1C		; Harpoon
-colSz_40x4:						equ $1D		; Harpoon
-colSz_4x8:						equ $1E		; Harpoon
-colSz_4x24:						equ $1F		; Harpoon
-colSz_4x40:						equ $20		; Harpoon
-colSz_4x32:						equ $21		; LZ Breakable Pole
-colSz_24x24_2:					equ $22		; SBZ Saws and Cutters
-colSz_12x24:					equ $23		; SBZ Flamethrower
-colSz_72x8:						equ $24		; SBZ Electrocuter
+colType_None:					equ $00		; unused
+colType_Badnik:					equ $02		; breakable enemies (Badniks)
+colType_Boss:					equ $04		; bosses
+colType_Ring:					equ $06		; rings, giant rings
+colType_Monitor:				equ $08		; monitors
+colType_Harmful:				equ $0A		; hurts when touched
+colType_Special:				equ $0C		; increment ost_col_property or routine (bumper and pole)
+colType_Routine:				equ $0E		; increment routine (pole)
+colType_Caterkiller:			equ $10		; Caterkiller
+colType_Yadrin:					equ $12		; Yadrin

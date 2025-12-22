@@ -4318,17 +4318,17 @@ BossMove:
 
 
 BossFlash:
-		lea		(v_palette+$22).w,a1	; load 2nd palette, 2nd entry
-		moveq	#0,d0					; move 0 (black) to d0
-		tst.w	(a1)					; is this palette color black?
-		bne.s	.notBlack				; if not, it's white. Branch ahead.
-		move.w	#cWhite,d0				; move 0EEE (white) to d0
+		lea		(v_palette+$22).w,a1		; load 2nd palette, 2nd entry
+		moveq	#0,d0						; move 0 (black) to d0
+		tst.w	(a1)						; is this palette color black?
+		bne.s	.notBlack					; if not, it's white. Branch ahead.
+		move.w	#cWhite,d0					; move 0EEE (white) to d0
 
 	.notBlack:
-		move.w	d0,(a1)					; load colour stored in	d0
+		move.w	d0,(a1)						; load colour stored in	d0
 		subq.b	#1,obBoss_FlashFrames(a0)	; decrement number of times to flash
 		bne.s	.stillFlashing
-		move.b	#(colEnemy|colSz_24x24),obColType(a0)	; reset collision after flashing
+		move.b	#colType_Boss,obColType(a0)	; reset collision after flashing (colSz_24x24; Dynamic hitboxes)
 
 	.stillFlashing:
 		rts	

@@ -14,7 +14,7 @@ Hog_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Ball_Hog,1,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#(colEnemy|colSz_12x18),obColType(a0)
+		move.b	#colType_Enemy,obColType(a0)	; (colSz_12x18; Dynamic hitboxes)
 		move.b	#$C,obDispWid(a0)
 		bsr.w	ObjectFall_YOnly
 		jsr		(ObjFloorDist).l			; find floor

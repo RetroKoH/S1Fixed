@@ -41,7 +41,7 @@ Swing_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_SLZ_Swing,2,0),obGfx(a0)
 		move.b	#$20,obDispWid(a0)
 		addq.b	#8,obHeight(a0)			; set height to $10
-		move.b	#(colHarmful|colSz_32x8),obColType(a0)
+		move.b	#colType_Harmful,obColType(a0)	; (colSz_32x8; Dynamic hitboxes)
 		bra.s	.length
 ; ---------------------------------------------------------------------------
 
@@ -53,7 +53,7 @@ Swing_Main:	; Routine 0
 		move.l	#Map_BBall,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SYZ_Big_Spikeball,0,0),obGfx(a0)
 		move.b	#$18,obHeight(a0)
-		move.b	#(colHarmful|colSz_16x16),obColType(a0)
+		move.b	#colType_Harmful,obColType(a0)	; (colSz_16x16; Dynamic hitboxes)
 		move.b	#$A,obRoutine(a0)		; goto Swing_Action next
 ; ---------------------------------------------------------------------------
 
@@ -132,7 +132,7 @@ Swing_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_GHZ_Giant_Ball,2,0),obGfx(a0)
 		move.b	#1,obFrame(a0)
 		move.w	#priority2,obPriority(a0)				; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#(colHarmful|colSz_20x20),obColType(a0)	; make object hurt when touched
+		move.b	#colType_Harmful,obColType(a0)	; (colSz_20x20; Dynamic hitboxes)
 
 	.not1X:
 		cmpi.b	#id_SBZ,(v_zone).w	; is zone SBZ?
@@ -271,7 +271,7 @@ Swing_DelLoop:
 		addi.l	#v_objspace&$FFFFFF,d0
 		movea.l	d0,a1
 		bsr.w	DeleteChild
-		dbf		d2,Swing_DelLoop				; repeat for length of	chain
+		dbf		d2,Swing_DelLoop				; repeat for length of chain
 		rts	
 ; ===========================================================================
 
@@ -280,11 +280,11 @@ Swing_Delete:	; Routine 6
 ; ===========================================================================
 
 Swing_Display:	; Routine $A
-		tst.b	obColType(a0)
-		beq.w	DisplaySprite
+		tst.b	obColType(a0)			; is this object harmful?
+		beq.w	DisplaySprite			; if not, branch
 
-		cmpi.b	#(colHarmful|colSz_20x20),obColType(a0)		; is this the wrecking ball (1X)
-		bne.s	.notwreckingball
+		btst	#4,obSubtype(a0)		; is this the wrecking ball (bject type $1X)? (ColType_Harmful; colSz_20x20)
+		bne.s	.notwreckingball		; if not, handle other harmful cases
 
 ; The following only applies to the wrecking ball
 		moveq	#0,d0

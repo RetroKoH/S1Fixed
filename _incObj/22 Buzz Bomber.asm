@@ -17,7 +17,7 @@ Buzz_Main:		; Routine 0
 		move.w	#make_art_tile(ArtTile_Buzz_Bomber,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#(colEnemy|colSz_24x12),obColType(a0)
+		move.b	#colType_Enemy,obColType(a0)	; (colSz_24x12; Dynamic hitboxes)
 		move.b	#$18,obDispWid(a0)
 ; ---------------------------------------------------------------------------
 

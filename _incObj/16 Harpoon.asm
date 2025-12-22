@@ -68,19 +68,20 @@ Harp_Move2:	; Routine 6
 		cmpi.b	#3,obTimeFrame(a0)
 		bne.w	RememberState					; branch if frame hasn't updated
 		moveq	#0,d0
-		move.b	obFrame(a0),d0					; get frame number
-		move.b	Harp_Hitbox_List(pc,d0.w),obColType(a0)	; get collision type
+		move.b	#colType_Harmful,obColType(a0)	; set harmful (dynamically set size; Dynamic hitboxes))
+;		move.b	obFrame(a0),d0					; get frame number
+;		move.b	Harp_Hitbox_List(pc,d0.w),obColType(a0)	; get collision type
 		bra.w	RememberState
 ; ===========================================================================
 
-Harp_Hitbox_List:
-		dc.b	(colHarmful|colSz_8x4)	; Horizontal (short)
-		dc.b	(colHarmful|colSz_24x4)	; Horizontal (middle)
-		dc.b	(colHarmful|colSz_40x4)	; Horizontal (extended)
-		dc.b	(colHarmful|colSz_4x8)	; Vertical (short)
-		dc.b	(colHarmful|colSz_4x24)	; Vertical (middle)
-		dc.b	(colHarmful|colSz_4x40)	; Vertical (extended)
-		even
+;Harp_Hitbox_List:
+;		dc.b	(colHarmful|colSz_8x4)	; Horizontal (short)
+;		dc.b	(colHarmful|colSz_24x4)	; Horizontal (middle)
+;		dc.b	(colHarmful|colSz_40x4)	; Horizontal (extended)
+;		dc.b	(colHarmful|colSz_4x8)	; Vertical (short)
+;		dc.b	(colHarmful|colSz_4x24)	; Vertical (middle)
+;		dc.b	(colHarmful|colSz_4x40)	; Vertical (extended)
+;		even
 ; ===========================================================================
 
 Harp_Wait:	; Routine 4

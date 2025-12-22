@@ -45,7 +45,7 @@ Mon_Main:	; Routine 0
 ; ===========================================================================
 
 .notbroken:
-		move.b	#(colPowerup|colSz_16x16),obColType(a0)
+		move.b	#colType_Monitor,obColType(a0)	; (colSz_16x16; Dynamic hitboxes)
 		move.b	obSubtype(a0),obAnim(a0)
 	if RandomMonitors
 		move.b	#monLastID-1,obAnim(a0)		; use '?' icon
