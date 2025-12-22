@@ -42,7 +42,7 @@ Ring_Animate:	; Routine 2
 RAttract_Collect:
 	if PerfectBonusEnabled
 		if EnemiesDropRings
-			tst.b	objoff_3D(a0)			; Attracted rings from enemies don't decrement Perfect Count
+			tst.b	obRLoss_BadnikFlag(a0)	; Attracted rings from enemies don't decrement Perfect Count
 			bne.s	Ring_Collect
 		endif
 		subq.w	#1,(v_perfectringsleft).w
@@ -167,7 +167,7 @@ RLoss_Count:	; Routine 0
 
 	; RetroKoH/DeltaW Enemies Drop Rings Mod
 	if EnemiesDropRings
-		tst.b	objoff_3D(a0)			; was this ring from a badnik?
+		tst.b	obRLoss_BadnikFlag(a0)	; was this ring from a badnik?
 		beq.w	.lostrings				; if not, branch
 
 		move.w	#-$380,obVelY(a0)
@@ -184,7 +184,7 @@ RLoss_Count:	; Routine 0
 		_move.b	#id_Points,obID(a1)		; load points object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		move.w	objoff_3E(a0),d0
+		move.w	obEnemy_Combo(a0),d0
 		lsr.w	#1,d0
 		move.b	d0,obFrame(a1)
 		bra.w	.setanim

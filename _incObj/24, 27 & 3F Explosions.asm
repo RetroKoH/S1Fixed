@@ -59,13 +59,13 @@ ExItem_Animal:	; Routine 0
 		_move.b	#id_RingLoss,obID(a1)		; load ring object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		move.b	#1,objoff_3D(a1)			; set flag to tell the game we don't want mass spawning of rings here
-		move.w	objoff_3E(a0),objoff_3E(a1)
+		move.b	#1,obRLoss_BadnikFlag(a1)	; set flag to tell the game we don't want mass spawning of rings here
+		move.w	obEnemy_Combo(a0),obEnemy_Combo(a1)
 	else
 		_move.b	#id_Animals,obID(a1)		; load animal object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		move.w	objoff_3E(a0),objoff_3E(a1)
+		move.w	obEnemy_Combo(a0),obEnemy_Combo(a1)
 	endif
 	; Enemies Drop Rings Mod End
 
