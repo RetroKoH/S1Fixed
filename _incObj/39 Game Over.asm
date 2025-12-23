@@ -59,7 +59,7 @@ Over_Move:	; Routine 2
 ; ===========================================================================
 
 	.next:
-		move.w	#720,obTimeFrame(a0)		; set time delay to 12 seconds
+		move.w	#720,obOver_Timer(a0)		; set time delay to 12 seconds
 		addq.b	#2,obRoutine(a0)			; -> Over_Wait
 		bra.w	DisplaySprite				; RetroKoH GAME OVER Flicker fix	
 ; ===========================================================================
@@ -70,9 +70,9 @@ Over_Wait:	; Routine 4
 		bne.s	Over_ChgMode				; if yes, branch
 		btst	#0,obFrame(a0)				; is object "OVER"?
 		bne.w	DisplaySprite				; if yes, branch
-		tst.w	obTimeFrame(a0)				; has time delay reached zero?
+		tst.w	obOver_Timer(a0)			; has time delay reached zero?
 		beq.s	Over_ChgMode				; if yes, branch
-		subq.w	#1,obTimeFrame(a0)			; subtract 1 from time delay
+		subq.w	#1,obOver_Timer(a0)			; subtract 1 from time delay
 		bra.w	DisplaySprite
 ; ===========================================================================
 

@@ -26,8 +26,7 @@ obWidth:				equ $17				; 1 byte  | width/2
 obAniFrame:				equ $1B				; 1 byte  | current frame in animation script
 obAnim:					equ $1C				; 1 byte  | current animation
 obPrevAni:				equ $1D				; 1 byte  | restart animation flag / next animation number (Sonic)
-obTimeFrame:			equ $1E				; 1 byte  | time to next frame (1 byte) / general timer (2 bytes)
-obDelayAni:				equ $1F				; 1 byte  | anim delay time (also used as TimeFrame low byte)
+obTimeFrame:			equ $1E				; 2 bytes  | time to next frame (1 byte) / general timer (2 bytes)
 obStatus:				equ $22				; 1 byte  | orientation or mode
 obRoutine:				equ $24				; 1 byte  | routine number
 obAngle:				equ $26				; 1 byte  | angle
@@ -144,6 +143,7 @@ obSign_PrevFrame:		equ objoff_3F		; 1 byte  | stored frame for DPLC handling
 ; ---------------------------------------------------------------------------
 
 ; Obj0E - Title Screen Sonic
+obTitlSon_DelayTime:	equ objoff_30		; 1 byte  | delay timer (replacing obDelayAni)
 obTitlSon_PrevFrame:	equ objoff_3F		; 1 byte  | stored frame for DPLC handling
 ; ---------------------------------------------------------------------------
 
@@ -161,6 +161,10 @@ obBridge_ChildObj2:		equ objoff_32		; 2 bytes | address of the second child obje
 obBridge_StartY:		equ objoff_3C		; 2 bytes | starting Y-axis position
 obBridge_BendPixels:	equ objoff_3E		; 1 byte  | number of pixels a log has been depressed
 obBridge_CurrentLog:	equ objoff_3F		; 1 byte  | log Sonic is currently standing on (left to right, starts at 0)
+; ---------------------------------------------------------------------------
+
+; Obj13 - MZ/LZ Fireball Launcher
+obFireM_SpawnTimer:		equ objoff_30		; 1 byte  | spawn timer (replacing obDelayAni)
 ; ---------------------------------------------------------------------------
 
 ; Obj14 - MZ/LZ Fireballs
@@ -198,6 +202,10 @@ obPlat_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position
 obPlat_PrevX:			equ objoff_34		; 2 bytes | previous X-axis position (used instead of pushing to the stack)
 obPlat_NudgeY:			equ objoff_38		; 1 byte  | amount of dip when Sonic is on the platform
 obPlat_WaitTime:		equ objoff_3A		; 2 bytes | time delay for platform moving when stood on
+; ---------------------------------------------------------------------------
+
+; Obj19 - GHZ Giant Ball
+obGBall_TimeMaster:		equ objoff_30		; 1 byte  | timer (replacing obDelayAni)
 ; ---------------------------------------------------------------------------
 
 ; Obj1A - GHZ Collapsing Ledge (Shared with Obj53)
@@ -334,6 +342,7 @@ obSpike_MoveTime:		equ objoff_38		; 2 bytes | time until object moves again
 ; ---------------------------------------------------------------------------
 
 ; Obj37 - Lost Rings
+obRLoss_Timer:			equ objoff_30		; 1 byte  | timer for ring deletion
 obRLoss_BadnikFlag:		equ objoff_3D		; 1 byte  | flag set if the ring was spawned from a badnik
 ; ---------------------------------------------------------------------------
 
@@ -342,9 +351,14 @@ obShield_ArtLoc			equ	objoff_38		; 4 bytes | pointer to art data
 obShield_DPLCLoc		equ	objoff_3C		; 4 bytes | pointer to DPLC data
 ; ---------------------------------------------------------------------------
 
+; Obj39 - Game Over
+obOver_Timer			equ	objoff_30		; 2 bytes | delay timer
+; ---------------------------------------------------------------------------
+
 ; Obj3A - Has Passed Card (shared offstes with Title Cards)
-obEoLCard_DisplayX:	equ obTCard_DisplayX	; 2 bytes | position for card to display on
-obEoLCard_FinalX:	equ obTCard_FinalX		; 2 bytes | position for card to finish on
+obEoLCard_DisplayX:		equ objoff_30		; 2 bytes | position for card to display on
+obEoLCard_FinalX:		equ objoff_32		; 2 bytes | position for card to finish on
+obEoLCard_Timer:		equ objoff_34		; 2 bytes | delay timer
 ; ---------------------------------------------------------------------------
 
 ; Obj3D - GHZ Boss
@@ -550,6 +564,10 @@ obLBlock_SinkPixels:	equ objoff_3E		; 1 byte  | pixels the platform has sunk whe
 obLBlock_ColFlag:		equ objoff_3F		; 1 byte  | 0 = none; 1 = side collision; -1 = top/bottom collision
 ; ---------------------------------------------------------------------------
 
+; Obj62 - LZ Gargoyle
+obGar_SpawnTime:		equ objoff_30		; 1 byte  | stored time between fireballs (replacing obDelayAni)
+; ---------------------------------------------------------------------------
+
 ; Obj63 - LZ Conveyor Platforms
 LCon_SpawnerType:		equ objoff_2F		; 1 byte  | saved subtype
 LCon_CenterX:			equ objoff_30		; 2 bytes | approximate x position of center of conveyor
@@ -709,9 +727,10 @@ obBossSLZ_Seesaws:		equ objoff_2A		; 6 bytes | addresses of boss' seesaws (2 byt
 ; ---------------------------------------------------------------------------
 
 ; Obj7B - SLZ Boss Spike
-obBossSpike_StartX:		equ objoff_30		; 1 byte  | delay timer for various actions
-obBossSpike_StartY:		equ objoff_34		; 2 bytes | stored X-position
-obBossSpike_State:		equ objoff_3A		; 1 byte  | second stored X-position
+obBossSpike_StartX:		equ objoff_30		; 2 bytes | starting X-axis position
+obBossSpike_StartY:		equ objoff_32		; 2 bytes | starting Y-axis position
+obBossSpike_State:		equ objoff_3A		; 1 byte  | seesaw state: 0 = left raised; 2 = right raised; 1/3 = flat
+obBossSpike_Time:		equ objoff_3B		; 1 byte  | (replacing obDelayAni)
 obBossSpike_Seesaw:		equ objoff_3C		; 2 bytes | address of corresponding seesaw
 obBossSpike_Parent:		equ objoff_3E		; 2 bytes | address of parent boss object
 ; ---------------------------------------------------------------------------
@@ -721,7 +740,8 @@ obBonus_WaitTime:		equ objoff_30		; 2 bytes | length of time to display bonus sp
 ; ---------------------------------------------------------------------------
 
 ; Obj7E - Special Stage Results Card
-obSSR_MainX:			equ objoff_30		; 2 bytes | position for card to display on
+obSSR_DisplayX:			equ objoff_30		; 2 bytes | position for card to display on
+obSSR_Timer:			equ objoff_34		; 2 bytes | delay timer
 ; ---------------------------------------------------------------------------
 
 ; Obj82 - SBZ2 Eggman
@@ -784,7 +804,7 @@ obEndEgg_WaitTime:		equ objoff_30		; 2 bytes | time to wait between events
 
 ; Obj8C - Try Again Emeralds
 obTChaos_Parent:		equ objoff_30		; 2 bytes |
-obTChaos_TimeMaster:	equ objoff_37		; 1 byte  | replacing obDelayAni
+obTChaos_TimeMaster:	equ objoff_37		; 1 byte  | (replacing obDelayAni)
 obTChaos_StartX:		equ objoff_38		; 2 bytes | x-axis centre of emerald circle
 obTChaos_StartY:		equ objoff_3A		; 2 bytes | y-axis centre of emerald circle
 obTChaos_Radius:		equ objoff_3C		; 1 byte  | radius

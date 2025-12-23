@@ -47,7 +47,7 @@ SSR_Main:	; Routine 0
 	.loop:
 		_move.b	#id_SSResult,obID(a1)
 		move.w	(a2)+,obX(a1)				; load start x-position
-		move.w	(a2)+,obSSR_MainX(a1)		; load main x-position
+		move.w	(a2)+,obSSR_DisplayX(a1)	; load main x-position
 		move.w	(a2)+,obScreenY(a1)			; load y-position
 		move.b	(a2)+,obRoutine(a1)			; -> SSR_Move
 		move.b	(a2)+,obFrame(a1)			; set frame number
@@ -66,7 +66,7 @@ SSR_Main:	; Routine 0
 		bne.s	.skip_emeralds				; if not, branch
 		moveq	#8,d0						; use "SONIC GOT THEM ALL" text
 		move.w	#$18,obX(a0)
-		move.w	#$118,obSSR_MainX(a0) 		; change position of text
+		move.w	#$118,obSSR_DisplayX(a0) 	; change position of text
 
 	.skip_emeralds:
 		move.b	d0,obFrame(a0)				; set frame for 1st object
@@ -74,7 +74,7 @@ SSR_Main:	; Routine 0
 
 SSR_Move:	; Routine 2
 		moveq	#$10,d1						; set horizontal speed
-		move.w	obSSR_MainX(a0),d0
+		move.w	obSSR_DisplayX(a0),d0
 		cmp.w	obX(a0),d0					; has item reached its target position?
 		beq.s	.at_target					; if yes, branch
 		bge.s	.is_left					; branch if object is left of target position
@@ -100,11 +100,11 @@ SSR_Move:	; Routine 2
 		bne.s	.chk_visible				; if not, branch
 
 		addq.b	#2,obRoutine(a0)			; goto SSR_Wait next, and then SSR_RingBonus
-		move.w	#180,obTimeFrame(a0)		; set time delay to 3 seconds
+		move.w	#180,obSSR_Timer(a0)		; set time delay to 3 seconds
 		move.b	#id_SSRChaos,(v_ssresemeralds).w	; load chaos emerald object
 
 SSR_Wait:	; Routine 4, 8, $C, $10
-		subq.w	#1,obTimeFrame(a0)			; decrement timer
+		subq.w	#1,obSSR_Timer(a0)			; decrement timer
 		bne.w	DisplaySprite				; branch if time remains
 		addq.b	#2,obRoutine(a0)			; goto SSR_RingBonus/SSR_Exit/SSR_Continue next
 		bra.w	DisplaySprite
@@ -229,10 +229,10 @@ SSR_RingBonus:	; Routine 6
 		move.w	#sfx_Cash,d0
 		jsr		(QueueSound2).w				; play "ker-ching" sound
 		addq.b	#2,obRoutine(a0)
-		move.w	#180,obTimeFrame(a0)		; set time delay to 3 seconds
+		move.w	#180,obSSR_Timer(a0)		; set time delay to 3 seconds
 		cmpi.w	#50,(v_rings).w				; do you have at least 50 rings?
 		blo.s	.exit						; if not, branch
-		move.w	#60,obTimeFrame(a0)			; set time delay to 1 second
+		move.w	#60,obSSR_Timer(a0)			; set time delay to 1 second
 		addq.b	#4,obRoutine(a0)			; goto "SSR_Continue" routine
 
 	.exit:
@@ -250,7 +250,7 @@ SSR_Continue:	; Routine $E
 		move.w	#sfx_Continue,d0
 		jsr	(QueueSound2).w					; play continues jingle
 		addq.b	#2,obRoutine(a0)			; goto SSR_Wait next, and then SSR_Exit
-		move.w	#360,obTimeFrame(a0)		; set time delay to 6 seconds
+		move.w	#360,obSSR_Timer(a0)		; set time delay to 6 seconds
 		bra.w	DisplaySprite
 ; ===========================================================================
 

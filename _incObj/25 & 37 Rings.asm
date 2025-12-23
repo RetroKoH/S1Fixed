@@ -247,12 +247,12 @@ RLoss_Count:	; Routine 0
 	;	clr.b	(v_lifecount).w
 	; Moved sfx above anim timer code to accomodate potential badnik ring branch
 		move.w	#sfx_RingLoss,d0
-		jsr		(QueueSound2).w		; play ring loss sound
+		jsr		(QueueSound2).w				; play ring loss sound
 
 	; RHS Ring Timers Fix
 	.setanim:
 		moveq   #-1,d0						; Move #-1 to d0
-		move.b  d0,obDelayAni(a0)			; Move d0 to new timer
+		move.b  d0,obRLoss_Timer(a0)		; Move d0 to new timer
 		move.b  d0,(v_ani3_time).w			; Move d0 to old timer (for animated purposes)
 	; Ring Timers Fix End
 
@@ -262,7 +262,7 @@ RLoss_Bounce:	; Routine 2
 	; RHS Underwater Rings Physics Fix
 		tst.b	(f_water).w					; Does the level have water?
 		beq.s	.skipbounceslow				; If not, branch and skip underwater checks
-		move.w	(v_waterpos_actual).w,d6			; Move water level to d6
+		move.w	(v_waterpos_actual).w,d6	; Move water level to d6
 		cmp.w	obY(a0),d6					; Is the ring object underneath the water level?
 		bgt.s	.skipbounceslow				; If not, branch and skip underwater commands
 		subi.w	#$E,obVelY(a0)				; Reduce gravity by $E ($18-$E=$A), giving the underwater effect
@@ -285,7 +285,7 @@ RLoss_Bounce:	; Routine 2
 
 	.chkdel:
 		; RHS Ring Timers Fix
-		subq.b	#1,obDelayAni(a0)			; Decrement timer
+		subq.b	#1,obRLoss_Timer(a0)		; Decrement timer
 		beq.w	DeleteObject				; If 0, delete
 		; Ring Timers Fix End
 		; RHS Accidental Ring Deletion Fix
@@ -337,7 +337,7 @@ RLoss_Bounce:	; Routine 2
 		addq.w	#2,(a1)					; Count this new entry
 		adda.w	(a1),a1					; Offset into right area of list
 		move.w	a0,(a1)					; Store RAM address in list
-		move.b	obDelayAni(a0),d0		; load timer to d0 (accessing d0 later saves cycles)
+		move.b	obRLoss_Timer(a0),d0	; load timer to d0 (accessing d0 later saves cycles)
 		btst	#0,d0					; Test the first bit of the timer, so rings flash every other frame.
 		beq.w	DisplaySprite			; If the bit is 0, the ring will appear.
 		cmpi.b	#80,d0					; Rings will flash during last 80 steps of their life.
@@ -353,7 +353,8 @@ RLoss_Bounce:	; Routine 2
 ; Ring Spawn Array -- RHS Ring Loss Speedup
 ; ---------------------------------------------------------------------------
 
-SpillRingData:  dc.w    $FF3C,$FC14, $00C4,$FC14, $FDC8,$FCB0, $0238,$FCB0 ; 4
+SpillRingData:
+				dc.w    $FF3C,$FC14, $00C4,$FC14, $FDC8,$FCB0, $0238,$FCB0 ; 4
                 dc.w    $FCB0,$FDC8, $0350,$FDC8, $FC14,$FF3C, $03EC,$FF3C ; 8
                 dc.w    $FC14,$00C4, $03EC,$00C4, $FCB0,$0238, $0350,$0238 ; 12
                 dc.w    $FDC8,$0350, $0238,$0350, $FF3C,$03EC, $00C4,$03EC ; 16
@@ -398,7 +399,7 @@ RAttract_Main:
 		bne.s	.hasshield
 		move.b	#2,obRoutine(a0)
 		moveq   #-1,d0					; Move #-1 to d0
-		move.b  d0,obDelayAni(a0)		; Move d0 to new timer
+		move.b  d0,obRLoss_Timer(a0)	; Move d0 to new timer
 		move.b  d0,(v_ani3_time).w		; Move d0 to old timer (for animation purposes)
 
 .hasshield:

@@ -35,16 +35,15 @@ Gar_Main:	; Routine 0
 		move.b	#$10,obDispWid(a0)
 		moveq	#$F,d0									; SCE Optimization
 		and.b	obSubtype(a0),d0						; get object subtype's low nybble
-		move.b	Gar_SpitRate(pc,d0.w),obDelayAni(a0)	; set fireball spit rate
-		move.b	obDelayAni(a0),obTimeFrame(a0)
-		andi.b	#$F,obSubtype(a0)
+		move.b	Gar_SpitRate(pc,d0.w),obGar_SpawnTime(a0)	; set fireball spit rate
+		move.b	obGar_SpawnTime(a0),obTimeFrame(a0)
 ; ---------------------------------------------------------------------------
 
 Gar_MakeFire:	; Routine 2
 		subq.b	#1,obTimeFrame(a0)						; decrement timer
 		bne.w	RememberState							; if time remains, branch
 
-		move.b	obDelayAni(a0),obTimeFrame(a0)			; reset timer
+		move.b	obGar_SpawnTime(a0),obTimeFrame(a0)		; reset timer
 		bsr.w	ChkObjectVisible
 		bne.w	RememberState							; branch if off screen
 		bsr.w	FindFreeObj								; find free object slot
