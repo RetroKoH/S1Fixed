@@ -50,14 +50,14 @@ Pow_Move:	; Routine 2
 ; ===========================================================================
 
 Pow_Delete:	; Routine 4
-		subq.w	#1,obTimeFrame(a0)
+		subq.b	#1,obTimeFrame(a0)
 		bmi.w	DeleteObject	; delete after half a second
 		bra.w	DisplaySprite	; Clownacy DisplaySprite Fix (Alt method by RetroKoH based on S2)
 ; ===========================================================================
 
 Pow_Checks:
 		addq.b	#2,obRoutine(a0)
-		move.w	#29,obTimeFrame(a0) ; display icon for half a second
+		move.b	#29,obTimeFrame(a0) ; display icon for half a second
 
 	; RetroKoH Powerup Optimization
 		moveq	#0,d0

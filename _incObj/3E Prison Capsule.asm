@@ -105,7 +105,7 @@ Pri_Switch:	; Routine 4
 
 		addq.w	#8,obY(a0)						; move switch down 8px
 		move.b	#$A,obRoutine(a0)				; -> Pri_Explosion
-		move.w	#60,obTimeFrame(a0)				; set time for explosions to 1 sec
+		move.b	#60,obTimeFrame(a0)				; set time for explosions to 1 sec
 		clr.b	(f_timecount).w					; stop time counter
 		clr.b	(f_lockscreen).w				; lock screen position
 		move.b	#1,(f_lockctrl).w				; lock controls
@@ -146,7 +146,7 @@ Pri_Explosion:	; Routine $A
 		add.w	d0,obY(a1)
 
 	.noexplosion:
-		subq.w	#1,obTimeFrame(a0)			; decrement timer
+		subq.b	#1,obTimeFrame(a0)			; decrement timer
 		beq.s	.makeanimal					; branch if 0
 	; Clownacy DisplaySprite Fix (Alt method by RetroKoH)
 		offscreen.s	.delete
@@ -160,7 +160,7 @@ Pri_Explosion:	; Routine $A
 		move.b	#2,(v_bossstatus).w			; set flag for prison open
 		move.b	#$C,obRoutine(a0)			; -> Pri_Animals
 		move.b	#6,obFrame(a0)				; make switch invisible
-		move.w	#150,obTimeFrame(a0)		; set time for additional animals to load to 2.5 secs
+		move.b	#150,obTimeFrame(a0)		; set time for additional animals to load to 2.5 secs
 		addi.w	#$20,obY(a0)
 		moveq	#7,d6						; number of animals to load (8)
 		move.w	#$9A,d5						; animal jumping queue start
@@ -217,7 +217,7 @@ Pri_Animals:	; Routine $C
 		move.w	#$C,obAnimal_PrisonNum(a1)	; set time for animal to jump out
 
 	.noanimal:
-		subq.w	#1,obTimeFrame(a0)			; decrement timer
+		subq.b	#1,obTimeFrame(a0)			; decrement timer
 		bne.s	.wait						; branch if time remains
 
 	if EndLevelFadeMusic

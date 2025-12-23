@@ -30,7 +30,7 @@ GHZBall_Main:
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)
 		move.b	#$18,obDispWid(a0)
-		move.b	#1,obDelayAni(a0)
+		move.b	#1,obGBall_TimeMaster(a0)
 		bsr.w	GHZBall_SetFrame
 		bra.w	RememberState
 
@@ -153,17 +153,17 @@ GHZBall_SetFrame:
 
 	.ispositive:
 		move.b	d0,obTimeFrame(a0)	; set frame timer
-		move.b	obDelayAni(a0),d0
+		move.b	obGBall_TimeMaster(a0),d0
 		addq.b	#1,d0
 		cmpi.b	#4,d0
 		bne.s	.under4
 		moveq	#1,d0
 
 	.under4:
-		move.b	d0,obDelayAni(a0)
+		move.b	d0,obGBall_TimeMaster(a0)
 
 	.setframe:
-		move.b	obDelayAni(a0),obFrame(a0)
+		move.b	obGBall_TimeMaster(a0),obFrame(a0)
 		rts
 ; ===========================================================================
 
@@ -176,14 +176,14 @@ GHZBall_SetFrame:
 
 	.ispositive2:
 		move.b	d0,obTimeFrame(a0)	; set frame timer
-		move.b	obDelayAni(a0),d0
+		move.b	obGBall_TimeMaster(a0),d0
 		subq.b	#1,d0
 		bne.s	.setframe2
 		moveq	#3,d0
 
 	.setframe2:
-		move.b	d0,obDelayAni(a0)
-		move.b	obDelayAni(a0),obFrame(a0)
+		move.b	d0,obGBall_TimeMaster(a0)
+		move.b	obGBall_TimeMaster(a0),obFrame(a0)
 		rts
 ; ===========================================================================
 

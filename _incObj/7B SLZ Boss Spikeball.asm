@@ -82,8 +82,9 @@ BossSpikeball_Fall:	; Routine 2
 
 	.no_xflip:
 		move.w	#$F0,obSubtype(a0)
-		move.b	#10,obDelayAni(a0)				; set frame duration to	10 frames
-		move.b	obDelayAni(a0),obTimeFrame(a0)
+		moveq	#10,d0
+		move.b	d0,obBossSpike_Time(a0)			; set frame duration to	10 frames
+		move.b	d0,obTimeFrame(a0)
 		bra.w	BossSpikeball_Update
 ; ===========================================================================
 
@@ -157,18 +158,18 @@ BossSpikeball_Bounce:	; Routine 4
 BossSpikeball_Animate:
 		cmpi.w	#$78,obSubtype(a0)				; subtype decrements like a timer
 		bne.s	.not_fast						; branch if not at specified value
-		move.b	#5,obDelayAni(a0)				; use faster animation speed
+		move.b	#5,obBossSpike_Time(a0)			; use faster animation speed
 
 	.not_fast:
 		cmpi.w	#$3C,obSubtype(a0)
 		bne.s	.not_faster
-		move.b	#2,obDelayAni(a0)				; use fastest animation speed
+		move.b	#2,obBossSpike_Time(a0)			; use fastest animation speed
 
 	.not_faster:
 		subq.b	#1,obTimeFrame(a0)				; decrement animation timer
 		bgt.s	.wait							; branch if time remains
 		bchg	#0,obFrame(a0)					; change frame
-		move.b	obDelayAni(a0),obTimeFrame(a0)
+		move.b	obBossSpike_Time(a0),obTimeFrame(a0)
 
 	.wait:
 		rts	
@@ -180,36 +181,38 @@ BossSpikeball_HitBoss:	; Routine 6
 		move.w	obY(a1),d1
 		move.w	obX(a0),d2						; position of spikeball
 		move.w	obY(a0),d3
-		lea		BossSpikeball_BossHitbox(pc),a2
-		lea		BossSpikeball_BallHitbox(pc),a3
-		move.b	(a2)+,d4
+
+		moveq	#-$18,d4						; BossSpikeball_BossHitbox
 		ext.w	d4
 		add.w	d4,d0
-		move.b	(a3)+,d4
+		moveq	#8,d4							; BossSpikeball_BallHitbox
 		ext.w	d4
 		add.w	d4,d2
 		cmp.w	d0,d2
 		bcs.s	.boss_missed
-		move.b	(a2)+,d4
+
+		moveq	#$30,d4							; BossSpikeball_BossHitbox
 		ext.w	d4
 		add.w	d4,d0
-		move.b	(a3)+,d4
+		moveq	#-$10,d4						; BossSpikeball_BallHitbox
 		ext.w	d4
 		add.w	d4,d2
 		cmp.w	d2,d0
 		bcs.s	.boss_missed
-		move.b	(a2)+,d4
+
+		moveq	#-$18,d4						; BossSpikeball_BossHitbox
 		ext.w	d4
 		add.w	d4,d1
-		move.b	(a3)+,d4
+		moveq	#8,d4							; BossSpikeball_BallHitbox
 		ext.w	d4
 		add.w	d4,d3
 		cmp.w	d1,d3
 		bcs.s	.boss_missed
-		move.b	(a2)+,d4
+
+		moveq	#$30,d4							; BossSpikeball_BossHitbox
 		ext.w	d4
 		add.w	d4,d1
-		move.b	(a3)+,d4
+		moveq	#-$10,d4						; BossSpikeball_BallHitbox
 		ext.w	d4
 		add.w	d4,d3
 		cmp.w	d3,d1
@@ -305,17 +308,17 @@ BossSpike_YPos:
 		dc.w -8
 		even
 
-BossSpikeball_BossHitbox:
+;BossSpikeball_BossHitbox:
 	; half width, full width
-		dc.b -$18, $30						; left to right
-		dc.b -$18, $30						; top to bottom
-		even
+;		dc.b -$18, $30						; left to right
+;		dc.b -$18, $30						; top to bottom
+;		even
 
-BossSpikeball_BallHitbox:
+;BossSpikeball_BallHitbox:
 	; half width, full width
-		dc.b 8,	-$10						; right to left
-		dc.b 8, -$10						; bottom to top
-		even
+;		dc.b 8,	-$10						; right to left
+;		dc.b 8, -$10						; bottom to top
+;		even
 ; ===========================================================================
 
 BossSpikeball_Explode:	; Routine 8
