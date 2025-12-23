@@ -1,8 +1,5 @@
 ; ---------------------------------------------------------------------------
 ; Object 13 - fire ball	maker (MZ, SLZ)
-;
-; spawned by:
-;	ObjPosLoad
 ; ---------------------------------------------------------------------------
 
 ; ===========================================================================
@@ -24,21 +21,23 @@ FireMaker:
 		tst.b	obRoutine(a0)
 		bne.s	FireM_MakeFire
 	; Object Routine Optimization End
+; ---------------------------------------------------------------------------
 
 FireM_Main:		; Routine 0
 		addq.b	#2,obRoutine(a0)					; -> FireM_MakeFire
 		moveq	#$70,d0
-		and.b	obSubtype(a0),d0					; get high nybble of subtype (spawn rate)
+		and.b	obSubtype(a0),d0					; get high nybble of subtype (firing rate)
 		lsr.w	#4,d0
 		move.b	FireM_Rates(pc,d0.w),d0
-		move.b	d0,obDelayAni(a0)
+		move.b	d0,obFireM_SpawnTimer(a0)
 		move.b	d0,obTimeFrame(a0)					; set time delay for lava balls
 		andi.b	#$F,obSubtype(a0)					; isolate low nybble of subtype (speed/direction)
+; ---------------------------------------------------------------------------
 
 FireM_MakeFire:	; Routine 2
 		subq.b	#1,obTimeFrame(a0)					; decrement timer
 		bne.s	.wait								; if time still	remains, branch
-		move.b	obDelayAni(a0),obTimeFrame(a0)		; reset time delay
+		move.b	obFireM_SpawnTimer(a0),obTimeFrame(a0)	; reset time delay
 		bsr.w	ChkObjectVisible					; is object on-screen?
 		bne.s	.wait								; if not, branch
 		bsr.w	FindFreeObj							; find free object RAM slot

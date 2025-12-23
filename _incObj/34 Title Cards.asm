@@ -59,7 +59,7 @@ Card_CheckSBZ3:	; Routine 0
 		move.b	#$78,obDispWid(a1)
 		clr.b	obRender(a1)
 		move.w	#priority0,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		move.w	#60,obTimeFrame(a1)			; set time delay to 1 second
+		move.b	#60,obTimeFrame(a1)			; set time delay to 1 second
 		lea		object_size(a1),a1			; next object
 		dbf		d1,.loop					; repeat sequence another 3 times
 ; ---------------------------------------------------------------------------
@@ -89,9 +89,9 @@ Card_Move:	; Routine 2
 
 Card_Wait:	; Routine 4/6
 	; title cards are instructed to jump here by GM_Level
-		tst.w	obTimeFrame(a0)				; is time remaining zero?
+		tst.b	obTimeFrame(a0)				; is time remaining zero?
 		beq.s	Card_MoveBack				; if yes, branch
-		subq.w	#1,obTimeFrame(a0)			; subtract 1 from time
+		subq.b	#1,obTimeFrame(a0)			; subtract 1 from time
 		bra.w	DisplaySprite
 ; ===========================================================================
 

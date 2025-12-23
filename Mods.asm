@@ -76,9 +76,9 @@ SuperMod: = 0
 ; Name: Disable Speed Caps
 ; Credit: Mercury (Ground/Air), RetroKoH (Applied to Devon's Rolling Speed Cap Fix)
 ; Function: Toggles the speed caps (The original game has speed caps active by default)
-GroundSpeedCapEnabled: = 1				; if set to 1, the ground speed cap is active
-AirSpeedCapEnabled: = 1					; if set to 1, the air speed cap is active
-RollSpeedCapEnabled: = 1				; if set to 1, the rolling speed cap is active (fixed by Devon)
+GroundSpeedCapEnabled: = 0				; if set to 1, the ground speed cap is active
+AirSpeedCapEnabled: = 0					; if set to 1, the air speed cap is active
+RollSpeedCapEnabled: = 0				; if set to 1, the rolling speed cap is active (fixed by Devon)
 
 ; Name: Original Roll Jump Toggle
 ; Credit: Mercury

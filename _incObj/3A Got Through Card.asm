@@ -100,11 +100,11 @@ Got_Move:	; Routine 2
 		bne.s	.chk_visible					; if not, branch
 
 		addq.b	#2,obRoutine(a0)				; goto Has_Wait next, and then Has_Bonus
-		move.w	#180,obTimeFrame(a0)			; set time delay to 3 seconds
+		move.b	#180,obTimeFrame(a0)			; set time delay to 3 seconds
 ; ---------------------------------------------------------------------------
 
 Got_Wait:	; Routine 4, 8, $C
-		subq.w	#1,obTimeFrame(a0)				; decrement timer
+		subq.b	#1,obTimeFrame(a0)				; decrement timer
 		bne.w	DisplaySprite					; branch if time remains
 		addq.b	#2,obRoutine(a0)				; goto Has_Bonus/Has_NextLevel/Has_MoveBack next
 		bra.w	DisplaySprite
@@ -260,7 +260,7 @@ Got_Bonus:	; Routine 6
 		addq.b	#4,obRoutine(a0)			; if yes, goto Has_Wait next, and then Has_MoveBack for SBZ2
 
 	.not_sbz2:
-		move.w	#180,obTimeFrame(a0)		; set time delay to 3 seconds
+		move.b	#180,obTimeFrame(a0)		; set time delay to 3 seconds
 
 	.exit:
 		rts	
