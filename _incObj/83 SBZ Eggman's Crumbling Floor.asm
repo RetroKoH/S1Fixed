@@ -67,7 +67,7 @@ FFloor_Main:	; Routine 0
 ; ===========================================================================
 
 FFloor_ChkBreak:	; Routine 2
-		cmpi.w	#"GO",obSubtype(a0)			; is object set to disintegrate? (by Eggman object)
+		cmpi.b	#"G",obSubtype(a0)			; is object set to disintegrate? (by Eggman object)
 		bne.s	FFloor_Solid				; if not, branch
 		clr.b	obFrame(a0)
 		addq.b	#2,obRoutine(a0)			; -> FFloor_Break
@@ -99,7 +99,7 @@ FFloor_SetBreak:	; Routine 4
 		add.w	d0,d0
 		move.w	obFFloor_Children(a0,d0.w),d0	; get address of OST for next child block
 		movea.l	d0,a1
-		move.w	#"GO",obSubtype(a1)			; set object to disintegrate
+		move.b	#"G",obSubtype(a1)			; set object to disintegrate
 		addq.b	#1,obFrame(a0)				; next frame
 		cmpi.b	#8,obFrame(a0)				; have all 8 floor panels been set to break? (final frame)
 		beq.s	FFloor_DestroyAll			; if yes, branch
@@ -113,7 +113,7 @@ FFloor_DestroyAll:		; Routine 6
 ; ===========================================================================
 
 FFloor_PanelBlock:		; Routine 8
-		cmpi.w	#"GO",obSubtype(a0)			; is object set to disintegrate?
+		cmpi.b	#"G",obSubtype(a0)			; is object set to disintegrate?
 		beq.s	FFloor_Break				; if yes, branch
 		jmp		(DisplaySprite).l
 ; ===========================================================================
