@@ -19,33 +19,40 @@ ADoor_Main:	; Routine 0
 
 ADoor_OpenShut:	; Routine 2
 		move.w	#64,d1					; set range for door detection
-		clr.b	obAnim(a0)				; use "closing"	animation
 		move.w	(v_player+obX).w,d0
 		add.w	d1,d0					; d0 = 64px right of Sonic
 		cmp.w	obX(a0),d0				; is Sonic > 64px left of door?
-		blo.s	ADoor_Animate			; if yes, branch
+		bcs.s	.door_close				; if yes, branch
 		sub.w	d1,d0
 		sub.w	d1,d0					; d0 = 64px left of Sonic
 		cmp.w	obX(a0),d0				; is Sonic > 64px right of door?
-		bhs.s	ADoor_Animate			; if yes, branch
+		bcc.s	.door_close				; if yes, branch
 
 		add.w	d1,d0					; d0 = Sonic's x position
 		cmp.w	obX(a0),d0				; is Sonic left of the door?
-		bhs.s	.sonic_is_left			; if yes, branch
+		bcc.s	.sonic_is_left			; if yes, branch
 		btst	#staFlipX,obStatus(a0)
-		bne.s	ADoor_Animate
-		bra.s	ADoor_Open
+		bne.s	.animate
+		bra.s	.door_open
+; ===========================================================================
+
+	.door_close:
+		moveq	#0,d0					; use "closing"	animation
+		bra.s	.set_anim				; set and run animation
 ; ===========================================================================
 
 	.sonic_is_left:
 		btst	#staFlipX,obStatus(a0)
-		beq.s	ADoor_Animate
+		beq.s	.animate
 ; ---------------------------------------------------------------------------
 
-ADoor_Open:
-		move.b	#1,obAnim(a0)			; use "opening" animation if Sonic is on active side of door
+	.door_open:
+		moveq	#1,d0					; use "opening" animation if Sonic is on active side of door
 
-ADoor_Animate:
+	.set_anim:
+		bsr.w	NewAnim
+
+	.animate:
 		lea		Ani_ADoor(pc),a1
 		bsr.w	AnimateSprite
 		tst.b	obFrame(a0)				; is the door open?

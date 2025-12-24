@@ -126,7 +126,7 @@ Disc_MoveSonic:
 
 	.jumping:
 		bclr	#staPush,obStatus(a1)
-		move.b	#aniID_Run,obPrevAni(a1)			; restart Sonic's animation
+		move.b	#aniID_Run,obAnimNext(a1)			; restart Sonic's animation
 		move.b	#1,obOnWheel(a1)					; keep Sonic stuck to disc until he jumps
 
 	.skip_init:

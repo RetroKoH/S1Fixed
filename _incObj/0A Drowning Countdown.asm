@@ -53,9 +53,10 @@ Drown_Main:	; Routine 0
 ; ===========================================================================
 
 .smallbubble:
-		move.b	d0,obAnim(a0)				; use animation from subtype (0-5 = nums; 6 = small bubble; $E = medium)
+		jsr		(NewAnim).w					; use animation from subtype (0-5 = nums; 6 = small bubble; $E = medium)
 		move.w	obX(a0),obDrown_StartX(a0)
 		move.w	#-$88,obVelY(a0)
+; ---------------------------------------------------------------------------
 
 Drown_Animate:	; Routine 2
 		lea		Ani_Drown(pc),a1
@@ -68,10 +69,12 @@ Drown_ChkWater:	; Routine 4
 
 		move.b	#id_Drown_Display,obRoutine(a0)	; -> Drown_Display
 		addq.b	#7,obAnim(a0)
+		bclr	#7,obAnim(a0)				; clear restart flag
 		cmpi.b	#$D,obAnim(a0)				; blank animation?
 		beq.s	Drown_Display				; if yes, branch
 		blt.s	Drown_Display
-		move.b	#$D,obAnim(a0)				; if higher than the last animation, hard-set it to blank
+		moveq	#$D,d0						; if higher than the last animation, hard-set it to blank
+		jsr		(NewAnim).w
 		bra.s	Drown_Display
 ; ===========================================================================
 
@@ -114,6 +117,7 @@ Drown_AirLeft:	; Routine $C
 		bne.s	.display
 		move.b	#id_Drown_Display+8,obRoutine(a0)	; goto Drown_Display next
 		addq.b	#7,obAnim(a0)						; use flashing number animation
+		bclr	#7,obAnim(a0)				; clear restart flag
 		bra.s	Drown_Display
 ; ===========================================================================
 
@@ -133,7 +137,9 @@ Drown_ShowNumber:
 		beq.s	.nonumber
 		subq.w	#1,obDrown_NumberTime(a0)	; decrement timer
 		bne.s	.nonumber					; if time remains, branch
-		cmpi.b	#7,obAnim(a0)
+		moveq	#$7F,d0
+		and.b	obAnim(a0),d0
+		cmpi.b	#7,d0
 		bhs.s	.nonumber
 
 		move.w	#15,obDrown_NumberTime(a0)

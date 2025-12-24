@@ -25,21 +25,24 @@ Chop_ChgSpeed:	; Routine 2
 		bsr.w	AnimateSprite
 		bsr.w	SpeedToPos_YOnly
 		addi.w	#$18,obVelY(a0)		; reduce speed
-		move.w	obChop_StartY(a0),d0
-		cmp.w	obY(a0),d0			; has Chopper returned to its original position?
+		move.w	obChop_StartY(a0),d1
+		cmp.w	obY(a0),d1			; has Chopper returned to its original position?
 		bhs.s	.chganimation		; if not, branch
-		move.w	d0,obY(a0)
+		move.w	d1,obY(a0)
 		move.w	#-$700,obVelY(a0)	; set vertical speed
 ; ---------------------------------------------------------------------------
 
 	.chganimation:
-		move.b	#1,obAnim(a0)		; use fast animation
-		subi.w	#$C0,d0
-		cmp.w	obY(a0),d0
-		bhs.w	RememberState
-		clr.b	obAnim(a0)			; use slow animation
+		moveq	#1,d0				; use fast animation
+		subi.w	#$C0,d1
+		cmp.w	obY(a0),d1
+		bcc.s	.chkanim
+		moveq	#0,d0				; use slow animation
 		tst.w	obVelY(a0)			; is Chopper at	its highest point?
-		bmi.w	RememberState		; if not, branch
-		move.b	#2,obAnim(a0)		; use stationary animation
-		bra.w	RememberState		; LavaGaming Object Routine Optimization
+		bmi.w	.chkanim			; if not, branch
+		move.b	#2,d0				; use stationary animation
+
+	.chkanim:
+		bsr.w	NewAnim				; check if animation has changed
+		bra.w	RememberState
 ; ===========================================================================

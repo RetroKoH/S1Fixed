@@ -41,7 +41,7 @@ Bub_Main:	; Routine 0
 ; ===========================================================================
 
 	.bubble:
-		move.b	d0,obAnim(a0)					; use animation 0/1/2 (small/medium/large)
+		jsr		(NewAnim).w						; use animation 0/1/2 (small/medium/large)
 		move.w	obX(a0),obBubble_StartX(a0)
 		move.w	#-$88,obVelY(a0)				; float bubble upwards
 		jsr		(RandomNumber).w
@@ -65,6 +65,7 @@ Bub_ChkWater:	; Routine 4
 	.burst:
 		move.b	#6,obRoutine(a0)				; goto Bub_Display next
 		addq.b	#3,obAnim(a0)					; run "bursting" animation
+		bclr	#7,obAnim(a0)					; clear restart flag
 		bra.w	Bub_Display
 ; ===========================================================================
 

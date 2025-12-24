@@ -63,6 +63,7 @@ Spin_Trapdoor:	; Routine 2
 
 		move.w	obSpin_WaitMaster(a0),obSpin_WaitTime(a0)
 		bchg	#0,obAnim(a0)				; switch between opening/closing animations
+		bclr	#7,obAnim(a0)				; clear restart flag
 		tst.b	obRender(a0)
 		bpl.s	.animate
 		move.w	#sfx_Door,d0
@@ -103,6 +104,7 @@ Spin_Spinner:	; Routine 4
 		move.w	obSpin_WaitMaster(a0),obSpin_WaitTime(a0)	; reset timer
 		clr.b	obSpin_SpinFlag(a0)
 		bchg	#0,obAnim(a0)				; restart animation (switches between identical animations)
+		bclr	#7,obAnim(a0)				; clear restart flag
 
 	.animate:
 		lea		Ani_Spin(pc),a1

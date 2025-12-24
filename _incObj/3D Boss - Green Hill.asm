@@ -308,41 +308,40 @@ BossGHZ_FaceMain:	; Routine 4
 		bne.s	BossGHZ_Delete						; if not, delete object
 	; Boss Object Fix End
 
-		moveq	#0,d0
-		moveq	#aniID_NormalFace1,d1
-		move.b	ob2ndRout(a1),d0					; get the ship's current routine
-		subq.b	#id_ghzb_wait,d0					; is ship in an idle phase?
+		moveq	#0,d1
+		moveq	#aniID_NormalFace1,d0
+		move.b	ob2ndRout(a1),d1					; get the ship's current routine
+		subq.b	#id_ghzb_wait,d1					; is ship in an idle phase?
 		bne.s	.notIdle							; if not, branch
 		cmpi.w	#boss_ghz_x+$A0,obBoss_BufferX(a1)
 		bne.s	.chkHurt
-		moveq	#aniID_LaughFace,d1
+		moveq	#aniID_LaughFace,d0
 
 	.notIdle:
-		subq.b	#id_ghzb_destroyed-id_ghzb_wait,d0	; is d0 == 6? check for 2ndRout $A
+		subq.b	#id_ghzb_destroyed-id_ghzb_wait,d1	; is d0 == 6? check for 2ndRout $A
 		bmi.s	.chkHurt							; if not in Routine $A, branch
-		moveq	#aniID_DefeatFace,d1				; show defeated (burned) face
+		moveq	#aniID_DefeatFace,d0				; show defeated (burned) face
 		bra.s	.setAnim
 ; ===========================================================================
 
 	.chkHurt:
 		tst.b	obColType(a1)
 		bne.s	.chkLaughing
-		moveq	#aniID_HurtFace,d1
+		moveq	#aniID_HurtFace,d0
 		bra.s	.setAnim
 ; ===========================================================================
 
 	.chkLaughing:
 		cmpi.b	#4,(v_player+obRoutine).w			; is Sonic hurt (or dead)?
 		blo.s	.setAnim							; if not, branch
-		moveq	#aniID_LaughFace,d1					; use laughing animation
+		moveq	#aniID_LaughFace,d0					; use laughing animation
 
 	.setAnim:
-		move.b	d1,obAnim(a0)						; set next face animation
-		subq.b	#2,d0								; is Eggman fleeing?
+		subq.b	#2,d1								; is Eggman fleeing?
 		bne.s	BossGHZ_Display						; if not, branch
-		move.b	#aniID_PanicFace,obAnim(a0)			; set panicking face
-		tst.b	obRender(a0)
-		bpl.s	BossGHZ_Delete
+		moveq	#aniID_PanicFace,d0					; set panicking face
+		tst.b	obRender(a0)						; is object on-screen?
+		bpl.s	BossGHZ_Delete						; if not, branch and delete
 		bra.s	BossGHZ_Display						; Face display
 ; ===========================================================================
 
@@ -358,10 +357,10 @@ BossGHZ_FlameMain:	; Routine 6
 		bne.s	BossGHZ_Delete						; if not, delete object
 	; Boss Object Fix End
 
-		move.b	#aniID_Blank,obAnim(a0)
+		moveq	#aniID_Blank,d0
 		cmpi.b	#$C,ob2ndRout(a1)					; has Eggman begun fleeing?
 		bne.s	.notfleeing							; if not, branch
-		move.b	#aniID_EscapeFlame,obAnim(a0)		; use the escape animation for the flame
+		moveq	#aniID_EscapeFlame,d0				; use the escape animation for the flame
 		tst.b	obRender(a0)						; is object on-screen?
 		bpl.s	BossGHZ_Delete						; if not, branch
 		bra.s	BossGHZ_Display						; Flame Display
@@ -370,13 +369,14 @@ BossGHZ_FlameMain:	; Routine 6
 	.notfleeing:
 		move.w	obVelX(a1),d0
 		beq.s	BossGHZ_Display						; Flame display
-		move.b	#aniID_Flame1,obAnim(a0)			; only show the flame if Eggman is moving
+		moveq	#aniID_Flame1,d0					; only show the flame if Eggman is moving
 
 BossGHZ_Display:
 		movea.w	obBoss_Parent(a0),a1				; get address of parent object (ship)
 		move.w	obX(a1),obX(a0)
 		move.w	obY(a1),obY(a0)
 		move.b	obStatus(a1),obStatus(a0)
+		jsr		(NewAnim).w							; set next animation (TO-DO: Maybe change this to fallthrough to AnimateSprite)
 		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
 		move.b	obStatus(a0),d0

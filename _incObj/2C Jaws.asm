@@ -35,7 +35,8 @@ Jaws_Turn:	; Routine 2
 		move.w	obJaws_TimeDelay(a0),obJaws_TurnTime(a0) ; reset turn delay time
 		neg.w	obVelX(a0)				; change speed direction
 		bchg	#staFlipX,obStatus(a0)	; change Jaws facing direction
-		move.b	#1,obPrevAni(a0)		; reset animation
+		clr.b	obAniFrame(a0)			; reset animation
+		clr.b	obTimeFrame(a0)			; reset frame duration
 
 	.animate:
 		lea		Ani_Jaws(pc),a1
