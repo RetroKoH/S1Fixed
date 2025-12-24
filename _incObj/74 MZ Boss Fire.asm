@@ -117,7 +117,7 @@ BossFire_SpawnFire:
 		move.b	#id_BossFire,obID(a1)			; load boss' fireball object
 		move.w	obX(a0),obX(a1)					; copy X and Y-positions
 		move.w	obY(a0),obY(a1)
-		move.w	#$67,obSubtype(a1)				; set subtype (is this arbitrary just to be non-zero)?
+		move.b	#$67,obBossFire_DelayTime(a1)	; set timer (no need to clear subtype here)
 
 	.noslot:
 		rts	

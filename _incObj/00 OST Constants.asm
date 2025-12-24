@@ -731,6 +731,7 @@ obBossSLZ_Seesaws:		equ objoff_2A		; 6 bytes | addresses of boss' seesaws (2 byt
 ; Obj7B - SLZ Boss Spike
 obBossSpike_StartX:		equ objoff_30		; 2 bytes | starting X-axis position
 obBossSpike_StartY:		equ objoff_32		; 2 bytes | starting Y-axis position
+obBossSpike_BoomTime:	equ objoff_38		; 1 byte  | timer for explosion (used instead of obSubtype)
 obBossSpike_State:		equ objoff_3A		; 1 byte  | seesaw state: 0 = left raised; 2 = right raised; 1/3 = flat
 obBossSpike_Time:		equ objoff_3B		; 1 byte  | (replacing obDelayAni)
 obBossSpike_Seesaw:		equ objoff_3C		; 2 bytes | address of corresponding seesaw
@@ -752,7 +753,7 @@ obSEgg_WaitTime:		equ objoff_32		; 1 byte  | time delay between events
 ; ---------------------------------------------------------------------------
 
 ; Obj83 - SBZ2 Eggman's Floor
-obFFloor_Children:		equ objoff_30		; 16 bytes| addresses of OSTs of child objects
+obFFloor_Children:		equ objoff_30		; 16 bytes| addresses of child objects
 ; ---------------------------------------------------------------------------
 
 ; Obj84 - Final Boss Cylinder
@@ -761,7 +762,7 @@ obECyl_EggFlag:			equ objoff_30		; 2 bytes | -1 if cylinder contains Eggman
 obECyl_StartY:			equ objoff_34		; 4 bytes | original y position (low word always 0)
 obECyl_MoveY:			equ objoff_38		; 4 bytes | amount the cylinder has moved
 
-obECyl_Parent:			equ objoff_3E		; 2 bytes | address of OST of parent object
+obECyl_Parent:			equ objoff_3E		; 2 bytes | address of parent object
 ; ---------------------------------------------------------------------------
 
 ; Obj85 - Final Boss Eggman
@@ -772,17 +773,16 @@ obBFZ_FlashNum:			equ objoff_35		; 1 byte  | number of times to make boss flash 
 obBFZ_ChildPlasma:		equ objoff_36		; 2 bytes | Obj RAM addresses of plasma object
 obBFZ_ChildCylinder:	equ objoff_38		; 8 bytes | Obj RAM addresses of cylinder objects
 
-obBFZ_Parent:			equ objoff_3E		; 2 bytes | address of OST of parent object - children only
+obBFZ_Parent:			equ objoff_3E		; 2 bytes | address of parent object - children only
 ; ---------------------------------------------------------------------------
 
 ; Obj86 - Final Boss Plasma
-obPlasma_Timer:			equ obSubtype		; 2 bytes | timer used during movement routines
-obPlasma_Enabled:		equ objoff_29		; 1 byte  | flag noting when to spawn plasma balls
 obPlasma_TargetX:		equ objoff_30		; 2 bytes | target x-position for the plasma ball to move toward
 obPlasma_Count:			equ objoff_32		; 2 bytes | plasma ball count
 obPlasma_Count2:		equ objoff_34		; 2 bytes | copy of plasma ball count
-
-obPlasma_Parent:		equ objoff_3E		; 2 bytes | address of OST of parent object
+obPlasma_Enabled:		equ objoff_36		; 1 byte  | flag noting when to spawn plasma balls
+obPlasma_Timer:			equ objoff_37		; 1 byte  | timer used during movement routines
+obPlasma_Parent:		equ objoff_3E		; 2 bytes | address of parent object
 ; ---------------------------------------------------------------------------
 
 ; Obj87 - Ending Sequence Sonic

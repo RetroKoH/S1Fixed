@@ -98,7 +98,7 @@ SEgg_Leap:
 		bmi.s	.find_blocks				; if not, branch
 		cmpi.w	#boss_sbz2_y+$85,obY(a0)	; has Eggman passed $595 on y axis?
 		blo.s	.find_blocks				; if not, branch
-		move.w	#"SW",obSubtype(a0)			; set flag for button to change to pressed
+		move.b	#"S",obSubtype(a0)			; set flag for button to change to pressed
 		cmpi.w	#boss_sbz2_y+$8B,obY(a0)	; has Eggman passed $59B on y axis?
 		blo.s	.find_blocks				; if not, branch
 		move.w	#boss_sbz2_y+$8B,obY(a0)	; stop at $59B
@@ -118,7 +118,7 @@ SEgg_Leap:
 		dbeq	d0,.loop					; if not, repeat (max $3E times)
 
 		bne.s	.update_pos
-		move.w	#"GO",obSubtype(a1)			; set block to disintegrate
+		move.b	#"G",obSubtype(a1)			; set block to disintegrate
 		addq.b	#2,ob2ndRout(a0)			; -> SEgg_Move
 		move.b	#1,obAnim(a0)
 
@@ -135,7 +135,7 @@ SEgg_Switch:	; Routine 4
 
 SEgg_BtnChk:
 		movea.w	obSEgg_Parent(a0),a1		; get address of parent object (Eggman)
-		cmpi.w	#"SW",obSubtype(a1)			; has subtype been changed?
+		cmpi.b	#"S",obSubtype(a1)			; has subtype been changed?
 		bne.s	SEgg_BtnDisplay				; if not, branch
 		move.b	#1,obFrame(a0)				; use pressed frame
 		addq.b	#2,ob2ndRout(a0)			; -> SEgg_BtnDisplay
