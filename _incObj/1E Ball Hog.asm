@@ -47,7 +47,7 @@ Hog_Action:	; Routine 2
 		move.b	#1,obHog_LaunchFlag(a0)
 		bsr.w	FindFreeObj
 		bne.w	RememberState
-		_move.b	#id_Cannonball,obID(a1)		; load cannonball object ($20)
+		_move.l	#Cannonball,obAddr(a1)		; load cannonball object ($20)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.l	#$FF000000,obVelX(a1)		; cannonball bounces to the left (-$100) and clear obYVel

@@ -3,18 +3,10 @@
 ; ---------------------------------------------------------------------------
 
 MotoBug:
-	; RetroKoH Object Routine Optimization
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		jmp		Moto_Index(pc,d0.w)
-; ===========================================================================
-Moto_Index:
-		bra.s	Moto_Main
-		bra.s	Moto_Action
-		bra.s	Moto_Animate
-		bra.w	DeleteObject
+	; LavaGaming/RetroKoH Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.s	Moto_Action
 	; Object Routine Optimization End
-; ===========================================================================
 
 Moto_Main:	; Routine 0
 		move.l	#Map_Moto,obMap(a0)
@@ -22,8 +14,6 @@ Moto_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$14,obDispWid(a0)
-		tst.b	obAnim(a0)					; is object a smoke trail?
-		bne.s	.smoke						; if yes, branch
 		move.w	#$E08,obHeight(a0)			; Height and Width
 		move.b	#(colEnemy|colSz_20x16),obColType(a0)
 		bsr.w	ObjectFall_YOnly
@@ -36,17 +26,7 @@ Moto_Main:	; Routine 0
 		bchg	#staFlipX,obStatus(a0)
 
 	.notonfloor:
-		rts	
-; ===========================================================================
-
-	.smoke:
-		addq.b	#4,obRoutine(a0)			; -> Moto_Animate
-; ---------------------------------------------------------------------------
-
-Moto_Animate:	; Routine 4
-		lea		Ani_Moto(pc),a1
-		jsr		(AnimateSprite).w
-		bra.w	DisplaySprite
+		rts
 ; ===========================================================================
 
 Moto_Action:	; Routine 2
@@ -68,7 +48,23 @@ Moto_Move:
 	.wait:
 		lea		Ani_Moto(pc),a1
 		jsr		(AnimateSprite).w
-		bra.s	RememberState
+		bra.w	RememberState
+; ===========================================================================
+
+; ---------------------------------------------------------------------------
+; Object 40 (sub) - Moto Bug smoke
+; ---------------------------------------------------------------------------
+
+MotoSmoke:
+	; LavaGaming/RetroKoH Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.w	DeleteObject
+	; Object Routine Optimization End
+
+Moto_Animate:	; Routine 0
+		lea		Ani_Moto(pc),a1
+		jsr		(AnimateSprite).w
+		bra.w	DisplaySprite
 ; ===========================================================================
 
 Moto_FindFloor:
@@ -86,7 +82,12 @@ Moto_FindFloor:
 		bsr.w	FindFreeObj
 		bne.s	.nosmoke					; branch if object slot not found
 
-		_move.b	#id_MotoBug,obID(a1)		; load exhaust smoke object
+		_move.l	#MotoSmoke,obAddr(a1)		; load exhaust smoke object (A slight bit more work here, since we will go straight to animating)
+		move.l	#Map_Moto,obMap(a1)
+		move.w	#make_art_tile(ArtTile_Moto_Bug,0,0),obGfx(a1)
+		move.b	#4,obRender(a1)
+		move.w	#priority4,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
+		move.b	#8,obDispWid(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.b	obStatus(a0),obStatus(a1)

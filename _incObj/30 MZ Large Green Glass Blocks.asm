@@ -49,7 +49,7 @@ Glass_Main:	; Routine 0
 
 	.load:
 		move.b	(a2)+,obRoutine(a1)
-		_move.b	#id_GlassBlock,obID(a1)
+		_move.l	#GlassBlock,obAddr(a1)
 		move.w	obX(a0),obX(a1)
 		move.b	(a2)+,d0
 		ext.w	d0

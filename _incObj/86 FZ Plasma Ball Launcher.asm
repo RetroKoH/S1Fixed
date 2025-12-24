@@ -34,7 +34,7 @@ BossPlasma_Generator:	; Routine 2
 		movea.w	obPlasma_Parent(a0),a1				; get address of parent object (Boss)
 		cmpi.b	#6,obBFZ_Mode(a1)					; has boss been defeated?
 		bne.s	.not_beaten							; if not, branch
-		_move.b	#id_ExplosionBomb,obID(a0)			; make explosion
+		_move.l	#ExplosionBomb,obAddr(a0)			; make explosion
 		clr.b	obRoutine(a0)
 		jmp		(DisplaySprite).l
 ; ===========================================================================
@@ -74,15 +74,9 @@ BossPlasma_MakeBalls:	; Routine 4
 		tst.b	obPlasma_Enabled(a0)				; is plasma set to activate?
 		beq.w	.skip_balls							; if not, branch
 		clr.b	obPlasma_Enabled(a0)
-; ---------------------------------------------------------------------------
-		add.w	obPlasma_TargetX(a0),d0				; these four lines do nothing
-		andi.w	#$1E,d0
-		adda.w	d0,a2
-		addq.w	#4,obPlasma_TargetX(a0)
-; ---------------------------------------------------------------------------
 		clr.w	obPlasma_Count(a0)					; initialise plasma ball count
 		moveq	#3,d2								; iterate for 4 plasma balls
-		_move.b	#id_BossPlasma,d3					; copy object ID
+		_move.l	#id_BossPlasma,d3					; copy object ID
 
 	; RetroKoH Object Load Optimization -- Based on Spirituinsanum Guides
 	; Here we begin what's replacing FindNextFreeObj. It'll be quicker to loop through here.
@@ -94,14 +88,14 @@ BossPlasma_MakeBalls:	; Routine 4
 		bcs.w	.skip_balls
 
 	.loop:
-		tst.b	obID(a1)							; is object RAM	slot empty?
+		tst.l	obAddr(a1)							; is object RAM	slot empty?
 		beq.s	.makeplasma							; if so, create plasma ball
 		lea		object_size(a1),a1
 		dbf		d0,.loop							; loop through object RAM
 		bne.s	.skip_balls							; We're moving this line here.
 
 	.makeplasma:
-		_move.b	d3,obID(a1)
+		_move.l	d3,obAddr(a1)						; create plasma object
 		move.w	obX(a0),obX(a1)						; start at same position as launcher object
 		move.w	#boss_fz_y+$2C,obY(a1)
 		move.b	#8,obRoutine(a1)					; -> Plasma_Balls

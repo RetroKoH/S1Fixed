@@ -18,19 +18,19 @@ GHZBall_ReactToItem:
 		moveq	#$10,d4
 		add.w	d5,d5
 
-.chkobjecttype:
+	.chkobjecttype:
 		lea		(v_lvlobjspace).w,a1	; set object RAM start address
 		move.w	#(v_lvlobjend-v_lvlobjspace)/$40-1,d6
 
-.loop:
-		cmpi.b	#id_GiantBall,obID(a1)	; is this a ball?
+	.loop:
+		cmpi.l	#GiantBall,obAddr(a1)	; is this a ball?
 		beq.s	.next					; if yes, branch
 		tst.b	obRender(a1)
 		bpl.s	.next
 		move.b	obColType(a1),d0		; Get its collision_flags
 		bne.s	.proximity				; If it actually has collision, branch
 
-.next:
+	.next:
 		lea		object_size(a1),a1		; next object RAM
 		dbf		d6,.loop				; repeat $5F more times
 
@@ -38,7 +38,7 @@ GHZBall_ReactToItem:
 		rts	
 ; ===========================================================================
 
-.proximity:
+	.proximity:
 		andi.w	#$3F,d0
 		add.w	d0,d0
 		lea		Touch_Sizes-2,a2
@@ -54,11 +54,12 @@ GHZBall_ReactToItem:
 		bcs.s	.withinx			; branch if touching
 		bra.s	.next
 ; ===========================================================================
-.outsidex:
+
+	.outsidex:
 		cmp.w	d4,d0
 		bhi.s	.next
 
-.withinx:
+	.withinx:
 		moveq	#0,d1
 		move.b	(a2)+,d1
 		move.w	obY(a1),d0
@@ -71,7 +72,7 @@ GHZBall_ReactToItem:
 		bra.s	.next
 ; ===========================================================================
 
-.outsidey:
+	.outsidey:
 		cmp.w	d5,d0
 		bhi.s	.next	
 
@@ -99,7 +100,7 @@ BallReact_Enemy:
 		blo.s	.bonusokay
 		moveq	#6,d0						; max bonus is lvl6
 
-.bonusokay:
+	.bonusokay:
 		move.w	d0,objoff_3E(a1)
 		move.w	.points(pc,d0.w),d0
 		cmpi.w	#$20,(v_itembonus).w		; have 16 enemies been destroyed?
@@ -107,9 +108,9 @@ BallReact_Enemy:
 		move.w	#1000,d0					; fix bonus to 10000
 		move.w	#$A,objoff_3E(a1)
 
-.lessthan16:
+	.lessthan16:
 		jsr		(AddPoints).l
-		_move.b	#id_ExplosionItem,obID(a1)	; change object to explosion
+		_move.l	#ExplosionItem,obAddr(a1)	; change object to explosion
 		clr.b	obRoutine(a1)
 		rts
 ; End of function GHZBall_ReactToItem

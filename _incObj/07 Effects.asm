@@ -84,7 +84,7 @@ Eff_SkidDust:
 		move.b	#3,obEff_DustTimer(a0)		; create dust once every 4 frames
 		jsr		(FindFreeObj).l
 		bne.s	Eff_LoadGfx
-		move.b	obID(a0),obID(a1)			; load obj07
+		move.l	obAddr(a0),obAddr(a1)		; load obj07
 		move.w	obX(a2),obX(a1)
 		move.w	obY(a2),obY(a1)
 		addi.w	#$10,obY(a1)

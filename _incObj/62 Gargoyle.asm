@@ -48,7 +48,7 @@ Gar_MakeFire:	; Routine 2
 		bne.w	RememberState							; branch if off screen
 		bsr.w	FindFreeObj								; find free object slot
 		bne.w	RememberState							; branch if not found
-		_move.b	#id_Gargoyle,obID(a1)					; load fireball object
+		_move.l	#Gargoyle,obAddr(a1)					; load fireball object
 		addq.b	#4,obRoutine(a1)						; use Gar_FireBall routine
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)

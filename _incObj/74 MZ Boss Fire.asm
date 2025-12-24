@@ -114,7 +114,7 @@ BossFire_MakeFlame:	; Secondary Routine 2
 BossFire_SpawnFire:
 		jsr		(FindNextFreeObj).l
 		bne.s	.noslot
-		move.b	#id_BossFire,obID(a1)			; load boss' fireball object
+		_move.l	#BossFire,obAddr(a1)			; load boss' fireball object
 		move.w	obX(a0),obX(a1)					; copy X and Y-positions
 		move.w	obY(a0),obY(a1)
 		move.b	#$67,obBossFire_DelayTime(a1)	; set timer (no need to clear subtype here)

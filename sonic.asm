@@ -3063,7 +3063,7 @@ MvSonic2:
 ; 1. It'd be a bit too complicated to apply to the main position, AND all of its subsprites.
 ; 2. With the trailing effect, it's not any sort of noticeable issue to have it lag behind slightly.
 		lea		(v_shieldobj).w,a2
-		tst.b	obID(a2)
+		tst.l	obAddr(a2)
 		beq.s	.noShield
 	; First, check to adjust for balancing
 		move.w	d2,d3				; copy x-pos to d3 for later
@@ -3140,7 +3140,7 @@ CollapseObject:
 		subq.w	#2,d1							; set iterator based on piece count, and decrement for the first part created
 		; S2 BuildSprites end
 		bset	#5,obRender(a0)
-		_move.b	obID(a0),d2						; ++DeltaW change
+		_move.l	obAddr(a0),d2					; ++DeltaW change
 		move.b	obRender(a0),d3					; ++DeltaW change
 		move.w	obGfx(a0),d4					; ++DeltaW addition
 		move.w	obPriority(a0),d5				; ++DeltaW addition
@@ -3160,14 +3160,14 @@ CollapseObject:
 .loop:
 	; REMOVE FindFreeObj. It's the routine that causes such slowdown
 		lea		object_size(a1),a1
-		tst.b	obID(a1)					; is object RAM	slot empty?
+		tst.l	obAddr(a1)					; is object RAM	slot empty?
 		dbeq	d0,.loop					; Branch correction again.
 		bne.s	.endloop					; We're moving this line here.
 
 .loadfrag:
 	; Create fragment object
 		move.b	#6,obRoutine(a1)
-		_move.b	d2,obID(a1)						; Obj1A or Obj53
+		_move.l	d2,obAddr(a1)						; Obj1A or Obj53
 		addq.w	#8,a3							; Set to next mapping. ; S2 BuildSprites Change 5 -> 8
 		move.l	a3,obMap(a1)					; Set appropriate mapping
 		move.b	d3,obRender(a1)					; Set render flags accordingly
@@ -3343,27 +3343,22 @@ Smash_FragSpd2:	dc.w -$600, -$600
 ; Object code execution subroutine
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
 ExecuteObjects:
 		lea		(v_objspace).w,a0			; set address for object RAM
 		moveq	#v_allobjcount,d7
-		moveq	#0,d0
 
 	if ~~ActiveDeathSequence				; RetroKoH Active Death Sequence Mod
 		cmpi.b	#6,(v_player+obRoutine).w	; has Sonic just died?
 		bhs.s	ObjectsDisplayOnly			; if yes, branch
 	endif
 
+; Uses longwords instead of byte IDs. We clear out obRender from the OSTs pulled
 RunObject:
-		move.b	obID(a0),d0					; load object number from RAM
-		beq.s	.next_object
-		add.w	d0,d0
-		add.w	d0,d0
-		movea.l	Obj_Index-4(pc,d0.w),a1
-		jsr		(a1)						; run the object's code
-		moveq	#0,d0
+		move.l	#$FFFFFF,d0					; load bitmask for object addresses to remove obRender
+		and.l	obAddr(a0),d0				; load object address from RAM
+		beq.s	.next_object				; branch if 0
+		movea.l	d0,a1
+		jsr		(a1)						; run the object's code directly
 
 	.next_object:
 		lea		object_size(a0),a0			; next object
@@ -3373,7 +3368,6 @@ RunObject:
 
 ; Special section for Special Stage (since we only ever use two objects here)
 SpecialObjects:
-		moveq	#0,d0
 		moveq	#1,d7						; only running the first two objects
 		lea		(v_player).w,a0				; start with Sonic
 		bra.s	RunObject					; we will follow up with the debug object
@@ -3391,7 +3385,8 @@ ObjectsDisplayOnly:
 		moveq	#v_lvlobjcount,d7			; Run through level obj space
 
 	.display:
-		tst.b	obID(a0)					; get the object's ID
+		move.l	#$FFFFFF,d0					; load bitmask for object addresses to remove obRender
+		and.l	obAddr(a0),d0				; load object address from RAM
 		beq.s	RunObject.next_object		; if there's no object, branch
 		tst.b	obRender(a0)				; was the object displayed on the previous frame?
 		bpl.s	RunObject.next_object		; if not, skip it
@@ -3407,11 +3402,6 @@ ObjectsDisplayOnly:
 	endif
 ; End of function ExecuteObjects
 ; ===========================================================================
-; ---------------------------------------------------------------------------
-; Object pointers
-; ---------------------------------------------------------------------------
-Obj_Index:
-		include	"_inc/Object Pointers.asm"
 
 		include	"_incObj/sub SpeedToPos.asm"
 		include	"_incObj/sub DisplaySprite.asm"
@@ -3424,6 +3414,9 @@ Obj_Index:
 		include	"_incObj/sub ChkObjectVisible.asm"
 
 		include "_inc/Object Manager.asm"
+
+Obj_Index:	; Object pointers
+		include	"_inc/Object Pointers.asm"
 
 		include	"_incObj/sub FindFreeObj.asm"
 		include	"_incObj/41 Springs.asm"
@@ -4259,16 +4252,13 @@ locret_15098:
 ; Defeated boss	subroutine
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
 BossDefeated:
 		move.b	(v_vbla_byte).w,d0
 		andi.b	#7,d0
 		bne.s	locret_178A2
 		jsr		(FindFreeObj).l
 		bne.s	locret_178A2
-		_move.b	#id_ExplosionBomb,obID(a1)	; load explosion object
+		_move.l	#ExplosionBomb,obAddr(a1)	; load explosion object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		jsr		(RandomNumber).w

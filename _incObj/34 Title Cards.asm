@@ -34,7 +34,7 @@ Card_CheckSBZ3:	; Routine 0
 		moveq	#3,d1						; there are 4 items (minus 1 for 1st loop)
 
 	.loop:
-		_move.b	#id_TitleCard,obID(a1)
+		_move.l	#TitleCard,obAddr(a1)
 		move.w	(a3),obX(a1)				; load start x-position
 		move.w	(a3)+,obTCard_FinalX(a1)	; load finish x-position (same as start)
 		move.w	(a3)+,obTCard_DisplayX(a1)	; load main x-position

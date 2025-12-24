@@ -26,7 +26,7 @@ SEgg_Main:	; Routine 0
 
 		jsr		(FindNextFreeObj).l
 		bne.s	SEgg_Eggman
-		_move.b	#id_ScrapEggman,obID(a1)	; load switch object
+		_move.l	#ScrapEggman,obAddr(a1)	; load switch object
 		addq.b	#4,obRoutine(a1)			; -> SEgg_Switch
 		move.w	#boss_sbz2_x+$E0,obX(a1)
 		move.w	#boss_sbz2_y+$AC,obY(a1)
@@ -114,7 +114,7 @@ SEgg_Leap:
 
 	.loop:
 		lea		object_size(a1),a1			; jump to next object RAM
-		cmpi.b	#id_FalseFloor,obID(a1)		; is object a block? (object $83)
+		cmpi.l	#FalseFloor,obAddr(a1)		; is object a block? (object $83)
 		dbeq	d0,.loop					; if not, repeat (max $3E times)
 
 		bne.s	.update_pos

@@ -44,7 +44,7 @@ BossMZ_Main:			; Routine 0
 	.loop:
 		jsr		(FindNextFreeObj).l
 		bne.s	BossMZ_ShipMain
-		_move.b	#id_BossMarble,obID(a1)
+		_move.l	#BossMarble,obAddr(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 
@@ -193,7 +193,7 @@ BossMZ_MoveAcross:		; Tertiary Routine 0/4
 		bcc.s	.nofireball							; if greater than 0, branch (and don't spawn fireball)
 		jsr		(FindFreeObj).l
 		bne.s	.resettimer
-		_move.b	#id_FireBall,obID(a1)				; load fireball object
+		_move.l	#FireBall,obAddr(a1)				; load fireball object
 		move.w	#boss_mz_y+$D8,obY(a1)				; hardset fireball's Y-position
 		jsr		(RandomNumber).w
 		moveq	#0,d2								; We save 8 cycles with the first two lines below, instead of using andi.l #$FFFF,d0
@@ -252,7 +252,7 @@ BossMZ_DropFire:		; Tertiary Routine 2/6
 		bchg	#staFlipX,obStatus(a0)				; turn Eggman to face toward the center of the field
 		jsr		(FindFreeObj).l
 		bne.s	.countdown
-		move.b	#id_BossFire,obID(a1)				; load boss' fireball object
+		_move.l	#BossFire,obAddr(a1)				; load boss' fireball object
 		move.w	obBoss_BufferX(a0),obX(a1)
 		move.w	obBoss_BufferY(a0),obY(a1)
 		addi.w	#$18,obY(a1)
@@ -375,7 +375,7 @@ BossMZ_FaceMain:			; Routine 4
 		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.b	#id_BossMarble,obID(a1)			; is the boss still loaded?
+		cmpi.l	#BossMarble,obAddr(a1)			; is the boss still loaded?
 		bne.w	BossMZ_Delete					; if not, delete object
 	; Boss Object Fix End
 
@@ -424,7 +424,7 @@ BossMZ_FlameMain:			; Routine 6
 		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.b	#id_BossMarble,obID(a1)			; is the boss still loaded?
+		cmpi.l	#BossMarble,obAddr(a1)			; is the boss still loaded?
 		bne.s	BossMZ_Delete					; if not, delete object
 	; Boss Object Fix End
 
@@ -467,7 +467,7 @@ BossMZ_TubeMain:	; Routine 8
 		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.b	#id_BossMarble,obID(a1)			; is the boss still loaded?
+		cmpi.l	#BossMarble,obAddr(a1)			; is the boss still loaded?
 		bne.s	BossMZ_Delete					; if not, delete object
 	; Boss Object Fix End
 

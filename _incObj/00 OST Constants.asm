@@ -5,36 +5,34 @@
 ; All object-specific OST constants are defined here
 ; ---------------------------------------------------------------------------
 ; Universal OSTs
-obID:					equ 0				; 1 byte  | object ID number
-obRender:				equ 1				; 1 byte  | bitfield for x/y flip, display mode	(1 byte)
-obGfx:					equ 2				; 2 bytes | palette line & VRAM setting
-obMap:					equ 4				; 4 bytes | sprite mappings address
-obX:					equ 8				; 2 bytes | x-axis position
+obAddr:					equ 0				; 4 bytes | object ID number
+obRender:				equ obAddr			; 1 byte  | bitfield for x/y flip, display mode	(top byte of obAddr)
+obGfx:					equ 4				; 2 bytes | palette line & VRAM setting
+obMap:					equ 6				; 4 bytes | sprite mappings address
+obX:					equ $A				; 2 bytes | x-axis position
 obXSub:					equ obX+2			; 2 bytes | x-axis subpixel position
 obScreenY:				equ obXSub			; 2 bytes | screen-fixed y-axis position
-obY:					equ $C				; 2 bytes | y-axis position
+obY:					equ $E				; 2 bytes | y-axis position
 obYSub:					equ obY+2			; 2 bytes | y-axis subpixel position
 obPriority:				equ $18				; 2 bytes | sprite stack priority
-obFrame:				equ $1A				; 1 byte  | current frame displayed
+obFrame:				equ $1C				; 1 byte  | current frame displayed
 obDispWid:				equ $23				; 1 byte  | display width/2
 ; ---------------------------------------------------------------------------
 ; conventions followed by most objects including Sonic:
-; (TO-DO): obAniFrame and obTimeFrame should be placed together for quick clearing
-obVelX:					equ $10				; 2 bytes | x-axis velocity
-obVelY:					equ $12				; 2 bytes | y-axis velocity
-obHeight:				equ $16				; 1 byte  | height/2
-obWidth:				equ $17				; 1 byte  | width/2
-obAniFrame:				equ $1B				; 1 byte  | current frame in animation script
-obAnim:					equ $1C				; 1 byte  | current animation
-;$1D
-obTimeFrame:			equ $1E				; 1 byte  | time to next frame (1 byte) / general timer (2 bytes)
-;$1F
+obVelX:					equ $12				; 2 bytes | x-axis velocity
+obVelY:					equ $14				; 2 bytes | y-axis velocity
+obHeight:				equ $1A				; 1 byte  | height/2
+obWidth:				equ $1B				; 1 byte  | width/2
+
+obAnim:					equ $1D				; 1 byte  | current animation
+obAniFrame:				equ $1E				; 1 byte  | current frame in animation script
+obTimeFrame:			equ $1F				; 1 byte  | time to next frame (1 byte) / general timer (2 bytes)
 obStatus:				equ $22				; 1 byte  | orientation or mode
 obRoutine:				equ $24				; 1 byte  | routine number
 obAngle:				equ $26				; 1 byte  | angle
 ; ---------------------------------------------------------------------------
 ; conventions followed by many objects but NOT Sonic
-obRespawnAddr:			equ $14				; 2 bytes | respawn list address
+obRespawnAddr:			equ $16				; 2 bytes | respawn list address
 obColType:				equ $20				; 1 byte  | collision response type
 obColProp:				equ $21				; 1 byte  | collision extra property
 ob2ndRout:				equ $25				; 1 byte  | secondary routine number

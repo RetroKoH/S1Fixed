@@ -35,7 +35,7 @@ BossGHZ_Main:	; Routine 0
 	.loop:
 		jsr		(FindNextFreeObj).l
 		bne.s	.notfound
-		_move.b	#id_BossGreenHill,obID(a1)
+		_move.l	#BossGreenHill,obAddr(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 
@@ -157,7 +157,7 @@ BossGHZ_MakeBall:	; Secondary Routine 2
 		addq.b	#2,ob2ndRout(a0)					; go to next routine
 		jsr		(FindNextFreeObj).l
 		bne.s	.notfound
-		_move.b	#id_BossBall,obID(a1)				; load swinging ball object
+		_move.l	#BossBall,obAddr(a1)				; load swinging ball object
 		move.w	obBoss_BufferX(a0),obX(a1)
 		move.w	obBoss_BufferY(a0),obY(a1)
 		move.w	a0,obBossBall_Parent(a1)
@@ -304,7 +304,7 @@ BossGHZ_FaceMain:	; Routine 4
 		movea.w	obBoss_Parent(a0),a1				; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.b	#id_BossGreenHill,obID(a1)			; is the boss still loaded?
+		_cmpi.l	#BossGreenHill,obAddr(a1)			; is the boss still loaded?
 		bne.s	BossGHZ_Delete						; if not, delete object
 	; Boss Object Fix End
 
@@ -353,7 +353,7 @@ BossGHZ_FlameMain:	; Routine 6
 		movea.w	obBoss_Parent(a0),a1				; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.b	#id_BossGreenHill,obID(a1)			; is the boss still loaded?
+		_cmpi.l	#BossGreenHill,obAddr(a1)			; is the boss still loaded?
 		bne.s	BossGHZ_Delete						; if not, delete object
 	; Boss Object Fix End
 

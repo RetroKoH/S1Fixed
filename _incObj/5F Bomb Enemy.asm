@@ -87,7 +87,7 @@ Bom_Action_Wait:
 Bom_Action_Explode:
 		subq.w	#1,obBomb_FuseTime(a0)			; subtract 1 from time delay
 		bpl.s	.noexplode						; if time remains, branch
-		_move.b	#id_ExplosionBomb,obID(a0)		; change bomb into an explosion
+		_move.l	#ExplosionBomb,obAddr(a0)	; change bomb into an explosion
 		clr.b	obRoutine(a0)
 
 	.noexplode:
@@ -126,7 +126,7 @@ Bom_ChkDistToSonic:
 		move.b	#2,obAnim(a0)					; use activated animation
 		bsr.w	FindNextFreeObj
 		bne.s	.outofrange
-		_move.b	#id_Bomb,obID(a1)				; load fuse object
+		_move.l	#Bomb,obAddr(a1)				; load fuse object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.w	obY(a0),obBomb_StartY(a1)
@@ -184,14 +184,14 @@ Bom_Fuse_ChkTime:
 		bcs.s	.fail
 
 	.loop:
-		tst.b	obID(a1)						; is object RAM	slot empty?
+		tst.l	obAddr(a1)						; is object RAM	slot empty?
 		beq.s	.makeshrapnel					; if so, create object piece
 		lea		object_size(a1),a1
 		dbf		d0,.loop						; loop through object RAM
 		bne.s	.fail							; We're moving this line here.
 
 	.makeshrapnel:
-		move.b	obID(a0),obID(a1)				; load shrapnel	object
+		move.l	obAddr(a0),obAddr(a1)			; load shrapnel	object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.b	#6,obSubtype(a1)				; this is copied to obRoutine later

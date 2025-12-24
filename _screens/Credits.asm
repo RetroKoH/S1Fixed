@@ -27,7 +27,7 @@ GM_Credits:
 
 		moveq	#palid_Sonic,d0
 		bsr.w	PalLoad_Fade						; load Sonic's palette
-		move.b	#id_CreditsText,(v_credits).w	; load credits object
+		_move.l	#CreditsText,(v_credits+obAddr).w	; load credits object
 		jsr		(ExecuteObjects).l
 		jsr		(BuildSprites).l
 		bsr.w	EndingDemoLoad
@@ -172,7 +172,7 @@ TryAgainEnd:
 		moveq	#palid_Ending,d0
 		bsr.w	PalLoad_Fade	; load ending palette
 		clr.w	(v_palette_fading+$40).w
-		move.b	#id_EndEggman,(v_endeggman).w ; load Eggman object
+		_move.l	#EndEggman,(v_endeggman+obAddr).w ; load Eggman object
 		jsr	(ExecuteObjects).l
 		jsr	(BuildSprites).l
 		move.w	#1800,(v_countdown).w ; show screen for 30 seconds

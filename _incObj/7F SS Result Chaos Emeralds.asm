@@ -49,7 +49,7 @@ SSRC_Main:	; Routine 0
 		btst	d2,(a3)						; did you get the emerald? (Using a bitfield saves 8 cycles here)
 		beq.s   .noemerald					; if not, skip and check for the next emerald
 
-		_move.b	#id_SSRChaos,obID(a1)
+		_move.l	#SSRChaos,obAddr(a1)
 		move.w	(a2)+,obX(a1)				; set x-position
 		move.w	#$F0,obScreenY(a1)			; set y-position
 		move.b	d2,obFrame(a1)				; get list of individual emeralds (numbered 0 to 5/6)

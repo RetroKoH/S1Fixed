@@ -322,7 +322,7 @@ BossSpike_YPos:
 ; ===========================================================================
 
 BossSpikeball_Explode:	; Routine 8
-		move.b	#id_ExplosionBomb,obID(a0)		; turn object into explosion
+		_move.l	#ExplosionBomb,obAddr(a0)		; turn object into explosion
 		clr.b	obRoutine(a0)
 		cmpi.b	#$20,obBossSpike_BoomTime(a0)	; is shrapnel flag set?
 		beq.s	.make_frags						; if yes, branch
@@ -341,14 +341,14 @@ BossSpikeball_Explode:	; Routine 8
 
 	.loop:
 		; REMOVE FindFreeObj. It's the routine that causes such slowdown
-		tst.b	obID(a1)							; is object RAM	slot empty?
+		tst.l	obAddr(a1)							; is object RAM	slot empty?
 		beq.s	.makeshrapnel						; Let's correct the branches. Here we can also skip the bne that was originally after bsr.w FindFreeObj because we already know there's a free object slot in memory.
 		lea		object_size(a1),a1
 		dbf		d0,.loop							; Branch correction again.
 		bne.s	.end
 
 	.makeshrapnel:
-		move.b	#id_BossSpikeball,obID(a1)			; load shrapnel object
+		_move.l	#BossSpikeball,obAddr(a1)			; load shrapnel object
 		move.b	#$A,obRoutine(a1)					; -> BSpike_MoveFrag
 		move.l	#Map_BSBall,obMap(a1)
 		move.w	#priority3,obPriority(a1)			; RetroKoH/Devon S3K+ Priority Manager

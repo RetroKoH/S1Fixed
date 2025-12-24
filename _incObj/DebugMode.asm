@@ -136,53 +136,61 @@ loc_1D066:
 		move.l	d3,obX(a0)
 
 Debug_ChgItem:
-		btst	#bitA,(v_jpadheld_actual).w	; is button A pressed?
-		beq.s	.createitem				; if not, branch
-		btst	#bitC,(v_jpadpressed_actual).w	; is button C pressed?
-		beq.s	.nextitem				; if not, branch
-		subq.b	#1,(v_debugitem).w		; go back 1 item
+		btst	#bitA,(v_jpadheld_actual).w			; is button A pressed?
+		beq.s	.createitem							; if not, branch
+		btst	#bitC,(v_jpadpressed_actual).w		; is button C pressed?
+		beq.s	.nextitem							; if not, branch
+		subq.b	#1,(v_debugitem).w					; go back 1 item
 		bcc.s	.display
 		add.b	d6,(v_debugitem).w
 		bra.s	.display
 ; ===========================================================================
 
-.nextitem:
-		btst	#bitA,(v_jpadpressed_actual).w	; is button A pressed?
-		beq.s	.createitem				; if not, branch
-		addq.b	#1,(v_debugitem).w		; go forwards 1 item
+	.nextitem:
+		btst	#bitA,(v_jpadpressed_actual).w		; is button A pressed?
+		beq.s	.createitem							; if not, branch
+		addq.b	#1,(v_debugitem).w					; go forwards 1 item
 		cmp.b	(v_debugitem).w,d6
 		bhi.s	.display
-		clr.b	(v_debugitem).w			; loop back to first item
+		clr.b	(v_debugitem).w						; loop back to first item
 
-.display:
+	.display:
 		bra.w	Debug_ShowItem
 ; ===========================================================================
 
-.createitem:
+	.createitem:
 		btst	#bitC,(v_jpadpressed_actual).w		; is button C pressed?
-		beq.s	.backtonormal				; if not, branch
+		beq.s	.backtonormal						; if not, branch
 		jsr		(FindFreeObj).l
 		bne.s	.backtonormal
-		clr.b	(v_objstate+2).w			; Mercury Debug Improvements -- Allows us to place more rings/boxes, etc.
+		clr.b	(v_objstate+2).w					; Mercury Debug Improvements -- Allows us to place more rings/boxes, etc.
 		; The above line causes an issue with certain in-level objects. Check S3K code to fix this.
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		_move.b	obMap(a0),obID(a1)			; create object
-		move.b	obRender(a0),obRender(a1)
 		move.b	obRender(a0),obStatus(a1)
-		andi.b	#$7F,obStatus(a1)			; ensure bit #7 is clear
+		andi.b	#$7F,obStatus(a1)					; clear broken flag (bit 7) from status
 		moveq	#0,d0
 		move.b	(v_debugitem).w,d0
-		lsl.w	#3,d0
-		move.b	4(a2,d0.w),obSubtype(a1)
+		mulu.w	#12,d0
+		move.b	4(a2,d0.w),obSubtype(a1)			; get subtype from debug list
+		move.l	8(a2,d0.w),obAddr(a1)				; create object
 
-.stayindebug:
+		moveq	#0,d0
+		move.b	8(a2,d0.w),d0						; get object ID (we will use the lookup table here)
+		add.w	d0,d0
+		add.w	d0,d0
+		lea		(Obj_Index-4).l,a3
+		move.l	(a3,d0.w),d0						; get object's code address
+		move.b	d0,obAddr(a1)						; set object's code address
+		move.b	obRender(a0),obRender(a1)
+
+	.stayindebug:
 		rts
 ; ===========================================================================
 
-.backtonormal:
+	.backtonormal:
 	; RetroKoH Debug Mode Fix
-		btst	#bitB,(v_jpadpressed_actual).w				; is button B pressed?
+		btst	#bitB,(v_jpadpressed_actual).w		; is button B pressed?
 		beq.s	.stayindebug						; if not, branch
 		clr.w	(v_debuguse).w						; deactivate debug mode
 
@@ -209,16 +217,17 @@ Debug_ChgItem:
 		beq.s	.notSuper							; if not, branch
 		move.l	#Map_SuperSonic,obMap(a1)			; set Super mappings
 		bset	#sta2ndInvinc,obStatus2nd(a1)		; set invincibility again (in case we spawn after death)
-.notSuper:
+
+	.notSuper:
 	endif
 		bsr.w	Debug_RestartMusic					; fix music bug w/ invincibility
 
 		lea     (v_sonspeedmax).w,a2				; Load Sonic_top_speed into a2
 		jsr		(ApplySpeedSettings).l				; Fetch Speed settings
-		move.w	(v_limittopdb).w,(v_limittop).w	; restore level boundaries
+		move.w	(v_limittopdb).w,(v_limittop).w		; restore level boundaries
 		move.w	(v_limitbtmdb).w,(v_limitbtm_target).w
 
-; HUD resets
+	; HUD resets
 		jsr		(Hud_Base).l						; reload basic HUD gfx	-- RetroKoH Debug Mode Improvement
 		move.b	#1,(f_ringcount).w					; update ring counter
 		move.b	#1,(f_scorecount).w					; update score counter

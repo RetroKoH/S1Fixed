@@ -66,7 +66,7 @@ BossFinal_Main:	; Routine 0
 		bne.s	.fail						; branch if not found
 
 	.load_boss:
-		_move.b	#id_BossFinal,obID(a1)
+		_move.l	#BossFinal,obAddr(a1)
 		move.w	(a2)+,obX(a1)
 		move.w	(a2)+,obY(a1)
 		move.w	(a2)+,obGfx(a1)
@@ -86,7 +86,7 @@ BossFinal_Main:	; Routine 0
 		lea		obBFZ_ChildPlasma(a0),a2
 		jsr		(FindFreeObj).l
 		bne.s	.fail2						; branch if not found
-		_move.b	#id_BossPlasma,obID(a1)		; load energy ball object
+		_move.l	#BossPlasma,obAddr(a1)		; load energy ball object
 		move.w	a1,(a2)						; save obj address of plasma launcher in parent OST
 		move.w	a0,obPlasma_Parent(a1)		; save parent address in plasma OST
 
@@ -98,7 +98,7 @@ BossFinal_Main:	; Routine 0
 		jsr		(FindNextFreeObj).l
 		bne.s	.fail2						; branch if not found
 		move.w	a1,(a2)+					; save obj address of crusher in parent OST
-		_move.b	#id_EggmanCylinder,obID(a1)	; load crushing cylinder object
+		_move.l	#EggmanCylinder,obAddr(a1)	; load crushing cylinder object
 		move.w	a0,obECyl_Parent(a1)		; save parent address in crusher OST
 		move.b	d2,obSubtype(a1)			; set subtype to 0/2/4/6
 		addq.w	#2,d2						; next subtype
@@ -108,6 +108,7 @@ BossFinal_Main:	; Routine 0
 		clr.w	obBFZ_Mode(a0)				; -> BFZ_Eggman_Wait (and clear FlashNum)
 		move.b	#8,obColProp(a0)			; set number of hits to 8
 		move.w	#-1,obBFZ_CylFlag(a0)		; set crushers to activate
+; ---------------------------------------------------------------------------
 
 BossFinal_Eggman:	; Routine 2
 		moveq	#0,d0
@@ -477,8 +478,8 @@ BossFinal_EggEscape:
 
 BossFinal_Flame:	; Routine 4
 		movea.w	obBFZ_Parent(a0),a1					; get RAM address of parent object
-		move.b	obID(a1),d0
-		cmp.b	obID(a0),d0							; has parent been deleted?
+		move.l	obAddr(a1),d0
+		cmp.l	obAddr(a0),d0						; has parent been deleted?
 		bne.w	BossFinal_Delete					; if yes, branch
 		moveq	#7,d0								; invisible
 		jsr		(NewAnim).w
@@ -514,8 +515,8 @@ BossFinal_Update_SkipPos:
 
 BossFinal_Cockpit:	; Routine 6
 		movea.w	obBFZ_Parent(a0),a1					; get address of parent object
-		move.b	obID(a1),d0
-		cmp.b	obID(a0),d0							; has parent been deleted?
+		move.l	obAddr(a1),d0
+		cmp.l	obAddr(a0),d0						; has parent been deleted?
 		bne.w	BossFinal_Delete					; if yes, branch
 		cmpi.l	#Map_Eggman,obMap(a1)				; is Eggman in his ship?
 		beq.s	.chk_hit							; if yes, branch

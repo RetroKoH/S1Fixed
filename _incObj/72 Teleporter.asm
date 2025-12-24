@@ -139,7 +139,7 @@ Tele_MoveSonic:	; Routine 6
 ; 1. It'd be a bit too complicated to apply to the main position, AND all of its subsprites.
 ; 2. With the trailing effect, it's not any sort of noticeable issue to have it lag behind slightly.
 		lea		(v_shieldobj).w,a2
-		tst.b	obID(a2)
+		tst.l	obAddr(a2)
 		beq.s	.noShield
 		move.w	obX(a1),obX(a2)
 		move.w	obY(a1),obY(a2)

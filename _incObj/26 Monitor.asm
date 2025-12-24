@@ -184,7 +184,7 @@ Mon_BreakOpen:	; Routine 4
 		clr.b	obColType(a0)
 		bsr.w	FindFreeObj
 		bne.s	.fail						; if we can't load a powerup, skip trying to load an explosion
-		_move.b	#id_PowerUp,obID(a1)		; load monitor contents object
+		_move.l	#PowerUp,obAddr(a1)		; load monitor contents object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		moveq	#$7F,d1
@@ -197,14 +197,14 @@ Mon_BreakOpen:	; Routine 4
 		lea		object_size(a1),a1			; go to the next object space
 
 	.loop:
-		tst.b	obID(a1)					; is object RAM	slot empty?
+		tst.l	obAddr(a1)					; is object RAM	slot empty?
 		beq.s	.explode					; Let's correct the branches. Here we can also skip the bne that was originally after bsr.w FindFreeObj because we already know there's a free object slot in memory.
 		lea		object_size(a1),a1
 		dbf		d0,.loop					; Branch correction again.
 		bne.s	.fail						; We're moving this line here.
 
 	.explode:
-		_move.b	#id_ExplosionItem,obID(a1)	; load explosion object
+		_move.l	#ExplosionItem,obAddr(a1)	; load explosion object
 		addq.b	#2,obRoutine(a1)			; don't create an animal
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
@@ -218,3 +218,4 @@ Mon_BreakOpen:	; Routine 4
 
 		move.b	#monLastID,obAnim(a0)		; set monitor type to broken
 		bra.w	DisplaySprite
+; ===========================================================================

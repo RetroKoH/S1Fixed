@@ -62,14 +62,14 @@ Cat_Main:	; Routine 0
 		bcs.w	Cat_ChkGone
 
 	.loop:
-		tst.b	obID(a1)					; is object RAM	slot empty?
+		tst.l	obAddr(a1)					; is object RAM	slot empty?
 		beq.s	.makebody					; if so, create object piece
 		lea		object_size(a1),a1
 		dbf		d0,.loop					; loop through object RAM
 		bne.w	Cat_ChkGone					; We're moving this line here.
 
 	.makebody:
-		_move.b	#id_Caterkiller,obID(a1)	; load body segment object
+		_move.l	#Caterkiller,obAddr(a1)		; load body segment object
 		move.b	d6,obRoutine(a1)			; goto Cat_BodySeg1 or Cat_BodySeg2 next
 		addq.b	#2,d6						; alternate between the two
 		move.l	obMap(a0),obMap(a1)
@@ -315,7 +315,7 @@ Cat_BodySeg1:	; Routine 4, 8
 		; at high speed causes Sonic to be hurt.
 
 		; Has the head been destroyed?
-		_cmpi.b	#id_ExplosionItem,obID(a1)
+		_cmpi.l	#ExplosionItem,obAddr(a1)
 		beq.s	.delete						; branch if parent is broken head
 		; Is the parent going to delete itself?
 		cmpi.b	#$A,obRoutine(a1)

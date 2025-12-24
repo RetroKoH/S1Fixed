@@ -26,7 +26,7 @@ ObjFloorDist2:
 		ext.w	d0
 		add.w	d0,d2
 		moveq	#$C,d5									; MJ: set solid type to check
-		cmpi.b	#id_SonicPlayer,obID(a0)				; MJ: is the parent object Sonic?
+		cmpi.l	#SonicPlayer,obAddr(a0)					; MJ: is the parent object Sonic?
 		bne.s	.notsonic								; MJ: if not, branch and only use first collision set
 		move.b	(v_top_solid_bit).w,d5					; MJ: load solid type to check
 		move.l	#v_collision1&$FFFFFF,(v_collindex).w	; MJ: load first collision data location
