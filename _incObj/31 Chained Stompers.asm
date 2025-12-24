@@ -67,7 +67,7 @@ CStom_Loop:
 
 CStom_MakeStomper:
 		move.b	(a2)+,obRoutine(a1)			; goto CStom_Block/CStom_Spikes/CStom_Chain/CStom_Ceiling next
-		_move.b	#id_ChainStomp,obID(a1)
+		_move.l	#ChainStomp,obAddr(a1)
 		move.w	obX(a0),obX(a1)
 		move.b	(a2)+,d0					; get relative y position
 		ext.w	d0

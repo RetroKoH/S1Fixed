@@ -29,7 +29,7 @@ LWall_Main:	; Routine 0
 		bne.s	.fail						; branch if object slot not found
 
 	.make:
-		_move.b	#id_LavaWall,obID(a1)		; load object
+		_move.l	#LavaWall,obAddr(a1)		; load object
 		move.l	#Map_LWall,obMap(a1)
 		move.w	#make_art_tile(ArtTile_MZ_Lava,3,0),obGfx(a1)
 		move.b	#4,obRender(a1)

@@ -291,11 +291,11 @@ Level_LoadTitleCard:
 		move.b  #3,(v_carddelay).w					; set the delay timer -- Fixes bug w/ HUD elements not appearing (AURORAFIELDS fix; is this still needed?)
 
 	if SkipTitleCard
-		tst.b	(f_deathflag).w					; are we restarting from death?
-		bne.s	Level_TtlCardLoop				; if yes, don't load title card objects
+		tst.b	(f_deathflag).w						; are we restarting from death?
+		bne.s	Level_TtlCardLoop					; if yes, don't load title card objects
 	endif
 
-		move.b	#id_TitleCard,(v_titlecard).w		; load title card object
+		_move.l	#TitleCard,(v_titlecard+obAddr).w	; load title card object
 
 Level_TtlCardLoop:
 		move.b	#$C,(v_vbla_routine).w
@@ -353,10 +353,10 @@ Level_SkipTtlCard:
 		jsr		(ConvertCollisionArray).l
 		bsr.w	ColIndexLoad
 		bsr.w	LZWaterFeatures
-		move.b	#id_SonicPlayer,(v_player).w	; load Sonic object
+		_move.l	#SonicPlayer,(v_player+obAddr).w	; load Sonic object
 
 	if InstashieldEnabled
-		move.b	#id_ShieldItem,(v_shieldobj).w	; load instashield object
+		_move.l	#ShieldItem,(v_shieldobj+obAddr).w	; load instashield object
 		move.b	#shTypeInsta,(v_shieldobj+obSubtype).w
 	endif
 
@@ -364,11 +364,11 @@ Level_ChkWater:
 		moveq	#0,d0
 		move.w	d0,(v_jpadheld_dup).w
 		move.w	d0,(v_jpadheld_actual).w
-		cmpi.b	#id_LZ,(v_zone).w						; is level LZ?
-		bne.s	Level_LoadObj							; if not, branch
-		move.b	#id_WaterSurface,(v_watersurface1).w	; load water surface object
+		cmpi.b	#id_LZ,(v_zone).w							; is level LZ?
+		bne.s	Level_LoadObj								; if not, branch
+		_move.l	#WaterSurface,(v_watersurface1+obAddr).w	; load water surface object
 		move.w	#$60,(v_watersurface1+obX).w
-		move.b	#id_WaterSurface,(v_watersurface2).w
+		_move.l	#WaterSurface,(v_watersurface2+obAddr).w
 		move.w	#$120,(v_watersurface2+obX).w
 
 Level_LoadObj:

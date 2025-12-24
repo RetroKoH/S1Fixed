@@ -61,14 +61,14 @@ Smab_Solid:	; Routine 2
 		lea		object_size(a1),a1				; go to the next object space
 
 	.loop:
-		tst.b	obID(a1)						; is object RAM	slot empty?
+		tst.l	obAddr(a1)						; is object RAM	slot empty?
 		beq.s	.loadpts						; Let's correct the branches. Here we can also skip the bne that was originally after bsr.w FindFreeObj because we already know there's a free object slot in memory.
 		lea		object_size(a1),a1
 		dbf		d3,.loop						; Branch correction again.
 		bne.s	Smab_Points						; We're moving this line here.
 
 	.loadpts:
-		_move.b	#id_Points,obID(a1)				; load points object
+		_move.l	#Points,obAddr(a1)				; load points object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.w	(v_itembonus).w,d2

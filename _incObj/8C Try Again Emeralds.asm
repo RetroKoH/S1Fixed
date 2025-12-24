@@ -16,7 +16,7 @@ TCha_Main:	; Routine 0
 		sub.b	(v_emeralds).w,d1			; d1 = number of emeralds we don't have - 1
 
 	.makeemerald:
-		move.b	#id_TryChaos,obID(a1)		; load emerald object
+		_move.l	#TryChaos,obAddr(a1)		; load emerald object
 		addq.b	#2,obRoutine(a1)
 		move.l	#Map_ECha,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Try_Again_Emeralds,0,0),obGfx(a1)

@@ -161,7 +161,7 @@ Anml_FromEnemy:
 		bne.s	.after_boss					; if yes, branch
 		bsr.w	FindFreeObj
 		bne.w	DisplaySprite
-		_move.b	#id_Points,obID(a1)			; load points object
+		_move.l	#Points,obAddr(a1)		; load points object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.w	obEnemy_Combo(a0),d0

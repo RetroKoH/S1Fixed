@@ -88,11 +88,11 @@ CrabAct_WaitFire:
 	.loop:
 	; REMOVE FindFreeObj. It's the routine that causes such slowdown
 		lea		object_size(a1),a1
-		tst.b	obID(a1)					; is object RAM	slot empty?
+		tst.l	obAddr(a1)					; is object RAM	slot empty?
 		dbeq	d0,.loop					; Branch correction again.
 		bne.s	.fail						; We're moving this line here.
 
-		_move.b	#id_Crabmeat,obID(a1)		; load left fireball
+		_move.l	#Crabmeat,obAddr(a1)		; load left fireball
 		move.b	#id_Crab_BallMain,obRoutine(a1)
 		move.w	obX(a0),obX(a1)
 		subi.w	#$10,obX(a1)
@@ -101,11 +101,11 @@ CrabAct_WaitFire:
 
 	; REMOVE FindFreeObj. It's the routine that causes such slowdown
 		lea		object_size(a1),a1
-		tst.b	obID(a1)					; is object RAM	slot empty?
+		tst.l	obAddr(a1)					; is object RAM	slot empty?
 		dbeq	d0,.loop					; Branch correction again.
 		bne.s	.fail						; We're moving this line here.
 
-		_move.b	#id_Crabmeat,obID(a1)		; load right fireball
+		_move.l	#Crabmeat,obAddr(a1)		; load right fireball
 		move.b	#id_Crab_BallMain,obRoutine(a1)
 		move.w	obX(a0),obX(a1)
 		addi.w	#$10,obX(a1)

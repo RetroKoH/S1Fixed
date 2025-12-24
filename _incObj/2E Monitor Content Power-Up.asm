@@ -147,7 +147,7 @@ Pow_Shoes:
 Pow_Shield:
 		andi.b	#mask2ndRmvShield,(v_player+obStatus2nd).w	; remove shield status
 		bset	#sta2ndShield,(v_player+obStatus2nd).w		; give Sonic a shield
-		move.b	#id_ShieldItem,(v_shieldobj).w				; load shield object ($38)
+		_move.l	#ShieldItem,(v_shieldobj+obAddr).w			; load shield object
 		clr.b	(v_shieldobj+obRoutine).w
 		clr.b	(v_shieldobj+obSubtype).w
 		move.w	#sfx_Shield,d0
@@ -162,7 +162,7 @@ Pow_Invinc:
 
 		bset	#sta2ndInvinc,(v_player+obStatus2nd).w	; make Sonic invincible
 		move.b	#$96,(v_player+obInvinc).w				; time limit for the power-up -- RetroKoH Sonic SST Compaction
-		move.b	#id_StarsItem,(v_starsobj).w			; load stars object
+		move.l	#StarsItem,(v_starsobj+obAddr).w		; load stars object
 		tst.b	(f_lockscreen).w						; is boss mode on?
 		bne.s	.nomusic								; if yes, branch
 		cmpi.b	#$C,(v_air).w
@@ -198,9 +198,9 @@ Pow_S:
 		bsr.w	CollectRing								; extra life bgm doesn't play
 
 		if AfterImagesOn	; Hitaxas S3K afterimage
-			move.b	#id_AfterImages,(v_trails).w
+			_move.l	#AfterImages,(v_trails+obAddr).w
 			move.w	#v_player,(v_trails+obParent).w	
-			move.b	#id_AfterImages,(v_trails2).w
+			_move.l	#AfterImages,(v_trails2+obAddr).w
 			move.b	#2,(v_trails2+obSubtype).w
 			move.w	#v_followobject,(v_trails2+obParent).w
 		endif
@@ -220,7 +220,7 @@ Pow_S:
 
 Pow_Goggles:
 		bset	#sta2ndGoggles,(v_player+obStatus2nd).w		; give Sonic goggles
-		move.b	#id_GogglesItem,(v_gogglesobj).w			; load goggles object ($8F)
+		_move.l	#GogglesItem,(v_gogglesobj+obAddr).w		; load goggles object ($8F)
 		move.w	#sfx_A2,d0;#sfx_Grab,d0
 		jmp		(QueueSound2).w								; play sound
 ; ===========================================================================
@@ -230,7 +230,7 @@ Pow_FShield:
 		andi.b	#mask2ndRmvShield,(v_player+obStatus2nd).w	; remove shield status
 		bset	#sta2ndShield,(v_player+obStatus2nd).w		; give Sonic a shield
 		bset	#sta2ndFShield,(v_player+obStatus2nd).w		; give Sonic a flame shield
-		move.b	#id_ShieldItem,(v_shieldobj).w				; load shield object
+		_move.l	#ShieldItem,(v_shieldobj+obAddr).w			; load shield object
 		clr.b	(v_shieldobj+obRoutine).w
 		move.b	#shTypeFlame,(v_shieldobj+obSubtype).w
 		move.w	#sfx_FShield,d0
@@ -241,7 +241,7 @@ Pow_BShield:
 		andi.b	#mask2ndRmvShield,(v_player+obStatus2nd).w	; remove shield status
 		bset	#sta2ndShield,(v_player+obStatus2nd).w		; give Sonic a shield
 		bset	#sta2ndBShield,(v_player+obStatus2nd).w		; give Sonic a bubble shield
-		move.b	#id_ShieldItem,(v_shieldobj).w				; load shield object
+		_move.l	#ShieldItem,(v_shieldobj+obAddr).w			; load shield object
 		clr.b	(v_shieldobj+obRoutine).w
 		move.b	#shtypeBubble,(v_shieldobj+obSubtype).w
 		move.w	#sfx_BShield,d0
@@ -252,7 +252,7 @@ Pow_LShield:
 		andi.b	#mask2ndRmvShield,(v_player+obStatus2nd).w	; remove shield status
 		bset	#sta2ndShield,(v_player+obStatus2nd).w		; give Sonic a shield
 		bset	#sta2ndLShield,(v_player+obStatus2nd).w		; give Sonic a lightning shield
-		move.b	#id_ShieldItem,(v_shieldobj).w				; load shield object
+		_move.l	#ShieldItem,(v_shieldobj+obAddr).w			; load shield object
 		clr.b	(v_shieldobj+obRoutine).w
 		move.b	#shTypeLtning,(v_shieldobj+obSubtype).w
 		move.w	#sfx_LShield,d0

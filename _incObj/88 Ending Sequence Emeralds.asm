@@ -20,15 +20,15 @@ ECha_Main:	; Routine 0
 ; ===========================================================================
 
 ECha_CreateEms:
-		move.w	(v_player+obX).w,obX(a0) ; match X position with Sonic
-		move.w	(v_player+obY).w,obY(a0) ; match Y position with Sonic
+		move.w	(v_player+obX).w,obX(a0)	; match X position with Sonic
+		move.w	(v_player+obY).w,obY(a0)	; match Y position with Sonic
 		movea.l	a0,a1
 		moveq	#0,d3
 		moveq	#1,d2
-		moveq	#emldCount-1,d1			; 5 (or 6 if SuperMod is on).
+		moveq	#emldCount-1,d1				; 5 (or 6 if SuperMod is on).
 
 ECha_LoadLoop:
-		move.b	#id_EndChaos,obID(a1)	; load chaos emerald object
+		_move.l	#EndChaos,obAddr(a1)		; load chaos emerald object
 		addq.b	#2,obRoutine(a1)
 		move.l	#Map_ECha,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Ending_Emeralds,0,0),obGfx(a1)
@@ -40,9 +40,9 @@ ECha_LoadLoop:
 		move.b	d2,obFrame(a1)
 		addq.b	#1,d2
 		move.b	d3,obAngle(a1)
-		addi.b	#$100/emldCount,d3		; angle between each emerald
+		addi.b	#$100/emldCount,d3			; angle between each emerald
 		lea		object_size(a1),a1
-		dbf		d1,ECha_LoadLoop		; repeat for each emerald
+		dbf		d1,ECha_LoadLoop			; repeat for each emerald
 
 ECha_Move:	; Routine 2
 		move.w	echa_angle(a0),d0

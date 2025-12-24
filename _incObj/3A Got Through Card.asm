@@ -44,7 +44,7 @@ Got_Main:	; Routine 0
 	endif
 
 	.loop:
-		_move.b	#id_GotThroughCard,obID(a1)
+		_move.l	#GotThroughCard,obAddr(a1)
 		move.w	(a2),obX(a1)					; load start x-position
 		move.w	(a2)+,obEoLCard_FinalX(a1)		; load finish x-position (same as start)
 		move.w	(a2)+,obEoLCard_DisplayX(a1)	; load main x-position

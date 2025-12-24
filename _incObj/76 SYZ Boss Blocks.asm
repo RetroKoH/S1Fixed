@@ -25,7 +25,7 @@ BossBlock_Main:	; Routine 0
 		bne.s	.fail
 
 	.load_block:
-		move.b	#id_BossBlock,obID(a1)
+		_move.l	#BossBlock,obAddr(a1)
 		move.l	#Map_BossBlock,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a1)
 		move.b	#4,obRender(a1)
@@ -132,9 +132,9 @@ BossBlock_Break:
 	.loop:
 	; REMOVE FindFreeObj. It's the routine that causes such slowdown
 		lea		object_size(a1),a1
-		tst.b	obID(a1)				; is object RAM	slot empty?
-		dbeq	d5,.loop				; Branch correction again.
-		bne.s	.fail					; We're moving this line here.
+		tst.l	obAddr(a1)					; is object RAM	slot empty?
+		dbeq	d5,.loop					; branch correction again.
+		bne.s	.fail						; we're moving this line here.
 
 		lea		(a0),a2						; load block to a2
 		lea		(a1),a3						; load fragment to a3

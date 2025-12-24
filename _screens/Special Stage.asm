@@ -41,8 +41,8 @@ GM_Special:
 		moveq	#0,d0
 		move.l	d0,(v_screenposx).w
 		move.l	d0,(v_screenposy).w
-		move.b	#id_SonicSpecial,(v_player).w		; load special stage Sonic object
-		move.b	#id_SpecialCursor,(v_playerdust).w	; load new debug cursor object (RetroKoH)
+		_move.l	#SonicSpecial,(v_player+obAddr).w		; load special stage Sonic object
+		_move.l	#SpecialCursor,(v_playerdust+obAddr).w	; load new debug cursor object (RetroKoH)
 
 	if DynamicSpecialStageWalls	; Mercury Dynamic Special Stage Walls
 		move.b	#$FF,(v_ssangleprev).w				; fill previous angle with obviously false value to force an update
@@ -271,7 +271,7 @@ LoadSSBase:
 
 		clearRAM v_objspace							; clear object RAM
 
-		move.b	#id_SSResult,(v_ssrescard).w		; load results screen object
+		_move.l	#SSResult,(v_ssrescard+obAddr).w	; load results screen object
 
 	if HUDInSpecialStage
 		clr.b	(f_levelstarted).w					; remove HUD

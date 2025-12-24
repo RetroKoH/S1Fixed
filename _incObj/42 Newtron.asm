@@ -159,7 +159,7 @@ Newt_Type1:
 		bsr.w	FindFreeObj
 		bne.s	.fail
 
-		_move.b	#id_Missile,obID(a1)		; load missile object
+		_move.l	#Missile,obAddr(a1)			; load missile object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		subq.w	#8,obY(a1)

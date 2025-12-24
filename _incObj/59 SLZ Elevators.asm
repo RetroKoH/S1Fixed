@@ -87,7 +87,7 @@ Elev_StoodOn:	; Routine 4
 		move.w	obX(a0),obElev_PrevX(a0)	; store pre-movement x-position
 		bsr.w	Elev_Types
 		move.w	obElev_PrevX(a0),d2			; restore pre-movement x-position
-		_tst.b	obID(a0)					; does object still exist?
+		_tst.l	obAddr(a0)					; does object still exist?
 		beq.s	.deleted					; if not, branch
 		jmp		(MvSonicOnPtfm2).l			; update Sonic's position
 
@@ -244,7 +244,7 @@ Elev_MakeMulti:	; Routine 6
 		move.w	obElev_DistCopy(a0),obElev_Dist(a0) ; reset timer
 		bsr.w	FindFreeObj					; find free object RAM slot
 		bne.s	.chkdel						; branch if not found
-		_move.b	#id_Elevator,obID(a1)		; duplicate the object
+		_move.l	#Elevator,obAddr(a1)		; duplicate the object
 		move.w	obX(a0),obX(a1)				; match position
 		move.w	obY(a0),obY(a1)
 		move.b	#$E,obSubtype(a1)			; platform rises and vanishes

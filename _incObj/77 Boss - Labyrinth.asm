@@ -41,7 +41,7 @@ BossLZ_Main:	; Routine 0
 	.loop:
 		jsr		(FindNextFreeObj).l
 		bne.s	BossLZ_ShipMain
-		_move.b	#id_BossLabyrinth,obID(a1)
+		_move.l	#BossLabyrinth,obAddr(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 
@@ -324,7 +324,7 @@ BossLZ_FaceMain:	; Routine 4
 		movea.w	obBoss_Parent(a0),a1				; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.b	#id_BossLabyrinth,obID(a1)			; is the boss still loaded?
+		cmpi.l	#BossLabyrinth,obAddr(a1)			; is the boss still loaded?
 		bne.s	BossLZ_Delete						; if not, delete object
 	; Boss Object Fix End
 
@@ -366,7 +366,7 @@ BossLZ_FlameMain:; Routine 6
 		movea.w	obBoss_Parent(a0),a1				; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.b	#id_BossLabyrinth,obID(a1)			; is the boss still loaded?
+		cmpi.l	#BossLabyrinth,obAddr(a1)			; is the boss still loaded?
 		bne.s	BossLZ_Delete						; if not, delete object
 	; Boss Object Fix End
 

@@ -46,7 +46,7 @@ BossSLZ_Main:
 	.loop:
 		jsr		(FindNextFreeObj).l
 		bne.s	.fail
-		_move.b	#id_BossStarLight,obID(a1)
+		_move.l	#BossStarLight,obAddr(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 
@@ -76,7 +76,7 @@ BossSLZ_Main:
 		moveq	#object_size,d2
 
 	.seesaw_loop:
-		cmp.b	obID(a1),d0					; is object a seesaw?
+		cmp.l	obAddr(a1),d0				; is object a seesaw?
 		bne.s	.next						; if not, branch
 		tst.b	obSubtype(a1)				; is seesaw empty?
 		beq.s	.next						; if not, branch
@@ -240,7 +240,7 @@ BossSLZ_ShipMakeBall:		; Secondary Routine 4
 		movea.l	(sp)+,a0
 		bne.s	.exit
 
-		_move.b	#id_BossSpikeball,obID(a1)	; load spiked ball object
+		_move.l	#BossSpikeball,obAddr(a1)	; load spiked ball object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		addi.w	#$20,obY(a1)
@@ -360,7 +360,7 @@ BossSLZ_FaceMain:	; Routine 4
 		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.b	#id_BossStarLight,obID(a1)		; is the boss still loaded?
+		cmpi.l	#BossStarLight,obAddr(a1)		; is the boss still loaded?
 		bne.w	BossSLZ_Delete					; if not, delete object
 	; Boss Object Fix End
 
@@ -398,7 +398,7 @@ BossSLZ_FlameMain:; Routine 6
 		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.b	#id_BossStarLight,obID(a1)		; is the boss still loaded?
+		cmpi.l	#BossStarLight,obAddr(a1)		; is the boss still loaded?
 		bne.s	BossSLZ_Delete					; if not, delete object
 	; Boss Object Fix End
 
@@ -443,7 +443,7 @@ BossSLZ_TubeMain:	; Routine 8
 		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.b	#id_BossStarLight,obID(a1)		; is the boss still loaded?
+		cmpi.l	#BossStarLight,obAddr(a1)		; is the boss still loaded?
 		bne.s	BossSLZ_Delete					; if not, delete object
 	; Boss Object Fix End
 

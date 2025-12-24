@@ -176,7 +176,7 @@ Bub_BblMaker:	; Routine $A
 		move.w	d0,obBubble_RandomTime(a0)		; set next random time (max 32 frames)
 		bsr.w	FindFreeObj
 		bne.s	.fail							; branch if obj slot not found
-		_move.b	#id_Bubble,obID(a1)				; load bubble object
+		_move.l	#Bubble,obAddr(a1)				; load bubble object
 		move.w	obX(a0),obX(a1)
 		jsr		(RandomNumber).w
 		andi.w	#$F,d0

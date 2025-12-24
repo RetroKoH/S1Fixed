@@ -59,7 +59,7 @@ Msl_Animate:	; Routine 2
 
 Msl_ChkCancel:
 		movea.w	obMissile_Parent(a0),a1
-		_cmpi.b	#id_ExplosionItem,obID(a1)	; has Buzz Bomber been destroyed?
+		_cmpi.l	#ExplosionItem,obAddr(a1)	; has Buzz Bomber been destroyed?
 		; This adds a return value so that we know if the object has
 		; been freed. -- Clownacy DisplaySprite Fix
 		bne.s	.return
@@ -87,7 +87,7 @@ Msl_FromBuzz:	; Routine 4
 ; ===========================================================================
 
 .explode:
-		_move.b	#id_MissileDissolve,obID(a0) ; change object to an explosion (Obj24)
+		_move.l	#MissileDissolve,obAddr(a0) ; change object to an explosion (Obj24)
 		clr.b	obRoutine(a0)
 		bra.w	MissileDissolve
 ; ===========================================================================

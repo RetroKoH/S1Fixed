@@ -100,7 +100,7 @@ But_MZPushBlock:
 	.loop:
 		tst.b	obRender(a1)
 		bpl.s	.next
-		cmpi.b	#id_PushBlock,obID(a1)	; is the object a green MZ block?
+		cmpi.l	#PushBlock,obAddr(a1)	; is the object a green MZ block?
 		beq.s	.found_block			; if yes, branch
 
 	.next:

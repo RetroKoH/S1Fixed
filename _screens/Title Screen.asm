@@ -50,7 +50,7 @@ GM_Title:
 
 		moveq	#palid_Sonic,d0					; load Sonic's palette
 		bsr.w	PalLoad_Fade
-		move.b	#id_CreditsText,(v_sonicteam).w	; load "SONIC TEAM PRESENTS" object
+		_move.l	#CreditsText,(v_sonicteam+obAddr).w	; load "SONIC TEAM PRESENTS" object
 		jsr		(ExecuteObjects).l
 		jsr		(BuildSprites).l
 		bsr.w	PaletteFadeIn
@@ -87,7 +87,7 @@ Tit_LoadText:
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformLayers
 
-	if BlocksInROM=1	;Mercury Blocks In ROM
+	if BlocksInROM	;Mercury Blocks In ROM
 		move.l	#Blk16_GHZ,(v_16x16).l		; store the ROM address for the block mappings
 	else
 		lea		(v_16x16).w,a1				; address to load decompressed blocks to
@@ -96,7 +96,7 @@ Tit_LoadText:
 		bsr.w	EniDec
 	endif
 
-	if ChunksInROM=1	;Mercury Chunks In ROM
+	if ChunksInROM	;Mercury Chunks In ROM
 		move.l	#Blk128_GHZ,(v_128x128).l	; store the ROM address for the chunk mappings
 	else
 		lea		(Blk128_GHZ).l,a0			; load GHZ 128x128 mappings
@@ -115,7 +115,7 @@ Tit_LoadText:
 		move.w	#$6000,d2
 		bsr.w	DrawChunks
 
-	if ChunksInROM=1	;Mercury Chunks In ROM
+	if ChunksInROM	;Mercury Chunks In ROM
 		copyTilemap	Eni_Title,vram_fg+$208,34,22			; RetroKoH Title Screen Adjustment
 	else
 		lea		(v_128x128&$FFFFFF).l,a1					; address to load decompressed chunks to
@@ -143,15 +143,16 @@ Tit_LoadText:
 		move.w	#$178,(v_countdown).w					; run title screen for $178 frames
 
 		clearRAM v_sonicteam,v_sonicteam+object_size	; PRESS START BUTTON Fix (Quickman)
-		move.b	#id_TitleSonic,(v_titlesonic).w			; load big Sonic object
-		move.b	#id_PSBTM,(v_pressstart).w				; load "PRESS START BUTTON" object
+		_move.l	#TitleSonic,(v_titlesonic+obAddr).w		; load big Sonic object
+		_move.l	#PSBTM,(v_pressstart+obAddr).w			; load "PRESS START BUTTON" object
 
 		tst.b   (v_megadrive).w							; is console Japanese?
 		bpl.s   .isjap									; if yes, branch
-		move.b	#id_PSBTM,(v_titletm).w					; load "TM" object
+		_move.l	#PSBTM,(v_titletm+obAddr).w				; load "TM" object
 		move.b	#3,(v_titletm+obFrame).w
-.isjap:
-		move.b	#id_PSBTM,(v_ttlsonichide).w			; load object which hides part of Sonic
+
+	.isjap:
+		_move.l	#PSBTM,(v_ttlsonichide+obAddr).w		; load object which hides part of Sonic
 		move.b	#2,(v_ttlsonichide+obFrame).w
 		jsr		(ExecuteObjects).l
 		bsr.w	DeformLayers

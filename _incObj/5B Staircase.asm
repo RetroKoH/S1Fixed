@@ -39,7 +39,7 @@ Stair_Main:	; Routine 0
 		move.b	#4,obRoutine(a1)			; -> Stair_Solid
 
 .makeblocks:
-		_move.b	#id_Staircase,obID(a1)		; load another stair block object
+		_move.l	#Staircase,obAddr(a1)	; load another stair block object
 		move.l	#Map_Stair,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a1)
 		move.b	#4,obRender(a1)

@@ -56,7 +56,6 @@ loc_6DC4:
 		move.b	#1,(f_bgscrollvert).w
 		rts	
 ; End of function DynamicLevelEvents
-
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
@@ -176,21 +175,21 @@ locret_6E96:
 
 loc_6E98:
 		move.w	#boss_ghz_y,(v_limitbtm_target).w
-		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
+		addq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 		rts	
 ; ===========================================================================
 
 DLE_GHZ3boss:
 		cmpi.w	#$960,(v_screenposx).w
 		bhs.s	loc_6EB0
-		subq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
+		subq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 
 loc_6EB0:
 		cmpi.w	#boss_ghz_x,(v_screenposx).w
 		blo.s	locret_6E96
 		bsr.w	FindFreeObj
 		bne.s	loc_6ED0
-		_move.b	#id_BossGreenHill,obID(a1) ; load GHZ boss	object
+		_move.l	#BossGreenHill,obAddr(a1)	; load GHZ boss object
 		move.w	#boss_ghz_x+$100,obX(a1)
 		move.w	#boss_ghz_y-$80,obY(a1)
 
@@ -233,7 +232,7 @@ loc_6F28:
 		bhs.s	locret_6F8C
 		move.b	#1,(f_switch+8).w			; trigger the door
 		move.w	#sfx_Rumbling,d0
-		bsr.w	QueueSound2			; play rumbling sound
+		bsr.w	QueueSound2					; play rumbling sound
 
 DLE_LZ3_BossChk:
 		tst.w	(v_dle_routine).w			; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
@@ -244,7 +243,7 @@ DLE_LZ3_BossChk:
 		bhs.s	locret_6F8C
 		bsr.w	FindFreeObj
 		bne.s	loc_6F4A
-		_move.b	#id_BossLabyrinth,obID(a1)	; load LZ boss object
+		_move.l	#BossLabyrinth,obAddr(a1)	; load LZ boss object
 
 loc_6F4A:
 
@@ -409,7 +408,7 @@ DLE_MZ3boss:
 		blo.s	locret_70E8
 		bsr.w	FindFreeObj
 		bne.s	loc_70D0
-		_move.b	#id_BossMarble,obID(a1) ; load MZ boss object
+		_move.l	#BossMarble,obAddr(a1)		; load MZ boss object
 		move.w	#boss_mz_x+$1F0,obX(a1)
 		move.w	#boss_mz_y+$1C,obY(a1)
 
@@ -458,7 +457,7 @@ DLE_SLZ3boss:
 		blo.s	locret_7130
 		bsr.w	FindFreeObj
 		bne.s	loc_7144
-		move.b	#id_BossStarLight,obID(a1) ; load SLZ boss object
+		_move.l	#BossStarLight,obAddr(a1)	; load SLZ boss object
 
 loc_7144:
 
@@ -514,7 +513,7 @@ DLE_SYZ3main:
 		blo.s	locret_71CE
 		bsr.w	FindFreeObj
 		bne.s	locret_71CE
-		move.b	#id_BossBlock,obID(a1)	; load blocks that boss picks up
+		_move.l	#BossBlock,obAddr(a1)	; load blocks that boss picks up
 		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 
 locret_71CE:
@@ -527,7 +526,7 @@ DLE_SYZ3boss:
 		move.w	#boss_syz_y,(v_limitbtm_target).w
 		bsr.w	FindFreeObj
 		bne.s	loc_71EC
-		move.b	#id_BossSpringYard,obID(a1)	; load SYZ boss object
+		_move.l	#BossSpringYard,obAddr(a1)	; load SYZ boss object
 		addq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 
 loc_71EC:
@@ -599,7 +598,7 @@ DLE_SBZ2boss:
 		blo.s	locret_7298
 		bsr.w	FindFreeObj
 		bne.s	locret_7298
-		move.b	#id_FalseFloor,obID(a1) ; load collapsing block object
+		_move.l	#id_FalseFloor,obAddr(a1) ; load collapsing block object
 		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 		moveq	#plcid_EggmanSBZ2,d0
 		bra.w	AddPLC					; load SBZ2 Eggman patterns
@@ -614,7 +613,7 @@ DLE_SBZ2boss2:
 		blo.s	loc_72C2
 		bsr.w	FindFreeObj
 		bne.s	loc_72B0
-		move.b	#id_ScrapEggman,obID(a1)	; load SBZ2 Eggman object
+		_move.l	#id_ScrapEggman,obAddr(a1)	; load SBZ2 Eggman object
 		addq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 
 loc_72B0:
@@ -673,7 +672,7 @@ FZ_Index:		offsetTable
 		offsetTableEntry.w DLE_FZboss
 		offsetTableEntry.w DLE_FZend
 		offsetTableEntry.w locret_7322
-		offsetTableEntry.w loc_72C2		; DLE_FZend2
+		offsetTableEntry.w loc_72C2			; DLE_FZend2
 ; ===========================================================================
 
 DLE_FZmain:
@@ -690,16 +689,16 @@ DLE_FZboss:
 		blo.s	loc_72C2
 		bsr.w	FindFreeObj
 		bne.s	loc_72C2
-		move.b	#id_BossFinal,obID(a1)	; load FZ boss object
-		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
-		move.b	#1,(f_lockscreen).w		; lock screen
+		_move.l	#BossFinal,obAddr(a1)		; load FZ boss object
+		addq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
+		move.b	#1,(f_lockscreen).w			; lock screen
 		bra.s	loc_72C2
 ; ===========================================================================
 
 DLE_FZend:
 		cmpi.w	#boss_fz_x,(v_screenposx).w
 		blo.s	loc_72C2
-		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
+		addq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 		bra.s	loc_72C2
 ; ===========================================================================
 

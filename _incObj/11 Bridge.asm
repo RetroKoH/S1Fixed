@@ -67,7 +67,7 @@ Bri_Main:	; Routine 0
 Bri_MakeSegment:
 		bsr.w	FindFreeObj
 		bne.s	.return
-		move.b	obID(a0),obID(a1)	; load obj11
+		_move.l	obAddr(a0),obAddr(a1)	; load obj11
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.l	obMap(a0),obMap(a1)

@@ -81,7 +81,7 @@ Lamp_Blue:	; Routine 2
 		jsr		(FindFreeObj).l
 		bne.s	.fail
 
-		_move.b	#id_Lamppost,obID(a1)		; load twirling	lamp bulb object
+		_move.l	#Lamppost,obAddr(a1)		; load twirling	lamp bulb object
 		move.b	#6,obRoutine(a1)			; -> Lamp_Twirl
 		move.w	obX(a0),obLamp_StartX(a1)
 		move.w	obY(a0),obLamp_StartY(a1)

@@ -43,7 +43,7 @@ FireM_MakeFire:	; Routine 2
 		bsr.w	FindFreeObj							; find free object RAM slot
 		bne.s	.wait								; branch if not found
 
-		_move.b	#id_FireBall,obID(a1)				; load lava ball object
+		_move.l	#FireBall,obAddr(a1)				; load lava ball object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.b	obSubtype(a0),obSubtype(a1)			; copy subtype (speed/direction)

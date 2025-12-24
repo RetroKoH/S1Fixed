@@ -310,7 +310,7 @@ React_Enemy:
 
 	.lessthan16:
 		bsr.w	AddPoints
-		_move.b	#id_ExplosionItem,obID(a1)	; change object to explosion
+		_move.l	#ExplosionItem,obAddr(a1)	; change object to explosion
 		clr.b	obRoutine(a1)				; explosion also spawns an animal
 		tst.w	obVelY(a0)
 		bmi.s	.bouncedown					; branch if Sonic is moving upwards
@@ -471,7 +471,7 @@ HurtSonic:
 
 		jsr		(FindFreeObj).l
 		bne.s	.hasshield
-		_move.b	#id_RingLoss,obID(a1)			; load bouncing multi rings object
+		_move.l	#RingLoss,obAddr(a1)			; load bouncing multi rings object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 
@@ -500,10 +500,10 @@ HurtSonic:
 		move.b	#aniID_Hurt,obAnim(a0)
 		move.b	#120,obInvuln(a0)				; set temp invincible time to 2 seconds -- RetroKoH Sonic SST Compaction
 		move.w	#sfx_Death,d0					; load normal damage sound
-		cmpi.b	#id_Spikes,obID(a2)				; was damage caused by spikes?
+		cmpi.l	#Spikes,obAddr(a2)				; was damage caused by spikes?
 	; Mercury Spike SFX Fix
 		beq.s	.setspikesound					; if so, branch
-		cmpi.b	#id_Harpoon,obID(a2)			; was damage caused by LZ harpoon?
+		cmpi.l	#Harpoon,obAddr(a2)				; was damage caused by LZ harpoon?
 		bne.s	.sound							; if not, branch
 
 	.setspikesound:
@@ -537,7 +537,7 @@ KillSonic:
 		bne.s	.dontdie						; if yes, branch
 
 	if HUDInSpecialStage	; Mercury Time Limit In Special Stage
-		cmpi.b	#id_SonicSpecial,obID(a0)		; test if it's Special Stage Sonic that's trying to die
+		cmpi.l	#SonicSpecial,obAddr(a0)		; test if it's Special Stage Sonic that's trying to die
 		bne.s	.normal
 		
 		move.b	#4,obRoutine(a0)				; change Sonic to Special Stage dying routine
@@ -570,9 +570,9 @@ KillSonic:
 		bset	#gfxPriority,obGfx(a0)
 	; Mercury Spike SFX Fix
 		move.w	#sfx_HitSpikes,d0				; play spikes death sound
-		cmpi.b	#id_Spikes,obID(a2)				; check	if you were killed by spikes
+		cmpi.l	#Spikes,obAddr(a2)				; check	if you were killed by spikes
 		beq.s	.sound
-		cmpi.b	#id_Harpoon,obID(a2)			; check	if you were killed by a harpoon
+		cmpi.l	#Harpoon,obAddr(a2)				; check	if you were killed by a harpoon
 		beq.s	.sound
 		move.w	#sfx_Death,d0					; play normal death sound
 	; Spike SFX Fix End

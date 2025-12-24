@@ -22,7 +22,7 @@ OT_Main:
 		bne.s	OT_Main
 
 		move.w	a1,obTest_ChildObj(a0)		; Set as child object
-		move.b	obID(a0),obID(a1)			; Load test object
+		_move.l	obAddr(a0),obAddr(a1)		; Load test object
 		move.b	#%01000100,obRender(a1)		; Set to render sub sprites -- %01000100 : Setting bit 6 enables subsprites for this object.
 		move.w	#ArtTile_Sonic,obGfx(a1)	; Base tile ID
 		move.l	#Map_Sonic,obMap(a1)		; Mappings
