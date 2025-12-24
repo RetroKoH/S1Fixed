@@ -19,14 +19,16 @@ obFrame:				equ $1A				; 1 byte  | current frame displayed
 obDispWid:				equ $23				; 1 byte  | display width/2
 ; ---------------------------------------------------------------------------
 ; conventions followed by most objects including Sonic:
+; (TO-DO): obAniFrame and obTimeFrame should be placed together for quick clearing
 obVelX:					equ $10				; 2 bytes | x-axis velocity
 obVelY:					equ $12				; 2 bytes | y-axis velocity
 obHeight:				equ $16				; 1 byte  | height/2
 obWidth:				equ $17				; 1 byte  | width/2
 obAniFrame:				equ $1B				; 1 byte  | current frame in animation script
 obAnim:					equ $1C				; 1 byte  | current animation
-obPrevAni:				equ $1D				; 1 byte  | restart animation flag / next animation number (Sonic)
-obTimeFrame:			equ $1E				; 2 bytes  | time to next frame (1 byte) / general timer (2 bytes)
+;$1D
+obTimeFrame:			equ $1E				; 1 byte  | time to next frame (1 byte) / general timer (2 bytes)
+;$1F
 obStatus:				equ $22				; 1 byte  | orientation or mode
 obRoutine:				equ $24				; 1 byte  | routine number
 obAngle:				equ $26				; 1 byte  | angle
@@ -61,7 +63,7 @@ obInertia:				equ $20				; 2 bytes | ground velocity
 obAutoRollFlag:			equ $2A				; 1 byte  | auto-roll (pinball mode) flag
 ;						equ $2B
 ;						equ $2E
-;						equ $2F
+obAnimNext:				equ $2F				; 1 byte  | next animation
 obInvuln:				equ $30				; 1 byte  | invulnerablity timer (blinking frames when hurt)
 obInvinc:				equ $31				; 1 byte  | invincibility stars timer
 obShoes:				equ $32				; 1 byte  | speed shoes timer
@@ -784,7 +786,7 @@ obPlasma_Parent:		equ objoff_3E		; 2 bytes | address of OST of parent object
 ; ---------------------------------------------------------------------------
 
 ; Obj87 - Ending Sequence Sonic
-obESonic_WaitTime:		equ objoff_30		; 1 byte  | time to wait between events
+obESonic_WaitTime:		equ objoff_30		; 1 byte  | time to wait between events (truncated down to 1 byte)
 ; ---------------------------------------------------------------------------
 
 ; Obj88 - Ending Sequence Emeralds

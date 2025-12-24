@@ -155,7 +155,7 @@ Sonic_Control:	; Routine 2
 		beq.s	.animate						; if not, branch
 		cmpi.b	#aniID_Walk,obAnim(a0)			; changed instruction because Walk is no longer #0
 		bne.s	.animate						; if not, branch
-		move.b	obPrevAni(a0),obAnim(a0)		; update animation
+		move.b	obAnimNext(a0),obAnim(a0)		; update animation
 
 	.animate:
 		bsr.w	Sonic_Animate					; handle Sonic's animations
@@ -214,7 +214,7 @@ Sonic_RevertToNormal:
 		move.b	#2,(f_super_palette).w			; Remove rotating palette
 		move.w	#$28,(v_palette_frame).w
 		bclr	#sta2ndSuper,obStatus2nd(a0)	; remove Super status
-		move.b	#aniID_Run,obPrevAni(a0)		; change animation back to normal
+		move.b	#aniID_Run,obAnimNext(a0)		; change animation back to normal
 		clr.b	obInvinc(a0)					; remove invincibility
 		move.l	#Map_Sonic,obMap(a0)			; load Sonic's normal mappings
 		lea     (v_sonspeedmax).w,a2			; load Sonic's top speed into a2
@@ -842,7 +842,7 @@ Sonic_MoveLeft:
 		bset	#staFacing,obStatus(a0)		; make Sonic face left
 		bne.s	.already_left				; branch if already facing left
 		bclr	#staPush,obStatus(a0)
-		move.b	#aniID_Run,obPrevAni(a0)	; restart Sonic's animation
+		move.b	#aniID_Run,obAnimNext(a0)	; restart Sonic's animation
 
 	.already_left:
 		sub.w	d5,d0						; d0 = inertia minus acceleration
@@ -904,7 +904,7 @@ Sonic_MoveRight:
 		bclr	#staFacing,obStatus(a0)		; make Sonic face right
 		beq.s	.already_right				; branch if already facing right
 		bclr	#staPush,obStatus(a0)
-		move.b	#aniID_Run,obPrevAni(a0)	; restart Sonic's animation
+		move.b	#aniID_Run,obAnimNext(a0)	; restart Sonic's animation
 
 	.already_right:
 		add.w	d5,d0						; d0 = inertia plus acceleration
@@ -3024,9 +3024,9 @@ Sonic_Animate:
 	.notsuper:
 		moveq	#0,d0
 		move.b	obAnim(a0),d0
-		cmp.b	obPrevAni(a0),d0		; has animation changed?
+		cmp.b	obAnimNext(a0),d0		; has animation changed?
 		beq.s	.do						; if not, branch
-		move.b	d0,obPrevAni(a0)		; set to "no restart"
+		move.b	d0,obAnimNext(a0)		; set to "no restart"
 		clr.b	obAniFrame(a0)			; reset animation
 		clr.b	obTimeFrame(a0)			; reset frame duration
 		bclr	#staPush,obStatus(a0)	; clear pushing flag -- Mercury Pushing While Walking Fix

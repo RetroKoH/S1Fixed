@@ -84,7 +84,8 @@ Roll_Stopped:
 		beq.s	.is_rolling					; if yes, branch
 		subq.w	#1,obRoller_OpenTime(a0)	; decrement timer
 		bpl.s	.wait						; branch if time remains
-		move.b	#1,obAnim(a0)				; use curling animation
+		moveq	#1,d0						; use curling animation
+		jsr		(NewAnim).w
 		move.w	#$700,obVelX(a0)			; move roller right
 		move.b	#(colHarmful|colSz_16x14),obColType(a0) ; make roller invincible
 

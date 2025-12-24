@@ -98,6 +98,7 @@ Sign_Touch:	; Routine 2
 		move.w	obY(a0),obSign_StartY(a0)			; store starting y-position so we know when to land
 		move.w	#60,obSign_SpinTime(a0)				; set spin cycle time to 1 second
 		addq.b	#1,obAnim(a0)						; set to first spin cycle early
+		bclr	#7,obAnim(a0)						; restart animation
 	endif
 
 		clr.b	obShoes(a1)							; Mercury Remove Speed Shoes At Signpost Fix (Moved from the Got_Through Card and improved) -- RetroKoH Sonic SST Compaction
@@ -137,6 +138,7 @@ Sign_Spin:	; Routine 4
 		cmpi.b	#3,obAnim(a0)					; have 3 spin cycles completed?
 		beq.s	.chksparkle						; if yes, branch
 		addq.b	#1,obAnim(a0)					; next spin cycle
+		bclr	#7,obAnim(a0)					; restart animation
 		bra.s	.chksparkle
 
 	.on_ground:
@@ -146,6 +148,7 @@ Sign_Spin:	; Routine 4
 		bpl.s	.chksparkle						; if time remains, branch
 		move.w	#60,obSign_SpinTime(a0)			; set spin cycle time to 1 second
 		addq.b	#1,obAnim(a0)					; next spin cycle
+		bclr	#7,obAnim(a0)					; restart animation
 		cmpi.b	#3,obAnim(a0)					; have 3 spin cycles completed?
 		bne.s	.chksparkle						; if not, branch
 
@@ -371,9 +374,9 @@ WorstTime:
 
 Signpost_LoadGfx:
 		moveq	#0,d0
-		move.b	obFrame(a0),d0			; load frame number
+		move.b	obFrame(a0),d0				; load frame number
 		cmp.b	obSign_PrevFrame(a0),d0		; has frame changed?
-		beq.s	.nochange				; if not, branch and exit
+		beq.s	.nochange					; if not, branch and exit
 
 		move.b	d0,obSign_PrevFrame(a0)		; update frame number for next check
 		lea		SignpostDynPLC(pc),a2
@@ -385,11 +388,11 @@ Signpost_LoadGfx:
 		bmi.s	.nochange					; if zero, branch
 		move.w	#(ArtTile_Signpost*$20),d4
 
-.readentry:
+	.readentry:
 		moveq	#0,d1
-		move.w	(a2)+,d1	; S3K .b to .w
-		move.w	d1,d3		; S3K
-		lsr.w	#8,d3		; S3K
+		move.w	(a2)+,d1					; S3K .b to .w
+		move.w	d1,d3						; S3K
+		lsr.w	#8,d3						; S3K
 		andi.w	#$F0,d3
 		addi.w	#$10,d3
 		andi.w	#$FFF,d1
@@ -399,8 +402,8 @@ Signpost_LoadGfx:
 		add.w	d3,d4
 		add.w	d3,d4
 		jsr		(QueueDMATransfer).w
-		dbf		d5,.readentry	; repeat for number of entries
+		dbf		d5,.readentry				; repeat for number of entries
 
-.nochange:
+	.nochange:
 		rts
 ; ===========================================================================

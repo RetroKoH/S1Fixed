@@ -2,30 +2,27 @@
 ; Subroutine to	animate	a sprite using an animation script
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
 AnimateSprite:
 		moveq	#0,d0
 		move.b	obAnim(a0),d0			; move animation number	to d0
-		cmp.b	obPrevAni(a0),d0		; has animation changed?
-		beq.s	Anim_Run				; if not, branch
+		btst	#7,d0					; is animation set to restart?
+		bne.s	Anim_Run				; if not, branch
 
-		move.b	d0,obPrevAni(a0)
+		bset	#7,obAnim(a0)			; set to "no restart"
 		clr.b	obAniFrame(a0)			; reset animation
 		clr.b	obTimeFrame(a0)			; reset frame duration
 
 Anim_Run:
 		subq.b	#1,obTimeFrame(a0)		; subtract 1 from frame duration
 		bpl.s	Anim_Wait				; if time remains, branch
+		andi.b	#$7F,d0					; ignore high bit (the no-restart flag)
 		add.w	d0,d0
 		adda.w	(a1,d0.w),a1			; jump to appropriate animation	script
 		move.b	(a1),obTimeFrame(a0)	; load frame duration
 		moveq	#0,d1
 		move.b	obAniFrame(a0),d1		; load current frame number
 		move.b	1(a1,d1.w),d0			; read sprite number from script
-		; MarkeyJester Art Limit Extensions
-		; Animations extended from [$00 - $7F] to [$00 - $F9]
+		; MarkeyJester Art Limit Extensions (extended from [$00 - $7F] to [$00 - $F9])
 		cmp.b	#$FA,d0					; is it a flag from FA to FF?
 		bhs.s	Anim_End_FF				; if animation is complete, branch
 		; Art Limit Extensions End
@@ -94,3 +91,26 @@ Anim_End_FA:					; code FA - increment 2nd routine counter
 .end:
 		rts	
 ; End of function AnimateSprite
+; ===========================================================================
+
+; ---------------------------------------------------------------------------
+; Subroutine to	update the animation id of an object if it changes
+;
+; input:
+;	d0 = new animation id
+
+; output:
+;	d1 = previous animation id
+; ---------------------------------------------------------------------------
+
+NewAnim:
+		moveq	#$7F,d1					; ignore high bit (the no-restart flag)
+		and.b	obAnim(a0),d1			; get previous animation id
+		cmp.b	d0,d1					; compare with new id
+		beq.s	.keepanim				; branch if same
+		move.b	d0,obAnim(a0)			; update animation id (and clear high bit)
+
+	.keepanim:
+		rts
+; End of function NewAnim
+; ===========================================================================

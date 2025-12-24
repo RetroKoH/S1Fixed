@@ -101,7 +101,7 @@ CFlo_WaitFall:	; Routine 6
 		tst.b	obCFloor_WaitTime(a0)
 		bne.s	.end						; branch if time delay > 0
 		andi.b	#~(maskOnObj+maskPush),obStatus(a1)	; Clear OnObj and Push flags ($D7)
-		move.b	#aniID_Run,obPrevAni(a1)	; restart Sonic's animation
+		move.b	#aniID_Run,obAnimNext(a1)	; restart Sonic's animation
 
 	.skip_platform:
 		clr.b	obCFloor_TouchFlag(a0)

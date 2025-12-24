@@ -22,7 +22,7 @@ BossPlasma_Main:	; Routine 0
 		move.w	#boss_fz_y+$2C,obY(a0)
 		move.w	#make_art_tile(ArtTile_FZ_Boss,0,0),obGfx(a0)
 		move.l	#Map_PLaunch,obMap(a0)
-		clr.b	obAnim(a0)
+		clr.b	obAnim(a0)							; set initial animation
 		move.w	#priority3,obPriority(a0)			; RetroKoH/Devon S3K+ Priority Manager
 		move.w	#$808,obHeight(a0)					; Height and Width
 		move.b	#4,obRender(a0)
@@ -40,15 +40,18 @@ BossPlasma_Generator:	; Routine 2
 ; ===========================================================================
 
 	.not_beaten:
-		clr.b	obAnim(a0)
+		moveq	#0,d0								; use initial red animation
 		tst.b	obPlasma_Enabled(a0)				; is it time to spawn plasma balls?
 		beq.s	Plasma_Update						; if not, branch
 		addq.b	#2,obRoutine(a0)					; advance routine to make plasma balls
-		move.b	#1,obAnim(a0)						; use sparking animation
+		moveq	#1,d0								; use sparking animation
 		move.b	#$3E,obSubtype(a0)
 ; ---------------------------------------------------------------------------
 
 Plasma_Update:
+		jsr		(NewAnim).w					; set animation
+
+BossPlasma_Solid:
 		moveq	#19,d1								; width; save 4 cycles -- Filter
 		moveq	#8,d2								; height (jumping); save 4 cycles -- Filter
 		moveq	#17,d3								; height (walking); save 4 cycles -- Filter
@@ -130,13 +133,13 @@ BossPlasma_MakeBalls:	; Routine 4
 
 	.skip_balls:
 		tst.w	obPlasma_Count(a0)					; are plasma balls still loaded?
-		bne.w	Plasma_Update						; if yes, branch
+		bne.w	BossPlasma_Solid					; if yes, branch
 		addq.b	#2,obRoutine(a0)					; -> Plasma_Finish (while the plasma balls are active)
-		bra.w	Plasma_Update
+		bra.w	BossPlasma_Solid
 ; ===========================================================================
 
 BossPlasma_Finish:	; Routine 6
-		move.b	#2,obAnim(a0)						; white sparking animation
+		moveq	#2,d0								; set animation to white sparking
 		tst.w	obPlasma_Count2(a0)					; are the plasma balls offscreen?
 		bne.w	Plasma_Update						; if not, branch
 		move.b	#2,obRoutine(a0)					; -> Plasma_Generator (revert back to the first wait routine)
@@ -182,20 +185,21 @@ PlasmaBall_GetIntoPosition:
 		subq.w	#1,obPlasma_Count(a1)				; decrement count of plasma balls at top
 
 	.skip_stop:
-		clr.b	obAnim(a0)
+		moveq	#0,d0								; ani_plasma_full
 		subq.w	#1,obPlasma_Timer(a0)				; decrement timer
 		bne.s	.animate							; branch if not 0
 		addq.b	#2,ob2ndRout(a0)					; -> PlasmaBall_Descend
-		move.b	#1,obAnim(a0)
+		moveq	#1,d0								; ani_plasma_short
 		move.b	#(colHarmful|colSz_12x12),obColType(a0)	; make plasma ball harmful
 		move.w	#180,obPlasma_Timer(a0)				; set timer to 3 seconds
-		moveq	#0,d0
-		move.w	(v_player+obX).w,d0
-		sub.w	obX(a0),d0
-		move.w	d0,obVelX(a0)						; move towards Sonic's x-axis position
+		moveq	#0,d1
+		move.w	(v_player+obX).w,d1
+		sub.w	obX(a0),d1
+		move.w	d1,obVelX(a0)						; move towards Sonic's x-axis position
 		move.w	#$140,obVelY(a0)					; set plasma ball to descend
 
 	.animate:
+		jsr		(NewAnim).w
 		lea		Ani_Plasma(pc),a1
 		jsr		(AnimateSprite).w
 		jmp		(DisplayAndCollision).l				; S3K TouchResponse

@@ -68,6 +68,7 @@ VanP_StoodOn:	; Routine 4
 
 	.isvanishing:
 		bchg	#0,obAnim(a0)				; switch between vanishing/appearing animations
+		bclr	#7,obAnim(a0)				; clear restart flag
 
 	.wait:
 		lea		Ani_Van(pc),a1

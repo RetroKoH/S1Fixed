@@ -187,7 +187,9 @@ Mon_BreakOpen:	; Routine 4
 		_move.b	#id_PowerUp,obID(a1)		; load monitor contents object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		move.b	obAnim(a0),obAnim(a1)
+		moveq	#$7F,d1
+		and.b	obAnim(a0),d1
+		move.b	d1,obAnim(a1)				; set powerup's type properly (TO-DO: Change Obj2E to not use obAnim here)
 
 	; REMOVE FindFreeObj. We can pick up with a1 and d0 where we left off
 		tst.b	d0							; have we already checked all object RAM?

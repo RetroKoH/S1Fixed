@@ -221,12 +221,15 @@ BossFinal_EggCrush:
 	.flash:
 		subq.b	#1,obBFZ_FlashNum(a0)		; decrement flash counter
 		beq.s	.missed						; branch if 0
-		move.b	#3,obAnim(a0)
-		bra.s	.animate
+		moveq	#3,d0						; in-cylinder animation
+		bra.s	.new_anim					; animate
 ; ===========================================================================
 
 	.missed:
-		move.b	#1,obAnim(a0)				; Eggman Laughing animation
+		moveq	#1,d0						; laugh animation
+
+	.new_anim:
+		jsr		(NewAnim).w
 
 	.animate:
 		lea		Ani_SEgg(pc),a1
@@ -315,7 +318,8 @@ BossFinal_EggFall:
 
 BossFinal_EggRun:
 		bset	#staFlipX,obStatus(a0)		; Eggman faces right
-		move.b	#4,obAnim(a0)				; use running animation
+		moveq	#4,d0						; use running animation
+		jsr		(NewAnim).w
 		jsr		(SpeedToPos).l
 		addi.w	#$10,obVelY(a0)				; apply gravity
 		cmpi.w	#boss_fz_y+$93,obY(a0)		; has Eggman hit the floor?
@@ -410,7 +414,8 @@ BFZ_Eggman_Scroll:
 BossFinal_EggShip:
 		move.l	#Map_Eggman,obMap(a0)		; use standard boss mappings
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
-		clr.b	obAnim(a0)
+		moveq	#0,d0						; boss ship
+		jsr		(NewAnim).w
 		bset	#staFlipX,obStatus(a0)		; ship faces right
 		jsr		(SpeedToPos).l
 		cmpi.w	#boss_fz_y+$34,obY(a0)		; has ship reached a certain height?
@@ -475,7 +480,8 @@ BossFinal_Flame:	; Routine 4
 		move.b	obID(a1),d0
 		cmp.b	obID(a0),d0							; has parent been deleted?
 		bne.w	BossFinal_Delete					; if yes, branch
-		move.b	#7,obAnim(a0)						; invisible
+		moveq	#7,d0								; invisible
+		jsr		(NewAnim).w
 		cmpi.b	#$C,obBFZ_Mode(a1)					; is Eggman in his ship?
 		bge.s	.chk_moving							; if yes, branch
 		bra.s	BossFinal_Update_SkipPos
@@ -484,7 +490,8 @@ BossFinal_Flame:	; Routine 4
 	.chk_moving:
 		tst.w	obVelX(a1)							; is ship moving?
 		beq.s	.not_moving							; if not, branch
-		move.b	#$B,obAnim(a0)						; use large flame animation
+		moveq	#$B,d0								; use large flame animation
+		jsr		(NewAnim).w
 
 	.not_moving:
 		lea		Ani_Eggman(pc),a1
@@ -517,12 +524,13 @@ BossFinal_Cockpit:	; Routine 6
 ; ===========================================================================
 
 	.chk_hit:
-		move.b	#1,obAnim(a0)
+		moveq	#1,d0
 		tst.b	obColProp(a1)						; has ship been hit?
 		ble.s	.explode							; if yes, branch
-		move.b	#6,obAnim(a0)						; use sweating animation
+		moveq	#6,d0								; use sweating animation
 		move.l	#Map_Eggman,obMap(a0)				; use standard boss mappings
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
+		jsr		(NewAnim).w
 		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
 		bra.w	BossFinal_Update
@@ -533,9 +541,10 @@ BossFinal_Cockpit:	; Routine 6
 		bpl.w	BossFinal_Delete					; if not, branch
 		bsr.w	BossDefeated						; spawn explosions
 		move.w	#priority2,obPriority(a0)			; RetroKoH/Devon S3K+ Priority Manager
-		clr.b	obAnim(a0)
+		moveq	#0,d0
 		move.l	#Map_FZDamaged,obMap(a0)			; use mappings for damaged ship
 		move.w	#make_art_tile(ArtTile_FZ_Eggman_Fleeing,0,0),obGfx(a0)
+		jsr		(NewAnim).w
 		lea		Ani_FZEgg(pc),a1
 		jsr		(AnimateSprite).w
 		bra.w	BossFinal_Update
