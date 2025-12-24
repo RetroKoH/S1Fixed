@@ -84,7 +84,7 @@ Ledge_Display:	; Routine 6
 		tst.b	obLedge_WaitTime(a0)		; has time reached 0?
 		bne.s	.exit						; if not, branch
 		andi.b	#~(maskOnObj+maskPush),obStatus(a1)	; Clear OnObj and Push flags ($D7)
-		move.b	#aniID_Run,obPrevAni(a1)			; restart Sonic's animation
+		move.b	#aniID_Run,obAnimNext(a1)			; restart Sonic's animation
 
 	.platform_clear:
 		clr.b	obLedge_TouchFlag(a0)

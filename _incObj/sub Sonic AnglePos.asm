@@ -133,17 +133,14 @@ loc_146C6:
 loc_146CC:
 		bset	#staAir,obStatus(a0)
 		bclr	#staPush,obStatus(a0)
-		move.b	#aniID_Run,obPrevAni(a0)	; restart Sonic's animation
+		move.b	#aniID_Run,obAnimNext(a0)	; restart Sonic's animation
 		rts	
-; ===========================================================================
 ; End of function Sonic_AnglePos
+; ===========================================================================
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	change Sonic's angle as he walks along the floor
 ; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
 
 Sonic_Angle:
 		move.b	(v_anglebuffer_left).w,d2
@@ -272,16 +269,14 @@ loc_147F8:
 loc_147FE:
 		bset	#staAir,obStatus(a0)
 		bclr	#staPush,obStatus(a0)
-		move.b	#aniID_Run,obPrevAni(a0)	; restart Sonic's animation
+		move.b	#aniID_Run,obAnimNext(a0)	; restart Sonic's animation
 		rts	
 ; End of function Sonic_WalkVertR
+; ===========================================================================
 
 ; ---------------------------------------------------------------------------
 ; Subroutine allowing Sonic to walk upside-down
 ; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
 
 Sonic_WalkCeiling:
 		moveq	#0,d0
@@ -352,16 +347,14 @@ loc_1489A:
 loc_148A0:
 		bset	#staAir,obStatus(a0)
 		bclr	#staPush,obStatus(a0)
-		move.b	#aniID_Run,obPrevAni(a0)	; restart Sonic's animation
+		move.b	#aniID_Run,obAnimNext(a0)	; restart Sonic's animation
 		rts	
 ; End of function Sonic_WalkCeiling
+; ===========================================================================
 
 ; ---------------------------------------------------------------------------
 ; Subroutine allowing Sonic to walk up a vertical slope/wall to	his left
 ; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
 
 Sonic_WalkVertL:
 		moveq	#0,d0						; MJ: clear d0
@@ -372,7 +365,7 @@ Sonic_WalkVertL:
 		ext.w	d0							; MJ: set left byte pos or neg
 		sub.w	d0,d3						; MJ: subtract from X position
 		eori.w	#$F,d3
-		lea		(v_anglebuffer_right).w,a4		; MJ: load address of the angle value set
+		lea		(v_anglebuffer_right).w,a4	; MJ: load address of the angle value set
 		movea.w	#-$10,a3
 		move.w	#$400,d6					; MJ: $800/2
 		bsr.w	FindWall					; MJ: check solidity
@@ -432,6 +425,7 @@ loc_1493C:
 loc_14942:
 		bset	#staAir,obStatus(a0)
 		bclr	#staPush,obStatus(a0)
-		move.b	#aniID_Run,obPrevAni(a0)	; restart Sonic's animation
+		move.b	#aniID_Run,obAnimNext(a0)	; restart Sonic's animation
 		rts	
 ; End of function Sonic_WalkVertL
+; ===========================================================================

@@ -364,30 +364,29 @@ BossSLZ_FaceMain:	; Routine 4
 		bne.w	BossSLZ_Delete					; if not, delete object
 	; Boss Object Fix End
 
-		moveq	#0,d0
-		moveq	#aniID_NormalFace1,d1
-		move.b	ob2ndRout(a1),d0
-		cmpi.b	#6,d0
+		moveq	#0,d1
+		moveq	#aniID_NormalFace1,d0
+		move.b	ob2ndRout(a1),d1
+		cmpi.b	#6,d1
 		bmi.s	.chk_hit
-		moveq	#aniID_DefeatFace,d1
+		moveq	#aniID_DefeatFace,d0
 		bra.s	.update
 ; ===========================================================================
 
 	.chk_hit:
 		tst.b	obColType(a1)					; is boss collision on?
 		bne.s	.chk_sonic_hurt					; if yes, branch
-		moveq	#aniID_HurtFace,d1				; use hit animation
+		moveq	#aniID_HurtFace,d0				; use hit animation
 		bra.s	.update
 ; ===========================================================================
 
 	.chk_sonic_hurt:
 		cmpi.b	#4,(v_player+obRoutine).w		; is Sonic hurt or dead?
 		blo.s	.update							; if not, branch
-		moveq	#aniID_LaughFace,d1
+		moveq	#aniID_LaughFace,d0
 
 	.update:
-		move.b	d1,obAnim(a0)					; set animation
-		cmpi.b	#$A,d0							; is ship on BossSLZ_ShipFlee?
+		cmpi.b	#$A,d1							; is ship on BossSLZ_ShipFlee?
 		bne.s	BossSLZ_Animate					; if not, branch
 		move.b	#aniID_PanicFace,obAnim(a0)		; use sweating animation
 		tst.b	obRender(a0)					; is object on-screen?
@@ -403,12 +402,12 @@ BossSLZ_FlameMain:; Routine 6
 		bne.s	BossSLZ_Delete					; if not, delete object
 	; Boss Object Fix End
 
-		move.b	#aniID_Flame1,obAnim(a0)
+		moveq	#aniID_Flame1,d0
 		cmpi.b	#$A,ob2ndRout(a1)				; is ship on BossSLZ_ShipFlee?
 		bne.s	.chk_flame						; if not, branch
 		tst.b	obRender(a0)					; is object on-screen?
 		bpl.s	BossSLZ_Delete					; if not, branch
-		move.b	#aniID_EscapeFlame,obAnim(a0)
+		moveq	#aniID_EscapeFlame,d0
 		bra.s	BossSLZ_Animate
 ; ===========================================================================
 
@@ -417,9 +416,10 @@ BossSLZ_FlameMain:; Routine 6
 		bgt.s	BossSLZ_Animate
 		cmpi.b	#4,ob2ndRout(a1)
 		blt.s	BossSLZ_Animate
-		move.b	#aniID_Blank,obAnim(a0)			; hide flame
+		moveq	#aniID_Blank,d0					; hide flame
 
 BossSLZ_Animate:
+		jsr		(NewAnim).w						; set next animation (TO-DO: Change this to fallthrough to AnimateSprite)
 		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
 

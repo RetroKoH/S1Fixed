@@ -201,7 +201,8 @@ End_MoveSon2:
 		move.w	d0,(v_player+obInertia).w
 		move.b	#$81,(v_player+obCtrlLock).w ; lock controls and disable object interaction
 		move.b	#fr_SonWait2,(v_player+obFrame).w
-		move.w	#(aniID_Wait<<8)+aniID_Wait,(v_player+obAnim).w ; use "standing" animation
+		move.b	#aniID_Wait,(v_player+obAnim).w	; use "standing" animation
+		move.b	#aniID_Wait,(v_player+obAnimNext).w
 		move.b	#3,(v_player+obTimeFrame).w
 		rts	
 ; ===========================================================================
@@ -217,5 +218,4 @@ End_MoveSon3:
 End_MoveSonExit:
 		rts	
 ; End of function End_MoveSonic
-
 ; ===========================================================================

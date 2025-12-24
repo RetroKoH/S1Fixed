@@ -379,45 +379,44 @@ BossMZ_FaceMain:			; Routine 4
 		bne.w	BossMZ_Delete					; if not, delete object
 	; Boss Object Fix End
 
-		moveq	#0,d0
-		moveq	#aniID_NormalFace1,d1
-		move.b	ob2ndRout(a1),d0				; get the ship's current routine
-		subq.w	#id_mzb_move,d0					; is ship in a movement phase?
+		moveq	#0,d1
+		moveq	#aniID_NormalFace1,d0
+		move.b	ob2ndRout(a1),d1				; get the ship's current routine
+		subq.w	#id_mzb_move,d1					; is ship in a movement phase?
 		bne.s	.notMoving						; if not, branch
 		btst	#1,obSubtype(a1)
 		beq.s	.chkHurt
 		tst.w	obVelY(a1)
 		bne.s	.chkHurt
-		moveq	#aniID_LaughFace,d1				; use laughing animation
+		moveq	#aniID_LaughFace,d0				; use laughing animation
 		bra.s	.setAnim
 ; ===========================================================================
 
 	.notMoving:
-		subq.b	#2,d0
+		subq.b	#2,d1
 		bmi.s	.chkHurt						; if not in Routine 6, branch
-		moveq	#aniID_DefeatFace,d1			; show defeated (burned) face
+		moveq	#aniID_DefeatFace,d0			; show defeated (burned) face
 		bra.s	.setAnim
 ; ===========================================================================
 
 	.chkHurt:
 		tst.b	obColType(a1)					; is boss collision on?
 		bne.s	.chkLaughing
-		moveq	#aniID_HurtFace,d1
+		moveq	#aniID_HurtFace,d0
 		bra.s	.setAnim
 ; ===========================================================================
 
 	.chkLaughing:
 		cmpi.b	#4,(v_player+obRoutine).w		; is Sonic hurt (or dead)?
 		blo.s	.setAnim						; if not, branch
-		moveq	#aniID_LaughFace,d1				; use laughing animation
+		moveq	#aniID_LaughFace,d0				; use laughing animation
 
 	.setAnim:
-		move.b	d1,obAnim(a0)					; set next face animation
-		subq.b	#4,d0							; is Eggman fleeing?
+		subq.b	#4,d1							; is Eggman fleeing?
 		bne.s	BossMZ_Animate					; if not, branch
-		move.b	#aniID_PanicFace,obAnim(a0)		; set panicking face
-		tst.b	obRender(a0)
-		bpl.s	BossMZ_Delete
+		moveq	#aniID_PanicFace,d0				; set panicking face
+		tst.b	obRender(a0)					; is object on-screen?
+		bpl.s	BossMZ_Delete					; if not, branch and delete
 		bra.s	BossMZ_Animate					; Face display
 ; ===========================================================================
 
@@ -429,10 +428,10 @@ BossMZ_FlameMain:			; Routine 6
 		bne.s	BossMZ_Delete					; if not, delete object
 	; Boss Object Fix End
 
-		move.b	#aniID_Blank,obAnim(a0)			; hide flame
+		moveq	#aniID_Blank,d0					; hide flame
 		cmpi.b	#id_mzb_flee,ob2ndRout(a1)		; has Eggman begun fleeing?
 		blt.s	.notfleeing						; if not, branch
-		move.b	#aniID_EscapeFlame,obAnim(a0)	; use the escape animation for the flame
+		moveq	#aniID_EscapeFlame,d0			; use the escape animation for the flame
 		tst.b	obRender(a0)					; is object on-screen?
 		bpl.s	BossMZ_Delete					; if not, branch
 		bra.s	BossMZ_Animate
@@ -441,9 +440,10 @@ BossMZ_FlameMain:			; Routine 6
 	.notfleeing:
 		tst.w	obVelX(a1)
 		beq.s	BossMZ_Animate
-		move.b	#aniID_Flame1,obAnim(a0)
+		moveq	#aniID_Flame1,d0
 
 BossMZ_Animate:
+		jsr		(NewAnim).w						; set next animation (TO-DO: Change this to fallthrough to AnimateSprite)
 		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
 

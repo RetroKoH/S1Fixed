@@ -89,6 +89,7 @@ Harp_Wait:	; Routine 4
 		move.w	obHarp_TimeMaster(a0),obHarp_Time(a0)	; reset timer
 		subq.b	#2,obRoutine(a0)						; run "Harp_Move" subroutine
 		bchg	#0,obAnim(a0)							; reverse animation
+		bclr	#7,obAnim(a0)							; clear restart flag
 		bra.w	RememberState
 ; ===========================================================================
 

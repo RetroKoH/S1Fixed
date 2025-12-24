@@ -57,9 +57,10 @@ Flame_On:	; Routine 2
 
 	.wait_anim:
 		subq.w	#1,obFlame_WaitTime(a0)			; decrement timer
-		bpl.w	RememberState				; if time remains, branch
+		bpl.w	RememberState					; if time remains, branch
 		move.w	obFlame_OffTime(a0),obFlame_WaitTime(a0)	; begin pause time
 		bchg	#0,obAnim(a0)					; switch between on/off animations
+		bclr	#7,obAnim(a0)					; clear restart flag
 		addq.b	#2,obRoutine(a0)				; -> Flame_Off
 		clr.b	obColType(a0)					; make object harmless
 		bra.w	RememberState

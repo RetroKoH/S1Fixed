@@ -135,7 +135,8 @@ Orb_ChkSonic:	; Routine 2
 		bhs.s	.animate					; if not, branch
 		tst.w	(v_debuguse).w				; is debug mode	on?
 		bne.s	.animate					; if yes, branch
-		move.b	#1,obAnim(a0)				; use "angry" animation
+		moveq	#1,d0						; use "angry" animation
+		jsr		(NewAnim).w
 
 	.animate:
 		lea		Ani_Orb(pc),a1

@@ -63,7 +63,7 @@ CrabAct_WaitFire:
 		move.w	#$80,obVelX(a0)				; move Crabmeat	to the right
 		bsr.w	Crab_SetAni					; select animation based on floor angle
 		addq.b	#3,d0						; use walking animation
-		move.b	d0,obAnim(a0)
+		bsr.w	NewAnim
 		bchg	#staFlipX,obStatus(a0)
 		bne.s	.noflip
 		neg.w	obVelX(a0)					; change direction
@@ -147,7 +147,7 @@ CrabAct_Walk:
 		move.b	d3,obAngle(a0)				; update angle
 		bsr.s	Crab_SetAni					; set animation based on angle
 		addq.b	#3,d0						; use walking animation
-		move.b	d0,obAnim(a0)
+		bsr.w	NewAnim
 		lea		Ani_Crab(pc),a1
 		bsr.w	AnimateSprite
 		bra.w	RememberState	
@@ -158,7 +158,7 @@ CrabAct_Walk:
 		move.w	#59,obCrab_WaitTime(a0)
 		clr.w	obVelX(a0)
 		bsr.s	Crab_SetAni					; set animation based on angle
-		move.b	d0,obAnim(a0)				; use standing animation
+		bsr.w	NewAnim						; use standing animation
 		lea		Ani_Crab(pc),a1
 		bsr.w	AnimateSprite
 		bra.w	RememberState

@@ -328,32 +328,31 @@ BossLZ_FaceMain:	; Routine 4
 		bne.s	BossLZ_Delete						; if not, delete object
 	; Boss Object Fix End
 
-		moveq	#0,d0
-		move.b	ob2ndRout(a1),d0
-		moveq	#aniID_NormalFace1,d1
+		moveq	#aniID_NormalFace1,d0
+		moveq	#0,d1
+		move.b	ob2ndRout(a1),d1
 		tst.b	obBossLZ_Defeated(a0)				; has boss been beaten?
 		beq.s	.chk_hit							; if not, branch
-		moveq	#aniID_DefeatFace,d1
+		moveq	#aniID_DefeatFace,d0
 		bra.s	.update
 ; ===========================================================================
 
 	.chk_hit:
 		tst.b	obColType(a1)						; is boss collision on?
 		bne.s	.chk_sonic_hurt						; if yes, branch
-		moveq	#aniID_HurtFace,d1					; use hurt animation
+		moveq	#aniID_HurtFace,d0					; use hurt animation
 		bra.s	.update
 ; ===========================================================================
 
 	.chk_sonic_hurt:
 		cmpi.b	#4,(v_player+obRoutine).w			; is Sonic hurt or dead?
 		blo.s	.update								; if not, branch
-		moveq	#aniID_LaughFace,d1
+		moveq	#aniID_LaughFace,d0					; use laughing animation
 
 	.update:
-		move.b	d1,obAnim(a0)						; set animation
-		cmpi.b	#$E,d0								; is boss escaping?
+		cmpi.b	#$E,d1								; is boss escaping?
 		bne.s	BossLZ_Display						; if not, branch
-		move.b	#aniID_PanicFace,obAnim(a0)			; use sweating animation
+		moveq	#aniID_PanicFace,d0					; use sweating animation
 		tst.b	obRender(a0)						; is object on-screen?
 		bpl.s	BossLZ_Delete						; if not, branch
 		bra.s	BossLZ_Display
@@ -371,14 +370,15 @@ BossLZ_FlameMain:; Routine 6
 		bne.s	BossLZ_Delete						; if not, delete object
 	; Boss Object Fix End
 
-		move.b	#aniID_Blank,obAnim(a0)				; hide flame
+		moveq	#aniID_Blank,d0						; hide flame
 		cmpi.b	#$E,ob2ndRout(a1)					; is boss escaping?
 		bne.s	BossLZ_Display						; if not, branch
-		move.b	#aniID_EscapeFlame,obAnim(a0)		; use big flame animation
+		moveq	#aniID_EscapeFlame,d0				; use big flame animation
 		tst.b	obRender(a0)						; is object on-screen?
 		bpl.s	BossLZ_Delete						; if not, branch
 
 BossLZ_Display:
+		jsr		(NewAnim).w							; set next animation (TO-DO: Change this to fallthrough to AnimateSprite)
 		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
 		movea.w	obBoss_Parent(a0),a1				; get address of parent object (ship)

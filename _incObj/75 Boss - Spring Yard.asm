@@ -471,14 +471,13 @@ BossSYZ_FaceMain:	; Routine 4
 		bne.w	BossSYZ_Delete							; if not, delete object
 	; Boss Object Fix End
 
-		moveq	#0,d0
-		moveq	#aniID_NormalFace1,d1
-		move.b	ob2ndRout(a1),d0
-		move.w	BossSYZ_FaceRoutines(pc,d0.w),d0
-		jsr		BossSYZ_FaceRoutines(pc,d0.w)			; set d1 as animation number
-		move.b	d1,obAnim(a0)							; set animation
-		move.b	(a0),d0
-		cmp.b	(a1),d0									; has ship been destroyed? (objects no longer match id)
+		moveq	#aniID_NormalFace1,d0
+		moveq	#0,d1
+		move.b	ob2ndRout(a1),d1
+		move.w	BossSYZ_FaceRoutines(pc,d1.w),d1
+		jsr		BossSYZ_FaceRoutines(pc,d1.w)			; set d1 as animation number
+		move.b	(a0),d1
+		cmp.b	(a1),d1									; has ship been destroyed? (objects no longer match id)
 		bne.s	BossSYZ_Delete							; if yes, branch
 		bra.s	BossSYZ_Display
 ; ===========================================================================
@@ -493,31 +492,31 @@ BossSYZ_FaceRoutines:	offsetTable
 ; ===========================================================================
 
 BSYZ_Face_Defeat:
-		moveq	#aniID_DefeatFace,d1					; use defeated animation
+		moveq	#aniID_DefeatFace,d0					; use defeated animation
 		rts	
 ; ===========================================================================
 
 BSYZ_Face_Escape:
-		moveq	#aniID_PanicFace,d1						; use sweating animation
+		moveq	#aniID_PanicFace,d0						; use sweating animation
 		rts	
 ; ===========================================================================
 
 BSYZ_Face_Attack:
 		cmpi.b	#2,obSubtype(a1)						; is the ship lifting a block or ascending?
 		beq.s	BSYZ_Face_ChkHit						; if yes, branch
-		moveq	#aniID_PanicFace,d1						; if not, load sweating animation first
+		moveq	#aniID_PanicFace,d0						; if not, load sweating animation first
 
 BSYZ_Face_ChkHit:
 		tst.b	obColType(a1)							; was Eggman recently hit and is flashing?
 		bne.s	.not_hit								; if not, branch
-		moveq	#aniID_HurtFace,d1						; use hit animation
+		moveq	#aniID_HurtFace,d0						; use hit animation
 		rts	
 ; ===========================================================================
 
 	.not_hit:
 		cmpi.b	#4,(v_player+obRoutine).w				; is Sonic hurt or dead?
 		blo.s	.sonic_ok								; if not, branch
-		moveq	#aniID_LaughFace,d1						; use laughing animation
+		moveq	#aniID_LaughFace,d0						; use laughing animation
 
 	.sonic_ok:
 		rts	
@@ -531,10 +530,10 @@ BossSYZ_FlameMain:; Routine 6
 		bne.s	BossSYZ_Delete							; if not, delete object
 	; Boss Object Fix End
 
-		move.b	#aniID_Blank,obAnim(a0)					; hide flame
+		moveq	#aniID_Blank,d0							; hide flame
 		cmpi.b	#$A,ob2ndRout(a1)						; is ship on BSYZ_Escape?
 		bne.s	BossSYZ_ChkMoving						; if not, branch
-		move.b	#aniID_EscapeFlame,obAnim(a0)			; use big flame animation
+		moveq	#aniID_EscapeFlame,d0					; use big flame animation
 		tst.b	obRender(a0)							; is object on-screen?
 		bpl.s	BossSYZ_Delete							; if not, branch
 		bra.s	BossSYZ_Display
@@ -547,9 +546,10 @@ BossSYZ_Delete:
 BossSYZ_ChkMoving:
 		tst.w	obVelX(a1)
 		beq.s	BossSYZ_Display							; branch if ship isn't moving
-		move.b	#aniID_Flame1,obAnim(a0)
+		moveq	#aniID_Flame1,d0						; only show the flame if Eggman is moving
 
 BossSYZ_Display:
+		jsr		(NewAnim).w								; set next animation (TO-DO: Change this to fallthrough to AnimateSprite)
 		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
 		movea.w	obBoss_Parent(a0),a1					; get address of parent object (ship)
