@@ -45,11 +45,10 @@ BossPlasma_Generator:	; Routine 2
 		beq.s	Plasma_Update						; if not, branch
 		addq.b	#2,obRoutine(a0)					; advance routine to make plasma balls
 		moveq	#1,d0								; use sparking animation
-		move.b	#$3E,obSubtype(a0)
 ; ---------------------------------------------------------------------------
 
 Plasma_Update:
-		jsr		(NewAnim).w					; set animation
+		jsr		(NewAnim).w							; set animation
 
 BossPlasma_Solid:
 		moveq	#19,d1								; width; save 4 cycles -- Filter
@@ -114,7 +113,7 @@ BossPlasma_MakeBalls:	; Routine 4
 		bset	#shPropLightning,obShieldProp(a1)	; Negated by Lightning Shield
 
 		move.w	#priority3,obPriority(a1)			; RetroKoH/Devon S3K+ Priority Manager
-		move.w	#$3E,obSubtype(a1)
+		move.b	#$3E,obPlasma_Timer(a1)
 		move.b	#4,obRender(a1)
 		bset	#7,obRender(a1)
 		move.w	a0,obPlasma_Parent(a1)				; set generator as plasma ball's parent
@@ -165,7 +164,7 @@ PlasmaBall_Init:
 		sub.w	obX(a0),d0
 		asl.w	#4,d0
 		move.w	d0,obVelX(a0)						; set speed so balls all arrive in position at the same time
-		move.w	#180,obPlasma_Timer(a0)				; set timer to 3 seconds
+		move.b	#180,obPlasma_Timer(a0)				; set timer to 3 seconds
 		addq.b	#2,ob2ndRout(a0)					; -> PlasmaBall_GetIntoPosition
 		lea		Ani_Plasma(pc),a1
 		jsr		(AnimateSprite).w
@@ -186,12 +185,12 @@ PlasmaBall_GetIntoPosition:
 
 	.skip_stop:
 		moveq	#0,d0								; ani_plasma_full
-		subq.w	#1,obPlasma_Timer(a0)				; decrement timer
+		subq.b	#1,obPlasma_Timer(a0)				; decrement timer
 		bne.s	.animate							; branch if not 0
 		addq.b	#2,ob2ndRout(a0)					; -> PlasmaBall_Descend
 		moveq	#1,d0								; ani_plasma_short
 		move.b	#(colHarmful|colSz_12x12),obColType(a0)	; make plasma ball harmful
-		move.w	#180,obPlasma_Timer(a0)				; set timer to 3 seconds
+		move.b	#180,obPlasma_Timer(a0)				; set timer to 3 seconds
 		moveq	#0,d1
 		move.w	(v_player+obX).w,d1
 		sub.w	obX(a0),d1
@@ -209,7 +208,7 @@ PlasmaBall_Descend:
 		jsr		(SpeedToPos).l						; drop down towards Sonic's locked position
 		cmpi.w	#boss_fz_y+$D0,obY(a0)				; has plasma ball moved off screen?
 		bhs.s	.delete								; if yes, branch
-		subq.w	#1,obPlasma_Timer(a0)				; decrement timer
+		subq.b	#1,obPlasma_Timer(a0)				; decrement timer
 		beq.s	.delete								; branch if 0
 		lea		Ani_Plasma(pc),a1
 		jsr		(AnimateSprite).w

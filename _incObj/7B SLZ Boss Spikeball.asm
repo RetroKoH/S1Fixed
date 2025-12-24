@@ -81,7 +81,7 @@ BossSpikeball_Fall:	; Routine 2
 		moveq	#0,d1
 
 	.no_xflip:
-		move.w	#$F0,obSubtype(a0)
+		move.b	#$F0,obBossSpike_BoomTime(a0)
 		moveq	#10,d0
 		move.b	d0,obBossSpike_Time(a0)			; set frame duration to	10 frames
 		move.b	d0,obTimeFrame(a0)
@@ -123,7 +123,7 @@ BossSpikeball_Bounce:	; Routine 4
 
 	.on_right:
 		move.b	#1,obFrame(a0)
-		move.w	#$20,obSubtype(a0)				; set timer
+		move.b	#$20,obBossSpike_BoomTime(a0)	; set detonation timer
 		addq.b	#2,obRoutine(a0)				; -> BossSpikeball_HitBoss
 		bra.w	BossSpikeball_HitBoss
 ; ===========================================================================
@@ -148,21 +148,21 @@ BossSpikeball_Bounce:	; Routine 4
 		move.w	d2,obX(a0)						; update x pos
 		clr.w	obYSub(a0)
 		clr.w	obXSub(a0)
-		subq.w	#1,obSubtype(a0)				; decrement timer
+		subq.b	#1,obBossSpike_BoomTime(a0)		; decrement detonation timer
 		bne.s	BossSpikeball_Animate			; branch if time remains
-		move.w	#$20,obSubtype(a0)				; set subtype to allow spawning of shrapnel objects
+		move.b	#$20,obBossSpike_BoomTime(a0)	; set timer to allow spawning of shrapnel objects
 		move.b	#8,obRoutine(a0)				; -> BSpike_Explode
 		rts	
 ; ===========================================================================
 
 BossSpikeball_Animate:
-		cmpi.w	#$78,obSubtype(a0)				; subtype decrements like a timer
+		cmpi.b	#$78,obBossSpike_BoomTime(a0)	; check shrapnel timer
 		bne.s	.not_fast						; branch if not at specified value
 		move.b	#5,obBossSpike_Time(a0)			; use faster animation speed
 
 	.not_fast:
-		cmpi.w	#$3C,obSubtype(a0)
-		bne.s	.not_faster
+		cmpi.b	#$3C,obBossSpike_BoomTime(a0)	; check shrapnel timer
+		bne.s	.not_faster						; branch if not at specified value
 		move.b	#2,obBossSpike_Time(a0)			; use fastest animation speed
 
 	.not_faster:
@@ -219,7 +219,7 @@ BossSpikeball_HitBoss:	; Routine 6
 		bcs.s	.boss_missed
 
 		addq.b	#2,obRoutine(a0)			; -> BSpike_Explode
-		clr.w	obSubtype(a0)
+		clr.b	obBossSpike_BoomTime(a0)
 		clr.b	obColType(a1)				; make boss harmless
 		subq.b	#1,obColProp(a1)			; deduct hit point from boss
 		bne.s	.boss_missed				; branch if not 0
@@ -262,7 +262,7 @@ BossSpikeball_HitBoss:	; Routine 6
 		moveq	#0,d1
 
 	.moving_left:
-		clr.w	obSubtype(a0)
+		clr.b	obBossSpike_BoomTime(a0)
 ; ---------------------------------------------------------------------------
 
 BossSpikeball_Update:
@@ -322,10 +322,10 @@ BossSpike_YPos:
 ; ===========================================================================
 
 BossSpikeball_Explode:	; Routine 8
-		move.b	#id_ExplosionBomb,obID(a0)	; turn object into explosion
+		move.b	#id_ExplosionBomb,obID(a0)		; turn object into explosion
 		clr.b	obRoutine(a0)
-		cmpi.w	#$20,obSubtype(a0)			; is shrapnel flag set?
-		beq.s	.make_frags					; if yes, branch
+		cmpi.b	#$20,obBossSpike_BoomTime(a0)	; is shrapnel flag set?
+		beq.s	.make_frags						; if yes, branch
 		rts	
 ; ===========================================================================
 
