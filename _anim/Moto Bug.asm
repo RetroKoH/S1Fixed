@@ -1,7 +1,8 @@
 ; ---------------------------------------------------------------------------
 ; Animation script - Motobug enemy
 ; ---------------------------------------------------------------------------
-Ani_Moto:	dc.w .stand-Ani_Moto
+Ani_Moto:
+		dc.w .stand-Ani_Moto
 		dc.w .walk-Ani_Moto
 		dc.w .smoke-Ani_Moto
 

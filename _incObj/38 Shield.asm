@@ -289,7 +289,7 @@ Shi_Flame:	; Routine 6
 
 Flame_Dissipate:
 		lea		(v_sparksobj).w,a1
-		move.b	#id_ShieldItem,obID(a1)
+		_move.l	#ShieldItem,obAddr(a1)
 		move.b	#id_Shi_Dissipate,obRoutine(a1)		; Flame_Dissipate routine
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
@@ -477,8 +477,8 @@ Lightning_CreateSpark:
 		lea		(SparkVelocities).l,a2
 		moveq	#3,d1
 
-.loop:
-		move.b	obID(a0),obID(a1)
+	.loop:
+		_move.l	obAddr(a0),obAddr(a1)
 		move.b	#id_Shi_Spark,obRoutine(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
@@ -491,7 +491,7 @@ Lightning_CreateSpark:
 		lea		object_size(a1),a1
 		dbf		d1,.loop
 
-.end:
+	.end:
 		rts
 ; End of function Lightning_CreateSpark
 ; ===========================================================================

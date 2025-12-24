@@ -174,7 +174,7 @@ LGrass_Sinking:
 		bsr.w	FindNextFreeObj
 		bne.s	.skip_fire					; branch if object slot not found
 
-		_move.b	#id_GrassFire,obID(a1)		; load sitting flame object (this spreads itself)
+		_move.l	#GrassFire,obAddr(a1)	; load sitting flame object (this spreads itself)
 		move.w	obX(a0),obX(a1)
 		move.w	obLGrass_StartY(a0),obGFire_StartY(a1)
 		addq.w	#8,obGFire_StartY(a1)

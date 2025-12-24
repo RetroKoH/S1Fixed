@@ -52,7 +52,7 @@ GMake_MakeLava:	; Routine 6
 		addq.b	#2,obRoutine(a0)			; -> GMake_Display
 		bsr.w	FindNextFreeObj
 		bne.s	.fail						; branch if object slot not found
-		_move.b	#id_LavaGeyser,obID(a1)		; load lavafall object
+		_move.l	#LavaGeyser,obAddr(a1)	; load lavafall object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.b	obSubtype(a0),obSubtype(a1)
@@ -138,7 +138,7 @@ Geyser_Main:	; Routine 0
 		bne.s	.fail
 
 .makelava:
-		_move.b	#id_LavaGeyser,obID(a1)
+		_move.l	#LavaGeyser,obAddr(a1)
 		move.l	#Map_Geyser,obMap(a1)
 		move.w	#make_art_tile(ArtTile_MZ_Lava,3,0),obGfx(a1)
 		move.b	#4,obRender(a1)

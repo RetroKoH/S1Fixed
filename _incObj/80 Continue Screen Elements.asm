@@ -62,7 +62,7 @@ CSI_MakeMiniSonic:
 ; ---------------------------------------------------------------------------
 
 CSI_MiniSonicLoop:
-		_move.b	#id_ContScrItem,obID(a1)	; load mini-Sonic object
+		_move.l	#ContScrItem,obAddr(a1)		; load mini-Sonic object
 		move.w	(a2)+,obX(a1)				; use above data for x-axis position
 		tst.b	d2							; do you have an even number of continues?
 		beq.s	.is_even					; if yes, branch

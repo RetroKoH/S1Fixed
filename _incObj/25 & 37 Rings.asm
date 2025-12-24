@@ -181,7 +181,7 @@ RLoss_Count:	; Routine 0
 	.loadpoints:	; Load points, since we still get points from enemies
 		bsr.w	FindFreeObj
 		bne.w	.setanim
-		_move.b	#id_Points,obID(a1)		; load points object
+		_move.l	#Points,obAddr(a1)		; load points object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.w	obEnemy_Combo(a0),d0
@@ -222,12 +222,12 @@ RLoss_Count:	; Routine 0
 	.loop:
 	; REMOVE FindFreeObj. It's the routine that causes such slowdown
 		lea		object_size(a1),a1
-		tst.b	obID(a1)					; is object RAM	slot empty?
+		tst.l	obAddr(a1)					; is object RAM	slot empty?
 		dbeq	d0,.loop					; Branch correction again.
 		bne.s	.resetcounter				; We're moving this line here.
 
 	.makerings:
-		_move.b	#id_RingLoss,obID(a1)		; load bouncing ring object
+		_move.l	#RingLoss,obAddr(a1)		; load bouncing ring object
 		addq.b	#2,obRoutine(a1)
 		move.w	d3,obHeight(a1)				; Height and Width
 		move.w	obX(a0),obX(a1)

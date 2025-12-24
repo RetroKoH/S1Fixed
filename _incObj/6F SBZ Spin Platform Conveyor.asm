@@ -79,7 +79,7 @@ SpinC_Init:
 		subq.b	#4,d1
 
 	.is_valid:
-		move.b	d1,SpinCon_CornerNext(a0)	; update corner counter
+		move.b	d1,SpinCon_CornerNext(a0)		; update corner counter
 
 	.no_reverse:
 		move.w	(a2,d1.w),SpinCon_TargetX(a0)	; set target x-position
@@ -127,36 +127,36 @@ SpinC_Spawner:
 
 	; RetroKoH Mass Object Load Optimization; Built off of Spirituinsanum's Ring Loss Optimization
 	; Create the first instance, then loop to create the others afterward.
-.firstPlatform:
-		_move.b	#id_SpinConvey,obID(a1)
-		move.w	(a2)+,obX(a1)			; set x-position
-		move.w	(a2)+,obY(a1)			; set y-position
+	.firstPlatform:
+		_move.l	#SpinConvey,obAddr(a1)
+		move.w	(a2)+,obX(a1)					; set x-position
+		move.w	(a2)+,obY(a1)					; set y-position
 		move.w	(a2)+,d0
-		move.b	d0,obSubtype(a1)		; set subtype, discarding upper byte
-		subq	#1,d1					; decrement for the first platform created
-		bmi.s	.endloop				; if, somehow, only one platform is needed, skip
+		move.b	d0,obSubtype(a1)				; set subtype, discarding upper byte
+		subq	#1,d1							; decrement for the first platform created
+		bmi.s	.endloop						; if, somehow, only one platform is needed, skip
 
 	; Here we begin what's replacing FindFreeObj, in order to avoid resetting its d0 every time an object is created.
 	; Slight improvement by Malachi
 		lea		(v_lvlobjspace-object_size).w,a1
 		move.w	#v_lvlobjcount,d2
 
-.loop:
+	.loop:
 	; REMOVE FindFreeObj. It's the routine that causes such slowdown
 		lea		object_size(a1),a1
-		tst.b	obID(a1)				; is object RAM	slot empty?
-		dbeq	d2,.loop				; Branch correction again.
-		bne.s	.endloop				; We're moving this line here.
+		tst.l	obAddr(a1)						; is object RAM	slot empty?
+		dbeq	d2,.loop						; branch correction again.
+		bne.s	.endloop						; we're moving this line here.
 
-.makePtfms:
-		_move.b	#id_SpinConvey,obID(a1)
-		move.w	(a2)+,obX(a1)			; set x-position
-		move.w	(a2)+,obY(a1)			; set y-position
+	.makePtfms:
+		_move.l	#SpinConvey,obAddr(a1)
+		move.w	(a2)+,obX(a1)					; set x-position
+		move.w	(a2)+,obY(a1)					; set y-position
 		move.w	(a2)+,d0
-		move.b	d0,obSubtype(a1)		; set subtype, discarding upper byte
-		dbf		d1,.loop				; repeat for number of platforms
+		move.b	d0,obSubtype(a1)				; set subtype, discarding upper byte
+		dbf		d1,.loop						; repeat for number of platforms
 
-.endloop:
+	.endloop:
 		addq.l	#4,sp
 		rts	
 ; ===========================================================================

@@ -41,7 +41,7 @@ BuildSprites:
 	; These are sanity checks to detect invalid objects which should not
 	; have been queued for display. They deliberately crash the console
 	; if they detect an invalid object.
-		tst.b	obID(a0)				; if null, branch
+		tst.l	obAddr(a0)				; if null, branch
 		beq.w	.skipObject				; was .crash
 		tst.l	obMap(a0)
 		beq.w	.skipObject				; (to be removed) jump to crash if loading a null pointer

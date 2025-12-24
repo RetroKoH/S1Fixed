@@ -63,10 +63,10 @@ End_LoadData:
 	endif
 
 End_LoadSonic:
-		move.b	#id_SonicPlayer,(v_player).w		; load Sonic object
+		_move.l	#SonicPlayer,(v_player+obAddr).w	; load Sonic object
 		bset	#staFacing,(v_player+obStatus).w	; make Sonic face left
 		move.b	#1,(f_lockctrl).w					; lock controls
-		move.w	#(btnL<<8),(v_jpadheld_dup).w			; move Sonic to the left
+		move.w	#(btnL<<8),(v_jpadheld_dup).w		; move Sonic to the left
 		move.w	#$F800,(v_player+obInertia).w		; set Sonic's speed
 		jsr		(ObjPosLoad).l
 		jsr		(ExecuteObjects).l
@@ -212,7 +212,7 @@ End_MoveSon3:
 		bne.s	End_MoveSonExit
 		addq.b	#2,(v_sonicend).w
 		move.w	#$A0,(v_player+obX).w
-		move.b	#id_EndSonic,(v_player).w ; load Sonic ending sequence object
+		_move.l	#EndSonic,(v_player+obAddr).w ; load Sonic ending sequence object
 		clr.w	(v_player+obRoutine).w
 
 End_MoveSonExit:

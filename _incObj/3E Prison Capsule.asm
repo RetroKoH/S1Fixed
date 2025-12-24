@@ -132,7 +132,7 @@ Pri_Explosion:	; Routine $A
 
 		jsr		(FindFreeObj).l
 		bne.s	.noexplosion				; branch if object slot not found
-		_move.b	#id_ExplosionBomb,obID(a1)	; load explosion object every 8 frames
+		_move.l	#ExplosionBomb,obAddr(a1)	; load explosion object every 8 frames
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		jsr		(RandomNumber).w
@@ -169,7 +169,7 @@ Pri_Explosion:	; Routine $A
 	.loop:
 		jsr		(FindFreeObj).l
 		bne.s	.fail						; branch if object slot not found
-		_move.b	#id_Animals,obID(a1)		; load animal object
+		_move.l	#Animals,obAddr(a1)		; load animal object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		add.w	d4,obX(a1)
@@ -198,7 +198,7 @@ Pri_Animals:	; Routine $C
 
 		jsr		(FindFreeObj).l
 		bne.s	.noanimal					; branch if object slot not found
-		_move.b	#id_Animals,obID(a1)		; load animal object every 8 frames
+		_move.l	#Animals,obAddr(a1)		; load animal object every 8 frames
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 ; RetroKoH End-of-Level optimization

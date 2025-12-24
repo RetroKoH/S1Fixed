@@ -226,7 +226,7 @@ PushB_ChkGeyser:
 PushB_LoadLava:
 		bsr.w	FindFreeObj
 		bne.s	.fail						; branch if object slot not found
-		_move.b	#id_GeyserMaker,obID(a1)	; load lava geyser object
+		_move.l	#GeyserMaker,obAddr(a1)		; load lava geyser object
 		move.w	obX(a0),obX(a1)
 		add.w	d2,obX(a1)
 		move.w	obY(a0),obY(a1)

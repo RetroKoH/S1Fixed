@@ -279,7 +279,7 @@ ObjMan_GoingDown_YWrap:
 ObjMan_GoingDown_NoYWrap:
 		addi.w	#$180,d3				; look one chunk down
 		cmpi.w	#$7FF,d3
-		bhi.s	ObjPosLoad_SameYRange	; don't do anything, if camera is too close to bottom
+		bhi.w	ObjPosLoad_SameYRange	; don't do anything, if camera is too close to bottom
  
 ObjPosLoad_YCheck:
 		jsr		(FindFreeObj).l			; get an empty object slot
@@ -305,19 +305,26 @@ OPLBack8:	; check, if current object needs to be loaded
 		bhi.s	OPL8	; branch, if object is out of range from the bottom
 		bset	#7,(a3)	; mark object as loaded
 	; load object
-		move.w	-2(a0),obX(a1)
+		move.w	-2(a0),obX(a1)			; set object's x position
 		move.w	(a0),d1
 		move.w	d1,d2
 		and.w	d5,d1					; get object's y position
-		move.w	d1,obY(a1)
+		move.w	d1,obY(a1)				; set object's y position
 		rol.w	#3,d2
 		andi.w	#3,d2					; get object's render flags and status
-		move.b	d2,obRender(a1)
 		move.b	d2,obStatus(a1)
-		move.b	2(a0),d0
-		andi.b	#$7F,d0
-		move.b	d0,obID(a1)
-		move.b	3(a0),obSubtype(a1)
+
+		moveq	#0,d0
+		move.b	2(a0),d0				; get object ID (we will use the lookup table here)
+		add.w	d0,d0
+		add.w	d0,d0
+		lea		(Obj_Index-4).l,a4
+		move.l	(a4,d0.w),d0			; get object's code address
+
+		move.l	d0,obAddr(a1)			; set object's code address
+		move.b	d2,obRender(a1)			; set render flags AFTER the code address
+		move.b	3(a0),obSubtype(a1)		; set object's subtype
+
 		move.w	a3,obRespawnAddr(a1)
 		bsr.w	FindFreeObj				; find new object slot
 		bne.s	ObjPosLoad_SameYRange	; brach, if there are none left
@@ -349,87 +356,97 @@ ObjPosLoad_SameYRange:
 ;  d1, d2, d7
 ; ---------------------------------------------------------------------------
 ChkLoadObj_YWrap:
-	tst.b	(a3)	; is object already loaded?
-	bpl.s	OPL9	; if not, branch
-	addq.w	#6,a0	; address of next object
-	moveq	#0,d1	; let the objects manager know that it can keep going
-	rts	
-; ---------------------------------------------------------------------------
+		tst.b	(a3)	; is object already loaded?
+		bpl.s	OPL9	; if not, branch
+		addq.w	#6,a0	; address of next object
+		moveq	#0,d1	; let the objects manager know that it can keep going
+		rts	
+; ===========================================================================
  
 OPL9:	
-	move.w	(a0)+,d7	; x_pos
-	move.w	(a0)+,d1	; there are three things stored in this word
-	move.w	d1,d2	; does this object skip y-Checks?
-	bmi.s	OPL10	; if yes, branch
-	and.w	d5,d1	; y_pos
-	cmp.w	d3,d1
-	bcc.s	LoadObj_YWrap
-	cmp.w	d4,d1
-	bls.s	LoadObj_YWrap
-	addq.w	#2,a0	; address of next object
-	moveq	#0,d1	; let the objects manager know that it can keep going
-	rts	
-; ---------------------------------------------------------------------------
+		move.w	(a0)+,d7	; x_pos
+		move.w	(a0)+,d1	; there are three things stored in this word
+		move.w	d1,d2	; does this object skip y-Checks?
+		bmi.s	OPL10	; if yes, branch
+		and.w	d5,d1	; y_pos
+		cmp.w	d3,d1
+		bcc.s	LoadObj_YWrap
+		cmp.w	d4,d1
+		bls.s	LoadObj_YWrap
+		addq.w	#2,a0	; address of next object
+		moveq	#0,d1	; let the objects manager know that it can keep going
+		rts	
+; ===========================================================================
  
 OPL10:	
-	and.w	d5,d1	; y_pos
+		and.w	d5,d1	; y_pos
  
 LoadObj_YWrap:
-	bset	#7,(a3)	; mark object as loaded
-	move.w	d7,obX(a1)
-	move.w	d1,obY(a1)
-	rol.w	#3,d2	; adjust bits
-	andi.w	#3,d2	; get render flags and status
-	move.b	d2,obRender(a1)
-	move.b	d2,obStatus(a1)
-	move.b	(a0)+,d0
-	andi.b	#$7F,d0
-	move.b	d0,obID(a1)
-	move.b	(a0)+,obSubtype(a1)
-	move.w	a3,obRespawnAddr(a1)
-	bra.s	FindFreeObj		; find new object slot
+		bset	#7,(a3)	; mark object as loaded
+		move.w	d7,obX(a1)
+		move.w	d1,obY(a1)
+		rol.w	#3,d2	; adjust bits
+		andi.w	#3,d2	; get render flags and status
+		move.b	d2,obStatus(a1)
+
+		move.b	(a0)+,d0				; get object ID (we will use the lookup table here)
+		add.w	d0,d0
+		add.w	d0,d0
+		move.l	Obj_Index-4(pc,d0.w),d0	; get object's code address
+		move.l	d0,obAddr(a1)			; set object's code address
+		move.b	d2,obRender(a1)			; set render flags AFTER the code address
+		move.b	(a0)+,obSubtype(a1)
+
+		move.w	a3,obRespawnAddr(a1)
+		bra.w	FindFreeObj		; find new object slot
+ ; ===========================================================================
  
 ;loc_17F36
 ChkLoadObj:
-	tst.b	(a3)	; is object already loaded?
-	bpl.s	OPL11	; if not, branch
-	addq.w	#6,a0	; address of next object
-	moveq	#0,d1	; let the objects manager know that it can keep going
-	rts	
+		tst.b	(a3)	; is object already loaded?
+		bpl.s	OPL11	; if not, branch
+		addq.w	#6,a0	; address of next object
+		moveq	#0,d1	; let the objects manager know that it can keep going
+		rts	
 ; ===========================================================================
 
 OPL11:	
-	move.w	(a0)+,d7	; x_pos
-	move.w	(a0)+,d1	; there are three things stored in this word
-	move.w	d1,d2		; does this object skip y-Checks?	;*6
-	bmi.s	OPL13		; if yes, branch
-	and.w	d5,d1		; y_pos
-	cmp.w	d3,d1
-	bcs.s	OPL12		; branch, if object is out of range from the top
-	cmp.w	d4,d1
-	bls.s	LoadObj		; branch, if object is in range from the bottom
+		move.w	(a0)+,d7	; x_pos
+		move.w	(a0)+,d1	; there are three things stored in this word
+		move.w	d1,d2		; does this object skip y-Checks?	;*6
+		bmi.s	OPL13		; if yes, branch
+		and.w	d5,d1		; y_pos
+		cmp.w	d3,d1
+		bcs.s	OPL12		; branch, if object is out of range from the top
+		cmp.w	d4,d1
+		bls.s	LoadObj		; branch, if object is in range from the bottom
 OPL12:
-	addq.w	#2,a0		; address of next object
-	moveq	#0,d1
-	rts		
+		addq.w	#2,a0		; address of next object
+		moveq	#0,d1
+		rts		
 ; ---------------------------------------------------------------------------
  
 OPL13:	
-	and.w	d5,d1		; y_pos
+		and.w	d5,d1		; y_pos
  
 LoadObj:
-	bset	#7,(a3)		; mark object as loaded
-	move.w	d7,obX(a1)
-	move.w	d1,obY(a1)
-	rol.w	#3,d2		; adjust bits
-	andi.w	#3,d2		; get render flags and status
-	move.b	d2,obRender(a1)
-	move.b	d2,obStatus(a1)
-    move.b	(a0)+,d0
-	andi.b	#$7F,d0
-	move.b	d0,obID(a1)
-	move.b	(a0)+,obSubtype(a1)
-	move.w	a3,obRespawnAddr(a1)
-	; continue straight to FindFreeObj
+		bset	#7,(a3)		; mark object as loaded
+		move.w	d7,obX(a1)
+		move.w	d1,obY(a1)
+		rol.w	#3,d2		; adjust bits
+		andi.w	#3,d2		; get render flags and status
+		move.b	d2,obStatus(a1)
+
+		moveq	#0,d0
+		move.b	(a0)+,d0				; get object ID (we will use the lookup table here)
+		add.w	d0,d0
+		add.w	d0,d0
+		move.l	Obj_Index-4(pc,d0.w),d0	; get object's code address
+		move.l	d0,obAddr(a1)			; set object's code address
+		move.b	d2,obRender(a1)			; set render flags AFTER the code address
+		move.b	(a0)+,obSubtype(a1)		; set object's subtype
+
+		move.w	a3,obRespawnAddr(a1)
+		bra.w	FindFreeObj				; find new object slot
 ; End of function ChkLoadObj
 ; ===========================================================================

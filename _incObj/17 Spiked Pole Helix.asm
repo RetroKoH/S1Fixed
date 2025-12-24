@@ -48,7 +48,7 @@ Hel_Main:	; Routine 0
 Hel_MakeSubsprite:
 		bsr.w	FindFreeObj
 		bne.w	.done
-		move.b	obID(a0),obID(a1)			; load obj17
+		_move.l	obAddr(a0),obAddr(a1)		; load obj17
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.l	obMap(a0),obMap(a1)

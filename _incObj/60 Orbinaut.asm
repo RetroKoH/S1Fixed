@@ -53,7 +53,7 @@ Orb_Main:	; Routine 0
 		bcs.s	.fail
 
 	.loop:
-		tst.b	obID(a1)					; is object RAM	slot empty?
+		tst.l	obAddr(a1)					; is object RAM	slot empty?
 		beq.s	.makesatellites				; if so, create object piece
 		lea		object_size(a1),a1
 		dbf		d0,.loop					; loop through object RAM
@@ -66,7 +66,7 @@ Orb_Main:	; Routine 0
 		lsr.w	#object_size_bits,d5
 		andi.w	#$7F,d5						; convert OST RAM address to id
 		move.b	d5,(a2)+					; add to list
-		_move.b	obID(a0),obID(a1)			; load spiked orb object
+		_move.l	obAddr(a0),obAddr(a1)		; load spiked orb object
 		move.b	#6,obRoutine(a1)			; use Orb_MoveOrb routine
 		move.l	obMap(a0),obMap(a1)
 		move.w	obGfx(a0),obGfx(a1)
@@ -179,10 +179,10 @@ Orb_ChkDel:
 
 Orb_MoveOrb:	; Routine 6
 		movea.w	obOrb_Parent(a0),a1
-		_cmpi.b	#id_Orbinaut,obID(a1)	; does parent object still exist?
-		bne.w	DeleteObject			; if not, delete
-		cmpi.b	#2,obFrame(a1)			; is orbinaut angry?
-		bne.w	.circle					; if not, branch
+		_cmpi.l	#Orbinaut,obAddr(a1)		; does parent object still exist?
+		bne.w	DeleteObject				; if not, delete
+		cmpi.b	#2,obFrame(a1)				; is orbinaut angry?
+		bne.w	.circle						; if not, branch
 
 	if SLZOrbinautBehaviourMod	; Mercury SLZ Orbinaut Behaviour Mod
 		cmpi.b	#2,obSubtype(a1)

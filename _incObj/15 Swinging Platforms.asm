@@ -58,7 +58,7 @@ Swing_Main:	; Routine 0
 ; ---------------------------------------------------------------------------
 
 	.length:
-		_move.b	obID(a0),d4			; d4 = object index
+		_move.l	obAddr(a0),d4		; d4 = object index
 		moveq	#0,d1
 		lea		obSubtype(a0),a2	; move address of object subtype to a2
 		move.b	(a2),d1				; move object subtype to d1
@@ -86,7 +86,7 @@ Swing_Main:	; Routine 0
 	.makechain:
 	; REMOVE FindFreeObj. It's the routine that causes such slowdown
 		lea		object_size(a1),a1
-		tst.b	obID(a1)				; is object RAM	slot empty?
+		tst.l	obAddr(a1)				; is object RAM	slot empty?
 		dbeq	d0,.makechain			; Branch correction again.
 		bne.s	.fail					; We're moving this line here.
 	; Mass Object Load Optimization End
@@ -98,7 +98,7 @@ Swing_Main:	; Routine 0
 		andi.w	#$7F,d5
 		move.b	d5,(a2)+				; store obj slot of child object in parent's SST at (a2)
 		move.b	#8,obRoutine(a1)		; goto Swing_Display next
-		_move.b	d4,obID(a1)				; load swinging	object
+		_move.l	d4,obAddr(a1)				; load swinging	object
 		move.l	obMap(a0),obMap(a1)
 		move.w	obGfx(a0),obGfx(a1)
 		bclr	#gfxPalUpper,obGfx(a1)

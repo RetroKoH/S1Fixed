@@ -117,7 +117,7 @@ LCon_Spawner:
 	; RetroKoH Mass Object Load Optimization (Based on SpirituInsanum's Ring Loss Optimization)
 	; Create the first instance, then loop to create the others afterward.
 	.firstPlatform:
-		_move.b	#id_LabyrinthConvey,obID(a1)
+		_move.l	#LabyrinthConvey,obAddr(a1)
 		move.w	(a2)+,obX(a1)				; set x-position
 		move.w	(a2)+,obY(a1)				; set y-position
 		move.w	(a2)+,d0
@@ -131,14 +131,14 @@ LCon_Spawner:
 
 	.loop:
 		; REMOVE FindFreeObj. It's the routine that causes such slowdown
-		tst.b	obID(a1)					; is object RAM	slot empty?
-		beq.s	.makePtfms					; Let's correct the branches. Here we can also skip the bne that was originally after bsr.w FindFreeObj because we already know there's a free object slot in memory.
+		tst.l	obAddr(a1)					; is object RAM	slot empty?
+		beq.s	.makePtfms					; let's correct the branches. Here we can also skip the bne that was originally after bsr.w FindFreeObj because we already know there's a free object slot in memory.
 		lea		object_size(a1),a1
-		dbf		d2,.loop					; Branch correction again.
+		dbf		d2,.loop					; branch correction again.
 		bne.s	.endloop
 
 	.makePtfms:
-		_move.b	#id_LabyrinthConvey,obID(a1)
+		_move.l	#LabyrinthConvey,obAddr(a1)
 		move.w	(a2)+,obX(a1)				; set x-position
 		move.w	(a2)+,obY(a1)				; set y-position
 		move.w	(a2)+,d0

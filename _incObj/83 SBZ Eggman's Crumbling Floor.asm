@@ -25,7 +25,7 @@ FFloor_Main:	; Routine 0
 
 	; store values for faster looping
 		lea		obFFloor_Children(a0),a2
-		_move.b	#id_FalseFloor,d1
+		_move.l	#FalseFloor,d1
 		move.l	#Map_FFloor,d2
 		move.w	#make_art_tile(ArtTile_Eggman_Trap_Floor,2,0),d3
 		moveq	#$10,d4
@@ -42,13 +42,13 @@ FFloor_Main:	; Routine 0
 	.loop:
 	; REMOVE FindFreeObj. It's the routine that causes such slowdown
 		lea		object_size(a1),a1
-		tst.b	obID(a1)					; is object RAM	slot empty?
+		tst.l	obAddr(a1)					; is object RAM	slot empty?
 		dbeq	d0,.loop					; Branch correction again.
 		bne.s	.endloop					; We're moving this line here.
 
 	.makefloor:
 		move.w	a1,(a2)+					; store the new object's address in the controller's memory (obFFloor_Children(a0) onward)
-		_move.b	d1,obID(a1)					; load block object
+		_move.l	d1,obAddr(a1)					; load block object
 		move.l	d2,obMap(a1)
 		move.w	d3,obGfx(a1)
 		move.b	#4,obRender(a1)
@@ -150,7 +150,7 @@ FFloor_Break:
 		bra.s	.makefrags					; start fragmentation
 
 	.findfreeobj:
-		tst.b	obID(a1)					; is object RAM	slot empty?
+		tst.l	obAddr(a1)					; is object RAM	slot empty?
 		beq.s	.makefrags					; if so, create object piece
 		lea		object_size(a1),a1
 		dbf		d0,.findfreeobj				; loop through object RAM

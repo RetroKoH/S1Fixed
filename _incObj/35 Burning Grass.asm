@@ -60,7 +60,7 @@ GFire_Spread:	; Routine 2
 
 		bsr.w	FindNextFreeObj					; find free object RAM slot
 		bne.s	.no_fire						; branch if not found
-		_move.b	#id_GrassFire,obID(a1)			; create another fire
+		_move.l	#GrassFire,obAddr(a1)			; create another fire
 		move.w	obX(a0),obX(a1)
 		move.w	d2,obGFire_StartY(a1)			; initial y pos (ignores platform sinking)
 		move.w	obGFire_SinkPixels(a0),obGFire_SinkPixels(a1)

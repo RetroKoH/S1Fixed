@@ -62,7 +62,7 @@ SBall_Main:	; Routine 0
 		move.w	#v_lvlobjcount,d0
 
 	.loop:
-		tst.b	obID(a1)								; is object RAM	slot empty?
+		tst.l	obAddr(a1)								; is object RAM	slot empty?
 		beq.s	.makechain								; if so, create object piece
 		lea		object_size(a1),a1
 		dbf		d0,.loop								; loop through object RAM
@@ -76,7 +76,7 @@ SBall_Main:	; Routine 0
 		andi.w	#$7F,d5									; convert to obj RAM index
 		move.b	d5,(a2)+								; add obj RAM index to list of child objects
 		move.b	#4,obRoutine(a1)						; -> SBall_Display
-		_move.b	obID(a0),obID(a1)
+		_move.l	obAddr(a0),obAddr(a1)
 		move.l	obMap(a0),obMap(a1)
 		move.w	obGfx(a0),obGfx(a1)
 		move.b	obRender(a0),obRender(a1)

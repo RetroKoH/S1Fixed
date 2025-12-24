@@ -27,7 +27,7 @@ Jun_Main:	; Routine 0
 	; This could be optimized
 		jsr		(FindFreeObj).l				; find free object RAM slot
 		bne.s	.fail						; branch if not found
-		_move.b	#id_Junction,obID(a1)		; load 2nd junction object
+		_move.l	#Junction,obAddr(a1)		; load 2nd junction object
 		addq.b	#4,obRoutine(a1)			; -> Jun_Display
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)

@@ -41,9 +41,9 @@ BossSYZ_Main:	; Routine 0
 ; ===========================================================================
 
 	.loop:
-		jsr	(FindNextFreeObj).l
+		jsr		(FindNextFreeObj).l
 		bne.s	BossSYZ_ShipMain
-		move.b	#id_BossSpringYard,obID(a1)
+		_move.l	#BossSpringYard,obAddr(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 
@@ -350,7 +350,7 @@ BossSYZ_FindBlocks:
 		move.b	obBossSYZ_BlockNum(a0),d2
 
 	.loop:
-		cmp.b	obID(a1),d1								; is object a SYZ boss block?
+		cmp.l	obAddr(a1),d1							; is object a SYZ boss block?
 		bne.s	.nextObj								; if not, branch
 		cmp.b	obSubtype(a1),d2
 		bne.s	.nextObj
@@ -467,7 +467,7 @@ BossSYZ_FaceMain:	; Routine 4
 		movea.w	obBoss_Parent(a0),a1					; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.b	#id_BossSpringYard,obID(a1)				; is the boss still loaded?
+		cmpi.l	#BossSpringYard,obAddr(a1)				; is the boss still loaded?
 		bne.w	BossSYZ_Delete							; if not, delete object
 	; Boss Object Fix End
 
@@ -526,7 +526,7 @@ BossSYZ_FlameMain:; Routine 6
 		movea.w	obBoss_Parent(a0),a1					; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.b	#id_BossSpringYard,obID(a1)				; is the boss still loaded?
+		cmpi.l	#BossSpringYard,obAddr(a1)				; is the boss still loaded?
 		bne.s	BossSYZ_Delete							; if not, delete object
 	; Boss Object Fix End
 
@@ -569,7 +569,7 @@ BossSYZ_SpikeMain:	; Routine 8
 		movea.w	obBoss_Parent(a0),a1					; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.b	#id_BossSpringYard,obID(a1)				; is the boss still loaded?
+		cmpi.l	#BossSpringYard,obAddr(a1)				; is the boss still loaded?
 		bne.s	BossSYZ_Delete							; if not, delete object
 	; Boss Object Fix End
 

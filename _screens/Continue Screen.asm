@@ -43,11 +43,11 @@ GM_Continue:
 		move.w	#659,(v_countdown).w						; set time delay to 11 seconds
 		clr.l	(v_screenposx).w
 		move.l	#$1000000,(v_screenposy).w
-		move.b	#id_ContSonic,(v_player).w					; load Sonic object
-		move.b	#id_ContScrItem,(v_continuetext).w			; load continue screen objects
-		move.b	#id_ContScrItem,(v_continuelight).w
+		_move.l	#ContSonic,(v_player+obAddr).w				; load Sonic object
+		_move.l	#ContScrItem,(v_continuetext+obAddr).w		; load continue screen objects
+		_move.l	#ContScrItem,(v_continuelight+obAddr).w
 		move.b	#4,(v_continuelight+obFrame).w
-		move.b	#id_ContScrItem,(v_continueicon).w
+		_move.l	#ContScrItem,(v_continueicon+obAddr).w
 		move.b	#4,(v_continueicon+obRoutine).w
 		jsr		(ExecuteObjects).l
 		jsr		(BuildSprites).l

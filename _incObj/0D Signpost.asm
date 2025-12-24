@@ -170,7 +170,7 @@ Sign_Spin:	; Routine 4
 		lea		Sign_SparkPos(pc,d0.w),a2		; load sparkle position data
 		bsr.w	FindFreeObj
 		bne.s	.fail
-		_move.b	#id_Rings,obID(a1)				; load rings object
+		_move.l	#Rings,obAddr(a1)				; load rings object
 		move.b	#id_Ring_Sparkle,obRoutine(a1)	; jump to ring sparkle subroutine
 		move.b	(a2)+,d0						; get relative x position
 		ext.w	d0
@@ -225,7 +225,7 @@ Sign_SonicRun:	; Routine 6
 		move.w	#btnR<<8,(v_jpadheld_dup).w		; make Sonic run to the right
 
 	.skiplockcontrols:
-		tst.b	(v_player+obID).w				; Check if Sonic's object has been deleted (because he entered the giant ring)
+		tst.l	(v_player).w					; Check if Sonic's object has been deleted (because he entered the giant ring)
 		beq.s	Sign_GotThrough
 	endif
 

@@ -46,7 +46,7 @@ Buzz_Move:		; Secondary Routine 0
 	.fire:
 		bsr.w	FindFreeObj
 		bne.w	Buzz_Animate
-		_move.b	#id_Missile,obID(a1)	; load missile object
+		_move.l	#Missile,obAddr(a1)		; load missile object
 
 		move.l	#$02000200,obVelX(a1)	; move missile downwards (obVelX), to the right (obVelY)
 

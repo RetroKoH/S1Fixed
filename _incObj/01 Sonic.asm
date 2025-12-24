@@ -90,7 +90,7 @@ Sonic_Control:	; Routine 2
 
 			bsr.w	FindFreeObj
 			bne.s	.nodec
-			move.b	#id_Effects,obID(a1)		; create puff
+			_move.l	#Effects,obAddr(a1)			; create puff
 			move.w	obX(a0),obX(a1)
 			move.w	obY(a0),obY(a1)
 			addi.w	#$A,obX(a1)
@@ -1581,24 +1581,24 @@ Sonic_TurnSuper:
 		move.b	#1,(f_super_palette).w
 		move.b	#$F,(v_palette_timer).w
 		bset	#sta2ndSuper,obStatus2nd(a0)
-		move.b	#60,(v_supersonic_frame).w		; set timer
-		move.l	#Map_SuperSonic,obMap(a0)		; change mappings
+		move.b	#60,(v_supersonic_frame).w			; set timer
+		move.l	#Map_SuperSonic,obMap(a0)			; change mappings
 		move.b	#$81,obCtrlLock(a0)
 		move.b	#aniID_Transform,obAnim(a0)
-		move.b	#id_SuperStars,(v_sstarsobj).w	; load super sonic stars object
-		lea		(v_sonspeedmax).w,a2			; Load Sonic_top_speed into a2
+		_move.b	#SuperStars,(v_sstarsobj+obAddr).w	; load super sonic stars object
+		lea		(v_sonspeedmax).w,a2				; Load Sonic_top_speed into a2
 		jsr		(ApplySpeedSettings).l
 		clr.b	obInvinc(a0)
-		bset	#sta2ndInvinc,obStatus2nd(a0)	; make Sonic invincible
+		bset	#sta2ndInvinc,obStatus2nd(a0)		; make Sonic invincible
 		move.w	#sfx_GiantRing,d0
 
 	if AmbienceMode
-		jmp		(QueueSound2).w					; play giant ring sound
+		jmp		(QueueSound2).w						; play giant ring sound
 	else
-		jsr		(QueueSound2).w					; play giant ring sound first
+		jsr		(QueueSound2).w						; play giant ring sound first
 		move.w	#bgm_Invincible,d0
-		move.b	d0,(v_lastbgmplayed).w			; store last played music
-		jmp		(QueueSound1).w					; play invincibility music
+		move.b	d0,(v_lastbgmplayed).w				; store last played music
+		jmp		(QueueSound1).w						; play invincibility music
 	endif
 ; End of function Sonic_TurnSuper
 ; ===========================================================================
@@ -2787,7 +2787,7 @@ DropDash_Release:
 	; Create drop dash dust
 		jsr		(FindFreeObj).l
 		bne.s	.noDust
-		_move.b	#id_Effects,obID(a1)		; load obj07
+		_move.l	#Effects,obAddr(a1)			; load obj07
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.b	obStatus(a0),obStatus(a1)	; match Player's x orientation

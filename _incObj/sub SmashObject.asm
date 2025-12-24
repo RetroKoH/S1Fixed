@@ -2,9 +2,6 @@
 ; Subroutine to	smash a	block (GHZ/SLZ walls [Obj3C] and MZ blocks [Obj51])
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
 SmashObject:
 		moveq	#0,d0
 		move.b	obFrame(a0),d0
@@ -18,7 +15,7 @@ SmashObject:
 		subq.w	#2,d1							; set iterator based on piece count, and decrement for the first part created
 	; S2 BuildSprites End
 		bset	#5,obRender(a0)
-		_move.b	obID(a0),d4
+		_move.l	obAddr(a0),d4
 		move.b	obRender(a0),d5
 
 	; RetroKoH Mass Object Load Optimization; Built off of Spirituinsanum's Ring Loss Optimization
@@ -33,16 +30,16 @@ SmashObject:
 		lea		(v_lvlobjspace-object_size).w,a1
 		move.w	#v_lvlobjcount,d3
 
-.loop:
+	.loop:
 	; REMOVE FindFreeObj. It's the routine that causes such slowdown
 		lea		object_size(a1),a1
-		tst.b	obID(a1)				; is object RAM	slot empty?
-		dbeq	d3,.loop				; Branch correction again.
-		bne.s	.endloop				; We're moving this line here.
+		tst.l	obAddr(a1)						; is object RAM	slot empty?
+		dbeq	d3,.loop						; branch correction again.
+		bne.s	.endloop						; we're moving this line here.
 
-.loadfrag:
+	.loadfrag:
 		move.b	#4,obRoutine(a1)
-		_move.b	d4,obID(a1)						; Obj3C or Obj51
+		_move.l	d4,obAddr(a1)					; Obj3C or Obj51
 		addq.w	#8,a3							; S2 BuildSprites Change: 5 > 8
 		move.l	a3,obMap(a1)					; Set appropriate mapping
 		move.b	d5,obRender(a1)					; Set render flags accordingly
@@ -63,11 +60,11 @@ SmashObject:
 		movea.l	(sp)+,a0
 		bsr.w	DisplaySprite1
 
-.loc_D268:
+	.loc_D268:
 		dbf		d1,.loop						; repeat for number of fragments (space permitting)
 
-.endloop:
+	.endloop:
 		move.w	#sfx_WallSmash,d0
-		jmp		(QueueSound2).w ; play smashing sound
-
+		jmp		(QueueSound2).w					; play smashing sound
 ; End of function SmashObject
+; ===========================================================================

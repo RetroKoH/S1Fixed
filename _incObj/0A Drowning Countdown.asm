@@ -293,7 +293,7 @@ Drown_Countdown:; Routine $A
 		move.w	d0,obDrown_DelayTime(a0)		; set timer as random 0-15 frames
 		jsr		(FindFreeObj).l
 		bne.w	.nocountdown					; branch if object slot not found
-		_move.b	#id_DrownCount,obID(a1)			; load object
+		_move.l	#DrownCount,obAddr(a1)			; load object
 		move.w	obX(a2),obX(a1)					; match X position to Sonic
 		moveq	#6,d0							; 6 pixels to right
 		btst	#staFacing,obStatus(a2)			; is Sonic facing left?
