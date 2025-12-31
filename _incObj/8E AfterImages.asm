@@ -5,11 +5,7 @@
 ; ---------------------------------------------------------------------------
 
 AfterImages:
-		tst.b	obRoutine(a0)
-		bne.s	AfterImages_Display
-
-AfterImages_Main:
-		addq.b	#2,obRoutine(a0)
+		_move.l	#AfterImages_Display,obAddr(a0)
 	; More compact code section by RetroKoH
 		lea		(v_player).w,a1					; followerobj1: Pulls from v_player
 		tst.b	obSubtype(a0)

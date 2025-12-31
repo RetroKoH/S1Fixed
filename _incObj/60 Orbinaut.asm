@@ -179,7 +179,8 @@ Orb_ChkDel:
 
 Orb_MoveOrb:	; Routine 6
 		movea.w	obOrb_Parent(a0),a1
-		_cmpi.l	#Orbinaut,obAddr(a1)		; does parent object still exist?
+		; does parent object still exist? (d1 = obAddr)?
+		cmp_addr	#Orbinaut,obAddr(a1),d1
 		bne.w	DeleteObject				; if not, delete
 		cmpi.b	#2,obFrame(a1)				; is orbinaut angry?
 		bne.w	.circle						; if not, branch

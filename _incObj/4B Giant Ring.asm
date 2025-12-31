@@ -99,7 +99,7 @@ GRing_Flash:	; Routine 6
 
 	.end:
 		addq.b	#2,obRoutine(a0)				; -> GRing_Delete
-		clr.w	(v_player).w 					; remove Sonic object (clears both ID and render flags)
+		clr.l	(v_player+obAddr).w 			; remove Sonic object (clears both obAddr and obRender)
 		rts
 ; ===========================================================================
 

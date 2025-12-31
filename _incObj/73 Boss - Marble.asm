@@ -375,7 +375,8 @@ BossMZ_FaceMain:			; Routine 4
 		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.l	#BossMarble,obAddr(a1)			; is the boss still loaded?
+		; is the boss still loaded (d1 = obAddr)?
+		cmp_addr	#BossMarble,obAddr(a1),d1
 		bne.w	BossMZ_Delete					; if not, delete object
 	; Boss Object Fix End
 
@@ -424,7 +425,8 @@ BossMZ_FlameMain:			; Routine 6
 		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.l	#BossMarble,obAddr(a1)			; is the boss still loaded?
+		; is the boss still loaded (d1 = obAddr)?
+		cmp_addr	#BossMarble,obAddr(a1),d1
 		bne.s	BossMZ_Delete					; if not, delete object
 	; Boss Object Fix End
 
@@ -467,7 +469,8 @@ BossMZ_TubeMain:	; Routine 8
 		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.l	#BossMarble,obAddr(a1)			; is the boss still loaded?
+		; is the boss still loaded (d1 = obAddr)?
+		cmp_addr	#BossMarble,obAddr(a1),d1
 		bne.s	BossMZ_Delete					; if not, delete object
 	; Boss Object Fix End
 

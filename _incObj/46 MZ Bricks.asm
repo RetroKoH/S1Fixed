@@ -3,14 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 MarbleBrick:
-	; LavaGaming Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.s	Brick_Action
-	; Object Routine Optimization End
-; ---------------------------------------------------------------------------
-
-Brick_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)
+		_move.l	#Brick_Action,obAddr(a0)
 		move.w	#$F0F,obHeight(a0)			; Height and Width
 		move.l	#Map_Brick,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a0)
@@ -109,6 +102,6 @@ Brick_Falling:
 		bcc.s	.exit						; if yes, branch
 		clr.b	obSubtype(a0)				; don't wobble
 
-.exit:
+	.exit:
 		rts	
 ; ===========================================================================

@@ -101,7 +101,7 @@ SSR_Move:	; Routine 2
 
 		addq.b	#2,obRoutine(a0)			; goto SSR_Wait next, and then SSR_RingBonus
 		move.w	#180,obSSR_Timer(a0)		; set time delay to 3 seconds
-		move.b	#id_SSRChaos,(v_ssresemeralds).w	; load chaos emerald object
+		_move.l	#SSRChaos,(v_ssresemeralds+obAddr).w	; load chaos emerald object
 
 SSR_Wait:	; Routine 4, 8, $C, $10
 		subq.w	#1,obSSR_Timer(a0)			; decrement timer

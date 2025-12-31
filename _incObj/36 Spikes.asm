@@ -15,13 +15,7 @@ Spik_Var:
 ; ===========================================================================
 
 Spikes:
-	; LavaGaming Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.s	Spik_Solid
-	; Object Routine Optimization End
-
-Spik_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)			; -> Spike_Solid
+		_move.l	#Spik_Solid,obAddr(a0)
 		move.l	#Map_Spike,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Spikes,0,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
@@ -38,7 +32,7 @@ Spik_Main:	; Routine 0
 		move.w	obY(a0),obSpike_StartY(a0)
 ; ---------------------------------------------------------------------------
 
-Spik_Solid:	; Routine 2
+Spik_Solid:
 		bsr.w	Spike_Move					; update position
 		moveq	#4,d2						; height for type $5x (jumping); save 4 cycles - Filter
 		cmpi.b	#5,obFrame(a0)				; is object type $5x ?
@@ -105,6 +99,10 @@ Spik_Display:
 		offscreen.w	DeleteObject,obSpike_StartX(a0)	; ProjectFM S3K Object Manager
 		bra.w	DisplaySprite					; Clownacy DisplaySprite Fix
 ; ===========================================================================
+
+; ---------------------------------------------------------------------------
+; Subroutine to move spikes
+; ---------------------------------------------------------------------------
 
 Spike_Move:
 	; LavaGaming Object Routine Optimization

@@ -1,21 +1,10 @@
 ; ---------------------------------------------------------------------------
 ; Object 69 - spinning platforms and trapdoors (SBZ)
+; TO-DO: Split these into two separate objects
 ; ---------------------------------------------------------------------------
 
 SpinPlatform:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Spin_Index(pc,d0.w),d1
-		jmp		Spin_Index(pc,d1.w)
-; ===========================================================================
-Spin_Index:		offsetTable
-		offsetTableEntry.w Spin_Main
-		offsetTableEntry.w Spin_Trapdoor
-		offsetTableEntry.w Spin_Spinner
-; ===========================================================================
-
-Spin_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)			; -> Spin_Trapdoor
+		_move.l	#Spin_Trapdoor,obAddr(a0)
 		move.l	#Map_Trap,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Trap_Door,2,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
@@ -33,8 +22,9 @@ Spin_Main:	; Routine 0
 		move.w	d0,obSpin_WaitMaster(a0)
 		tst.b	d2							; is subtype $8x?
 		bpl.s	Spin_Trapdoor				; if not, branch
+; ---------------------------------------------------------------------------
 
-		addq.b	#2,obRoutine(a0)			; -> Spin_Spinner
+		_move.l	#Spin_Spinner,obAddr(a0)
 		move.l	#Map_Spin,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Spinning_Platform,0,0),obGfx(a0)
 		move.b	#$10,obDispWid(a0)
@@ -57,7 +47,7 @@ Spin_Main:	; Routine 0
 		bra.s	Spin_Spinner
 ; ===========================================================================
 
-Spin_Trapdoor:	; Routine 2
+Spin_Trapdoor:
 		subq.w	#1,obSpin_WaitTime(a0)		; decrement timer
 		bpl.s	.animate					; if time remains, branch
 
@@ -90,7 +80,7 @@ Spin_Trapdoor:	; Routine 2
 		bra.w	RememberState
 ; ===========================================================================
 
-Spin_Spinner:	; Routine 4
+Spin_Spinner:
 		move.w	(v_framecount).w,d0			; read frame counter
 		and.w	obSpin_TimeSync(a0),d0		; apply bitmask ($3F or $7F)
 		bne.s	.delay						; branch if not 0

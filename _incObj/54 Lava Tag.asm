@@ -12,14 +12,7 @@ LTag_ColTypes:
 ; ===========================================================================
 
 LavaTag:
-	; LavaGaming Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.s	LTag_ChkDel
-	; Object Routine Optimization End
-; ---------------------------------------------------------------------------
-
-LTag_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)
+		_move.l	#LTag_ChkDel,obAddr(a0)
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
 		move.b	LTag_ColTypes(pc,d0.w),obColType(a0)
@@ -29,7 +22,7 @@ LTag_Main:	; Routine 0
 		bset	#shPropFlame,obShieldProp(a0)	; Negated by Flame Shield
 ; ---------------------------------------------------------------------------
 
-LTag_ChkDel:	; Routine 2
+LTag_ChkDel:
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
 		move.w	(v_screenposx).w,d1
@@ -46,5 +39,5 @@ LTag_ChkDel:	; Routine 2
 		bra.w	DeleteObject		; and delete object
 
 LTag_NoDel:
-		jmp  	Add_SpriteToCollisionResponseList	; S3K TouchResponse
+		jmp  	(Add_SpriteToCollisionResponseList).l	; S3K TouchResponse
 ; ===========================================================================

@@ -110,7 +110,7 @@ SonAni_Peelout:
 		dc.b	fr_SonDash11,  fr_SonDash12,  fr_SonDash13,  fr_SonDash14, afBack, 4
 		even
 SonAni_DropDash:
-		dc.b	$0, fr_SonDropDash1, fr_SonRoll5, fr_SonDropDash2, fr_SonRoll5, fr_SonDropDash3, fr_SonRoll5, fr_SonDropDash4, fr_SonRoll5
+		dc.b	0, fr_SonDropDash1, fr_SonRoll5, fr_SonDropDash2, fr_SonRoll5, fr_SonDropDash3, fr_SonRoll5, fr_SonDropDash4, fr_SonRoll5
 		dc.b	fr_SonDropDash5, fr_SonRoll5, fr_SonDropDash6, fr_SonRoll5, fr_SonDropDash7, fr_SonRoll5, fr_SonDropDash8, fr_SonRoll5, afEnd
 		even
 SonAni_Transform:

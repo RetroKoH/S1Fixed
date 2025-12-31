@@ -16,14 +16,7 @@ Disc_Radii:
 ; ===========================================================================
 
 RunningDisc:
-	; LavaGaming Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.s	Disc_Action
-	; Object Routine Optimization End
-; ---------------------------------------------------------------------------
-
-Disc_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)					; -> Disc_Action
+		_move.l	#Disc_Action,obAddr(a0)
 		move.l	#Map_Disc,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Disc,2,1),obGfx(a0)
 		move.b	#4,obRender(a0)
@@ -51,12 +44,12 @@ Disc_Main:	; Routine 0
 		move.b	d0,obAngle(a0)						; use as starting angle
 ; ---------------------------------------------------------------------------
 
-Disc_Action:	; Routine 2
+Disc_Action:
 		bsr.s	Disc_MoveSonic
 		move.w	obDisc_Rotation(a0),d1
 		add.w	d1,obAngle(a0)						; update angle (d1 is obDisc_Rotation)
 		move.b	obAngle(a0),d0
-		jsr		(CalcSine).w						; convert to sine/cosine
+		jsr		(CalcSine).w						; convert to sine/cosine TO-DO: call direct sine macro
 		move.w	obDisc_StartY(a0),d2
 		move.w	obDisc_StartX(a0),d3
 		moveq	#0,d4
@@ -82,6 +75,7 @@ Disc_ChkDel:
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to detect collision with disc and set Sonic's inertia
+; TO-DO: Move this directly into the main action code
 ; ---------------------------------------------------------------------------
 
 Disc_MoveSonic:

@@ -15,14 +15,7 @@ Conv_Widths:
 ; ===========================================================================
 
 Conveyor:
-	; LavaGaming Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.s	Conv_Action
-	; Object Routine Optimization End
-; ---------------------------------------------------------------------------
-
-Conv_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)
+		_move.l	#Conv_Action,obAddr(a0)
 
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0		; get object subtype

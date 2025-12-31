@@ -56,21 +56,17 @@ obBoss_HoverAngle:		equ objoff_3F		; 1 byte  | Used w/ CalcSine for the ship's h
 
 ; Obj01 - Sonic
 obInertia:				equ $20				; 2 bytes | ground velocity
-;						equ $25
-;						equ $28
-obAutoRollFlag:			equ $2A				; 1 byte  | auto-roll (pinball mode) flag
-;						equ $2B
-;						equ $2E
-obAnimNext:				equ $2F				; 1 byte  | next animation
+obAutoRollFlag:			equ $2A				; 1 byte  | auto-roll (pinball mode) flag (also obSpinDashFlag)
 obInvuln:				equ $30				; 1 byte  | invulnerablity timer (blinking frames when hurt)
 obInvinc:				equ $31				; 1 byte  | invincibility stars timer
 obShoes:				equ $32				; 1 byte  | speed shoes timer
+obAnimNext:				equ $34				; 1 byte  | next animation
 obCtrlLock:				equ $35				; 1 byte  | formerly f_playerctrl (0, 1, or $81)
 obFrontAngle:			equ $36				; 1 byte  | angle on ground in front of sprite
 obRearAngle:			equ $37				; 1 byte  | angle on ground behind sprite
 obOnWheel:				equ $38				; 1 byte  | on convex wheel flag
 obStatus2nd:			equ $39				; 1 byte  | secondary status counter
-obRestartTimer:			equ $3A				; 2 bytes | level restart timer
+obRestartTimer:			equ $3A				; 2 bytes | level restart timer (Also obSpinDashCounter)
 obJumping:				equ $3C				; 1 byte  | jumping flag
 obLRLock:				equ $3D				; 1 byte  | flag preventing left and right input
 obPlatformAddr:			equ $3E				; 2 bytes | address of object Sonic's on top of
@@ -242,12 +238,12 @@ obStars_TrackData:		equ objoff_30		; 4 bytes | tracking data for stars
 ; ---------------------------------------------------------------------------
 
 ; Obj22 - Buzz Bomber Badnik
-obBuzz_WaitTime:		equ objoff_32		; 2 bytes | time delay for each action
-obBuzz_Mode:			equ objoff_34		; 1 byte  | current action - 0 = flying; 1 = recently fired; 2 = near Sonic
+obBuzz_WaitTime:		equ objoff_30		; 1 byte  | time delay for each action
+obBuzz_Mode:			equ objoff_31		; 1 byte  | current action - 0 = flying; 1 = recently fired; 2 = near Sonic
 ; ---------------------------------------------------------------------------
 
 ; Obj23 - Buzz Bomber's Missile
-obMissile_WaitTime:		equ objoff_32		; 2 bytes | time delay
+obMissile_WaitTime:		equ objoff_30		; 1 bytes | time delay
 obMissile_Parent:		equ objoff_3E		; 2 bytes | RAM address of parent object
 ; ---------------------------------------------------------------------------
 

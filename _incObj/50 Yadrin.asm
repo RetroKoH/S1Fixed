@@ -3,12 +3,6 @@
 ; ---------------------------------------------------------------------------
 
 Yadrin:
-	; LavaGaming Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.s	Yad_Action
-	; Object Routine Optimization End
-
-Yad_Main:	; Routine 0
 		move.l	#Map_Yad,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Yadrin,1,0),obGfx(a0)
 		move.b	#4,obRender(a0)
@@ -22,23 +16,17 @@ Yad_Main:	; Routine 0
 		bpl.s	.keep_falling				; if not, branch
 		add.w	d1,obY(a0)					; align to floor
 		clr.w	obVelY(a0)					; stop falling
-		addq.b	#2,obRoutine(a0)			; goto Yad_Action
+		_move.l	#Yad_Move,obAddr(a0)
 		bchg	#staFlipX,obStatus(a0)
 
 	.keep_falling:
 		rts	
 ; ===========================================================================
 
-Yad_Action:	; Routine 2
-	; LavaGaming Object Routine Optimization
-		tst.b	ob2ndRout(a0)
-		bne.s	Yad_FixToFloor
-	; Object Routine Optimization End
-
 Yad_Move:
 		subq.w	#1,obYadrin_WaitTime(a0)	; decrement timer
 		bpl.s	.animate					; if time remains, branch
-		addq.b	#2,ob2ndRout(a0)			; -> Yad_FixToFloor
+		_move.l	#Yad_FixToFloor,obAddr(a0)
 		move.w	#-$100,obVelX(a0)			; move object left
 		move.b	#1,obAnim(a0)
 		bchg	#staFlipX,obStatus(a0)
@@ -55,20 +43,21 @@ Yad_FixToFloor:
 		bsr.w	SpeedToPos_XOnly
 		bsr.w	ObjFloorDist
 		cmpi.w	#-8,d1
-		blt.s	Yad_Pause					; branch if > 8px below floor
+		blt.s	.pause						; branch if > 8px below floor
 		cmpi.w	#$C,d1
-		bge.s	Yad_Pause					; branch if > 11px above floor (also detects a ledge)
+		bge.s	.pause						; branch if > 11px above floor (also detects a ledge)
 		add.w	d1,obY(a0)					; align to floor
 		bsr.s	Yad_ChkWall					; detect wall
-		bne.s	Yad_Pause					; branch if wall is hit
-	; Animate
+		bne.s	.pause						; branch if wall is hit
+
+;	.animate:
 		lea		Ani_Yad(pc),a1
 		jsr		(AnimateSprite).w
 		bra.w	RememberState	
 ; ===========================================================================
 
-Yad_Pause:
-		subq.b	#2,ob2ndRout(a0)			; goto Yad_Move
+	.pause:
+		_move.l	#Yad_Move,obAddr(a0)
 		move.w	#59,obYadrin_WaitTime(a0)	; set pause time to 1 second
 		clr.w	obVelX(a0)					; stop moving
 		clr.b	obAnim(a0)					; use standing animation

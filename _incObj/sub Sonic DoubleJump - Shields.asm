@@ -70,6 +70,7 @@ Sonic_ShieldDoNothing:
 	if InstashieldEnabled
 Sonic_InstaShieldAttack:
 		addq.b	#1,(v_shieldobj+obAnim).w				; Set animation to aniID_InstaActive
+		bclr	#7,(v_shieldobj+obAnim).w
 		move.b	#1,obDoubleJumpFlag(a0)					; Set to 1. Will be set to 2 when finished.
 		move.w	#sfx_InstaAtk,d0
 		jmp		(QueueSound2).w
@@ -80,6 +81,7 @@ Sonic_InstaShieldAttack:
 	if ShieldsMode
 Sonic_FlameShieldAttack:
 		addq.b	#1,(v_shieldobj+obAnim).w				; Set animation to aniID_FlameDash
+		bclr	#7,(v_shieldobj+obAnim).w
 		move.b	#1,obDoubleJumpFlag(a0)					; Set double jump flag
 
 	if CameraDashLag	; Camera Lag applied when dashing
@@ -102,6 +104,7 @@ Sonic_FlameShieldAttack:
 
 Sonic_BubbleShieldAttack:
 		addq.b	#1,(v_shieldobj+obAnim).w				; Set animation to aniID_BubbleBounce
+		bclr	#7,(v_shieldobj+obAnim).w
 		move.b	#1,obDoubleJumpFlag(a0)
 		clr.w	obVelX(a0)
 		clr.w	obInertia(a0)
@@ -112,6 +115,7 @@ Sonic_BubbleShieldAttack:
 
 Sonic_LightningShieldAttack:
 		addq.b	#1,(v_shieldobj+obAnim).w				; Set animation to aniID_LightningSpark
+		bclr	#7,(v_shieldobj+obAnim).w
 		move.b	#1,obDoubleJumpFlag(a0)
 		move.w	#-$580,obVelY(a0)						; y speed set to -5.5, to spring him further upward
 		clr.b	obJumping(a0)

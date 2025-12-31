@@ -3,13 +3,6 @@
 ; ---------------------------------------------------------------------------
 
 Roller:
-	; LavaGaming Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.s	Roll_Action
-	; Object Routine Optimization End
-; ---------------------------------------------------------------------------
-
-Roll_Main:	; Routine 0
 		move.w	#$E08,obHeight(a0)			; Height and Width
 		bsr.w	ObjectFall_YOnly
 		jsr		(ObjFloorDist).l
@@ -17,7 +10,7 @@ Roll_Main:	; Routine 0
 		bpl.s	.no_floor					; if not, branch
 		add.w	d1,obY(a0)					; align to floor
 		clr.w	obVelY(a0)					; stop falling
-		addq.b	#2,obRoutine(a0)			; -> Roll_Action
+		_move.l	#Roll_Action,obAddr(a0)
 		move.l	#Map_Roll,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Roller,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)

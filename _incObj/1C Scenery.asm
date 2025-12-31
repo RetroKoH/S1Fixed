@@ -3,15 +3,10 @@
 ; ---------------------------------------------------------------------------
 
 Scenery:
-	; LavaGaming Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.s	Scen_ChkDel
-	; Object Routine Optimization End
-
-Scen_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)
+		obj_addr	#Scen_ChkDel
 
 	; New Scenery Loading (RetroKoH)
+		moveq	#0,d0
 		move.b	(v_zone).w,d0			; d0 = zone
 		add.w	d0,d0
 		lea		(Scen_Index).l,a1

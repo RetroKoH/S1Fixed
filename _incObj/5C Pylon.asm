@@ -3,14 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Pylon:
-	; LavaGaming Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.s	Pyl_Display
-	; Object Routine Optimization End
-; ---------------------------------------------------------------------------
-
-Pyl_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)			; -> Pyl_Display
+		_move.l	#Pyl_Display,obAddr(a0)
 		move.l	#Map_Pylon,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SLZ_Pylon,0,1),obGfx(a0)
 		move.w	#priority0,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager

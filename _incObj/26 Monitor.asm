@@ -184,7 +184,7 @@ Mon_BreakOpen:	; Routine 4
 		clr.b	obColType(a0)
 		bsr.w	FindFreeObj
 		bne.s	.fail						; if we can't load a powerup, skip trying to load an explosion
-		_move.l	#PowerUp,obAddr(a1)		; load monitor contents object
+		_move.l	#PowerUp,obAddr(a1)			; load monitor contents object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		moveq	#$7F,d1
@@ -204,14 +204,13 @@ Mon_BreakOpen:	; Routine 4
 		bne.s	.fail						; We're moving this line here.
 
 	.explode:
-		_move.l	#ExplosionItem,obAddr(a1)	; load explosion object
-		addq.b	#2,obRoutine(a1)			; don't create an animal
+		_move.l	#ExItem_Main,obAddr(a1)		; load explosion object, but no animal
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 
 	.fail:
 	; ProjectFM S3K Objects Manager
-		move.w	obRespawnAddr(a0),d0			; get address in respawn table
+		move.w	obRespawnAddr(a0),d0		; get address in respawn table
 		movea.w	d0,a2						; load address into a2
 		bset	#0,(a2)
 	; S3K Objects Manager End

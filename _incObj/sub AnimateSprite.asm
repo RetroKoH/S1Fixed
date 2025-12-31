@@ -9,8 +9,7 @@ AnimateSprite:
 		bne.s	Anim_Run				; if not, branch
 
 		bset	#7,obAnim(a0)			; set to "no restart"
-		clr.b	obAniFrame(a0)			; reset animation
-		clr.b	obTimeFrame(a0)			; reset frame duration
+		clr.w	obAniFrame(a0)			; reset animation and frame duration
 
 Anim_Run:
 		subq.b	#1,obTimeFrame(a0)		; subtract 1 from frame duration

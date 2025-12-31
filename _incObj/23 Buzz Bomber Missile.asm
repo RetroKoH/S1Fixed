@@ -17,7 +17,7 @@ Msl_Index:	offsetTable
 ; ===========================================================================
 
 Msl_Main:	; Routine 0
-		subq.w	#1,obMissile_WaitTime(a0)		; decrement timer
+		subq.b	#1,obMissile_WaitTime(a0)		; decrement timer
 		bpl.s	Msl_ChkCancel					; branch if time remains
 		addq.b	#2,obRoutine(a0)				; -> Msl_Animate
 		move.l	#Map_Missile,obMap(a0)
@@ -59,10 +59,13 @@ Msl_Animate:	; Routine 2
 
 Msl_ChkCancel:
 		movea.w	obMissile_Parent(a0),a1
-		_cmpi.l	#ExplosionItem,obAddr(a1)	; has Buzz Bomber been destroyed?
+
+		; has Buzz Bomber been destroyed? (d0 = buzz bomber obAddr)
+		cmp_addr	#ExplosionItem,obAddr(a1),d0
+
 		; This adds a return value so that we know if the object has
 		; been freed. -- Clownacy DisplaySprite Fix
-		bne.s	.return
+		bne.s	.return					; if not, branch
 		bsr.w	DeleteObject
 		moveq	#0,d0
 
