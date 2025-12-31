@@ -598,7 +598,7 @@ DLE_SBZ2boss:
 		blo.s	locret_7298
 		bsr.w	FindFreeObj
 		bne.s	locret_7298
-		_move.l	#id_FalseFloor,obAddr(a1) ; load collapsing block object
+		_move.l	#FalseFloor,obAddr(a1)	; load collapsing block object
 		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 		moveq	#plcid_EggmanSBZ2,d0
 		bra.w	AddPLC					; load SBZ2 Eggman patterns
@@ -613,11 +613,11 @@ DLE_SBZ2boss2:
 		blo.s	loc_72C2
 		bsr.w	FindFreeObj
 		bne.s	loc_72B0
-		_move.l	#id_ScrapEggman,obAddr(a1)	; load SBZ2 Eggman object
-		addq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
+		_move.l	#ScrapEggman,obAddr(a1)	; load SBZ2 Eggman object
+		addq.w	#2,(v_dle_routine).w	; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 
 loc_72B0:
-		move.b	#1,(f_lockscreen).w			; lock screen
+		move.b	#1,(f_lockscreen).w		; lock screen
 		bra.s	loc_72C2
 ; ===========================================================================
 

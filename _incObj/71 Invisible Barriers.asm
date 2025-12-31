@@ -3,7 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Invisibarrier:
-		_move.l	#Invis_Solid,obAddr(a0)
+		obj_addr	#Invis_Solid
 		move.l	#Map_Invis,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Monitor,0,1),obGfx(a0)
 		ori.b	#4,obRender(a0)

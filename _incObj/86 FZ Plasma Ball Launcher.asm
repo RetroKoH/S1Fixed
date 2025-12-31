@@ -76,7 +76,7 @@ BossPlasma_MakeBalls:	; Routine 4
 		clr.b	obPlasma_Enabled(a0)
 		clr.w	obPlasma_Count(a0)					; initialise plasma ball count
 		moveq	#3,d2								; iterate for 4 plasma balls
-		_move.l	#id_BossPlasma,d3					; copy object ID
+		_move.l	#BossPlasma,d3						; copy object ID
 
 	; RetroKoH Object Load Optimization -- Based on Spirituinsanum Guides
 	; Here we begin what's replacing FindNextFreeObj. It'll be quicker to loop through here.

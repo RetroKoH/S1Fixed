@@ -17,7 +17,7 @@ Gar_SpitRate:
 ; ===========================================================================
 
 Gargoyle:
-		_move.l	#Gar_MakeFire,obAddr(a0)
+		obj_addr	#Gar_MakeFire
 		move.l	#Map_Gar,obMap(a0)
 		move.w	#make_art_tile(ArtTile_LZ_Gargoyle,2,0),obGfx(a0)
 		ori.b	#4,obRender(a0)

@@ -30,10 +30,10 @@ GM_Ending:
 		move.b	#30,(v_air).w
 		move.w	#id_EndZ<<8,(v_zone).w ; set level number to 0600 (extra flowers)
 		cmpi.b	#emldCount,(v_emeralds).w ; do you have all emeralds?
-		beq.s	End_LoadData	; if yes, branch
+		beq.s	.load_data	; if yes, branch
 		move.w	#(id_EndZ<<8)+1,(v_zone).w ; set level number to 0601 (no flowers)
 
-End_LoadData:
+	.load_data:
 		jsr		(AnimateLevelGfx_Init).l
 		moveq	#plcid_Ending,d0
 		bsr.w	QuickPLC							; load ending sequence patterns
@@ -168,13 +168,11 @@ End_SlowFade:
 
 		bsr.w	PaletteWhiteIn
 		bra.w	End_MainLoop
+; ===========================================================================
 
 ; ---------------------------------------------------------------------------
 ; Subroutine controlling Sonic on the ending sequence
 ; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
 
 End_MoveSonic:
 		move.b	(v_sonicend).w,d0
@@ -212,7 +210,9 @@ End_MoveSon3:
 		bne.s	End_MoveSonExit
 		addq.b	#2,(v_sonicend).w
 		move.w	#$A0,(v_player+obX).w
-		_move.l	#EndSonic,(v_player+obAddr).w ; load Sonic ending sequence object
+		move.b	(v_player+obRender).w,d0
+		_move.l	#EndSonic,(v_player+obAddr).w	; load Sonic ending sequence object
+		move.b	d0,(v_player+obRender).w
 		clr.w	(v_player+obRoutine).w
 
 End_MoveSonExit:

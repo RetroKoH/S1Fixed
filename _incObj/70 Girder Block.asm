@@ -3,7 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Girder:
-		_move.l	#Gird_Action,obAddr(a0)
+		obj_addr	#Gird_Action
 		move.l	#Map_Gird,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Girder,2,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
@@ -56,7 +56,7 @@ Gird_Action:
 Gird_ChgDir:
 		moveq	#$18,d0
 		and.b	obGird_MoveSetting(a0),d0		; get current setting (SCE Optimization)
-		lea		(.settings).l,a1
+		lea		.settings(pc),a1
 		adda.w	d0,a1							; jump to relevant settings (HAME: Replace lea instruction)
 		move.l	(a1)+,obVelX(a0)				; move the data contained in the array to obVelX and obVelY, and increment the address in a1
 		move.w	(a1)+,obGird_MoveTime(a0)		; how long to move in that direction
