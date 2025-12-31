@@ -3,30 +3,32 @@
 ; ---------------------------------------------------------------------------
 
 Yadrin:
+		move.w	#$1108,obHeight(a0)			; Height and Width
+		bsr.w	ObjectFall_YOnly
+		bsr.w	ObjFloorDist
+		tst.w	d1							; has yadrin hit the floor?
+		bpl.s	.no_floor					; if not, branch
+
+		add.w	d1,obY(a0)					; align to floor
+		clr.w	obVelY(a0)					; stop falling
+	; init
+		_move.l	#Yad_Move,obAddr(a0)
 		move.l	#Map_Yad,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Yadrin,1,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$14,obDispWid(a0)
-		move.w	#$1108,obHeight(a0)			; Height and Width
 		move.b	#(colSpecial|colSz_20x16),obColType(a0)
-		bsr.w	ObjectFall_YOnly
-		bsr.w	ObjFloorDist
-		tst.w	d1							; has yadrin hit the floor?
-		bpl.s	.keep_falling				; if not, branch
-		add.w	d1,obY(a0)					; align to floor
-		clr.w	obVelY(a0)					; stop falling
-		_move.l	#Yad_Move,obAddr(a0)
 		bchg	#staFlipX,obStatus(a0)
 
-	.keep_falling:
+	.no_floor:
 		rts	
 ; ===========================================================================
 
 Yad_Move:
 		subq.w	#1,obYadrin_WaitTime(a0)	; decrement timer
 		bpl.s	.animate					; if time remains, branch
-		_move.l	#Yad_FixToFloor,obAddr(a0)
+		obj_addr	#Yad_FindFloor
 		move.w	#-$100,obVelX(a0)			; move object left
 		move.b	#1,obAnim(a0)
 		bchg	#staFlipX,obStatus(a0)
@@ -39,7 +41,7 @@ Yad_Move:
 		bra.w	RememberState	
 ; ===========================================================================
 
-Yad_FixToFloor:
+Yad_FindFloor:
 		bsr.w	SpeedToPos_XOnly
 		bsr.w	ObjFloorDist
 		cmpi.w	#-8,d1
@@ -57,7 +59,7 @@ Yad_FixToFloor:
 ; ===========================================================================
 
 	.pause:
-		_move.l	#Yad_Move,obAddr(a0)
+		obj_addr	#Yad_Move
 		move.w	#59,obYadrin_WaitTime(a0)	; set pause time to 1 second
 		clr.w	obVelX(a0)					; stop moving
 		clr.b	obAnim(a0)					; use standing animation

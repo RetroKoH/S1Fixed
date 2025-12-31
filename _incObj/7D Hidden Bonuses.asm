@@ -23,7 +23,7 @@ HiddenBonus:
 		tst.b	(f_bigring).w				; has giant ring been collected?
 		bne.s	.chkdel						; if yes, branch
 
-		_move.l	#Bonus_Display,obAddr(a0)
+		obj_addr	#Bonus_Display
 		move.l	#Map_Bonus,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Hidden_Points,0,1),obGfx(a0)
 		ori.b	#4,obRender(a0)

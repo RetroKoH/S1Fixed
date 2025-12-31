@@ -4,7 +4,7 @@
 ; ---------------------------------------------------------------------------
 
 SpinPlatform:
-		_move.l	#Spin_Trapdoor,obAddr(a0)
+		obj_addr	#Spin_Trapdoor
 		move.l	#Map_Trap,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Trap_Door,2,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
@@ -24,7 +24,7 @@ SpinPlatform:
 		bpl.s	Spin_Trapdoor				; if not, branch
 ; ---------------------------------------------------------------------------
 
-		_move.l	#Spin_Spinner,obAddr(a0)
+		obj_addr	#Spin_Spinner
 		move.l	#Map_Spin,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Spinning_Platform,0,0),obGfx(a0)
 		move.b	#$10,obDispWid(a0)

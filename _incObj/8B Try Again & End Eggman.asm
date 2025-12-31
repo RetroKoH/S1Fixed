@@ -65,6 +65,7 @@ EEgg_Wait:	; Routine 6
 		subq.w	#1,obEndEgg_WaitTime(a0)		; decrement timer
 		bpl.s	.nochg					; branch if time remains
 		bchg	#0,obAnim(a0)
+		bclr	#7,obAnim(a0)			; clear restart flag
 		move.b	#2,obRoutine(a0)		; goto EEgg_Animate next
 
 	.nochg:

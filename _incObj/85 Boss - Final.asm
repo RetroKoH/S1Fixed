@@ -106,7 +106,7 @@ BossFinal_Main:	; Routine 0
 
 	.fail2:
 		clr.w	obBFZ_Mode(a0)				; -> BFZ_Eggman_Wait (and clear FlashNum)
-		move.b	#8,obColProp(a0)			; set number of hits to 8
+		move.b	#1,obColProp(a0)			; set number of hits to 8
 		move.w	#-1,obBFZ_CylFlag(a0)		; set crushers to activate
 ; ---------------------------------------------------------------------------
 
@@ -478,8 +478,11 @@ BossFinal_EggEscape:
 
 BossFinal_Flame:	; Routine 4
 		movea.w	obBFZ_Parent(a0),a1					; get RAM address of parent object
-		move.l	obAddr(a1),d0
-		cmp.l	obAddr(a0),d0						; has parent been deleted?
+		move.l	#$FFFFFF,d0
+		move.l	d0,d1
+		and.l	obAddr(a1),d0
+		and.l	obAddr(a0),d1
+		cmp.l	d1,d0								; has parent been deleted?
 		bne.w	BossFinal_Delete					; if yes, branch
 		moveq	#7,d0								; invisible
 		jsr		(NewAnim).w
@@ -515,8 +518,11 @@ BossFinal_Update_SkipPos:
 
 BossFinal_Cockpit:	; Routine 6
 		movea.w	obBFZ_Parent(a0),a1					; get address of parent object
-		move.l	obAddr(a1),d0
-		cmp.l	obAddr(a0),d0						; has parent been deleted?
+		move.l	#$FFFFFF,d0
+		move.l	d0,d1
+		and.l	obAddr(a1),d0
+		and.l	obAddr(a0),d1
+		cmp.l	d1,d0								; has parent been deleted?
 		bne.w	BossFinal_Delete					; if yes, branch
 		cmpi.l	#Map_Eggman,obMap(a1)				; is Eggman in his ship?
 		beq.s	.chk_hit							; if yes, branch

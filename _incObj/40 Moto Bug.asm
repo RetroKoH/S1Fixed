@@ -20,24 +20,25 @@ Moto_Animate:	; Routine 0
 ; ---------------------------------------------------------------------------
 
 MotoBug:
-		move.l	#Map_Moto,obMap(a0)
-		move.w	#make_art_tile(ArtTile_Moto_Bug,0,0),obGfx(a0)
-		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#$14,obDispWid(a0)
 		move.w	#$E08,obHeight(a0)			; Height and Width
-		move.b	#(colEnemy|colSz_20x16),obColType(a0)
 		bsr.w	ObjectFall_YOnly
 		bsr.w	ObjFloorDist
 		tst.w	d1							; has motobug hit the floor?
-		bpl.s	.notonfloor					; if not, branch
+		bpl.s	.no_floor					; if not, branch
 
 		add.w	d1,obY(a0)					; match	object's position with the floor
 		clr.w	obVelY(a0)					; stop falling
+	; init
 		_move.l	#Moto_Move,obAddr(a0)
+		move.l	#Map_Moto,obMap(a0)
+		move.w	#make_art_tile(ArtTile_Moto_Bug,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
+		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
+		move.b	#$14,obDispWid(a0)
+		move.b	#(colEnemy|colSz_20x16),obColType(a0)
 		bchg	#staFlipX,obStatus(a0)
 
-	.notonfloor:
+	.no_floor:
 		rts
 ; ===========================================================================
 
@@ -57,7 +58,7 @@ Moto_Move:
 		bra.w	RememberState
 ; ===========================================================================
 
-Moto_FindFloor:	; Routine 2
+Moto_FindFloor:
 		bsr.w	SpeedToPos_XOnly
 		jsr		(ObjFloorDist).l			; d1 = distance to floor
 		cmpi.w	#-8,d1

@@ -8,13 +8,15 @@ Roller:
 		jsr		(ObjFloorDist).l
 		tst.w	d1							; has roller hit the floor?
 		bpl.s	.no_floor					; if not, branch
+
 		add.w	d1,obY(a0)					; align to floor
 		clr.w	obVelY(a0)					; stop falling
+	; init
 		_move.l	#Roll_Action,obAddr(a0)
 		move.l	#Map_Roll,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Roller,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.w	#priority4,obPriority(a0)	; RetroKoH S3K Priority Manager
+		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$10,obDispWid(a0)
 
 	.no_floor:

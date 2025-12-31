@@ -477,9 +477,6 @@ BossSYZ_FaceMain:	; Routine 4
 		move.b	ob2ndRout(a1),d1
 		move.w	BossSYZ_FaceRoutines(pc,d1.w),d1
 		jsr		BossSYZ_FaceRoutines(pc,d1.w)			; set d1 as animation number
-		move.b	(a0),d1
-		cmp.b	(a1),d1									; has ship been destroyed? (objects no longer match id)
-		bne.s	BossSYZ_Delete							; if yes, branch
 		bra.s	BossSYZ_Display
 ; ===========================================================================
 
