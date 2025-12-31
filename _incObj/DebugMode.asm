@@ -173,15 +173,14 @@ Debug_ChgItem:
 		move.b	(v_debugitem).w,d0
 		mulu.w	#12,d0
 		move.b	4(a2,d0.w),obSubtype(a1)			; get subtype from debug list
-		move.l	8(a2,d0.w),obAddr(a1)				; create object
 
 		moveq	#0,d0
-		move.b	8(a2,d0.w),d0						; get object ID (we will use the lookup table here)
+		move.b	(a2,d0.w),d0						; get object ID (we will use the lookup table here)
 		add.w	d0,d0
 		add.w	d0,d0
 		lea		(Obj_Index-4).l,a3
 		move.l	(a3,d0.w),d0						; get object's code address
-		move.b	d0,obAddr(a1)						; set object's code address
+		_move.l	d0,obAddr(a1)						; set object's code address
 		move.b	obRender(a0),obRender(a1)
 
 	.stayindebug:

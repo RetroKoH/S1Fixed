@@ -3,13 +3,6 @@
 ; ---------------------------------------------------------------------------
 
 HiddenBonus:
-	; LavaGaming Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.w	Bonus_Display
-	; Object Routine Optimization End
-; ---------------------------------------------------------------------------
-
-Bonus_Main:	; Routine 0
 		moveq	#16,d2						; radius
 		move.w	d2,d3
 		add.w	d3,d3						; radius*2
@@ -30,7 +23,7 @@ Bonus_Main:	; Routine 0
 		tst.b	(f_bigring).w				; has giant ring been collected?
 		bne.s	.chkdel						; if yes, branch
 
-		addq.b	#2,obRoutine(a0)			; -> Bonus_Display
+		_move.l	#Bonus_Display,obAddr(a0)
 		move.l	#Map_Bonus,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Hidden_Points,0,1),obGfx(a0)
 		ori.b	#4,obRender(a0)
@@ -63,7 +56,7 @@ Bonus_Points:
 		dc.w 10			; subtype 3 - 100 points (1337Rooster points fix)
 ; ===========================================================================
 
-Bonus_Display:	; Routine 2
+Bonus_Display:
 		subq.w	#1,obBonus_WaitTime(a0)	; decrement display time
 		bmi.s	Bonus_Delete			; if time is zero, branch
 		out_of_range.s	Bonus_Delete

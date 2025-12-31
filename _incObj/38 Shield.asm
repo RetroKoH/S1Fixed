@@ -79,7 +79,7 @@ Shi_Main:	; Routine 0
 		lea     ShieldVars,a1		; Load lookup table into a1
 		adda.w	d0,a1				; get corresponding shield data
 		move.l	(a1)+,d0			; load the first longword, but we'll only use the lowest byte
-		move.b	d0,obAnim(a0)		; load correct animation
+		jsr		(NewAnim).w
 		move.l	(a1)+,obMap(a0)		; load correct mappings
 		move.l	(a1)+,obShield_ArtLoc(a0)	; load correct art location (for DPLCs)
 		move.l	(a1)+,obShield_DPLCLoc(a0)	; load correct DPLC location
@@ -95,7 +95,7 @@ Shi_Main:	; Routine 0
 			move.l	#Art_Shield_L2,d1				; Load art for sparks
 			move.w	#ArtTile_LShield_Sparks*$20,d2	; load it just after the lightning shield art
 			moveq	#$50,d3
-			jsr		(QueueDMATransfer).w
+			jmp		(QueueDMATransfer).w
 
 	.notLightning:
 		endif
@@ -135,13 +135,14 @@ Shi_Shield:	; Routine 2
 		bne.s	.noshift
 	endif
 		
-.shift:
+	.shift:
 		sub.w	d1,obX(a0)
 		btst	#staFlipX,d0	; X-Flip sprite bit
 		beq.s	.noshift
 		add.w	d1,d1
 		add.w	d1,obX(a0)
-.noshift:
+
+	.noshift:
 	; Shield/Invincibility Positioning Fix End
 
 		lea		Ani_Shield(pc),a1
@@ -149,24 +150,28 @@ Shi_Shield:	; Routine 2
 		bsr.w	Shield_LoadGfx		; RetroKoH VRAM Overhaul
 		move.w	#priority1,d0		; RetroKoH/Devon S3K+ Priority Manager
 		jmp		(DisplaySprite2).l
+; ===========================================================================
 
-.remove:
+	.remove:
 		rts	
+; ===========================================================================
 
-; Commented out code is useful for hacks w/ additional characters.
-.delete:
+	; Commented out code is useful for hacks w/ additional characters.
+	.delete:
 	if InstashieldEnabled
-;		tst.b	(v_player+obCharID).w		; You would need to add obCharID to player SST to use this.
-;		bne.s	.notSonic
+	;	tst.b	(v_player+obCharID).w		; You would need to add obCharID to player SST to use this.
+	;	bne.s	.notSonic
 		clr.b	obRoutine(a0)
 		move.b	#shTypeInsta,obSubtype(a0)	; Replace shield with instashield
 		rts
+; ===========================================================================
 
-;.notSonic:
-; Normal .delete (without instashield) jumps straight to this line.
+	;.notSonic:
+	; Normal .delete (without instashield) jumps straight to this line.
 	endif
 		jmp		(DeleteObject).l			; Delete if instashield isn't enabled
 ; ===========================================================================
+
 	if InstashieldEnabled
 Shi_Insta:	; Routine 4
 
@@ -189,20 +194,20 @@ Shi_Insta:	; Routine 4
 		beq.s	.chkframe
 		move.b	#2,(v_player+obDoubleJumpFlag).w		; Advance flag (We can now rev the Drop Dash)
 
-.chkframe:
+	.chkframe:
 		tst.b	obFrame(a0)
 		beq.s	.loaddplc
 		cmpi.b	#3,obFrame(a0)
 		bne.s	.display
 
-.loaddplc:
+	.loaddplc:
 		bsr.w	Shield_LoadGfx
 
-.display:
+	.display:
 		move.w	#priority1,d0		; RetroKoH/Devon S3K+ Priority Manager
 		jmp		(DisplaySprite2).l
 
-.remove:
+	.remove:
 		rts
 ; ===========================================================================
 	endif
@@ -244,13 +249,14 @@ Shi_Flame:	; Routine 6
 		bne.s	.noshift
 	endif
 	
-.shift:
+	.shift:
 		sub.w	d1,obX(a0)
 		btst	#staFlipX,d0	; X-Flip sprite bit
 		beq.s	.noshift
 		add.w	d1,d1
 		add.w	d1,obX(a0)
-.noshift:
+
+	.noshift:
 	; Shield/Invincibility Positioning Fix End
 
 		lea		Ani_Shield(pc),a1
@@ -262,27 +268,29 @@ Shi_Flame:	; Routine 6
 		bcs.s	.display
 		move.w	#priority4,d0		; RetroKoH/Devon S3K+ Priority Manager
 
-.display:
+	.display:
 		jmp		(DisplaySprite2).l
+; ===========================================================================
 
-.remove:
+	.remove:
 		rts
+; ===========================================================================
 
-.dissipate: ; SPECIAL EFFECT FOR UNDERWATER
+	.dissipate: ; SPECIAL EFFECT FOR UNDERWATER
 		bsr.s	Flame_Dissipate
 
-; Commented out code is useful for hacks w/ additional characters.
-.delete:
+	; Commented out code is useful for hacks w/ additional characters.
+	.delete:
 		andi.b	#mask2ndRmvShield,(v_player+obStatus2nd).w
 	if InstashieldEnabled
-;		tst.b	(v_player+obCharID).w		; You would need to add obCharID to player SST to use this.
-;		bne.s	.notSonic
+	;	tst.b	(v_player+obCharID).w		; You would need to add obCharID to player SST to use this.
+	;	bne.s	.notSonic
 		clr.b	obRoutine(a0)
 		move.b	#shTypeInsta,obSubtype(a0)	; Replace shield with instashield
 		rts
 
-;.notSonic:
-; Normal .delete (without instashield) jumps straight to this line.
+	;.notSonic:
+	; Normal .delete (without instashield) jumps straight to this line.
 	endif
 		jmp		(DeleteObject).l			; Delete if instashield isn't enabled
 ; ===========================================================================
@@ -334,13 +342,14 @@ Shi_Bubble:	; Routine 8
 			bne.s	.noshift
 		endif
 		
-.shift:
+	.shift:
 		sub.w	d1,obX(a0)
 		btst	#staFlipX,d0	; X-Flip sprite bit
 		beq.s	.noshift
 		add.w	d1,d1
 		add.w	d1,obX(a0)
-.noshift:
+
+	.noshift:
 	; Shield/Invincibility Positioning Fix End
 
 		lea		Ani_Shield(pc),a1
@@ -352,24 +361,27 @@ Shi_Bubble:	; Routine 8
 		bcs.s	.display
 		move.w	#priority4,d0		; RetroKoH/Devon S3K+ Priority Manager
 
-.display:
+	.display:
 		jmp		(DisplaySprite2).l
+; ===========================================================================
 
-.remove:
+	.remove:
 		rts
+; ===========================================================================
 
-; Commented out code is useful for hacks w/ additional characters.
-.delete:
+	; Commented out code is useful for hacks w/ additional characters.
+	.delete:
 		andi.b	#mask2ndRmvShield,(v_player+obStatus2nd).w
 	if InstashieldEnabled
-;		tst.b	(v_player+obCharID).w		; You would need to add obCharID to player SST to use this.
-;		bne.s	.notSonic
+	;	tst.b	(v_player+obCharID).w		; You would need to add obCharID to player SST to use this.
+	;	bne.s	.notSonic
 		clr.b	obRoutine(a0)
 		move.b	#shTypeInsta,obSubtype(a0)	; Replace shield with instashield
 		rts
+; ===========================================================================
 
-;.notSonic:
-; Normal .delete (without instashield) jumps straight to this line.
+	;.notSonic:
+	; Normal .delete (without instashield) jumps straight to this line.
 	endif
 		jmp		(DeleteObject).l			; Delete if instashield isn't enabled
 ; ===========================================================================
@@ -408,21 +420,25 @@ Shi_Lightning:	; Routine $A
 			bne.s	.noshift
 		endif
 		
-.shift:
+	.shift:
 		sub.w	d1,obX(a0)
 		btst	#staFlipX,d0	; X-Flip sprite bit
 		beq.s	.noshift
 		add.w	d1,d1
 		add.w	d1,obX(a0)
-.noshift:
+
+	.noshift:
 	; Shield/Invincibility Positioning Fix End
 	
-		cmpi.b	#aniID_LightningShield,obAnim(a0)
+		moveq	#$7F,d0
+		and.b	obAnim(a0),d0
+		cmpi.b	#aniID_LightningShield,d0
 		beq.s	.animate
 		bsr.w	Lightning_CreateSpark
 		move.b	#aniID_LightningShield,obAnim(a0)
+		bclr	#7,obAnim(a0)
 
-.animate:
+	.animate:
 		lea		Ani_Shield(pc),a1
 		jsr		(AnimateSprite).w
 		bsr.w	Shield_LoadGfx
@@ -432,18 +448,21 @@ Shi_Lightning:	; Routine $A
 		bcs.s	.display
 		move.w	#priority4,d0		; RetroKoH/Devon S3K+ Priority Manager
 
-.display:
+	.display:
 		jmp		(DisplaySprite2).l
+; ===========================================================================
 
-.remove:
+	.remove:
 		rts
+; ===========================================================================
 
-.checkflash: ; SPECIAL EFFECT FOR UNDERWATER (To be added later)
+	.checkflash: ; SPECIAL EFFECT FOR UNDERWATER (To be added later)
 		;tst.w	(v_pcyc_time).w
 		bra.s	Lightning_FlashWater
+; ===========================================================================
 
-; Commented out code is useful for hacks w/ additional characters.
-.delete:
+	; Commented out code is useful for hacks w/ additional characters.
+	.delete:
 		andi.b	#mask2ndRmvShield,(v_player+obStatus2nd).w
 	if InstashieldEnabled
 ;		tst.b	(v_player+obCharID).w		; You would need to add obCharID to player SST to use this.
@@ -451,9 +470,10 @@ Shi_Lightning:	; Routine $A
 		clr.b	obRoutine(a0)
 		move.b	#shTypeInsta,obSubtype(a0)	; Replace shield with instashield
 		rts
+; ===========================================================================
 
-;.notSonic:
-; Normal .delete (without instashield) jumps straight to this line.
+	;.notSonic:
+	; Normal .delete (without instashield) jumps straight to this line.
 	endif
 		jmp		(DeleteObject).l			; Delete if instashield isn't enabled
 ; ===========================================================================
@@ -465,10 +485,11 @@ Lightning_FlashWater:
 		lea		(v_palette_water_fading).w,a2
 		moveq	#$1F,d0
 
-.loop:
+	.loop:
 		move.l	(a1),(a2)+
 		move.l	#$EEE0EEE,(a1)+
 		dbf		d0,.loop
+
 		move.w	#0,-$40(a1)
 		rts
 ; ===========================================================================
@@ -496,13 +517,12 @@ Lightning_CreateSpark:
 ; End of function Lightning_CreateSpark
 ; ===========================================================================
 
-; ---------------------------------------------------------------------------
 SparkVelocities:
 		dc.w  $FE00, $FE00
 		dc.w   $200, $FE00
 		dc.w  $FE00,  $200
 		dc.w   $200,  $200
-; ---------------------------------------------------------------------------
+; ===========================================================================
 
 Shi_FlameDissipate: ; Routine $C
 		jsr		(SpeedToPos).l
@@ -513,11 +533,11 @@ Shi_FlameDissipate: ; Routine $C
 		cmpi.b	#5,obFrame(a0)
 		beq.s	.delete
 
-.display:
+	.display:
 		move.w	#priority5,d0		; RetroKoH/Devon S3K+ Priority Manager
 		jmp		(DisplaySprite2).l
 
-.delete:
+	.delete:
 		jmp		(DeleteObject).l
 ; ===========================================================================
 
@@ -531,7 +551,7 @@ Shi_LightningSpark: ; Routine $E
 		move.w	#priority1,d0		; RetroKoH/Devon S3K+ Priority Manager
 		jmp		(DisplaySprite2).l
 
-.delete:
+	.delete:
 		jmp		(DeleteObject).l
 ; ===========================================================================
 
@@ -549,16 +569,16 @@ Shi_LightningDestroy: ; Routine $10
 	endif
 		jsr		(DeleteObject).l			; Delete if instashield isn't enabled
 
-.cont:
+	.cont:
 		lea		(v_palette_water_fading).w,a1
 		lea		(v_palette_water).w,a2
 		moveq	#$1F,d0
 
-.loop:
+	.loop:
 		move.l	(a1)+,(a2)+
 		dbf		d0,.loop
 
-.return:
+	.return:
 		rts
 ; ===========================================================================
 	endif
@@ -582,7 +602,7 @@ Stars_LoadGfx:
 		bmi.s	.nochange					; if zero, branch
 		move.w	#(ArtTile_Shield*tile_size),d4
 
-.readentry:
+	.readentry:
 		moveq	#0,d1
 		move.w	(a2)+,d1					; S3K .b to .w
 		move.w	d1,d3						; S3K
@@ -598,7 +618,7 @@ Stars_LoadGfx:
 		jsr		(QueueDMATransfer).w
 		dbf		d5,.readentry				; repeat for number of entries
 
-.nochange:
+	.nochange:
 		rts
 ; ===========================================================================
 

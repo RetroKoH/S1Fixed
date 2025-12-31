@@ -293,6 +293,7 @@ Touch_Ring_AttractRing:
 		movea.l	a1,a3
 		jsr		(FindFreeObj).l
 		bne.w	.noring
+
 		_move.l	#RingLoss,obAddr(a1)	; Create attracted ring in the location of the ring in the Ring Manager
 		move.b	#$A,obRoutine(a1)		; Set routine to Attracted Ring
 		move.w	(a3),obX(a1)			; Set x-position of object based on x-position in table

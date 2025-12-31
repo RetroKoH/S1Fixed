@@ -48,14 +48,14 @@ ESon_MakeEmeralds:	; Routine 2
 		move.b	d0,obAnim(a0)					; use "hold emeralds" animation
 		move.b	d0,obAniFrame(a0)				; reset animation
 		move.b	d0,obTimeFrame(a0)				; reset frame duration
-		move.b	#id_EndChaos,(v_endemeralds).w	; load chaos emeralds objects
+		_move.l	#EndChaos,(v_endemeralds+obAddr).w	; load chaos emeralds objects
 
 	.wait:
 		jmp		(DisplaySprite).l	
 ; ===========================================================================
 
 ESon_LookUp:	; Routine 6
-		cmpi.w	#$2000,((v_endemeralds+echa_radius)&$FFFFFF).l	; has emerald circle expanded fully?
+		cmpi.w	#$2000,((v_endemeralds+obEChaos_Radius)&$FFFFFF).l	; has emerald circle expanded fully?
 		bne.s	.wait							; if not, branch
 
 		move.b	#1,(f_restart).w				; set level to restart (causes flash)
@@ -93,7 +93,7 @@ ESon_MakeLogo:	; Routine $C
 		addq.b	#2,ob2ndRout(a0)				; -> ESon_Animate
 		move.b	#180,obESonic_WaitTime(a0)		; set delay to 3 seconds
 		move.b	#2,obAnim(a0)					; use "leaping" animation
-		move.b	#id_EndSTH,(v_endlogo).w		; load "SONIC THE HEDGEHOG" object
+		_move.l	#EndSTH,(v_endlogo+obAddr).w	; load "SONIC THE HEDGEHOG" object
 
 	.wait:
 		jmp		(DisplaySprite).l	
@@ -111,7 +111,7 @@ ESon_Leap:	; Routine $10
 		move.w	#priority2,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#5,obFrame(a0)
 		move.b	#2,obAnim(a0)					; use "leaping" animation
-		move.b	#id_EndSTH,(v_endlogo).w		; load "SONIC THE HEDGEHOG" object
+		_move.l	#EndSTH,(v_endlogo+obAddr).w	; load "SONIC THE HEDGEHOG" object
 
 ESon_Animate:	; Routine 4, $A, $E, $12
 		lea		AniScript_ESon(pc),a1

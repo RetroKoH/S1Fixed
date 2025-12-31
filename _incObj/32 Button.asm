@@ -1,17 +1,9 @@
-
 ; ---------------------------------------------------------------------------
 ; Object 32 - buttons (MZ, SYZ, LZ, SBZ)
 ; ---------------------------------------------------------------------------
 
 Button:
-	; LavaGaming Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.s	But_Pressed
-	; Object Routine Optimization End
-; ---------------------------------------------------------------------------
-
-But_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)
+		_move.l	#But_Pressed,obAddr(a0)
 		move.l	#Map_But,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Button,0,0),obGfx(a0)
 		cmpi.b	#id_MZ,(v_zone).w				; is level Marble Zone?
@@ -84,10 +76,13 @@ But_Display:
 ;
 ; output:
 ;	d0 = 0 if not found; 1 if found
+;
+; TO-DO: Rework this to link upon init, instead of running a RAM-wide check every frame
 ; ---------------------------------------------------------------------------
 
 But_MZPushBlock:
 		move.w	d3,-(sp)
+		moveq	#0,d1
 		move.w	obX(a0),d2
 		move.w	obY(a0),d3
 		subi.w	#$10,d2					; d2 = x pos. of button left edge
@@ -98,9 +93,11 @@ But_MZPushBlock:
 		move.w	#v_lvlobjcount,d6
 
 	.loop:
-		tst.b	obRender(a1)
-		bpl.s	.next
-		cmpi.l	#PushBlock,obAddr(a1)	; is the object a green MZ block?
+		_move.l	obAddr(a1),d1			; move obRender and obAddr to d1
+		tst.l	d1						; is button on screen?
+		bpl.s	.next					; if not, branch
+		andi.l	#$FFFFFF,d1				; isolate object code address
+		cmpi.l	#PushBlock,d1			; is the object a green MZ block?
 		beq.s	.found_block			; if yes, branch
 
 	.next:
@@ -111,16 +108,12 @@ But_MZPushBlock:
 		moveq	#0,d0
 		rts	
 ; ===========================================================================
-; TO-DO remove table lookup and load directly
-	.sizes:	dc.b $10, $10				; x and y radius of pushable block
-; ===========================================================================
 
 	.found_block:
 		moveq	#1,d0
 		andi.w	#$3F,d0
 		add.w	d0,d0					; d0 = 2
-		lea	.sizes-2(pc,d0.w),a2
-		move.b	(a2)+,d1
+		move.b	obDispWid(a0),d1		; load width ($10) -- This allows for users to easily change size if desired
 		ext.w	d1						; d1 = $10
 		move.w	obX(a1),d0				; d0 = x pos. of pblock
 		sub.w	d1,d0
@@ -137,7 +130,7 @@ But_MZPushBlock:
 		bhi.s	.next					; if not, branch
 
 	.pblock_x_ok:
-		move.b	(a2)+,d1
+		move.b	obDispWid(a0),d1		; load width again
 		ext.w	d1						; d1 = $10
 		move.w	obY(a1),d0
 		sub.w	d1,d0

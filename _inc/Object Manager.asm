@@ -33,9 +33,10 @@ OPL_ClrList:
 		dbf     d1,OPL_ClrList			; clear	pre-destroyed object list
 
 	;Mercury SLZ Pylons Fix
-		cmpi.b	#id_SLZ,(v_zone).w			; are we currently in Star Light Zone?
-		bne.s	.notSLZ						; if not, branch
-		move.b	#id_Pylon,(v_lvlobjspace).w	; Manually load the pylon object.
+		cmpi.b	#id_SLZ,(v_zone).w				; are we currently in Star Light Zone?
+		bne.s	.notSLZ							; if not, branch
+		_move.l	#Pylon,(v_lvlobjspace+obAddr).w	; Manually load the pylon object.
+
 .notSLZ:
 	; SLZ Pylons Fix End
 		

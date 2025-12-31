@@ -244,14 +244,14 @@ priority7:	equ	v_spritequeue+$380
 
 ; ; Devon Subsprite OSTs -- Subsprite properties set DO override some standard object SSTs.
 ; ; What is overridden really depends on the amount of sub sprites you have set to display.
-; mainspr_routine:		equ $A	; added by RetroKoH
-; mainspr_mapframe:		equ $B	; last byte of obX (2nd byte of obScreenY)
+; mainspr_routine:			equ $A	; added by RetroKoH
+; mainspr_mapframe:			equ $B	; last byte of obX (2nd byte of obScreenY)
 ; mainspr_width:			equ $E
-; mainspr_childsprites:	equ $F	; amount of child sprites
-; mainspr_height:			equ $14
-; subspr_data:			equ $10
+; mainspr_childsprites:		equ $F	; amount of child sprites
+; subspr_data:				equ $10
 ; sub2_x_pos:				equ $10	; x_vel
 ; sub2_y_pos:				equ $12	; y_vel
+; mainspr_height:			equ $14
 ; sub2_mapframe:			equ $15
 ; sub3_x_pos:				equ $16	; y_radius
 ; sub3_y_pos:				equ $18 ; priority
@@ -274,7 +274,7 @@ priority7:	equ	v_spritequeue+$380
 ; sub9_x_pos:				equ $3A
 ; sub9_y_pos:				equ $3C
 ; sub9_mapframe:			equ $3F
-; next_subspr:			equ $6
+; next_subspr:				equ $6
 
 ; Animation flags
 afEnd:			equ $FF	; return to beginning of animation

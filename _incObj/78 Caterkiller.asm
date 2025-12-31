@@ -315,8 +315,14 @@ Cat_BodySeg1:	; Routine 4, 8
 		; at high speed causes Sonic to be hurt.
 
 		; Has the head been destroyed?
-		_cmpi.l	#ExplosionItem,obAddr(a1)
-		beq.s	.delete						; branch if parent is broken head
+		_move.l	obAddr(a1),d0
+		and.l	#$FFFFFF,d0
+		cmpi.l	#ExplosionItem,d0
+		blo.s	.notexplosion
+		cmpi.l	#ExItem_Animate,d0
+		bls.s	.delete						; branch if parent is broken head
+
+	.notexplosion:
 		; Is the parent going to delete itself?
 		cmpi.b	#$A,obRoutine(a1)
 		bne.s	.display					; branch if parent is set to delete

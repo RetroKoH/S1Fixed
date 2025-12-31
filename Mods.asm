@@ -41,16 +41,10 @@ DropDashEnabled: = 0
 ; Name: Elemental Shields (Incomplete: Minor bugfixes)
 ; Credit: RetroKoH, DeltaW
 ; Function: Enables the usage of S3K Shields and abilities.
-InstashieldEnabled: = 0					; if set to 1, instashield is now enabled (Now split from Elemental Shields toggle).
-ShieldsMode: = 0						; 0 - Blue Shield only, 1 - Blue + Elementals, 2 - Elementals only.
+InstashieldEnabled: = 1					; if set to 1, instashield is now enabled (Now split from Elemental Shields toggle).
+ShieldsMode: = 2						; 0 - Blue Shield only, 1 - Blue + Elementals, 2 - Elementals only.
 S3KDoubleJump: = (InstashieldEnabled|ShieldsMode)>0
 	RingMagnetRange: = $40				; The range of the lightning shield's ring magnetism
-
-; Name: Camera Lag
-; Credit: DeltaW
-; Function: Enables the Sonic 3K Camera Lag w/ Spin Dash, Peelout, Flame Dash, and Drop Dash
-CameraDashLag: = (SpinDashEnabled|PeeloutEnabled|DropDashEnabled|ShieldsMode)
-; Automatically toggled when any of the above elective mods are enabled.
 
 ; Name: Wall Jump (Incomplete -- Not fully compatible with all double jump mechanics)
 ; Credit: Mercury, RetroKoH
@@ -121,6 +115,12 @@ CenteredCamera: = 0*(CDCamera==0)		; if set to 1, screen will be tighter, lockin
 ScrollDelay: = 0						; if set to 1, looking up and down will have a delay before the camera scrolls
 	ScrollDelayTime: = 120				; number of frames to wait before the camera scrolls when looking up/down
 ; NOTE: This mod is forced whenever Spin Dash is enabled. THIS toggle is purely for those who don't want the spindash, but still want a delay.
+
+; Name: Camera Lag
+; Credit: DeltaW
+; Function: Enables the Sonic 3K Camera Lag w/ Spin Dash, Peelout, Flame Dash, and Drop Dash
+CameraDashLag: = (SpinDashEnabled|PeeloutEnabled|DropDashEnabled|ShieldsMode)
+; Automatically toggled when any of the above elective mods are enabled.
 
 ; Name: S3K AfterImages (Incomplete: Add for Super Sonic)
 ; Credit: Hitaxas (Wooloo Engine)

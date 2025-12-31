@@ -3,9 +3,6 @@
 ; Simply an abbreviated version of ReactToItem
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
 GHZBall_ReactToItem:
 		nop	
 		move.w	obX(a0),d2				; load ball's x-axis position
@@ -23,7 +20,8 @@ GHZBall_ReactToItem:
 		move.w	#(v_lvlobjend-v_lvlobjspace)/$40-1,d6
 
 	.loop:
-		cmpi.l	#GiantBall,obAddr(a1)	; is this a ball?
+		; is this a giant ball? (d1 = obAddr)?
+		cmp_addr	#GiantBall,obAddr(a1),d1
 		beq.s	.next					; if yes, branch
 		tst.b	obRender(a1)
 		bpl.s	.next

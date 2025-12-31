@@ -370,6 +370,7 @@ Level_ChkWater:
 		move.w	#$60,(v_watersurface1+obX).w
 		_move.l	#WaterSurface,(v_watersurface2+obAddr).w
 		move.w	#$120,(v_watersurface2+obX).w
+		_move.l	#Splash,(v_splash+obAddr).w					; load splash object
 
 Level_LoadObj:
 		jsr		(ObjPosLoad).l

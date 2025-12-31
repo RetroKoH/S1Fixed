@@ -114,7 +114,8 @@ SEgg_Leap:
 
 	.loop:
 		lea		object_size(a1),a1			; jump to next object RAM
-		cmpi.l	#FalseFloor,obAddr(a1)		; is object a block? (object $83)
+		; is object a block? (object $83) (d1 = obAddr)?
+		cmp_addr	#FalseFloor,obAddr(a1),d1
 		dbeq	d0,.loop					; if not, repeat (max $3E times)
 
 		bne.s	.update_pos

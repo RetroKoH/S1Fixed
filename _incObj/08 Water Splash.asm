@@ -7,31 +7,39 @@
 ; 38 OST bytes free
 ; $10-17, $20-22, $25-3F 
 ; ---------------------------------------------------------------------------
+; TO-DO: Init this object along with the Water Surface, and have it appear
+; when splashing, and in a hidden state when animation ends.
 
 Splash:
-	; RetroKoH/LavaGaming Object Routine Optimization
-		move.b	obRoutine(a0),d0
-		subq.b	#2,d0
-		beq.s	Spla_Display
-		bpl.s	Spla_Delete
-	; Object Routine Optimization End
-
-Spla_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)				; -> Spla_Display
+		_move.l	#Spla_Hide,obAddr(a0)
 		move.l	#Map_Splash,obMap(a0)
-		ori.b	#4,obRender(a0)
 		move.w	#priority1,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$10,obDispWid(a0)
 		move.w	#make_art_tile(ArtTile_Splash,2,0),obGfx(a0)
-		move.w	(v_player+obX).w,obX(a0)		; copy X-axis position from Sonic
+; ---------------------------------------------------------------------------
 
-Spla_Display:	; Routine 2
+Spla_Hide:
+		rts										; hide on init, or when animation is complete
+; ===========================================================================
+
+Spla_Activate:
+		obj_addr	#Spla_Display
+		ori.b	#4,obRender(a0)
+		move.w	(v_player+obX).w,obX(a0)		; copy X-axis position from Sonic
+		clr.w	obAniFrame(a0)					; reset animation and frame duration
+; ---------------------------------------------------------------------------
+
+Spla_Display:
+		tst.b	obRoutine(a0)					; did animation finish?
+		bne.s	.hide							; if yes, branch and hide object
 		move.w	(v_waterpos_actual).w,obY(a0)	; copy Y-axis position from water height
 		lea		Ani_Splash(pc),a1
-		jsr		(AnimateSprite).w				; animate; -> Spla_Delete
+		jsr		(AnimateSprite).w
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 
-Spla_Delete:	; Routine 4
-		jmp		(DeleteObject).l				; delete when animation	is complete
+	.hide:
+		clr.b	obRoutine(a0)
+		obj_addr	#Spla_Hide
+		rts
 ; ===========================================================================

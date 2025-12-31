@@ -136,8 +136,9 @@ Tit_MainLoop:
 		addq.w	#2,d0
 		move.w	d0,(v_player+obX).w			; move Sonic to the right
 
-		cmpi.b	#4,(v_pressstart+obRoutine).w
-		beq.w	Tit_NoDemo
+		; is menu triggered (d1 = obAddr)?
+		cmp_addr	#PSB_Menu,(v_pressstart+obAddr).w,d1
+		beq.w	Tit_NoDemo					; if yes, branch
 
 		cmpi.w	#$1C00,d0					; has Sonic object passed $1C00 on x-axis?
 		blo.s	Tit_EnterCheat				; if not, branch
@@ -202,7 +203,8 @@ Tit_NoDemo:
 		beq.w	Tit_MainLoop					; if not, branch
 
 Tit_ChkLevSel:
-		cmpi.b	#4,(v_pressstart+obRoutine).w	; is menu triggered?
+		; is menu triggered (d0 = obAddr)?
+		cmp_addr	#PSB_Menu,(v_pressstart+obAddr).w,d0
 		beq.s	Tit_MenuChoice					; if yes, Level Select can't be activated
 		tst.b	(f_levselcheat).w				; otherwise, check if level select code is on
 
@@ -212,10 +214,11 @@ Tit_ChkLevSel:
 		beq.s	Tit_NoLevSel
 		move.b	#id_MenuScreen,(v_gamemode).w
 		jmp		MainGameLoop					; transition to new level select
+
 Tit_NoLevSel:
 	endif
 
-		move.b	#4,(v_pressstart+obRoutine).w	; activate NEW/CONTINUE menu
+		_move.l	#PSB_Menu,(v_pressstart+obAddr).w	; activate NEW/CONTINUE menu
 		move.b	#4,(v_pressstart+obFrame).w
 		move.b	#sfx_Lamppost,d0
 		bsr.w	QueueSound2						; play sfx

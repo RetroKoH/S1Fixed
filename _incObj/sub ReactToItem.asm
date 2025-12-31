@@ -38,7 +38,7 @@ ReactToItem:
 		moveq	#0,d0
 		rts
 
-	.noInstaShield
+	.noInstaShield:
 	endif
 		move.w	obX(a0),d2						; load Sonic's x-axis position
 		move.w	obY(a0),d3						; load Sonic's y-axis position
@@ -499,16 +499,18 @@ HurtSonic:
 		clr.w	obInertia(a0)
 		move.b	#aniID_Hurt,obAnim(a0)
 		move.b	#120,obInvuln(a0)				; set temp invincible time to 2 seconds -- RetroKoH Sonic SST Compaction
-		move.w	#sfx_Death,d0					; load normal damage sound
-		cmpi.l	#Spikes,obAddr(a2)				; was damage caused by spikes?
-	; Mercury Spike SFX Fix
-		beq.s	.setspikesound					; if so, branch
-		cmpi.l	#Harpoon,obAddr(a2)				; was damage caused by LZ harpoon?
-		bne.s	.sound							; if not, branch
 
-	.setspikesound:
+	; Mercury Spike SFX Fix
+		move.w	#sfx_HitSpikes,d0				; play spikes death sound
+	; using cmp_addr macro code directly here
+		move.l	#$FFFFFF,d1
+		and.l	obAddr(a2),d1					; isolate the code address
+		_cmpi.l	#Spikes,d1						; check	if you were killed by spikes
+		beq.s	.sound
+		_cmpi.l	#Harpoon,d1						; check	if you were killed by a harpoon
+		beq.s	.sound
+		move.w	#sfx_Death,d0					; play normal death sound
 	; Spike SFX Fix End
-		move.w	#sfx_HitSpikes,d0				; load spikes damage sound
 
 	.sound:
 		jsr		(QueueSound2).w
@@ -537,8 +539,9 @@ KillSonic:
 		bne.s	.dontdie						; if yes, branch
 
 	if HUDInSpecialStage	; Mercury Time Limit In Special Stage
-		cmpi.l	#SonicSpecial,obAddr(a0)		; test if it's Special Stage Sonic that's trying to die
-		bne.s	.normal
+		; test if it's Special Stage Sonic that's trying to die (d1 = obAddr)?
+		cmp_addr	#SonicSpecial,obAddr(a0),d1
+		bne.s	.normal							; if not, branch
 		
 		move.b	#4,obRoutine(a0)				; change Sonic to Special Stage dying routine
 		
@@ -568,11 +571,15 @@ KillSonic:
 		clr.w	obInertia(a0)
 		move.b	#aniID_Death,obAnim(a0)
 		bset	#gfxPriority,obGfx(a0)
+
 	; Mercury Spike SFX Fix
 		move.w	#sfx_HitSpikes,d0				; play spikes death sound
-		cmpi.l	#Spikes,obAddr(a2)				; check	if you were killed by spikes
+	; using cmp_addr macro code directly here
+		move.l	#$FFFFFF,d1
+		and.l	obAddr(a2),d1					; isolate the code address
+		_cmpi.l	#Spikes,d1						; check	if you were killed by spikes
 		beq.s	.sound
-		cmpi.l	#Harpoon,obAddr(a2)				; check	if you were killed by a harpoon
+		_cmpi.l	#Harpoon,d1						; check	if you were killed by a harpoon
 		beq.s	.sound
 		move.w	#sfx_Death,d0					; play normal death sound
 	; Spike SFX Fix End

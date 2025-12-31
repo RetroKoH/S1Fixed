@@ -3,13 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Girder:
-	; LavaGaming Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.s	Gird_Action
-	; Object Routine Optimization End
-
-Gird_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)
+		_move.l	#Gird_Action,obAddr(a0)
 		move.l	#Map_Gird,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Girder,2,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
@@ -21,7 +15,7 @@ Gird_Main:	; Routine 0
 		bsr.w	Gird_ChgDir					; set initial speed & direction
 ; ---------------------------------------------------------------------------
 
-Gird_Action:	; Routine 2
+Gird_Action:
 		move.w	obX(a0),obGird_PrevX(a0)
 		tst.b	obGird_MoveDelay(a0)		; has time delay hit 0?
 		beq.s	.begin_move					; if yes, branch
@@ -60,8 +54,8 @@ Gird_Action:	; Routine 2
 ; ---------------------------------------------------------------------------
 
 Gird_ChgDir:
-		move.b	obGird_MoveSetting(a0),d0		; get current setting
-		andi.w	#$18,d0
+		moveq	#$18,d0
+		and.b	obGird_MoveSetting(a0),d0		; get current setting (SCE Optimization)
 		lea		(.settings).l,a1
 		adda.w	d0,a1							; jump to relevant settings (HAME: Replace lea instruction)
 		move.l	(a1)+,obVelX(a0)				; move the data contained in the array to obVelX and obVelY, and increment the address in a1

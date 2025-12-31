@@ -3,13 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Invisibarrier:
-	; LavaGaming Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.s	Invis_Solid
-	; Object Routine Optimization End
-
-Invis_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)			; -> Invis_Solid
+		_move.l	#Invis_Solid,obAddr(a0)
 		move.l	#Map_Invis,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Monitor,0,1),obGfx(a0)
 		ori.b	#4,obRender(a0)
@@ -26,7 +20,7 @@ Invis_Main:	; Routine 0
 		move.b	d1,obHeight(a0)				; set object height
 ; ---------------------------------------------------------------------------
 
-Invis_Solid:	; Routine 2
+Invis_Solid:
 		bsr.w	ChkSizedObjVisible			; is object off screen? (Devon Checking For Solids Fix)
 		bne.s	.chkdel						; if yes, branch
 		moveq	#11,d1
@@ -41,12 +35,12 @@ Invis_Solid:	; Routine 2
 	.chkdel:
 		offscreen.s	.delete					; ProjectFM S3K Object Manager
 		tst.w	(v_debuguse).w				; are you using	debug mode?
-		beq.s	.nodisplay					; if not, branch
-		jmp		(DisplaySprite).l			; if yes, display the object
+		bne.s	.display					; if yes, branch and display the object
+		rts									; if not, exit
 ; ===========================================================================
 
-	.nodisplay:
-		rts	
+	.display:
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 
 	.delete:

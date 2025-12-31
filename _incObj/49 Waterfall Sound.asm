@@ -3,17 +3,11 @@
 ; ---------------------------------------------------------------------------
 
 WaterSound:
-	; LavaGaming Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.s	WSnd_PlaySnd
-	; Object Routine Optimization End
+		_move.l	#WSnd_PlaySnd,obAddr(a0)
+		move.b	#4,obRender(a0)			; is this line necessary?
 ; ---------------------------------------------------------------------------
 
-WSnd_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)		; -> WSnd_PlaySnd
-		move.b	#4,obRender(a0)
-
-WSnd_PlaySnd:	; Routine 2
+WSnd_PlaySnd:
 		move.b	(v_vbla_byte).w,d0		; get low byte of VBlank counter
 		andi.b	#$3F,d0					; read bits 0-5
 		bne.s	.skip_sfx				; branch if not 0

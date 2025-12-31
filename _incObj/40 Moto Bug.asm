@@ -1,17 +1,27 @@
 ; ---------------------------------------------------------------------------
+; Object 40 (sub) - Moto Bug smoke
+; ---------------------------------------------------------------------------
+
+MotoSmoke:
+	; LavaGaming/RetroKoH Object Routine Optimization
+		tst.b	obRoutine(a0)
+		bne.w	DeleteObject
+	; Object Routine Optimization End
+; ---------------------------------------------------------------------------
+
+Moto_Animate:	; Routine 0
+		lea		Ani_Moto(pc),a1
+		jsr		(AnimateSprite).w
+		bra.w	DisplaySprite
+; ===========================================================================
+
+; ---------------------------------------------------------------------------
 ; Object 40 - Moto Bug enemy (GHZ)
 ; ---------------------------------------------------------------------------
 
 MotoBug:
-	; LavaGaming/RetroKoH Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.s	Moto_Action
-	; Object Routine Optimization End
-
-Moto_Main:	; Routine 0
 		move.l	#Map_Moto,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Moto_Bug,0,0),obGfx(a0)
-		move.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$14,obDispWid(a0)
 		move.w	#$E08,obHeight(a0)			; Height and Width
@@ -20,25 +30,21 @@ Moto_Main:	; Routine 0
 		bsr.w	ObjFloorDist
 		tst.w	d1							; has motobug hit the floor?
 		bpl.s	.notonfloor					; if not, branch
+
 		add.w	d1,obY(a0)					; match	object's position with the floor
 		clr.w	obVelY(a0)					; stop falling
-		addq.b	#2,obRoutine(a0)			; -> Moto_Action
+		_move.l	#Moto_Move,obAddr(a0)
+		move.b	#4,obRender(a0)
 		bchg	#staFlipX,obStatus(a0)
 
 	.notonfloor:
 		rts
 ; ===========================================================================
 
-Moto_Action:	; Routine 2
-	; LavaGaming/RetroKoH Object Routine Optimization
-		tst.b	ob2ndRout(a0)
-		bne.s	Moto_FindFloor
-	; Object Routine Optimization End
-
 Moto_Move:
 		subq.w	#1,obMoto_TurnTime(a0)		; decrement wait timer
 		bpl.s	.wait						; if time remains, branch
-		addq.b	#2,ob2ndRout(a0)			; -> Moto_FindFloor
+		obj_addr	#Moto_FindFloor
 		move.w	#-$100,obVelX(a0)			; move object to the left
 		move.b	#1,obAnim(a0)
 		bchg	#staFlipX,obStatus(a0)		; is Motobug facing right?
@@ -51,23 +57,7 @@ Moto_Move:
 		bra.w	RememberState
 ; ===========================================================================
 
-; ---------------------------------------------------------------------------
-; Object 40 (sub) - Moto Bug smoke
-; ---------------------------------------------------------------------------
-
-MotoSmoke:
-	; LavaGaming/RetroKoH Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.w	DeleteObject
-	; Object Routine Optimization End
-
-Moto_Animate:	; Routine 0
-		lea		Ani_Moto(pc),a1
-		jsr		(AnimateSprite).w
-		bra.w	DisplaySprite
-; ===========================================================================
-
-Moto_FindFloor:
+Moto_FindFloor:	; Routine 2
 		bsr.w	SpeedToPos_XOnly
 		jsr		(ObjFloorDist).l			; d1 = distance to floor
 		cmpi.w	#-8,d1
@@ -95,7 +85,7 @@ Moto_FindFloor:
 		bra.s	.nosmoke
 
 	.pause:
-		subq.b	#2,ob2ndRout(a0)			; -> Moto_Move
+		obj_addr	#Moto_Move
 		move.w	#59,obMoto_TurnTime(a0)		; set pause time to 1 second
 		clr.w	obVelX(a0)					; stop the object moving
 		clr.b	obAnim(a0)

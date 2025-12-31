@@ -12,7 +12,7 @@ Lamppost:
 Lamp_Index:	offsetTable
 		offsetTableEntry.w Lamp_Main
 		offsetTableEntry.w Lamp_Blue
-		offsetTableEntry.w Lamp_Finish
+		offsetTableEntry.w Lamp_Red
 		offsetTableEntry.w Lamp_Twirl
 ; ===========================================================================
 
@@ -37,16 +37,16 @@ Lamp_Main:	; Routine 0
 
 	.red:
 		bset	#0,(a2)						; remember lamppost as red - ProjectFM S3K Object Manager
-		move.b	#4,obRoutine(a0)			; -> Lamp_Finish
+		move.b	#4,obRoutine(a0)			; -> Lamp_Red
 		move.b	#3,obFrame(a0)				; use red lamppost frame
 		jmp		(RememberState).l
 ; ===========================================================================
 
 Lamp_Blue:	; Routine 2
 		tst.w	(v_debuguse).w				; is debug mode	being used?
-		bne.w	Lamp_Finish					; if yes, branch
+		bne.w	Lamp_Red					; if yes, branch
 		tst.b	(v_player+obCtrlLock).w
-		bmi.w	Lamp_Finish
+		bmi.w	Lamp_Red
 
 		moveq	#$7F,d1
 		move.l	d1,d2
@@ -58,7 +58,7 @@ Lamp_Blue:	; Routine 2
 		move.w	obRespawnAddr(a0),d0		; get address in respawn table -- ProjectFM
 		movea.w	d0,a2						; load address into a2 -- ProjectFM
 		bset	#0,(a2)						; remember lamppost as red - ProjectFM
-		move.b	#4,obRoutine(a0)			; -> Lamp_Finish
+		move.b	#4,obRoutine(a0)			; -> Lamp_Red
 		move.b	#3,obFrame(a0)				; use red lamppost frame
 		jmp		(RememberState).l
 ; ===========================================================================
@@ -68,12 +68,12 @@ Lamp_Blue:	; Routine 2
 		sub.w	obX(a0),d0
 		addq.w	#8,d0
 		cmpi.w	#$10,d0
-		bhs.w	Lamp_Finish
+		bhs.w	Lamp_Red
 		move.w	(v_player+obY).w,d0
 		sub.w	obY(a0),d0
 		addi.w	#$40,d0
 		cmpi.w	#$68,d0
-		bhs.s	Lamp_Finish
+		bhs.s	Lamp_Red
 
 		move.w	#sfx_Lamppost,d0
 		jsr		(QueueSound2).w				; play lamppost sound
@@ -103,14 +103,15 @@ Lamp_Blue:	; Routine 2
 		bset	#0,(a2)						; remember lamppost as red
 	; ProjectFM
 
-Lamp_Finish:	; Routine 4
+;Lamp_Finish:
+Lamp_Red:	; Routine 4
 		jmp		(RememberState).l	
 ; ===========================================================================
 
 Lamp_Twirl:	; Routine 6
 		subq.w	#1,obLamp_SpinTime(a0)		; decrement timer
 		bpl.s	.continue					; if time remains, keep twirling
-		move.b	#4,obRoutine(a0)			; -> Lamp_Finish
+		move.b	#4,obRoutine(a0)			; -> Lamp_Red
 
 .continue:
 		move.b	obAngle(a0),d0

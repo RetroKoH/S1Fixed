@@ -3,12 +3,6 @@
 ; ---------------------------------------------------------------------------
 
 TryChaos:
-	; LavaGaming Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.w	TCha_Move
-	; Object Routine Optimization End
-
-TCha_Main:	; Routine 0
 		movea.l	a0,a1
 		moveq	#0,d2
 		moveq	#0,d3
@@ -16,8 +10,7 @@ TCha_Main:	; Routine 0
 		sub.b	(v_emeralds).w,d1			; d1 = number of emeralds we don't have - 1
 
 	.makeemerald:
-		_move.l	#TryChaos,obAddr(a1)		; load emerald object
-		addq.b	#2,obRoutine(a1)
+		_move.l	#TCha_Move,obAddr(a1)		; load emerald object
 		move.l	#Map_ECha,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Try_Again_Emeralds,0,0),obGfx(a1)
 		clr.b	obRender(a1)
@@ -51,7 +44,7 @@ TCha_Main:	; Routine 0
 		dbf		d1,.makeemerald				; repeat d1 times... for every emerald we don't have
 ; ---------------------------------------------------------------------------
 
-TCha_Move:	; Routine 2
+TCha_Move:
 		tst.w	obTChaos_Speed(a0)			; should be 0, 2 or -2 (changed by Eggman object)
 		beq.s	.no_move					; branch if 0
 		tst.b	obTimeFrame(a0)

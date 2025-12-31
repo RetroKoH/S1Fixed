@@ -4,12 +4,6 @@
 ; ---------------------------------------------------------------------------
 
 SuperStars:
-	; LavaGaming Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.s	SStars_Next
-	; Object Routine Optimization End
-
-SStars_Main:	; Routine 0
 		move.l	a0,-(sp)
 		lea		(Art_SuperStars).l,a0									; load super star art to a0
 		move.l  #((Art_SuperStars_End-Art_SuperStars)/tile_size)-1,d0	; super star art length, in tiles
@@ -17,14 +11,14 @@ SStars_Main:	; Routine 0
 		jsr		(LoadUncArt).w
 		move.l	(sp)+,a0
 
-		addq.b	#2,obRoutine(a0)
+		_move.l	#SStars_Main,obAddr(a0)
 		move.l	#Map_SStars,obMap(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority1,obPriority(a0)
 		move.b	#$18,obDispWid(a0)
 		move.w	#make_art_tile(ArtTile_Shield,0,0),obGfx(a0)
 
-SStars_Next:	; Routine 2
+SStars_Main:
 		btst	#sta2ndSuper,(v_player+obStatus2nd).w	; is Sonic Super?
 		beq.s	SStars_Delete							; if not, branch and delete
 		tst.b	objoff_30(a0)

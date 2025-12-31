@@ -191,7 +191,7 @@ Bom_Fuse_ChkTime:
 		bne.s	.fail							; We're moving this line here.
 
 	.makeshrapnel:
-		move.l	obAddr(a0),obAddr(a1)			; load shrapnel	object
+		_move.l	obAddr(a0),obAddr(a1)			; load shrapnel	object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.b	#6,obSubtype(a1)				; this is copied to obRoutine later
