@@ -332,9 +332,9 @@ obGFire_SinkPixels:		equ objoff_3C		; 2 bytes | pixels the platform has sunk whe
 ; Obj36 - Spikes
 obSpike_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
 obSpike_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position
-obSpike_MoveDist:		equ objoff_34		; 2 bytes | pixel distance to move object * $100, either direction
-obSpike_MoveFlag:		equ objoff_36		; 2 bytes | 0 = original position; 1 = moved position
-obSpike_MoveTime:		equ objoff_38		; 2 bytes | time until object moves again
+obSpike_MoveDist:		equ objoff_34		; 1 byte  | pixel distance to move object * $100, either direction
+obSpike_MoveFlag:		equ objoff_35		; 1 byte  | 0 = original position; 1 = moved position
+obSpike_MoveTime:		equ objoff_36		; 1 byte  | time until object moves again
 ; ---------------------------------------------------------------------------
 
 ; Obj37 - Lost Rings

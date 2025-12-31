@@ -15,7 +15,7 @@ Spik_Var:
 ; ===========================================================================
 
 Spikes:
-		_move.l	#Spik_Solid,obAddr(a0)
+		obj_addr	#Spik_Solid
 		move.l	#Map_Spike,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Spikes,0,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
@@ -42,7 +42,6 @@ Spik_Solid:
 		moveq	#20,d2						; height for type $1x (jumping); save 4 cycles - Filter
 
 ; Spikes types $1x and $5x face	sideways
-
 Spik_SideWays:
 		moveq	#27,d1						; width; save 4 cycles - Filter
 		move.w	d2,d3						; height (walking)
@@ -57,7 +56,6 @@ Spik_SideWays:
 ; ===========================================================================
 
 ; Spikes types $0x, $2x, $3x and $4x face up or	down
-
 Spik_Upright:
 		moveq	#11,d1
 		add.b	obDispWid(a0),d1			; width; save 8 cycles
@@ -140,9 +138,9 @@ Spike_LeftRight:
 ; ===========================================================================
 
 Spik_Wait:
-		tst.w	obSpike_MoveTime(a0)		; is time delay	= zero?
+		tst.b	obSpike_MoveTime(a0)		; is time delay	= zero?
 		beq.s	.update						; if yes, branch
-		subq.w	#1,obSpike_MoveTime(a0)		; subtract 1 from time delay
+		subq.b	#1,obSpike_MoveTime(a0)		; subtract 1 from time delay
 		bne.s	.exit						; branch if not 0
 		tst.b	obRender(a0)				; is spikes object on-screen?
 		bpl.s	.exit						; if not, branch
@@ -151,22 +149,22 @@ Spik_Wait:
 ; ===========================================================================
 
 	.update:
-		tst.w	obSpike_MoveFlag(a0)		; are spikes in original position?
+		tst.b	obSpike_MoveFlag(a0)		; are spikes in original position?
 		beq.s	.original_pos				; if yes, branch
-		subi.w	#$800,obSpike_MoveDist(a0)	; subtract 8px from distance
+		subi.b	#8,obSpike_MoveDist(a0)		; subtract 8px from distance
 		bcc.s	.exit						; branch if 0 or more
-		clr.l	obSpike_MoveDist(a0)		; clear obSpike_MoveDist and obSpike_MoveFlag
-		move.w	#60,obSpike_MoveTime(a0)	; set time delay to 1 second
+		clr.w	obSpike_MoveDist(a0)		; clear obSpike_MoveDist and obSpike_MoveFlag
+		move.b	#60,obSpike_MoveTime(a0)	; set time delay to 1 second
 		rts
 ; ===========================================================================
 
 	.original_pos:
-		addi.w	#$800,obSpike_MoveDist(a0)	; add 8px to move distance
-		cmpi.w	#$2000,obSpike_MoveDist(a0)	; has it moved 32px?
+		addi.b	#8,obSpike_MoveDist(a0)		; add 8px to move distance
+		cmpi.b	#$20,obSpike_MoveDist(a0)	; has it moved 32px?
 		blo.s	.exit						; if not, branch
-		move.w	#$2000,obSpike_MoveDist(a0)	; set max distance
-		move.w	#1,obSpike_MoveFlag(a0)		; set flag that spikes are in new position
-		move.w	#60,obSpike_MoveTime(a0)	; set time delay to 1 second
+		move.b	#$20,obSpike_MoveDist(a0)	; set max distance
+		move.b	#1,obSpike_MoveFlag(a0)		; set flag that spikes are in new position
+		move.b	#60,obSpike_MoveTime(a0)	; set time delay to 1 second
 
 	.exit:
 		rts	
