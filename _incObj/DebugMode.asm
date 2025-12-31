@@ -171,16 +171,16 @@ Debug_ChgItem:
 		andi.b	#$7F,obStatus(a1)					; clear broken flag (bit 7) from status
 		moveq	#0,d0
 		move.b	(v_debugitem).w,d0
-		mulu.w	#12,d0
+		lsl.w	#3,d0
 		move.b	4(a2,d0.w),obSubtype(a1)			; get subtype from debug list
 
-		moveq	#0,d0
-		move.b	(a2,d0.w),d0						; get object ID (we will use the lookup table here)
-		add.w	d0,d0
-		add.w	d0,d0
+		moveq	#0,d1
+		move.b	(a2,d0.w),d1						; get object ID (we will use the lookup table here)
+		add.w	d1,d1
+		add.w	d1,d1
 		lea		(Obj_Index-4).l,a3
-		move.l	(a3,d0.w),d0						; get object's code address
-		_move.l	d0,obAddr(a1)						; set object's code address
+		move.l	(a3,d1.w),d1						; get object's code address
+		_move.l	d1,obAddr(a1)						; set object's code address
 		move.b	obRender(a0),obRender(a1)
 
 	.stayindebug:
