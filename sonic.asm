@@ -3247,7 +3247,6 @@ Ledge_SlopeData:
 
 		include	"_incObj/25 & 37 Rings.asm"
 		include	"_incObj/4B Giant Ring.asm"
-		include	"_incObj/7C Ring Flash.asm"		; No longer used
 
 		include	"_anim/Rings.asm"
 dplcTiles := Art_BigRing		; MainMemory 128k Boundary Check for DPLCs

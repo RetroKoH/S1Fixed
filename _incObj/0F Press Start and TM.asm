@@ -3,23 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 PSBTM:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		jmp		PSB_Index(pc,d0.w)
-; ===========================================================================
-PSB_Index:
-		bra.s	PSB_Main
-		bra.s	PSB_PrsStart
-
-	if SaveProgressMod
-		bra.s	PSB_Menu
-	endif
-
-		bra.w	DisplaySprite
-; ===========================================================================
-
-PSB_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)
+		_move.l	#PSB_PrsStart,obAddr(a0)
 		move.w	#$D8,obX(a0)				; RetroKoH Title Screen Adjustment
 		move.w	#$130,obScreenY(a0)
 		move.l	#Map_PSB,obMap(a0)
@@ -27,6 +11,7 @@ PSB_Main:	; Routine 0
 		move.w	#priority0,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		cmpi.b	#2,obFrame(a0)				; is object "PRESS START"?
 		blo.s	PSB_PrsStart				; if yes, branch
+; ---------------------------------------------------------------------------
 
 	; Kilo sprite line limiter fix
 		clr.w	obGfx(a0)					; Clear out tile ID.
@@ -35,11 +20,7 @@ PSB_Main:	; Routine 0
 		move.w	#priority6,obPriority(a0)	; Kilo: Change to #6 -- RetroKoH/Devon S3K+ Priority Manager
 	; sprite line limiter fix end
 
-	if SaveProgressMod
-		addq.b	#4,obRoutine(a0)			; sprite line limiter and TM routine
-	else
-		addq.b	#2,obRoutine(a0)			; sprite line limiter and TM routine
-	endif
+		_move.l	#DisplaySprite,obAddr(a0)	; sprite line limiter and TM routine
 
 		cmpi.b	#3,obFrame(a0)				; is the object	"TM"?
 		bne.w	DisplaySprite				; if not, branch and exit

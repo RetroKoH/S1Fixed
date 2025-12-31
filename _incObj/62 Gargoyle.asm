@@ -2,17 +2,7 @@
 ; Object 62 - gargoyle head (LZ)
 ; ---------------------------------------------------------------------------
 
-Gargoyle:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Gar_Index(pc,d0.w),d1
-		jmp		Gar_Index(pc,d1.w)
 ; ===========================================================================
-Gar_Index:	offsetTable
-		offsetTableEntry.w Gar_Main
-		offsetTableEntry.w Gar_MakeFire
-		offsetTableEntry.w Gar_FireBall
-		offsetTableEntry.w Gar_AniFire
 
 Gar_SpitRate:
 		dc.b 30						; 0 - 0.5 seconds (unused)
@@ -26,8 +16,8 @@ Gar_SpitRate:
 		even
 ; ===========================================================================
 
-Gar_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)
+Gargoyle:
+		_move.l	#Gar_MakeFire,obAddr(a0)
 		move.l	#Map_Gar,obMap(a0)
 		move.w	#make_art_tile(ArtTile_LZ_Gargoyle,2,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
@@ -39,7 +29,7 @@ Gar_Main:	; Routine 0
 		move.b	obGar_SpawnTime(a0),obTimeFrame(a0)
 ; ---------------------------------------------------------------------------
 
-Gar_MakeFire:	; Routine 2
+Gar_MakeFire:
 		subq.b	#1,obTimeFrame(a0)						; decrement timer
 		bne.w	RememberState							; if time remains, branch
 
@@ -48,40 +38,42 @@ Gar_MakeFire:	; Routine 2
 		bne.w	RememberState							; branch if off screen
 		bsr.w	FindFreeObj								; find free object slot
 		bne.w	RememberState							; branch if not found
-		_move.l	#Gargoyle,obAddr(a1)					; load fireball object
-		addq.b	#4,obRoutine(a1)						; use Gar_FireBall routine
+
+		_move.l	#Gar_FireBall,obAddr(a1)				; load fireball object
+		move.l	#Map_Gar,obMap(a1)
+		move.w	#make_art_tile(ArtTile_LZ_Gargoyle,0,0),obGfx(a1)
+		ori.b	#4,obRender(a1)
+		move.w	#priority4,obPriority(a1)				; RetroKoH/Devon S3K+ Priority Manager
+		move.w	#$808,obHeight(a1)						; Height and Width
+		move.b	#8,obDispWid(a1)
+		move.b	#2,obFrame(a1)
+
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
+		addq.w	#8,obY(a1)
 		move.b	obRender(a0),obRender(a1)
 		move.b	obStatus(a0),obStatus(a1)
+
+		move.w	#$200,obVelX(a1)						; move fireball right
+		btst	#staFlipX,obStatus(a1)					; is gargoyle facing left?
+		bne.s	.noflip									; if not, branch
+		neg.w	obVelX(a1)								; move fireball left
+
+	.noflip:
+		move.b	#(colHarmful|colSz_4x4),obColType(a1)
+		bset	#shPropFlame,obShieldProp(a1)			; Negated by Flame Shield
+
+		move.w	#sfx_Fireball,d0
+		jsr		(QueueSound2).w							; play fireball sound
+
 		bra.w	RememberState	
 ; ===========================================================================
 
-Gar_FireBall:	; Routine 4
-		addq.b	#2,obRoutine(a0)						; -> Gar_AniFire
-		move.w	#$808,obHeight(a0)						; Height and Width
-		move.l	#Map_Gar,obMap(a0)
-		move.w	#make_art_tile(ArtTile_LZ_Gargoyle,0,0),obGfx(a0)
-		ori.b	#4,obRender(a0)
-		move.w	#priority4,obPriority(a0)				; RetroKoH/Devon S3K+ Priority Manager
-		move.b	#(colHarmful|colSz_4x4),obColType(a0)
-
-		bset	#shPropFlame,obShieldProp(a0)			; Negated by Flame Shield
-
-		move.b	#8,obDispWid(a0)
-		move.b	#2,obFrame(a0)
-		addq.w	#8,obY(a0)
-		move.w	#$200,obVelX(a0)						; move fireball right
-		btst	#staFlipX,obStatus(a0)					; is gargoyle facing left?
-		bne.s	.noflip									; if not, branch
-		neg.w	obVelX(a0)								; move fireball left
-
-	.noflip:
-		move.w	#sfx_Fireball,d0
-		jsr		(QueueSound2).w							; play fireball sound
+; ---------------------------------------------------------------------------
+; Object 62 (sub) - gargoyle head's fireball (LZ)
 ; ---------------------------------------------------------------------------
 
-Gar_AniFire:	; Routine 6
+Gar_FireBall:
 		moveq	#7,d0
 		and.b	(v_framebyte).w,d0						; SCE Optimization
 		bne.s	.nochg

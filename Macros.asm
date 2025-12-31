@@ -365,3 +365,29 @@ __LABEL__ label *
 offsetTableEntry macro ptr
 	dc.ATTRIBUTE ptr-current_offset_table
     endm
+
+; ---------------------------------------------------------------------------
+; macro for obAddr setting (Needed because the first byte is obRender)
+
+; input
+; a0 = object
+; a1 = address
+; trashes
+; d0.b
+; ---------------------------------------------------------------------------
+
+obj_addr macro addr
+		move.b	obRender(a0),d0
+		_move.l	addr,obAddr(a0)
+		move.b	d0,obRender(a0)
+		endm
+
+; ---------------------------------------------------------------------------
+; macro for obAddr comparing (Needed because the first byte is obRender)
+; ---------------------------------------------------------------------------
+
+cmp_addr macro addr,src,dest
+		move.l	#$FFFFFF,dest
+		and.l	src,dest			; isolate the code address
+		_cmpi.l	addr,dest
+		endm

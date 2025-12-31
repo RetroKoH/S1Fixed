@@ -25,15 +25,7 @@ FBall_Speeds:
 
 ;LavaBall:
 FireBall:
-	; RetroKoH/LavaGaming Object Routine Optimization
-		move.b	obRoutine(a0),d0
-		subq.b	#2,d0
-		beq.w	FBall_Action
-		bpl.w	DeleteObject
-	; Object Routine Optimization End
-
-FBall_Main:		; Routine 0
-		addq.b	#2,obRoutine(a0)					; -> FBall_Action
+		_move.l	#FBall_Action,obAddr(a0)
 		move.w	#$808,obHeight(a0)					; Height and Width
 		move.l	#Map_Fire,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Fireball,0,0),obGfx(a0)	; RetroKoH VRAM Overhaul
@@ -67,8 +59,9 @@ FBall_Main:		; Routine 0
 	.sound:
 		move.w	#sfx_Fireball,d0
 		jsr		(QueueSound2).w						; play fireball sound
+; ---------------------------------------------------------------------------
 
-FBall_Action:	; Routine 2
+FBall_Action:
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
 		add.w	d0,d0
@@ -101,7 +94,7 @@ FBall_Type_UpDown:
 		move.w	obFBall_StartY(a0),d0
 		cmp.w	obY(a0),d0							; has object fallen back to its	original position?
 		bhs.s	.keep_falling						; if not, branch
-		addq.b	#2,obRoutine(a0)					; -> DeleteObject
+		_move.l	#DeleteObject,obAddr(a0)			; slate object for deletion
 
 	.keep_falling:
 		bclr	#staFlipY,obStatus(a0)

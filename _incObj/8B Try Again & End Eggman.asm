@@ -15,8 +15,6 @@ EEgg_Index:
 		bra.s	EEgg_Juggle
 		bra.w	EEgg_Wait
 	; Object Routine Optimization End
-
-eegg_time = objoff_30		; time between juggle motions
 ; ===========================================================================
 
 EEgg_Main:	; Routine 0
@@ -31,10 +29,10 @@ EEgg_Main:	; Routine 0
 		cmpi.b	#emldCount,(v_emeralds).w		; do you have all emeralds?
 		beq.s	EEgg_Animate					; if yes, branch
 
-		move.b	#id_CreditsText,(v_tryagain).w	; load credits object
-		move.w	#9,(v_creditsnum).w				; use "TRY AGAIN" text
-		move.b	#id_TryChaos,(v_eggmanchaos).w	; load emeralds object on "TRY AGAIN" screen
-		clr.b	obAnim(a0)						; use "TRY AGAIN" animation
+		_move.l	#CreditsText,(v_tryagain+obAddr).w	; load credits object
+		move.w	#9,(v_creditsnum).w					; use "TRY AGAIN" text
+		_move.l	#TryChaos,(v_eggmanchaos+obAddr).w	; load emeralds object on "TRY AGAIN" screen
+		clr.b	obAnim(a0)							; use "TRY AGAIN" animation
 
 EEgg_Animate:	; Routine 2
 		lea		Ani_EEgg(pc),a1
@@ -48,11 +46,11 @@ EEgg_Juggle:	; Routine 4
 		beq.s	.noflip
 		neg.w	d0
 
-.noflip:
+	.noflip:
 		lea		(v_eggmanchaos).w,a1	; get RAM address for emeralds
 		moveq	#emldCount-1,d1
 
-.emeraldloop:
+	.emeraldloop:
 		move.b	d0,objoff_3E(a1)
 		move.w	d0,d2
 		asl.w	#3,d2
@@ -60,13 +58,15 @@ EEgg_Juggle:	; Routine 4
 		lea		object_size(a1),a1
 		dbf		d1,.emeraldloop
 		addq.b	#1,obFrame(a0)
-		move.w	#112,eegg_time(a0)
+		move.w	#112,obEndEgg_WaitTime(a0)
+; ---------------------------------------------------------------------------
 
 EEgg_Wait:	; Routine 6
-		subq.w	#1,eegg_time(a0)		; decrement timer
+		subq.w	#1,obEndEgg_WaitTime(a0)		; decrement timer
 		bpl.s	.nochg					; branch if time remains
 		bchg	#0,obAnim(a0)
 		move.b	#2,obRoutine(a0)		; goto EEgg_Animate next
 
-.nochg:
-		rts	
+	.nochg:
+		rts
+; ===========================================================================

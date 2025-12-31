@@ -123,9 +123,9 @@ Pow_Shoes:
 		move.b	#$96,(v_player+obShoes).w				; time limit for the power-up -- RetroKoH Sonic SST Compaction
 
 	if AfterImagesOn	; Hitaxas S3K afterimage
-		move.b	#id_AfterImages,(v_trails).w
+		_move.l	#AfterImages,(v_trails+obAddr).w
 		move.w	#v_player,(v_trails+obParent).w	
-		move.b	#id_AfterImages,(v_trails2).w
+		_move.l	#AfterImages,(v_trails2+obAddr).w
 		move.b	#2,(v_trails2+obSubtype).w
 		move.w	#v_followobject,(v_trails2+obParent).w
 	endif
@@ -162,7 +162,7 @@ Pow_Invinc:
 
 		bset	#sta2ndInvinc,(v_player+obStatus2nd).w	; make Sonic invincible
 		move.b	#$96,(v_player+obInvinc).w				; time limit for the power-up -- RetroKoH Sonic SST Compaction
-		move.l	#StarsItem,(v_starsobj+obAddr).w		; load stars object
+		_move.l	#StarsItem,(v_starsobj+obAddr).w		; load stars object
 		tst.b	(f_lockscreen).w						; is boss mode on?
 		bne.s	.nomusic								; if yes, branch
 		cmpi.b	#$C,(v_air).w

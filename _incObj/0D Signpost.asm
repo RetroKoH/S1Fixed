@@ -278,7 +278,7 @@ GotThroughAct:
 		move.w	(v_limitright).w,(v_limitleft).w
 		bclr	#sta2ndInvinc,(v_player+obStatus2nd).w	; disable invincibility
 		clr.b	(f_timecount).w							; stop time counter
-		move.b	#id_GotThroughCard,(v_endcard).w		; load "Sonic Has Passed" title card
+		_move.l	#GotThroughCard,(v_endcard+obAddr).w	; load "Sonic Has Passed" title card
 
 	; TheBlad768/AURORA☆FIELDS/RetroKoH Title Card Optimization
         lea    GotThrough_UncList(pc),a1

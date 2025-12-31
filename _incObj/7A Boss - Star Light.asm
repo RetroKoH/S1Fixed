@@ -71,20 +71,19 @@ BossSLZ_Main:
 	.fail:
 		lea		(v_lvlobjspace).w,a1		; FixBugs -- Formerly (v_objspace+object_size*1)
 		lea		obBossSLZ_Seesaws(a0),a2	; pointers to Eggman's seesaws
-		moveq	#id_Seesaw,d0
-		moveq	#v_lvlobjcount,d1			; FixBugs: Normally only covered the first half of object RAM.
-		moveq	#object_size,d2
+		moveq	#v_lvlobjcount,d0			; FixBugs: Normally only covered the first half of object RAM.
 
 	.seesaw_loop:
-		cmp.l	obAddr(a1),d0				; is object a seesaw?
+		; is object a seesaw? (d1 = obAddr)?
+		cmp_addr	#Seesaw,obAddr(a1),d1
 		bne.s	.next						; if not, branch
 		tst.b	obSubtype(a1)				; is seesaw empty?
 		beq.s	.next						; if not, branch
 		move.w	a1,(a2)+					; set pointer to seesaw object RAM
 
 	.next:
-		adda.w	d2,a1						; next object slot
-		dbf		d1,.seesaw_loop				; repeat for remaining slots
+		lea		object_size(a1),a1			; next object RAM entry
+		dbf		d0,.seesaw_loop				; repeat for remaining slots
 ; ---------------------------------------------------------------------------
 
 BossSLZ_ShipMain:	; Routine 2
@@ -360,7 +359,8 @@ BossSLZ_FaceMain:	; Routine 4
 		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.l	#BossStarLight,obAddr(a1)		; is the boss still loaded?
+		; is the boss still loaded (d1 = obAddr)?
+		cmp_addr	#BossStarLight,obAddr(a1),d1
 		bne.w	BossSLZ_Delete					; if not, delete object
 	; Boss Object Fix End
 
@@ -398,7 +398,8 @@ BossSLZ_FlameMain:; Routine 6
 		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.l	#BossStarLight,obAddr(a1)		; is the boss still loaded?
+		; is the boss still loaded (d1 = obAddr)?
+		cmp_addr	#BossStarLight,obAddr(a1),d1
 		bne.s	BossSLZ_Delete					; if not, delete object
 	; Boss Object Fix End
 
@@ -443,7 +444,8 @@ BossSLZ_TubeMain:	; Routine 8
 		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.l	#BossStarLight,obAddr(a1)		; is the boss still loaded?
+		; is the boss still loaded (d1 = obAddr)?
+		cmp_addr	#BossStarLight,obAddr(a1),d1
 		bne.s	BossSLZ_Delete					; if not, delete object
 	; Boss Object Fix End
 

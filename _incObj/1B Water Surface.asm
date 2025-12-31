@@ -3,13 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 WaterSurface:
-	; LavaGaming Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.s	Surf_Action
-	; Object Routine Optimization End
-
-Surf_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)					; -> Surf_Action
+		_move.l	#Surf_Action,obAddr(a0)
 		move.l	#Map_Surf,obMap(a0)
 		move.w	#make_art_tile(ArtTile_LZ_Water_Surface,2,1),obGfx(a0)
 		move.b	#4,obRender(a0)
@@ -18,7 +12,7 @@ Surf_Main:	; Routine 0
 		move.w	obX(a0),obSurf_StartX(a0)			; save initial x position ($60 or $120)
 ; ---------------------------------------------------------------------------
 
-Surf_Action:	; Routine 2
+Surf_Action:
 		move.w	(v_screenposx).w,d1					; get camera x position
 		andi.w	#$FFE0,d1							; round down to $20
 		add.w	obSurf_StartX(a0),d1				; add initial position
@@ -43,13 +37,13 @@ Surf_Action:	; Routine 2
 		bra.w	DisplaySprite
 ; ===========================================================================
 
-.stopped:
+	.stopped:
 		tst.b	(f_pause).w							; is the game paused?
 		bne.w	DisplaySprite						; if yes, branch
 		clr.b	obSurf_Freeze(a0)					; resume animation
 		subq.b	#3,obFrame(a0)						; use normal frames
 
-.animate:
+	.animate:
 		subq.b	#1,obTimeFrame(a0)					; decrement animation timer
 		bpl.w	DisplaySprite						; branch if time remains
 		move.b	#7,obTimeFrame(a0)					; reset timer

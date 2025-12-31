@@ -3,14 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Bumper:
-	; LavaGaming Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.s	Bump_Hit
-	; Object Routine Optimization End
-; ---------------------------------------------------------------------------
-
-Bump_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)			; -> Bump_Hit
+		_move.l	#Bump_Hit,obAddr(a0)
 		move.l	#Map_Bump,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SYZ_Bumper,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
@@ -19,7 +12,7 @@ Bump_Main:	; Routine 0
 		move.b	#(colSpecial|colSz_8x8_2),obColType(a0)
 ; ---------------------------------------------------------------------------
 
-Bump_Hit:	; Routine 2
+Bump_Hit:
 		tst.b	obColProp(a0)				; has Sonic touched the	bumper?
 		beq.w	.display					; if not, branch
 		clr.b	obColProp(a0)

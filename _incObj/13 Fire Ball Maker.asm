@@ -17,14 +17,7 @@ FireM_Rates:
 ; ===========================================================================
 
 FireMaker:
-	; LavaGaming Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.s	FireM_MakeFire
-	; Object Routine Optimization End
-; ---------------------------------------------------------------------------
-
-FireM_Main:		; Routine 0
-		addq.b	#2,obRoutine(a0)					; -> FireM_MakeFire
+		_move.l	#FireM_MakeFire,obAddr(a0)
 		moveq	#$70,d0
 		and.b	obSubtype(a0),d0					; get high nybble of subtype (firing rate)
 		lsr.w	#4,d0
@@ -34,7 +27,7 @@ FireM_Main:		; Routine 0
 		andi.b	#$F,obSubtype(a0)					; isolate low nybble of subtype (speed/direction)
 ; ---------------------------------------------------------------------------
 
-FireM_MakeFire:	; Routine 2
+FireM_MakeFire:
 		subq.b	#1,obTimeFrame(a0)					; decrement timer
 		bne.s	.wait								; if time still	remains, branch
 		move.b	obFireM_SpawnTimer(a0),obTimeFrame(a0)	; reset time delay

@@ -346,21 +346,21 @@ BossSYZ_FindBlocks:
 		clr.w	obBossSYZ_BlockAddr(a0)					; clear stored block address
 		lea		(v_lvlobjspace).w,a1					; Fixed from (v_objspace+object_size*1)
 		moveq	#v_lvlobjcount,d0						; Fixed. Originally only covered the first half of object RAM.
-		moveq	#id_BossBlock,d1
 		move.b	obBossSYZ_BlockNum(a0),d2
 
 	.loop:
-		cmp.l	obAddr(a1),d1							; is object a SYZ boss block?
+		; is object a SYZ boss block? (d1 = obAddr)?
+		cmp_addr	#BossBlock,obAddr(a1),d1
 		bne.s	.nextObj								; if not, branch
-		cmp.b	obSubtype(a1),d2
-		bne.s	.nextObj
-		move.w	a1,obBossSYZ_BlockAddr(a0)
+		cmp.b	obSubtype(a1),d2						; can block be plucked?
+		bne.s	.nextObj								; if not, branch
+		move.w	a1,obBossSYZ_BlockAddr(a0)				; set pointer to block object RAM
 		bra.s	.endloop
 ; ===========================================================================
 
 	.nextObj:
 		lea		object_size(a1),a1						; next object RAM entry
-		dbf		d0,.loop
+		dbf		d0,.loop								; repeat for remaining slots
 
 	.endloop:
 		rts	
@@ -467,7 +467,8 @@ BossSYZ_FaceMain:	; Routine 4
 		movea.w	obBoss_Parent(a0),a1					; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.l	#BossSpringYard,obAddr(a1)				; is the boss still loaded?
+		; is the boss still loaded (d1 = obAddr)?
+		cmp_addr	#BossSpringYard,obAddr(a1),d1
 		bne.w	BossSYZ_Delete							; if not, delete object
 	; Boss Object Fix End
 
@@ -526,7 +527,8 @@ BossSYZ_FlameMain:; Routine 6
 		movea.w	obBoss_Parent(a0),a1					; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.l	#BossSpringYard,obAddr(a1)				; is the boss still loaded?
+		; is the boss still loaded (d1 = obAddr)?
+		cmp_addr	#BossSpringYard,obAddr(a1),d1
 		bne.s	BossSYZ_Delete							; if not, delete object
 	; Boss Object Fix End
 
@@ -569,7 +571,8 @@ BossSYZ_SpikeMain:	; Routine 8
 		movea.w	obBoss_Parent(a0),a1					; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.l	#BossSpringYard,obAddr(a1)				; is the boss still loaded?
+		; is the boss still loaded (d1 = obAddr)?
+		cmp_addr	#BossSpringYard,obAddr(a1),d1
 		bne.s	BossSYZ_Delete							; if not, delete object
 	; Boss Object Fix End
 

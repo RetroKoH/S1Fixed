@@ -44,7 +44,7 @@ Sonic_Main:	; Routine 0
 		bsr.w   ApplySpeedSettings				; fetch Speed settings
 
 	if (SpinDashEnabled|SkidDustEnabled)
-		move.b	#id_Effects,(v_playerdust).w	; load object for dust effects
+		_move.l	#Effects,(v_playerdust+obAddr).w	; load object for dust effects
 	endif
 
 Sonic_Control:	; Routine 2
@@ -368,7 +368,7 @@ Sonic_Water:
 		bne.s	.exit								; branch if this was already set
 
 		bsr.w	ResumeMusic
-		move.b	#id_DrownCount,(v_sonicbubbles).w	; load bubbles object from Sonic's mouth
+		_move.l	#DrownCount,(v_sonicbubbles).w		; load bubbles object from Sonic's mouth
 		move.b	#$81,(v_sonicbubbles+obSubtype).w
 		lea     (v_sonspeedmax).w,a2				; load Sonic's top speed into a2
 		bsr.w   ApplySpeedSettings					; fetch speed settings
@@ -376,7 +376,7 @@ Sonic_Water:
 		asr		obVelY(a0)
 		asr		obVelY(a0)							; slow Sonic
 		beq.s	.exit								; branch if Sonic stops moving
-		move.b	#id_Splash,(v_splash).w				; load splash object
+		_move.l	#Spla_Activate,(v_splash+obAddr).w	; activate splash object
 		move.w	#sfx_Splash,d0
 		jmp		(QueueSound2).w						; play splash sound
 ; ===========================================================================
@@ -390,7 +390,7 @@ Sonic_Water:
 		bsr.w   ApplySpeedSettings					; fetch speed settings
 		asl		obVelY(a0)
 		beq.w	.exit								; if we aren't moving vertically, branch
-		move.b	#id_Splash,(v_splash).w				; load splash object
+		_move.l	#Spla_Activate,(v_splash+obAddr).w	; activate splash object
 		cmpi.w	#-$1000,obVelY(a0)
 		bgt.s	.belowmaxspeed
 		move.w	#-$1000,obVelY(a0)					; set maximum speed on leaving water
@@ -2041,14 +2041,14 @@ Sonic_SpinDashLaunch:
 		muls.w	obInertia(a0),d0
 		asr.l	#8,d0
 		move.w	d0,obVelY(a0)
-		bra.w	.reset_screen
+		bra.w	Sonic_SpinDashResetScreen
 ; ===========================================================================
 
 Sonic_SpinDashCharge:				; If still charging the dash...
 		cmpi.w	#$1E,obSpinDashCounter(a0)
-		beq.s	.reset_screen
+		beq.s	Sonic_SpinDashResetScreen
 		addq.w	#1,obSpinDashCounter(a0)
-		bra.s	.reset_screen
+		bra.s	Sonic_SpinDashResetScreen
 
 Sonic_SpinDashStopSound:
 		move.w	#sfx_Stop,d0
@@ -2058,7 +2058,7 @@ Sonic_SpinDashStopSound:
 		move.b	#aniID_Wait,obAnim(a0)
 		subq.w	#5,obY(a0)
 
-	.reset_screen:
+Sonic_SpinDashResetScreen:
 		addq.l	#4,sp			; increase stack ptr
 		cmpi.w	#$60,(v_lookshift).w
 		beq.s	.finish
@@ -2920,35 +2920,38 @@ GameOver:
 		st.b	(f_deathflag).w		; set flag noting we are restarting the level from death
 	endif
 
+		_move.l	#GameOverCard,d1	; quick load object address
+
 	; Mercury Lives Over/Underflow Fix
 		tst.b	(v_lives).w			; are lives already at 0?
-		beq.s	.skip
+		beq.s	.skip				; if yes, branch
 		addq.b	#1,(f_lifecount).w	; update lives counter
 		subq.b	#1,(v_lives).w		; subtract 1 from number of lives
-		bne.s	.chkTimeOver
-.skip:
+		bne.s	.chkTimeOver		; check for death by time over
+
+	.skip:
 	; Lives Over/Underflow Fix End
 
 		clr.b	obRestartTimer(a0)
-		move.b	#id_GameOverCard,(v_gameovertext1).w	; load GAME object
-		move.b	#id_GameOverCard,(v_gameovertext2).w	; load OVER object
-		move.b	#1,(v_gameovertext2+obFrame).w			; set OVER object to correct frame
+		_move.l	d1,(v_gameovertext1+obAddr).w	; load GAME object
+		_move.l	d1,(v_gameovertext2+obAddr).w	; load OVER object
+		move.b	#1,(v_gameovertext2+obFrame).w	; set OVER object to correct frame
 		clr.b	(f_timeover).w
 		bra.s	.playmusic
 ; ===========================================================================
 
-.chkTimeOver:
-		move.b	#60,obRestartTimer(a0)					; set time delay to 1 second
-		tst.b	(f_timeover).w							; is TIME OVER tag set?
-		beq.s	.end									; if not, branch
+	.chkTimeOver:
+		move.b	#60,obRestartTimer(a0)			; set time delay to 1 second
+		tst.b	(f_timeover).w					; is TIME OVER tag set?
+		beq.s	.end							; if not, branch
 
 		clr.b	obRestartTimer(a0)
-		move.b	#id_GameOverCard,(v_gameovertext1).w	; load TIME object
-		move.b	#id_GameOverCard,(v_gameovertext2).w	; load OVER object
-		move.b	#2,(v_gameovertext1+obFrame).w			; set TIME object to correct frame
-		move.b	#3,(v_gameovertext2+obFrame).w			; set OVER object to correct frame
+		_move.l	d1,(v_gameovertext1+obAddr).w	; load TIME object
+		_move.l	d1,(v_gameovertext2+obAddr).w	; load OVER object
+		move.b	#2,(v_gameovertext1+obFrame).w	; set TIME object to correct frame
+		move.b	#3,(v_gameovertext2+obFrame).w	; set OVER object to correct frame
 
-.playmusic:
+	.playmusic:
 		moveq	#plcid_GameOver,d0
 		
 	if AmbienceMode
@@ -2961,7 +2964,7 @@ GameOver:
 	endif
 ; ===========================================================================
 
-.end:
+	.end:
 		rts	
 ; End of function GameOver
 ; ===========================================================================
@@ -3027,8 +3030,7 @@ Sonic_Animate:
 		cmp.b	obAnimNext(a0),d0		; has animation changed?
 		beq.s	.do						; if not, branch
 		move.b	d0,obAnimNext(a0)		; set to "no restart"
-		clr.b	obAniFrame(a0)			; reset animation
-		clr.b	obTimeFrame(a0)			; reset frame duration
+		clr.w	obAniFrame(a0)			; reset animation and frame duration
 		bclr	#staPush,obStatus(a0)	; clear pushing flag -- Mercury Pushing While Walking Fix
 
 	.do:

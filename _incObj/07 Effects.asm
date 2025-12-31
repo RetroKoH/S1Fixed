@@ -7,12 +7,14 @@ Effects:
 		move.w	Eff_Index(pc,d0.w),d1
 		jmp		Eff_Index(pc,d1.w)
 ; ===========================================================================
+
 Eff_Index:	offsetTable
 		offsetTableEntry.w 	Eff_Init
 		offsetTableEntry.w 	Eff_Main
 		offsetTableEntry.w 	Eff_Delete
 		offsetTableEntry.w	Eff_ChkSkid
 ; ===========================================================================
+
 Eff_Init:		; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Effects,obMap(a0)
@@ -26,19 +28,20 @@ Eff_Init:		; Routine 0
 
 Eff_Main:		; Routine 2
 		lea		(v_player).w,a2
-		moveq	#0,d0
-		move.b	obAnim(a0),d0	; use current animation as a secondary routine counter
+		moveq	#$7F,d0
+		and.b	obAnim(a0),d0				; use current animation as a secondary routine counter
 		add.w	d0,d0
 		move.w	Eff_DisplayModes(pc,d0.w),d1
 		jmp		Eff_DisplayModes(pc,d1.w)
 ; ===========================================================================
-; off_1DDA4:
+
 Eff_DisplayModes:	offsetTable
 		offsetTableEntry.w 	Eff_MdDisplay		; 0
 		offsetTableEntry.w 	Eff_MdSpindashDust	; 2
 		offsetTableEntry.w 	Eff_MdDisplay		; Eff_MdSkidDust-Eff_DisplayModes	; 4
 		offsetTableEntry.w 	Eff_MdDisplay		; 6: DropDash Dust
 ; ===========================================================================
+
 Eff_MdSpindashDust:
 	if SpinDashEnabled==1
 		cmpi.b	#4,obRoutine(a2)
@@ -66,25 +69,26 @@ Eff_Delete:		; Routine 4
 		jmp		(DeleteObject).l			; delete when animation	is complete
 ; ===========================================================================
 
-Eff_ChkSkid:
+Eff_ChkSkid:	; Routine 6
 	if ~~SkidDustEnabled
 		rts
 	else
 		lea		(v_player).w,a2
-		cmpi.b	#aniID_Stop,obAnim(a2)
-		beq.s	Eff_SkidDust
-		move.b	#2,obRoutine(a0)
-		clr.b	obEff_DustTimer(a0)
+		cmpi.b	#aniID_Stop,obAnim(a2)		; is Sonic skidding to a halt?
+		beq.s	Eff_SkidDust				; if yes, branch
+		move.b	#2,obRoutine(a0)			; otherwise, revert to Routine 2
+		clr.b	obEff_DustTimer(a0)			; and clear dust timer
 		rts
 ; ===========================================================================
 
 Eff_SkidDust:
-		subq.b	#1,obEff_DustTimer(a0)
-		bpl.s	Eff_LoadGfx
+		subq.b	#1,obEff_DustTimer(a0)		; decrement timer
+		bpl.s	Eff_LoadGfx					; branch if time remains
+
 		move.b	#3,obEff_DustTimer(a0)		; create dust once every 4 frames
 		jsr		(FindFreeObj).l
 		bne.s	Eff_LoadGfx
-		move.l	obAddr(a0),obAddr(a1)		; load obj07
+		_move.l	obAddr(a0),obAddr(a1)		; load obj07 (and copy obRender)
 		move.w	obX(a2),obX(a1)
 		move.w	obY(a2),obY(a1)
 		addi.w	#$10,obY(a1)

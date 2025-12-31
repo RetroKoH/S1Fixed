@@ -130,7 +130,7 @@ ptr_Caterkiller:		dc.l Caterkiller	; $78
 ptr_Lamppost:			dc.l Lamppost
 ptr_BossStarLight:		dc.l BossStarLight
 ptr_BossSpikeball:		dc.l BossSpikeball
-ptr_RingFlash:			dc.l RingFlash
+ptr_Obj7C:				dc.l NullObject
 ptr_HiddenBonus:		dc.l HiddenBonus
 ptr_SSResult:			dc.l SSResult
 ptr_SSRChaos:			dc.l SSRChaos
@@ -289,7 +289,7 @@ id_Caterkiller:			equ ((ptr_Caterkiller-Obj_Index)/4)+1		; $78
 id_Lamppost:			equ ((ptr_Lamppost-Obj_Index)/4)+1
 id_BossStarLight:		equ ((ptr_BossStarLight-Obj_Index)/4)+1
 id_BossSpikeball:		equ ((ptr_BossSpikeball-Obj_Index)/4)+1
-id_RingFlash:			equ ((ptr_RingFlash-Obj_Index)/4)+1
+id_Obj7C:				equ ((ptr_Obj7C-Obj_Index)/4)+1
 id_HiddenBonus:			equ ((ptr_HiddenBonus-Obj_Index)/4)+1
 id_SSResult:			equ ((ptr_SSResult-Obj_Index)/4)+1
 id_SSRChaos:			equ ((ptr_SSRChaos-Obj_Index)/4)+1

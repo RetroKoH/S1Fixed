@@ -3,14 +3,6 @@
 ; ---------------------------------------------------------------------------
 
 BigSpikeBall:
-	; LavaGaming Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.s	BBall_Move
-	; Object Routine Optimization End
-; ---------------------------------------------------------------------------
-
-BBall_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)			; -> BBall_Move
 		move.l	#Map_BBall,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SYZ_Big_Spikeball,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
@@ -30,21 +22,21 @@ BBall_Main:	; Routine 0
 		move.b	d0,obAngle(a0)				; set initial angle
 		move.b	d0,obBBall_Angle(a0)		; set initial precise angle
 		move.b	#$50,obBBall_Radius(a0)		; set radius of circle motion
-; ---------------------------------------------------------------------------
 
-BBall_Move:	; Routine 2
 		moveq	#7,d0
 		and.b	obSubtype(a0),d0			; read low nybble of subtype (SCE Optimization)
-		beq.s	BBall_Still					; skip if subtype 00 (this type is unused)
 		add.w	d0,d0
-		move.w	BBall_Types-2(pc,d0.w),d1
-		jmp		BBall_Types(pc,d1.w)
+		lea		(BBall_Index).l,a1
+		movea.l	(a1,d0.w),a1
+		move.l	a1,obAddr(a0)				; load address of movement code for future use
+		jmp		(a1)						; run movement code for the first time
 ; ===========================================================================
 
-BBall_Types:	offsetTable
-		offsetTableEntry.w BBall_Sideways
-		offsetTableEntry.w BBall_UpDown
-		offsetTableEntry.w BBall_Circle
+BBall_Index:
+		dc.l	BBall_Still					; 0
+		dc.l	BBall_Sideways				; 2
+		dc.l	BBall_UpDown				; 4
+		dc.l	BBall_Circle				; 6
 ; ===========================================================================
 
 BBall_Sideways:

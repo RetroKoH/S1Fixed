@@ -99,8 +99,7 @@ Spring_AniUp:	; Routine 4
 ; ===========================================================================
 
 Spring_ResetUp:	; Routine 6
-		clr.b	obAniFrame(a0)			; reset animation
-		clr.b	obTimeFrame(a0)			; reset frame duration
+		clr.w	obAniFrame(a0)				; reset animation and frame duration
 		subq.b	#4,obRoutine(a0)			; -> Spring_Up
 		rts	
 ; ===========================================================================
@@ -111,11 +110,7 @@ Spring_LR:	; Routine 8
 		moveq	#15,d3						; height (walking); save 4 cycles - Filter
 		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject
-		cmpi.b	#2,obRoutine(a0)			; has routine changed? (unused; SolidObject doesn't change it)
-		bne.s	.routine_ok					; if not, branch
 		move.b	#8,obRoutine(a0)
-
-	.routine_ok:
 		btst	#staSonicPush,obStatus(a0)
 		bne.s	Spring_BounceLR
 		rts	
@@ -158,8 +153,7 @@ Spring_AniLR:	; Routine $A
 ; ===========================================================================
 
 Spring_ResetLR:	; Routine $C
-		clr.b	obAniFrame(a0)			; reset animation
-		clr.b	obTimeFrame(a0)			; reset frame duration
+		clr.w	obAniFrame(a0)				; reset animation and frame duration
 		subq.b	#4,obRoutine(a0)			; goto "Spring_LR" routine
 		rts	
 ; ===========================================================================
@@ -170,11 +164,7 @@ Spring_Dwn:	; Routine $E
 		moveq	#16,d3						; height (walking); save 4 cycles - Filter
 		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject
-		cmpi.b	#2,obRoutine(a0)			; has routine changed? (unused; SolidObject doesn't change it)
-		bne.s	.routine_ok					; if not, branch
 		move.b	#$E,obRoutine(a0)
-
-	.routine_ok:
 		btst	#staSonicOnObj,obStatus(a0)	; is Sonic on top of the spring? (removed obSolid)
 		bne.s	.on_top						; if yes, branch
 		tst.w	d4
@@ -204,8 +194,7 @@ Spring_AniDwn:	; Routine $10
 
 Spring_ResetDwn:
 		; Routine $12
-		clr.b	obAniFrame(a0)			; reset animation
-		clr.b	obTimeFrame(a0)			; reset frame duration
+		clr.w	obAniFrame(a0)				; reset animation and frame duration
 		subq.b	#4,obRoutine(a0)			; goto "Spring_Dwn" routine
 		rts	
 ; ===========================================================================

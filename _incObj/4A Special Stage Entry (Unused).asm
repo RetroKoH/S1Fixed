@@ -48,9 +48,9 @@ Van_RmvSonic:	; Routine 2
 ; ===========================================================================
 
 Van_LoadSonic:	; Routine 4
-		subq.w	#1,obVanish_Timer(a0)		; subtract 1 from time
-		bne.s	.wait						; if time remains, branch
-		move.b	#id_SonicPlayer,(v_player).w	; load Sonic object
+		subq.w	#1,obVanish_Timer(a0)				; subtract 1 from time
+		bne.s	.wait								; if time remains, branch
+		_move.l	#SonicPlayer,(v_player+obAddr).w	; load Sonic object
 		jmp		(DeleteObject).l
 
 	.wait:

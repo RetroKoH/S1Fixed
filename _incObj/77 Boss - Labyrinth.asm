@@ -324,7 +324,8 @@ BossLZ_FaceMain:	; Routine 4
 		movea.w	obBoss_Parent(a0),a1				; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.l	#BossLabyrinth,obAddr(a1)			; is the boss still loaded?
+		; is the boss still loaded (d1 = obAddr)?
+		cmp_addr	#BossLabyrinth,obAddr(a1),d1
 		bne.s	BossLZ_Delete						; if not, delete object
 	; Boss Object Fix End
 
@@ -366,7 +367,8 @@ BossLZ_FlameMain:; Routine 6
 		movea.w	obBoss_Parent(a0),a1				; get address of parent object (ship)
 
 	; Devon Boss Object Fix
-		cmpi.l	#BossLabyrinth,obAddr(a1)			; is the boss still loaded?
+		; is the boss still loaded (d1 = obAddr)?
+		cmp_addr	#BossLabyrinth,obAddr(a1),d1
 		bne.s	BossLZ_Delete						; if not, delete object
 	; Boss Object Fix End
 
