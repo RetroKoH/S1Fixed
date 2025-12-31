@@ -159,7 +159,6 @@ BuildSprites_MultiDraw:
 		move.l	a4,-(sp)
 		lea		(v_screenposx).w,a4
 		movea.w	obGfx(a0),a3
-		movea.l	obMap(a0),a5
 		moveq	#0,d0
 
 		; check if object is within X bounds
@@ -191,9 +190,9 @@ BuildSprites_MultiDraw:
 		addi.w	#128,d2
 		bra.s	.drawSprite
 
-.assumeHeight:
-; this doesn't take into account the height of the sprite/object when checking
-; if it's onscreen vertically or not.
+	.assumeHeight:
+	; this doesn't take into account the height of the sprite/object when checking
+	; if it's onscreen vertically or not.
 		move.w	obY(a0),d2
 		sub.w	4(a4),d2						; subtract screen y-pos
 		addi.w	#128,d2
@@ -203,12 +202,12 @@ BuildSprites_MultiDraw:
 		cmpi.w	#32+128+224,d2
 		bhs.s	.skipObject
 
-.drawSprite:
+	.drawSprite:
 		moveq	#0,d1
 		move.b	mainspr_mapframe(a0),d1			; get current frame
 		beq.s	.noparenttodraw
 		add.w	d1,d1							; S2 BuildSprites Change .b > .w.
-		movea.l	a5,a1							; a5 is obMap(a0), copy to a1
+		movea.l	obMap(a0),a1					; load mappings directly
 		adda.w	(a1,d1.w),a1
 		move.w	(a1)+,d1						; S2 BuildSprites Change .b > .w.
 		subq.w	#1,d1							; get number of pieces ; S2 BuildSprites Change .b > .w.
@@ -219,7 +218,8 @@ BuildSprites_MultiDraw:
 
 	.noparenttodraw:
 		bset	#7,obRender(a0)					; set onscreen flag
-		lea		subspr_data(a0),a6				; address of first child sprite info
+		lea		subspr_frames(a0),a5
+		lea		subspr_posdata(a0),a6			; address of first child sprite info
 		moveq	#0,d0
 		move.b	mainspr_childsprites(a0),d0		; get child sprite count
 		subq.w	#1,d0							; if there are 0, go to next object
@@ -234,22 +234,21 @@ BuildSprites_MultiDraw:
 		sub.w	4(a4),d2						; subtract the screen's y position
 		addi.w	#128,d2
 	; took out S2 hard-coded y-wrap check
-		addq.w	#1,a6
 		moveq	#0,d1
-		move.b	(a6)+,d1						; get mapping frame
+		move.b	(a5)+,d1						; get mapping frame
 		add.w	d1,d1							; S2 BuildSprites Change .b > .w.
-		movea.l	a5,a1
+		movea.l	obMap(a0),a1					; load mappings directly
 		adda.w	(a1,d1.w),a1
 		move.w	(a1)+,d1						; S2 BuildSprites Change .b > .w.
 		subq.w	#1,d1							; get number of pieces ; S2 BuildSprites Change .b > .w.
 		bmi.s	.nochildleft					; if there are 0 pieces, branch
 		move.w	d4,-(sp)
-		bsr.s	ChkDrawSprite
+		bsr.s	ChkDrawSprite					; BuildSpr_Draw
 		move.w	(sp)+,d4
 
 .nochildleft:
 		swap	d0
-		dbf	d0,.drawchildloop					; repeat for number of child sprites
+		dbf		d0,.drawchildloop				; repeat for number of child sprites
 
 ; loc_16804:
 .skipObject:

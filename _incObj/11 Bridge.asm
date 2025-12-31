@@ -77,16 +77,17 @@ Bri_MakeSegment:
 		move.b	#$40,mainspr_width(a1)
 		move.b	d1,mainspr_childsprites(a1)
 		subq.b	#1,d1
-		lea		sub2_x_pos(a1),a2	; starting address for subsprite data
+		lea		subspr_posdata(a1),a2	; starting address for subsprite position data
+		lea		subspr_frames(a1),a3	; starting address for subsprite frame data
 
-.loop:
+	.loop:
 		move.w	d3,(a2)+			; sub?_x_pos
 		move.w	d2,(a2)+			; sub?_y_pos
-		move.w	#0,(a2)+			; sub?_mapframe
+		move.w	#0,(a3)+			; sub?_mapframe
 		addi.w	#$10,d3				; width of a log, x_pos for next log
 		dbf		d1,.loop			; repeat for d1 logs
 
-.return:
+	.return:
 		rts
 ; ===========================================================================
 
@@ -112,9 +113,9 @@ Bri_Action:	; Routine 2
 		move.b	obSubtype(a0),d1
 		lsl.w	#3,d1
 		move.w	d1,d2
-		addq.w	#8,d1
-		add.w	d2,d2
-		moveq	#8,d3
+		addq.w	#8,d1				; d1 = (half-width of bridge) + 8
+		add.w	d2,d2				; d2 = (full width of bridge)
+		moveq	#8,d3				; is this used???
 		move.w	obX(a0),d4
 		bsr.s	Bri_Solid
 
@@ -137,28 +138,29 @@ Bri_Solid:
 		cmp.w	d2,d0
 		blo.s	.inX
 
-.flip:
+	.flip:
 		bclr	#staOnObj,obStatus(a1)
 		bclr	#staSonicOnObj,obStatus(a0)	; For single player, we don't need to load the standing bit to d6, as there's only one.
 		moveq	#0,d4
 		rts
 ; ===========================================================================
 
-.inX:
-		lsr.w	#4,d0
+	.inX:
+		lsr.w	#4,d0						; get index of log that Sonic is standing on
 		move.b	d0,(a0,d5.w)
-		movea.w	obBridge_ChildObj1(a0),a2 ; Get child object
-		cmpi.w	#8,d0
-		blo.s	.firstsubsprite
-		movea.w	obBridge_ChildObj2(a0),a2 ; Get child object
-		subq.w	#8,d0
+		movea.w	obBridge_ChildObj1(a0),a2	; Get child object
+		cmpi.w	#8,d0						; is Sonic on logs 0-7?
+		blo.s	.firstsubsprite				; if yes, branch
 
-.firstsubsprite:
+		movea.w	obBridge_ChildObj2(a0),a2	; Get child object
+		subq.w	#8,d0						; get actual log ID for the second part of the bridge
+
+	.firstsubsprite:
 		add.w	d0,d0
 		move.w	d0,d1
-		add.w	d0,d0
-		add.w	d1,d0
-		move.w	sub2_y_pos(a2,d0.w),d0
+		add.w	d0,d0						; multiply by 4 for correct subsprite
+		addq.w	#2,d0						; add 2 to get y-pos
+		move.w	subspr_posdata(a2,d0.w),d0
 		subq.w	#8,d0
 		moveq	#0,d1
 		move.b	obHeight(a1),d1
@@ -217,8 +219,8 @@ Bri_Bend:
 		lsl.w	#4,d3
 		lea		(a4,d3.w),a3
 		movea.w	obBridge_ChildObj1(a0),a1
-		lea		sub9_y_pos+next_subspr(a1),a2
-		lea		sub2_y_pos(a1),a1
+		lea		sub9_y_pos+next_subspr(a1),a2	;$42
+		lea		sub2_y_pos(a1),a1				;$10
 
 .loopafter:
 		moveq	#0,d0
@@ -229,7 +231,7 @@ Bri_Bend:
 		swap	d0
 		add.w	obBridge_StartY(a0),d0
 		move.w	d0,(a1)
-		addq.w	#6,a1
+		addq.w	#next_subspr,a1
 		cmpa.w	a2,a1
 		bne.s	.skiploopafter
 		movea.w	obBridge_ChildObj2(a0),a1 ; a1=object
@@ -262,7 +264,7 @@ Bri_Bend:
 		swap	d0
 		add.w	obBridge_StartY(a0),d0
 		move.w	d0,(a1)
-		addq.w	#6,a1
+		addq.w	#next_subspr,a1
 		cmpa.w	a2,a1
 		bne.s	.skiploopbefore
 		movea.w	obBridge_ChildObj2(a0),a1 ; a1=object
