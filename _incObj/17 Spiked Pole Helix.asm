@@ -64,32 +64,24 @@ Hel_MakeSubsprite:
 		move.b	d1,d4						; loop iterator
 		addq.b	#1,d1						; subsprite count
 		move.b	d1,mainspr_childsprites(a1)
-		lea		subspr_data(a1),a2			; starting address for subsprite data
+		lea		subspr_posdata(a1),a2		; starting address for subsprite position data
 		move.w	obX(a1),d2
 		move.w	obY(a1),d3
 
 .loop:
 		move.w	d2,(a2)+					; sub?_x_pos
-		move.w	d3,(a2)						; sub?_y_pos
-		addq.w	#4,a2						; skip frame
+		move.w	d3,(a2)+					; sub?_y_pos
 		addi.w	#$10,d2						; width of a spike, x_pos for next spike
 		dbf		d4,.loop					; repeat for d4 spikes
 
 .done:
 		move.w	obHel_OffsetX(a0),d0
 		addi.w	d0,obX(a1)					; x-offset from above (still in d0)
-		move.w	a1,obHel_ChildObj(a0)		; pointer to subsprite object
-		
+		move.w	a1,obHel_ChildObj(a0)		; pointer to subsprite object	
 	; Spiked Log Helix is finished
+; ---------------------------------------------------------------------------
 
 Hel_Action:	; Routine 2
-		bsr.w	Hel_RotateSpikes
-		bra.w	Hel_ChkDel					; Clownacy DisplaySprite Fix
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
-Hel_RotateSpikes:
 		movea.w	obHel_ChildObj(a0),a1 ; a1=object
 		moveq	#0,d0
 		move.b	(v_ani0_frame).w,d0
@@ -97,13 +89,12 @@ Hel_RotateSpikes:
 
 		moveq	#0,d2
 		move.b	obSubtype(a0),d2			; get number of spikes
-		lea		sub2_mapframe(a1),a2		; address for subsprite frames	
+		lea		subspr_frames(a1),a2		; address for subsprite frames	
 
 	.loop:
-		move.b	d0,(a2)						; set frame
+		move.b	d0,(a2)+					; set frame & go to next frame address
 		addq.b	#1,d0						; next frame
 		and.b	d1,d0						; max spikes frames
-		addq.w	#6,a2						; go to next frame address
 		dbf		d2,.loop					; repeat for d2 spikes
 
 		; collision move
@@ -116,26 +107,20 @@ Hel_RotateSpikes:
 		add.w	d3,d0						; "
 		move.w	d0,obX(a0)					; set collision xpos
 
-.framecheck:
+	.framecheck:
 		move.b	obSubtype(a0),d2			; get number of spikes
 		cmp.b	d4,d2						; is the spike log to short to display a "high frame" right now?
-		bcs.s	.nocollision				; if yes, branch and don't register any collision
+		bcs.s	.chkdel						; if yes, branch and don't register any collision
 
 		; set collision IF spike frame is available
 		lea		(v_col_response_list).w,a1
 		cmpi.w	#$7E,(a1)					; Is list full?
-		bhs.s	Hel_ChkDel					; If so, return
+		bhs.s	.chkdel						; If so, return
 		addq.w	#2,(a1)						; Count this new entry
 		adda.w	(a1),a1						; Offset into right area of list
 		move.w	a0,(a1)						; Store RAM address in list
 
-.nocollision:
-		rts	
-; End of function Hel_RotateSpikes
-
-; ===========================================================================
-
-Hel_ChkDel:
+	.chkdel:
 		offscreen.s	Hel_Delete,obHel_StartX(a0)	; ProjectFM S3K Objects Manager
 		rts
 ; ===========================================================================

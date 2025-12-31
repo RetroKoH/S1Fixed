@@ -26,8 +26,7 @@ OT_Main:
 		move.b	#%01000100,obRender(a1)		; Set to render sub sprites -- %01000100 : Setting bit 6 enables subsprites for this object.
 		move.w	#ArtTile_Sonic,obGfx(a1)	; Base tile ID
 		move.l	#Map_Sonic,obMap(a1)		; Mappings
-		move.b	#$30,mainspr_width(a1)		; Set main sprite width
-		move.b	#$30,mainspr_height(a1)		; Set main sprite height
+		move.w	#$3030,mainspr_height(a1)	; Set main sprite height/width
 		move.b	#4,mainspr_childsprites(a1)	; Set number of child sprites
 		move.w	obX(a0),obX(a1)				; Set position
 		move.w	obY(a0),obY(a1)

@@ -7,29 +7,18 @@ Stars_Delete:
 ; ===========================================================================
 
 StarsItem:
-	; LavaGaming Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.s	Stars_Next
-	; Object Routine Optimization End
-
-Stars_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)
+		_move.l	#Stars_Trail,obAddr(a0)
 		move.b	#4,obRender(a0)
-		bset	#6,obRender(a0)
+		bset	#6,obRender(a0)							; multi-draw (sub-sprites) flag
 		move.w	#make_art_tile(ArtTile_Shield,0,0),obGfx(a0)
-		move.l	#Map_Shield,obMap(a0)
-		move.l	#Art_Stars,obShield_ArtLoc(a0)
-		move.l	#ShieldDynPLC,obShield_DPLCLoc(a0)
-
+		move.l	#Map_Shield,obMap(a0)					; TO-DO: split mappings and DPLCs
 		clr.b	mainspr_routine(a0)						; use this to increment every single star frame using the data table
-		moveq	#$10,d0
-		move.b	d0,mainspr_width(a0)
-		move.b	d0,mainspr_height(a0)
+		move.w	#$1010,mainspr_height(a0)				; height and width
 		move.b	#3,mainspr_childsprites(a0)
 	; fallthrough to Routine 2
 ; ---------------------------------------------------------------------------
 
-Stars_Next:	; Routine 2
+Stars_Trail:	; Routine 2
 	if SuperMod
 		btst	#sta2ndSuper,(v_player+obStatus2nd).w	; is Sonic Super?
 		bne.s	Stars_Delete							; if yes, destroy stars
@@ -39,11 +28,12 @@ Stars_Next:	; Routine 2
 		moveq	#0,d1
 		moveq	#0,d3									; d3 = loop iterator
 		moveq	#0,d4
-		lea		subspr_data(a0),a2						; starting address for subsprite data
+		lea		subspr_posdata(a0),a2					; starting address for subsprite position data
+		lea		subspr_frames(a0),a5					; starting address for subsprite frame data
 		lea		Star_main(pc),a3						; starting address for animations
 		move.b	mainspr_routine(a0),d4					; d4 = current animation frame
 		lea		(a3,d4.w),a3							; a3 = location of mapping frame
-		lea		obStars_TrackData(a0),a4					; previous tracking data for each subsprite
+		lea		obStars_TrackData(a0),a4				; previous tracking data for each subsprite
 		move.b	(v_player+obStatus).w,obStatus(a0)		; set status early (we'll need it for position adjustment later
 		move.b	(v_player+obAnim).w,d5					; more efficient to store this once and compare 4-8 times later
 
@@ -108,8 +98,7 @@ Stars_Next:	; Routine 2
 		move.w	d4,(a2)+				; sub?_x_pos
 		move.w	(a1)+,(a2)+				; sub?_y_pos
 		adda.w	#$18,a3
-		move.b	(a3),1(a2)				; sub?_mapframe
-		addq.w	#2,a2					; skip to next sub data
+		move.b	(a3),(a5)+				; sub?_mapframe
 
 	.skipsubanims:
 		addq.b	#1,d3
@@ -119,8 +108,33 @@ Stars_Next:	; Routine 2
 
 		moveq	#0,d0
 		move.b	mainspr_mapframe(a0),d0
-		bsr.w	Stars_LoadGfx			; RetroKoH VRAM Overhaul
+;Stars_LoadGfx:
+		lea		ShieldDynPLC(pc),a2
+		add.w	d0,d0
+		adda.w	(a2,d0.w),a2
+		moveq	#0,d5
+		move.w	(a2)+,d5					; read "number of entries" value -- S3k: .b to .w
+		subq.w	#1,d5
+		bmi.s	.nochange					; if zero, branch
+		move.w	#(ArtTile_Shield*tile_size),d4
 
+	.readentry:
+		moveq	#0,d1
+		move.w	(a2)+,d1					; S3K .b to .w
+		move.w	d1,d3						; S3K
+		lsr.w	#8,d3						; S3K
+		andi.w	#$F0,d3
+		addi.w	#$10,d3
+		andi.w	#$FFF,d1
+		lsl.l	#5,d1
+		add.l	#Art_Stars,d1
+		move.w	d4,d2
+		add.w	d3,d4
+		add.w	d3,d4
+		jsr		(QueueDMATransfer).w
+		dbf		d5,.readentry				; repeat for number of entries
+
+	.nochange:
 		move.b	mainspr_routine(a0),d0	; d0 = animation frame to be incremented
 		addq.b	#1,d0					; add to animation frame
 		cmpi.b	#24,d0					; did we reach the end of the animation?
