@@ -505,7 +505,7 @@ HurtSonic:
 	; using cmp_addr macro code directly here
 		move.l	#$FFFFFF,d1
 		and.l	obAddr(a2),d1					; isolate the code address
-		_cmpi.l	#Spikes,d1						; check	if you were killed by spikes
+		_cmpi.l	#Spik_Solid,d1					; check	if you were killed by spikes
 		beq.s	.sound
 		_cmpi.l	#Harpoon,d1						; check	if you were killed by a harpoon
 		beq.s	.sound
@@ -577,7 +577,7 @@ KillSonic:
 	; using cmp_addr macro code directly here
 		move.l	#$FFFFFF,d1
 		and.l	obAddr(a2),d1					; isolate the code address
-		_cmpi.l	#Spikes,d1						; check	if you were killed by spikes
+		_cmpi.l	#Spik_Solid,d1					; check	if you were killed by spikes
 		beq.s	.sound
 		_cmpi.l	#Harpoon,d1						; check	if you were killed by a harpoon
 		beq.s	.sound
