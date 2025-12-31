@@ -23,12 +23,13 @@ BigSpikeBall:
 		move.b	d0,obBBall_Angle(a0)		; set initial precise angle
 		move.b	#$50,obBBall_Radius(a0)		; set radius of circle motion
 
-		moveq	#7,d0
-		and.b	obSubtype(a0),d0			; read low nybble of subtype (SCE Optimization)
+		moveq	#7,d0						; get last digit of subtype (sans bit 3)
+		and.b	obSubtype(a0),d0			; SCE Optimization
 		add.w	d0,d0
-		lea		(BBall_Index).l,a1
+		add.w	d0,d0
+		lea		BBall_Index(pc),a1
 		movea.l	(a1,d0.w),a1
-		move.l	a1,obAddr(a0)				; load address of movement code for future use
+		obj_addr	a1						; load address of movement code for future use
 		jmp		(a1)						; run movement code for the first time
 ; ===========================================================================
 
