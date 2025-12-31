@@ -849,36 +849,71 @@ objoff_3F:	equ $3F
 object_size_bits:		equ 6
 object_size:			equ 1<<object_size_bits
 
-; Devon Subsprite OSTs -- Subsprite properties set DO override some standard object SSTs.
-; What is overridden really depends on the amount of sub sprites you have set to display.
-mainspr_routine:		equ $A	; added by RetroKoH
-mainspr_mapframe:		equ $B	; last byte of obX (2nd byte of obScreenY)
-mainspr_width:			equ $E
-mainspr_childsprites:	equ $F	; amount of child sprites
-mainspr_height:			equ $14
-subspr_data:			equ $10
-sub2_x_pos:				equ $10	; x_vel
-sub2_y_pos:				equ $12	; y_vel
-sub2_mapframe:			equ $15
-sub3_x_pos:				equ $16	; y_radius
-sub3_y_pos:				equ $18 ; priority
-sub3_mapframe:			equ $1B ; anim_frame
-sub4_x_pos:				equ $1C ; anim
-sub4_y_pos:				equ $1E ; anim_frame_duration
-sub4_mapframe:			equ $21 ; collision_property
-sub5_x_pos:				equ $22 ; status
-sub5_y_pos:				equ $24 ; routine
-sub5_mapframe:			equ $27
-sub6_x_pos:				equ $28 ; subtype
+; Devon/KoH Subsprite OSTs -- Subsprite properties set DO override standard OSTs.
+; What is actually overridden depends on the amount of sub sprites you have set to display.
+mainspr_routine:		equ $13	; added by RetroKoH
+mainspr_mapframe:		equ $14	; last byte of obX (2nd byte of obScreenY)
+mainspr_childsprites:	equ $15	; amount of child sprites
+mainspr_height:			equ $16 ; TO-DO: swap obRespawnAddr with obHeight/Width so we can use those here
+mainspr_width:			equ $17
+
+subspr_posdata:			equ $18
+sub2_x_pos:				equ $18
+sub2_y_pos:				equ $1A
+sub3_x_pos:				equ $1C
+sub3_y_pos:				equ $1E
+sub4_x_pos:				equ $20
+sub4_y_pos:				equ $22
+sub5_x_pos:				equ $24
+sub5_y_pos:				equ $26
+sub6_x_pos:				equ $28
 sub6_y_pos:				equ $2A
-sub6_mapframe:			equ $2D
-sub7_x_pos:				equ $2E
-sub7_y_pos:				equ $30
-sub7_mapframe:			equ $33
-sub8_x_pos:				equ $34
-sub8_y_pos:				equ $36
-sub8_mapframe:			equ $39
-sub9_x_pos:				equ $3A
-sub9_y_pos:				equ $3C
+sub7_x_pos:				equ $2C
+sub7_y_pos:				equ $2E
+sub8_x_pos:				equ $30
+sub8_y_pos:				equ $32
+sub9_x_pos:				equ $34
+sub9_y_pos:				equ $36
+next_subspr:			equ 4		; location of the next subspr position
+
+subspr_frames:			equ $38
+sub2_mapframe:			equ $38
+sub3_mapframe:			equ $39
+sub4_mapframe:			equ $3A
+sub5_mapframe:			equ $3B
+sub6_mapframe:			equ $3C
+sub7_mapframe:			equ $3D
+sub8_mapframe:			equ $3E
 sub9_mapframe:			equ $3F
-next_subspr:			equ $6
+
+; mainspr_routine:		equ $A	; added by RetroKoH
+; mainspr_mapframe:		equ $B	; last byte of obX (2nd byte of obScreenY)
+; mainspr_width:			equ $E
+; mainspr_childsprites:	equ $F	; amount of child sprites
+; mainspr_height:			equ $14
+; subspr_data:			equ $10
+; sub2_x_pos:				equ $10	; x_vel
+; sub2_y_pos:				equ $12	; y_vel
+; sub2_mapframe:			equ $15
+; sub3_x_pos:				equ $16	; y_radius
+; sub3_y_pos:				equ $18 ; priority
+; sub3_mapframe:			equ $1B ; anim_frame
+; sub4_x_pos:				equ $1C ; anim
+; sub4_y_pos:				equ $1E ; anim_frame_duration
+; sub4_mapframe:			equ $21 ; collision_property
+; sub5_x_pos:				equ $22 ; status
+; sub5_y_pos:				equ $24 ; routine
+; sub5_mapframe:			equ $27
+; sub6_x_pos:				equ $28 ; subtype
+; sub6_y_pos:				equ $2A
+; sub6_mapframe:			equ $2D
+; sub7_x_pos:				equ $2E
+; sub7_y_pos:				equ $30
+; sub7_mapframe:			equ $33
+; sub8_x_pos:				equ $34
+; sub8_y_pos:				equ $36
+; sub8_mapframe:			equ $39
+; sub9_x_pos:				equ $3A
+; sub9_y_pos:				equ $3C
+; sub9_mapframe:			equ $3F
+; next_subspr:			equ $6

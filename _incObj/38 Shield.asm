@@ -591,8 +591,6 @@ Shi_LightningDestroy: ; Routine $10
 Shield_LoadGfx:
 		moveq	#0,d0
 		move.b	(v_shieldobj+obFrame).w,d0	; load frame number
-
-Stars_LoadGfx:
 		movea.l	obShield_DPLCLoc(a0),a2
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2

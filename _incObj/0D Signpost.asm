@@ -386,7 +386,7 @@ Signpost_LoadGfx:
 		move.w	(a2)+,d5					; read "number of entries" value -- S3k: .b to .w
 		subq.w	#1,d5
 		bmi.s	.nochange					; if zero, branch
-		move.w	#(ArtTile_Signpost*$20),d4
+		move.w	#(ArtTile_Signpost*tile_size),d4
 
 	.readentry:
 		moveq	#0,d1
