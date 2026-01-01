@@ -5307,9 +5307,9 @@ Sound_2E:	include "sound/sfx/Snd - Switch.asm"
 Sound_2F:	include "sound/sfx/Snd - Ring Left Speaker.asm"
 Sound_30:	include "sound/sfx/Snd - Signpost Rotation.asm"
 Sound_31:	include "sound/sfx/Snd - SpinDash.asm"
-Sound_32:	include "sound/sfx/Snd - Harpoon.asm" 		; Placeholder
-Sound_33:	include "sound/sfx/Snd - GlideLand.asm"		; Placeholder
-Sound_34:	include "sound/sfx/Snd - GroundSlide.asm"	; Placeholder
+Sound_32:	include "sound/sfx/Snd - Peelout Charge.asm"
+Sound_33:	include "sound/sfx/Snd - Peelout Release.asm"
+Sound_34:	include "sound/sfx/Snd - Peelout Stop.asm"
 Sound_35:	include "sound/sfx/Snd - Insta Attack.asm"
 Sound_36:	include "sound/sfx/Snd - Fire Shield.asm"
 Sound_37:	include "sound/sfx/Snd - Bubble Shield.asm"
@@ -5317,7 +5317,7 @@ Sound_38:	include "sound/sfx/Snd - Lightning Shield.asm"
 Sound_39:	include "sound/sfx/Snd - Fire Attack.asm"
 Sound_3A:	include "sound/sfx/Snd - Bubble Attack.asm"
 Sound_3B:	include "sound/sfx/Snd - Electric Attack.asm"
-Sound_3C:	include "sound/sfx/Snd - Signpost.asm" ; Placeholder
+Sound_3C:	include "sound/sfx/Snd - Dropdash.asm"
 Sound_3D:	include "sound/sfx/Snd - Perfect.asm"
 
 ; Continuous
