@@ -2,15 +2,12 @@
 ; Object 11 - GHZ bridge - Ported from Sonic 2 (Credit: DeltaWooloo)
 ; ---------------------------------------------------------------------------
 
-Bridge:
-		btst	#6,obRender(a0)			; Is this object set to render sub sprites?
-		beq.s	.normal					; If not, branch
-
+Bridge_Sub:		; child sprite objects only need to be drawn
 		move.w	#priority3,d0			; RetroKoH/Devon S3K+ Priority Manager
 		bra.w	DisplaySprite2			; Display sprites
 ; ===========================================================================
 
-	.normal:
+Bridge:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Bri_Index(pc,d0.w),d1
@@ -34,21 +31,21 @@ Bri_Main:	; Routine 0
 		move.w	d2,obBridge_StartY(a0)
 		move.w	obX(a0),d3
 		moveq	#0,d1
-		move.b	obSubtype(a0),d1	; copy subtype (bridge length) to d1
+		move.b	obSubtype(a0),d1			; copy subtype (bridge length) to d1
 		move.w	d1,d0
 		lsr.w	#1,d0
-		lsl.w	#4,d0				; (d0 div 2) * 16
-		sub.w	d0,d3				; d3 = x-position of left half
-		swap	d1					; store subtype in high word for later
-		move.w	#8,d1				; load #0008 to the low word
+		lsl.w	#4,d0						; (d0 div 2) * 16
+		sub.w	d0,d3						; d3 = x-position of left half
+		swap	d1							; store subtype in high word for later
+		move.w	#8,d1						; load #0008 to the low word
 		bsr.s	Bri_MakeSegment
 		move.w	sub6_x_pos(a1),d0
 		subq.w	#8,d0
-		move.w	d0,obX(a1)			; center of first subsprite object
+		move.w	d0,obX(a1)					; center of first subsprite object
 		move.w	a1,obBridge_ChildObj1(a0)	; pointer to first subsprite object
-		swap	d1					; retrieve subtype
+		swap	d1							; retrieve subtype
 		subq.w	#8,d1
-		bls.s	.nomore				; branch, if subtype <= 8 (bridge has no more than 8 logs)
+		bls.s	.nomore						; branch, if subtype <= 8 (bridge has no more than 8 logs)
 	; else, create a second subsprite object for the rest of the bridge
 		move.w	d1,d4
 		bsr.s	Bri_MakeSegment
@@ -58,34 +55,34 @@ Bri_Main:	; Routine 0
 		add.w	d4,d0	; d0*3
 		move.w	sub2_x_pos(a1,d0.w),d0
 		subq.w	#8,d0
-		move.w	d0,obX(a1)			; center of second subsprite object
+		move.w	d0,obX(a1)					; center of second subsprite object
 
 .nomore:
-		bra.s	Bri_Action			; Bridge is finished
+		bra.s	Bri_Action					; Bridge is finished
 ; ===========================================================================
 
 Bri_MakeSegment:
 		bsr.w	FindFreeObj
 		bne.s	.return
-		_move.l	obAddr(a0),obAddr(a1)	; load obj11
+		_move.l	#Bridge_Sub,obAddr(a1)		; load subsprite object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.l	obMap(a0),obMap(a1)
 		move.w	obGfx(a0),obGfx(a1)
 		move.b	obRender(a0),obRender(a1)
-		bset	#6,obRender(a1)		; set subsprites flag
+		bset	#6,obRender(a1)				; set subsprites flag
 		move.b	#$40,mainspr_width(a1)
 		move.b	d1,mainspr_childsprites(a1)
 		subq.b	#1,d1
-		lea		subspr_posdata(a1),a2	; starting address for subsprite position data
-		lea		subspr_frames(a1),a3	; starting address for subsprite frame data
+		lea		subspr_posdata(a1),a2		; starting address for subsprite position data
+		lea		subspr_frames(a1),a3		; starting address for subsprite frame data
 
 	.loop:
-		move.w	d3,(a2)+			; sub?_x_pos
-		move.w	d2,(a2)+			; sub?_y_pos
-		move.w	#0,(a3)+			; sub?_mapframe
-		addi.w	#$10,d3				; width of a log, x_pos for next log
-		dbf		d1,.loop			; repeat for d1 logs
+		move.w	d3,(a2)+					; sub?_x_pos
+		move.w	d2,(a2)+					; sub?_y_pos
+		move.w	#0,(a3)+					; sub?_mapframe
+		addi.w	#$10,d3						; width of a log, x_pos for next log
+		dbf		d1,.loop					; repeat for d1 logs
 
 	.return:
 		rts
@@ -113,14 +110,12 @@ Bri_Action:	; Routine 2
 		move.b	obSubtype(a0),d1
 		lsl.w	#3,d1
 		move.w	d1,d2
-		addq.w	#8,d1				; d1 = (half-width of bridge) + 8
-		add.w	d2,d2				; d2 = (full width of bridge)
-		moveq	#8,d3				; is this used???
+		addq.w	#8,d1						; d1 = (half-width of bridge) + 8
+		add.w	d2,d2						; d2 = (full width of bridge)
+		moveq	#8,d3						; is this used???
 		move.w	obX(a0),d4
 		bsr.s	Bri_Solid
-
-.display:
-		bra.w	Bri_ChkDel	; Clownacy DisplaySprite Fix
+		bra.w	Bri_ChkDel					; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 Bri_Solid:

@@ -2981,7 +2981,6 @@ Swing_Solid:
 		sub.w	d3,d0
 		bra.w	Platform3
 ; End of function Obj15_Solid
-
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
@@ -3280,7 +3279,6 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 		include	"_anim/Press Start and TM.asm"
 
 		include	"_incObj/2B Chopper.asm"
-		include	"_anim/Chopper.asm"
 
 		include	"_incObj/2C Jaws.asm"
 		include	"_anim/Jaws.asm"
