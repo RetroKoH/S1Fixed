@@ -3,21 +3,18 @@
 ; Adapted an optimized version from S1: Sonic Clean Engine
 ; ---------------------------------------------------------------------------
 
-Helix:
-		btst	#6,obRender(a0)		; Is this object set to render sub sprites?
-		bne.s	.SubSprs			; If so, branch
-; ---------------------------------------------------------------------------
+Helix_Sub:		; child sprite objects only need to be drawn
+		move.w	#priority3,d0			; RetroKoH/Devon S3K+ Priority Manager
+		bra.w	DisplaySprite2			; Display sprites
+; ===========================================================================
 
+Helix:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Hel_Index(pc,d0.w),d1
 		jmp		Hel_Index(pc,d1.w)
 ; ===========================================================================
-.SubSprs:
-	; child sprite objects only need to be drawn
-		move.w	#priority3,d0			; RetroKoH/Devon S3K+ Priority Manager
-		bra.w	DisplaySprite2			; Display sprites
-; ===========================================================================
+
 Hel_Index:		offsetTable
 		offsetTableEntry.w Hel_Main
 		offsetTableEntry.w Hel_Action
@@ -48,7 +45,7 @@ Hel_Main:	; Routine 0
 Hel_MakeSubsprite:
 		bsr.w	FindFreeObj
 		bne.w	.done
-		_move.l	obAddr(a0),obAddr(a1)		; load obj17
+		_move.l	#Helix_Sub,obAddr(a1)		; load obj17
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.l	obMap(a0),obMap(a1)

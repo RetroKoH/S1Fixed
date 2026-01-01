@@ -885,35 +885,3 @@ sub6_mapframe:			equ $3C
 sub7_mapframe:			equ $3D
 sub8_mapframe:			equ $3E
 sub9_mapframe:			equ $3F
-
-; mainspr_routine:		equ $A	; added by RetroKoH
-; mainspr_mapframe:		equ $B	; last byte of obX (2nd byte of obScreenY)
-; mainspr_width:			equ $E
-; mainspr_childsprites:	equ $F	; amount of child sprites
-; mainspr_height:			equ $14
-; subspr_data:			equ $10
-; sub2_x_pos:				equ $10	; x_vel
-; sub2_y_pos:				equ $12	; y_vel
-; sub2_mapframe:			equ $15
-; sub3_x_pos:				equ $16	; y_radius
-; sub3_y_pos:				equ $18 ; priority
-; sub3_mapframe:			equ $1B ; anim_frame
-; sub4_x_pos:				equ $1C ; anim
-; sub4_y_pos:				equ $1E ; anim_frame_duration
-; sub4_mapframe:			equ $21 ; collision_property
-; sub5_x_pos:				equ $22 ; status
-; sub5_y_pos:				equ $24 ; routine
-; sub5_mapframe:			equ $27
-; sub6_x_pos:				equ $28 ; subtype
-; sub6_y_pos:				equ $2A
-; sub6_mapframe:			equ $2D
-; sub7_x_pos:				equ $2E
-; sub7_y_pos:				equ $30
-; sub7_mapframe:			equ $33
-; sub8_x_pos:				equ $34
-; sub8_y_pos:				equ $36
-; sub8_mapframe:			equ $39
-; sub9_x_pos:				equ $3A
-; sub9_y_pos:				equ $3C
-; sub9_mapframe:			equ $3F
-; next_subspr:			equ $6
