@@ -9,7 +9,7 @@ Scenery:
 		moveq	#0,d0
 		move.b	(v_zone).w,d0			; d0 = zone
 		add.w	d0,d0
-		lea		(Scen_Index).l,a1
+		lea		Scen_Index(pc),a1
 		move.w	(a1,d0.w),d0
 		adda.w	d0,a1					; Table read optimization - Vladikcomper
 
@@ -36,7 +36,7 @@ Scen_Index:		offsetTable
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
-; Variables for	object $1C are stored in an array
+; Object Variables
 ; ---------------------------------------------------------------------------
 Scen_Bridge:
 		dc.l Map_Bri											; mappings address

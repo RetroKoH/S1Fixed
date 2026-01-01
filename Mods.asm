@@ -148,6 +148,11 @@ GHZBossDelay: = 0						; if set to 1, the boss can't be hit until he lowers the 
 ; Function: Limits the rising speed of blocks in LZ so that Sonic can jump off them more comfortably.
 LimitLZBlockRisingSpeed: = 0			; if set to 1, LZ Rising platforms are speed-capped
 
+; Name: Chopper Animation Tweak
+; Credit: RetroKoH
+; Function: Makes Chopper flip over the bridge when jumping in the air, making the leap a little more realistic.
+ChopperAnimationTweak: = 1
+
 ; Name: Orbinaut Animation Tweak
 ; Credit: Mercury
 ; Function: Makes Orbinaut "notice" Sonic at a closer range so that it's more likely to happen onscreen, and "get angry" quicker.
