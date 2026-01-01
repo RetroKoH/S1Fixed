@@ -143,7 +143,7 @@ sfx_SpinDash			ds.b 1		; $31
 sfx_Charge				ds.b 1		; Placeholder- Peelout sfx
 sfx_Release				ds.b 1		; Placeholder- Peelout sfx
 sfx_Stop				ds.b 1		; Placeholder- Peelout sfx
-sfx_InstaAttack			ds.b 1		; $0B
+sfx_InstaAtk			ds.b 1		; $0B
 sfx_FShield				ds.b 1		; $0C sfx_FireShield
 sfx_BShield				ds.b 1		; $0D sfx_BubbleShield
 sfx_LShield				ds.b 1		; $0E sfx_LightningShield
