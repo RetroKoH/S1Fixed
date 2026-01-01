@@ -3,98 +3,44 @@
 ; ---------------------------------------------------------------------------
 
 Bomb:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Bom_Index(pc,d0.w),d1
-		jmp		Bom_Index(pc,d1.w)
-		; Slightly altered to prevent display-and-delete bug -- Clownacy DisplaySprite Fix
-; ===========================================================================
-Bom_Index:	offsetTable
-		offsetTableEntry.w Bom_Main
-		offsetTableEntry.w Bom_Action
-		offsetTableEntry.w Bom_Fuse
-		offsetTableEntry.w Bom_Shrapnel
-; ===========================================================================
-
-Bom_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)
+		obj_addr	#Bom_Wait
 		move.l	#Map_Bomb,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Bomb,0,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$C,obDispWid(a0)
-		move.b	obSubtype(a0),d0
-		beq.s	.type00						; branch if subtype = 0
-		move.b	d0,obRoutine(a0)			; copy subtype to routine (4 = Bom_Fuse; 6 = Bom_Shrapnel)
-		jmp		Add_SpriteToCollisionResponseList	
-; ===========================================================================
-
-	.type00:
 		move.b	#(colHarmful|colSz_12x12),obColType(a0)
 		bchg	#staFlipX,obStatus(a0)
+		move.w	#$10,obVelX(a0)
 ; ---------------------------------------------------------------------------
 
-Bom_Action:	; Routine 2
-		moveq	#0,d0
-		move.b	ob2ndRout(a0),d0
-		jmp		Bom_ActionIndex(pc,d0.w)	; LavaGaming/RetroKoH Routine Optimization
-; ===========================================================================
+Bom_Wait:
+		subq.b	#1,obTimeFrame(a0)				; decrement time
+		bpl.s	.wait							; if time remains, branch
+		move.b	#$13,obTimeFrame(a0)			; reset time based on desired animation speed
+		bchg	#0,obFrame(a0)					; swap frames to animate
 
-Bom_ActionIndex:	offsetTable
-		bra.s	Bom_Action_Walk
-		bra.s	Bom_Action_Wait
-		bra.s	Bom_Action_Explode
-; ===========================================================================
-
-Bom_Action_Walk:
+	.wait:
 		bsr.w	Bom_ChkDistToSonic
 		subq.w	#1,obBomb_FuseTime(a0)			; subtract 1 from time delay
-		bpl.s	.noflip							; if time remains, branch
-		addq.b	#2,ob2ndRout(a0)				; goto .wait
-		move.w	#1535,obBomb_FuseTime(a0)		; set time delay to 25 seconds
-		move.w	#$10,obVelX(a0)
-		move.b	#1,obAnim(a0)					; use walking animation
+		bpl.s	Bom_ChkDistToSonic				; if time remains, branch
+		obj_addr	#Bom_Walk
+		clr.w	obAniFrame(a0)					; reset animation
+		move.w	#1535,obBomb_FuseTime(a0)		; set time delay to 25.5 seconds
 		bchg	#staFlipX,obStatus(a0)
-		beq.s	.noflip
 		neg.w	obVelX(a0)						; change direction
-
-	.noflip:
-		lea		Ani_Bomb(pc),a1
-		jsr		(AnimateSprite).w
-		bra.w	RememberState
+		bra.s	Bom_ChkDistToSonic
 ; ===========================================================================
 
-Bom_Action_Wait:
-		bsr.w	Bom_ChkDistToSonic
-		subq.w	#1,obBomb_FuseTime(a0)			; subtract 1 from time delay
-		bmi.s	.stopwalking					; if time expires, branch
+Bom_Walk:
+		lea		Ani_Bomb(pc),a1
+		jsr		(AnimateSprite).w
 		bsr.w	SpeedToPos_XOnly
-		lea		Ani_Bomb(pc),a1
-		jsr		(AnimateSprite).w
-		bra.w	RememberState
-; ===========================================================================
-
-	.stopwalking:
-		subq.b	#2,ob2ndRout(a0)
+		subq.w	#1,obBomb_FuseTime(a0)			; decrement timer
+		bpl.s	Bom_ChkDistToSonic				; if time remains, branch
+		obj_addr	#Bom_Wait
 		move.w	#179,obBomb_FuseTime(a0)		; set time delay to 3 seconds
-		clr.w	obVelX(a0)						; stop walking
-		clr.b	obAnim(a0)						; use waiting animation
-		lea		Ani_Bomb(pc),a1
-		jsr		(AnimateSprite).w
-		bra.w	RememberState
-; ===========================================================================
-
-Bom_Action_Explode:
-		subq.w	#1,obBomb_FuseTime(a0)			; subtract 1 from time delay
-		bpl.s	.noexplode						; if time remains, branch
-		_move.l	#ExplosionBomb,obAddr(a0)	; change bomb into an explosion
-		clr.b	obRoutine(a0)
-
-	.noexplode:
-		lea		Ani_Bomb(pc),a1
-		jsr		(AnimateSprite).w
-		bra.w	RememberState
-; ===========================================================================
+		move.b	#0,obFrame(a0)					; second standing frame
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to check Sonic's distance and load fuse object
@@ -108,7 +54,7 @@ Bom_ChkDistToSonic:
 
 	.isleft:
 		cmpi.w	#$60,d0							; is Sonic within $60 pixels?
-		bhs.s	.outofrange						; if not, branch
+		bhs.w	RememberState					; if not, branch
 		move.w	(v_player+obY).w,d0
 		sub.w	obY(a0),d0
 		bcc.s	.isabove
@@ -116,25 +62,30 @@ Bom_ChkDistToSonic:
 
 	.isabove:
 		cmpi.w	#$60,d0							; is Sonic within $60 pixels?
-		bhs.s	.outofrange						; if not, branch
+		bhs.w	RememberState					; if not, branch
 		tst.w	(v_debuguse).w					; is Debug Mode Active?
-		bne.s	.outofrange						; if yes, branch
+		bne.w	RememberState					; if yes, branch
 
-		move.b	#4,ob2ndRout(a0)
+		obj_addr	#Bom_Explode
 		move.w	#143,obBomb_FuseTime(a0)		; set fuse time
 		clr.w	obVelX(a0)
-		move.b	#2,obAnim(a0)					; use activated animation
+		move.b	#7,obFrame(a0)					; first activated frame
 		bsr.w	FindNextFreeObj
-		bne.s	.outofrange
-		_move.l	#Bomb,obAddr(a1)				; load fuse object
+		bne.w	RememberState
+
+		_move.l	#Bomb_Fuse,obAddr(a1)			; load fuse object
+		move.l	#Map_Bomb,obMap(a1)
+		move.w	#make_art_tile(ArtTile_Bomb,0,0),obGfx(a1)
+		move.b	obRender(a0),obRender(a1)
+		move.w	#priority3,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
+		move.b	#8,obDispWid(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.w	obY(a0),obBomb_StartY(a1)
 		move.b	obStatus(a0),obStatus(a1)
-		move.b	#4,obSubtype(a1)
-		move.b	#3,obAnim(a1)
+		move.b	#8,obFrame(a1)					; first fuse frame
 		move.w	#$10,obVelY(a1)
-		btst	#staFlipY,obStatus(a0)			; is bomb upside-down?
+		btst	#staFlipY,obStatus(a1)			; is bomb upside-down?
 		beq.s	.normal							; if not, branch
 		neg.w	obVelY(a1)						; reverse direction for fuse
 
@@ -143,15 +94,37 @@ Bom_ChkDistToSonic:
 		move.w	a0,obBomb_Parent(a1)
 
 	.outofrange:
-		rts	
+		bra.w	RememberState	
 ; ===========================================================================
 
-; Bom_Display:
-Bom_Fuse:	; Routine 4
-		bsr.s	Bom_Fuse_ChkTime
-		lea		Ani_Bomb(pc),a1
-		jsr		(AnimateSprite).w
+Bom_Explode:
+		subq.b	#1,obTimeFrame(a0)				; decrement time
+		bpl.s	.wait							; if time remains, branch
+		move.b	#$13,obTimeFrame(a0)			; reset time based on desired animation speed
+		bchg	#0,obFrame(a0)					; swap frames to animate
+
+	.wait:
+		subq.w	#1,obBomb_FuseTime(a0)			; subtract 1 from time delay
+		bpl.s	.noexplode						; if time remains, branch
+		_move.l	#ExplosionBomb,obAddr(a0)		; change bomb into an explosion
+
+	.noexplode:
 		bra.w	RememberState
+; ===========================================================================
+
+; ---------------------------------------------------------------------------
+; Object 5F - Bomb's fuse
+; ---------------------------------------------------------------------------
+
+Bomb_Fuse:
+		subq.b	#1,obTimeFrame(a0)			; decrement time
+		bpl.s	.wait						; if time remains, branch
+		move.b	#3,obTimeFrame(a0)			; reset time based on desired animation speed
+		bchg	#0,obFrame(a0)				; swap frames to animate
+
+	.wait:
+		bsr.s	Bom_Fuse_ChkTime
+		bra.w	DisplaySprite
 ; ===========================================================================
 
 Bom_Fuse_ChkTime:
@@ -162,18 +135,23 @@ Bom_Fuse_ChkTime:
 
 	.explode:
 		clr.w	obBomb_FuseTime(a0)
-		clr.b	obRoutine(a0)
 		move.w	obBomb_StartY(a0),obY(a0)
 		moveq	#2,d1							; 3 additional shrapnel objects
-		movea.l	a0,a1
+		_move.l	#Bomb_Shrapnel,d2				; store code address for shrapnel
+		movea.l	a0,a1							; turn this object into shrapnel
 		lea		(Bom_ShrSpeed).l,a2				; load shrapnel speed data
 
-		move.b	#6,obRoutine(a0)				; Bom_Shrapnel
-		move.b	#4,obAnim(a0)
-		move.l	(a2)+,obVelX(a0)				; move the data contained in the array to obVelX and obVelY, and increment the address in a2
-		move.b	#(colHarmful|colSz_4x4),obColType(a0)
-		bset	#shPropReflect,obShieldProp(a0)
-		bset	#7,obRender(a0)
+	; Init the first shrapnel object
+		_move.l	d2,obAddr(a1)					; this is now a shrapnel object
+		move.b	#4,obRender(a1)
+		move.b	#8,obDispWid(a1)
+		move.b	#$A,obFrame(a1)					; first shrapnel frame
+		move.l	(a2)+,obVelX(a1)				; move the data contained in the array to obVelX and obVelY, and increment the address in a2
+		move.b	#(colHarmful|colSz_4x4),obColType(a1)
+
+		bset	#shPropReflect,obShieldProp(a1)	; Reflected by Elemental Shields
+
+		bset	#7,obRender(a1)
 
 	; RetroKoH Object Load Optimization -- Based on Spirituinsanum Guides
 	; Here we begin what's replacing FindNextFreeObj. It'll be quicker to loop through here.
@@ -190,12 +168,17 @@ Bom_Fuse_ChkTime:
 		dbf		d0,.loop						; loop through object RAM
 		bne.s	.fail							; We're moving this line here.
 
+	; make 3 more shrapnel fragments
 	.makeshrapnel:
-		_move.l	obAddr(a0),obAddr(a1)			; load shrapnel	object
+		_move.l	d2,obAddr(a1)					; load shrapnel	object
+		move.l	#Map_Bomb,obMap(a1)
+		move.w	#make_art_tile(ArtTile_Bomb,0,0),obGfx(a1)
+		move.b	#4,obRender(a1)
+		move.w	#priority3,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		move.b	#6,obSubtype(a1)				; this is copied to obRoutine later
-		move.b	#4,obAnim(a1)
+		move.b	#8,obDispWid(a1)
+		move.b	#$A,obFrame(a1)					; first shrapnel frame
 		move.l	(a2)+,obVelX(a1)				; move the data contained in the array to obVelX and obVelY, and increment the address in a2
 		move.b	#(colHarmful|colSz_4x4),obColType(a1)
 
@@ -207,12 +190,19 @@ Bom_Fuse_ChkTime:
 		dbf		d1,.loop						; repeat 3 more	times
 ; ---------------------------------------------------------------------------
 
-; Bom_End:
-Bom_Shrapnel:	; Routine 6
+; ---------------------------------------------------------------------------
+; Object 5F - Bomb's shrapnel (could share with SLZ boss?)
+; ---------------------------------------------------------------------------
+
+Bomb_Shrapnel:
+		subq.b	#1,obTimeFrame(a0)				; decrement time
+		bpl.s	.wait							; if time remains, branch
+		move.b	#3,obTimeFrame(a0)				; reset time based on desired animation speed
+		bchg	#0,obFrame(a0)					; swap frames to animate
+
+	.wait:
 		bsr.w	SpeedToPos
 		addi.w	#$18,obVelY(a0)					; apply gravity
-		lea		Ani_Bomb(pc),a1
-		jsr		(AnimateSprite).w
 		tst.b	obRender(a0)					; is object on-screen?
 		bpl.w	DeleteObject					; if not, branch
 		bra.w	DisplayAndCollision
