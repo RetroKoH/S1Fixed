@@ -8,7 +8,7 @@
  RetroKoH - S1Fixed  
  DeltaW - Backporting Assistance  
  Filter, TheBlad768 - Code Optimizations  
- Hivebrain - Annotations, Code Rewrites
+ Hivebrain - Annotations, Code Rewrites  
  Clownacy - Updated S1 One Two-Eight Base  
  MarkeyJester - Original S1 One Two-Eight Base  
  Mercury - Original ReadySonic  
