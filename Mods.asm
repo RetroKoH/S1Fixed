@@ -198,7 +198,7 @@ ExtraBonuses: = CoolBonusEnabled+PerfectBonusEnabled	; if either bonus is enable
 ; If both are enabled, the Got Through Card has a 4th tally mapping
 
 ; Name: Enemies Drop Rings
-; Credit: RetroKoH, DeltaW
+; Credit: RetroKoH, DeltaW (Lost Rings Attract code originally from ReadySonic (Mercury))
 ; Function: Enemies drop rings instead of animals
 EnemiesDropRings: = 0
 	EnemyRingsAttract: = 1*ShieldsMode	; if set, the Lightning Shield will attract these rings
