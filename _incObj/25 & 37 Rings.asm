@@ -299,6 +299,7 @@ RLoss_Bounce:	; Routine 2
 		; Mercury Ring Flashing Effect
 
 	; RetroKoH/DeltaW Enemies Drop Rings Mod
+	; Lost Rings Attract code originally from ReadySonic (Mercury)
 	if EnemyRingsAttract
 		lea 	(v_player).w,a1
 		btst	#sta2ndLShield,obStatus2nd(a1)	; does the player have a lightning shield?
