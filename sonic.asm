@@ -3469,8 +3469,10 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 
 		include "_incObj/4F Splats.asm"
 
-		include	"_incObj/40 Moto Bug.asm" ; includes "_incObj/sub RememberState.asm"
+		include	"_incObj/40 Moto Bug.asm"
 		include	"_anim/Moto Bug.asm"
+
+		include "_incObj/sub RememberState.asm"
 
 		include	"_incObj/50 Yadrin.asm"
 		include	"_anim/Yadrin.asm"

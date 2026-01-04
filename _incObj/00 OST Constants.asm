@@ -270,6 +270,7 @@ obChop_StartY:			equ objoff_30		; 2 bytes | starting Y-axis position
 ; Obj2C - Jaws Badnik
 obJaws_TurnTime:		equ objoff_30		; 2 bytes | time until jaws turns
 obJaws_TimeDelay:		equ objoff_32		; 2 bytes | time between turns, copied to ost_jaws_turn_time every turn
+obJaws_BubbleTime:		equ objoff_34		; 2 bytes | time to wait before producing a bubble (Mod-exclusive)
 ; ---------------------------------------------------------------------------
 
 ; Obj2D - Burrobot Badnik
@@ -366,7 +367,8 @@ obPrison_AnimalCount:	equ objoff_3F		; 1 byte  | number of animals spawned from 
 
 ; Obj40 - Moto Bug
 obMoto_TurnTime:		equ objoff_30		; 2 bytes | time delay before changing direction
-obMoto_SmokeDelay:		equ objoff_33		; 1 byte  | time delay between smoke puffs
+obMoto_SmokeDelay:		equ objoff_32		; 1 byte  | time delay between smoke puffs
+obMoto_SpeedUpFlag:		equ objoff_33		; 1 byte  | flag used with an upcoming behavior mod
 ; ---------------------------------------------------------------------------
 
 ; Obj41 - Springs
