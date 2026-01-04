@@ -159,12 +159,10 @@ obBridge_BendPixels:	equ objoff_3E		; 1 byte  | number of pixels a log has been 
 obBridge_CurrentLog:	equ objoff_3F		; 1 byte  | log Sonic is currently standing on (left to right, starts at 0)
 ; ---------------------------------------------------------------------------
 
-; Obj13 - MZ/LZ Fireball Launcher
-obFireM_SpawnTimer:		equ objoff_30		; 1 byte  | spawn timer (replacing obDelayAni)
-; ---------------------------------------------------------------------------
-
-; Obj14 - MZ/LZ Fireballs
-obFBall_StartY:			equ objoff_30		; 2 bytes | starting Y-axis position
+; Obj13 - MZ/SLZ Fireballs and Spawner
+obFireM_SpawnTimer:		equ objoff_30		; 1 byte  | spawn timer (Spawner only) (replacing obDelayAni)
+obFBall_StartY:			equ objoff_30		; 2 bytes | starting Y-axis position (Fireballs only)
+obFBall_Mode:			equ objoff_32		; 2 bytes | saved action mode based on subtype
 ; ---------------------------------------------------------------------------
 
 ; Obj15 - GHZ, MZ, SLZ Swinging Platforms/SBZ Spikeball on Chain
