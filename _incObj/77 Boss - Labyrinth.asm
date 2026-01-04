@@ -13,15 +13,12 @@ BossLZ_Index:	offsetTable
 		offsetTableEntry.w BossLZ_Main
 		offsetTableEntry.w BossLZ_ShipMain
 		offsetTableEntry.w BossLZ_FaceMain
-		offsetTableEntry.w BossLZ_FlameMain
 
 BossLZ_ObjData:
 	; Ship
 		dc.b 2,	aniID_Ship		; routine counter, animation
 	; Face
 		dc.b 4,	aniID_NormalFace1
-	; Flame
-		dc.b 6,	aniID_Blank
 ; ===========================================================================
 
 BossLZ_Main:	; Routine 0
@@ -34,7 +31,7 @@ BossLZ_Main:	; Routine 0
 		move.w	#priority4,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		lea		BossLZ_ObjData(pc),a2			; get data for routine number & animation
 		movea.l	a0,a1							; replace current object with 1st in list
-		moveq	#2,d1							; 2 additional objects
+		moveq	#1,d1							; 1 additional object
 		bra.s	.load_boss
 ; ===========================================================================
 
@@ -57,6 +54,12 @@ BossLZ_Main:	; Routine 0
 		move.b	#$20,obDispWid(a1)
 		move.w	a0,obBoss_Parent(a1)			; save obj address of parent
 		dbf		d1,.loop						; repeat sequence 2 more times
+
+		jsr		(FindNextFreeObj).l
+		bne.s	BossLZ_ShipMain
+		_move.l	#BossFlame,obAddr(a1)
+		move.b	#$40,obSubtype(a1)				; set speed at which ship escapes (div by $10)
+		move.w	a0,obBoss_Parent(a1)			; save address of parent
 ; ---------------------------------------------------------------------------
 
 BossLZ_ShipMain:	; Routine 2
@@ -362,22 +365,6 @@ BossLZ_FaceMain:	; Routine 4
 BossLZ_Delete:
 		jmp		(DeleteObject).l
 ; ===========================================================================
-
-BossLZ_FlameMain:; Routine 6
-		movea.w	obBoss_Parent(a0),a1				; get address of parent object (ship)
-
-	; Devon Boss Object Fix
-		; is the boss still loaded (d1 = obAddr)?
-		cmp_addr	#BossLabyrinth,obAddr(a1),d1
-		bne.s	BossLZ_Delete						; if not, delete object
-	; Boss Object Fix End
-
-		moveq	#aniID_Blank,d0						; hide flame
-		cmpi.b	#$E,ob2ndRout(a1)					; is boss escaping?
-		bne.s	BossLZ_Display						; if not, branch
-		moveq	#aniID_EscapeFlame,d0				; use big flame animation
-		tst.b	obRender(a0)						; is object on-screen?
-		bpl.s	BossLZ_Delete						; if not, branch
 
 BossLZ_Display:
 		jsr		(NewAnim).w							; set next animation (TO-DO: Change this to fallthrough to AnimateSprite)

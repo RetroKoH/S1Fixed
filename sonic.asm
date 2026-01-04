@@ -4318,6 +4318,9 @@ BossFlash:
 		include	"_incObj/7A Boss - Star Light.asm"
 		include	"_incObj/7B SLZ Boss Spikeball.asm"
 
+	; Sub-Objects
+		include "_incObj/-- Boss Exhaust Flame.asm"
+
 	; Cutscene boss
 		include	"_incObj/82 Eggman - Scrap Brain 2.asm"
 		include	"_anim/Eggman - Scrap Brain 2 & Final.asm"
