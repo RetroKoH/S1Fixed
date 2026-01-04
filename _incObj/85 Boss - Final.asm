@@ -20,7 +20,6 @@ BossFinal_Index:	offsetTable
 		offsetTableEntry.w BossFinal_Legs
 		offsetTableEntry.w BossFinal_Cockpit
 		offsetTableEntry.w BossFinal_EmptyShip
-		offsetTableEntry.w BossFinal_Flame
 
 BossFinal_ObjData:
 		dc.w $100, $100, make_art_tile(ArtTile_FZ_Eggman_No_Vehicle,0,0)	; X pos, Y pos,	VRAM setting
@@ -31,8 +30,6 @@ BossFinal_ObjData:
 		dc.l Map_FZLegs
 		dc.w boss_fz_x+$290, boss_fz_y+$86, make_art_tile(ArtTile_FZ_Eggman_No_Vehicle,0,0)
 		dc.l Map_SEgg
-		dc.w boss_fz_x+$290, boss_fz_y+$86, make_art_tile(ArtTile_Eggman,0,0)
-		dc.l Map_Eggman
 		dc.w boss_fz_x+$290, boss_fz_y+$86, make_art_tile(ArtTile_Eggman,0,0)
 		dc.l Map_Eggman
 
@@ -49,15 +46,13 @@ BossFinal_ObjData2:
 		dc.w	priority3
 		dc.b	$A, 	0,		$20,	$20		
 		dc.w	priority3
-		dc.b	$C, 	0,		0,		0		
-		dc.w	priority3
 ; ===========================================================================
 
 BossFinal_Main:	; Routine 0
 		lea		BossFinal_ObjData(pc),a2
 		lea		BossFinal_ObjData2(pc),a3
 		movea.l	a0,a1					; replace current object with 1st in list
-		moveq	#5,d1					; 5 additional objects
+		moveq	#4,d1					; 4 additional objects
 		bra.s	.load_boss
 ; ===========================================================================
 
@@ -425,6 +420,14 @@ BossFinal_EggShip:
 		move.w	#-$18,obVelY(a0)			; move up slowly
 		move.b	#(colEnemy|colSz_24x24),obColType(a0)	; enable collision
 		addq.b	#2,obBFZ_Mode(a0)			; -> BFZ_Eggman_Escape
+
+		jsr		(FindNextFreeObj).l			; find free OST slot
+		bne.s	.keep_rising				; branch if not found
+		_move.l	#BossFlame,obAddr(a1)
+		move.b	#$18,obSubtype(a1)			; set speed at which ship escapes (div by $10)
+		move.w	a0,obBoss_Parent(a1)		; save address of OST of parent
+
+	.keep_rising:
 		bra.w	BFZ_Eggman_AnimScroll		; animate & scroll screen
 ; ===========================================================================
 

@@ -156,12 +156,12 @@ ChopperAnimationTweak: = 1
 ; Name: Jaws Bubble Generating
 ; Credit: RetroKoH
 ; Function: Makes Jaws produce small bubbles from its back when swimming
-JawsBubbleGenerate: = 1
+JawsBubbleGenerate: = 0
 
 ; Name: Jaws Behaviour Mod
 ; Credit: RetroKoH
 ; Function: Makes Jaws chase after Sonic, similar to Chop-Chop in Sonic 2
-JawsBehaviorMod: = 1
+JawsBehaviorMod: = 0
 
 ; Name: Orbinaut Animation Tweak
 ; Credit: Mercury

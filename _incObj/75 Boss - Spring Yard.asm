@@ -13,7 +13,6 @@ BossSYZ_Index:	offsetTable
 		offsetTableEntry.w BossSYZ_Main
 		offsetTableEntry.w BossSYZ_ShipMain
 		offsetTableEntry.w BossSYZ_FaceMain
-		offsetTableEntry.w BossSYZ_FlameMain
 		offsetTableEntry.w BossSYZ_SpikeMain
 
 BossSYZ_ObjData:
@@ -21,10 +20,8 @@ BossSYZ_ObjData:
 		dc.b 2,	aniID_Ship		; routine counter, animation
 	; Face
 		dc.b 4,	aniID_NormalFace1
-	; Flame
-		dc.b 6,	aniID_Blank
 	; Spike
-		dc.b 8,	0				; does not animate
+		dc.b 6,	0				; does not animate
 ; ===========================================================================
 
 BossSYZ_Main:	; Routine 0
@@ -34,9 +31,9 @@ BossSYZ_Main:	; Routine 0
 		move.w	obY(a0),obBoss_BufferY(a0)
 		move.b	#(colEnemy|colSz_24x24),obColType(a0)
 		move.b	#8,obColProp(a0)					; set number of hits to 8
-		lea		BossSYZ_ObjData(pc),a2		; get routine number, animation & priority
+		lea		BossSYZ_ObjData(pc),a2				; get routine number, animation & priority
 		movea.l	a0,a1								; replace current object with 1st in list
-		moveq	#3,d1								; 3 additional objects
+		moveq	#2,d1								; 2 additional objects
 		bra.s	.load_boss
 ; ===========================================================================
 
@@ -64,6 +61,12 @@ BossSYZ_Main:	; Routine 0
 		move.l	#Map_BossItems,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman_Weapons,1,0),obGfx(a1)
 		move.b	#5,obFrame(a1)
+
+		jsr		(FindNextFreeObj).l
+		bne.s	BossSYZ_ShipMain
+		_move.l	#BossFlame,obAddr(a1)
+		move.b	#$40,obSubtype(a1)				; set speed at which ship escapes (div by $10)
+		move.w	a0,obBoss_Parent(a1)			; save address of parent
 ; ---------------------------------------------------------------------------
 
 BossSYZ_ShipMain:	; Routine 2
@@ -520,32 +523,9 @@ BSYZ_Face_ChkHit:
 		rts	
 ; ===========================================================================
 
-BossSYZ_FlameMain:; Routine 6
-		movea.w	obBoss_Parent(a0),a1					; get address of parent object (ship)
-
-	; Devon Boss Object Fix
-		; is the boss still loaded (d1 = obAddr)?
-		cmp_addr	#BossSpringYard,obAddr(a1),d1
-		bne.s	BossSYZ_Delete							; if not, delete object
-	; Boss Object Fix End
-
-		moveq	#aniID_Blank,d0							; hide flame
-		cmpi.b	#$A,ob2ndRout(a1)						; is ship on BSYZ_Escape?
-		bne.s	BossSYZ_ChkMoving						; if not, branch
-		moveq	#aniID_EscapeFlame,d0					; use big flame animation
-		tst.b	obRender(a0)							; is object on-screen?
-		bpl.s	BossSYZ_Delete							; if not, branch
-		bra.s	BossSYZ_Display
-; ===========================================================================
-
 BossSYZ_Delete:
 		jmp		(DeleteObject).l
 ; ===========================================================================
-
-BossSYZ_ChkMoving:
-		tst.w	obVelX(a1)
-		beq.s	BossSYZ_Display							; branch if ship isn't moving
-		moveq	#aniID_Flame1,d0						; only show the flame if Eggman is moving
 
 BossSYZ_Display:
 		jsr		(NewAnim).w								; set next animation (TO-DO: Change this to fallthrough to AnimateSprite)

@@ -12,7 +12,6 @@ BossSLZ_Index:	offsetTable
 		offsetTableEntry.w BossSLZ_Main
 		offsetTableEntry.w BossSLZ_ShipMain
 		offsetTableEntry.w BossSLZ_FaceMain
-		offsetTableEntry.w BossSLZ_FlameMain
 		offsetTableEntry.w BossSLZ_TubeMain
 
 BossSLZ_ObjData:
@@ -26,7 +25,7 @@ BossSLZ_ObjData:
 		dc.b 6,	aniID_Blank
 		dc.w priority4
 	; Tube
-		dc.b 8,	0				; does not animate
+		dc.b 6,	0				; does not animate
 		dc.w priority3
 ; ===========================================================================
 
@@ -39,7 +38,7 @@ BossSLZ_Main:
 		move.b	#8,obColProp(a0)				; set number of hits to 8
 		lea		BossSLZ_ObjData(pc),a2			; get data for routine number, animation & priority
 		movea.l	a0,a1							; replace current object with 1st in list
-		moveq	#3,d1							; 3 additional objects
+		moveq	#2,d1							; 2 additional objects
 		bra.s	.load_boss
 ; ===========================================================================
 
@@ -67,6 +66,12 @@ BossSLZ_Main:
 		move.l	#Map_BossItems,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman_Weapons,1,0),obGfx(a1)
 		move.b	#3,obFrame(a1)
+
+		jsr		(FindNextFreeObj).l
+		bne.s	.fail
+		_move.l	#BossFlame,obAddr(a1)
+		move.b	#$40,obSubtype(a1)				; set speed at which ship escapes (div by $10)
+		move.w	a0,obBoss_Parent(a1)			; save address of parent
 
 	.fail:
 		lea		(v_lvlobjspace).w,a1		; FixBugs -- Formerly (v_objspace+object_size*1)
@@ -391,33 +396,7 @@ BossSLZ_FaceMain:	; Routine 4
 		move.b	#aniID_PanicFace,obAnim(a0)		; use sweating animation
 		tst.b	obRender(a0)					; is object on-screen?
 		bpl.s	BossSLZ_Delete					; if not, branch
-		bra.s	BossSLZ_Animate
-; ===========================================================================
-
-BossSLZ_FlameMain:; Routine 6
-		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
-
-	; Devon Boss Object Fix
-		; is the boss still loaded (d1 = obAddr)?
-		cmp_addr	#BossStarLight,obAddr(a1),d1
-		bne.s	BossSLZ_Delete					; if not, delete object
-	; Boss Object Fix End
-
-		moveq	#aniID_Flame1,d0
-		cmpi.b	#$A,ob2ndRout(a1)				; is ship on BossSLZ_ShipFlee?
-		bne.s	.chk_flame						; if not, branch
-		tst.b	obRender(a0)					; is object on-screen?
-		bpl.s	BossSLZ_Delete					; if not, branch
-		moveq	#aniID_EscapeFlame,d0
-		bra.s	BossSLZ_Animate
-; ===========================================================================
-
-	.chk_flame:
-		cmpi.b	#8,ob2ndRout(a1)
-		bgt.s	BossSLZ_Animate
-		cmpi.b	#4,ob2ndRout(a1)
-		blt.s	BossSLZ_Animate
-		moveq	#aniID_Blank,d0					; hide flame
+; ---------------------------------------------------------------------------
 
 BossSLZ_Animate:
 		jsr		(NewAnim).w						; set next animation (TO-DO: Change this to fallthrough to AnimateSprite)

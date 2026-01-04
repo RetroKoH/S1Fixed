@@ -12,7 +12,6 @@ BossMZ_Index:	offsetTable
 		offsetTableEntry.w BossMZ_Main
 		offsetTableEntry.w BossMZ_ShipMain
 		offsetTableEntry.w BossMZ_FaceMain
-		offsetTableEntry.w BossMZ_FlameMain
 		offsetTableEntry.w BossMZ_TubeMain
 
 BossMZ_ObjData:
@@ -22,11 +21,8 @@ BossMZ_ObjData:
 	; Face
 		dc.b 4,	aniID_NormalFace1
 		dc.w priority4
-	; Flame
-		dc.b 6,	aniID_Blank
-		dc.w priority4
 	; Tube -- Does not animate
-		dc.b 8,	0
+		dc.b 6,	0
 		dc.w priority3
 ; ===========================================================================
 
@@ -37,7 +33,7 @@ BossMZ_Main:			; Routine 0
 		move.b	#8,obColProp(a0) 		; set number of hits to 8
 		lea		BossMZ_ObjData(pc),a2
 		movea.l	a0,a1
-		moveq	#3,d1
+		moveq	#2,d1							; 2 additional objects
 		bra.s	.load_boss
 ; ===========================================================================
 
@@ -65,6 +61,12 @@ BossMZ_Main:			; Routine 0
 		move.l	#Map_BossItems,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman_Weapons,1,0),obGfx(a1)
 		move.b	#4,obFrame(a1)
+
+		jsr		(FindNextFreeObj).l
+		bne.s	BossMZ_ShipMain
+		_move.l	#BossFlame,obAddr(a1)
+		move.b	#$50,obSubtype(a1)				; set speed at which ship escapes (div by $10)
+		move.w	a0,obBoss_Parent(a1)			; save address of parent
 ; ---------------------------------------------------------------------------
 
 BossMZ_ShipMain:		; Routine 2
@@ -418,31 +420,7 @@ BossMZ_FaceMain:			; Routine 4
 		moveq	#aniID_PanicFace,d0				; set panicking face
 		tst.b	obRender(a0)					; is object on-screen?
 		bpl.s	BossMZ_Delete					; if not, branch and delete
-		bra.s	BossMZ_Animate					; Face display
-; ===========================================================================
-
-BossMZ_FlameMain:			; Routine 6
-		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
-
-	; Devon Boss Object Fix
-		; is the boss still loaded (d1 = obAddr)?
-		cmp_addr	#BossMarble,obAddr(a1),d1
-		bne.s	BossMZ_Delete					; if not, delete object
-	; Boss Object Fix End
-
-		moveq	#aniID_Blank,d0					; hide flame
-		cmpi.b	#id_mzb_flee,ob2ndRout(a1)		; has Eggman begun fleeing?
-		blt.s	.notfleeing						; if not, branch
-		moveq	#aniID_EscapeFlame,d0			; use the escape animation for the flame
-		tst.b	obRender(a0)					; is object on-screen?
-		bpl.s	BossMZ_Delete					; if not, branch
-		bra.s	BossMZ_Animate
-; ===========================================================================
-
-	.notfleeing:
-		tst.w	obVelX(a1)
-		beq.s	BossMZ_Animate
-		moveq	#aniID_Flame1,d0
+; ---------------------------------------------------------------------------
 
 BossMZ_Animate:
 		jsr		(NewAnim).w						; set next animation (TO-DO: Change this to fallthrough to AnimateSprite)
