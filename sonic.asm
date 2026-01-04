@@ -3432,8 +3432,7 @@ Obj_Index:	; Object pointers
 
 		include	"_incObj/44 GHZ Edge Walls.asm"
 
-		include	"_incObj/13 Fire Ball Maker.asm"
-		include	"_incObj/14 Fire Ball.asm"
+		include	"_incObj/13 Fire Ball Maker.asm"	; Also contains fire balls
 		include	"_anim/Fireballs.asm"
 		include	"_incObj/74 MZ Boss Fire.asm"		; Moved to enable short addressing w/ animation
 
