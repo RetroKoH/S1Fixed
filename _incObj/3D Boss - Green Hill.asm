@@ -13,7 +13,6 @@ BossGHZ_Index:		offsetTable
 		offsetTableEntry.w BossGHZ_Main
 		offsetTableEntry.w BossGHZ_ShipMain
 		offsetTableEntry.w BossGHZ_FaceMain
-		offsetTableEntry.w BossGHZ_FlameMain
 		; The wrecking ball is its own object (Obj48)
 
 BossGHZ_ObjData:
@@ -21,14 +20,12 @@ BossGHZ_ObjData:
 		dc.b 2,	aniID_Ship		; routine counter, animation
 	; Face
 		dc.b 4,	aniID_NormalFace1
-	; Flame
-		dc.b 6,	aniID_Blank
 ; ===========================================================================
 
 BossGHZ_Main:	; Routine 0
 		lea		(BossGHZ_ObjData).l,a2			; get data for routine number & animation
 		movea.l	a0,a1							; replace current object with 1st in list
-		moveq	#2,d1							; 2 additional objects
+		moveq	#1,d1							; 1 additional objects
 		bra.s	.loadboss
 ; ---------------------------------------------------------------------------
 
@@ -51,6 +48,12 @@ BossGHZ_Main:	; Routine 0
 		move.b	#$20,obDispWid(a1)
 		move.w	a0,obBoss_Parent(a1)			; save address of OST of parent
 		dbf		d1,.loop						; repeat sequence 2 more times
+
+		jsr		(FindNextFreeObj).l
+		bne.s	.notfound
+		_move.l	#BossFlame,obAddr(a1)
+		move.b	#$40,obSubtype(a1)				; set speed at which ship escapes (div by $10)
+		move.w	a0,obBoss_Parent(a1)			; save address of parent
 
 	.notfound:
 		move.w	obX(a0),obBoss_BufferX(a0)
@@ -349,29 +352,6 @@ BossGHZ_FaceMain:	; Routine 4
 BossGHZ_Delete:
 		jmp		(DeleteObject).l
 ; ===========================================================================
-
-BossGHZ_FlameMain:	; Routine 6
-		movea.w	obBoss_Parent(a0),a1				; get address of parent object (ship)
-
-	; Devon Boss Object Fix
-		; is the boss still loaded (d1 = obAddr)?
-		cmp_addr	#BossGreenHill,obAddr(a1),d1
-		bne.s	BossGHZ_Delete						; if not, delete object
-	; Boss Object Fix End
-
-		moveq	#aniID_Blank,d0
-		cmpi.b	#$C,ob2ndRout(a1)					; has Eggman begun fleeing?
-		bne.s	.notfleeing							; if not, branch
-		moveq	#aniID_EscapeFlame,d0				; use the escape animation for the flame
-		tst.b	obRender(a0)						; is object on-screen?
-		bpl.s	BossGHZ_Delete						; if not, branch
-		bra.s	BossGHZ_Display						; Flame Display
-; ===========================================================================
-
-	.notfleeing:
-		move.w	obVelX(a1),d0
-		beq.s	BossGHZ_Display						; Flame display
-		moveq	#aniID_Flame1,d0					; only show the flame if Eggman is moving
 
 BossGHZ_Display:
 		movea.w	obBoss_Parent(a0),a1				; get address of parent object (ship)
