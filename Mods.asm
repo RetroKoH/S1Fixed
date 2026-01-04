@@ -384,7 +384,6 @@ ProtoVictoryLeap: = 0
 ; Credit: Clownacy/MarkeyJester
 ; Function: Sound alert when running through the path swapper while Debug Mode is enabled
 DebugPathSwappers: = 1
-; To-Do: Add Forced Roll object from Sonic 2, and give it a similar debug function to this
 
 ; Name: Save Game Functionality
 ; Credit: RetroKoH, s1Disasm Team
