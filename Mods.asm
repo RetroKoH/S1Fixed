@@ -153,6 +153,16 @@ LimitLZBlockRisingSpeed: = 0			; if set to 1, LZ Rising platforms are speed-capp
 ; Function: Makes Chopper flip over the bridge when jumping in the air, making the leap a little more realistic.
 ChopperAnimationTweak: = 1
 
+; Name: Jaws Bubble Generating
+; Credit: RetroKoH
+; Function: Makes Jaws produce small bubbles from its back when swimming
+JawsBubbleGenerate: = 1
+
+; Name: Jaws Behaviour Mod
+; Credit: RetroKoH
+; Function: Makes Jaws chase after Sonic, similar to Chop-Chop in Sonic 2
+JawsBehaviorMod: = 1
+
 ; Name: Orbinaut Animation Tweak
 ; Credit: Mercury
 ; Function: Makes Orbinaut "notice" Sonic at a closer range so that it's more likely to happen onscreen, and "get angry" quicker.
