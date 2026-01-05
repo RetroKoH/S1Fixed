@@ -4321,6 +4321,7 @@ BossFlash:
 	; Sub-Objects
 		include "_incObj/-- Boss Face.asm"
 		include "_incObj/-- Boss Exhaust Flame.asm"
+		include "_incObj/-- Boss Weapons.asm"
 
 	; Cutscene boss
 		include	"_incObj/82 Eggman - Scrap Brain 2.asm"
