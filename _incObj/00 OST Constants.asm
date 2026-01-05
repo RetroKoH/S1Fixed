@@ -58,6 +58,10 @@ obBossFace_Parent:		equ objoff_3E		; 2 bytes | parent address (Eggman's ship)
 ; Boss flame variables (Boss variables exclusive to the flame sub-object)
 obBossFlame_Escape:		equ objoff_3C		; 2 bytes | escape speed of ship
 obBossFlame_Parent:		equ objoff_3E		; 2 bytes | parent address (Eggman's ship)
+
+; Boss flame variables (Boss variables exclusive to the flame sub-object)
+obBossWeapon_DiffY:		equ objoff_3C		; 2 bytes | escape speed of ship
+obBossWeapon_Parent:	equ objoff_3E		; 2 bytes | parent address (Eggman's ship)
 ; ---------------------------------------------------------------------------
 
 ; ---------------------------------------------------------------------------
