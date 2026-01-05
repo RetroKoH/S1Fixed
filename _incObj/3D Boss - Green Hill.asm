@@ -11,49 +11,33 @@ BossGreenHill:
 
 BossGHZ_Index:		offsetTable
 		offsetTableEntry.w BossGHZ_Main
-		offsetTableEntry.w BossGHZ_ShipMain
-		offsetTableEntry.w BossGHZ_FaceMain
-		; The wrecking ball is its own object (Obj48)
-
-BossGHZ_ObjData:
-	; Ship
-		dc.b 2,	aniID_Ship		; routine counter, animation
-	; Face
-		dc.b 4,	aniID_NormalFace1
+		offsetTableEntry.w BossGHZ_Ship
 ; ===========================================================================
 
 BossGHZ_Main:	; Routine 0
-		lea		(BossGHZ_ObjData).l,a2			; get data for routine number & animation
-		movea.l	a0,a1							; replace current object with 1st in list
-		moveq	#1,d1							; 1 additional objects
-		bra.s	.loadboss
-; ---------------------------------------------------------------------------
-
-	.loop:
-		jsr		(FindNextFreeObj).l
-		bne.s	.notfound
-		_move.l	#BossGreenHill,obAddr(a1)
+		addq.b	#2,obRoutine(a0)				; -> BossGHZ_Ship
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
+		move.l	#Map_Eggman,obMap(a0)
+		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
+		move.b	#4,obRender(a0)
+		move.b	#$20,obDispWid(a0)
+		move.w	#priority3,obPriority(a0)
+		move.b	#aniID_Ship,obAnim(a0)
+		move.w	#$400,d1
 
-	.loadboss:
-		bclr	#staFlipX,obStatus(a1)
-		clr.b	ob2ndRout(a1)
-		move.b	(a2)+,obRoutine(a1)				; -> BGHZ_ShipMain/BGHZ_FaceMain/BGHZ_FlameMain next
-		move.b	(a2)+,obAnim(a1)
-		move.w	#priority3,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
-		move.l	#Map_Eggman,obMap(a1)
-		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a1)
-		move.b	#4,obRender(a1)
-		move.b	#$20,obDispWid(a1)
-		move.w	a0,obBoss_Parent(a1)			; save address of OST of parent
-		dbf		d1,.loop						; repeat sequence 2 more times
+		jsr		(FindNextFreeObj).l
+		bne.s	.notfound
+		_move.l	#BossFace,obAddr(a1)
+		move.b	#8,obBossFace_Defeat(a1)		; boss defeat routine number
+		move.w	d1,obBossFace_Escape(a1)		; set speed at which ship escapes
+		move.w	a0,obBossFace_Parent(a1)		; save address of parent
 
 		jsr		(FindNextFreeObj).l
 		bne.s	.notfound
 		_move.l	#BossFlame,obAddr(a1)
-		move.b	#$40,obSubtype(a1)				; set speed at which ship escapes (div by $10)
-		move.w	a0,obBoss_Parent(a1)			; save address of parent
+		move.w	d1,obBossFlame_Escape(a1)		; set speed at which ship escapes
+		move.w	a0,obBossFlame_Parent(a1)		; save address of parent
 
 	.notfound:
 		move.w	obX(a0),obBoss_BufferX(a0)
@@ -63,15 +47,15 @@ BossGHZ_Main:	; Routine 0
 		move.w	#$100,obVelY(a0)				; start moving ship down -- movement applied here, instead of EVERY frame in 2ndRout 0
 ; ---------------------------------------------------------------------------
 
-BossGHZ_ShipMain:	; Routine 2
+BossGHZ_Ship:	; Routine 2
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
 		move.w	BossGHZ_ShipIndex(pc,d0.w),d1
 		jsr		BossGHZ_ShipIndex(pc,d1.w)
 		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
-		move.b	obStatus(a0),d0
-		andi.b	#(maskFlipX+maskFlipY),d0
+		moveq	#(maskFlipX+maskFlipY),d0
+		and.b	obStatus(a0),d0
 		andi.b	#$FC,obRender(a0)				; ignore x/y flip bits
 		or.b	d0,obRender(a0)					; combine x/y flip bits from status instead
 
@@ -167,12 +151,14 @@ BossGHZ_MakeBall:	; Secondary Routine 2
 
 	.notfound:
 		move.w	#119,obBoss_DelayTime(a0)			; set wait timer to 2 seconds (Eggman won't move until this timer is up)
+		move.b	#1,obBoss_AttackFlag(a0)			; trigger Eggman laughing
 		bra.w	BossGHZ_ChkHit
 ; ===========================================================================
 
 BossGHZ_ShipWait:	; Secondary Routine 4
 		subq.w	#1,obBoss_DelayTime(a0)
 		bpl.s	.reverse
+		clr.b	obBoss_AttackFlag(a0)				; stop Eggman laughing
 		addq.b	#2,ob2ndRout(a0)
 		move.w	#$40-1,obBoss_DelayTime(a0)
 		move.w	#$100,obVelX(a0)					; move the ship sideways
@@ -296,74 +282,9 @@ BossGHZ_ShipFlee:	; Secondary Routine $C
 ; ===========================================================================
 
 BossGHZ_ShipDel:
-		; We do not want to return to BossGHZ_ShipMain, as objects
+		; We do not want to return to BossGHZ_Ship, as objects
 		; should not queue themselves for display while also being
 		; deleted.
 		addq.l	#4,sp								; Clownacy DisplaySprites Fix
 		jmp		(DeleteObject).l
-; ===========================================================================
-
-BossGHZ_FaceMain:	; Routine 4
-		movea.w	obBoss_Parent(a0),a1				; get address of parent object (ship)
-
-	; Devon Boss Object Fix
-		; is the boss still loaded (d1 = obAddr)?
-		cmp_addr	#BossGreenHill,obAddr(a1),d1
-		bne.s	BossGHZ_Delete						; if not, delete object
-	; Boss Object Fix End
-
-		moveq	#0,d1
-		moveq	#aniID_NormalFace1,d0
-		move.b	ob2ndRout(a1),d1					; get the ship's current routine
-		subq.b	#id_ghzb_wait,d1					; is ship in an idle phase?
-		bne.s	.notIdle							; if not, branch
-		cmpi.w	#boss_ghz_x+$A0,obBoss_BufferX(a1)
-		bne.s	.chkHurt
-		moveq	#aniID_LaughFace,d0
-
-	.notIdle:
-		subq.b	#id_ghzb_destroyed-id_ghzb_wait,d1	; is d0 == 6? check for 2ndRout $A
-		bmi.s	.chkHurt							; if not in Routine $A, branch
-		moveq	#aniID_DefeatFace,d0				; show defeated (burned) face
-		bra.s	.setAnim
-; ===========================================================================
-
-	.chkHurt:
-		tst.b	obColType(a1)
-		bne.s	.chkLaughing
-		moveq	#aniID_HurtFace,d0
-		bra.s	.setAnim
-; ===========================================================================
-
-	.chkLaughing:
-		cmpi.b	#4,(v_player+obRoutine).w			; is Sonic hurt (or dead)?
-		blo.s	.setAnim							; if not, branch
-		moveq	#aniID_LaughFace,d0					; use laughing animation
-
-	.setAnim:
-		subq.b	#2,d1								; is Eggman fleeing?
-		bne.s	BossGHZ_Display						; if not, branch
-		moveq	#aniID_PanicFace,d0					; set panicking face
-		tst.b	obRender(a0)						; is object on-screen?
-		bpl.s	BossGHZ_Delete						; if not, branch and delete
-		bra.s	BossGHZ_Display						; Face display
-; ===========================================================================
-
-BossGHZ_Delete:
-		jmp		(DeleteObject).l
-; ===========================================================================
-
-BossGHZ_Display:
-		movea.w	obBoss_Parent(a0),a1				; get address of parent object (ship)
-		move.w	obX(a1),obX(a0)
-		move.w	obY(a1),obY(a0)
-		move.b	obStatus(a1),obStatus(a0)
-		jsr		(NewAnim).w							; set next animation (TO-DO: Maybe change this to fallthrough to AnimateSprite)
-		lea		Ani_Eggman(pc),a1
-		jsr		(AnimateSprite).w
-		move.b	obStatus(a0),d0
-		andi.b	#(maskFlipX+maskFlipY),d0
-		andi.b	#$FC,obRender(a0)					; ignore x/yflip bits
-		or.b	d0,obRender(a0)						; combine x/yflip bits from status instead
-		jmp		(DisplaySprite).l
 ; ===========================================================================

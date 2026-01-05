@@ -10,19 +10,15 @@ BossMarble:
 ; ===========================================================================
 BossMZ_Index:	offsetTable
 		offsetTableEntry.w BossMZ_Main
-		offsetTableEntry.w BossMZ_ShipMain
-		offsetTableEntry.w BossMZ_FaceMain
-		offsetTableEntry.w BossMZ_TubeMain
+		offsetTableEntry.w BossMZ_Ship
+		offsetTableEntry.w BossMZ_Tube
 
 BossMZ_ObjData:
 	; Ship
 		dc.b 2,	aniID_Ship			; routine number, animation
 		dc.w priority4				; priority
-	; Face
-		dc.b 4,	aniID_NormalFace1
-		dc.w priority4
 	; Tube -- Does not animate
-		dc.b 6,	0
+		dc.b 4,	0
 		dc.w priority3
 ; ===========================================================================
 
@@ -30,16 +26,16 @@ BossMZ_Main:			; Routine 0
 		move.w	obX(a0),obBoss_BufferX(a0)
 		move.w	obY(a0),obBoss_BufferY(a0)
 		move.b	#(colEnemy|colSz_24x24),obColType(a0)
-		move.b	#8,obColProp(a0) 		; set number of hits to 8
+		move.b	#8,obColProp(a0) 				; set number of hits to 8
 		lea		BossMZ_ObjData(pc),a2
 		movea.l	a0,a1
-		moveq	#2,d1							; 2 additional objects
+		moveq	#1,d1							; 1 additional objects
 		bra.s	.load_boss
 ; ===========================================================================
 
 	.loop:
 		jsr		(FindNextFreeObj).l
-		bne.s	BossMZ_ShipMain
+		bne.w	BossMZ_Ship
 		_move.l	#BossMarble,obAddr(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
@@ -49,27 +45,35 @@ BossMZ_Main:			; Routine 0
 		clr.b	ob2ndRout(a1)
 		move.b	(a2)+,obRoutine(a1)
 		move.b	(a2)+,obAnim(a1)
-		move.w	(a2)+,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
+		move.w	(a2)+,obPriority(a1)			; RetroKoH/Devon S3K+ Priority Manager
 		move.l	#Map_Eggman,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.b	#$20,obDispWid(a1)
 		move.w	a0,obBoss_Parent(a1)
-		dbf		d1,.loop					; repeat sequence 3 more times
+		dbf		d1,.loop						; repeat sequence 1 more time
 
 	; Set data for Tube
 		move.l	#Map_BossItems,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman_Weapons,1,0),obGfx(a1)
 		move.b	#4,obFrame(a1)
+		move.w	#$500,d1
 
 		jsr		(FindNextFreeObj).l
-		bne.s	BossMZ_ShipMain
+		bne.s	BossMZ_Ship
+		move.l	#BossFace,obAddr(a1)
+		move.b	#4,obBossFace_Defeat(a1)		; boss defeat routine number
+		move.w	d1,obBossFace_Escape(a1)		; set speed at which ship escapes
+		move.w	a0,obBossFace_Parent(a1)		; save address of parent
+
+		jsr		(FindNextFreeObj).l
+		bne.s	BossMZ_Ship
 		_move.l	#BossFlame,obAddr(a1)
-		move.b	#$50,obSubtype(a1)				; set speed at which ship escapes (div by $10)
-		move.w	a0,obBoss_Parent(a1)			; save address of parent
+		move.w	d1,obBossFlame_Escape(a1)		; set speed at which ship escapes
+		move.w	a0,obBossFlame_Parent(a1)		; save address of parent
 ; ---------------------------------------------------------------------------
 
-BossMZ_ShipMain:		; Routine 2
+BossMZ_Ship:		; Routine 2
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
 		move.w	BossMZ_ShipIndex(pc,d0.w),d1
@@ -250,6 +254,7 @@ BossMZ_DropFire:		; Tertiary Routine 2/6
 		tst.w	obVelY(a0)							; is Eggman moving vertically?
 		beq.s	.countdown							; if not, branch. We've already fired the ball.
 		clr.w	obVelY(a0)							; stop moving vertically, and deploy that fire!
+		move.b	#1,obBoss_AttackFlag(a0)			; set Eggman to laugh while attacking
 		move.w	#$50,obBoss_DelayTime(a0)			; set timer for after Eggman fires the ball
 		bchg	#staFlipX,obStatus(a0)				; turn Eggman to face toward the center of the field
 		jsr		(FindFreeObj).l
@@ -264,6 +269,7 @@ BossMZ_DropFire:		; Tertiary Routine 2/6
 		subq.w	#1,obBoss_DelayTime(a0)
 		bne.s	.end
 		addq.b	#2,obBoss_3rdRout(a0)				; Advance to movement tertiary routine
+		clr.b	obBoss_AttackFlag(a0)				; stop Eggman laughing
 
 	.end:
 		rts	
@@ -373,61 +379,21 @@ BossMZ_ShipDel:
 		jmp		(DeleteObject).l
 ; ===========================================================================
 
-BossMZ_FaceMain:			; Routine 4
+BossMZ_Tube:	; Routine 4
 		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
 
 	; Devon Boss Object Fix
 		; is the boss still loaded (d1 = obAddr)?
 		cmp_addr	#BossMarble,obAddr(a1),d1
-		bne.w	BossMZ_Delete					; if not, delete object
+		bne.s	.delete							; if not, delete object
 	; Boss Object Fix End
 
-		moveq	#0,d1
-		moveq	#aniID_NormalFace1,d0
-		move.b	ob2ndRout(a1),d1				; get the ship's current routine
-		subq.w	#id_mzb_move,d1					; is ship in a movement phase?
-		bne.s	.notMoving						; if not, branch
-		btst	#1,obSubtype(a1)
-		beq.s	.chkHurt
-		tst.w	obVelY(a1)
-		bne.s	.chkHurt
-		moveq	#aniID_LaughFace,d0				; use laughing animation
-		bra.s	.setAnim
-; ===========================================================================
-
-	.notMoving:
-		subq.b	#2,d1
-		bmi.s	.chkHurt						; if not in Routine 6, branch
-		moveq	#aniID_DefeatFace,d0			; show defeated (burned) face
-		bra.s	.setAnim
-; ===========================================================================
-
-	.chkHurt:
-		tst.b	obColType(a1)					; is boss collision on?
-		bne.s	.chkLaughing
-		moveq	#aniID_HurtFace,d0
-		bra.s	.setAnim
-; ===========================================================================
-
-	.chkLaughing:
-		cmpi.b	#4,(v_player+obRoutine).w		; is Sonic hurt (or dead)?
-		blo.s	.setAnim						; if not, branch
-		moveq	#aniID_LaughFace,d0				; use laughing animation
-
-	.setAnim:
-		subq.b	#4,d1							; is Eggman fleeing?
-		bne.s	BossMZ_Animate					; if not, branch
-		moveq	#aniID_PanicFace,d0				; set panicking face
+		cmpi.b	#id_mzb_flee,ob2ndRout(a1)		; has Eggman begun fleeing?
+		bne.s	.display						; if not, branch
 		tst.b	obRender(a0)					; is object on-screen?
-		bpl.s	BossMZ_Delete					; if not, branch and delete
-; ---------------------------------------------------------------------------
+		bpl.s	.delete							; if not, branch
 
-BossMZ_Animate:
-		jsr		(NewAnim).w						; set next animation (TO-DO: Change this to fallthrough to AnimateSprite)
-		lea		Ani_Eggman(pc),a1
-		jsr		(AnimateSprite).w
-
-BossMZ_Display:
+	.display:
 		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
 		move.w	obX(a1),obX(a0)
 		move.w	obY(a1),obY(a0)
@@ -439,22 +405,6 @@ BossMZ_Display:
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 
-BossMZ_Delete:
-		jmp	(DeleteObject).l
-; ===========================================================================
-
-BossMZ_TubeMain:	; Routine 8
-		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
-
-	; Devon Boss Object Fix
-		; is the boss still loaded (d1 = obAddr)?
-		cmp_addr	#BossMarble,obAddr(a1),d1
-		bne.s	BossMZ_Delete					; if not, delete object
-	; Boss Object Fix End
-
-		cmpi.b	#id_mzb_flee,ob2ndRout(a1)		; has Eggman begun fleeing?
-		bne.s	BossMZ_Display					; if not, branch
-		tst.b	obRender(a0)					; is object on-screen?
-		bpl.s	BossMZ_Delete					; if not, branch
-		bra.s	BossMZ_Display
+	.delete:
+		jmp		(DeleteObject).l
 ; ===========================================================================
