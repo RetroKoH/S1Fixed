@@ -11,17 +11,14 @@ BossSpringYard:
 
 BossSYZ_Index:	offsetTable
 		offsetTableEntry.w BossSYZ_Main
-		offsetTableEntry.w BossSYZ_ShipMain
-		offsetTableEntry.w BossSYZ_FaceMain
-		offsetTableEntry.w BossSYZ_SpikeMain
+		offsetTableEntry.w BossSYZ_Ship
+		offsetTableEntry.w BossSYZ_Spike
 
 BossSYZ_ObjData:
 	; Ship
 		dc.b 2,	aniID_Ship		; routine counter, animation
-	; Face
-		dc.b 4,	aniID_NormalFace1
 	; Spike
-		dc.b 6,	0				; does not animate
+		dc.b 4,	0				; does not animate
 ; ===========================================================================
 
 BossSYZ_Main:	; Routine 0
@@ -33,13 +30,13 @@ BossSYZ_Main:	; Routine 0
 		move.b	#8,obColProp(a0)					; set number of hits to 8
 		lea		BossSYZ_ObjData(pc),a2				; get routine number, animation & priority
 		movea.l	a0,a1								; replace current object with 1st in list
-		moveq	#2,d1								; 2 additional objects
+		moveq	#1,d1								; 1 additional object
 		bra.s	.load_boss
 ; ===========================================================================
 
 	.loop:
 		jsr		(FindNextFreeObj).l
-		bne.s	BossSYZ_ShipMain
+		bne.w	BossSYZ_Ship
 		_move.l	#BossSpringYard,obAddr(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
@@ -55,21 +52,30 @@ BossSYZ_Main:	; Routine 0
 		move.b	#4,obRender(a1)
 		move.b	#$20,obDispWid(a1)
 		move.w	a0,obBoss_Parent(a1)				; save address of parent
-		dbf		d1,.loop							; repeat sequence 3 more times
+		dbf		d1,.loop							; repeat sequence 1 more time
 
 	; Set data for Spike
 		move.l	#Map_BossItems,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Eggman_Weapons,1,0),obGfx(a1)
 		move.b	#5,obFrame(a1)
+		move.w	#$400,d1
 
 		jsr		(FindNextFreeObj).l
-		bne.s	BossSYZ_ShipMain
+		bne.s	BossSYZ_Ship
+		move.l	#BossFace,obAddr(a1)
+		move.b	#1,obSubtype(a1)					; set subtype to check for 3rdRout #2
+		move.b	#6,obBossFace_Defeat(a1)			; boss defeat routine number
+		move.w	d1,obBossFace_Escape(a1)			; set speed at which ship escapes
+		move.w	a0,obBossFace_Parent(a1)			; save address of parent
+
+		jsr		(FindNextFreeObj).l
+		bne.s	BossSYZ_Ship
 		_move.l	#BossFlame,obAddr(a1)
-		move.b	#$40,obSubtype(a1)				; set speed at which ship escapes (div by $10)
-		move.w	a0,obBoss_Parent(a1)			; save address of parent
+		move.w	d1,obBossFlame_Escape(a1)			; set speed at which ship escapes
+		move.w	a0,obBossFlame_Parent(a1)			; save address of parent
 ; ---------------------------------------------------------------------------
 
-BossSYZ_ShipMain:	; Routine 2
+BossSYZ_Ship:	; Routine 2
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
 		move.w	BossSYZ_ShipIndex(pc,d0.w),d1
@@ -460,67 +466,10 @@ BossSYZ_ShipFlee:		; Secondary Routine $A
 ; ===========================================================================
 
 BossSYZ_ShipDelete:
-		; Avoid returning to BossSYZ_ShipMain to prevent a
+		; Avoid returning to BossSYZ_Ship to prevent a
 		; display-and-delete bug. (Clownacy DisplaySprite Fix)
 		addq.l	#4,sp
 		jmp		(DeleteObject).l
-; ===========================================================================
-
-BossSYZ_FaceMain:	; Routine 4
-		movea.w	obBoss_Parent(a0),a1					; get address of parent object (ship)
-
-	; Devon Boss Object Fix
-		; is the boss still loaded (d1 = obAddr)?
-		cmp_addr	#BossSpringYard,obAddr(a1),d1
-		bne.w	BossSYZ_Delete							; if not, delete object
-	; Boss Object Fix End
-
-		moveq	#aniID_NormalFace1,d0
-		moveq	#0,d1
-		move.b	ob2ndRout(a1),d1
-		move.w	BossSYZ_FaceRoutines(pc,d1.w),d1
-		jsr		BossSYZ_FaceRoutines(pc,d1.w)			; set d1 as animation number
-		bra.s	BossSYZ_Display
-; ===========================================================================
-
-BossSYZ_FaceRoutines:	offsetTable
-		offsetTableEntry.w BSYZ_Face_ChkHit
-		offsetTableEntry.w BSYZ_Face_ChkHit
-		offsetTableEntry.w BSYZ_Face_Attack
-		offsetTableEntry.w BSYZ_Face_Defeat
-		offsetTableEntry.w BSYZ_Face_Defeat
-		offsetTableEntry.w BSYZ_Face_Escape
-; ===========================================================================
-
-BSYZ_Face_Defeat:
-		moveq	#aniID_DefeatFace,d0					; use defeated animation
-		rts	
-; ===========================================================================
-
-BSYZ_Face_Escape:
-		moveq	#aniID_PanicFace,d0						; use sweating animation
-		rts	
-; ===========================================================================
-
-BSYZ_Face_Attack:
-		cmpi.b	#2,obSubtype(a1)						; is the ship lifting a block or ascending?
-		beq.s	BSYZ_Face_ChkHit						; if yes, branch
-		moveq	#aniID_PanicFace,d0						; if not, load sweating animation first
-
-BSYZ_Face_ChkHit:
-		tst.b	obColType(a1)							; was Eggman recently hit and is flashing?
-		bne.s	.not_hit								; if not, branch
-		moveq	#aniID_HurtFace,d0						; use hit animation
-		rts	
-; ===========================================================================
-
-	.not_hit:
-		cmpi.b	#4,(v_player+obRoutine).w				; is Sonic hurt or dead?
-		blo.s	.sonic_ok								; if not, branch
-		moveq	#aniID_LaughFace,d0						; use laughing animation
-
-	.sonic_ok:
-		rts	
 ; ===========================================================================
 
 BossSYZ_Delete:
@@ -544,7 +493,7 @@ BSYZ_Display_SkipAnim:
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 
-BossSYZ_SpikeMain:	; Routine 8
+BossSYZ_Spike:	; Routine 4
 		movea.w	obBoss_Parent(a0),a1					; get address of parent object (ship)
 
 	; Devon Boss Object Fix

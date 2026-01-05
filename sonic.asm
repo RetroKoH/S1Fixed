@@ -4335,6 +4335,7 @@ BossFlash:
 		include	"_incObj/7B SLZ Boss Spikeball.asm"
 
 	; Sub-Objects
+		include "_incObj/-- Boss Face.asm"
 		include "_incObj/-- Boss Exhaust Flame.asm"
 
 	; Cutscene boss

@@ -11,14 +11,7 @@ BossLabyrinth:
 
 BossLZ_Index:	offsetTable
 		offsetTableEntry.w BossLZ_Main
-		offsetTableEntry.w BossLZ_ShipMain
-		offsetTableEntry.w BossLZ_FaceMain
-
-BossLZ_ObjData:
-	; Ship
-		dc.b 2,	aniID_Ship		; routine counter, animation
-	; Face
-		dc.b 4,	aniID_NormalFace1
+		offsetTableEntry.w BossLZ_Ship
 ; ===========================================================================
 
 BossLZ_Main:	; Routine 0
@@ -29,40 +22,31 @@ BossLZ_Main:	; Routine 0
 		move.b	#(colEnemy|colSz_24x24),obColType(a0)
 		move.b	#8,obColProp(a0)				; set number of hits to 8
 		move.w	#priority4,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
-		lea		BossLZ_ObjData(pc),a2			; get data for routine number & animation
-		movea.l	a0,a1							; replace current object with 1st in list
-		moveq	#1,d1							; 1 additional object
-		bra.s	.load_boss
-; ===========================================================================
-
-	.loop:
-		jsr		(FindNextFreeObj).l
-		bne.s	BossLZ_ShipMain
-		_move.l	#BossLabyrinth,obAddr(a1)
-		move.w	obX(a0),obX(a1)
-		move.w	obY(a0),obY(a1)
-
-	.load_boss:
 		bclr	#staFlipX,obStatus(a0)
-		clr.b	ob2ndRout(a1)
-		move.b	(a2)+,obRoutine(a1)				; goto BLZ_ShipMain/BLZ_FaceMain/BLZ_FlameMain next
-		move.b	(a2)+,obAnim(a1)
-		move.w	obPriority(a0),obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
-		move.l	#Map_Eggman,obMap(a1)
-		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a1)
-		move.b	#4,obRender(a1)
-		move.b	#$20,obDispWid(a1)
-		move.w	a0,obBoss_Parent(a1)			; save obj address of parent
-		dbf		d1,.loop						; repeat sequence 2 more times
+		clr.b	ob2ndRout(a0)
+		move.b	#2,obRoutine(a0)				; goto BossLZ_Ship
+		move.b	#aniID_Ship,obAnim(a0)
+		move.l	#Map_Eggman,obMap(a0)
+		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
+		move.b	#4,obRender(a0)
+		move.b	#$20,obDispWid(a0)
+		move.w	#$400,d1
 
 		jsr		(FindNextFreeObj).l
-		bne.s	BossLZ_ShipMain
+		bne.s	BossLZ_Ship
+		move.l	#BossFace,obAddr(a1)
+		; no defeat routine marker
+		move.w	d1,obBossFace_Escape(a1)			; set speed at which ship escapes
+		move.w	a0,obBossFace_Parent(a1)			; save address of parent
+
+		jsr		(FindNextFreeObj).l
+		bne.s	BossLZ_Ship
 		_move.l	#BossFlame,obAddr(a1)
-		move.b	#$40,obSubtype(a1)				; set speed at which ship escapes (div by $10)
-		move.w	a0,obBoss_Parent(a1)			; save address of parent
+		move.w	d1,obBossFlame_Escape(a1)			; set speed at which ship escapes
+		move.w	a0,obBossFlame_Parent(a1)			; save address of parent
 ; ---------------------------------------------------------------------------
 
-BossLZ_ShipMain:	; Routine 2
+BossLZ_Ship:	; Routine 2
 		lea		(v_player).w,a1
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
@@ -317,66 +301,8 @@ BossLZ_ShipFlee:
 ; ===========================================================================
 
 BossLZ_ShipDel:
-		; Avoid returning to BossLZ_ShipMain to prevent a
+		; Avoid returning to BossLZ_Ship to prevent a
 		; display-and-delete bug.
 		addq.l	#4,sp			; Clownacy DisplaySprite Fix
 		jmp		(DeleteObject).l
-; ===========================================================================
-
-BossLZ_FaceMain:	; Routine 4
-		movea.w	obBoss_Parent(a0),a1				; get address of parent object (ship)
-
-	; Devon Boss Object Fix
-		; is the boss still loaded (d1 = obAddr)?
-		cmp_addr	#BossLabyrinth,obAddr(a1),d1
-		bne.s	BossLZ_Delete						; if not, delete object
-	; Boss Object Fix End
-
-		moveq	#aniID_NormalFace1,d0
-		moveq	#0,d1
-		move.b	ob2ndRout(a1),d1
-		tst.b	obBossLZ_Defeated(a0)				; has boss been beaten?
-		beq.s	.chk_hit							; if not, branch
-		moveq	#aniID_DefeatFace,d0
-		bra.s	.update
-; ===========================================================================
-
-	.chk_hit:
-		tst.b	obColType(a1)						; is boss collision on?
-		bne.s	.chk_sonic_hurt						; if yes, branch
-		moveq	#aniID_HurtFace,d0					; use hurt animation
-		bra.s	.update
-; ===========================================================================
-
-	.chk_sonic_hurt:
-		cmpi.b	#4,(v_player+obRoutine).w			; is Sonic hurt or dead?
-		blo.s	.update								; if not, branch
-		moveq	#aniID_LaughFace,d0					; use laughing animation
-
-	.update:
-		cmpi.b	#$E,d1								; is boss escaping?
-		bne.s	BossLZ_Display						; if not, branch
-		moveq	#aniID_PanicFace,d0					; use sweating animation
-		tst.b	obRender(a0)						; is object on-screen?
-		bpl.s	BossLZ_Delete						; if not, branch
-		bra.s	BossLZ_Display
-; ===========================================================================
-
-BossLZ_Delete:
-		jmp		(DeleteObject).l
-; ===========================================================================
-
-BossLZ_Display:
-		jsr		(NewAnim).w							; set next animation (TO-DO: Change this to fallthrough to AnimateSprite)
-		lea		Ani_Eggman(pc),a1
-		jsr		(AnimateSprite).w
-		movea.w	obBoss_Parent(a0),a1				; get address of parent object (ship)
-		move.w	obX(a1),obX(a0)
-		move.w	obY(a1),obY(a0)
-		move.b	obStatus(a1),obStatus(a0)
-		moveq	#(maskFlipX+maskFlipY),d0
-		and.b	obStatus(a0),d0
-		andi.b	#$FC,obRender(a0)					; ignore x/yflip bits
-		or.b	d0,obRender(a0)						; combine x/yflip bits from status instead
-		jmp		(DisplaySprite).l
 ; ===========================================================================

@@ -3,7 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 BossFlame:
-		movea.w	obBoss_Parent(a0),a2				; get address of parent object (ship)
+		movea.w	obBossFlame_Parent(a0),a2			; get address of parent object (ship)
 
 	; Devon Boss Object Fix
 		tst.l	obAddr(a2)
@@ -23,10 +23,10 @@ BossFlame:
 		move.w	obX(a2),obX(a0)
 		move.w	obY(a2),obY(a0)
 		move.b	obStatus(a2),obStatus(a0)
-		move.b	obStatus(a0),d0
-		andi.b	#(maskFlipX+maskFlipY),d0
-		andi.b	#$FC,obRender(a0)		; ignore x/yflip bits
-		or.b	d0,obRender(a0)		; combine x/yflip bits from status instead
+		moveq	#(maskFlipX+maskFlipY),d0
+		and.b	obStatus(a0),d0
+		andi.b	#$FC,obRender(a0)					; ignore x/yflip bits
+		or.b	d0,obRender(a0)						; combine x/yflip bits from status instead
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 
@@ -51,29 +51,26 @@ Exhaust_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.b	#$20,obDispWid(a0)
 		move.w	#priority3,obPriority(a0)
-		move.b	#8,obAnim(a0)
-		moveq	#0,d0
-		move.b	obSubtype(a0),d0			; get escape speed from subtype
-		lsl.w	#4,d0						; multiply by $10
-		move.w	d0,objoff_30(a0)
+		move.b	#aniID_Flame1,obAnim(a0)	; use small flame
+		bclr	#7,obAnim(a0)
 ; ---------------------------------------------------------------------------
 
 Exhaust_Chk:	; Routine 2
-		move.w	objoff_30(a0),d0
+		move.w	obBossFlame_Escape(a0),d0
 		cmp.w	obVelX(a2),d0
-		bgt.s	.exit						; branch if ship is moving slowly
-		move.b	#$B,obAnim(a0)				; use large flame when ship escapes
-		addq.b	#2,obRoutine(a0)			; goto Exhaust_Big next
+		bgt.s	.exit							; branch if ship is moving slowly
+		move.b	#aniID_EscapeFlame,obAnim(a0)	; use large flame when ship escapes
+		addq.b	#2,obRoutine(a0)				; goto Exhaust_Big next
 		
 	.exit:
 		rts
 ; ===========================================================================
 
 Exhaust_Big:	; Routine 4
-		move.w	objoff_30(a0),d0
+		move.w	obBossFlame_Escape(a0),d0
 		cmp.w	obVelX(a2),d0
 		bls.s	.exit						; branch if ship is moving fast
-		move.b	#8,obAnim(a0)				; use small flame otherwise
+		move.b	#aniID_Flame1,obAnim(a0)	; use small flame otherwise
 		subq.b	#2,obRoutine(a0)			; goto Exhaust_Chk next
 		
 	.exit:

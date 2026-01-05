@@ -42,12 +42,22 @@ obParent:				equ $3E				; 2 bytes | parent address
 ; ---------------------------------------------------------------------------
 ; Boss variables (Any unique variables are found within the object file itself)
 obBoss_3rdRout:			equ obSubtype		; 1 byte  | bosses may use this OST as a tertiary routine counter
+obBoss_AttackFlag:		equ objoff_2F		; 1 byte  |
 obBoss_BufferX:			equ objoff_30		; 2 bytes | stored X-axis position
-obBoss_Parent:			equ objoff_34		; 2 bytes | parent address (Used by face, flame, and weapon)
+obBoss_Parent:			equ objoff_34		; 2 bytes | parent address (Used by weapon) <- Soon to be deprecated
 obBoss_BufferY:			equ objoff_38		; 2 bytes | stored Y-axis position
 obBoss_DelayTime:		equ objoff_3C		; 2 bytes | delay timer
 obBoss_FlashFrames:		equ objoff_3E		; 1 byte  | # of frames to flash white when hit
 obBoss_HoverAngle:		equ objoff_3F		; 1 byte  | Used w/ CalcSine for the ship's hover effect
+
+; Boss face variables (Boss variables exclusive to the face sub-object)
+obBossFace_Defeat:		equ objoff_3B		; 1 byte  | routine number that boss is defeated on
+obBossFace_Escape:		equ objoff_3C		; 2 bytes | escape speed of ship
+obBossFace_Parent:		equ objoff_3E		; 2 bytes | parent address (Eggman's ship)
+
+; Boss flame variables (Boss variables exclusive to the flame sub-object)
+obBossFlame_Escape:		equ objoff_3C		; 2 bytes | escape speed of ship
+obBossFlame_Parent:		equ objoff_3E		; 2 bytes | parent address (Eggman's ship)
 ; ---------------------------------------------------------------------------
 
 ; ---------------------------------------------------------------------------
