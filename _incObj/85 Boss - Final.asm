@@ -424,7 +424,7 @@ BossFinal_EggShip:
 		jsr		(FindNextFreeObj).l			; find free OST slot
 		bne.s	.keep_rising				; branch if not found
 		_move.l	#BossFlame,obAddr(a1)
-		move.b	#$18,obSubtype(a1)			; set speed at which ship escapes (div by $10)
+		move.w	#$180,obBossFlame_Escape(a1)	; set speed at which ship escapes
 		move.w	a0,obBoss_Parent(a1)		; save address of OST of parent
 
 	.keep_rising:
