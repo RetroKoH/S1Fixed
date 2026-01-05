@@ -12,52 +12,24 @@ BossSpringYard:
 BossSYZ_Index:	offsetTable
 		offsetTableEntry.w BossSYZ_Main
 		offsetTableEntry.w BossSYZ_Ship
-		offsetTableEntry.w BossSYZ_Spike
-
-BossSYZ_ObjData:
-	; Ship
-		dc.b 2,	aniID_Ship		; routine counter, animation
-	; Spike
-		dc.b 4,	0				; does not animate
 ; ===========================================================================
 
 BossSYZ_Main:	; Routine 0
+		addq.b	#2,obRoutine(a0)					; goto BossSYZ_Ship next
 		move.w	#boss_syz_x+$1B0,obX(a0)
 		move.w	#boss_syz_y+$E,obY(a0)
 		move.w	obX(a0),obBoss_BufferX(a0)
 		move.w	obY(a0),obBoss_BufferY(a0)
 		move.b	#(colEnemy|colSz_24x24),obColType(a0)
 		move.b	#8,obColProp(a0)					; set number of hits to 8
-		lea		BossSYZ_ObjData(pc),a2				; get routine number, animation & priority
-		movea.l	a0,a1								; replace current object with 1st in list
-		moveq	#1,d1								; 1 additional object
-		bra.s	.load_boss
-; ===========================================================================
-
-	.loop:
-		jsr		(FindNextFreeObj).l
-		bne.w	BossSYZ_Ship
-		_move.l	#BossSpringYard,obAddr(a1)
-		move.w	obX(a0),obX(a1)
-		move.w	obY(a0),obY(a1)
-
-	.load_boss:
 		bclr	#staFlipX,obStatus(a0)
-		clr.b	ob2ndRout(a1)
-		move.b	(a2)+,obRoutine(a1)					; goto BSYZ_ShipMain/BSYZ_FaceMain/BSYZ_FlameMain/BSYZ_SpikeMain next
-		move.b	(a2)+,obAnim(a1)
-		move.w	#priority5,obPriority(a1)			; RetroKoH/Devon S3K+ Priority Manager
-		move.l	#Map_Eggman,obMap(a1)
-		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a1)
-		move.b	#4,obRender(a1)
-		move.b	#$20,obDispWid(a1)
-		move.w	a0,obBoss_Parent(a1)				; save address of parent
-		dbf		d1,.loop							; repeat sequence 1 more time
-
-	; Set data for Spike
-		move.l	#Map_BossItems,obMap(a1)
-		move.w	#make_art_tile(ArtTile_Eggman_Weapons,1,0),obGfx(a1)
-		move.b	#5,obFrame(a1)
+		clr.b	ob2ndRout(a0)
+		move.b	#aniID_Ship,obAnim(a0)
+		move.w	#priority5,obPriority(a0)
+		move.l	#Map_Eggman,obMap(a0)
+		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
+		move.b	#4,obRender(a0)
+		move.b	#$20,obDispWid(a0)
 		move.w	#$400,d1
 
 		jsr		(FindNextFreeObj).l
@@ -73,6 +45,14 @@ BossSYZ_Main:	; Routine 0
 		_move.l	#BossFlame,obAddr(a1)
 		move.w	d1,obBossFlame_Escape(a1)			; set speed at which ship escapes
 		move.w	a0,obBossFlame_Parent(a1)			; save address of parent
+
+		jsr		(FindNextFreeObj).l
+		bne.s	BossSYZ_Ship
+		move.l	#BossWeapon,obAddr(a1)
+		move.w	#priority5,obPriority(a1)
+		move.b	#5,obFrame(a1)						; Spike frame
+		move.b	#1,obSubtype(a1)					; set to run special routine
+		move.w	a0,obBossWeapon_Parent(a1)			; save address of parent
 ; ---------------------------------------------------------------------------
 
 BossSYZ_Ship:	; Routine 2
@@ -458,92 +438,16 @@ BossSYZ_ShipFlee:		; Secondary Routine $A
 
 	.chkdel:
 		tst.b	obRender(a0)							; is ship on-screen?
-		bpl.s	BossSYZ_ShipDelete						; if not, branch
+		bpl.s	.delete									; if not, branch
 
-.update:
+	.update:
 		bsr.w	BossMove								; update parent position
 		bra.w	BossSYZ_ShipHover						; update actual position
 ; ===========================================================================
 
-BossSYZ_ShipDelete:
+	.delete:
 		; Avoid returning to BossSYZ_Ship to prevent a
 		; display-and-delete bug. (Clownacy DisplaySprite Fix)
 		addq.l	#4,sp
 		jmp		(DeleteObject).l
-; ===========================================================================
-
-BossSYZ_Delete:
-		jmp		(DeleteObject).l
-; ===========================================================================
-
-BossSYZ_Display:
-		jsr		(NewAnim).w								; set next animation (TO-DO: Change this to fallthrough to AnimateSprite)
-		lea		Ani_Eggman(pc),a1
-		jsr		(AnimateSprite).w
-		movea.w	obBoss_Parent(a0),a1					; get address of parent object (ship)
-		move.w	obX(a1),obX(a0)
-		move.w	obY(a1),obY(a0)
-
-BSYZ_Display_SkipAnim:
-		move.b	obStatus(a1),obStatus(a0)
-		moveq	#(maskFlipX+maskFlipY),d0
-		and.b	obStatus(a0),d0
-		andi.b	#$FC,obRender(a0)						; ignore x/yflip bits
-		or.b	d0,obRender(a0)							; combine x/yflip bits from status instead
-		jmp		(DisplaySprite).l
-; ===========================================================================
-
-BossSYZ_Spike:	; Routine 4
-		movea.w	obBoss_Parent(a0),a1					; get address of parent object (ship)
-
-	; Devon Boss Object Fix
-		; is the boss still loaded (d1 = obAddr)?
-		cmp_addr	#BossSpringYard,obAddr(a1),d1
-		bne.s	BossSYZ_Delete							; if not, delete object
-	; Boss Object Fix End
-
-		cmpi.b	#$A,ob2ndRout(a1)						; is ship on BSYZ_Escape?
-		bne.s	.not_escaping							; if not, branch
-		tst.b	obRender(a0)							; is object on-screen?
-		bpl.s	BossSYZ_Delete							; if not, branch
-
-	.not_escaping:
-		move.w	obX(a1),obX(a0)
-		move.w	obY(a1),obY(a0)
-		move.w	obBoss_DelayTime(a0),d0
-		cmpi.b	#4,ob2ndRout(a1)						; is ship descending or lifting a block?
-		bne.s	.not_attacking							; if not, branch
-		cmpi.b	#6,obSubtype(a1)						; is block being broken right now?
-		beq.s	.breaking_block							; if yes, branch
-		tst.b	obSubtype(a1)							; is ship descending?
-		bne.s	.set_spike								; if not branch
-		cmpi.w	#$94,d0
-		bge.s	.set_spike
-		addq.w	#7,d0
-		bra.s	.set_spike
-; ===========================================================================
-
-	.breaking_block:
-		tst.w	obBoss_DelayTime(a1)
-		bpl.s	.set_spike
-
-	.not_attacking:
-		tst.w	d0
-		ble.s	.set_spike
-		subq.w	#5,d0
-
-	.set_spike:
-		move.w	d0,obBoss_DelayTime(a0)					; set timer
-		asr.w	#2,d0
-		add.w	d0,obY(a0)								; extend or retract spike
-		move.b	#8,obDispWid(a0)
-		move.b	#$C,obHeight(a0)
-		clr.b	obColType(a0)
-		movea.w	obBoss_Parent(a0),a1					; get address of parent object (ship)
-		tst.b	obColType(a1)							; has ship been hit recently?
-		beq.w	BSYZ_Display_SkipAnim					; if yes, branch
-		tst.b	obBossSYZ_Mode(a1)						; is block being lifted?
-		bne.w	BSYZ_Display_SkipAnim					; if yes, branch
-		move.b	#(colHarmful|colSz_4x16),obColType(a0)	; make spike harmful
-		bra.w	BSYZ_Display_SkipAnim
 ; ===========================================================================

@@ -15,6 +15,7 @@ BossLZ_Index:	offsetTable
 ; ===========================================================================
 
 BossLZ_Main:	; Routine 0
+		addq.b	#2,obRoutine(a0)				; goto BossLZ_Ship
 		move.w	#boss_lz_x+$30,obX(a0)
 		move.w	#boss_lz_y+$500,obY(a0)
 		move.w	obX(a0),obBoss_BufferX(a0)
@@ -24,7 +25,6 @@ BossLZ_Main:	; Routine 0
 		move.w	#priority4,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		bclr	#staFlipX,obStatus(a0)
 		clr.b	ob2ndRout(a0)
-		move.b	#2,obRoutine(a0)				; goto BossLZ_Ship
 		move.b	#aniID_Ship,obAnim(a0)
 		move.l	#Map_Eggman,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)

@@ -8,57 +8,28 @@ BossStarLight:
 		move.w	BossSLZ_Index(pc,d0.w),d1
 		jmp		BossSLZ_Index(pc,d1.w)
 ; ===========================================================================
+
 BossSLZ_Index:	offsetTable
 		offsetTableEntry.w BossSLZ_Main
 		offsetTableEntry.w BossSLZ_Ship
-		offsetTableEntry.w BossSLZ_Tube
-
-BossSLZ_ObjData:
-	; Ship
-		dc.b 2,	aniID_Ship		; routine number, animation
-		dc.w priority4			; priority
-	; Tube
-		dc.b 4,	0				; does not animate
-		dc.w priority3
 ; ===========================================================================
 
 BossSLZ_Main:
+		addq.b	#2,obRoutine(a0)				; goto BossSLZ_Ship next
 		move.w	#boss_slz_x+$188,obX(a0)
 		move.w	#boss_slz_y+$18,obY(a0)
 		move.w	obX(a0),obBoss_BufferX(a0)
 		move.w	obY(a0),obBoss_BufferY(a0)
 		move.b	#(colEnemy|colSz_24x24),obColType(a0)
 		move.b	#8,obColProp(a0)				; set number of hits to 8
-		lea		BossSLZ_ObjData(pc),a2			; get data for routine number, animation & priority
-		movea.l	a0,a1							; replace current object with 1st in list
-		moveq	#1,d1							; 1 additional objects
-		bra.s	.load_boss
-; ===========================================================================
-
-	.loop:
-		jsr		(FindNextFreeObj).l
-		bne.w	.fail
-		_move.l	#BossStarLight,obAddr(a1)
-		move.w	obX(a0),obX(a1)
-		move.w	obY(a0),obY(a1)
-
-	.load_boss:
 		bclr	#staFlipX,obStatus(a0)
-		clr.b	ob2ndRout(a1)
-		move.b	(a2)+,obRoutine(a1)
-		move.b	(a2)+,obAnim(a1)
-		move.w	(a2)+,obPriority(a1)			; RetroKoH/Devon S3K+ Priority Manager
-		move.l	#Map_Eggman,obMap(a1)
-		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a1)
-		move.b	#4,obRender(a1)
-		move.b	#$20,obDispWid(a1)
-		move.w	a0,obBoss_Parent(a1)
-		dbf		d1,.loop						; repeat sequence 1 more time
-
-	; Set data for Tube
-		move.l	#Map_BossItems,obMap(a1)
-		move.w	#make_art_tile(ArtTile_Eggman_Weapons,1,0),obGfx(a1)
-		move.b	#3,obFrame(a1)
+		clr.b	ob2ndRout(a0)
+		move.b	#aniID_Ship,obAnim(a0)
+		move.w	#priority4,obPriority(a0)
+		move.l	#Map_Eggman,obMap(a0)
+		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
+		move.b	#4,obRender(a0)
+		move.b	#$20,obDispWid(a0)
 		move.w	#$400,d1
 
 		jsr		(FindNextFreeObj).l
@@ -73,6 +44,13 @@ BossSLZ_Main:
 		_move.l	#BossFlame,obAddr(a1)
 		move.w	d1,obBossFlame_Escape(a1)		; set speed at which ship escapes
 		move.w	a0,obBossFlame_Parent(a1)		; save address of parent
+
+		jsr		(FindNextFreeObj).l
+		bne.s	.fail
+		move.l	#BossWeapon,obAddr(a1)
+		move.w	#priority3,obPriority(a1)
+		move.b	#3,obFrame(a1)					; Wide pipe frame
+		move.w	a0,obBossWeapon_Parent(a1)		; save address of parent
 
 	.fail:
 		lea		(v_lvlobjspace).w,a1			; FixBugs -- Formerly (v_objspace+object_size*1)
@@ -358,35 +336,8 @@ BossSLZ_ShipFlee:		; Secondary Routine $A
 		; Avoid returning to BossSLZ_Ship to prevent a
 		; display-and-delete bug.
 		addq.l	#4,sp
-		jmp		(DeleteObject).l
-; ===========================================================================
 
-BossSLZ_Tube:	; Routine 4
-		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
-
-	; Devon Boss Object Fix
-		; is the boss still loaded (d1 = obAddr)?
-		cmp_addr	#BossStarLight,obAddr(a1),d1
-		bne.s	BossSLZ_Delete					; if not, delete object
-	; Boss Object Fix End
-
-		cmpi.b	#$A,ob2ndRout(a1)				; is ship on BossSLZ_ShipFlee?
-		bne.s	BossSLZ_Display					; if not, branch
-		tst.b	obRender(a0)					; is object on-screen?
-		bpl.s	BossSLZ_Delete					; if not, branch
-
-BossSLZ_Display:
-		movea.w	obBoss_Parent(a0),a1			; get address of parent object (ship)
-		move.w	obX(a1),obX(a0)
-		move.w	obY(a1),obY(a0)
-		move.b	obStatus(a1),obStatus(a0)
-		moveq	#(maskFlipX+maskFlipY),d0
-		and.b	obStatus(a0),d0
-		andi.b	#$FC,obRender(a0)				; ignore x/y flip bits
-		or.b	d0,obRender(a0)					; combine x/y flip bits from status instead
-		jmp		(DisplaySprite).l
-; ===========================================================================
-
+; The following label is used by the spikeball (Obj7B)
 BossSLZ_Delete:
 		jmp		(DeleteObject).l
 ; ===========================================================================
