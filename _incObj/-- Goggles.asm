@@ -1,13 +1,9 @@
 ; ---------------------------------------------------------------------------
-; Object 8F - Goggles
+; Object - Goggles
 ; ---------------------------------------------------------------------------
 
 GogglesItem:
-		tst.b	obRoutine(a0)
-		bne.s	Goggles_Display
-
-Goggles_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)
+		_move.l	#Goggles_Display,obAddr(a0)
 		move.l	#Map_Goggles,obMap(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
@@ -17,7 +13,7 @@ Goggles_Main:	; Routine 0
 		rts	
 ; ===========================================================================
 
-Goggles_Display:	; Routine 2
+Goggles_Display:
 		btst	#sta2ndGoggles,(v_player+obStatus2nd).w	; does Sonic have Goggles?
 		beq.s	.delete									; if not, branch
 		move.w	(v_player+obX).w,obX(a0)

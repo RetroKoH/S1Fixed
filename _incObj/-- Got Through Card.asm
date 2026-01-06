@@ -1,5 +1,5 @@
 ; ---------------------------------------------------------------------------
-; Object 3A - "SONIC HAS PASSED" title card (Really need to rename all of this)
+; Object - "SONIC HAS PASSED" title card (Really need to rename all of this)
 ; ---------------------------------------------------------------------------
 
 	if (~~CoolBonusEnabled)&(PerfectBonusEnabled)

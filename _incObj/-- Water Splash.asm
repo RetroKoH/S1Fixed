@@ -1,14 +1,7 @@
 ; ---------------------------------------------------------------------------
-; Object 08 - water splash (LZ)
-;
-; spawned by:
-;	SonicPlayer
-;
-; 38 OST bytes free
-; $10-17, $20-22, $25-3F 
+; Object - Water splash (LZ)
+; Reworked by RetroKoH to only spawn once at level start
 ; ---------------------------------------------------------------------------
-; TO-DO: Init this object along with the Water Surface, and have it appear
-; when splashing, and in a hidden state when animation ends.
 
 Splash:
 		_move.l	#Spla_Hide,obAddr(a0)

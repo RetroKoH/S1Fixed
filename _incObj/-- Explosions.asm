@@ -1,5 +1,5 @@
 ; ---------------------------------------------------------------------------
-; Object 24 - buzz bomber missile vanishing (unused?)
+; Object - buzz bomber missile vanishing (unused)
 ; ---------------------------------------------------------------------------
 
 MissileDissolve:
@@ -27,7 +27,7 @@ MDis_Animate:
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
-; Object 27 - explosion	from a destroyed enemy or monitor
+; Object - explosion from a destroyed enemy or monitor
 ; ---------------------------------------------------------------------------
 
 ExplosionItem:
@@ -76,7 +76,7 @@ ExItem_Animate:
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
-; Object 3F - explosion	from a destroyed boss, bomb or cannonball
+; Object - explosion from a destroyed boss, bomb or cannonball
 ; ---------------------------------------------------------------------------
 
 ExplosionBomb:

@@ -1,5 +1,5 @@
 ; ---------------------------------------------------------------------------
-; Object 8E - After-images
+; Object - After-images
 ; Credit to Hitaxas, ported from WoolooEngine, cleaned up by RetroKoH
 ; This checks data in v_followobject, which is currently unused
 ; ---------------------------------------------------------------------------

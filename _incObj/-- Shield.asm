@@ -1,5 +1,5 @@
 ; ---------------------------------------------------------------------------
-; Object 38 - shields
+; Object - shields
 ; Invincibility Stars have been removed and moved to their own object ($21)
 ; ---------------------------------------------------------------------------
 
