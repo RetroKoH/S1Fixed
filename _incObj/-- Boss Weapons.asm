@@ -28,11 +28,16 @@ BossWeapon:
 		and.b	obStatus(a0),d0
 		andi.b	#$FC,obRender(a0)					; ignore x/yflip bits
 		or.b	d0,obRender(a0)						; combine x/yflip bits from status instead
+		tst.b	obColType(a0)
+		bne.s	.collide
 		jmp		(DisplaySprite).l
+
+	.collide:
+		jmp		(DisplayAndCollision).l
 ; ===========================================================================
 
 	.delete:
-		jmp	DeleteObject
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 Weapon_Index:	offsetTable

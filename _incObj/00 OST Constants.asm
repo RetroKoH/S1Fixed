@@ -231,16 +231,13 @@ obSwi_StartY:			equ objoff_30		; 2 bytes | starting Y-axis position
 ; ---------------------------------------------------------------------------
 
 ; Obj1E - BallHog Badnik
-obHog_LaunchFlag:		equ objoff_32		; 1 byte  | 0 to launch a cannonball
+obHog_TimeMaster:		equ objoff_30		; 2 bytes | timer applied to the cannonball
+obCBall_Time:			equ objoff_30		; 2 bytes | (sub only) time until the cannonball explodes
 ; ---------------------------------------------------------------------------
 
 ; Obj1F - Crabmeat Badnik
 obCrab_WaitTime:		equ objoff_30		; 2 bytes | time until crabmeat fires
 obCrab_Mode:			equ objoff_32		; 1 byte  | current action - 0/1 = not firing; 2/3 = firing
-; ---------------------------------------------------------------------------
-
-; Obj20 - BallHog Cannonball
-obCBall_Time:			equ objoff_30		; 2 bytes | time until the cannonball explodes
 ; ---------------------------------------------------------------------------
 
 ; Obj21 - Invincibility Stars

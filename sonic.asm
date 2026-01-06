@@ -3228,7 +3228,6 @@ Ledge_SlopeData:
 
 		include	"_anim/Ball Hog.asm"
 		include	"_incObj/1E Ball Hog.asm"
-		include	"_incObj/20 Cannonball.asm"
 
 		include	"_incObj/24, 27 & 3F Explosions.asm"
 
