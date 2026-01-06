@@ -1,5 +1,5 @@
 ; ---------------------------------------------------------------------------
-; Object 21 - Invincibility Stars (Moved from Shield to its own object)
+; Object - Invincibility Stars (Moved from Shield to its own object)
 ; ---------------------------------------------------------------------------
 
 Stars_Delete:

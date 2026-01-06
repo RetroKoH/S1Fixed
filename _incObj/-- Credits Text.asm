@@ -1,5 +1,5 @@
 ; ---------------------------------------------------------------------------
-; Object 8A - "SONIC TEAM PRESENTS" and	credits
+; Object - "SONIC TEAM PRESENTS" and credits
 ; ---------------------------------------------------------------------------
 
 CreditsText:

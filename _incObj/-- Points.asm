@@ -1,5 +1,5 @@
 ; ---------------------------------------------------------------------------
-; Object 29 - points that appear when you destroy something
+; Object - points that appear when you destroy something
 ; ---------------------------------------------------------------------------
 
 Points:

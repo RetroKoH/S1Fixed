@@ -1,27 +1,15 @@
 ; ---------------------------------------------------------------------------
-; Object 39 - "GAME OVER" and "TIME OVER"
+; Object - "GAME OVER" and "TIME OVER"
 ; ---------------------------------------------------------------------------
 
 GameOverCard:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Over_Index(pc,d0.w),d1
-		jmp		Over_Index(pc,d1.w)
-; ===========================================================================
-Over_Index:		offsetTable
-		offsetTableEntry.w Over_ChkPLC
-		offsetTableEntry.w Over_Move
-		offsetTableEntry.w Over_Wait
-; ===========================================================================
-
-Over_ChkPLC:	; Routine 0
 		tst.l	(v_plc_buffer).w			; are the pattern load cues empty?
-		beq.s	Over_Main					; if yes, branch
+		beq.s	.plc_free					; if yes, branch
 		rts	
 ; ===========================================================================
 
-Over_Main:
-		addq.b	#2,obRoutine(a0)			; -> Over_Move
+	.plc_free:
+		_move.l	#Over_Move,obAddr(a0)
 		move.w	#$50,obX(a0)				; set x-position
 		btst	#0,obFrame(a0)				; is the object	"OVER"?
 		beq.s	.not_over					; if not, branch
@@ -60,7 +48,7 @@ Over_Move:	; Routine 2
 
 	.next:
 		move.w	#720,obOver_Timer(a0)		; set time delay to 12 seconds
-		addq.b	#2,obRoutine(a0)			; -> Over_Wait
+		obj_addr	#Over_Wait
 		bra.w	DisplaySprite				; RetroKoH GAME OVER Flicker fix	
 ; ===========================================================================
 

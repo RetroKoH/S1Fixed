@@ -1,10 +1,7 @@
 ; ---------------------------------------------------------------------------
-; Object 0A - drowning countdown numbers and small bubbles that float out of
+; Object - drowning countdown numbers and small bubbles that float out of
 ; Sonic's mouth (LZ)
 ;
-; spawned by:
-;	SonicPlayer - subtype $81
-;	DrownCount - subtypes 6 (small), $E (medium), 0-5 (numbers)
 ; To-Do: (Does S1Squared change how these are spawned in)?
 ; ---------------------------------------------------------------------------
 
@@ -348,4 +345,57 @@ Drown_Countdown:; Routine $A
 
 	.nocountdown:
 		rts	
+; ===========================================================================
+
+; ---------------------------------------------------------------------------
+; Subroutine to	play music for LZ/SBZ3 after a countdown
+; ---------------------------------------------------------------------------
+
+ResumeMusic:
+	if ~~AmbienceMode
+			cmpi.b	#12,(v_air).w				; more than 12 seconds of air left?
+			bhi.s	.over12						; if yes, branch
+
+		if DynamicBGMs
+			move.w	#bgm_LZ1,d0
+			add.b	(v_act).w,d0
+			cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; check if level is 0103 (SBZ3)
+			bne.s	.notsbz
+			move.w	#bgm_SBZ3,d0				; play SBZ3 music
+		else
+			move.w	#bgm_LZ,d0					; play LZ music
+			cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; check if level is 0103 (SBZ3)
+			bne.s	.notsbz
+			move.w	#bgm_SBZ,d0					; play SBZ music
+		endif
+
+
+	.notsbz:
+		if SuperMod
+			btst	#sta2ndSuper,(v_player+obStatus2nd).w	; is player in Super Form?
+			bne.s	.playinvinc								; if yes, branch
+		endif
+
+			btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; is Sonic invincible?
+			beq.s	.notinvinc								; if not, branch
+
+	.playinvinc:
+			move.w	#bgm_Invincible,d0
+
+	.notinvinc:
+			tst.b	(f_lockscreen).w			; is Sonic at a boss?
+			beq.s	.playselected				; if not, branch
+			move.w	#bgm_Boss,d0
+
+	.playselected:
+			jsr		(QueueSound1).w				; restore music
+			move.b	d0,(v_lastbgmplayed).w		; store last played music
+
+	.over12:
+	endif
+
+		move.b	#30,(v_air).w				; reset air to 30 seconds
+		clr.b	(v_sonicbubbles+$32).w
+		rts	
+; End of function ResumeMusic
 ; ===========================================================================
