@@ -252,7 +252,7 @@ obBuzz_Mode:			equ objoff_31		; 1 byte  | current action - 0 = flying; 1 = recen
 ; ---------------------------------------------------------------------------
 
 ; Obj23 - Buzz Bomber's Missile
-obMissile_WaitTime:		equ objoff_30		; 1 bytes | time delay
+obMissile_WaitTime:		equ objoff_30		; 1 byte  | time delay
 obMissile_Parent:		equ objoff_3E		; 2 bytes | RAM address of parent object
 ; ---------------------------------------------------------------------------
 

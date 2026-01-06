@@ -1913,22 +1913,19 @@ Demo_SS:	binclude	"demodata/Intro - Special Stage.bin"
 		include "_screens/Special Stage.asm"
 		include "_screens/Continue Screen.asm"
 
-		include	"_incObj/80 Continue Screen Elements.asm"
-		include	"_incObj/81 Continue Screen Sonic.asm"
+		include	"_incObj/-- Continue Screen Elements.asm"
 		include	"_anim/Continue Screen Sonic.asm"
 
 		include "_screens/Ending.asm"
 
-		include	"_incObj/87 Ending Sequence Sonic.asm"
+		include	"_incObj/-- Ending Sequence Sonic.asm"
 		include "_anim/Ending Sequence Sonic.asm"
-		include	"_incObj/88 Ending Sequence Emeralds.asm"
-		include	"_incObj/89 Ending Sequence STH.asm"
+		include	"_incObj/-- Ending Sequence Objects.asm"	; Emeralds and STH Logo
 
 		include "_screens/Credits.asm"
 
-		include	"_incObj/8B Try Again & End Eggman.asm"
 		include "_anim/Try Again & End Eggman.asm"
-		include	"_incObj/8C Try Again Emeralds.asm"
+		include	"_incObj/-- End Screen Objects.asm"			; Try Again & End Eggman; Emeralds
 
 ; ---------------------------------------------------------------------------
 ; Ending sequence demos
@@ -3229,21 +3226,19 @@ Ledge_SlopeData:
 		include	"_anim/Ball Hog.asm"
 		include	"_incObj/1E Ball Hog.asm"
 
-		include	"_incObj/24, 27 & 3F Explosions.asm"
+		include	"_incObj/-- Explosions.asm"
 
 		include	"_incObj/28 Animals.asm"
-		include	"_incObj/29 Points.asm"
+		include	"_incObj/-- Points.asm"
 
 		include	"_incObj/1F Crabmeat.asm"
 		include	"_anim/Crabmeat.asm"
 
 		include	"_incObj/22 Buzz Bomber.asm"
-		include	"_incObj/23 Buzz Bomber Missile.asm"
 		include	"_anim/Buzz Bomber.asm"
 		include	"_anim/Buzz Bomber Missile.asm"
 
-
-		include	"_incObj/25 & 37 Rings.asm"
+		include	"_incObj/25 Rings.asm"
 		include	"_incObj/4B Giant Ring.asm"
 
 		include	"_anim/Rings.asm"
@@ -3252,7 +3247,7 @@ dplcTiles := Art_BigRing		; MainMemory 128k Boundary Check for DPLCs
 dplcTiles := 0					; 128k Boundary Check for DPLCs End
 
 		include	"_incObj/26 Monitor.asm"
-		include	"_incObj/2E Monitor Content Power-Up.asm"
+		include	"_incObj/26 Monitor (Contents sub-object).asm"
 		include	"_incObj/26 Monitor (SolidSides subroutine).asm"
 		include	"_anim/Monitor.asm"
 
@@ -3260,9 +3255,7 @@ dplcTiles := Art_TitleSonic		; MainMemory 128k Boundary Check for DPLCs
 		include	"_maps/Title Screen Sonic - DPLCs.asm"
 dplcTiles := 0					; 128k Boundary Check for DPLCs End
 
-		include	"_incObj/0E Title Screen Sonic.asm"
-		include	"_incObj/0F Press Start and TM.asm"
-
+		include	"_incObj/-- Title Screen Objects.asm"
 		include	"_anim/Title Screen Sonic.asm"
 		include	"_anim/Press Start and TM.asm"
 
@@ -3288,11 +3281,10 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 
 		include	"_incObj/33 Pushable Blocks.asm"
 
-		include	"_incObj/34 Title Cards.asm"
-		include	"_incObj/39 Game Over.asm"
-		include	"_incObj/3A Got Through Card.asm"
-		include	"_incObj/7E Special Stage Results.asm"
-		include	"_incObj/7F SS Result Chaos Emeralds.asm"
+		include	"_incObj/-- Title Cards.asm"
+		include	"_incObj/-- Game Over.asm"
+		include	"_incObj/-- Got Through Card.asm"
+		include	"_incObj/-- Special Stage Results.asm"
 
 		include	"_incObj/36 Spikes.asm"
 
@@ -3466,10 +3458,8 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 
 		include	"_incObj/52 Moving Blocks.asm"
 
-
 		include	"_incObj/55 Basaran.asm"
 		include	"_anim/Basaran.asm"
-
 
 		include	"_incObj/56 Floating Blocks and Doors.asm"
 
@@ -3485,17 +3475,14 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 
 		include	"_incObj/5C Pylon.asm"
 
-
-		include	"_incObj/1B Water Surface.asm"
+		include	"_incObj/-- Water Surface.asm"
 
 		include	"_incObj/0B Pole that Breaks.asm"
 
 		include	"_incObj/0C Flapping Door.asm"
 		include	"_anim/Flapping Door.asm"
 
-
 		include	"_incObj/71 Invisible Barriers.asm"
-
 
 		include	"_incObj/5D Fan.asm"
 
@@ -3504,10 +3491,8 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 		include	"_incObj/5F Bomb Enemy.asm"
 		include	"_anim/Bomb Enemy.asm"
 
-
 		include	"_incObj/60 Orbinaut.asm"
 		include	"_anim/Orbinaut.asm"
-
 
 		include	"_incObj/16 Harpoon.asm"
 		include	"_anim/Harpoon.asm"
@@ -3549,72 +3534,15 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 		include "_incObj/sub ApplySpeedSettings.asm"
 
 		include	"_anim/Drowning Countdown.asm"
-		include	"_incObj/0A Drowning Countdown.asm"
+		include	"_incObj/-- Drowning Countdown.asm"
 
+		include	"_incObj/-- Shield.asm"
+		include	"_incObj/-- Invincibility.asm"						; Split from Shields (RetroKoH)
 
-; ---------------------------------------------------------------------------
-; Subroutine to	play music for LZ/SBZ3 after a countdown
-; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
-ResumeMusic:
-
-	if ~~AmbienceMode
-			cmpi.b	#12,(v_air).w				; more than 12 seconds of air left?
-			bhi.s	.over12						; if yes, branch
-
-		if DynamicBGMs
-			move.w	#bgm_LZ1,d0
-			add.b	(v_act).w,d0
-			cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; check if level is 0103 (SBZ3)
-			bne.s	.notsbz
-			move.w	#bgm_SBZ3,d0				; play SBZ3 music
-		else
-			move.w	#bgm_LZ,d0					; play LZ music
-			cmpi.w	#(id_LZ<<8)+3,(v_zone).w	; check if level is 0103 (SBZ3)
-			bne.s	.notsbz
-			move.w	#bgm_SBZ,d0					; play SBZ music
-		endif
-
-
-	.notsbz:
-		if SuperMod
-			btst	#sta2ndSuper,(v_player+obStatus2nd).w	; is player in Super Form?
-			bne.s	.playinvinc								; if yes, branch
-		endif
-
-			btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; is Sonic invincible?
-			beq.s	.notinvinc								; if not, branch
-
-	.playinvinc:
-			move.w	#bgm_Invincible,d0
-
-	.notinvinc:
-			tst.b	(f_lockscreen).w			; is Sonic at a boss?
-			beq.s	.playselected				; if not, branch
-			move.w	#bgm_Boss,d0
-
-	.playselected:
-			jsr		(QueueSound1).w				; restore music
-			move.b	d0,(v_lastbgmplayed).w		; store last played music
-
-	.over12:
-	endif
-
-		move.b	#30,(v_air).w				; reset air to 30 seconds
-		clr.b	(v_sonicbubbles+$32).w
-		rts	
-; End of function ResumeMusic
-
-; ===========================================================================
-
-		include	"_incObj/38 Shield.asm"
-		include	"_incObj/21 Invincibility.asm"						; Split from Shields (RetroKoH)
 		include	"_incObj/03 Collision Switcher.asm"
 		include "_incObj/04 Auto Roll Tag.asm"						; Backported from Sonic 2
-		include	"_incObj/08 Water Splash.asm"
+
+		include	"_incObj/-- Water Splash.asm"
 		include	"_anim/Water Splash.asm"
 
 		include	"_anim/Shields.asm"
@@ -3662,7 +3590,7 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 		include	"_incObj/sub FindWall.asm"
 ; ---------------------------------------------------------------------------
 		
-		include "_incObj/8F Goggles.asm"
+		include "_incObj/-- Goggles.asm"
 dplcTiles := Art_Goggles		; MainMemory 128k Boundary Check for DPLCs
 		include "_maps/Goggles - DPLCs.asm"
 dplcTiles := 0					; 128k Boundary Check for DPLCs End
@@ -4232,7 +4160,7 @@ locret_15098:
 
 		include	"_incObj/7D Hidden Bonuses.asm"
 
-		include	"_incObj/8A Credits.asm"
+		include	"_incObj/-- Credits Text.asm"
 
 ; ---------------------------------------------------------------------------
 ; Defeated boss	subroutine
@@ -5022,13 +4950,15 @@ SS_MapIndex:
 SS_MapIndex_End:
 
 		include	"_incObj/09 Sonic in Special Stage.asm"
-		include "_incObj/06 SS Debug Cursor.asm"
+		include "_incObj/-- SS Debug Cursor.asm"
 
 		include	"_incObj/10.asm"
 
 		include	"_inc/AnimateLevelGfx.asm"
 
-		include	"_incObj/8E AfterImages.asm"
+	if AfterImagesOn
+		include	"_incObj/-- AfterImages.asm"
+	endif
 
 ; ---------------------------------------------------------------------------
 ; Add points subroutine
@@ -5083,9 +5013,6 @@ AddPoints:
 ; ---------------------------------------------------------------------------
 ; Subroutine to	load countdown numbers on the continue screen
 ; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
 
 ContScrCounter:
 		locVRAM	ArtTile_Continue_Number*tile_size

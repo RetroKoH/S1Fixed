@@ -1,5 +1,5 @@
 ; ----------------------------------------------------------------------------
-; Object 07 - Visual Effects (Spin Dash, Skid Dust, Drop Dash Dust)
+; Object - Visual Effects (Spin Dash, Skid Dust, Drop Dash Dust)
 ; ----------------------------------------------------------------------------
 Effects:
 		moveq	#0,d0

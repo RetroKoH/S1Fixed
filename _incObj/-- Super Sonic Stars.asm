@@ -1,5 +1,5 @@
 ; ---------------------------------------------------------------------------
-; Object 8D - Super Sonic's stars (Ported from S2 - Obj7E)
+; Object - Super Sonic's stars (Ported from S2 - Obj7E)
 ; Art loading backported from S3K
 ; ---------------------------------------------------------------------------
 

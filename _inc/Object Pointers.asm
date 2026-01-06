@@ -1,75 +1,71 @@
 ; ---------------------------------------------------------------------------
 ; Object pointers
+; This list only contains objects that are loaded by ObjPosLoad
+; Dynamically spawned objects are no longer in this list
 ; ---------------------------------------------------------------------------
-ptr_SonicPlayer:		dc.l SonicPlayer	; $01
-ptr_Obj02:				dc.l NullObject
+ptr_SonicPlayer:		dc.l SonicPlayer	; $01 (Dynamically loaded, but I'll keep it here for now)
+ptr_Obj02:				dc.l DeleteObject
 ptr_PathSwapper:		dc.l PathSwapper
 ptr_AutoRollTag:		dc.l AutoRollTag
-ptr_Obj05:				dc.l NullObject
-ptr_SpecialCursor:		dc.l SpecialCursor
-
-	if (SpinDashEnabled|SkidDustEnabled)
-ptr_Effects:			dc.l Effects
-	else
-ptr_Obj07:				dc.l NullObject
-	endif
-
-ptr_Splash:				dc.l Splash			; $08
-ptr_SonicSpecial:		dc.l SonicSpecial
-ptr_DrownCount:			dc.l DrownCount
+ptr_Obj05:				dc.l DeleteObject
+ptr_Obj06:				dc.l DeleteObject
+ptr_Obj07:				dc.l DeleteObject
+ptr_Obj08:				dc.l DeleteObject	; $08
+ptr_SonicSpecial:		dc.l SonicSpecial	; (Dynamically loaded, but I'll keep it here for now)
+ptr_Obj0A:				dc.l DeleteObject
 ptr_Pole:				dc.l Pole
 ptr_FlapDoor:			dc.l FlapDoor
 ptr_Signpost:			dc.l Signpost
-ptr_TitleSonic:			dc.l TitleSonic
-ptr_PSBTM:				dc.l PSBTM
+ptr_Obj0E:				dc.l DeleteObject
+ptr_Obj0F:				dc.l DeleteObject
 ptr_Obj10:				dc.l Obj10			; $10
 ptr_Bridge:				dc.l Bridge
 ptr_SpinningLight:		dc.l SpinningLight
 ptr_FireMaker:			dc.l FireMaker
-ptr_Obj14:				dc.l NullObject
+ptr_Obj14:				dc.l DeleteObject
 ptr_SwingingPlatform:	dc.l SwingingPlatform
 ptr_Harpoon:			dc.l Harpoon
 ptr_Helix:				dc.l Helix
 ptr_BasicPlatform:		dc.l BasicPlatform	; $18
 ptr_GiantBall:			dc.l GiantBall
 ptr_CollapseLedge:		dc.l CollapseLedge
-ptr_WaterSurface:		dc.l WaterSurface
+ptr_Obj1B:				dc.l DeleteObject
 ptr_Scenery:			dc.l Scenery
 ptr_MagicSwitch:		dc.l MagicSwitch
 ptr_BallHog:			dc.l BallHog
 ptr_Crabmeat:			dc.l Crabmeat
-ptr_Obj20:				dc.l NullObject		; $20
-ptr_StarsItem:			dc.l StarsItem
+ptr_Obj20:				dc.l DeleteObject	; $20
+ptr_Obj21:				dc.l DeleteObject
 ptr_BuzzBomber:			dc.l BuzzBomber
-ptr_Missile:			dc.l Missile
-ptr_MissileDissolve:	dc.l MissileDissolve
+ptr_Obj23:				dc.l DeleteObject
+ptr_Obj24:				dc.l DeleteObject
 ptr_Rings:				dc.l Rings
 ptr_Monitor:			dc.l Monitor
-ptr_ExplosionItem:		dc.l ExplosionItem
+ptr_Obj27:				dc.l DeleteObject
 ptr_Animals:			dc.l Animals		; $28
-ptr_Points:				dc.l Points
+ptr_Obj29:				dc.l DeleteObject
 ptr_AutoDoor:			dc.l AutoDoor
 ptr_Chopper:			dc.l Chopper
 ptr_Jaws:				dc.l Jaws
 ptr_Burrobot:			dc.l Burrobot
-ptr_PowerUp:			dc.l PowerUp
+ptr_Obj2E:				dc.l DeleteObject
 ptr_LargeGrass:			dc.l LargeGrass
 ptr_GlassBlock:			dc.l GlassBlock		; $30
 ptr_ChainStomp:			dc.l ChainStomp
 ptr_Button:				dc.l Button
 ptr_PushBlock:			dc.l PushBlock
-ptr_TitleCard:			dc.l TitleCard
+ptr_Obj34:				dc.l DeleteObject
 ptr_GrassFire:			dc.l GrassFire
 ptr_Spikes:				dc.l Spikes
-ptr_RingLoss:			dc.l RingLoss
-ptr_ShieldItem:			dc.l ShieldItem		; $38
-ptr_GameOverCard:		dc.l GameOverCard
-ptr_GotThroughCard:		dc.l GotThroughCard
+ptr_Obj37:				dc.l DeleteObject
+ptr_Obj38:				dc.l DeleteObject	; $38
+ptr_Obj39:				dc.l DeleteObject
+ptr_Obj3A:				dc.l DeleteObject
 ptr_PurpleRock:			dc.l PurpleRock
 ptr_SmashWall:			dc.l SmashWall
 ptr_BossGreenHill:		dc.l BossGreenHill
 ptr_Prison:				dc.l Prison
-ptr_ExplosionBomb:		dc.l ExplosionBomb
+ptr_Obj3F:				dc.l DeleteObject
 ptr_MotoBug:			dc.l MotoBug		; $40
 ptr_Springs:			dc.l Springs
 ptr_Newtron:			dc.l Newtron
@@ -130,57 +126,34 @@ ptr_Caterkiller:		dc.l Caterkiller	; $78
 ptr_Lamppost:			dc.l Lamppost
 ptr_BossStarLight:		dc.l BossStarLight
 ptr_BossSpikeball:		dc.l BossSpikeball
-ptr_Obj7C:				dc.l NullObject
+ptr_Obj7C:				dc.l DeleteObject
 ptr_HiddenBonus:		dc.l HiddenBonus
-ptr_SSResult:			dc.l SSResult
-ptr_SSRChaos:			dc.l SSRChaos
-ptr_ContScrItem:		dc.l ContScrItem	; $80
-ptr_ContSonic:			dc.l ContSonic
+ptr_Obj7E:				dc.l DeleteObject
+ptr_Obj7F:				dc.l DeleteObject
+ptr_Obj80:				dc.l DeleteObject	; $80
+ptr_Obj81:				dc.l DeleteObject
 ptr_ScrapEggman:		dc.l ScrapEggman
 ptr_FalseFloor:			dc.l FalseFloor
 ptr_EggmanCylinder:		dc.l EggmanCylinder
 ptr_BossFinal:			dc.l BossFinal
 ptr_BossPlasma:			dc.l BossPlasma
-ptr_EndSonic:			dc.l EndSonic
-ptr_EndChaos:			dc.l EndChaos		; $88
-ptr_EndSTH:				dc.l EndSTH
-ptr_CreditsText:		dc.l CreditsText
-ptr_EndEggman:			dc.l EndEggman
-ptr_TryChaos:			dc.l TryChaos
-
-	if SuperMod
-ptr_SuperStars:			dc.l SuperStars
-	else
-ptr_Obj8D:				dc.l NullObject
-	endif
-
-ptr_AfterImages:		dc.l AfterImages
-ptr_GogglesItem:		dc.l GogglesItem
-
-NullObject:
-		jmp	(DeleteObject).l	; Any invalid objects will delete themselves immediately.
+; ===========================================================================
 
 id_SonicPlayer:			equ ((ptr_SonicPlayer-Obj_Index)/4)+1		; $01
 id_Obj02:				equ ((ptr_Obj02-Obj_Index)/4)+1
 id_PathSwapper:			equ ((ptr_PathSwapper-Obj_Index)/4)+1
 id_AutoRollTag:			equ ((ptr_AutoRollTag-Obj_Index)/4)+1
 id_Obj05:				equ ((ptr_Obj05-Obj_Index)/4)+1
-id_SpecialCursor:		equ ((ptr_SpecialCursor-Obj_Index)/4)+1
-
-	if (SpinDashEnabled|SkidDustEnabled)
-id_Effects:				equ ((ptr_Effects-Obj_Index)/4)+1
-	else
+id_Obj06:				equ ((ptr_Obj06-Obj_Index)/4)+1
 id_Obj07:				equ ((ptr_Obj07-Obj_Index)/4)+1
-	endif
-
-id_Splash:				equ ((ptr_Splash-Obj_Index)/4)+1			; $08
+id_Obj08:				equ ((ptr_Obj08-Obj_Index)/4)+1				; $08
 id_SonicSpecial:		equ ((ptr_SonicSpecial-Obj_Index)/4)+1
-id_DrownCount:			equ ((ptr_DrownCount-Obj_Index)/4)+1
+id_Obj0A:				equ ((ptr_Obj0A-Obj_Index)/4)+1
 id_Pole:				equ ((ptr_Pole-Obj_Index)/4)+1
 id_FlapDoor:			equ ((ptr_FlapDoor-Obj_Index)/4)+1
 id_Signpost:			equ ((ptr_Signpost-Obj_Index)/4)+1
-id_TitleSonic:			equ ((ptr_TitleSonic-Obj_Index)/4)+1
-id_PSBTM:				equ ((ptr_PSBTM-Obj_Index)/4)+1
+id_Obj0E:				equ ((ptr_Obj0E-Obj_Index)/4)+1
+id_Obj0F:				equ ((ptr_Obj0F-Obj_Index)/4)+1
 id_Obj10:				equ ((ptr_Obj10-Obj_Index)/4)+1				; $10
 id_Bridge:				equ ((ptr_Bridge-Obj_Index)/4)+1
 id_SpinningLight:		equ ((ptr_SpinningLight-Obj_Index)/4)+1
@@ -192,43 +165,43 @@ id_Helix:				equ ((ptr_Helix-Obj_Index)/4)+1
 id_BasicPlatform:		equ ((ptr_BasicPlatform-Obj_Index)/4)+1		; $18
 id_GiantBall:			equ ((ptr_GiantBall-Obj_Index)/4)+1
 id_CollapseLedge:		equ ((ptr_CollapseLedge-Obj_Index)/4)+1
-id_WaterSurface:		equ ((ptr_WaterSurface-Obj_Index)/4)+1
+id_Obj1B:				equ ((ptr_Obj1B-Obj_Index)/4)+1
 id_Scenery:				equ ((ptr_Scenery-Obj_Index)/4)+1
 id_MagicSwitch:			equ ((ptr_MagicSwitch-Obj_Index)/4)+1
 id_BallHog:				equ ((ptr_BallHog-Obj_Index)/4)+1
 id_Crabmeat:			equ ((ptr_Crabmeat-Obj_Index)/4)+1
 id_Obj20:				equ ((ptr_Obj20-Obj_Index)/4)+1				; $20
-id_StarsItem:			equ ((ptr_StarsItem-Obj_Index)/4)+1
+id_Obj21:				equ ((ptr_Obj21-Obj_Index)/4)+1
 id_BuzzBomber:			equ ((ptr_BuzzBomber-Obj_Index)/4)+1
-id_Missile:				equ ((ptr_Missile-Obj_Index)/4)+1
-id_MissileDissolve:		equ ((ptr_MissileDissolve-Obj_Index)/4)+1
+id_Obj23:				equ ((ptr_Obj23-Obj_Index)/4)+1
+id_Obj24:				equ ((ptr_Obj24-Obj_Index)/4)+1
 id_Rings:				equ ((ptr_Rings-Obj_Index)/4)+1
 id_Monitor:				equ ((ptr_Monitor-Obj_Index)/4)+1
-id_ExplosionItem:		equ ((ptr_ExplosionItem-Obj_Index)/4)+1
+id_Obj27:				equ ((ptr_Obj27-Obj_Index)/4)+1
 id_Animals:				equ ((ptr_Animals-Obj_Index)/4)+1			; $28
-id_Points:				equ ((ptr_Points-Obj_Index)/4)+1
+id_Obj29:				equ ((ptr_Obj29-Obj_Index)/4)+1
 id_AutoDoor:			equ ((ptr_AutoDoor-Obj_Index)/4)+1
 id_Chopper:				equ ((ptr_Chopper-Obj_Index)/4)+1
 id_Jaws:				equ ((ptr_Jaws-Obj_Index)/4)+1
 id_Burrobot:			equ ((ptr_Burrobot-Obj_Index)/4)+1
-id_PowerUp:				equ ((ptr_PowerUp-Obj_Index)/4)+1
+id_Obj2E:				equ ((ptr_Obj2E-Obj_Index)/4)+1
 id_LargeGrass:			equ ((ptr_LargeGrass-Obj_Index)/4)+1
 id_GlassBlock:			equ ((ptr_GlassBlock-Obj_Index)/4)+1		; $30
 id_ChainStomp:			equ ((ptr_ChainStomp-Obj_Index)/4)+1
 id_Button:				equ ((ptr_Button-Obj_Index)/4)+1
 id_PushBlock:			equ ((ptr_PushBlock-Obj_Index)/4)+1
-id_TitleCard:			equ ((ptr_TitleCard-Obj_Index)/4)+1
+id_Obj34:				equ ((ptr_Obj34-Obj_Index)/4)+1
 id_GrassFire:			equ ((ptr_GrassFire-Obj_Index)/4)+1
 id_Spikes:				equ ((ptr_Spikes-Obj_Index)/4)+1
-id_RingLoss:			equ ((ptr_RingLoss-Obj_Index)/4)+1
-id_ShieldItem:			equ ((ptr_ShieldItem-Obj_Index)/4)+1		; $38
-id_GameOverCard:		equ ((ptr_GameOverCard-Obj_Index)/4)+1
-id_GotThroughCard:		equ ((ptr_GotThroughCard-Obj_Index)/4)+1
+id_Obj37:				equ ((ptr_Obj37-Obj_Index)/4)+1
+id_Obj38:				equ ((ptr_Obj38-Obj_Index)/4)+1				; $38
+id_Obj39:				equ ((ptr_Obj39-Obj_Index)/4)+1
+id_Obj3A:				equ ((ptr_Obj3A-Obj_Index)/4)+1
 id_PurpleRock:			equ ((ptr_PurpleRock-Obj_Index)/4)+1
 id_SmashWall:			equ ((ptr_SmashWall-Obj_Index)/4)+1
 id_BossGreenHill:		equ ((ptr_BossGreenHill-Obj_Index)/4)+1
 id_Prison:				equ ((ptr_Prison-Obj_Index)/4)+1
-id_ExplosionBomb:		equ ((ptr_ExplosionBomb-Obj_Index)/4)+1
+id_Obj3F:				equ ((ptr_Obj3F-Obj_Index)/4)+1
 id_MotoBug:				equ ((ptr_MotoBug-Obj_Index)/4)+1			; $40
 id_Springs:				equ ((ptr_Springs-Obj_Index)/4)+1
 id_Newtron:				equ ((ptr_Newtron-Obj_Index)/4)+1
@@ -291,27 +264,13 @@ id_BossStarLight:		equ ((ptr_BossStarLight-Obj_Index)/4)+1
 id_BossSpikeball:		equ ((ptr_BossSpikeball-Obj_Index)/4)+1
 id_Obj7C:				equ ((ptr_Obj7C-Obj_Index)/4)+1
 id_HiddenBonus:			equ ((ptr_HiddenBonus-Obj_Index)/4)+1
-id_SSResult:			equ ((ptr_SSResult-Obj_Index)/4)+1
-id_SSRChaos:			equ ((ptr_SSRChaos-Obj_Index)/4)+1
-id_ContScrItem:			equ ((ptr_ContScrItem-Obj_Index)/4)+1		; $80
-id_ContSonic:			equ ((ptr_ContSonic-Obj_Index)/4)+1
+id_Obj7E:				equ ((ptr_Obj7E-Obj_Index)/4)+1
+id_Obj7F:				equ ((ptr_Obj7F-Obj_Index)/4)+1
+id_Obj80:				equ ((ptr_Obj80-Obj_Index)/4)+1				; $80
+id_Obj81:				equ ((ptr_Obj81-Obj_Index)/4)+1
 id_ScrapEggman:			equ ((ptr_ScrapEggman-Obj_Index)/4)+1
 id_FalseFloor:			equ ((ptr_FalseFloor-Obj_Index)/4)+1
 id_EggmanCylinder:		equ ((ptr_EggmanCylinder-Obj_Index)/4)+1
 id_BossFinal:			equ ((ptr_BossFinal-Obj_Index)/4)+1
 id_BossPlasma:			equ ((ptr_BossPlasma-Obj_Index)/4)+1
-id_EndSonic:			equ ((ptr_EndSonic-Obj_Index)/4)+1
-id_EndChaos:			equ ((ptr_EndChaos-Obj_Index)/4)+1			; $88
-id_EndSTH:				equ ((ptr_EndSTH-Obj_Index)/4)+1
-id_CreditsText:			equ ((ptr_CreditsText-Obj_Index)/4)+1
-id_EndEggman:			equ ((ptr_EndEggman-Obj_Index)/4)+1
-id_TryChaos:			equ ((ptr_TryChaos-Obj_Index)/4)+1
-
-	if SuperMod
-id_SuperStars:			equ ((ptr_SuperStars-Obj_Index)/4)+1
-	else
-id_Obj8D:				equ ((ptr_Obj8D-Obj_Index)/4)+1
-	endif
-
-id_AfterImages:			equ ((ptr_AfterImages-Obj_Index)/4)+1
-id_GogglesItem:			equ ((ptr_GogglesItem-Obj_Index)/4)+1
+; ===========================================================================
