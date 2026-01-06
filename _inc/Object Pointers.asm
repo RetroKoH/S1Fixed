@@ -38,7 +38,7 @@ ptr_Scenery:			dc.l Scenery
 ptr_MagicSwitch:		dc.l MagicSwitch
 ptr_BallHog:			dc.l BallHog
 ptr_Crabmeat:			dc.l Crabmeat
-ptr_Cannonball:			dc.l Cannonball		; $20
+ptr_Obj20:				dc.l NullObject		; $20
 ptr_StarsItem:			dc.l StarsItem
 ptr_BuzzBomber:			dc.l BuzzBomber
 ptr_Missile:			dc.l Missile
@@ -197,7 +197,7 @@ id_Scenery:				equ ((ptr_Scenery-Obj_Index)/4)+1
 id_MagicSwitch:			equ ((ptr_MagicSwitch-Obj_Index)/4)+1
 id_BallHog:				equ ((ptr_BallHog-Obj_Index)/4)+1
 id_Crabmeat:			equ ((ptr_Crabmeat-Obj_Index)/4)+1
-id_Cannonball:			equ ((ptr_Cannonball-Obj_Index)/4)+1		; $20
+id_Obj20:				equ ((ptr_Obj20-Obj_Index)/4)+1				; $20
 id_StarsItem:			equ ((ptr_StarsItem-Obj_Index)/4)+1
 id_BuzzBomber:			equ ((ptr_BuzzBomber-Obj_Index)/4)+1
 id_Missile:				equ ((ptr_Missile-Obj_Index)/4)+1

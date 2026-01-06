@@ -3,18 +3,15 @@
 ; Blinking function refactored by RetroKoH
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
-
-; loc_17178:
 BuildHUD:
 		moveq	#0,d1
 		tst.w	(v_rings).w
-		bne.s	.chktime					; blink ring counter if 0
+		bne.s	.chktime					; if Sonic has rings, branch
 		btst	#3,(v_framebyte).w
 		bne.s	.chktime					; only blink on certain frames
 		addq.w	#1,d1						; set mapping frame for ring count blink
 
-.chktime:
+	.chktime:
 	if TimeLimitInSpecialStage
 		cmpi.b	#id_Special,(v_gamemode).w	; is this the Special Stage?
 		bne.s	.countup					; if no, behave like normal
@@ -27,16 +24,16 @@ BuildHUD:
 		addq.w	#2,d1						; set mapping frame time counter blink
 		bra.s	.goahead
 
-.countup:
+	.countup:
 	endif
 	; Blink at 9 minutes
 		btst	#3,(v_framebyte).w
 		bne.s	.goahead					; only blink on certain frames
 		cmpi.b	#9,(v_timemin).w			; have 9 minutes elapsed?
 		bne.s	.goahead					; if not, branch
-		addq.w	#2,d1						; set mapping frame time counter blink
+		addq.w	#2,d1						; set mapping frame time counter blink (double if ring blink was set)
 
-.goahead:
+	.goahead:
 	if HUDScrolling
 		moveq	#0,d3
 		move.b	(v_hudscrollpos).w,d3		; set X pos. Will scroll to $90.
@@ -54,7 +51,7 @@ BuildHUD:
 		lea		(Map_HUD_SS).l,a1
 		movea.w	#ArtTile_SS_HUD,a3			; set art tile and flags
 
-.notSS:
+	.notSS:
 	endif	; HUD in Special Stage End
 
 		add.w	d1,d1
@@ -63,7 +60,8 @@ BuildHUD:
 		subq.w	#1,d1						; S2 BuildSprites .b > .w
 		bmi.s	.end
 		bra.w	BuildSpr_Normal				; draw frame
-.end:
+
+	.end:
 		rts
 ; End of function BuildHUD
-
+; ===========================================================================
