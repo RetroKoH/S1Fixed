@@ -55,7 +55,7 @@ ptr_ChainStomp:			dc.l ChainStomp
 ptr_Button:				dc.l Button
 ptr_PushBlock:			dc.l PushBlock
 ptr_Obj34:				dc.l DeleteObject
-ptr_GrassFire:			dc.l GrassFire
+ptr_Obj35:				dc.l DeleteObject
 ptr_Spikes:				dc.l Spikes
 ptr_Obj37:				dc.l DeleteObject
 ptr_Obj38:				dc.l DeleteObject	; $38
@@ -74,9 +74,9 @@ ptr_EdgeWalls:			dc.l EdgeWalls
 ptr_SideStomp:			dc.l SideStomp
 ptr_MarbleBrick:		dc.l MarbleBrick
 ptr_Bumper:				dc.l Bumper
-ptr_BossBall:			dc.l BossBall		; $48
+ptr_Obj48:				dc.l DeleteObject		; $48
 ptr_WaterSound:			dc.l WaterSound
-ptr_VanishSonic:		dc.l VanishSonic
+ptr_Obj4A:				dc.l DeleteObject
 ptr_GiantRing:			dc.l GiantRing
 ptr_GeyserMaker:		dc.l GeyserMaker
 ptr_LavaGeyser:			dc.l LavaGeyser
@@ -186,7 +186,7 @@ id_ChainStomp:			equ ((ptr_ChainStomp-Obj_Index)/4)+1
 id_Button:				equ ((ptr_Button-Obj_Index)/4)+1
 id_PushBlock:			equ ((ptr_PushBlock-Obj_Index)/4)+1
 id_Obj34:				equ ((ptr_Obj34-Obj_Index)/4)+1
-id_GrassFire:			equ ((ptr_GrassFire-Obj_Index)/4)+1
+id_Obj35:				equ ((ptr_Obj35-Obj_Index)/4)+1
 id_Spikes:				equ ((ptr_Spikes-Obj_Index)/4)+1
 id_Obj37:				equ ((ptr_Obj37-Obj_Index)/4)+1
 id_Obj38:				equ ((ptr_Obj38-Obj_Index)/4)+1				; $38
@@ -205,9 +205,9 @@ id_EdgeWalls:			equ ((ptr_EdgeWalls-Obj_Index)/4)+1
 id_SideStomp:			equ ((ptr_SideStomp-Obj_Index)/4)+1
 id_MarbleBrick:			equ ((ptr_MarbleBrick-Obj_Index)/4)+1
 id_Bumper:				equ ((ptr_Bumper-Obj_Index)/4)+1
-id_BossBall:			equ ((ptr_BossBall-Obj_Index)/4)+1			; $48
+id_Obj48:				equ ((ptr_Obj48-Obj_Index)/4)+1			; $48
 id_WaterSound:			equ ((ptr_WaterSound-Obj_Index)/4)+1
-id_VanishSonic:			equ ((ptr_VanishSonic-Obj_Index)/4)+1
+id_Obj4A:				equ ((ptr_Obj4A-Obj_Index)/4)+1
 id_GiantRing:			equ ((ptr_GiantRing-Obj_Index)/4)+1
 id_GeyserMaker:			equ ((ptr_GeyserMaker-Obj_Index)/4)+1
 id_LavaGeyser:			equ ((ptr_LavaGeyser-Obj_Index)/4)+1
