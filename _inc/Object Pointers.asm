@@ -3,7 +3,7 @@
 ; This list only contains objects that are loaded by ObjPosLoad
 ; Dynamically spawned objects are no longer in this list
 ; ---------------------------------------------------------------------------
-ptr_SonicPlayer:		dc.l SonicPlayer	; $01 (Dynamically loaded, but I'll keep it here for now)
+ptr_Obj01:				dc.l DeleteObject	; $01
 ptr_Obj02:				dc.l DeleteObject
 ptr_PathSwapper:		dc.l PathSwapper
 ptr_AutoRollTag:		dc.l AutoRollTag
@@ -11,14 +11,14 @@ ptr_Obj05:				dc.l DeleteObject
 ptr_Obj06:				dc.l DeleteObject
 ptr_Obj07:				dc.l DeleteObject
 ptr_Obj08:				dc.l DeleteObject	; $08
-ptr_SonicSpecial:		dc.l SonicSpecial	; (Dynamically loaded, but I'll keep it here for now)
+ptr_Obj09:				dc.l DeleteObject
 ptr_Obj0A:				dc.l DeleteObject
 ptr_Pole:				dc.l Pole
 ptr_FlapDoor:			dc.l FlapDoor
 ptr_Signpost:			dc.l Signpost
 ptr_Obj0E:				dc.l DeleteObject
 ptr_Obj0F:				dc.l DeleteObject
-ptr_Obj10:				dc.l Obj10			; $10
+ptr_Obj10:				dc.l DeleteObject	; $10
 ptr_Bridge:				dc.l Bridge
 ptr_SpinningLight:		dc.l SpinningLight
 ptr_FireMaker:			dc.l FireMaker
@@ -130,16 +130,11 @@ ptr_Obj7C:				dc.l DeleteObject
 ptr_HiddenBonus:		dc.l HiddenBonus
 ptr_Obj7E:				dc.l DeleteObject
 ptr_Obj7F:				dc.l DeleteObject
-ptr_Obj80:				dc.l DeleteObject	; $80
-ptr_Obj81:				dc.l DeleteObject
-ptr_ScrapEggman:		dc.l ScrapEggman
-ptr_FalseFloor:			dc.l FalseFloor
-ptr_EggmanCylinder:		dc.l EggmanCylinder
-ptr_BossFinal:			dc.l BossFinal
-ptr_BossPlasma:			dc.l BossPlasma
+
+; Add new object pointers here
 ; ===========================================================================
 
-id_SonicPlayer:			equ ((ptr_SonicPlayer-Obj_Index)/4)+1		; $01
+id_Obj01:				equ ((ptr_Obj01-Obj_Index)/4)+1				; $01
 id_Obj02:				equ ((ptr_Obj02-Obj_Index)/4)+1
 id_PathSwapper:			equ ((ptr_PathSwapper-Obj_Index)/4)+1
 id_AutoRollTag:			equ ((ptr_AutoRollTag-Obj_Index)/4)+1
@@ -147,7 +142,7 @@ id_Obj05:				equ ((ptr_Obj05-Obj_Index)/4)+1
 id_Obj06:				equ ((ptr_Obj06-Obj_Index)/4)+1
 id_Obj07:				equ ((ptr_Obj07-Obj_Index)/4)+1
 id_Obj08:				equ ((ptr_Obj08-Obj_Index)/4)+1				; $08
-id_SonicSpecial:		equ ((ptr_SonicSpecial-Obj_Index)/4)+1
+id_Obj09:				equ ((ptr_Obj09-Obj_Index)/4)+1
 id_Obj0A:				equ ((ptr_Obj0A-Obj_Index)/4)+1
 id_Pole:				equ ((ptr_Pole-Obj_Index)/4)+1
 id_FlapDoor:			equ ((ptr_FlapDoor-Obj_Index)/4)+1
@@ -266,11 +261,6 @@ id_Obj7C:				equ ((ptr_Obj7C-Obj_Index)/4)+1
 id_HiddenBonus:			equ ((ptr_HiddenBonus-Obj_Index)/4)+1
 id_Obj7E:				equ ((ptr_Obj7E-Obj_Index)/4)+1
 id_Obj7F:				equ ((ptr_Obj7F-Obj_Index)/4)+1
-id_Obj80:				equ ((ptr_Obj80-Obj_Index)/4)+1				; $80
-id_Obj81:				equ ((ptr_Obj81-Obj_Index)/4)+1
-id_ScrapEggman:			equ ((ptr_ScrapEggman-Obj_Index)/4)+1
-id_FalseFloor:			equ ((ptr_FalseFloor-Obj_Index)/4)+1
-id_EggmanCylinder:		equ ((ptr_EggmanCylinder-Obj_Index)/4)+1
-id_BossFinal:			equ ((ptr_BossFinal-Obj_Index)/4)+1
-id_BossPlasma:			equ ((ptr_BossPlasma-Obj_Index)/4)+1
+
+; Add new object IDs here
 ; ===========================================================================

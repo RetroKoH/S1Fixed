@@ -773,7 +773,7 @@ obECyl_Parent:			equ objoff_3E		; 2 bytes | address of parent object
 ; Obj85 - Final Boss Eggman
 obBFZ_CylFlag:			equ objoff_30		; 2 bytes | -1 when cylinders activate; id of cylinder Eggman is in when crushing
 obBFZ_PhaseState:		equ objoff_32		; 2 bytes | 1 = crushing; 0 = plasma; -1 = crushing/plasma complete
-obBFZ_Mode:				equ objoff_34		; 2 bytes | action being performed, increments of 2
+obBFZ_Mode:				equ objoff_34		; 1 byte  | action being performed, increments of 2
 obBFZ_FlashNum:			equ objoff_35		; 1 byte  | number of times to make boss flash when hit
 obBFZ_ChildPlasma:		equ objoff_36		; 2 bytes | Obj RAM addresses of plasma object
 obBFZ_ChildCylinder:	equ objoff_38		; 8 bytes | Obj RAM addresses of cylinder objects
