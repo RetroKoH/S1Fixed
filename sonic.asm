@@ -3519,7 +3519,7 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 		include "_anim/Effects.asm"
 	endif
 
-		include "_incObj/01 Sonic.asm"
+		include "_incObj/-- Sonic.asm"
 
 dplcTiles := Art_Sonic			; MainMemory 128k Boundary Check for DPLCs
 		include	"_maps/Sonic - DPLCs.asm"
@@ -4235,7 +4235,6 @@ BossFlash:
 ; ===========================================================================
 
 	; Zone bosses
-		include	"_anim/Eggman.asm"
 		include	"_incObj/3D Boss - Green Hill.asm"
 		include	"_incObj/48 Eggman's Swinging Ball.asm"
 		include	"_incObj/73 Boss - Marble.asm"
@@ -4246,23 +4245,24 @@ BossFlash:
 		include	"_incObj/7B SLZ Boss Spikeball.asm"
 
 	; Sub-Objects
+		include	"_anim/Eggman.asm"
 		include "_incObj/-- Boss Face.asm"
 		include "_incObj/-- Boss Exhaust Flame.asm"
 		include "_incObj/-- Boss Weapons.asm"
 
 	; Cutscene boss
-		include	"_incObj/82 Eggman - Scrap Brain 2.asm"
+		include	"_incObj/-- Eggman - Scrap Brain 2.asm"
 		include	"_anim/Eggman - Scrap Brain 2 & Final.asm"
 
-		include	"_incObj/83 SBZ Eggman's Crumbling Floor.asm"
+		include	"_incObj/-- SBZ Eggman's Crumbling Floor.asm"
 
 	; Final boss
-		include	"_incObj/85 Boss - Final.asm"
+		include	"_incObj/-- Boss - Final.asm"
 		include	"_anim/FZ Eggman in Ship.asm"
 
-		include	"_incObj/84 FZ Eggman's Cylinders.asm"
+		include	"_incObj/-- FZ Eggman's Cylinders.asm"
 
-		include	"_incObj/86 FZ Plasma Ball Launcher.asm"
+		include	"_incObj/-- FZ Plasma Ball Launcher.asm"
 		include	"_anim/Plasma Ball Launcher.asm"
 
 		include	"_anim/Plasma Balls.asm"
@@ -4949,10 +4949,10 @@ SS_MapIndex:
 		include	"_inc/Special Stage Mappings & VRAM Pointers.asm"
 SS_MapIndex_End:
 
-		include	"_incObj/09 Sonic in Special Stage.asm"
+		include	"_incObj/-- Sonic in Special Stage.asm"
 		include "_incObj/-- SS Debug Cursor.asm"
 
-		include	"_incObj/10.asm"
+		include	"_incObj/-- Subsprite Test Object.asm"
 
 		include	"_inc/AnimateLevelGfx.asm"
 

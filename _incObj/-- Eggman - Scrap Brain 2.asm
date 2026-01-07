@@ -1,18 +1,9 @@
 ; ---------------------------------------------------------------------------
-; Object 82 - Eggman (SBZ2)
+; Object - Eggman (SBZ2)
 ; ---------------------------------------------------------------------------
 
 ScrapEggman:
-	; RetroKoH/LavaGaming Object Routine Optimization
-		move.b	obRoutine(a0),d0
-		subq.b	#2,d0
-		beq.w	SEgg_Eggman
-		bpl.w	SEgg_Switch
-	; Object Routine Optimization End
-; ---------------------------------------------------------------------------
-
-SEgg_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)			; -> SEgg_Eggman
+		_move.l	#SEgg_Eggman,obAddr(a0)
 		move.w	#boss_sbz2_x+$110,obX(a0)
 		move.w	#boss_sbz2_y+$94,obY(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
@@ -26,8 +17,7 @@ SEgg_Main:	; Routine 0
 
 		jsr		(FindNextFreeObj).l
 		bne.s	SEgg_Eggman
-		_move.l	#ScrapEggman,obAddr(a1)	; load switch object
-		addq.b	#4,obRoutine(a1)			; -> SEgg_Switch
+		_move.l	#SEgg_Switch,obAddr(a1)	; load switch object
 		move.w	#boss_sbz2_x+$E0,obX(a1)
 		move.w	#boss_sbz2_y+$AC,obY(a1)
 		move.w	#priority3,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
@@ -38,51 +28,40 @@ SEgg_Main:	; Routine 0
 		move.w	a0,obSEgg_Parent(a1)		; set switch's parent to Eggman object
 ; ---------------------------------------------------------------------------
 
-SEgg_Eggman:	; Routine 2
-		moveq	#0,d0
-		move.b	ob2ndRout(a0),d0
-	; RetroKoH Object Routine Optimization
-		jsr		SEgg_EggIndex(pc,d0.w)
-		lea		Ani_SEgg(pc),a1
-		jsr		(AnimateSprite).w
-		jmp		(DisplaySprite).l
-; ===========================================================================
-SEgg_EggIndex:
-		bra.s	SEgg_ChkSonic
-		bra.s	SEgg_PreLeap
-		bra.s	SEgg_Leap
-		jmp		(SpeedToPos).l
-	; Object Routine Optimization End
-; ===========================================================================
-
-SEgg_ChkSonic:
+SEgg_Eggman:
 		move.w	obX(a0),d0
 		sub.w	(v_player+obX).w,d0
 		cmpi.w	#128,d0						; is Sonic within 128 px of	Eggman?
 		bhs.s	SEgg_Move					; if not, branch
-		addq.b	#2,ob2ndRout(a0)			; -> SEgg_PreLeap
+		obj_addr	#SEgg_PreLeap
 		move.b	#180,obSEgg_WaitTime(a0)	; set delay to 3 seconds
 		move.b	#1,obAnim(a0)
 
 SEgg_Move:
-		jmp		(SpeedToPos).l
+		jsr		(SpeedToPos).l
+		lea		Ani_SEgg(pc),a1
+		jsr		(AnimateSprite).w
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 
 SEgg_PreLeap:
 		subq.b	#1,obSEgg_WaitTime(a0)		; subtract 1 from time delay
 		bne.s	.wait						; if time remains, branch
-		addq.b	#2,ob2ndRout(a0)			; -> SEgg_Leap
+		obj_addr	#SEgg_Leap
 		move.b	#2,obAnim(a0)
 		addq.w	#4,obY(a0)
 		move.b	#15,obSEgg_WaitTime(a0)		; wait quarter of a second before jumping
 
 	.wait:
-		jmp		(SpeedToPos).l
+		jsr		(SpeedToPos).l
+		lea		Ani_SEgg(pc),a1
+		jsr		(AnimateSprite).w
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 
 SEgg_Leap:
 		subq.b	#1,obSEgg_WaitTime(a0)		; decrement timer
-		bgt.s	.update_pos
+		bgt.w	.update_pos
 		bne.s	.wait
 		move.w	#-$FC,obVelX(a0)			; make Eggman leap
 		move.w	#-$3C0,obVelY(a0)
@@ -120,26 +99,26 @@ SEgg_Leap:
 
 		bne.s	.update_pos
 		move.b	#"G",obSubtype(a1)			; set block to disintegrate
-		addq.b	#2,ob2ndRout(a0)			; -> SEgg_Move
+		obj_addr	#SEgg_Move
 		move.b	#1,obAnim(a0)
 
 	.update_pos:
-		jmp		(SpeedToPos).l
+		jsr		(SpeedToPos).l
+		lea		Ani_SEgg(pc),a1
+		jsr		(AnimateSprite).w
+		jmp		(DisplaySprite).l
 ; ===========================================================================
 
-SEgg_Switch:	; Routine 4
-	; LavaGaming Object Routine Optimization
-		tst.b	ob2ndRout(a0)
-		bne.s	SEgg_BtnDisplay
-	; Object Routine Optimization End
+; ---------------------------------------------------------------------------
+; Object (sub) - Eggman's Switch (SBZ2)
 ; ---------------------------------------------------------------------------
 
-SEgg_BtnChk:
+SEgg_Switch:
 		movea.w	obSEgg_Parent(a0),a1		; get address of parent object (Eggman)
 		cmpi.b	#"S",obSubtype(a1)			; has subtype been changed?
 		bne.s	SEgg_BtnDisplay				; if not, branch
 		move.b	#1,obFrame(a0)				; use pressed frame
-		addq.b	#2,ob2ndRout(a0)			; -> SEgg_BtnDisplay
+		obj_addr	#DisplaySprite
 
 	if GiantRingsInSBZ	; Mercury Giant Rings In SBZ
 		cmpi.w	#50,(v_rings).w	; do you have at least 50 rings?
