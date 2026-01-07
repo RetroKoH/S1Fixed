@@ -12,16 +12,13 @@ Orb_Index:	offsetTable
 		offsetTableEntry.w Orb_Main
 		offsetTableEntry.w Orb_ChkSonic
 		offsetTableEntry.w Orb_MoveHead
-		offsetTableEntry.w Orb_MoveOrb
-		offsetTableEntry.w Orb_FireOrb
 
 	if SLZOrbinautBehaviourMod	; Mercury SLZ Orbinaut Behaviour Mod
 		offsetTableEntry.w Orb_Pause
-		offsetTableEntry.w Orb_MoveOut
 	endif	; SLZ Orbinaut Behaviour Mod End
 ; ===========================================================================
 
-Orb_Main:	; Routine 0
+Orb_Main:	; Orbinaut Routine 0
 		move.l	#Map_Orb,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Orbinaut,0,0),obGfx(a0)	; RetroKoH VRAM Overhaul
 		cmpi.b	#id_SLZ,(v_zone).w								; check if level is SLZ
@@ -66,8 +63,8 @@ Orb_Main:	; Routine 0
 		lsr.w	#object_size_bits,d5
 		andi.w	#$7F,d5						; convert OST RAM address to id
 		move.b	d5,(a2)+					; add to list
-		_move.l	obAddr(a0),obAddr(a1)		; load spiked orb object
-		move.b	#6,obRoutine(a1)			; use Orb_MoveOrb routine
+		_move.l	#Orb_Spikeball,obAddr(a1)	; load spiked orb object
+;		move.b	#4,obRender(a1)
 		move.l	obMap(a0),obMap(a1)
 		move.w	obGfx(a0),obGfx(a1)
 		ori.b	#4,obRender(a1)
@@ -111,7 +108,7 @@ Orb_Main:	; Routine 0
 		rts	
 ; ===========================================================================
 
-Orb_ChkSonic:	; Routine 2
+Orb_ChkSonic:	; Orbinaut Routine 2
 		move.w	(v_player+obX).w,d0
 		sub.w	obX(a0),d0					; is Sonic to the right of the orbinaut?
 		bcc.s	.isright					; if yes, branch
@@ -145,7 +142,7 @@ Orb_ChkSonic:	; Routine 2
 ; ===========================================================================
 
 ;Orb_Display:
-Orb_MoveHead:	; Routine 4
+Orb_MoveHead:	; Orbinaut Routine 4
 		bsr.w	SpeedToPos_XOnly
 
 Orb_ChkDel:
@@ -177,7 +174,11 @@ Orb_ChkDel:
 		bra.w	DeleteObject
 ; ===========================================================================
 
-Orb_MoveOrb:	; Routine 6
+; ---------------------------------------------------------------------------
+; Object 60 (sub) - Orbinaut's spikeball
+; ---------------------------------------------------------------------------
+
+Orb_Spikeball:
 		movea.w	obOrb_Parent(a0),a1
 		; does parent object still exist? (d1 = obAddr)?
 		cmp_addr	#Orbinaut,obAddr(a1),d1
@@ -190,15 +191,15 @@ Orb_MoveOrb:	; Routine 6
 		beq.s	.fire2
 	endif	; end SLZ Orbinaut Behaviour Mod
 
-		cmpi.b	#$40,obAngle(a0)		; is spikeorb directly under the orbinaut?
-		bne.s	.circle					; if not, branch
-		addq.b	#2,obRoutine(a0)		; -> Orb_FireOrb
-		subq.b	#1,obOrb_ObjCount(a1)	; decrement orb count
-		bne.s	.fire					; branch if not 0
-		addq.b	#2,obRoutine(a1)		; if all orbs have been thrown, goto Orb_MoveHead next
+		cmpi.b	#$40,obAngle(a0)			; is spikeorb directly under the orbinaut?
+		bne.s	.circle						; if not, branch
+		obj_addr	#OrbSBall_FireOrb
+		subq.b	#1,obOrb_ObjCount(a1)		; decrement orb count
+		bne.s	.fire						; branch if not 0
+		addq.b	#2,obRoutine(a1)			; if all orbs have been thrown, have badnik goto Orb_MoveHead next
 
 	.fire:
-		move.w	#-$200,obVelX(a0)		; move orb to the left (quickly)
+		move.w	#-$200,obVelX(a0)			; move orb to the left (quickly)
 		btst	#staFlipX,obStatus(a1)
 		beq.s	.noflip
 		neg.w	obVelX(a0)
@@ -207,22 +208,22 @@ Orb_MoveOrb:	; Routine 6
 		bra.s	.noflip
 
 	.fire2:
-		cmpi.b	#3,obOrb_OrbDist(a1)	; is the orb distance high enough?
-		beq.s	.circle					; if so, branch to the code that makes them circle
-		move.b	#12,obRoutine(a0)		; change orb to the routine that moves it outward
-		move.b	#30,obOrb_OrbTimer(a0)	; set the orb timer to 30 steps
-		subq.b	#1,obOrb_ObjCount(a1)	; decrease the number of orbs left to be fired off
-		bne.s	.skip					; if there are still orbs, branch
-		move.b	#10,obRoutine(a1)		; change to the routine that pauses movement
-		move.b	#3,obOrb_OrbDist(a1)	; set orb distance
-		move.b	obOrb_Direction(a1),d0	; double orbit speed
+		cmpi.b	#3,obOrb_OrbDist(a1)		; is the orb distance high enough?
+		beq.s	.circle						; if so, branch to the code that makes them circle
+		obj_addr	#OrbSBall_MoveOut		; change orb to the routine that moves it outward
+		move.b	#30,obOrb_OrbTimer(a0)		; set the orb timer to 30 steps
+		subq.b	#1,obOrb_ObjCount(a1)		; decrease the number of orbs left to be fired off
+		bne.s	.skip						; if there are still orbs, branch
+		move.b	#6,obRoutine(a1)			; change to the routine that pauses movement
+		move.b	#3,obOrb_OrbDist(a1)		; set orb distance
+		move.b	obOrb_Direction(a1),d0		; double orbit speed
 		asl.b	#1,d0
 		move.b	d0,obOrb_Direction(a1)
-		move.b	#30,obOrb_OrbTimer(a1)	; set a timer to 30 steps
+		move.b	#30,obOrb_OrbTimer(a1)		; set a timer to 30 steps
 	
 	.skip:
-		move.w	obX(a0),d2				; set the velocity of the orb based on its position
-		sub.w	obX(a1),d2				; relative to the Orbinaut
+		move.w	obX(a0),d2					; set the velocity of the orb based on its position
+		sub.w	obX(a1),d2					; relative to the Orbinaut
 		asl.w	#3,d2
 		move.w	d2,obVelX(a0)
 		move.w	obY(a0),d2
@@ -232,16 +233,16 @@ Orb_MoveOrb:	; Routine 6
 	endif	; end SLZ Orbinaut Behaviour Mod
 
 	.noflip:
-		bra.w	DisplayAndCollision		; S3K TouchResponse
+		bra.w	DisplayAndCollision			; S3K TouchResponse
 ; ===========================================================================
 
 	.circle:
 	if SLZOrbinautBehaviourMod	; Mercury SLZ Orbinaut Behaviour Mod
-		move.b	obOrb_OrbDist(a1),d2	; put orb distance into d2
+		move.b	obOrb_OrbDist(a1),d2		; put orb distance into d2
 	endif	; end SLZ Orbinaut Behaviour Mod
 
-		move.b	obAngle(a0),d0			; get angle
-		calcsine_direct					; convert to sine/cosine
+		move.b	obAngle(a0),d0				; get angle
+		calcsine_direct						; convert to sine/cosine
 
 	if SLZOrbinautBehaviourMod	; Mercury SLZ Orbinaut Behaviour Mod
 		asr.w	d2,d1
@@ -260,33 +261,26 @@ Orb_MoveOrb:	; Routine 6
 
 		add.w	obY(a1),d0
 		move.w	d0,obY(a0)
-		move.b	obOrb_Direction(a1),d0	; get direction (1 or -1)
-		add.b	d0,obAngle(a0)			; add to angle
-		bra.w	DisplayAndCollision		; S3K TouchResponse
+		move.b	obOrb_Direction(a1),d0		; get direction (1 or -1)
+		add.b	d0,obAngle(a0)				; add to angle
+		bra.w	DisplayAndCollision			; S3K TouchResponse
 ; ===========================================================================
 
 	if SLZOrbinautBehaviourMod	;Mercury SLZ Orbinaut Behaviour Mod
-Orb_Pause:	; Routine 10
-		subq.b	#1,obOrb_OrbTimer(a0)	; decrease timer
-		bne.s	Orb_ChkDel2Skip			; if it hasn't run out, branch
-		move.b	#4,obRoutine(a0)		; go back to the normal routine
-		bra.s	Orb_ChkDel2Skip
+Orb_Pause:			; Orbinaut Routine 6
+		subq.b	#1,obOrb_OrbTimer(a0)		; decrease timer
+		bne.w	DisplayAndCollision			; if it hasn't run out, branch
+		move.b	#4,obRoutine(a0)			; go back to the normal badnik routine
+		bra.w	DisplayAndCollision
 
-Orb_MoveOut:	; Routine 12
-		subq.b	#1,obOrb_OrbTimer(a0)	; decrease timer
-		bne.s	Orb_FireOrb				; if it hasn't run out, branch
-		move.b	#6,obRoutine(a0)		; go back to the normal routine
+OrbSBall_MoveOut:	; Spikeball Routine 4
+		subq.b	#1,obOrb_OrbTimer(a0)		; decrease timer
+		bne.s	OrbSBall_FireOrb			; if it hasn't run out, branch
+		obj_addr	#Orb_Spikeball			; go back to the normal spikeball routine
 	endif	;end SLZ Orbinaut Behaviour Mod
 
-;Orb_ChkDel2:	; Routine 8
-Orb_FireOrb:
+;Orb_ChkDel2:
+OrbSBall_FireOrb:	; Spikeball Routine 2
 		bsr.w	SpeedToPos
-		
-	if SLZOrbinautBehaviourMod	; Mercury SLZ Orbinaut Behaviour Mod
-Orb_ChkDel2Skip:
-	endif	;end SLZ Orbinaut Behaviour Mod
-
-		tst.b	obRender(a0)		; is orb on-screen?
-		bpl.w	DeleteObject		; if not, branch
-		bra.w	DisplayAndCollision	; S3K TouchResponse
+		bra.w	DisplayAndCollision			; S3K TouchResponse
 ; ===========================================================================
