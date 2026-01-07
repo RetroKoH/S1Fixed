@@ -1,23 +1,9 @@
 ; ---------------------------------------------------------------------------
-; Object 86 - energy balls (FZ)
+; Object - plasma ball spawner (FZ)
 ; ---------------------------------------------------------------------------
 
 BossPlasma:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	BossPlasma_Index(pc,d0.w),d0
-		jmp		BossPlasma_Index(pc,d0.w)
-; ===========================================================================
-
-BossPlasma_Index:	offsetTable
-		offsetTableEntry.w BossPlasma_Main
-		offsetTableEntry.w BossPlasma_Generator
-		offsetTableEntry.w BossPlasma_MakeBalls
-		offsetTableEntry.w BossPlasma_Finish
-		offsetTableEntry.w BossPlasma_PlasmaBalls
-; ===========================================================================
-
-BossPlasma_Main:	; Routine 0
+		_move.l	#BossPlasma_Generator,obAddr(a0)
 		move.w	#boss_fz_x+$138,obX(a0)
 		move.w	#boss_fz_y+$2C,obY(a0)
 		move.w	#make_art_tile(ArtTile_FZ_Boss,0,0),obGfx(a0)
@@ -27,15 +13,13 @@ BossPlasma_Main:	; Routine 0
 		move.w	#$808,obHeight(a0)					; Height and Width
 		move.b	#4,obRender(a0)
 		bset	#7,obRender(a0)
-		addq.b	#2,obRoutine(a0)					; -> BossPlasma_Generator
 ; ---------------------------------------------------------------------------
 
-BossPlasma_Generator:	; Routine 2
+BossPlasma_Generator:
 		movea.w	obPlasma_Parent(a0),a1				; get address of parent object (Boss)
 		cmpi.b	#6,obBFZ_Mode(a1)					; has boss been defeated?
 		bne.s	.not_beaten							; if not, branch
 		_move.l	#ExplosionBomb,obAddr(a0)			; make explosion
-		clr.b	obRoutine(a0)
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 
@@ -43,7 +27,7 @@ BossPlasma_Generator:	; Routine 2
 		moveq	#0,d0								; use initial red animation
 		tst.b	obPlasma_Enabled(a0)				; is it time to spawn plasma balls?
 		beq.s	Plasma_Update						; if not, branch
-		addq.b	#2,obRoutine(a0)					; advance routine to make plasma balls
+		obj_addr	#BossPlasma_MakeBalls
 		moveq	#1,d0								; use sparking animation
 ; ---------------------------------------------------------------------------
 
@@ -70,13 +54,13 @@ BossPlasma_Solid:
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 
-BossPlasma_MakeBalls:	; Routine 4
+BossPlasma_MakeBalls:
 		tst.b	obPlasma_Enabled(a0)				; is plasma set to activate?
 		beq.w	.skip_balls							; if not, branch
 		clr.b	obPlasma_Enabled(a0)
 		clr.w	obPlasma_Count(a0)					; initialise plasma ball count
 		moveq	#3,d2								; iterate for 4 plasma balls
-		_move.l	#BossPlasma,d3						; copy object ID
+		_move.l	#BossPlasmaBalls,d3					; copy object ID
 
 	; RetroKoH Object Load Optimization -- Based on Spirituinsanum Guides
 	; Here we begin what's replacing FindNextFreeObj. It'll be quicker to loop through here.
@@ -98,7 +82,6 @@ BossPlasma_MakeBalls:	; Routine 4
 		_move.l	d3,obAddr(a1)						; create plasma object
 		move.w	obX(a0),obX(a1)						; start at same position as launcher object
 		move.w	#boss_fz_y+$2C,obY(a1)
-		move.b	#8,obRoutine(a1)					; -> Plasma_Balls
 		move.w	#make_art_tile(ArtTile_FZ_Boss,1,0),obGfx(a1)
 		move.l	#Map_Plasma,obMap(a1)
 		move.w	#$C0C,obHeight(a1)					; Height and Width
@@ -127,39 +110,34 @@ BossPlasma_MakeBalls:	; Routine 4
 	.skip_balls:
 		tst.w	obPlasma_Count(a0)					; are plasma balls still loaded?
 		bne.w	BossPlasma_Solid					; if yes, branch
-		addq.b	#2,obRoutine(a0)					; -> Plasma_Finish (while the plasma balls are active)
+		obj_addr	#BossPlasma_Finish
 		bra.w	BossPlasma_Solid
 ; ===========================================================================
 
-BossPlasma_Finish:	; Routine 6
+BossPlasma_Finish:
 		moveq	#2,d0								; set animation to white sparking
 		tst.w	obPlasma_Count2(a0)					; are the plasma balls offscreen?
 		bne.w	Plasma_Update						; if not, branch
-		move.b	#2,obRoutine(a0)					; -> Plasma_Generator (revert back to the first wait routine)
+	; run obj_addr directly with d1, so we can preserve d0 (anim ID)
+		move.b	obRender(a0),d1
+		_move.l	#BossPlasma_Generator,obAddr(a0)	; revert back to the first wait routine
+		move.b	d1,obRender(a0)
 		movea.w	obPlasma_Parent(a0),a1				; object RAM address of parent object (Eggman)
 		move.w	#-1,obBFZ_PhaseState(a1)			; signal to boss that plasma phase is finished
 		bra.w	Plasma_Update
 ; ===========================================================================
 
-BossPlasma_PlasmaBalls:	; Routine 8
-		moveq	#0,d0
-		move.b	ob2ndRout(a0),d0
-		jmp		PlasmaBall_Index(pc,d0.w)
-; ===========================================================================
+; ---------------------------------------------------------------------------
+; Object - plasma balls (FZ)
+; ---------------------------------------------------------------------------
 
-PlasmaBall_Index:
-		bra.s	PlasmaBall_Init
-		bra.s	PlasmaBall_GetIntoPosition
-		bra.w	PlasmaBall_Descend
-; ===========================================================================
-
-PlasmaBall_Init:
+BossPlasmaBalls:
 		move.w	obPlasma_TargetX(a0),d0
 		sub.w	obX(a0),d0
 		asl.w	#4,d0
 		move.w	d0,obVelX(a0)						; set speed so balls all arrive in position at the same time
 		move.b	#180,obPlasma_Timer(a0)				; set timer to 3 seconds
-		addq.b	#2,ob2ndRout(a0)					; -> PlasmaBall_GetIntoPosition
+		obj_addr	#PlasmaBall_GetIntoPosition
 		lea		Ani_Plasma(pc),a1
 		jsr		(AnimateSprite).w
 		jmp		(DisplayAndCollision).l				; S3K TouchResponse
@@ -181,7 +159,7 @@ PlasmaBall_GetIntoPosition:
 		moveq	#0,d0								; ani_plasma_full
 		subq.b	#1,obPlasma_Timer(a0)				; decrement timer
 		bne.s	.animate							; branch if not 0
-		addq.b	#2,ob2ndRout(a0)					; -> PlasmaBall_Descend
+		obj_addr	#PlasmaBall_Descend
 		moveq	#1,d0								; ani_plasma_short
 		move.b	#(colHarmful|colSz_12x12),obColType(a0)	; make plasma ball harmful
 		move.b	#180,obPlasma_Timer(a0)				; set timer to 3 seconds

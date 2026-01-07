@@ -1,58 +1,43 @@
 ; ---------------------------------------------------------------------------
-; Object 85 - Eggman (FZ)
+; Object - Final Boss
 ; ---------------------------------------------------------------------------
 
 BossFinal_Delete:
 		jmp	(DeleteObject).l
 ; ===========================================================================
 
-BossFinal:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	BossFinal_Index(pc,d0.w),d0
-		jmp		BossFinal_Index(pc,d0.w)
-; ===========================================================================
-
-BossFinal_Index:	offsetTable
-		offsetTableEntry.w BossFinal_Main
-		offsetTableEntry.w BossFinal_Eggman
-		offsetTableEntry.w BossFinal_Panel
-		offsetTableEntry.w BossFinal_Legs
-		offsetTableEntry.w BossFinal_Cockpit
-		offsetTableEntry.w BossFinal_EmptyShip
-
 BossFinal_ObjData:
 		dc.w $100, $100, make_art_tile(ArtTile_FZ_Eggman_No_Vehicle,0,0)	; X pos, Y pos,	VRAM setting
-		dc.l Map_SEgg		; mappings pointer
+		dc.l BossFinal_Eggman, Map_SEgg										; object address, mappings pointer
 		dc.w boss_fz_x+$160, boss_fz_y+$80, make_art_tile(ArtTile_FZ_Boss,0,0)
-		dc.l Map_EggCyl
+		dc.l BossFinal_Panel, Map_EggCyl
 		dc.w boss_fz_x+$290, boss_fz_y+$86, make_art_tile(ArtTile_FZ_Eggman_Fleeing,0,0)
-		dc.l Map_FZLegs
+		dc.l BossFinal_Legs, Map_FZLegs
 		dc.w boss_fz_x+$290, boss_fz_y+$86, make_art_tile(ArtTile_FZ_Eggman_No_Vehicle,0,0)
-		dc.l Map_SEgg
+		dc.l BossFinal_Cockpit, Map_SEgg
 		dc.w boss_fz_x+$290, boss_fz_y+$86, make_art_tile(ArtTile_Eggman,0,0)
-		dc.l Map_Eggman
+		dc.l BossFinal_EmptyShip, Map_Eggman
 
 BossFinal_ObjData2:
-	; 			routine,		width,
-	;					anim,			height
-		dc.b	2,		0, 		$20,	$19		
+	; 			width,
+	;					height
+		dc.b	$20,	$19		
 		dc.w	priority4
-		dc.b	4,		0,		$12,	8		
+		dc.b	$12,	8		
 		dc.w	priority1
-		dc.b	6,		0,		0,		0		
+		dc.b	0,		0		
 		dc.w	priority3
-		dc.b	8,		0,		0,		0		
+		dc.b	0,		0		
 		dc.w	priority3
-		dc.b	$A, 	0,		$20,	$20		
+		dc.b	$20,	$20		
 		dc.w	priority3
 ; ===========================================================================
 
-BossFinal_Main:	; Routine 0
+BossFinal:
 		lea		BossFinal_ObjData(pc),a2
 		lea		BossFinal_ObjData2(pc),a3
-		movea.l	a0,a1					; replace current object with 1st in list
-		moveq	#4,d1					; 4 additional objects
+		movea.l	a0,a1					; replace current object with 1st in list (BossFinal_Eggman)
+		moveq	#4,d1					; 4 additional objects (BossFinal_Panel, BossFinal_Legs, BossFinal_Cockpit, BossFinal_EmptyShip)
 		bra.s	.load_boss
 ; ===========================================================================
 
@@ -61,20 +46,18 @@ BossFinal_Main:	; Routine 0
 		bne.s	.fail						; branch if not found
 
 	.load_boss:
-		_move.l	#BossFinal,obAddr(a1)
 		move.w	(a2)+,obX(a1)
 		move.w	(a2)+,obY(a1)
 		move.w	(a2)+,obGfx(a1)
+		_move.l	(a2)+,obAddr(a1)
 		move.l	(a2)+,obMap(a1)
-		move.b	(a3)+,obRoutine(a1)
-		move.b	(a3)+,obAnim(a1)
 		move.b	(a3)+,obDispWid(a1)
 		move.b	(a3)+,obHeight(a1)
 		move.w	(a3)+,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#4,obRender(a1)
 		bset	#7,obRender(a0)
-		move.w	a0,obBFZ_Parent(a1)			; save obj RAM address of parent
-		dbf		d1,.loop					; repeat 5 more times
+		move.w	a0,obBFZ_Parent(a1)			; save obj RAM address of parent (BossFinal_Eggman)
+		dbf		d1,.loop					; repeat 4 more times
 ; ---------------------------------------------------------------------------
 
 	.fail:
@@ -105,7 +88,11 @@ BossFinal_Main:	; Routine 0
 		move.w	#-1,obBFZ_CylFlag(a0)		; set crushers to activate
 ; ---------------------------------------------------------------------------
 
-BossFinal_Eggman:	; Routine 2
+; ---------------------------------------------------------------------------
+; Object (sub) - Eggman (FZ)
+; ---------------------------------------------------------------------------
+
+BossFinal_Eggman:
 		moveq	#0,d0
 		move.b	obBFZ_Mode(a0),d0
 		move.w	BFZ_Eggman_Index(pc,d0.w),d0
@@ -117,14 +104,14 @@ BFZ_Eggman_Index:		offsetTable
 		offsetTableEntry.w BossFinal_EggWait
 		offsetTableEntry.w BossFinal_EggCrush
 		offsetTableEntry.w BossFinal_EggPlasma
-		offsetTableEntry.w BossFinal_EggFall
+		offsetTableEntry.w BossFinal_EggDefeated
 		offsetTableEntry.w BossFinal_EggRun
 		offsetTableEntry.w BossFinal_EggJump
 		offsetTableEntry.w BossFinal_EggShip
 		offsetTableEntry.w BossFinal_EggEscape
 ; ===========================================================================
 
-BossFinal_EggWait:
+BossFinal_EggWait:		; Boss Routine 0
 		tst.l	(v_plc_buffer).w			; is pattern load cue buffer empty?
 		bne.s	.wait						; if not, branch
 		cmpi.w	#boss_fz_x,(v_screenposx).w	; has camera reached boss arena?
@@ -136,7 +123,7 @@ BossFinal_EggWait:
 		rts	
 ; ===========================================================================
 
-BossFinal_EggCrush:
+BossFinal_EggCrush:		; Boss Routine 2
 		tst.w	obBFZ_CylFlag(a0)			; are crushers set to activate?
 		bpl.s	.skip_crushers				; if not, branch
 		clr.w	obBFZ_CylFlag(a0)
@@ -244,7 +231,7 @@ BossFinal_EggCrush:
 	.beaten:
 		moveq	#100,d0
 		bsr.w	AddPoints					; give Sonic 1000 points
-		move.b	#6,obBFZ_Mode(a0)			; -> BossFinal_EggFall
+		move.b	#6,obBFZ_Mode(a0)			; -> BossFinal_EggDefeated
 		move.w	#boss_fz_x+$170,obX(a0)
 		move.w	#boss_fz_y+$2C,obY(a0)
 		move.b	#$14,obHeight(a0)
@@ -263,7 +250,7 @@ cyl_top_left:		equ 4
 cyl_top_right:		equ 6
 ; ===========================================================================
 
-BossFinal_EggPlasma:
+BossFinal_EggPlasma:		; Boss Routine 4
 		moveq	#-1,d0
 		move.w	obBFZ_ChildPlasma(a0),d0
 		movea.w	d0,a1						; get RAM address of plasma launcher
@@ -295,7 +282,7 @@ BossFinal_EggPlasma:
 		jmp		(QueueSound2).w				; play electricity sound
 ; ===========================================================================
 
-BossFinal_EggFall:
+BossFinal_EggDefeated:		; Boss Routine 6
 		move.b	#$30,obDispWid(a0)
 		bset	#staFlipX,obStatus(a0)		; Eggman faces right
 		jsr		(SpeedToPos).l				; update position
@@ -312,7 +299,7 @@ BossFinal_EggFall:
 		bra.w	BFZ_Eggman_Scroll
 ; ===========================================================================
 
-BossFinal_EggRun:
+BossFinal_EggRun:		; Boss Routine 8
 		bset	#staFlipX,obStatus(a0)		; Eggman faces right
 		moveq	#4,d0						; use running animation
 		jsr		(NewAnim).w
@@ -361,7 +348,7 @@ BossFinal_EggRun:
 		bra.s	BFZ_Eggman_AnimScroll
 ; ===========================================================================
 
-BossFinal_EggJump:
+BossFinal_EggJump:		; Boss Routine $A
 		jsr		(SpeedToPos).l
 		cmpi.w	#boss_fz_x+$290,obX(a0)		; is Eggman directly above his ship?
 		blo.s	.not_above_ship				; if not, branch
@@ -407,7 +394,7 @@ BFZ_Eggman_Scroll:
 		rts	
 ; ===========================================================================
 
-BossFinal_EggShip:
+BossFinal_EggShip:		; Boss Routine $C
 		move.l	#Map_Eggman,obMap(a0)		; use standard boss mappings
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
 		moveq	#0,d0						; boss ship
@@ -431,7 +418,7 @@ BossFinal_EggShip:
 		bra.w	BFZ_Eggman_AnimScroll		; animate & scroll screen
 ; ===========================================================================
 
-BossFinal_EggEscape:
+BossFinal_EggEscape:		; Boss Routine $E
 		bset	#staFlipX,obStatus(a0)		; ship faces right
 		jsr		(SpeedToPos).l
 		tst.w	obBFZ_CylFlag(a0)			; this flag is repurposed as a timer
@@ -479,38 +466,13 @@ BossFinal_EggEscape:
 		bra.w	BossFinal_Delete					; delete ship
 ; ===========================================================================
 
-BossFinal_Flame:	; Routine 4
-		movea.w	obBFZ_Parent(a0),a1					; get RAM address of parent object
-		move.l	#$FFFFFF,d0
-		move.l	d0,d1
-		and.l	obAddr(a1),d0
-		and.l	obAddr(a0),d1
-		cmp.l	d1,d0								; has parent been deleted?
-		bne.w	BossFinal_Delete					; if yes, branch
-		moveq	#7,d0								; invisible
-		jsr		(NewAnim).w
-		cmpi.b	#$C,obBFZ_Mode(a1)					; is Eggman in his ship?
-		bge.s	.chk_moving							; if yes, branch
-		bra.s	BossFinal_Update_SkipPos
-; ===========================================================================
-
-	.chk_moving:
-		tst.w	obVelX(a1)							; is ship moving?
-		beq.s	.not_moving							; if not, branch
-		moveq	#$B,d0								; use large flame animation
-		jsr		(NewAnim).w
-
-	.not_moving:
-		lea		Ani_Eggman(pc),a1
-		jsr		(AnimateSprite).w
-
 BossFinal_Update:
-		movea.w	obBFZ_Parent(a0),a1					; get address of parent object
+		movea.w	obBFZ_Parent(a0),a1					; get address of parent object (BossFinal_Eggman)
 		move.w	obX(a1),obX(a0)						; match position with parent
 		move.w	obY(a1),obY(a0)
 
 BossFinal_Update_SkipPos:
-		movea.w	obBFZ_Parent(a0),a1					; get address of parent object
+		movea.w	obBFZ_Parent(a0),a1					; get address of parent object (BossFinal_Eggman)
 		move.b	obStatus(a1),obStatus(a0)
 		moveq	#(maskFlipX+maskFlipY),d0
 		and.b	obStatus(a0),d0
@@ -519,13 +481,14 @@ BossFinal_Update_SkipPos:
 		jmp		(DisplayAndCollision).l				; S3K TouchResponse
 ; ===========================================================================
 
-BossFinal_Cockpit:	; Routine 6
-		movea.w	obBFZ_Parent(a0),a1					; get address of parent object
-		move.l	#$FFFFFF,d0
-		move.l	d0,d1
-		and.l	obAddr(a1),d0
-		and.l	obAddr(a0),d1
-		cmp.l	d1,d0								; has parent been deleted?
+; ---------------------------------------------------------------------------
+; Object (sub) - Eggman's ship cockpit (FZ)
+; ---------------------------------------------------------------------------
+
+BossFinal_Cockpit:
+		movea.w	obBFZ_Parent(a0),a1					; get address of parent object (BossFinal_Eggman)
+		; has parent been deleted?
+		cmp_addr	#BossFinal_Eggman,obAddr(a1),d0
 		bne.w	BossFinal_Delete					; if yes, branch
 		cmpi.l	#Map_Eggman,obMap(a1)				; is Eggman in his ship?
 		beq.s	.chk_hit							; if yes, branch
@@ -560,9 +523,13 @@ BossFinal_Cockpit:	; Routine 6
 		bra.w	BossFinal_Update
 ; ===========================================================================
 
-BossFinal_Legs:	; Routine 8
+; ---------------------------------------------------------------------------
+; Object (sub) - Eggman's ship's legs (FZ)
+; ---------------------------------------------------------------------------
+
+BossFinal_Legs:
 		bset	#staFlipX,obStatus(a0)
-		movea.w	obBFZ_Parent(a0),a1					; get address of parent object
+		movea.w	obBFZ_Parent(a0),a1					; get address of parent object (BossFinal_Eggman)
 		cmpi.l	#Map_Eggman,obMap(a1)				; is Eggman in his ship?
 		beq.s	.animate							; if yes, branch
 		bra.w	BossFinal_Update_SkipPos
@@ -584,7 +551,11 @@ BossFinal_Legs:	; Routine 8
 		bra.w	BossFinal_Update
 ; ===========================================================================
 
-BossFinal_Panel:	; Routine $A
+; ---------------------------------------------------------------------------
+; Object (sub) - Eggman's metal panel (FZ)
+; ---------------------------------------------------------------------------
+
+BossFinal_Panel:
 		move.b	#$B,obFrame(a0)
 		move.w	(v_player+obX).w,d0
 		sub.w	obX(a0),d0
@@ -596,10 +567,14 @@ BossFinal_Panel:	; Routine $A
 		jmp		(DisplayAndCollision).l				; S3K TouchResponse
 ; ===========================================================================
 
-BossFinal_EmptyShip:	; Routine $C
+; ---------------------------------------------------------------------------
+; Object (sub) - Eggman's empty ship (FZ)
+; ---------------------------------------------------------------------------
+
+BossFinal_EmptyShip:
 		clr.b	obFrame(a0)
 		bset	#staFlipX,obStatus(a0)				; face right
-		movea.w	obBFZ_Parent(a0),a1					; get address of parent object
+		movea.w	obBFZ_Parent(a0),a1					; get address of parent object (BossFinal_Eggman)
 		cmpi.b	#$C,obBFZ_Mode(a1)					; is Eggman in his ship? (pre-escaping)
 		bne.w	BossFinal_Update_SkipPos			; if not, branch
 		cmpi.l	#Map_Eggman,obMap(a1)				; is Eggman in his ship at all?

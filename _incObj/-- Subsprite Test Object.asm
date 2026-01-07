@@ -1,5 +1,5 @@
 ; ---------------------------------------------------------------------------
-; Object 10 - Test object that tests out sub sprites
+; Object - Test object that tests out sub sprites
 ; ---------------------------------------------------------------------------
 
 Obj10:
