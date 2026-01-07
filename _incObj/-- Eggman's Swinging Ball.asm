@@ -1,5 +1,5 @@
 ; ---------------------------------------------------------------------------
-; Object 48 - ball on a	chain that Eggman swings (GHZ)
+; Object - ball on a chain that Eggman swings (GHZ)
 ; ---------------------------------------------------------------------------
 
 BossBall:

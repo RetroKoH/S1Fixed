@@ -3285,7 +3285,8 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 
 
 		include	"_incObj/2F MZ Large Grassy Platforms.asm"
-		include	"_incObj/35 Burning Grass.asm"
+		; 35 will be the sinking platform
+		include	"_incObj/-- Burning Grass.asm"
 		include	"_anim/Burning Grass.asm"
 
 		include	"_incObj/30 MZ Large Green Glass Blocks.asm"
@@ -3593,9 +3594,6 @@ dplcTiles := Art_Shield_L		; MainMemory 128k Boundary Check for DPLCs
 dplcTiles := 0					; 128k Boundary Check for DPLCs End
 
 	endif
-
-		include	"_incObj/4A Special Stage Entry (Unused).asm"
-		include	"_anim/Special Stage Entry (Unused).asm"
 
 ; ---------------------------------------------------------------------------
 ; Keeping these together in isolation for now
@@ -4252,7 +4250,7 @@ BossFlash:
 
 	; Zone bosses
 		include	"_incObj/3D Boss - Green Hill.asm"
-		include	"_incObj/48 Eggman's Swinging Ball.asm"
+		include	"_incObj/-- Eggman's Swinging Ball.asm"
 		include	"_incObj/73 Boss - Marble.asm"
 		include	"_incObj/75 Boss - Spring Yard.asm"
 		include	"_incObj/76 SYZ Boss Blocks.asm"
@@ -5939,7 +5937,6 @@ Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.bin"
 
 		include	"_maps/Drowning Countdown.asm"
 		include	"_maps/Shield and Invincibility.asm"
-		include	"_maps/Special Stage Entry (Unused).asm"
 		include "_maps/Collision Switcher.asm"
 		include	"_maps/Water Splash.asm"
 		include "_maps/Goggles.asm"
