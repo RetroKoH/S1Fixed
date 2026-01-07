@@ -15,7 +15,7 @@ Seesaw:
 		sub.w	d1,d0
 		; Deleted first call to DeleteObject
 		cmpi.w	#$280,d0
-		bls.w	SBall_Display				; branch to here for S3K TouchResponse
+		bls.w	RememberState				; branch to display and remember this object
 		move.w	obRespawnAddr(a0),d0		; get address in respawn table
 		beq.w	DeleteObject				; if it's zero, don't remember object
 		movea.w	d0,a2						; load address into a2
@@ -27,9 +27,6 @@ See_Index:	offsetTable
 		offsetTableEntry.w See_Main
 		offsetTableEntry.w See_Slope
 		offsetTableEntry.w See_StoodOn
-		offsetTableEntry.w See_Spikeball
-		offsetTableEntry.w See_SpikeAction
-		offsetTableEntry.w See_SpikeFall
 ; ===========================================================================
 
 See_Main:	; Routine 0
@@ -45,8 +42,7 @@ See_Main:	; Routine 0
 
 		bsr.w	FindNextFreeObj
 		bne.s	.noball
-		_move.l	#Seesaw,obAddr(a1)			; load spikeball object
-		addq.b	#6,obRoutine(a1)			; -> See_Spikeball
+		_move.l	#See_Spikeball,obAddr(a1)	; load spikeball object
 		move.w	obX(a0),obX(a1)				; spikeball position is updated later
 		move.w	obY(a0),obY(a1)
 		move.b	obStatus(a0),obStatus(a1)
@@ -136,7 +132,29 @@ See_ChgFrame:
 		rts	
 ; ===========================================================================
 
-See_Spikeball:	; Routine 6
+; ---------------------------------------------------------------------------
+; Object 5E (sub) - seesaws (SLZ)
+; ---------------------------------------------------------------------------
+
+See_Spikeball:
+		moveq	#0,d0
+		move.b	obRoutine(a0),d0
+		move.w	SeeSpike_Index(pc,d0.w),d1
+		jsr		SeeSpike_Index(pc,d1.w)
+
+		movea.w	obSeesaw_Parent(a0),a1
+		cmp_addr	#Seesaw,obAddr(a1),d0
+		bne.w	DeleteObject				; and delete object	
+		bra.w	SBall_Display				; branch to here for S3K TouchResponse (label from 57 Spiked Ball and Chain.asm)
+; ===========================================================================
+
+SeeSpike_Index:	offsetTable
+		offsetTableEntry.w See_SpikeMain
+		offsetTableEntry.w See_SpikeAction
+		offsetTableEntry.w See_SpikeFall
+; ===========================================================================
+
+See_SpikeMain:
 		addq.b	#2,obRoutine(a0)			; goto See_SpikeAction
 		move.l	#Map_SSawBall,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SLZ_Spikeball,0,0),obGfx(a0)
