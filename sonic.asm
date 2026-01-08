@@ -3192,9 +3192,6 @@ CollapseObject:
 ; Sloped platform subroutine (GHZ collapsing ledges, MZ platforms, and SLZ Seesaws)
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
 SlopeObject2:
 		lea		(v_player).w,a1
 		btst	#staOnObj,obStatus(a1)
@@ -3223,8 +3220,8 @@ loc_854E:
 locret_856E:
 		rts	
 ; End of function SlopeObject2
-
 ; ===========================================================================
+
 ; ---------------------------------------------------------------------------
 ; Collision data for GHZ collapsing ledge
 ; ---------------------------------------------------------------------------
@@ -3288,6 +3285,7 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 		; 35 will be the sinking platform
 		include	"_incObj/-- Burning Grass.asm"
 		include	"_anim/Burning Grass.asm"
+		include	"_incObj/2E MZ Sinking Grassy Platforms.asm"
 
 		include	"_incObj/30 MZ Large Green Glass Blocks.asm"
 
