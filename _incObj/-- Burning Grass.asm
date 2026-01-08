@@ -36,7 +36,7 @@ GFire_Main:	; Routine 0
 ; ===========================================================================
 
 GFire_Spread:	; Routine 2
-		movea.l	obGFire_ColPtr(a0),a1			; a1 = pointer to platform heightmap
+		lea		SGrass_Collision(pc),a1			; pointer to platform heightmap
 		move.w	obX(a0),d1
 		sub.w	obGFire_StartX(a0),d1			; d1 = relative x position on platform
 		addi.w	#$C,d1
@@ -66,7 +66,7 @@ GFire_Spread:	; Routine 2
 		move.w	obGFire_SinkPixels(a0),obGFire_SinkPixels(a1)
 		move.b	#1,obSubtype(a1)				; child type, doesn't spawn more fire
 		movea.w	obGFire_Parent(a0),a2
-		bsr.w	LGrass_AddChildToList			; add to list in parent's object RAM
+		bsr.w	SGrass_AddChildToList			; add to list in parent's object RAM
 
 	.no_fire:
 		bra.s	GFire_Animate

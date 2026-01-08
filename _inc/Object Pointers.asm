@@ -48,7 +48,7 @@ ptr_AutoDoor:			dc.l AutoDoor
 ptr_Chopper:			dc.l Chopper
 ptr_Jaws:				dc.l Jaws
 ptr_Burrobot:			dc.l Burrobot
-ptr_Obj2E:				dc.l DeleteObject
+ptr_SGrass:				dc.l SinkingGrass
 ptr_LargeGrass:			dc.l LargeGrass
 ptr_GlassBlock:			dc.l GlassBlock		; $30
 ptr_ChainStomp:			dc.l ChainStomp
@@ -179,7 +179,7 @@ id_AutoDoor:			equ ((ptr_AutoDoor-Obj_Index)/4)+1
 id_Chopper:				equ ((ptr_Chopper-Obj_Index)/4)+1
 id_Jaws:				equ ((ptr_Jaws-Obj_Index)/4)+1
 id_Burrobot:			equ ((ptr_Burrobot-Obj_Index)/4)+1
-id_Obj2E:				equ ((ptr_Obj2E-Obj_Index)/4)+1
+id_SGrass:				equ ((ptr_SGrass-Obj_Index)/4)+1
 id_LargeGrass:			equ ((ptr_LargeGrass-Obj_Index)/4)+1
 id_GlassBlock:			equ ((ptr_GlassBlock-Obj_Index)/4)+1		; $30
 id_ChainStomp:			equ ((ptr_ChainStomp-Obj_Index)/4)+1
