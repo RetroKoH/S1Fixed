@@ -124,7 +124,7 @@ ptr_Obj76:				dc.l DeleteObject
 ptr_Obj77:				dc.l DeleteObject
 ptr_Caterkiller:		dc.l Caterkiller	; $78
 ptr_Lamppost:			dc.l Lamppost
-ptr_Obj7A:				dc.l DeleteObject
+ptr_MetalBar:			dc.l MetalBar
 ptr_Obj7B:				dc.l DeleteObject
 ptr_Obj7C:				dc.l DeleteObject
 ptr_HiddenBonus:		dc.l HiddenBonus
@@ -255,7 +255,7 @@ id_Obj76:				equ ((ptr_Obj76-Obj_Index)/4)+1
 id_Obj77:				equ ((ptr_Obj77-Obj_Index)/4)+1
 id_Caterkiller:			equ ((ptr_Caterkiller-Obj_Index)/4)+1		; $78
 id_Lamppost:			equ ((ptr_Lamppost-Obj_Index)/4)+1
-id_Obj7A:				equ ((ptr_Obj7A-Obj_Index)/4)+1
+id_MetalBar:			equ ((ptr_MetalBar-Obj_Index)/4)+1
 id_Obj7B:				equ ((ptr_Obj7B-Obj_Index)/4)+1
 id_Obj7C:				equ ((ptr_Obj7C-Obj_Index)/4)+1
 id_HiddenBonus:			equ ((ptr_HiddenBonus-Obj_Index)/4)+1

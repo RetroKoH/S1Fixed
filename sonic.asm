@@ -4134,7 +4134,9 @@ locret_15098:
 
 		include	"_incObj/6A Saws and Pizza Cutters.asm"
 
-		include	"_incObj/6B SBZ Stomper and Door.asm"
+	; These were once one object
+		include	"_incObj/6B SBZ Stomper.asm"
+		include "_incObj/7A SBZ Metal Sliding Bar.asm"
 		include	"_incObj/7F SBZ3 Large Sliding Platform.asm"
 
 		include	"_incObj/6C SBZ Vanishing Platforms.asm"
@@ -5928,7 +5930,9 @@ Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.bin"
 		include	"_maps/Trapdoor.asm"
 		include	"_maps/SBZ Spinning Platforms.asm"
 		include	"_maps/Saws and Pizza Cutters.asm"
-		include	"_maps/SBZ Stomper and Door.asm"
+		include	"_maps/SBZ Stomper.asm"
+		include	"_maps/SBZ Sliding Bar.asm"
+		include "_maps/SBZ3 Large Sliding Platform.asm"
 		include	"_maps/SBZ Vanishing Platforms.asm"
 		include	"_maps/Electrocuter.asm"
 		include	"_maps/Girder Block.asm"
