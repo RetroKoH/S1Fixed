@@ -3424,7 +3424,7 @@ Obj_Index:	; Object pointers
 
 		include	"_incObj/13 Fire Ball Maker.asm"	; Also contains fire balls
 		include	"_anim/Fireballs.asm"
-		include	"_incObj/74 MZ Boss Fire.asm"		; Moved to enable short addressing w/ animation
+		include	"_incObj/-- Boss (MZ) Fire.asm"		; Moved to enable short addressing w/ animation
 
 		include	"_incObj/6D Flamethrower.asm"
 		include	"_anim/Flamethrower.asm"
@@ -4151,6 +4151,7 @@ locret_15098:
 		include	"_incObj/6A Saws and Pizza Cutters.asm"
 
 		include	"_incObj/6B SBZ Stomper and Door.asm"
+		include	"_incObj/7F SBZ3 Large Sliding Platform.asm"
 
 		include	"_incObj/6C SBZ Vanishing Platforms.asm"
 		include	"_anim/SBZ Vanishing Platforms.asm"
@@ -4247,14 +4248,14 @@ BossFlash:
 ; ===========================================================================
 
 	; Zone bosses
-		include	"_incObj/3D Boss - Green Hill.asm"
-		include	"_incObj/-- Eggman's Swinging Ball.asm"
-		include	"_incObj/73 Boss - Marble.asm"
-		include	"_incObj/75 Boss - Spring Yard.asm"
-		include	"_incObj/76 SYZ Boss Blocks.asm"
-		include	"_incObj/77 Boss - Labyrinth.asm"
-		include	"_incObj/7A Boss - Star Light.asm"
-		include	"_incObj/7B SLZ Boss Spikeball.asm"
+		include	"_incObj/-- Boss - Green Hill.asm"
+		include	"_incObj/-- Boss (GHZ) Swinging Ball.asm"
+		include	"_incObj/-- Boss - Marble.asm"
+		include	"_incObj/-- Boss - Spring Yard.asm"
+		include	"_incObj/-- Boss (SYZ) Blocks.asm"
+		include	"_incObj/-- Boss - Labyrinth.asm"
+		include	"_incObj/-- Boss - Star Light.asm"
+		include	"_incObj/-- Boss (SLZ) Spikeball.asm"
 
 	; Sub-Objects
 		include	"_anim/Eggman.asm"
@@ -4272,9 +4273,9 @@ BossFlash:
 		include	"_incObj/-- Boss - Final.asm"
 		include	"_anim/FZ Eggman in Ship.asm"
 
-		include	"_incObj/-- FZ Eggman's Cylinders.asm"
+		include	"_incObj/-- Boss (FZ) Cylinders.asm"
 
-		include	"_incObj/-- FZ Plasma Ball Launcher.asm"
+		include	"_incObj/-- Boss (FZ) Plasma Ball Launcher.asm"
 		include	"_anim/Plasma Ball Launcher.asm"
 
 		include	"_anim/Plasma Balls.asm"

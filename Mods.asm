@@ -41,8 +41,8 @@ DropDashEnabled: = 0
 ; Name: Elemental Shields (Incomplete: Minor bugfixes)
 ; Credit: RetroKoH, DeltaW
 ; Function: Enables the usage of S3K Shields and abilities.
-InstashieldEnabled: = 1					; if set to 1, instashield is now enabled (Now split from Elemental Shields toggle).
-ShieldsMode: = 2						; 0 - Blue Shield only, 1 - Blue + Elementals, 2 - Elementals only.
+InstashieldEnabled: = 0					; if set to 1, instashield is now enabled (Now split from Elemental Shields toggle).
+ShieldsMode: = 1						; 0 - Blue Shield only, 1 - Blue + Elementals, 2 - Elementals only.
 S3KDoubleJump: = (InstashieldEnabled|ShieldsMode)>0
 	RingMagnetRange: = $40				; The range of the lightning shield's ring magnetism
 
