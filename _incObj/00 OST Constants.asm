@@ -631,14 +631,13 @@ obSaw_StartX:			equ objoff_3A		; 2 bytes | starting X-axis position
 obSaw_GroundFlag:		equ objoff_3D		; 1 byte  | flag set when the ground saw appears
 ; ---------------------------------------------------------------------------
 
-; Obj6B - SBZ Stompers and Sliding Door
+; Obj6B - SBZ Stomper
 obStomp_StartY:			equ objoff_30		; 2 bytes | starting Y-axis position
-obStomp_StartX:			equ objoff_34		; 2 bytes | starting X-axis position
-obStomp_WaitTime:		equ objoff_36		; 2 bytes | time until next action
-obStomp_ButtonFlag:		equ objoff_38		; 1 byte  | flag set when associated button is pressed
-obStomp_DistMoved:		equ objoff_3A		; 2 bytes | distance moved
-obStomp_DistToMove:		equ objoff_3C		; 2 bytes | distance to move
-obStomp_ButtonNum:		equ objoff_3E		; 1 byte  | button number associated with door
+obStomp_WaitTime:		equ objoff_32		; 1 byte  | time until next action
+obStomp_MoveFlag:		equ objoff_33		; 1 byte  | flag associated with movement
+obStomp_DistMoved:		equ objoff_34		; 2 bytes | distance moved
+obStomp_DistToMove:		equ objoff_36		; 2 bytes | distance to move
+obStomp_Behavior:		equ objoff_38		; 1 byte  | notes fast or slow behavior
 ; ---------------------------------------------------------------------------
 
 ; Obj6C - SBZ Vanishing Platform
@@ -727,6 +726,23 @@ obCat_Parent:			equ objoff_3E		; 2 bytes | address of OST of parent object (4 by
 obLamp_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
 obLamp_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position
 obLamp_SpinTime:		equ objoff_36		; 2 bytes | length of time to twirl the lamp
+; ---------------------------------------------------------------------------
+
+; Obj7A - SBZ Sliding Bar
+obMBar_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
+obMBar_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position
+obMBar_WaitTime:		equ objoff_34		; 1 byte  | time until next action
+obMBar_ButtonFlag:		equ objoff_35		; 1 byte  | flag set when associated button is pressed
+obMBar_DistMoved:		equ objoff_36		; 2 bytes | distance moved
+obMBar_DistToMove:		equ objoff_38		; 2 bytes | distance to move
+obMBar_ButtonNum:		equ objoff_3A		; 1 byte  | button number associated with door
+; ---------------------------------------------------------------------------
+
+; Obj7F - SBZ3 Sliding Platform
+obSlid_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
+obSlid_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position
+obSlid_ButtonFlag:		equ objoff_34		; 1 byte  | flag set when associated button is pressed
+obSlid_ButtonNum:		equ objoff_35		; 1 byte  | button number associated with door
 ; ---------------------------------------------------------------------------
 
 ; Obj7A - SLZ Boss

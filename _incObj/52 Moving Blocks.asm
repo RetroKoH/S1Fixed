@@ -41,7 +41,7 @@ MBlock_Main:	; Routine 0
 		bne.s	.continue
 
 		; SBZ specific code
-		move.w	#make_art_tile(ArtTile_SBZ_Moving_Block_Short,1,0),obGfx(a0) ; SBZ specific code (sybtype $28)
+		move.w	#make_art_tile(ArtTile_SBZ_Moving_Block_Short,1,0),obGfx(a0) ; SBZ specific code (subtype $28)
 		cmpi.b	#$28,obSubtype(a0)			; is sybtype == $28?
 		beq.s	.continue					; if yes, branch
 		move.w	#make_art_tile(ArtTile_SBZ_Moving_Block_Long,2,0),obGfx(a0) ; SBZ specific code (sybtype $3x)
