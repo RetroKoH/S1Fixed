@@ -2,7 +2,6 @@
 ; Object 6B - stomper and sliding door (SBZ)
 ; Stompers
 ; Thin Horizontal Sliding Doors triggered by switches
-; Large Sliding Platform in SBZ3
 ; ---------------------------------------------------------------------------
 
 ; ===========================================================================
@@ -12,7 +11,7 @@ Sto_Var:
 		dc.b  $1C,		$20,	$38,	3		; 04
 		dc.b  $1C,		$20,	$40,	4		; 08
 		dc.b  $1C,		$20,	$60,	4		; 0C
-		dc.b  $80,		$40,	0,		5		; 10
+		dc.b  $80,		$40,	0,		5		; 10 (unused -- formerly for the SBZ3 sliding platform)
 ; ===========================================================================
 
 ScrapStomp:
@@ -35,35 +34,6 @@ Sto_Main:	; Routine 0
 		move.b	d0,obFrame(a0)			; high nybble without bit 7 = frame
 		move.l	#Map_Stomp,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Moving_Block_Short,1,0),obGfx(a0)
-		cmpi.b	#id_LZ,(v_zone).w		; check if level is LZ/SBZ3
-		bne.s	.skip_sbz3_init			; if not, branch
-		bset	#0,(v_obj6B).w			; flag object as loaded
-		beq.s	.sbz3_init				; branch if not previously loaded
-
-	.chkdel:
-		move.w	obRespawnAddr(a0),d0	; get address in respawn table
-		beq.s	.delete					; if it's zero, don't remember object
-		movea.w	d0,a2					; load address into a2
-		bclr	#7,(a2)					; clear respawn table entry, so object can be loaded again
-
-	.delete:
-		jmp		(DeleteObject).l
-; ===========================================================================
-
-	.sbz3_init:
-		move.w	#make_art_tile(ArtTile_LZ_Block_2,2,0),obGfx(a0)
-		cmpi.w	#$A80,obX(a0)			; is object in its starting position?
-		bne.s	.skip_sbz3_init			; if not, branch
-		move.w	obRespawnAddr(a0),d0	; get address in respawn table
-		beq.s	.skip_sbz3_init			; if it's zero, don't remember object
-		movea.w	d0,a2					; load address into a2
-		btst	#0,(a2)
-		beq.s	.skip_sbz3_init
-		clr.b	(v_obj6B).w
-		bra.s	.chkdel
-; ===========================================================================
-
-	.skip_sbz3_init:
 		ori.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.w	obX(a0),obStomp_StartX(a0)
@@ -78,11 +48,13 @@ Sto_Main:	; Routine 0
 		andi.b	#$F,d0						; read only low nybble
 		move.b	d0,obStomp_ButtonNum(a0)	; copy to obStomp_ButtonNum
 		move.b	(a3),obSubtype(a0)			; update subtype with value from list
-		cmpi.b	#5,(a3)						; is object the huge sliding platform from SBZ3? (5)
-		bne.s	.chkgone					; if not, branch
-		bset	#4,obRender(a0)
 
-	.chkgone:
+; Commented out for future use in-case users want this object in SBZ proper.
+;		cmpi.b	#5,(a3)						; is object the huge sliding platform (5)?
+;		bne.s	.chkgone					; if not, branch
+;		bset	#4,obRender(a0)
+
+;	.chkgone:
 		move.w	obRespawnAddr(a0),d0		; get address in respawn table
 		beq.s	Sto_Action					; if it's zero, don't remember object
 		movea.w	d0,a2						; load address into a2
@@ -114,18 +86,9 @@ Sto_Action:	; Routine 2
 		jsr		(SolidObject).l
 
 	.chkdel:
-		offscreen.s	.chkgone,obStomp_StartX(a0)
+		offscreen.s	.delete,obStomp_StartX(a0)
 		jmp	(DisplaySprite).l
 ; ---------------------------------------------------------------------------
-
-	.chkgone:
-		cmpi.b	#id_LZ,(v_zone).w		; check if level is LZ
-		bne.s	.delete					; if not, branch
-		clr.b	(v_obj6B).w
-		move.w	obRespawnAddr(a0),d0	; get address in respawn table
-		beq.s	.delete					; if it's zero, don't remember object
-		movea.w	d0,a2					; load address into a2
-		bclr	#7,(a2)					; clear respawn table entry, so object can be loaded again
 
 	.delete:
 		jmp	(DeleteObject).l
@@ -302,8 +265,7 @@ Sto_Drop_RiseFast:
 		rts	
 ; ===========================================================================
 
-; Type 5
-; Huge sliding door from SBZ3
+; Type 5 -- Unused (formerly for the huge sliding door from SBZ3)
 Sto_SlideDiagonal:
 		tst.b	obStomp_ButtonFlag(a0)		; has door been activated?
 		bne.s	.update_pos					; if yes, branch

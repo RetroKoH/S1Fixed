@@ -63,7 +63,7 @@ ptr_Obj39:				dc.l DeleteObject
 ptr_Obj3A:				dc.l DeleteObject
 ptr_PurpleRock:			dc.l PurpleRock
 ptr_SmashWall:			dc.l SmashWall
-ptr_BossGreenHill:		dc.l BossGreenHill
+ptr_Obj3D:				dc.l DeleteObject
 ptr_Prison:				dc.l Prison
 ptr_Obj3F:				dc.l DeleteObject
 ptr_MotoBug:			dc.l MotoBug		; $40
@@ -74,7 +74,7 @@ ptr_EdgeWalls:			dc.l EdgeWalls
 ptr_SideStomp:			dc.l SideStomp
 ptr_MarbleBrick:		dc.l MarbleBrick
 ptr_Bumper:				dc.l Bumper
-ptr_Obj48:				dc.l DeleteObject		; $48
+ptr_Obj48:				dc.l DeleteObject	; $48
 ptr_WaterSound:			dc.l WaterSound
 ptr_Obj4A:				dc.l DeleteObject
 ptr_GiantRing:			dc.l GiantRing
@@ -117,19 +117,19 @@ ptr_SpinConvey:			dc.l SpinConvey
 ptr_Girder:				dc.l Girder			; $70
 ptr_Invisibarrier:		dc.l Invisibarrier
 ptr_Teleport:			dc.l Teleport
-ptr_BossMarble:			dc.l BossMarble
-ptr_BossFire:			dc.l BossFire
-ptr_BossSpringYard:		dc.l BossSpringYard
-ptr_BossBlock:			dc.l BossBlock
-ptr_BossLabyrinth:		dc.l BossLabyrinth
+ptr_Obj73:				dc.l DeleteObject
+ptr_Obj74:				dc.l DeleteObject
+ptr_Obj75:				dc.l DeleteObject
+ptr_Obj76:				dc.l DeleteObject
+ptr_Obj77:				dc.l DeleteObject
 ptr_Caterkiller:		dc.l Caterkiller	; $78
 ptr_Lamppost:			dc.l Lamppost
-ptr_BossStarLight:		dc.l BossStarLight
-ptr_BossSpikeball:		dc.l BossSpikeball
+ptr_Obj7A:				dc.l DeleteObject
+ptr_Obj7B:				dc.l DeleteObject
 ptr_Obj7C:				dc.l DeleteObject
 ptr_HiddenBonus:		dc.l HiddenBonus
 ptr_Obj7E:				dc.l DeleteObject
-ptr_Obj7F:				dc.l DeleteObject
+ptr_SlidingPlatform:	dc.l SlidingPlatform
 
 ; Add new object pointers here
 ; ===========================================================================
@@ -194,7 +194,7 @@ id_Obj39:				equ ((ptr_Obj39-Obj_Index)/4)+1
 id_Obj3A:				equ ((ptr_Obj3A-Obj_Index)/4)+1
 id_PurpleRock:			equ ((ptr_PurpleRock-Obj_Index)/4)+1
 id_SmashWall:			equ ((ptr_SmashWall-Obj_Index)/4)+1
-id_BossGreenHill:		equ ((ptr_BossGreenHill-Obj_Index)/4)+1
+id_Obj3D:				equ ((ptr_Obj3D-Obj_Index)/4)+1
 id_Prison:				equ ((ptr_Prison-Obj_Index)/4)+1
 id_Obj3F:				equ ((ptr_Obj3F-Obj_Index)/4)+1
 id_MotoBug:				equ ((ptr_MotoBug-Obj_Index)/4)+1			; $40
@@ -248,19 +248,19 @@ id_SpinConvey:			equ ((ptr_SpinConvey-Obj_Index)/4)+1
 id_Girder:				equ ((ptr_Girder-Obj_Index)/4)+1			; $70
 id_Invisibarrier:		equ ((ptr_Invisibarrier-Obj_Index)/4)+1
 id_Teleport:			equ ((ptr_Teleport-Obj_Index)/4)+1
-id_BossMarble:			equ ((ptr_BossMarble-Obj_Index)/4)+1
-id_BossFire:			equ ((ptr_BossFire-Obj_Index)/4)+1
-id_BossSpringYard:		equ ((ptr_BossSpringYard-Obj_Index)/4)+1
-id_BossBlock:			equ ((ptr_BossBlock-Obj_Index)/4)+1
-id_BossLabyrinth:		equ ((ptr_BossLabyrinth-Obj_Index)/4)+1
+id_Obj73:				equ ((ptr_Obj73-Obj_Index)/4)+1
+id_Obj74:				equ ((ptr_Obj74-Obj_Index)/4)+1
+id_Obj75:				equ ((ptr_Obj75-Obj_Index)/4)+1
+id_Obj76:				equ ((ptr_Obj76-Obj_Index)/4)+1
+id_Obj77:				equ ((ptr_Obj77-Obj_Index)/4)+1
 id_Caterkiller:			equ ((ptr_Caterkiller-Obj_Index)/4)+1		; $78
 id_Lamppost:			equ ((ptr_Lamppost-Obj_Index)/4)+1
-id_BossStarLight:		equ ((ptr_BossStarLight-Obj_Index)/4)+1
-id_BossSpikeball:		equ ((ptr_BossSpikeball-Obj_Index)/4)+1
+id_Obj7A:				equ ((ptr_Obj7A-Obj_Index)/4)+1
+id_Obj7B:				equ ((ptr_Obj7B-Obj_Index)/4)+1
 id_Obj7C:				equ ((ptr_Obj7C-Obj_Index)/4)+1
 id_HiddenBonus:			equ ((ptr_HiddenBonus-Obj_Index)/4)+1
 id_Obj7E:				equ ((ptr_Obj7E-Obj_Index)/4)+1
-id_Obj7F:				equ ((ptr_Obj7F-Obj_Index)/4)+1
+id_ptr_SlidingPlatform:	equ ((ptr_SlidingPlatform-Obj_Index)/4)+1
 
 ; Add new object IDs here
 ; ===========================================================================

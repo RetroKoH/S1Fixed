@@ -1,5 +1,5 @@
 ; ---------------------------------------------------------------------------
-; Object 7B - exploding	spikeys	that Eggman drops (SLZ)
+; Object - exploding spikeballs that Eggman drops (SLZ)
 ; ---------------------------------------------------------------------------
 
 BossSpikeball:
@@ -32,7 +32,6 @@ BossSpikeball_Index:	offsetTable
 		offsetTableEntry.w BossSpikeball_Bounce
 		offsetTableEntry.w BossSpikeball_HitBoss
 		offsetTableEntry.w BossSpikeball_Explode
-		offsetTableEntry.w BossSpikeball_MoveFrag
 ; ===========================================================================
 
 BossSpikeball_Main:	; Routine 0
@@ -348,8 +347,7 @@ BossSpikeball_Explode:	; Routine 8
 		bne.s	.end
 
 	.makeshrapnel:
-		_move.l	#BossSpikeball,obAddr(a1)			; load shrapnel object
-		move.b	#$A,obRoutine(a1)					; -> BSpike_MoveFrag
+		_move.l	#BossSpikeball_Frag,obAddr(a1)		; load shrapnel object
 		move.l	#Map_BSBall,obMap(a1)
 		move.w	#priority3,obPriority(a1)			; RetroKoH/Devon S3K+ Priority Manager
 		move.w	#make_art_tile(ArtTile_SLZ_Shrapnel,0,0),obGfx(a1)	; RetroKoH VRAM Overhaul	
@@ -368,6 +366,7 @@ BossSpikeball_Explode:	; Routine 8
 	.end:
 		rts	
 ; ===========================================================================
+
 BossSpikeball_FragSpeed:
 		dc.w -$100, -$340	; horizontal, vertical
 		dc.w -$A0, -$240
@@ -375,7 +374,11 @@ BossSpikeball_FragSpeed:
 		dc.w $A0, -$240
 ; ===========================================================================
 
-BossSpikeball_MoveFrag:	; Routine $A
+; ---------------------------------------------------------------------------
+; Object (sub) - exploding spikeball's shrapnel fragments
+; ---------------------------------------------------------------------------
+
+BossSpikeball_Frag:
 		jsr		(SpeedToPos).l
 		move.w	obX(a0),obBossSpike_StartX(a0)
 		move.w	obY(a0),obBossSpike_StartY(a0)
@@ -387,10 +390,9 @@ BossSpikeball_MoveFrag:	; Routine $A
 		tst.b	obRender(a0)				; is object on-screen?
 	; Clownacy DisplaySprite Fix
 		bpl.s   .delete						; if not, branch
-		rts
+		jmp		(DisplayAndCollision).l		; S3K TouchResponse
 ; ===========================================================================
 
 	.delete:
-        addq.l  #4,sp
 		jmp		(DeleteObject).l
 ; ===========================================================================
