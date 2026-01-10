@@ -3434,7 +3434,7 @@ dplcTiles := Art_Signpost		; MainMemory 128k Boundary Check for DPLCs
 	endcase
 dplcTiles := 0					; 128k Boundary Check for DPLCs End
 
-		include	"_incObj/4C & 4D Lava Geyser Maker.asm"
+		include	"_incObj/4C Lava Geyser Maker.asm"
 		include	"_incObj/4E Wall of Lava.asm"
 		include	"_incObj/54 Lava Tag.asm"
 
@@ -3462,7 +3462,8 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 
 		include	"_incObj/56 Floating Blocks and Doors.asm"
 
-		include	"_incObj/57 Spiked Ball and Chain.asm"
+		include	"_incObj/57 LZ Chained Spikeball.asm"
+		include "_incObj/4D SYZ Spikeballs.asm"
 
 		include	"_incObj/58 Big Spiked Ball.asm"
 
