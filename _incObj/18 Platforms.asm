@@ -312,7 +312,7 @@ PlatMove_Type_Pillar:
 ; ===========================================================================
 
 Plat_ChkDel:
-		offscreen.s	Plat_Delete,obPlat_StartX(a0)	; ProjectFM S3K Objects Manager
+		offscreen.w	DeleteObject,obPlat_StartX(a0)	; ProjectFM S3K Objects Manager
 		bra.w	DisplaySprite						; Clownacy DisplaySprite Fix
 ; ===========================================================================
 

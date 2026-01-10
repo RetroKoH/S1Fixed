@@ -1,7 +1,8 @@
 ; ---------------------------------------------------------------------------
 ; Animation script - countdown numbers and bubbles (LZ)
 ; ---------------------------------------------------------------------------
-Ani_Drown:	dc.w .zeroappear-Ani_Drown
+Ani_Drown:
+		dc.w .zeroappear-Ani_Drown
 		dc.w .oneappear-Ani_Drown
 		dc.w .twoappear-Ani_Drown
 		dc.w .threeappear-Ani_Drown
@@ -16,6 +17,7 @@ Ani_Drown:	dc.w .zeroappear-Ani_Drown
 		dc.w .fiveflash-Ani_Drown
 		dc.w .blank-Ani_Drown
 		dc.w .mediumbubble-Ani_Drown
+
 .zeroappear:	dc.b 5,	0, 1, 2, 3, 4, 9, $D, afRoutine
 		even
 .oneappear:	dc.b 5,	0, 1, 2, 3, 4, $C, $12,	afRoutine

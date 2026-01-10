@@ -3020,9 +3020,6 @@ MvSonicOnPtfm:
 ; Subroutine to	change Sonic's position with a platform
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
 MvSonicOnPtfm2:
 		lea		(v_player).w,a1
 		move.w	obY(a0),d0
@@ -3473,7 +3470,7 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 
 		include	"_incObj/5B Staircase.asm"
 
-		include	"_incObj/5C Pylon.asm"
+		include	"_incObj/-- Pylon.asm"
 
 		include	"_incObj/-- Water Surface.asm"
 
@@ -3497,7 +3494,9 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 		include	"_incObj/16 Harpoon.asm"
 		include	"_anim/Harpoon.asm"
 
-		include	"_incObj/61 LZ Blocks.asm"
+		include	"_incObj/61 LZ Blocks.asm"				; formerly sub 30
+		include	"_incObj/48 LZ Rising Platform.asm"		; formerly sub 13
+		include	"_incObj/4A LZ Cork.asm"				; formerly sub 27
 		include	"_incObj/62 Gargoyle.asm"
 		include	"_incObj/63 LZ Conveyor.asm"
 		include	"_incObj/64 Bubbles.asm"
@@ -3510,7 +3509,7 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 	endif
 
 	if (SpinDashEnabled|SkidDustEnabled)
-		include "_incObj/07 Effects.asm"	; Skid Dust and/or Spindash Dust
+		include "_incObj/-- Effects.asm"	; Skid Dust and/or Spindash Dust
 
 dplcTiles := Art_Effects		; MainMemory 128k Boundary Check for DPLCs
 		include	"_maps/Effects - DPLCs.asm"
@@ -5913,6 +5912,8 @@ Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.bin"
 		include	"_maps/Orbinaut.asm"
 		include	"_maps/Harpoon.asm"
 		include	"_maps/LZ Blocks.asm"
+		include	"_maps/LZ Cork.asm"
+		include "_maps/LZ Rising Platform.asm"
 		include	"_maps/Gargoyle.asm"
 		include	"_maps/LZ Conveyor.asm"
 		include	"_maps/Bubbles.asm"

@@ -108,16 +108,16 @@ standards:	macro
 	dbug	Map_SBall,		id_SpikeBall,		$D5,	0,		make_art_tile(ArtTile_SYZ_Spikeball_Chain,0,0)	; Chained Spikeball (5 links, speed: 3, counter-clockwise)
 	dbug	Map_Flap,		id_FlapDoor,		2,		0,		make_art_tile(ArtTile_LZ_Flapping_Door,2,0)		; Flapping Door
 	dbug	Map_But,		id_Button,			0,		0,		make_art_tile(ArtTile_Button,0,0)				; Button
-	dbug	Map_LBlock,		id_LabyrinthBlock,	$30,	3,		make_art_tile(ArtTile_LZ_Blocks,2,0)			; Solid Masked Block
+	dbug	Map_LBlock,		id_LabyrinthBlock,	0,	0,			make_art_tile(ArtTile_LZ_Blocks,2,0)			; Solid Masked Block
 	dbug	Map_MBlockLZ,	id_MovingBlock,		4,		0,		make_art_tile(ArtTile_LZ_Moving_Block,2,0)		; Small Moving Block
 	dbug	Map_FBlock,		id_FloatingBlock,	$E0,	6,		make_art_tile(ArtTile_LZ_Door,2,0)				; Switch activated door
-	dbug	Map_LBlock,		id_LabyrinthBlock,	$27,	2,		make_art_tile(ArtTile_LZ_Blocks,2,0)			; Cork
+	dbug	Map_Cork,		id_LZCork,			0,		0,		make_art_tile(ArtTile_LZ_Cork,2,0)				; Cork
 	dbug	Map_FBlock,		id_FloatingBlock,	$F0,	7,		make_art_tile(ArtTile_LZ_Door,2,0)				; Horizontal witch activated block door
-	dbug	Map_LBlock,		id_LabyrinthBlock,	$13,	1,		make_art_tile(ArtTile_LZ_Blocks,2,0)			; Lifting Platform
+	dbug	Map_LRise,		id_LZRisePlat,		0,		0,		make_art_tile(ArtTile_LZ_Rising_Platform,2,0)	; Lifting Platform
 	dbug	Map_Push,		id_PushBlock,		0,		0,		make_art_tile(ArtTile_LZ_Push_Block,2,0)		; Pushable Block
 	dbug	Map_Push,		id_PushBlock,		$81,	1,		make_art_tile(ArtTile_LZ_Push_Block,2,0)		; Long Pushable Block
-	dbug	Map_LBlock,		id_LabyrinthBlock,	5,		0,		make_art_tile(ArtTile_LZ_Blocks,2,0)			; Sinking Block (Only sinks when pushed)
-	dbug	Map_LBlock,		id_LabyrinthBlock,	1,		0,		make_art_tile(ArtTile_LZ_Blocks,2,0)			; Sinking Block (Sinks when stood upon)
+	dbug	Map_LBlock,		id_LabyrinthBlock,	1,		1,		make_art_tile(ArtTile_LZ_Blocks,2,0)			; Sinking Block (Sinks when stood upon)
+	dbug	Map_LBlock,		id_LabyrinthBlock,	2,		1,		make_art_tile(ArtTile_LZ_Blocks,2,0)			; Sinking Block (Only sinks when pushed)
 	dbug	Map_Pole,		id_Pole,			0,		0,		make_art_tile(ArtTile_LZ_Pole,2,0)				; Grabbable Pole
 	dbug	Map_Stomp,		id_ScrapStomp,		$CB,	4,		make_art_tile(ArtTile_LZ_Block_2,2,0)			; SBZ3 Giant Platform
 .LZend:

@@ -3,6 +3,7 @@
 ; This list only contains objects that are loaded by ObjPosLoad
 ; Dynamically spawned objects are no longer in this list
 ; ---------------------------------------------------------------------------
+
 ptr_Obj01:				dc.l DeleteObject	; $01
 ptr_Obj02:				dc.l DeleteObject
 ptr_PathSwapper:		dc.l PathSwapper
@@ -74,9 +75,9 @@ ptr_EdgeWalls:			dc.l EdgeWalls
 ptr_SideStomp:			dc.l SideStomp
 ptr_MarbleBrick:		dc.l MarbleBrick
 ptr_Bumper:				dc.l Bumper
-ptr_Obj48:				dc.l DeleteObject	; $48
+ptr_LZRisePlat:			dc.l LZRisePlat	; $48
 ptr_WaterSound:			dc.l WaterSound
-ptr_Obj4A:				dc.l DeleteObject
+ptr_LZCork:				dc.l LZCork
 ptr_GiantRing:			dc.l GiantRing
 ptr_GeyserMaker:		dc.l GeyserMaker
 ptr_SpikeBar:			dc.l SpikeBar
@@ -94,7 +95,7 @@ ptr_BigSpikeBall:		dc.l BigSpikeBall	; $58
 ptr_Elevator:			dc.l Elevator
 ptr_CirclingPlatform:	dc.l CirclingPlatform
 ptr_Staircase:			dc.l Staircase
-ptr_Pylon:				dc.l Pylon
+ptr_Obj5C:				dc.l DeleteObject
 ptr_Fan:				dc.l Fan
 ptr_Seesaw:				dc.l Seesaw
 ptr_Bomb:				dc.l Bomb
@@ -134,6 +135,7 @@ ptr_SlidingPlatform:	dc.l SlidingPlatform
 ; Add new object pointers here
 ; ===========================================================================
 
+; Index numbers (Used in _inc/DebugList.asm)
 id_Obj01:				equ ((ptr_Obj01-Obj_Index)/4)+1				; $01
 id_Obj02:				equ ((ptr_Obj02-Obj_Index)/4)+1
 id_PathSwapper:			equ ((ptr_PathSwapper-Obj_Index)/4)+1
@@ -205,9 +207,9 @@ id_EdgeWalls:			equ ((ptr_EdgeWalls-Obj_Index)/4)+1
 id_SideStomp:			equ ((ptr_SideStomp-Obj_Index)/4)+1
 id_MarbleBrick:			equ ((ptr_MarbleBrick-Obj_Index)/4)+1
 id_Bumper:				equ ((ptr_Bumper-Obj_Index)/4)+1
-id_Obj48:				equ ((ptr_Obj48-Obj_Index)/4)+1				; $48
+id_LZRisePlat:			equ ((ptr_LZRisePlat-Obj_Index)/4)+1		; $48
 id_WaterSound:			equ ((ptr_WaterSound-Obj_Index)/4)+1
-id_Obj4A:				equ ((ptr_Obj4A-Obj_Index)/4)+1
+id_LZCork:				equ ((ptr_LZCork-Obj_Index)/4)+1
 id_GiantRing:			equ ((ptr_GiantRing-Obj_Index)/4)+1
 id_GeyserMaker:			equ ((ptr_GeyserMaker-Obj_Index)/4)+1
 id_SpikeBar:			equ ((ptr_SpikeBar-Obj_Index)/4)+1
@@ -225,7 +227,7 @@ id_BigSpikeBall:		equ ((ptr_BigSpikeBall-Obj_Index)/4)+1		; $58
 id_Elevator:			equ ((ptr_Elevator-Obj_Index)/4)+1
 id_CirclingPlatform:	equ ((ptr_CirclingPlatform-Obj_Index)/4)+1
 id_Staircase:			equ ((ptr_Staircase-Obj_Index)/4)+1
-id_Pylon:				equ ((ptr_Pylon-Obj_Index)/4)+1
+id_Obj5C:				equ ((ptr_Obj5C-Obj_Index)/4)+1
 id_Fan:					equ ((ptr_Fan-Obj_Index)/4)+1
 id_Seesaw:				equ ((ptr_Seesaw-Obj_Index)/4)+1
 id_Bomb:				equ ((ptr_Bomb-Obj_Index)/4)+1
