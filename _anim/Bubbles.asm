@@ -1,7 +1,8 @@
 ; ---------------------------------------------------------------------------
 ; Animation script - bubbles (LZ)
 ; ---------------------------------------------------------------------------
-Ani_Bub:	dc.w .small-Ani_Bub
+Ani_Bub:
+		dc.w .small-Ani_Bub
 		dc.w .medium-Ani_Bub
 		dc.w .large-Ani_Bub
 		dc.w .incroutine-Ani_Bub
