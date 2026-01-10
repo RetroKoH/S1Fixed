@@ -79,7 +79,7 @@ ptr_WaterSound:			dc.l WaterSound
 ptr_Obj4A:				dc.l DeleteObject
 ptr_GiantRing:			dc.l GiantRing
 ptr_GeyserMaker:		dc.l GeyserMaker
-ptr_LavaGeyser:			dc.l LavaGeyser
+ptr_SpikeBar:			dc.l SpikeBar
 ptr_LavaWall:			dc.l LavaWall
 ptr_Splats:				dc.l Splats
 ptr_Yadrin:				dc.l Yadrin			; $50
@@ -205,12 +205,12 @@ id_EdgeWalls:			equ ((ptr_EdgeWalls-Obj_Index)/4)+1
 id_SideStomp:			equ ((ptr_SideStomp-Obj_Index)/4)+1
 id_MarbleBrick:			equ ((ptr_MarbleBrick-Obj_Index)/4)+1
 id_Bumper:				equ ((ptr_Bumper-Obj_Index)/4)+1
-id_Obj48:				equ ((ptr_Obj48-Obj_Index)/4)+1			; $48
+id_Obj48:				equ ((ptr_Obj48-Obj_Index)/4)+1				; $48
 id_WaterSound:			equ ((ptr_WaterSound-Obj_Index)/4)+1
 id_Obj4A:				equ ((ptr_Obj4A-Obj_Index)/4)+1
 id_GiantRing:			equ ((ptr_GiantRing-Obj_Index)/4)+1
 id_GeyserMaker:			equ ((ptr_GeyserMaker-Obj_Index)/4)+1
-id_LavaGeyser:			equ ((ptr_LavaGeyser-Obj_Index)/4)+1
+id_SpikeBar:			equ ((ptr_SpikeBar-Obj_Index)/4)+1
 id_LavaWall:			equ ((ptr_LavaWall-Obj_Index)/4)+1
 id_Splats:				equ ((ptr_Splats-Obj_Index)/4)+1
 id_Yadrin:				equ ((ptr_Yadrin-Obj_Index)/4)+1			; $50
