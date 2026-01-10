@@ -117,7 +117,7 @@ ptr_SpinConvey:			dc.l SpinConvey
 ptr_Girder:				dc.l Girder			; $70
 ptr_Invisibarrier:		dc.l Invisibarrier
 ptr_Teleport:			dc.l Teleport
-ptr_Obj73:				dc.l DeleteObject
+ptr_Trapdoor:			dc.l Trapdoor
 ptr_Obj74:				dc.l DeleteObject
 ptr_Obj75:				dc.l DeleteObject
 ptr_Obj76:				dc.l DeleteObject
@@ -248,7 +248,7 @@ id_SpinConvey:			equ ((ptr_SpinConvey-Obj_Index)/4)+1
 id_Girder:				equ ((ptr_Girder-Obj_Index)/4)+1			; $70
 id_Invisibarrier:		equ ((ptr_Invisibarrier-Obj_Index)/4)+1
 id_Teleport:			equ ((ptr_Teleport-Obj_Index)/4)+1
-id_Obj73:				equ ((ptr_Obj73-Obj_Index)/4)+1
+id_Trapdoor:			equ ((ptr_Trapdoor-Obj_Index)/4)+1
 id_Obj74:				equ ((ptr_Obj74-Obj_Index)/4)+1
 id_Obj75:				equ ((ptr_Obj75-Obj_Index)/4)+1
 id_Obj76:				equ ((ptr_Obj76-Obj_Index)/4)+1
