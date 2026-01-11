@@ -3,23 +3,25 @@
 ; ---------------------------------------------------------------------------
 
 Roller:
+		_move.l	#Roll_ChkFloor,obAddr(a0)
 		move.w	#$E08,obHeight(a0)			; Height and Width
-		bsr.w	ObjectFall_YOnly
-		jsr		(ObjFloorDist).l
-		tst.w	d1							; has roller hit the floor?
-		bpl.s	.no_floor					; if not, branch
-
-		add.w	d1,obY(a0)					; align to floor
-		clr.w	obVelY(a0)					; stop falling
-	; init
-		_move.l	#Roll_Action,obAddr(a0)
 		move.l	#Map_Roll,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Roller,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$10,obDispWid(a0)
+; ---------------------------------------------------------------------------
 
-	.no_floor:
+Roll_ChkFloor:
+		bsr.w	ObjectFall_YOnly			; immediately make roller fall
+		jsr		(ObjFloorDist).l			; find floor
+		tst.w	d1							; has roller hit the floor?
+		bpl.s	.floornotfound				; if not, branch (repeat until floor is found)
+		add.w	d1,obY(a0)					; align to floor
+		clr.w	obVelY(a0)					; stop falling
+		obj_addr	#Roll_Action
+
+	.floornotfound:
 		rts	
 ; ===========================================================================
 

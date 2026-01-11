@@ -3,26 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Crabmeat:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Crab_Index(pc,d0.w),d1
-		jmp		Crab_Index(pc,d1.w)
-; ===========================================================================
-Crab_Index:		offsetTable
-ptr_Crab_Main:		offsetTableEntry.w	Crab_Main
-ptr_Crab_Action:	offsetTableEntry.w	Crab_Action
-ptr_Crab_Delete:	offsetTableEntry.w	Crab_Delete
-ptr_Crab_BallMain:	offsetTableEntry.w	Crab_BallMain
-ptr_Crab_BallMove:	offsetTableEntry.w	Crab_BallMove
-
-id_Crab_Main = ptr_Crab_Main-Crab_Index	; 0
-id_Crab_Action = ptr_Crab_Action-Crab_Index	; 2
-id_Crab_Delete = ptr_Crab_Delete-Crab_Index	; 4
-id_Crab_BallMain = ptr_Crab_BallMain-Crab_Index	; 6
-id_Crab_BallMove = ptr_Crab_BallMove-Crab_Index	; 8
-; ===========================================================================
-
-Crab_Main:	; Routine 0
+		move.l	#Crab_ChkFloor,obAddr(a0)
 		move.w	#$1008,obHeight(a0)			; Height and Width
 		move.l	#Map_Crab,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Crabmeat,0,0),obGfx(a0)
@@ -30,6 +11,9 @@ Crab_Main:	; Routine 0
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colEnemy|colSz_16x16),obColType(a0)
 		move.b	#$15,obDispWid(a0)
+; ---------------------------------------------------------------------------
+
+Crab_ChkFloor:
 		bsr.w	ObjectFall_YOnly			; immediately make crabmeat fall
 		jsr		(ObjFloorDist).l			; find floor
 		tst.w	d1							; has crabmeat hit floor?
@@ -37,17 +21,11 @@ Crab_Main:	; Routine 0
 		add.w	d1,obY(a0)					; align to floor
 		move.b	d3,obAngle(a0)				; copy floor angle
 		clr.w	obVelY(a0)					; stop falling
-		addq.b	#2,obRoutine(a0)			; -> Crab_Action
+		obj_addr	#CrabAct_WaitFire
 
 	.floornotfound:
 		rts	
 ; ===========================================================================
-
-Crab_Action:	; Routine 2
-	; LavaGaming Object Routine Optimization
-		tst.b	ob2ndRout(a0)
-		bne.w	CrabAct_Walk
-	; Object Routine Optimization End
 
 CrabAct_WaitFire:
 		subq.w	#1,obCrab_WaitTime(a0)		; decrement timer
@@ -58,7 +36,7 @@ CrabAct_WaitFire:
 		bne.s	.fire						; branch if previously set
 
 	.movecrab:
-		addq.b	#2,ob2ndRout(a0)			; -> CrabAct_Walk next
+		obj_addr	#CrabAct_Walk
 		move.w	#127,obCrab_WaitTime(a0)	; set time delay to approx 2 seconds
 		move.w	#$80,obVelX(a0)				; move Crabmeat	to the right
 		bsr.w	Crab_SetAni					; select animation based on floor angle
@@ -92,8 +70,7 @@ CrabAct_WaitFire:
 		dbeq	d0,.loop					; Branch correction again.
 		bne.s	.fail						; We're moving this line here.
 
-		_move.l	#Crabmeat,obAddr(a1)		; load left fireball
-		move.b	#id_Crab_BallMain,obRoutine(a1)
+		_move.l	#Crab_Ball,obAddr(a1)		; load left fireball
 		move.w	obX(a0),obX(a1)
 		subi.w	#$10,obX(a1)
 		move.w	obY(a0),obY(a1)
@@ -105,8 +82,7 @@ CrabAct_WaitFire:
 		dbeq	d0,.loop					; Branch correction again.
 		bne.s	.fail						; We're moving this line here.
 
-		_move.l	#Crabmeat,obAddr(a1)		; load right fireball
-		move.b	#id_Crab_BallMain,obRoutine(a1)
+		_move.l	#Crab_Ball,obAddr(a1)		; load right fireball
 		move.w	obX(a0),obX(a1)
 		addi.w	#$10,obX(a1)
 		move.w	obY(a0),obY(a1)
@@ -154,7 +130,7 @@ CrabAct_Walk:
 ; ===========================================================================
 
 	.stop:
-		subq.b	#2,ob2ndRout(a0)			; -> CrabAct_WaitFire
+		obj_addr	#CrabAct_WaitFire
 		move.w	#59,obCrab_WaitTime(a0)
 		clr.w	obVelX(a0)
 		bsr.s	Crab_SetAni					; set animation based on angle
@@ -199,31 +175,30 @@ Crab_SetAni:
 ; End of function Crab_SetAni
 ; ===========================================================================
 
-Crab_Delete:	; Routine 4
-		bra.w	DeleteObject
-; ===========================================================================
-
 ; ---------------------------------------------------------------------------
-; Sub-object - missile that the	Crabmeat throws
+; Object 1F (sub) - missile that the Crabmeat throws
 ; ---------------------------------------------------------------------------
 
-Crab_BallMain:	; Routine 6
-		addq.b	#2,obRoutine(a0)				; -> Crab_BallMove
-		move.l	#Map_Crab,obMap(a0)
+Crab_Ball:
+		_move.l	#Crab_BallMove,obAddr(a0)
+		move.l	#Map_CrabBall,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Crabmeat,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colHarmful|colSz_6x6),obColType(a0)
 		move.b	#8,obDispWid(a0)
 		move.w	#-$400,obVelY(a0)
-		move.b	#7,obAnim(a0)
 		
 		bset	#shPropReflect,obShieldProp(a0)	; Reflected by Elemental Shields
 ; ---------------------------------------------------------------------------
 
 Crab_BallMove:	; Routine 8
-		lea		Ani_Crab(pc),a1
-		bsr.w	AnimateSprite
+		subq.b	#1,obTimeFrame(a0)				; decrement time
+		bpl.s	.wait							; branch if time remains
+		move.b	#1,obTimeFrame(a0)				; reset time
+		bchg	#0,obFrame(a0)					; toggle between sprites every 2 frames
+
+	.wait:
 		bsr.w	ObjectFall
 		move.w	(v_limitbtm).w,d0
 		addi.w	#$E0,d0

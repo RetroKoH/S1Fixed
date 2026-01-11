@@ -7,8 +7,6 @@ Map_Crab:	mappingsTable
 	mappingsTableEntry.w	.slope1
 	mappingsTableEntry.w	.slope2
 	mappingsTableEntry.w	.firing
-	mappingsTableEntry.w	.ball1
-	mappingsTableEntry.w	.ball2
 
 .stand:	spriteHeader
 	spritePiece	-$18, -$10, 3, 2, 0, 0, 0, 0, 0	; standing/middle walking frame
@@ -46,13 +44,5 @@ Map_Crab:	mappingsTable
 	spritePiece	-$10, 8, 2, 1, $3A, 0, 0, 0, 0
 	spritePiece	0, 8, 2, 1, $3A, 1, 0, 0, 0
 .firing_End
-
-.ball1:	spriteHeader
-	spritePiece	-8, -8, 2, 2, $3C, 0, 0, 0, 0 ; projectile
-.ball1_End
-
-.ball2:	spriteHeader
-	spritePiece	-8, -8, 2, 2, $40, 0, 0, 0, 0 ; projectile
-.ball2_End
 
 	even
