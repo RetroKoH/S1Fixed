@@ -5821,6 +5821,7 @@ Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.bin"
 		include	"_maps/Animals 3.asm"
 		include	"_maps/Points.asm"
 		include	"_maps/Crabmeat.asm"
+		include	"_maps/Crabmeat Missile.asm"
 		include	"_maps/Buzz Bomber.asm"
 		include	"_maps/Buzz Bomber Missile.asm"
 		include	"_maps/Rings.asm"		; debug rings, lost rings, and SS rings

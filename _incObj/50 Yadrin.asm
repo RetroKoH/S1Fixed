@@ -3,16 +3,8 @@
 ; ---------------------------------------------------------------------------
 
 Yadrin:
+		_move.l	#Yad_ChkFloor,obAddr(a0)
 		move.w	#$1108,obHeight(a0)			; Height and Width
-		bsr.w	ObjectFall_YOnly
-		bsr.w	ObjFloorDist
-		tst.w	d1							; has yadrin hit the floor?
-		bpl.s	.no_floor					; if not, branch
-
-		add.w	d1,obY(a0)					; align to floor
-		clr.w	obVelY(a0)					; stop falling
-	; init
-		_move.l	#Yad_Move,obAddr(a0)
 		move.l	#Map_Yad,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Yadrin,1,0),obGfx(a0)
 		move.b	#4,obRender(a0)
@@ -20,8 +12,18 @@ Yadrin:
 		move.b	#$14,obDispWid(a0)
 		move.b	#(colSpecial|colSz_20x16),obColType(a0)
 		bchg	#staFlipX,obStatus(a0)
+; ---------------------------------------------------------------------------
 
-	.no_floor:
+Yad_ChkFloor:
+		bsr.w	ObjectFall_YOnly			; immediately make yadrin fall
+		bsr.w	ObjFloorDist				; find floor
+		tst.w	d1							; has yadrin hit the floor?
+		bpl.s	.floornotfound				; if not, branch (repeat until floor is found)
+		add.w	d1,obY(a0)					; align to floor
+		clr.w	obVelY(a0)					; stop falling
+		obj_addr	#Yad_Move
+
+	.floornotfound:
 		rts	
 ; ===========================================================================
 
