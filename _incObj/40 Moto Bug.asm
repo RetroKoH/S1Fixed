@@ -20,18 +20,8 @@ Moto_Animate:
 ; ---------------------------------------------------------------------------
 
 MotoBug:
+		_move.l	#Moto_ChkFloor,obAddr(a0)
 		move.w	#$E08,obHeight(a0)			; Height and Width
-		bsr.w	ObjectFall_YOnly
-		bsr.w	ObjFloorDist
-		tst.w	d1							; has motobug hit the floor?
-		bpl.s	.no_floor					; if not, branch
-
-		add.w	d1,obY(a0)					; match	object's position with the floor
-		clr.w	obVelY(a0)					; stop falling
-; ---------------------------------------------------------------------------
-
-	; init
-		_move.l	#Moto_Move,obAddr(a0)
 		move.l	#Map_Moto,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Moto_Bug,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
@@ -40,10 +30,20 @@ MotoBug:
 		move.b	#(colEnemy|colSz_20x16),obColType(a0)
 		move.w	#-$100,obVelX(a0)			; move object to the left
 		btst	#staFlipX,obStatus(a0)
-		beq.s	.no_floor					; branch if facing left
+		beq.s	Moto_ChkFloor				; branch if facing left
 		neg.w	obVelX(a0)					; moves right
+; ---------------------------------------------------------------------------
 
-	.no_floor:
+Moto_ChkFloor:
+		bsr.w	ObjectFall_YOnly			; immediately make motobug fall
+		bsr.w	ObjFloorDist				; find floor
+		tst.w	d1							; has motobug hit floor?
+		bpl.s	.floornotfound				; if not, branch (repeat until floor is found)
+		add.w	d1,obY(a0)					; align to floor
+		clr.w	obVelY(a0)					; stop falling
+		obj_addr	#Moto_Move
+
+	.floornotfound:
 		rts
 ; ===========================================================================
 

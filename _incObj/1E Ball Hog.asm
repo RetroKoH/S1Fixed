@@ -24,12 +24,12 @@ BallHog:
 ; ---------------------------------------------------------------------------
 
 Hog_ChkFloor:
-		bsr.w	ObjectFall_YOnly
+		bsr.w	ObjectFall_YOnly			; immediately make ballhog fall
 		jsr		(ObjFloorDist).l			; find floor
-		tst.w	d1
-		bpl.s	.floornotfound
+		tst.w	d1							; has ballhog hit floor?
+		bpl.s	.floornotfound				; if not, branch (repeat until floor is found)
 		add.w	d1,obY(a0)					; align to floor
-		clr.w	obVelY(a0)
+		clr.w	obVelY(a0)					; stop falling
 		obj_addr	#Hog_Action
 
 	.floornotfound:
