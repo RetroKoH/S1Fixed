@@ -1,5 +1,5 @@
 ; ---------------------------------------------------------------------------
-; Object 56 - floating blocks (SYZ/SLZ)
+; Object 56 - floating blocks (SYZ)
 ; ---------------------------------------------------------------------------
 
 ; ===========================================================================
@@ -27,12 +27,7 @@ FloatingBlock:
 FBlock_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_FBlock,obMap(a0)
-		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a0)		; SYZ/SLZ code
-		cmpi.b	#id_LZ,(v_zone).w				; check if level is LZ
-		bne.s	.notLZ							; if not, branch
-		move.w	#make_art_tile(ArtTile_LZ_Door,2,0),obGfx(a0)	; LZ specific code
-
-	.notLZ:
+		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		moveq	#0,d0
@@ -68,28 +63,24 @@ FBlock_Main:	; Routine 0
 ; ===========================================================================
 
 	.dontdelete:
-		moveq	#0,d0
-		cmpi.b	#id_LZ,(v_zone).w				; check if level is LZ
-		beq.s	.isLZ							; if yes, branch
-
-		moveq	#$F,d0							; SYZ/SLZ specific code
-		and.b	obSubtype(a0),d0				; read low nybble of subtype (SCE Optimization)
+		moveq	#$F,d0							; read low nybble of subtype
+		and.b	obSubtype(a0),d0				; SCE Optimization
 		subq.w	#8,d0
-		bcs.s	.isLZ							; branch if low nybble was > 8
+		bcs.s	.chkType						; branch if low nybble was > 8
 		lsl.w	#2,d0							; multiply by 4
 		lea		(v_oscillate+$2C).w,a2
 		adda.w	d0,a2							; read oscillating value (HAME: Replace lea instruction)
 		tst.w	(a2)
-		bpl.s	.isLZ							; branch if not negative
+		bpl.s	.chkType						; branch if not negative
 		bchg	#staFlipX,obStatus(a0)			; otherwise, xflip object
 
-	.isLZ:
+	.chkType:
 		move.b	obSubtype(a0),d0
 		bpl.s	FBlock_Action					; if subtype is 0-$7F, branch
 		andi.b	#$F,d0							; read low nybble
 		move.b	d0,obFBlock_ButtonNum(a0)		; set low nybble of subtype as switch index
 		move.b	#5,obSubtype(a0)				; force subtype to 5 (moves up when button is pressed)
-		cmpi.b	#7,obFrame(a0)					; is object a large horizontal LZ door?
+		cmpi.b	#7,obFrame(a0)					; is object a large horizontal LZ door (oould make this a subtype for SYZ)?
 		bne.s	.chkstate						; if not, branch
 		move.b	#$C,obSubtype(a0)				; force subtype to $C (moves left when button is pressed)
 		move.w	#128,obFBlock_MoveDist(a0)
@@ -149,8 +140,8 @@ FBlock_Index:	offsetTable
 		offsetTableEntry.w	FBlock_LeftRightWide	; Type 02 - moves side-to-side
 		offsetTableEntry.w	FBlock_UpDown			; Type 03 - moves up/down
 		offsetTableEntry.w	FBlock_UpDownWide		; Type 04 - moves up/down (wide distance)
-		offsetTableEntry.w	FBlock_Null				; Type 05 - moves up when a button is pressed
-		offsetTableEntry.w	FBlock_Null				; Type 06 - moves down when button is pressed
+		offsetTableEntry.w	FBlock_UpButton			; Type 05 - moves up when a button is pressed
+		offsetTableEntry.w	FBlock_DownButton		; Type 06 - moves down when button is pressed
 		offsetTableEntry.w	FBlock_FarRightButton	; Type 07 - moves far right when button $F is pressed
 ; ===========================================================================
 
@@ -208,6 +199,92 @@ FBlock_UpDownWide:
 		sub.w	d0,d1
 		move.w	d1,obY(a0)					; move object vertically
 		rts
+; ===========================================================================
+
+; Type 05 - moves up when a button is pressed
+FBlock_UpButton:
+		tst.b	obFBlock_MoveFlag(a0)		; is object moving?
+		bne.s	.chk_distance				; if yes, branch
+
+		lea		(f_switch).w,a2
+		moveq	#0,d0
+		move.b	obFBlock_ButtonNum(a0),d0
+		btst	#0,(a2,d0.w)				; check status of linked button
+		beq.s	.not_pressed				; branch if not pressed
+		move.b	#1,obFBlock_MoveFlag(a0)	; flag object as moving
+
+	.chk_distance:
+		tst.w	obFBlock_MoveDist(a0)		; is remaining distance = 0?
+		beq.s	.finish						; if yes, branch
+		subq.w	#2,obFBlock_MoveDist(a0)	; decrement distance
+
+	.not_pressed:
+		move.w	obFBlock_MoveDist(a0),d0
+		btst	#staFlipX,obStatus(a0)
+		beq.s	.no_xflip
+		neg.w	d0							; invert if xflipped
+
+	.no_xflip:
+		move.w	obFBlock_StartY(a0),d1
+		add.w	d0,d1						; add distance to start position
+		move.w	d1,obY(a0)					; update y pos
+		rts	
+; ===========================================================================
+
+	.finish:
+		addq.b	#1,obSubtype(a0)			; convert to type 6
+		clr.b	obFBlock_MoveFlag(a0)		; clear movement flag
+	; ProjectFM S3K Object Manager
+		move.w	obRespawnAddr(a0),d0		; get address in respawn table
+		beq.s	.not_pressed				; if it's zero, don't remember object
+		movea.w	d0,a2						; load address into a2
+		bset	#0,(a2)
+	; End
+		bra.s	.not_pressed
+; ===========================================================================
+
+; Type 06 - moves down when button is pressed
+FBlock_DownButton:
+		tst.b	obFBlock_MoveFlag(a0)		; is object moving?
+		bne.s	.chk_distance				; if yes, branch
+		lea		(f_switch).w,a2
+		moveq	#0,d0
+		move.b	obFBlock_ButtonNum(a0),d0
+		tst.b	(a2,d0.w)					; check status of linked button (unused button subtype $4x)
+		bpl.s	.not_pressed				; branch if not pressed
+		move.b	#1,obFBlock_MoveFlag(a0)
+
+	.chk_distance:
+		moveq	#0,d0
+		move.b	obHeight(a0),d0
+		add.w	d0,d0
+		cmp.w	obFBlock_MoveDist(a0),d0	; has object moved distance equal to its height?
+		beq.s	.finish						; if yes, branch
+		addq.w	#2,obFBlock_MoveDist(a0)	; increment distance
+
+	.not_pressed:
+		move.w	obFBlock_MoveDist(a0),d0
+		btst	#staFlipX,obStatus(a0)
+		beq.s	.no_xflip
+		neg.w	d0							; invert if xflipped
+
+	.no_xflip:
+		move.w	obFBlock_StartY(a0),d1
+		add.w	d0,d1						; add distance to start position
+		move.w	d1,obY(a0)					; update y pos
+		rts	
+; ===========================================================================
+
+	.finish:
+		subq.b	#1,obSubtype(a0)			; convert to type 5
+		clr.b	obFBlock_MoveFlag(a0)		; clear movement flag
+	; ProjectFM S3K Obj Manager
+		move.w	obRespawnAddr(a0),d0		; get address in respawn table
+		beq.s	.not_pressed				; if it's zero, don't remember object
+		movea.w	d0,a2						; load address into a2
+		bclr	#0,(a2)
+	; End
+		bra.s	.not_pressed
 ; ===========================================================================
 
 ; Type 07 - moves far right when button $F is pressed
