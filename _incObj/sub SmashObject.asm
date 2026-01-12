@@ -14,7 +14,7 @@ SmashObject:
 		move.w	(a3)+,d1						; amount of pieces the frame consists of
 		subq.w	#2,d1							; set iterator based on piece count, and decrement for the first part created
 	; S2 BuildSprites End
-		bset	#5,obRender(a0)
+		bset	#renRawMap,obRender(a0)			; fragment is a single sprite part
 		_move.l	obAddr(a0),d4
 		move.b	obRender(a0),d5
 

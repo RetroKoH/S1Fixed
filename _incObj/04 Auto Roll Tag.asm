@@ -106,8 +106,8 @@ ARoll_MainX:
 		blt.s	ARoll_ChkDel
 		cmp.w	d3,d4
 		bge.s	ARoll_ChkDel
-		btst	#0,obRender(a0)
-		bne.w	ARoll_Disable
+		btst	#renXFlip,obRender(a0)		; is the object flipped horizontally?
+		bne.w	ARoll_Disable				; if yes, branch
 		move.b	#1,obAutoRollFlag(a1)		; enable auto roll mode
 		bra.w	ARoll_ChkRoll
 ; ===========================================================================
@@ -126,8 +126,8 @@ ARoll_MainX_Alt:
 		blt.w	ARoll_ChkDel
 		cmp.w	d3,d4
 		bge.w	ARoll_ChkDel
-		btst	#0,obRender(a0)
-		beq.w	ARoll_Disable
+		btst	#renXFlip,obRender(a0)		; is the object flipped horizontally?
+		beq.w	ARoll_Disable				; if not, branch
 		move.b	#1,obAutoRollFlag(a1)		; enable auto roll mode
 		bra.w	ARoll_ChkRoll
 ; ===========================================================================
@@ -153,8 +153,8 @@ ARoll_MainY:
 		blo.w	ARoll_ChkDel
 		cmp.w	d3,d4
 		bhs.w	ARoll_ChkDel
-		btst	#0,obRender(a0)
-		bne.w	ARoll_Disable
+		btst	#renXFlip,obRender(a0)		; is the object flipped horizontally?
+		bne.w	ARoll_Disable				; if yes, branch
 		move.b	#1,obAutoRollFlag(a1)		; enable auto roll mode
 		bra.w	ARoll_ChkRoll
 ; ===========================================================================
@@ -173,8 +173,8 @@ ARoll_MainY_Alt:
 		blo.w	ARoll_ChkDel
 		cmp.w	d3,d4
 		bhs.w	ARoll_ChkDel
-		btst	#0,obRender(a0)
-		beq.w	ARoll_Disable
+		btst	#renXFlip,obRender(a0)		; is the object flipped horizontally?
+		beq.w	ARoll_Disable				; if not, branch
 		move.b	#1,obAutoRollFlag(a1)		; enable auto roll mode
 		bra.w	ARoll_ChkRoll
 ; ===========================================================================

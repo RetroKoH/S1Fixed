@@ -12,7 +12,7 @@ BossPlasma:
 		move.w	#priority3,obPriority(a0)			; RetroKoH/Devon S3K+ Priority Manager
 		move.w	#$808,obHeight(a0)					; Height and Width
 		move.b	#4,obRender(a0)
-		bset	#7,obRender(a0)
+		bset	#renVisible,obRender(a0)			; set object as visible
 ; ---------------------------------------------------------------------------
 
 BossPlasma_Generator:
@@ -92,7 +92,7 @@ BossPlasma_MakeBalls:
 		move.w	#priority3,obPriority(a1)			; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$3E,obPlasma_Timer(a1)
 		move.b	#4,obRender(a1)
-		bset	#7,obRender(a1)
+		bset	#renVisible,obRender(a1)			; set object as visible
 		move.w	a0,obPlasma_Parent(a1)				; set generator as plasma ball's parent
 		jsr		(RandomNumber).w					; d0 = random number
 		move.w	obPlasma_Count(a0),d1				; id of plasma ball (0-3)

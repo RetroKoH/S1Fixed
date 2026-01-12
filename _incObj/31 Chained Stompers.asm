@@ -141,7 +141,7 @@ CStom_Block:	; Routine 2
 
 CStom_Chain:	; Routine 8
 		move.b	#$80,obHeight(a0)
-		bset	#4,obRender(a0)
+		bset	#renUseHeight,obRender(a0)		; set height flag, as this is a larger object
 		movea.w	obCStom_Parent(a0),a1			; get address of parent object
 		move.b	obCStom_ChainLength(a1),d0		; get current chain length
 		lsr.b	#5,d0							; divide by $20

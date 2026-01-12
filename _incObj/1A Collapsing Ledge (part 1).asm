@@ -27,7 +27,7 @@ Ledge_Main:	; Routine 0
 		move.b	#$64,obDispWid(a0)
 		move.b	obSubtype(a0),obFrame(a0)
 		move.b	#$38,obHeight(a0)
-		bset	#4,obRender(a0)
+		bset	#renUseHeight,obRender(a0)	; set height flag, as this is a larger object
 ; ---------------------------------------------------------------------------
 
 Ledge_Touch:	; Routine 2

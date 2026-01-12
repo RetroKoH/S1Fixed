@@ -46,14 +46,14 @@ BuildSprites:
 		tst.l	obMap(a0)
 		beq.w	.skipObject				; (to be removed) jump to crash if loading a null pointer
 
-		bclr	#7,obRender(a0)			; set as not visible
+		bclr	#renVisible,obRender(a0)	; set as not visible
 		move.b	obRender(a0),d0
 		move.b	d0,d4
 	; Devon Subsprites
-		btst	#6,d0					; is the multi-draw flag set?
+		btst	#renMultiDraw,d0		; is the multi-draw flag set?
 		bne.w	BuildSprites_MultiDraw	; if it is, branch
 	; Devon Subsprites End
-		andi.w	#$C,d0 					; is this to be positioned by screen coordinates?
+		andi.w	#$C,d0 					; is this to be positioned by screen coordinates (checks renRelative and renBGAlign)?
 		beq.s	.screenCoords			; if yes, branch
 
 		lea		(v_screenposx).w,a1
@@ -61,29 +61,29 @@ BuildSprites:
 		moveq	#0,d0
 		move.b	obDispWid(a0),d0
 		move.w	obX(a0),d3
-		sub.w	(a1),d3			; d3 = screen x-pos
+		sub.w	(a1),d3				; d3 = screen x-pos
 		move.w	d3,d1
-		add.w	d0,d1			; is the object right edge to the left of the screen?
-		bmi.w	.skipObject		; if it is, branch
+		add.w	d0,d1				; is the object right edge to the left of the screen?
+		bmi.w	.skipObject			; if it is, branch
 		move.w	d3,d1
 		sub.w	d0,d1
-		cmpi.w	#320,d1			; is the object left edge to the right of the screen?
-		bge.s	.skipObject		; if it is, branch
-		addi.w	#128,d3			; VDP sprites start at 128px
-		btst	#4,d4			; is assume height flag on?
-		beq.s	.assumeHeight	; if yes, branch
+		cmpi.w	#320,d1				; is the object left edge to the right of the screen?
+		bge.s	.skipObject			; if it is, branch
+		addi.w	#128,d3				; VDP sprites start at 128px
+		btst	#renUseHeight,d4	; is height flag set?
+		beq.s	.assumeHeight		; if not, branch and assume object's height
 		moveq	#0,d0
 		move.b	obHeight(a0),d0
 		move.w	obY(a0),d2
-		sub.w	4(a1),d2		; d2 = screen y-pos
+		sub.w	4(a1),d2			; d2 = screen y-pos
 		move.w	d2,d1
 		add.w	d0,d1
-		bmi.s	.skipObject		; if the object is above the screen
+		bmi.s	.skipObject			; if the object is above the screen
 		move.w	d2,d1
 		sub.w	d0,d1
 		cmpi.w	#224,d1
 		bge.s	.skipObject
-		addi.w	#128,d2			; if the object is below the screen
+		addi.w	#128,d2				; if the object is below the screen
 		bra.s	.drawObject
 ; ===========================================================================
 
@@ -95,10 +95,10 @@ BuildSprites:
 
 	.assumeHeight:
 		move.w	obY(a0),d2
-		sub.w	4(a1),d2		; subtract screen y-pos
+		sub.w	4(a1),d2			; subtract screen y-pos
 		addi.w	#128,d2
 	; took out S2 hard-coded y-wrap check
-		cmpi.w	#-32+128,d2		; assume height to be 32 pixels
+		cmpi.w	#-32+128,d2			; assume height to be 32 pixels
 		blo.s	.skipObject
 		cmpi.w	#32+128+224,d2
 		bhs.s	.skipObject
@@ -106,8 +106,8 @@ BuildSprites:
 	.drawObject:
 		movea.l	obMap(a0),a1
 		moveq	#0,d1
-		btst	#5,d4				; is static mappings flag on?
-		bne.s	.drawFrame			; if yes, branch
+		btst	#renRawMap,d4		; is raw mappings flag on?
+		bne.s	.drawFrame			; if yes, branch to draw a single piece (most likely used for fragments)
 		move.b	obFrame(a0),d1
 		add.w	d1,d1				; changed to .w (we want more than 7F sprites) -- MarkeyJester Art Limit Extensions
 		adda.w	(a1,d1.w),a1		; get mappings frame address
@@ -119,7 +119,7 @@ BuildSprites:
 		bsr.w	BuildSpr_Draw		; write data from sprite pieces to buffer
 
 	.setVisible:
-		bset	#7,obRender(a0)		; set object as visible
+		bset	#renVisible,obRender(a0)	; set object as visible
 
 	.skipObject:
 		addq.w	#2,d6				; load next object
@@ -175,7 +175,7 @@ BuildSprites_MultiDraw:
 		addi.w	#128,d3
 
 		; check if object is within Y bounds
-		btst	#4,d4							; is the accurate Y check flag set?
+		btst	#renUseHeight,d4				; is the accurate Y check flag set?
 		beq.s	.assumeHeight					; if not, branch
 		moveq	#0,d0
 		move.b	mainspr_height(a0),d0			; load pixel height
@@ -197,7 +197,7 @@ BuildSprites_MultiDraw:
 		sub.w	4(a4),d2						; subtract screen y-pos
 		addi.w	#128,d2
 	; took out S2 hard-coded y-wrap check
-		cmpi.w	#-32+128,d2
+		cmpi.w	#-32+128,d2						; assume height to be 32 pixels
 		blo.s	.skipObject
 		cmpi.w	#32+128+224,d2
 		bhs.s	.skipObject
@@ -217,7 +217,7 @@ BuildSprites_MultiDraw:
 		move.w	(sp)+,d4
 
 	.noparenttodraw:
-		bset	#7,obRender(a0)					; set onscreen flag
+		bset	#renVisible,obRender(a0)		; set onscreen flag
 		lea		subspr_frames(a0),a5
 		lea		subspr_posdata(a0),a6			; address of first child sprite info
 		moveq	#0,d0
@@ -264,9 +264,9 @@ BuildSpr_Draw: ; sub_D750
 		movea.w	obGfx(a0),a3
 
 ChkDrawSprite:		; New label -- Devon Subsprites
-		btst	#0,d4			; is the sprite to be X-flipped?
+		btst	#renXFlip,d4	; is the sprite to be X-flipped?
 		bne.s	BuildSpr_FlipX	; if yes, branch
-		btst	#1,d4			; is the sprite to be Y-flipped?
+		btst	#renYFlip,d4	; is the sprite to be Y-flipped?
 		bne.w	BuildSpr_FlipY	; if yes, branch
 ; End of function BuildSpr_Draw
 
@@ -305,7 +305,7 @@ BuildSpr_Normal:
 ; ===========================================================================
 
 BuildSpr_FlipX:
-		btst	#1,d4		; is object also y-flipped?
+		btst	#renYFlip,d4		; is object also y-flipped?
 		bne.w	BuildSpr_FlipXY	; if yes, branch
 
 	.loop:

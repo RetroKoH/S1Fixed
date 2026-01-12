@@ -44,7 +44,7 @@ SlidingPlatform:
 
 		andi.b	#$F,d0						; read only low nybble
 		move.b	d0,obSlid_ButtonNum(a0)		; copy to obSlid_ButtonNum
-		bset	#4,obRender(a0)
+		bset	#renUseHeight,obRender(a0)	; set height flag, as this is a larger object
 
 	.chkgone:
 		move.w	obRespawnAddr(a0),d0		; get address in respawn table

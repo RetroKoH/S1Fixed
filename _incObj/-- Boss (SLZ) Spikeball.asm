@@ -359,7 +359,7 @@ BossSpikeball_Explode:	; Routine 8
 		bset	#shPropReflect,obShieldProp(a1)		; Reflected by Elemental Shields
 
 		ori.b	#4,obRender(a1)
-		bset	#7,obRender(a1)
+		bset	#renVisible,obRender(a1)			; set object as visible
 		move.b	#$C,obDispWid(a1)
 		dbf		d1,.loop							; repeat sequence 3 more times
 

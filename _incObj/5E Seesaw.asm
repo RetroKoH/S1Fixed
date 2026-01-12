@@ -123,10 +123,10 @@ See_ChgFrame:
 		subq.b	#1,d0
 		move.b	d0,obFrame(a0)				; update frame
 		move.b	d1,obSeesaw_State(a0)
-		bclr	#0,obRender(a0)
+		bclr	#renXFlip,obRender(a0)
 		btst	#1,obFrame(a0)				; is frame 2 or 3?
 		beq.s	.noflip						; if not, branch
-		bset	#0,obRender(a0)
+		bset	#renXFlip,obRender(a0)
 
 	.noflip:
 		rts	

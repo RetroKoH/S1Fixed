@@ -73,7 +73,7 @@ Glass_Main:	; Routine 0
 
 	.Fail:
 		move.w	#$90,obGlass_DistY(a0)
-		bset	#4,obRender(a0)
+		bset	#renUseHeight,obRender(a0)	; set height flag, as this is a larger object
 ; ---------------------------------------------------------------------------
 
 Glass_Block012:	; Routine 2
