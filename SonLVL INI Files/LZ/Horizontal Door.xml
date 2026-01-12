@@ -2,8 +2,8 @@
 <ObjDef xmlns="http://www.sonicretro.org" Name="Horizontal Door" Image="horizontal" RememberState="true">
   <Images>
     <ImageFromMappings id="horizontal">
-      <ArtFile filename="../artnem/LZ Horizontal Door.nem" offset="832"/>
-      <MapFile type="ASM" filename="../_maps/Floating Blocks and Doors.asm" frame="7" startpal="2"/>
+      <ArtFile filename="../artnem/LZ Horizontal Door.nem"/>
+      <MapFile type="ASM" filename="../_maps/Horizontal Doors.asm" frame="0" startpal="2"/>
     </ImageFromMappings>
   </Images>
   <Properties>
