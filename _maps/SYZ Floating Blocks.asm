@@ -1,5 +1,5 @@
 ; ---------------------------------------------------------------------------
-; Sprite mappings - moving blocks (SYZ/SLZ/LZ)
+; Sprite mappings - moving blocks (SYZ)
 ; ---------------------------------------------------------------------------
 Map_FBlock:	mappingsTable
 	mappingsTableEntry.w	.syz1x1
@@ -7,9 +7,6 @@ Map_FBlock:	mappingsTable
 	mappingsTableEntry.w	.syz1x2
 	mappingsTableEntry.w	.syzrect2x2
 	mappingsTableEntry.w	.syzrect1x3
-	mappingsTableEntry.w	.slz
-	mappingsTableEntry.w	.lzvert
-	mappingsTableEntry.w	.lzhoriz
 
 .syz1x1:	spriteHeader
 	spritePiece	-$10, -$10, 4, 4, $61, 0, 0, 0, 0 ; SYZ - 1x1 square block
@@ -39,21 +36,5 @@ Map_FBlock:	mappingsTable
 	spritePiece	-$10, -$D, 4, 4, $81, 0, 0, 0, 0
 	spritePiece	-$10, $D, 4, 4, $81, 0, 0, 0, 0
 .syzrect1x3_End
-
-.slz:	spriteHeader
-	spritePiece	-$10, -$10, 4, 4, $21, 0, 0, 0, 0 ; SLZ - 1x1 square block
-.slz_End
-
-.lzvert:	spriteHeader
-	spritePiece	-8, -$20, 2, 4, 0, 0, 0, 0, 0	; LZ - small vertical door
-	spritePiece	-8, 0, 2, 4, 0, 0, 1, 0, 0
-.lzvert_End
-
-.lzhoriz:	spriteHeader
-	spritePiece	-$40, -$10, 4, 4, $1A, 0, 0, 0, 0	; LZ - large horizontal door
-	spritePiece	-$20, -$10, 4, 4, $1A, 0, 0, 0, 0	; RetroKoH VRAM Overhaul
-	spritePiece	0, -$10, 4, 4, $1A, 0, 0, 0, 0
-	spritePiece	$20, -$10, 4, 4, $1A, 0, 0, 0, 0
-.lzhoriz_End
 
 	even

@@ -4,14 +4,13 @@
 
 LZDoorHoriz:
 		_move.l	#DoorH_Action,obAddr(a0)
-		move.l	#Map_FBlock,obMap(a0)
-		move.w	#make_art_tile(ArtTile_LZ_Door,2,0),obGfx(a0)	; LZ specific code
+		move.l	#Map_DoorH,obMap(a0)
+		move.w	#make_art_tile(ArtTile_LZ_Blocks,2,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 
 		move.b	#$40,obDispWid(a0)
-		move.b	#$10,obHeight(a0)	
-		move.b	#7,obFrame(a0)					; will use its own mappings later
+		move.b	#$10,obHeight(a0)
 		move.w	obX(a0),obFBlock_StartX(a0)		; store starting positions
 		move.w	obY(a0),obFBlock_StartY(a0)
 
