@@ -36,13 +36,13 @@ Splats_ChkDist:	; Routine 2
 
 loc_D24A:
 		move.w	#$100,d1				; move right
-		bset	#0,obRender(a0)			; face right
+		bset	#renXFlip,obRender(a0)	; face right
 		move.w	(v_objspace+obX).w,d0
 		sub.w	obX(a0),d0
 		bcc.s	loc_D268
 		neg.w	d0
 		neg.w	d1						; move left
-		bclr	#0,obRender(a0)			; face left
+		bclr	#renXFlip,obRender(a0)	; face left
 
 loc_D268:
 		cmp.w	d2,d0
@@ -75,7 +75,7 @@ Splats_Move:	; Routine 4
 		bsr.w	Splats_ChkWalls
 		beq.s	loc_D2C4
 		neg.w	obVelX(a0)
-		bchg	#0,obRender(a0)
+		bchg	#renXFlip,obRender(a0)	; change sprite direction
 		bchg	#0,obStatus(a0)
 
 loc_D2C4:

@@ -166,7 +166,7 @@ Geyser_Main:	; Routine 0
 		bset	#shPropFlame,obShieldProp(a1)	; Negated by Flame Shield
 
 		move.b	#$80,obHeight(a1)
-		bset	#4,obRender(a1)
+		bset	#renUseHeight,obRender(a1)		; set height flag, as this is a larger object
 		addq.b	#4,obRoutine(a1)				; goto Geyser_Middle next
 		move.w	a0,obGeyser_Parent(a1)
 		tst.b	obSubtype(a0)					; is this a geyser or lavafall?

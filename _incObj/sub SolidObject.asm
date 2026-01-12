@@ -84,8 +84,8 @@ SolidObject2F:
 		cmp.w	d3,d0
 		bhi.w	Solid_Ignore
 		move.w	d0,d5
-		btst	#0,obRender(a0)	; is object horizontally flipped?
-		beq.s	.notflipped	; if not, branch
+		btst	#renXFlip,obRender(a0)	; is object horizontally flipped?
+		beq.s	.notflipped				; if not, branch
 		not.w	d5
 		add.w	d3,d5
 

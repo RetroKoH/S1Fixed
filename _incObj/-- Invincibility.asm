@@ -9,7 +9,7 @@ Stars_Delete:
 StarsItem:
 		_move.l	#Stars_Trail,obAddr(a0)
 		move.b	#4,obRender(a0)
-		bset	#6,obRender(a0)							; multi-draw (sub-sprites) flag
+		bset	#renMultiDraw,obRender(a0)				; multi-draw (sub-sprites) flag
 		move.w	#make_art_tile(ArtTile_Shield,0,0),obGfx(a0)
 		move.l	#Map_Shield,obMap(a0)					; TO-DO: split mappings and DPLCs
 		clr.b	mainspr_routine(a0)						; use this to increment every single star frame using the data table

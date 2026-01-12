@@ -70,7 +70,7 @@ Bri_MakeSegment:
 		move.l	obMap(a0),obMap(a1)
 		move.w	obGfx(a0),obGfx(a1)
 		move.b	obRender(a0),obRender(a1)
-		bset	#6,obRender(a1)				; set subsprites flag
+		bset	#renMultiDraw,obRender(a1)	; multi-draw (sub-sprites) flag
 		move.b	#$40,mainspr_width(a1)
 		move.b	d1,mainspr_childsprites(a1)
 		subq.b	#1,d1

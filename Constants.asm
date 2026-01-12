@@ -125,6 +125,19 @@ bitUp:		equ 0
 	include "_incObj/00 OST Constants.asm"
 
 ; ---------------------------------------------------------------------------
+; obRender constants
+;
+renXFlip:		equ 0	; horizontal flip flag
+renYFlip:		equ 1	; vertical flip flag
+renRelative:	equ 2	; if set, screen coordinates are relative to the level. If clear, screen coordinates are absolute.
+renBGAlign:		equ 3	; object's sprite is aligned to the background
+renUseHeight:	equ 4	; objects use obHeight to decide if object is on-screen, otherwise height is assumed to be $20 (used for large objects)
+renRawMap:		equ 5	; sprites use raw mappings - i.e. object consists of a single sprite instead of multipart sprite mappings (e.g. broken block fragments)
+renMultiDraw:	equ 6	; object renders subsprites (multiple sprites for one object)
+renVisible:		equ 7	; object is visible on-screen
+; ---------------------------------------------------------------------------
+
+; ---------------------------------------------------------------------------
 ; obStatus bitfield constants
 ;
 ; Sonic's status bits (status)

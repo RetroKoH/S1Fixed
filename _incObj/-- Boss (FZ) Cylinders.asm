@@ -29,8 +29,8 @@ ECyl_Main:	; Routine 0
 		add.w	d0,d0
 		adda.w	d0,a1						; jump to relevant address for x/y pos data
 		move.b	#4,obRender(a0)
-		bset	#7,obRender(a0)
-		bset	#4,obRender(a0)
+		bset	#renVisible,obRender(a0)	; set object as visible
+		bset	#renUseHeight,obRender(a0)	; set height flag, as this is a larger object
 		move.w	#make_art_tile(ArtTile_FZ_Boss,0,0),obGfx(a0)
 		move.l	#Map_EggCyl,obMap(a0)
 		move.w	(a1)+,obX(a0)
@@ -45,7 +45,7 @@ ECyl_Main:	; Routine 0
 ECyl_Action:	; Routine 2
 		cmpi.b	#2,obSubtype(a0)			; is cylinder on ceiling?
 		ble.s	.not_ceiling				; if not, branch
-		bset	#1,obRender(a0)				; yflip
+		bset	#renYFlip,obRender(a0)		; flip sprite vertically
 
 	.not_ceiling:
 		clr.l	obECyl_MoveY(a0)
@@ -158,7 +158,7 @@ Cyl_Bottom:
 ; ===========================================================================
 
 Cyl_Top:	; Subtypes 04 (top left) and 06 (top right)
-		bset	#1,obRender(a0)					; flip sprite vertically
+		bset	#renYFlip,obRender(a0)			; flip sprite vertically
 		tst.b	obECyl_ExtendFlag(a0)			; is cylinder extending?
 		bne.s	.extend							; if yes, branch
 		movea.w	obECyl_Parent(a0),a1			; get RAM address of parent object (Eggman)
