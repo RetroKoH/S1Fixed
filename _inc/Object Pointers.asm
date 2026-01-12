@@ -64,9 +64,9 @@ ptr_Obj39:				dc.l DeleteObject
 ptr_Obj3A:				dc.l DeleteObject
 ptr_PurpleRock:			dc.l PurpleRock
 ptr_SmashWall:			dc.l SmashWall
-ptr_Obj3D:				dc.l DeleteObject
+ptr_LZDoorVert:			dc.l LZDoorVert	; LZ Vertical Door (from obj56)
 ptr_Prison:				dc.l Prison
-ptr_Obj3F:				dc.l DeleteObject
+ptr_Obj3F:				dc.l DeleteObject	; LZ Large Horizontal Door (from obj56)
 ptr_MotoBug:			dc.l MotoBug		; $40
 ptr_Springs:			dc.l Springs
 ptr_Newtron:			dc.l Newtron
@@ -75,7 +75,7 @@ ptr_EdgeWalls:			dc.l EdgeWalls
 ptr_SideStomp:			dc.l SideStomp
 ptr_MarbleBrick:		dc.l MarbleBrick
 ptr_Bumper:				dc.l Bumper
-ptr_LZRisePlat:			dc.l LZRisePlat	; $48
+ptr_LZRisePlat:			dc.l LZRisePlat		; $48
 ptr_WaterSound:			dc.l WaterSound
 ptr_LZCork:				dc.l LZCork
 ptr_GiantRing:			dc.l GiantRing
@@ -89,13 +89,13 @@ ptr_MovingBlock:		dc.l MovingBlock
 ptr_CollapseFloor:		dc.l CollapseFloor
 ptr_LavaTag:			dc.l LavaTag
 ptr_Basaran:			dc.l Basaran
-ptr_FloatingBlock:		dc.l FloatingBlock
+ptr_FloatingBlock:		dc.l FloatingBlock	; SYZ Floating Blocks
 ptr_SpikeBall:			dc.l SpikeBall
 ptr_BigSpikeBall:		dc.l BigSpikeBall	; $58
 ptr_Elevator:			dc.l Elevator
 ptr_CirclingPlatform:	dc.l CirclingPlatform
 ptr_Staircase:			dc.l Staircase
-ptr_Obj5C:				dc.l DeleteObject
+ptr_Obj5C:				dc.l DeleteObject	; SLZ Floating Block Contraption (from obj56)
 ptr_Fan:				dc.l Fan
 ptr_Seesaw:				dc.l Seesaw
 ptr_Bomb:				dc.l Bomb
@@ -196,7 +196,7 @@ id_Obj39:				equ ((ptr_Obj39-Obj_Index)/4)+1
 id_Obj3A:				equ ((ptr_Obj3A-Obj_Index)/4)+1
 id_PurpleRock:			equ ((ptr_PurpleRock-Obj_Index)/4)+1
 id_SmashWall:			equ ((ptr_SmashWall-Obj_Index)/4)+1
-id_Obj3D:				equ ((ptr_Obj3D-Obj_Index)/4)+1
+id_LZDoorVert:			equ ((ptr_LZDoorVert-Obj_Index)/4)+1
 id_Prison:				equ ((ptr_Prison-Obj_Index)/4)+1
 id_Obj3F:				equ ((ptr_Obj3F-Obj_Index)/4)+1
 id_MotoBug:				equ ((ptr_MotoBug-Obj_Index)/4)+1			; $40
