@@ -10,7 +10,7 @@ LZDoorVert:
 		move.w	#priority3,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 
 		move.b	#8,obDispWid(a0)
-		move.b	#$20,obHeight(a0)	
+		move.b	#$20,obHeight(a0)
 		move.b	#6,obFrame(a0)					; will use its own mappings later
 		move.w	obY(a0),obFBlock_StartY(a0)
 
