@@ -64,9 +64,9 @@ ptr_Obj39:				dc.l DeleteObject
 ptr_Obj3A:				dc.l DeleteObject
 ptr_PurpleRock:			dc.l PurpleRock
 ptr_SmashWall:			dc.l SmashWall
-ptr_LZDoorVert:			dc.l LZDoorVert	; LZ Vertical Door (from obj56)
+ptr_LZDoorVert:			dc.l LZDoorVert
 ptr_Prison:				dc.l Prison
-ptr_Obj3F:				dc.l DeleteObject	; LZ Large Horizontal Door (from obj56)
+ptr_LZDoorHoriz:		dc.l LZDoorHoriz
 ptr_MotoBug:			dc.l MotoBug		; $40
 ptr_Springs:			dc.l Springs
 ptr_Newtron:			dc.l Newtron
@@ -198,7 +198,7 @@ id_PurpleRock:			equ ((ptr_PurpleRock-Obj_Index)/4)+1
 id_SmashWall:			equ ((ptr_SmashWall-Obj_Index)/4)+1
 id_LZDoorVert:			equ ((ptr_LZDoorVert-Obj_Index)/4)+1
 id_Prison:				equ ((ptr_Prison-Obj_Index)/4)+1
-id_Obj3F:				equ ((ptr_Obj3F-Obj_Index)/4)+1
+id_LZDoorHoriz:			equ ((ptr_LZDoorHoriz-Obj_Index)/4)+1
 id_MotoBug:				equ ((ptr_MotoBug-Obj_Index)/4)+1			; $40
 id_Springs:				equ ((ptr_Springs-Obj_Index)/4)+1
 id_Newtron:				equ ((ptr_Newtron-Obj_Index)/4)+1

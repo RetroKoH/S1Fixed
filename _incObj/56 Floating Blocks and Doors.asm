@@ -156,8 +156,8 @@ FBlock_Index:	offsetTable
 		offsetTableEntry.w	FBlock_SquareMedium		; Type 09 - moves around in a medium square
 		offsetTableEntry.w	FBlock_SquareBig		; Type $0A - moves around in a large square
 		offsetTableEntry.w	FBlock_SquareBiggest	; Type $0B - moves around in the largest square
-		offsetTableEntry.w	FBlock_LeftButton		; Type $0C - moves left when button is pressed
-		offsetTableEntry.w	FBlock_RightButton		; Type $0D - moves right when button is pressed
+		offsetTableEntry.w	FBlock_Null				; Type $0C - moves left when button is pressed
+		offsetTableEntry.w	FBlock_Null				; Type $0D - moves right when button is pressed
 ; ===========================================================================
 
 ; Type 01 - moves side-to-side
@@ -237,91 +237,6 @@ FBlock_FarRightButton:
 
 	.end:
 		rts	
-; ===========================================================================
-
-; Type $0C - moves left when button is pressed
-FBlock_LeftButton:
-		tst.b	obFBlock_MoveFlag(a0)		; is object moving?
-		bne.s	.chk_distance				; if yes, branch
-		lea		(f_switch).w,a2
-		moveq	#0,d0
-		move.b	obFBlock_ButtonNum(a0),d0
-		btst	#0,(a2,d0.w)				; check status of linked button
-		beq.s	.not_pressed				; branch if not pressed
-		move.b	#1,obFBlock_MoveFlag(a0)	; flag object as moving
-
-	.chk_distance:
-		tst.w	obFBlock_MoveDist(a0)		; is remaining distance = 0?
-		beq.s	.finish						; if yes, branch
-		subq.w	#2,obFBlock_MoveDist(a0)	; decrement distance
-
-	.not_pressed:
-		move.w	obFBlock_MoveDist(a0),d0
-		btst	#staFlipX,obStatus(a0)
-		beq.s	.no_xflip
-		neg.w	d0							; invert if xflipped
-		addi.w	#$80,d0
-
-	.no_xflip:
-		move.w	obFBlock_StartX(a0),d1
-		add.w	d0,d1						; add distance to start position
-		move.w	d1,obX(a0)					; update x pos
-		rts	
-; ===========================================================================
-
-	.finish:
-		addq.b	#1,obSubtype(a0)			; convert to type $D
-		clr.b	obFBlock_MoveFlag(a0)		; clear movement flag
-	; ProjectFM S3K Obj Manager
-		move.w	obRespawnAddr(a0),d0		; get address in respawn table
-		beq.s	.not_pressed				; if it's zero, don't remember object
-		movea.w	d0,a2						; load address into a2
-		bset	#0,(a2)
-	; End
-		bra.s	.not_pressed
-; ===========================================================================
-
-; Type $0D - moves right when button is pressed
-FBlock_RightButton:
-		tst.b	obFBlock_MoveFlag(a0)		; is object moving?
-		bne.s	.chk_distance				; if yes, branch
-		lea		(f_switch).w,a2
-		moveq	#0,d0
-		move.b	obFBlock_ButtonNum(a0),d0
-		tst.b	(a2,d0.w)					; check status of linked button (unused button subtype $4x)
-		bpl.s	.not_pressed				; branch if not pressed
-		move.b	#1,obFBlock_MoveFlag(a0)
-
-	.chk_distance:
-		move.w	#128,d0
-		cmp.w	obFBlock_MoveDist(a0),d0	; has object moved 128 ($80) px?
-		beq.s	.finish						; if yes, branch
-		addq.w	#2,obFBlock_MoveDist(a0)	; increment distance
-
-	.not_pressed:
-		move.w	obFBlock_MoveDist(a0),d0
-		btst	#staFlipX,obStatus(a0)
-		beq.s	.no_xflip
-		neg.w	d0							; invert if xflipped
-		addi.w	#$80,d0
-
-	.no_xflip:
-		move.w	obFBlock_StartX(a0),d1
-		add.w	d0,d1						; add distance to start position
-		move.w	d1,obX(a0)					; update x pos
-		rts	
-; ===========================================================================
-
-	.finish:
-		subq.b	#1,obSubtype(a0)			; convert to type $C
-		clr.b	obFBlock_MoveFlag(a0)		; clear movement flag
-	; ProjectFM S3K Obj Manager
-		move.w	obRespawnAddr(a0),d0		; get address in respawn table
-		beq.s	.not_pressed				; if it's zero, don't remember object
-		movea.w	d0,a2						; load address into a2
-		bclr	#0,(a2)
-	; End
-		bra.s	.not_pressed
 ; ===========================================================================
 
 ; Type 08 - moves around in a small square

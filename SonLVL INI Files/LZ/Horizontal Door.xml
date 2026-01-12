@@ -1,10 +1,6 @@
 <?xml version="1.0"?>
-<ObjDef xmlns="http://www.sonicretro.org" Name="Door" Image="vertical" RememberState="true">
+<ObjDef xmlns="http://www.sonicretro.org" Name="Horizontal Door" Image="horizontal" RememberState="true">
   <Images>
-    <ImageFromMappings id="vertical">
-      <ArtFile filename="../artnem/LZ Vertical Door.nem"/>
-      <MapFile type="ASM" filename="../_maps/Floating Blocks and Doors.asm" frame="6" startpal="2"/>
-    </ImageFromMappings>
     <ImageFromMappings id="horizontal">
       <ArtFile filename="../artnem/LZ Horizontal Door.nem" offset="832"/>
       <MapFile type="ASM" filename="../_maps/Floating Blocks and Doors.asm" frame="7" startpal="2"/>
@@ -12,13 +8,8 @@
   </Images>
   <Properties>
     <BitsProperty name="SwitchID" displayname="Switch ID" type="SwitchID" startbit="0" length="4" />
-    <BitsProperty name="Type" type="DoorType" startbit="4" length="4" />
   </Properties>
   <Enums>
-    <Enum name="DoorType">
-      <EnumMember name="Vertical" value="14" />
-      <EnumMember name="Horizontal" value="15" />
-    </Enum>
     <Enum name="SwitchID">
       <EnumMember name="Switch 00" />
       <EnumMember name="Switch 01" />
@@ -40,11 +31,6 @@
   </Enums>
   <Display>
     <DisplayOption>
-      <Condition property="Type" value="Vertical" />
-      <ImageRef image="vertical" />
-    </DisplayOption>
-    <DisplayOption>
-      <Condition property="Type" value="Horizontal" />
       <ImageRef image="horizontal" xflip="NeverFlip" />
     </DisplayOption>
   </Display>
