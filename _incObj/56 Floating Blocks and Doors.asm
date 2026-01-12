@@ -109,7 +109,7 @@ FBlock_Main:	; Routine 0
 
 FBlock_Action:	; Routine 2
 		move.w	obX(a0),obFBlock_PrevX(a0)		; store current pre-movement x-position
-		moveq	#$F,d0							; get low nybble of subtype  (changed if original was $80+)
+		moveq	#7,d0							; get low bytes of subtype  (changed if original was $80+)
 		and.b	obSubtype(a0),d0				; SCE optimization
 		beq.s	.type00							; skip if subtype 00 (doesn't move)
 		add.w	d0,d0
@@ -152,12 +152,6 @@ FBlock_Index:	offsetTable
 		offsetTableEntry.w	FBlock_Null				; Type 05 - moves up when a button is pressed
 		offsetTableEntry.w	FBlock_Null				; Type 06 - moves down when button is pressed
 		offsetTableEntry.w	FBlock_FarRightButton	; Type 07 - moves far right when button $F is pressed
-		offsetTableEntry.w	FBlock_SquareSmall		; Type 08 - moves around in a small square
-		offsetTableEntry.w	FBlock_SquareMedium		; Type 09 - moves around in a medium square
-		offsetTableEntry.w	FBlock_SquareBig		; Type $0A - moves around in a large square
-		offsetTableEntry.w	FBlock_SquareBiggest	; Type $0B - moves around in the largest square
-		offsetTableEntry.w	FBlock_Null				; Type $0C - moves left when button is pressed
-		offsetTableEntry.w	FBlock_Null				; Type $0D - moves right when button is pressed
 ; ===========================================================================
 
 ; Type 01 - moves side-to-side
@@ -236,98 +230,5 @@ FBlock_FarRightButton:
 		clr.b	obSubtype(a0)				; stop object moving
 
 	.end:
-		rts	
-; ===========================================================================
-
-; Type 08 - moves around in a small square
-FBlock_SquareSmall:
-		moveq	#16,d1
-		moveq	#0,d0
-		move.b	(v_oscillate+$2A).w,d0
-		lsr.w	#1,d0
-		move.w	(v_oscillate+$2C).w,d3
-		bra.s	FBlock_Square_Move
-; ===========================================================================
-
-; Type 09 - moves around in a medium square
-FBlock_SquareMedium:
-		moveq	#48,d1
-		moveq	#0,d0
-		move.b	(v_oscillate+$2E).w,d0
-		move.w	(v_oscillate+$30).w,d3
-		bra.s	FBlock_Square_Move
-; ===========================================================================
-
-; Type $0A - moves around in a large square
-FBlock_SquareBig:
-		moveq	#80,d1
-		moveq	#0,d0
-		move.b	(v_oscillate+$32).w,d0
-		move.w	(v_oscillate+$34).w,d3
-		bra.s	FBlock_Square_Move
-; ===========================================================================
-
-; Type $0B - moves around in the largest square
-FBlock_SquareBiggest:
-		moveq	#112,d1
-		moveq	#0,d0
-		move.b	(v_oscillate+$36).w,d0
-		move.w	(v_oscillate+$38).w,d3
-; ---------------------------------------------------------------------------
-
-FBlock_Square_Move:
-		tst.w	d3		; is oscillating value rate currently 0? (i.e. at peak or nadir of oscillation)
-		bne.s	.keep_going								; if not, branch
-		addq.b	#1,obStatus(a0)							; change direction
-		andi.b	#(maskFlipX+maskFlipY),obStatus(a0)		; prevent bit overflow
-
-	.keep_going:
-		moveq	#(maskFlipX+maskFlipY),d2
-		and.b	obStatus(a0),d2							; read xflip and yflip bits (SCE Optimization)
-		bne.s	.xflip									; branch if either are set
-		sub.w	d1,d0
-		add.w	obFBlock_StartX(a0),d0
-		move.w	d0,obX(a0)								; update position
-		neg.w	d1
-		add.w	obFBlock_StartY(a0),d1
-		move.w	d1,obY(a0)
-		rts	
-; ===========================================================================
-
-	.xflip:
-		subq.b	#1,d2
-		bne.s	.yflip									; branch if yflip bit is set
-		subq.w	#1,d1
-		sub.w	d1,d0
-		neg.w	d0
-		add.w	obFBlock_StartY(a0),d0
-		move.w	d0,obY(a0)								; update position
-		addq.w	#1,d1
-		add.w	obFBlock_StartX(a0),d1
-		move.w	d1,obX(a0)
-		rts	
-; ===========================================================================
-
-	.yflip:
-		subq.b	#1,d2
-		bne.s	.xflip_and_yflip						; branch if xflip and yflip bits are set
-		subq.w	#1,d1
-		sub.w	d1,d0
-		neg.w	d0
-		add.w	obFBlock_StartX(a0),d0
-		move.w	d0,obX(a0)								; update position
-		addq.w	#1,d1
-		add.w	obFBlock_StartY(a0),d1
-		move.w	d1,obY(a0)
-		rts	
-; ===========================================================================
-
-	.xflip_and_yflip:
-		sub.w	d1,d0
-		add.w	obFBlock_StartY(a0),d0
-		move.w	d0,obY(a0)								; update position
-		neg.w	d1
-		add.w	obFBlock_StartX(a0),d1
-		move.w	d1,obX(a0)
 		rts	
 ; ===========================================================================

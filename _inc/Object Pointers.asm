@@ -95,7 +95,7 @@ ptr_BigSpikeBall:		dc.l BigSpikeBall	; $58
 ptr_Elevator:			dc.l Elevator
 ptr_CirclingPlatform:	dc.l CirclingPlatform
 ptr_Staircase:			dc.l Staircase
-ptr_Obj5C:				dc.l DeleteObject	; SLZ Floating Block Contraption (from obj56)
+ptr_RBlock:				dc.l RotatingBlock
 ptr_Fan:				dc.l Fan
 ptr_Seesaw:				dc.l Seesaw
 ptr_Bomb:				dc.l Bomb
@@ -227,7 +227,7 @@ id_BigSpikeBall:		equ ((ptr_BigSpikeBall-Obj_Index)/4)+1		; $58
 id_Elevator:			equ ((ptr_Elevator-Obj_Index)/4)+1
 id_CirclingPlatform:	equ ((ptr_CirclingPlatform-Obj_Index)/4)+1
 id_Staircase:			equ ((ptr_Staircase-Obj_Index)/4)+1
-id_Obj5C:				equ ((ptr_Obj5C-Obj_Index)/4)+1
+id_RBlock:				equ ((ptr_RBlock-Obj_Index)/4)+1
 id_Fan:					equ ((ptr_Fan-Obj_Index)/4)+1
 id_Seesaw:				equ ((ptr_Seesaw-Obj_Index)/4)+1
 id_Bomb:				equ ((ptr_Bomb-Obj_Index)/4)+1
