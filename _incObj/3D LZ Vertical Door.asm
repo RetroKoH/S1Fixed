@@ -13,12 +13,12 @@ LZDoorVert:
 		move.b	#$20,obHeight(a0)	
 		move.b	#6,obFrame(a0)					; will use its own mappings later
 		move.w	obY(a0),obFBlock_StartY(a0)
-		move.w	#$40,obFBlock_MoveDist(a0)		; store full height (from top to bottom)
 
 		moveq	#$F,d0							; read low nybble of subtype
 		and.b	obSubtype(a0),d0				; SCE Optimization
 		move.b	d0,obFBlock_ButtonNum(a0)		; set low nybble of subtype as switch index
 		move.b	#1,obSubtype(a0)				; force subtype to 1: moves up when button is pressed
+		move.w	#$40,obFBlock_MoveDist(a0)		; store full height (from top to bottom)
 
 	; ProjectFM S3K Object Manager
 		move.w	obRespawnAddr(a0),d0			; get address in respawn table
@@ -41,8 +41,8 @@ DoorV_Action:	; Routine 2
 		jsr		DoorV_Index(pc,d1.w)			; move block subroutines
 
 	.type00:
-		tst.b	obRender(a0)
-		bpl.s	.chkdel
+		tst.b	obRender(a0)					; is object on-screen?
+		bpl.s	.chkdel							; if not, branch
 		moveq	#19,d1							; width
 		moveq	#32,d2							; height (jumping)
 		moveq	#33,d3							; height (walking)
@@ -50,14 +50,10 @@ DoorV_Action:	; Routine 2
 		bsr.w	SolidObject
 
 	.chkdel:
-		offscreen.s	.chkdel2					; ProjectFM S3K Object Manager
+		offscreen.s	.delete						; ProjectFM S3K Object Manager
 
 	.display:
 		bra.w	DisplaySprite
-
-	.chkdel2:
-		tst.b	obFBlock_MoveFlag(a0)
-		bne.w	DisplaySprite
 
 	.delete:
 		jmp		(DeleteObject).l

@@ -3475,6 +3475,7 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 
 		include	"_incObj/56 Floating Blocks and Doors.asm"
 		include	"_incObj/3D LZ Vertical Door.asm"
+		include	"_incObj/3F LZ Large Horizontal Door.asm"
 
 		include	"_incObj/57 LZ Chained Spikeball.asm"
 		include "_incObj/4D SYZ Spikeballs.asm"
