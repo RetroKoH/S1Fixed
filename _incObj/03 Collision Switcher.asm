@@ -50,8 +50,8 @@ PSwapper_Init_CheckX:
 ; ===========================================================================
 
 PSwapper_Handle:
-		btst	#0,obRender(a0)
-		bne.s	.jump2
+		btst	#renXFlip,obRender(a0)		; is the object flipped horizontally?
+		bne.s	.jump2						; if yes, branch
 		move.w	#$0C0D,(v_top_solid_bit).w	; MJ: set collision to 1st
 		btst	d5,d0
 		beq.s	.jump2

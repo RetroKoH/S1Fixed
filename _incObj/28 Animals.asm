@@ -119,7 +119,7 @@ Anml_Main:	; Routine 0
 		move.l	d1,obVelX(a0) 				; (obVelX and obVelY)
 		move.b	#$C,obHeight(a0)
 		move.b	#4,obRender(a0)
-		bset	#0,obRender(a0)
+		bset	#renXFlip,obRender(a0)
 		move.w	#priority6,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#8,obDispWid(a0)
 		move.b	#7,obTimeFrame(a0)
@@ -200,7 +200,7 @@ Anml_ChkFloor:		; Routine 2
 		btst	#4,(v_vbla_byte).w			; check bit that changes every 16 frames
 		beq.w	DisplaySprite				; branch if 0
 		neg.w	obVelX(a0)					; reverse direction
-		bchg	#0,obRender(a0)				; change x-flip direction
+		bchg	#renXFlip,obRender(a0)		; x-flip bit change
 		bra.w	DisplaySprite
 ; ===========================================================================
 
@@ -233,7 +233,7 @@ Anml_Type5
 		cmpi.b	#$A,obSubtype(a0)
 		beq.s	.animate
 		neg.w	obVelX(a0)
-		bchg	#0,obRender(a0)				; change x-flip direction
+		bchg	#renXFlip,obRender(a0)		; x-flip bit change
 
 	.animate:
 		subq.b	#1,obTimeFrame(a0)			; decrement timer
@@ -325,7 +325,7 @@ Ending_Squirrel:	; Routine $28
 		not.b	obAnimal_Direction(a0)		; change direction flag
 		bne.s	.no_flip					; branch if 1
 		neg.w	obVelX(a0)					; reverse direction
-		bchg	#0,obRender(a0)
+		bchg	#renXFlip,obRender(a0)		; x-flip bit change
 
 	.no_flip:
 		add.w	d1,obY(a0)					; align to floor
@@ -359,7 +359,7 @@ Ending_Seal:		; Routine $22
 		tst.w	d1							; has object hit the floor?
 		bpl.w	Anml_End_ChkDel				; if not, branch
 		neg.w	obVelX(a0)					; reverse direction
-		bchg	#0,obRender(a0)
+		bchg	#renXFlip,obRender(a0)		; x-flip bit change
 		add.w	d1,obY(a0)					; align to floor
 		move.w	obAnimal_VelY(a0),obVelY(a0)	; reset y speed
 		bra.w	Anml_End_ChkDel
@@ -378,7 +378,7 @@ Ending_Chicken:	; Routine $26
 		not.b	obAnimal_Direction(a0)		; change direction flag
 		bne.s	.no_flip					; branch if 1
 		neg.w	obVelX(a0)					; reverse direction
-		bchg	#0,obRender(a0)				; x-flip bit change
+		bchg	#renXFlip,obRender(a0)		; x-flip bit change
 
 	.no_flip:
 		add.w	d1,obY(a0)					; align to floor
@@ -419,11 +419,11 @@ Anml_End_Update:
 ; ---------------------------------------------------------------------------
 
 Anml_End_ChkDirection:
-		bset	#0,obRender(a0)				; set x-flip bit
+		bset	#renXFlip,obRender(a0)		; set x-flip bit
 		move.w	obX(a0),d0
 		sub.w	(v_player+obX).w,d0			; d0 = distance between Sonic & object (-ve if Sonic is to the right)
 		bcc.s	.exit						; branch if Sonic is to the left
-		bclr	#0,obRender(a0)				; clear x-flip bit
+		bclr	#renXFlip,obRender(a0)		; clear x-flip bit
 
 .exit:
 		rts

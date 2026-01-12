@@ -25,7 +25,7 @@ LargeGrass:
 		move.b	d0,obDispWid(a0)			; set to either $20 (narrow, flat) or $40 (wide, sloped)
 		andi.b	#$F,obSubtype(a0)			; clear high nybble of subtype
 		move.b	#$40,obHeight(a0)
-		bset	#4,obRender(a0)
+		bset	#renUseHeight,obRender(a0)	; set height flag, as this is a larger object
 ; ---------------------------------------------------------------------------
 
 LGrass_Action:

@@ -2931,9 +2931,6 @@ Plat_Exit:
 ; Sloped platform subroutine (GHZ collapsing ledges and	SLZ seesaws)
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
 SlopeObject:
 		lea	(v_player).w,a1
 		tst.w	obVelY(a1)
@@ -2945,8 +2942,8 @@ SlopeObject:
 		add.w	d1,d1
 		cmp.w	d1,d0
 		bhs.s	Plat_Exit
-		btst	#0,obRender(a0)
-		beq.s	loc_754A
+		btst	#renXFlip,obRender(a0)	; is object's sprite flipped horizontally?
+		beq.s	loc_754A				; if not, branch
 		not.w	d0
 		add.w	d1,d0
 
@@ -3117,9 +3114,6 @@ locret_7B62:
 ; Subroutine to	make a platform collapse (GHZ ledge [Obj1A] and floors [Obj53])
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
 CollapseObject:
 		moveq	#0,d0
 		move.b	obFrame(a0),d0
@@ -3132,7 +3126,7 @@ CollapseObject:
 		move.w	(a3)+,d1						; amount of pieces the frame consists of
 		subq.w	#2,d1							; set iterator based on piece count, and decrement for the first part created
 		; S2 BuildSprites end
-		bset	#5,obRender(a0)
+		bset	#renRawMap,obRender(a0)			; fragment is a single sprite part
 		_move.l	obAddr(a0),d2					; ++DeltaW change
 		move.b	obRender(a0),d3					; ++DeltaW change
 		move.w	obGfx(a0),d4					; ++DeltaW addition
@@ -3192,8 +3186,8 @@ SlopeObject2:
 		sub.w	obX(a0),d0
 		add.w	d1,d0
 		lsr.w	#1,d0
-		btst	#0,obRender(a0)
-		beq.s	loc_854E
+		btst	#renXFlip,obRender(a0)	; is object's sprite flipped horizontally?
+		beq.s	loc_854E				; if not, branch
 		not.w	d0
 		add.w	d1,d0
 
@@ -3379,7 +3373,7 @@ ObjectsDisplayOnly:
 	; value to display it as it's being used for coordinate data.
 	; This fix is applied from s2disasm.
 		pea		RunObject.next_object(pc)	; This is an optimisation to avoid the need for extra branches: it makes it so .next_object will be executed after a return
-		btst	#6,obRender(a0)				; Is this a multi-sprite object?
+		btst	#renMultiDraw,obRender(a0)	; Is this a multi-sprite object?
 		beq.w	DisplaySprite				; If not, display using the object's 'priority' value.
 		move.w	#priority4,d0				; If not, display using a hardcoded priority of 4.
 		bra.w	DisplaySprite2

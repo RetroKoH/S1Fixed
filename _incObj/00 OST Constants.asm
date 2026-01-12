@@ -189,6 +189,7 @@ obSwing_Angle:			equ $10				; 2 bytes | precise rotation angle
 obSwing_StartY:			equ objoff_38		; 2 bytes | starting Y-axis position
 obSwing_StartX:			equ objoff_3A		; 2 bytes | starting X-axis position
 obSwing_Radius:			equ objoff_3C		; 1 byte  | distance of chainlink from anchor
+obSwing_Chain:			equ objoff_3E		; 2 bytes
 obSwing_Unk:			equ objoff_3E		; 2 bytes | unused (obBossBall_Speed)
 ; ---------------------------------------------------------------------------
 

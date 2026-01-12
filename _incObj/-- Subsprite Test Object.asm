@@ -3,7 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Obj10:
-		btst	#6,obRender(a0)				; Is this object set to render sub sprites?
+		btst	#renMultiDraw,obRender(a0)	; Is this object set to render sub sprites?
 		beq.s	.normal						; If not, branch
 
 		move.w	#priority4,d0				; RetroKoH/Devon S3K+ Priority Manager

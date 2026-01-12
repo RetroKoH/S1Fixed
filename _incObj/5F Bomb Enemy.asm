@@ -151,7 +151,7 @@ Bom_Fuse_ChkTime:
 
 		bset	#shPropReflect,obShieldProp(a1)	; Reflected by Elemental Shields
 
-		bset	#7,obRender(a1)
+		bset	#renVisible,obRender(a1)		; set object as visible
 
 	; RetroKoH Object Load Optimization -- Based on Spirituinsanum Guides
 	; Here we begin what's replacing FindNextFreeObj. It'll be quicker to loop through here.
@@ -184,7 +184,7 @@ Bom_Fuse_ChkTime:
 
 		bset	#shPropReflect,obShieldProp(a1)	; Reflected by Elemental Shields
 
-		bset	#7,obRender(a1)
+		bset	#renVisible,obRender(a1)		; set object as visible
 
 	.fail:
 		dbf		d1,.loop						; repeat 3 more	times

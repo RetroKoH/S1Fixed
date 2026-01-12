@@ -59,11 +59,11 @@ CFlo_Touch:	; Routine 2
 		bpl.w	RememberState				; if not, branch
 		btst	#staOnObj,obStatus(a1)
 		beq.w	RememberState
-		bclr	#0,obRender(a0)
+		bclr	#renXFlip,obRender(a0)
 		move.w	obX(a1),d0
 		sub.w	obX(a0),d0
 		bcc.w	RememberState				; branch if Sonic is left of the platform
-		bset	#0,obRender(a0)
+		bset	#renXFlip,obRender(a0)
 		bra.w	RememberState
 ; ===========================================================================
 

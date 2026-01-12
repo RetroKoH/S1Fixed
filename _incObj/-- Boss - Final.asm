@@ -55,7 +55,7 @@ BossFinal:
 		move.b	(a3)+,obHeight(a1)
 		move.w	(a3)+,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#4,obRender(a1)
-		bset	#7,obRender(a0)
+		bset	#renVisible,obRender(a0)	; set a0 object as visible (why is this in the loop?)
 		move.w	a0,obBFZ_Parent(a1)			; save obj RAM address of parent (BossFinal_Eggman)
 		dbf		d1,.loop					; repeat 4 more times
 ; ---------------------------------------------------------------------------
