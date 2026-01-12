@@ -149,8 +149,8 @@ FBlock_Index:	offsetTable
 		offsetTableEntry.w	FBlock_LeftRightWide	; Type 02 - moves side-to-side
 		offsetTableEntry.w	FBlock_UpDown			; Type 03 - moves up/down
 		offsetTableEntry.w	FBlock_UpDownWide		; Type 04 - moves up/down (wide distance)
-		offsetTableEntry.w	FBlock_Null				; Type 05 - moves up when a button is pressed
-		offsetTableEntry.w	FBlock_Null				; Type 06 - moves down when button is pressed
+		offsetTableEntry.w	FBlock_UpButton			; Type 05 - moves up when a button is pressed
+		offsetTableEntry.w	FBlock_DownButton		; Type 06 - moves down when button is pressed
 		offsetTableEntry.w	FBlock_FarRightButton	; Type 07 - moves far right when button $F is pressed
 		offsetTableEntry.w	FBlock_SquareSmall		; Type 08 - moves around in a small square
 		offsetTableEntry.w	FBlock_SquareMedium		; Type 09 - moves around in a medium square
@@ -184,8 +184,6 @@ FBlock_LeftRightWide:
 		move.w	obFBlock_StartX(a0),d1
 		sub.w	d0,d1
 		move.w	d1,obX(a0)					; move object horizontally
-
-FBlock_Null:
 		rts		
 ; ===========================================================================
 
@@ -213,7 +211,110 @@ FBlock_UpDownWide:
 		move.w	obFBlock_StartY(a0),d1
 		sub.w	d0,d1
 		move.w	d1,obY(a0)					; move object vertically
-		rts
+		rts	
+; ===========================================================================
+
+; Type 05 - moves up when a button is pressed
+FBlock_UpButton:
+		tst.b	obFBlock_MoveFlag(a0)		; is object moving?
+		bne.s	.chk_distance				; if yes, branch
+		cmpi.w	#(id_LZ<<8)+0,(v_zone).w	; is level LZ1?
+		bne.s	.not_lz1					; if not, branch
+		cmpi.b	#3,obFBlock_ButtonNum(a0)	; is object linked to button 3?
+		bne.s	.not_lz1					; if not, branch
+		clr.b	(f_wtunnelallow).w			; enable water tunnels
+		move.w	(v_player+obX).w,d0
+		cmp.w	obX(a0),d0					; is Sonic to the right?
+		bhs.s	.not_lz1					; if yes, branch
+		move.b	#1,(f_wtunnelallow).w		; disable water tunnels if Sonic is to the left
+
+	.not_lz1:
+		lea		(f_switch).w,a2
+		moveq	#0,d0
+		move.b	obFBlock_ButtonNum(a0),d0
+		btst	#0,(a2,d0.w)				; check status of linked button
+		beq.s	.not_pressed				; branch if not pressed
+		cmpi.w	#(id_LZ<<8)+0,(v_zone).w	; is level LZ1 ?
+		bne.s	.set_moveflag				; if not, branch
+		cmpi.b	#3,d0						; is object linked to button 3?
+		bne.s	.set_moveflag				; if not, branch
+		clr.b	(f_wtunnelallow).w			; enable water tunnels
+
+	.set_moveflag:
+		move.b	#1,obFBlock_MoveFlag(a0)	; flag object as moving
+
+	.chk_distance:
+		tst.w	obFBlock_MoveDist(a0)		; is remaining distance = 0?
+		beq.s	.finish						; if yes, branch
+		subq.w	#2,obFBlock_MoveDist(a0)	; decrement distance
+
+	.not_pressed:
+		move.w	obFBlock_MoveDist(a0),d0
+		btst	#staFlipX,obStatus(a0)
+		beq.s	.no_xflip
+		neg.w	d0							; invert if xflipped
+
+	.no_xflip:
+		move.w	obFBlock_StartY(a0),d1
+		add.w	d0,d1						; add distance to start position
+		move.w	d1,obY(a0)					; update y pos
+		rts	
+; ===========================================================================
+
+	.finish:
+		addq.b	#1,obSubtype(a0)			; convert to type 6
+		clr.b	obFBlock_MoveFlag(a0)		; clear movement flag
+	; ProjectFM S3K Object Manager
+		move.w	obRespawnAddr(a0),d0		; get address in respawn table
+		beq.s	.not_pressed				; if it's zero, don't remember object
+		movea.w	d0,a2						; load address into a2
+		bset	#0,(a2)
+	; End
+		bra.s	.not_pressed
+; ===========================================================================
+
+; Type 06 - moves down when button is pressed
+FBlock_DownButton:
+		tst.b	obFBlock_MoveFlag(a0)		; is object moving?
+		bne.s	.chk_distance				; if yes, branch
+		lea		(f_switch).w,a2
+		moveq	#0,d0
+		move.b	obFBlock_ButtonNum(a0),d0
+		tst.b	(a2,d0.w)					; check status of linked button (unused button subtype $4x)
+		bpl.s	.not_pressed				; branch if not pressed
+		move.b	#1,obFBlock_MoveFlag(a0)
+
+	.chk_distance:
+		moveq	#0,d0
+		move.b	obHeight(a0),d0
+		add.w	d0,d0
+		cmp.w	obFBlock_MoveDist(a0),d0	; has object moved distance equal to its height?
+		beq.s	.finish						; if yes, branch
+		addq.w	#2,obFBlock_MoveDist(a0)	; increment distance
+
+	.not_pressed:
+		move.w	obFBlock_MoveDist(a0),d0
+		btst	#staFlipX,obStatus(a0)
+		beq.s	.no_xflip
+		neg.w	d0							; invert if xflipped
+
+	.no_xflip:
+		move.w	obFBlock_StartY(a0),d1
+		add.w	d0,d1						; add distance to start position
+		move.w	d1,obY(a0)					; update y pos
+		rts	
+; ===========================================================================
+
+	.finish:
+		subq.b	#1,obSubtype(a0)			; convert to type 5
+		clr.b	obFBlock_MoveFlag(a0)		; clear movement flag
+	; ProjectFM S3K Obj Manager
+		move.w	obRespawnAddr(a0),d0		; get address in respawn table
+		beq.s	.not_pressed				; if it's zero, don't remember object
+		movea.w	d0,a2						; load address into a2
+		bclr	#0,(a2)
+	; End
+		bra.s	.not_pressed
 ; ===========================================================================
 
 ; Type 07 - moves far right when button $F is pressed
