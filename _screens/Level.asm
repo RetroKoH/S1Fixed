@@ -368,8 +368,6 @@ Level_ChkWater:
 		bne.s	Level_LoadObj								; if not, branch
 		_move.l	#WaterSurface,(v_watersurface1+obAddr).w	; load water surface object
 		move.w	#$60,(v_watersurface1+obX).w
-		_move.l	#WaterSurface,(v_watersurface2+obAddr).w
-		move.w	#$120,(v_watersurface2+obX).w
 		_move.l	#Splash,(v_splash+obAddr).w					; load splash object
 
 Level_LoadObj:

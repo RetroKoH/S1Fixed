@@ -72,9 +72,10 @@ Hel_MakeSubsprite:
 		dbf		d4,.loop					; repeat for d4 spikes
 
 .done:
+		move.b	#-1,mainspr_mapframe(a1)	; don't render the "main frame"
 		move.w	obHel_OffsetX(a0),d0
 		addi.w	d0,obX(a1)					; x-offset from above (still in d0)
-		move.w	a1,obHel_ChildObj(a0)		; pointer to subsprite object	
+		move.w	a1,obHel_ChildObj(a0)		; pointer to subsprite object
 	; Spiked Log Helix is finished
 ; ---------------------------------------------------------------------------
 

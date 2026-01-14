@@ -206,7 +206,7 @@ BuildSprites_MultiDraw:
 	.drawSprite:
 		moveq	#0,d1
 		move.b	mainspr_mapframe(a0),d1			; get current frame
-		beq.s	.noparenttodraw
+		bmi.s	.noparenttodraw					; certain objects do NOT want the main frame to render (KoH Edit)
 		add.w	d1,d1							; S2 BuildSprites Change .b > .w.
 		movea.l	obMap(a0),a1					; load mappings directly
 		adda.w	(a1,d1.w),a1

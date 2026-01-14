@@ -84,6 +84,8 @@ Bri_MakeSegment:
 		addi.w	#$10,d3						; width of a log, x_pos for next log
 		dbf		d1,.loop					; repeat for d1 logs
 
+		move.b	#-1,mainspr_mapframe(a1)	; don't render the "main frame"
+
 	.return:
 		rts
 ; ===========================================================================
