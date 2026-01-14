@@ -179,6 +179,7 @@ BuildSprites_MultiDraw:
 		beq.s	.assumeHeight					; if not, branch
 		moveq	#0,d0
 		move.b	mainspr_height(a0),d0			; load pixel height
+		move.w	obY(a0),d2
 		sub.w	4(a4),d2						; subtract screen y-pos
 		move.w	d2,d1
 		add.w	d0,d1							; is the object above the screen?
