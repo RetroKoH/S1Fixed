@@ -5588,8 +5588,6 @@ Nem_Weapons_SYZ:	binclude	"artnem/Boss - Weapons - SYZ.nem"	; Removed 1 unneeded
 		even
 Nem_Weapons_SLZ:	binclude	"artnem/Boss - Weapons - SLZ.nem"	; Add Spikeball to this set
 		even
-Nem_Weapons:	binclude	"artnem/Boss - Weapons.nem"
-		even
 Nem_Prison:	binclude	"artnem/Prison Capsule.nem"
 		even
 Nem_Sbz2Eggman:	binclude	"artnem/Boss - Eggman in SBZ2 & FZ.nem"

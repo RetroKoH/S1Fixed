@@ -111,13 +111,13 @@ GBall_Base:	; Routine 2
 	.display:
 		bsr.w	GBall_UpdateBase			; update base animation/position
 		move.b	obAngle(a0),d0
-		jsr		(Swing_MoveAll).l			; update positions of all chain links & ball
+		bsr.w	Swing_MoveAll				; update positions of all chain links & ball
 		jmp		(DisplayAndCollision).l		; S3K TouchResponse
 ; ===========================================================================
 
 GBall_Base2:	; Routine 4
 		bsr.w	GBall_UpdateBase			; update base animation/position
-		jsr		(GBall_Move).l				; update angle and positions of child objects
+		bsr.w	GBall_Move					; update angle and positions of child objects
 		jmp		(DisplayAndCollision).l		; S3K TouchResponse
 ; ===========================================================================
 
@@ -192,4 +192,78 @@ GBall_Angles:
 		dc.b	1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2		; $20 - $2F
 		dc.b	2,2,2,2,3,3,3,3,3,3,3,3,1,1,1,1,1	; $30 - $40
 		even
+; ===========================================================================
+
+; ---------------------------------------------------------------------------
+; Subroutine to update swinging angle and positions for chain links and boss ball
+; (Belongs to the BossBall object)
+; ---------------------------------------------------------------------------
+
+GBall_Move:
+		tst.b	obBossBall_Side(a0)				; is ball on the left side of the screen?
+		bne.s	.left_side						; if yes, branch
+		move.w	obBossBall_Speed(a0),d0
+		addq.w	#8,d0
+		move.w	d0,obBossBall_Speed(a0)			; increase swing speed
+		add.w	d0,obSwing_Angle(a0)			; update angle
+		move.b	obSwing_Angle(a0),obAngle(a0)
+		cmpi.w	#$200,d0						; is speed at max?
+		bne.s	.not_at_highest					; if not, branch
+		move.b	#1,obBossBall_Side(a0)			; switch side flag
+		bra.s	.not_at_highest
+; ===========================================================================
+
+	.left_side:
+		move.w	obBossBall_Speed(a0),d0
+		subq.w	#8,d0
+		move.w	d0,obBossBall_Speed(a0)			; decrease swing speed
+		add.w	d0,obSwing_Angle(a0)			; update angle
+		move.b	obSwing_Angle(a0),obAngle(a0)
+		cmpi.w	#-$200,d0						; is speed at max?
+		bne.s	.not_at_highest					; if not, branch
+		clr.b	obBossBall_Side(a0)				; switch side flag
+
+	.not_at_highest:
+		move.b	obAngle(a0),d0					; get latest angle
+; End of function GBall_Move
+; ===========================================================================
+
+; ---------------------------------------------------------------------------
+; Subroutine to convert angle to position for all chain links
+;
+; input:
+;	d0 = current swing angle
+; ---------------------------------------------------------------------------
+
+;Swing_Move2:
+Swing_MoveAll:
+		calcsine_direct							; convert d0 to sine
+
+		move.w	obSwing_StartY(a0),d2
+		move.w	obSwing_StartX(a0),d3
+		lea		obSubtype(a0),a2				; (a2) = chain length, followed by child OST index list
+		moveq	#0,d6
+		move.b	(a2)+,d6						; get chain length
+
+	.loop:
+		moveq	#0,d4
+		move.b	(a2)+,d4						; get child OST index
+		lsl.w	#object_size_bits,d4
+		addi.l	#v_objspace&$FFFFFF,d4			; convert to RAM address
+		movea.l	d4,a1
+		moveq	#0,d4
+		move.b	obSwing_Radius(a1),d4			; get distance of object from anchor
+		move.l	d4,d5
+		muls.w	d0,d4
+		asr.l	#8,d4
+		muls.w	d1,d5
+		asr.l	#8,d5
+		add.w	d2,d4
+		add.w	d3,d5
+		move.w	d4,obY(a1)						; update position
+		move.w	d5,obX(a1)
+		dbf		d6,.loop						; repeat for all chainlinks and platform
+
+		rts	
+; End of function Swing_MoveAll
 ; ===========================================================================
