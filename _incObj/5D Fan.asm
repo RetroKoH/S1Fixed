@@ -3,14 +3,7 @@
 ; ---------------------------------------------------------------------------
 
 Fan:
-	; LavaGaming Object Routine Optimization
-		tst.b	obRoutine(a0)
-		bne.s	Fan_Delay
-	; Object Routine Optimization End
-; ---------------------------------------------------------------------------
-
-Fan_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)			; -> Fan_Delay
+		_move.l	#Fan_Action,obRoutine(a0)
 		move.l	#Map_Fan,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SLZ_Fan,2,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
@@ -18,7 +11,7 @@ Fan_Main:	; Routine 0
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 ; ---------------------------------------------------------------------------
 
-Fan_Delay:	; Routine 2
+Fan_Action:	; Routine 2
 		btst	#1,obSubtype(a0)			; is object type 02/03 (always on)?
 		bne.s	.blow						; if yes, branch
 		subq.w	#1,obFan_Time(a0)			; subtract 1 from time delay
