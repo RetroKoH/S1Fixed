@@ -9,28 +9,28 @@ SpikeBar:
 		move.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)				; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#8,obDispWid(a0)
-		move.w	obX(a0),obSBall_CenterX(a0)
-		move.w	obY(a0),obSBall_CenterY(a0)
+		move.w	obX(a0),obSBar_CenterX(a0)
+		move.w	obY(a0),obSBar_CenterY(a0)
 		move.b	#(colHarmful|colSz_4x4),obColType(a0)	; SYZ specific code (chain hurts Sonic)
 		move.b	obSubtype(a0),d1						; get object type
 		andi.b	#$F0,d1									; read only the	high nybble
 		ext.w	d1
 		asl.w	#3,d1									; multiply by 8
-		move.w	d1,obSBall_Speed(a0)					; set object twirl speed
+		move.w	d1,obSBar_Speed(a0)						; set object twirl speed
 	; This needs to be examined
 		move.b	obStatus(a0),d0
 		ror.b	#2,d0									; move bits 0-1 into bits 6-7
 		andi.b	#$C0,d0									; read only x/y flip bits
 		move.b	d0,obAngle(a0)							; set initial angle
-		move.b	d0,obSBall_Angle(a0)					; set initial precise angle
+		move.b	d0,obSBar_Angle(a0)						; set initial precise angle
 	; is obStatus always 0???
-		lea		obSBall_ObjCount(a0),a2					; a2 = (a0)'s child address array
+		lea		obSBar_ObjCount(a0),a2					; a2 = (a0)'s child address array
 		move.b	obSubtype(a0),d1						; get object type
 		andi.w	#7,d1									; read only the	2nd digit (max: 7)
 		clr.b	(a2)+
 		move.w	d1,d3
 		lsl.w	#4,d3									; multiply type by $10
-		move.b	d3,obSBall_Radius(a0)					; set as radius
+		move.b	d3,obSBar_Radius(a0)					; set as radius
 		subq.w	#1,d1									; set chain length (type-1)
 		bcs.w	.fail									; if length of 0, branch ahead (invalid)
 		btst	#3,obSubtype(a0)
@@ -53,7 +53,7 @@ SpikeBar:
 		bne.w	.fail									; We're moving this line here.
 
 	.makechain:
-		addq.b	#1,obSBall_ObjCount(a0)					; increment child object counter
+		addq.b	#1,obSBar_ObjCount(a0)					; increment child object counter
 		move.w	a1,d5									; get child object RAM address
 		subi.w	#v_objspace&$FFFF,d5					; subtract base address ($D000)
 		lsr.w	#object_size_bits,d5					; divide by $40
@@ -67,7 +67,7 @@ SpikeBar:
 		move.b	obDispWid(a0),obDispWid(a1)
 		move.b	obColType(a0),obColType(a1)
 		subi.b	#$10,d3									; subtract $10 for radius, each object closer to centre
-		move.b	d3,obSBall_Radius(a1)
+		move.b	d3,obSBar_Radius(a1)
 		dbf		d1,.loop 								; repeat for length of chain
 
 	.fail:
@@ -80,17 +80,17 @@ SpikeBar:
 
 SBar_Move:	; Routine 2
 	; branches removed. We just call the code directly.
-		move.w	obSBall_Speed(a0),d0					; get rotation speed
-		add.w	d0,obSBall_Angle(a0)					; add speed to angle
-		move.b	obSBall_Angle(a0),obAngle(a0)			; load high byte here (to prevent insta-shield bug).
+		move.w	obSBar_Speed(a0),d0						; get rotation speed
+		add.w	d0,obSBar_Angle(a0)						; add speed to angle
+		move.b	obSBar_Angle(a0),obAngle(a0)			; load high byte here (to prevent insta-shield bug).
 		move.b	obAngle(a0),d0							; get updated angle
 
 	; convert to sine/cosine
 		calcsine_direct
 
-		move.w	obSBall_CenterY(a0),d2					; get position of chain base
-		move.w	obSBall_CenterX(a0),d3
-		lea		obSBall_ObjCount(a0),a2
+		move.w	obSBar_CenterY(a0),d2					; get position of chain base
+		move.w	obSBar_CenterX(a0),d3
+		lea		obSBar_ObjCount(a0),a2
 		moveq	#0,d6
 		move.b	(a2)+,d6								; get number of objects
 
@@ -101,7 +101,7 @@ SBar_Move:	; Routine 2
 		addi.l	#v_objspace&$FFFFFF,d4					; convert to RAM address
 		movea.l	d4,a1									; point a1 to address
 		moveq	#0,d4
-		move.b	obSBall_Radius(a1),d4					; get radius for that object
+		move.b	obSBar_Radius(a1),d4					; get radius for that object
 		move.l	d4,d5
 		muls.w	d0,d4
 		asr.l	#8,d4
@@ -113,13 +113,13 @@ SBar_Move:	; Routine 2
 		move.w	d5,obX(a1)
 		dbf		d6,.loop								; repeat for all objects
 
-		offscreen.s	.delete,obSBall_CenterX(a0)			; ProjectFM S3K Object Manager
+		offscreen.s	.delete,obSBar_CenterX(a0)			; ProjectFM S3K Object Manager
 		bra.w	SBall_Display							; Display (+ Collision)
 ; ===========================================================================
 
 	.delete:
 		moveq	#0,d2
-		lea		obSBall_ObjCount(a0),a2
+		lea		obSBar_ObjCount(a0),a2
 		move.b	(a2)+,d2								; get number of objects
 
 	.deleteloop:

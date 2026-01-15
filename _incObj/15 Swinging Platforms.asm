@@ -6,7 +6,7 @@
 ; ----------------------------------------------------------------------------
 
 Swing_Sub:
-		move.w	#priority4,d0	; 4 or 5?
+		move.w	#priority5,d0	; decreased from 4
 		bra.w	DisplaySprite2
 ; ===========================================================================
 
@@ -65,6 +65,7 @@ Swing_Main:
 	; create chain
 		bsr.w	FindNextFreeObj
 		bne.w	Swing_OffScreen
+
 		_move.l	#Swing_Sub,obAddr(a1)			; load subsprite object
 		move.l	obMap(a0),obMap(a1)
 		move.w	obGfx(a0),obGfx(a1)
