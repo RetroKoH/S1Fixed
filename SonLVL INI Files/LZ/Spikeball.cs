@@ -8,7 +8,7 @@ namespace S1ObjectDefinitions.LZ
 {
 	class Spikeball : ObjectDefinition
 	{
-		private int[] labels = { 0, 1, 2 };
+		private int[] labels = { 1, 0, 2 };		// chain, spike, base
 		private Sprite img;
 		private List<Sprite> imgs = new List<Sprite>();
 
