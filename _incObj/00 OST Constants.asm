@@ -431,9 +431,26 @@ obGMake_WaitTime:		equ objoff_32		; 2 bytes | current time remaining
 obGMake_WaitTotal:		equ objoff_34		; 2 bytes | time delay
 ; ---------------------------------------------------------------------------
 
-; Obj4D - MZ Lava Geyser / Lavafall
+; Obj4C (sub) - MZ Lava Geyser / Lavafall
 obGeyser_StartY:		equ objoff_30		; 2 bytes | starting Y-axis position
 obGeyser_Parent:		equ objoff_3E		; 2 bytes | RAM address of parent object
+; ---------------------------------------------------------------------------
+
+; Obj4D - Spiked Balls (SYZ, LZ)
+obSBar_ObjCount:		equ objoff_29		; 1 byte  | number of child objects
+obSBar_ChildObjs:		equ objoff_2A		; 14 bytes| object RAM indices of child objects and parent
+; ^^^ S1Fixed has this documented as 8 bytes. hivebrain has it documented as 14. I need to double check this.
+; If this is indeed 14 bytes, then this could conflict with the Angle OST below.
+; COULD this be one of the things that is corrupting Ring Sprites?
+
+obSBar_Angle:			equ objoff_36		; 2 bytes | precise rotation angle
+	; ^^^ We need this so that obShieldProp isn't overwritten, otherwise
+	; Insta-Shield negates its collision property. Upper byte written to obAngle.
+
+obSBar_CenterY:			equ objoff_38		; 2 bytes | center Y-axis position
+obSBar_CenterX:			equ objoff_3A		; 2 bytes | center X-axis position
+obSBar_Radius:			equ objoff_3C		; 1 byte  | radius
+obSBar_Speed:			equ objoff_3E		; 2 bytes | rate of spin
 ; ---------------------------------------------------------------------------
 
 ; Obj4E - MZ Lava Wall
@@ -477,18 +494,14 @@ obFBlock_ButtonNum:		equ objoff_3C		; 1 byte  | which button the block is linked
 ; ---------------------------------------------------------------------------
 
 ; Obj57 - Spiked Balls (SYZ, LZ)
-obSBall_ObjCount:		equ objoff_29		; 1 byte  | number of child objects
-obSBall_ChildObjs:		equ objoff_2A		; 14 bytes| object RAM indices of child objects and parent
-; ^^^ S1Fixed has this documented as 8 bytes. hivebrain has it documented as 14. I need to double check this.
-; If this is indeed 14 bytes, then this could conflict with the Angle OST below.
-; COULD this be one of the things that is corrupting Ring Sprites?
+obSBall_Chain:			equ objoff_30		; 2 bytes | object RAM indices of child objects and parent
 
 obSBall_Angle:			equ objoff_36		; 2 bytes | precise rotation angle
 	; ^^^ We need this so that obShieldProp isn't overwritten, otherwise
 	; Insta-Shield negates its collision property. Upper byte written to obAngle.
 
-obSBall_CenterY:		equ objoff_38		; 2 bytes | center Y-axis position
-obSBall_CenterX:		equ objoff_3A		; 2 bytes | center X-axis position
+obSBall_CenterX:		equ objoff_38		; 2 bytes | center X-axis position
+obSBall_CenterY:		equ objoff_3A		; 2 bytes | center Y-axis position
 obSBall_Radius:			equ objoff_3C		; 1 byte  | radius
 obSBall_Speed:			equ objoff_3E		; 2 bytes | rate of spin
 ; ---------------------------------------------------------------------------
