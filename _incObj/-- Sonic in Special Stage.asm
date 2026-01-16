@@ -1,12 +1,19 @@
 ; ---------------------------------------------------------------------------
 ; Player Object - Sonic (special stage)
 ; ---------------------------------------------------------------------------
+; OST constants
+obSSSonic_UpDownTime:	equ objoff_30		; 1 byte  | time until UP/DOWN can be triggered again
+obSSSonic_ReverseTime:	equ objoff_31		; 1 byte  | time until Reverse can be triggered again
+obSSSonic_GhostStatus:	equ objoff_32		; 1 byte  | status of ghost blocks (0 = ghost; 1 = passed; 2 = solid)
+obSSSonic_SSItemID:		equ objoff_33		; 1 byte  | item id Sonic is touching
+obSSSonic_SSItemAddr:	equ objoff_34		; 4 bytes | RAM address of item in layout Sonic is touching
+; ---------------------------------------------------------------------------
 
 SonicSpecial:
 		tst.w	(v_debuguse).w					; is debug mode	being used?
 		beq.s	SpSon_Normal					; if not, branch
 		bsr.w	SS_FixCamera					; center camera on Sonic
-		bra.w	DebugMode_SS
+		bra.w	DebugMode_SS					; enter the all-new debug mode
 ; ===========================================================================
 
 SpSon_Normal:
@@ -19,7 +26,6 @@ SpSon_Index:	offsetTable
 		offsetTableEntry.w	SpSon_Main
 		offsetTableEntry.w	SpSon_Action
 		offsetTableEntry.w	SpSon_ExitStage
-		offsetTableEntry.w	SpSon_ExitWait
 ; ===========================================================================
 
 SpSon_Main:		; Routine 0
@@ -340,29 +346,9 @@ SpSon_ExitStage:		; Routine 4
 		move.b	#id_Level,(v_gamemode).w		; set game mode to normal level
 
 	.not_1800:
-		cmpi.w	#$3000,(v_ssrotate).w			; check if it's up to $3000
-		blt.s	.not_3000						; if not, branch
-		clr.w	(v_ssrotate).w					; stop rotation
-		move.w	#$4000,(v_ssangle).w
-		addq.b	#2,obRoutine(a0)				; -> SpSon_ExitWait
-		move.w	#$3C,obSSSonic_RestartTime(a0)
-
-	.not_3000:
 		move.w	(v_ssangle).w,d0
 		add.w	(v_ssrotate).w,d0				; add rotation speed to angle
 		move.w	d0,(v_ssangle).w				; update angle
-		jsr		(Sonic_Animate).l
-		jsr		(Sonic_LoadGfx).l
-		bsr.w	SS_FixCamera
-		jmp		(DisplaySprite).l
-; ===========================================================================
-
-SpSon_ExitWait:		; Routine 6
-		subq.w	#1,obSSSonic_RestartTime(a0)	; decrement timer
-		bne.s	.wait							; branch if time remains
-		move.b	#id_Level,(v_gamemode).w
-
-	.wait:
 		jsr		(Sonic_Animate).l
 		jsr		(Sonic_LoadGfx).l
 		bsr.w	SS_FixCamera

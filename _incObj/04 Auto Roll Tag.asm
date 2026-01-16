@@ -2,6 +2,10 @@
 ; Object 04 - Pinball mode enable/disable
 ; Backported from Sonic 2's Obj84; rewritten by RetroKoH
 ; ----------------------------------------------------------------------------
+; OST constants
+obARoll_Radius:			equ objoff_30		; 2 bytes | width/height of the tag
+obARoll_Flag:			equ objoff_32		; 1 byte  | flag utilized during handling
+; ----------------------------------------------------------------------------
 
 AutoRollTag:
 		move.l	#Map_PathSwapper,obMap(a0)
