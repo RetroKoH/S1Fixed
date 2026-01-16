@@ -103,7 +103,7 @@ ptr_Orbinaut:			dc.l Orbinaut		; $60
 ptr_LabyrinthBlock:		dc.l LabyrinthBlock
 ptr_Gargoyle:			dc.l Gargoyle
 ptr_LabyrinthConvey:	dc.l LabyrinthConvey
-ptr_Bubble:				dc.l Bubble
+ptr_Bubbler:			dc.l Bubbler
 ptr_Waterfall:			dc.l Waterfall
 ptr_Junction:			dc.l Junction
 ptr_RunningDisc:		dc.l RunningDisc
@@ -235,7 +235,7 @@ id_Orbinaut:			equ ((ptr_Orbinaut-Obj_Index)/4)+1			; $60
 id_LabyrinthBlock:		equ ((ptr_LabyrinthBlock-Obj_Index)/4)+1
 id_Gargoyle:			equ ((ptr_Gargoyle-Obj_Index)/4)+1
 id_LabyrinthConvey:		equ ((ptr_LabyrinthConvey-Obj_Index)/4)+1
-id_Bubble:				equ ((ptr_Bubble-Obj_Index)/4)+1
+id_Bubbler:				equ ((ptr_Bubbler-Obj_Index)/4)+1
 id_Waterfall:			equ ((ptr_Waterfall-Obj_Index)/4)+1
 id_Junction:			equ ((ptr_Junction-Obj_Index)/4)+1
 id_RunningDisc:			equ ((ptr_RunningDisc-Obj_Index)/4)+1
