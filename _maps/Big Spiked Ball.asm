@@ -19,8 +19,8 @@ Map_BBall:	mappingsTable
 .chain_End
 
 .anchor:	spriteHeader
-	spritePiece	-$10, -8, 4, 2, $18, 0, 0, 0, 0
-	spritePiece	-$10, -$18, 4, 2, $18, 0, 1, 0, 0
+	spritePiece	-$10, -8, 4, 2, $18, 0, 0, 1, 0
+	spritePiece	-$10, -$18, 4, 2, $18, 0, 1, 1, 0
 .anchor_End
 
 	even

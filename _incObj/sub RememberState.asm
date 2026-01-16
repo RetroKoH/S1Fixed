@@ -3,20 +3,16 @@
 ; ---------------------------------------------------------------------------
 
 RememberState:
-		out_of_range.w	.offscreen
+		out_of_range.s	State_OffScreen
+
+DisplayAndCollision:
 		bsr.w	DisplaySprite
-		bra.s	Add_SpriteToCollisionResponseList
+; fallthrough to Add_SpriteToCollisionResponseList
 
-.offscreen:
-		move.w	obRespawnAddr(a0),d0	; get address in respawn table
-		beq.w	DeleteObject		; if it's zero, don't remember object
-		movea.w	d0,a2				; load address into a2
-		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again
-		bra.w	DeleteObject
-
-; -----------------------------------------------------------------------------------------------------------
-; Subroutine to collide an object with player (so it works under S3K's touch collision response list
-; -----------------------------------------------------------------------------------------------------------
+; ---------------------------------------------------------------------------
+; Subroutine to collide an object with player
+; (so it works under S3K's touch collision response list)
+; ---------------------------------------------------------------------------
 
 Add_SpriteToCollisionResponseList:
 		lea		(v_col_response_list).w,a1
@@ -29,7 +25,12 @@ Add_SpriteToCollisionResponseList:
 	.return:
 		rts
 ; End of function Add_SpriteToCollisionResponseList
-; ---------------------------------------------------------------------------
-DisplayAndCollision:
-		bsr.w	DisplaySprite
-		bra.s	Add_SpriteToCollisionResponseList
+; ===========================================================================
+
+State_OffScreen:
+		move.w	obRespawnAddr(a0),d0	; get address in respawn table
+		beq.w	DeleteObject		; if it's zero, don't remember object
+		movea.w	d0,a2				; load address into a2
+		bclr	#7,(a2)				; clear respawn table entry, so object can be loaded again
+		bra.w	DeleteObject
+; ===========================================================================
