@@ -2,7 +2,6 @@
 ; Object 15 - swinging platforms (GHZ, MZ, SLZ)
 ;			- spiked ball on a chain (SBZ)
 ; Adapted from Sonic Clean Engine
-; TO-DO: The old wrecking ball will become its own object, using this object's swing motion
 ; ----------------------------------------------------------------------------
 
 Swing_Sub:
@@ -54,7 +53,7 @@ Swing_Main:
 	; SBZ specific code
 		addq.b	#4,obRoutine(a0)				; initialize to spikeball routine (6)
 		move.l	#Map_BBall,d0
-		move.w	#make_art_tile(ArtTile_SYZ_Big_Spikeball,0,0),d1
+		move.w	#make_art_tile(ArtTile_SYZ_Big_Spikeball,1,0),d1
 		move.b	#$18,obHeight(a0)
 		move.b	#(colHarmful|colSz_16x16),obColType(a0)
 
@@ -63,7 +62,7 @@ Swing_Main:
 		move.w	d1,obGfx(a0)
 
 	; create chain
-		bsr.w	FindNextFreeObj
+		bsr.w	FindFreeObj
 		bne.w	Swing_OffScreen
 
 		_move.l	#Swing_Sub,obAddr(a1)			; load subsprite object
@@ -152,7 +151,7 @@ Swing_SpikeChkDel:
         sub.w	d1,d0					; approx distance between object and screen
         cmpi.w	#$280,d0
         bhi.w	Swing_OffScreen
-		bra.w	DisplaySprite
+		bra.w	DisplayAndCollision
 ; ===========================================================================
 
 Swing_Action2:	; Routine 4
