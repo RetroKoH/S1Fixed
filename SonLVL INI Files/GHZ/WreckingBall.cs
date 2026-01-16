@@ -6,25 +6,27 @@ using SonicRetro.SonLVL.API;
 
 namespace S1ObjectDefinitions.GHZ
 {
-	class SwingingPlatform : ObjectDefinition
+	class WreckingBall : ObjectDefinition
 	{
 		private int[] labels = { 0, 1, 2 };		// Platform, Chain, Anchor
+		private Sprite imgwreckingball;
 		private List<Sprite> imgs = new List<Sprite>();
 
 		public override void Init(ObjectData data)
 		{
+			imgwreckingball = ObjectHelper.MapASMToBmp(ObjectHelper.OpenArtFile("../artnem/GHZ Giant Ball.nem", CompressionType.Nemesis), "../_maps/GHZ Ball.asm", 1, 2);
 			for (int i = 0; i < labels.Length; i++)
 				imgs.Add(ObjectHelper.MapASMToBmp(ObjectHelper.OpenArtFile("../artnem/GHZ Swinging Platform.nem", CompressionType.Nemesis), "../_maps/Swinging Platforms (GHZ).asm", labels[i], i == 1 ? 0 : 1));
 		}
 
 		public override ReadOnlyCollection<byte> Subtypes
 		{
-			get { return new ReadOnlyCollection<byte>(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 }); }
+			get { return new ReadOnlyCollection<byte>(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7 }); }
 		}
 
 		public override string Name
 		{
-			get { return "Swinging Platform"; }
+			get { return "Wrecking Ball"; }
 		}
 
 		public override bool RememberState
@@ -34,18 +36,18 @@ namespace S1ObjectDefinitions.GHZ
 
 		public override string SubtypeName(byte subtype)
 		{
-				return (subtype & 0x0F) + " links";
+				return (subtype & 0x0F) + " links + ball";
 		}
 
 		public override Sprite Image
 		{
-			get { return imgs[0]; }
-		}
+			get { return imgwreckingball; }     // override the platform frame with the wrecking ball
+        }
 
 		public override Sprite SubtypeImage(byte subtype)
 		{
-				return imgs[0];
-		}
+				return imgwreckingball;     // override the platform frame with the wrecking ball
+        }
 
 		public override Sprite GetSprite(ObjectEntry obj)
 		{
@@ -60,7 +62,7 @@ namespace S1ObjectDefinitions.GHZ
 				yoff += 16;
 			}
 			yoff -= 8;
-			Sprite tm2 = new Sprite(imgs[0]);
+			Sprite tm2 = new Sprite(imgwreckingball);
 			tm2.Offset(0, yoff);
 			sprs.Add(tm2);
 			return new Sprite(sprs.ToArray());

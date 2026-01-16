@@ -3012,15 +3012,14 @@ loc_75E0:
 locret_75F2:
 		rts	
 ; End of function ExitPlatform
+; ===========================================================================
 
 		include	"_incObj/15 Swinging Platforms.asm"
+		include	"_incObj/14 GHZ Swinging Ball.asm"
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	change Sonic's position with a platform
 ; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
 
 MvSonicOnPtfm:
 		lea		(v_player).w,a1
@@ -3028,6 +3027,7 @@ MvSonicOnPtfm:
 		sub.w	d3,d0
 		bra.s	MvSonic2
 ; End of function MvSonicOnPtfm
+; ===========================================================================
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	change Sonic's position with a platform
