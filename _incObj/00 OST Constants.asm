@@ -65,7 +65,8 @@ obBossWeapon_Parent:	equ objoff_3E		; 2 bytes | parent address (Eggman's ship)
 ; ---------------------------------------------------------------------------
 
 ; ---------------------------------------------------------------------------
-; All object-specific OST constants are defined below
+; Sonic-specific OST constants are defined below
+; Object-specific OST constants are defined in their respective files
 ; ---------------------------------------------------------------------------
 
 ; Obj01 - Sonic
@@ -98,30 +99,6 @@ obWallJump:				equ $28				; 2 bytes | used for wall jumps
 obSpinDashFlag:			equ obAutoRollFlag	; 1 byte  | spin dash/peelout flag
 obSpinDashCounter:		equ obRestartTimer	; 2 bytes | Counter used for the Spin Dash and/or Peelout
 	endif
-; ---------------------------------------------------------------------------
-
-; Obj03 - Path Swapper Tag
-obPSwap_Radius:			equ objoff_32		; 2 bytes | width/height of the tag
-obPSwap_Flag:			equ objoff_34		; 1 byte  | flag utilized during handling
-; ---------------------------------------------------------------------------
-
-; Obj04 - Auto Roll Tag (identical to Obj03)
-obARoll_Radius:			equ obPSwap_Radius	; 2 bytes | width/height of the tag
-obARoll_Flag:			equ obPSwap_Flag	; 1 byte  | flag utilized during handling
-; ---------------------------------------------------------------------------
-
-; Obj07 - Dust Effects
-obEff_DustTimer:		equ objoff_32		; 1 byte  | timer for generating dust
-obEff_PrevFrame:		equ objoff_3F		; 1 byte  | stored frame for DPLC handling
-; ---------------------------------------------------------------------------
-
-; Obj09 - Special Stage Sonic
-obSSSonic_SSItemID:		equ objoff_30		; 1 byte  | item id Sonic is touching
-obSSSonic_SSItemAddr:	equ objoff_32		; 4 bytes | RAM address of item in layout Sonic is touching
-obSSSonic_UpDownTime:	equ objoff_36		; 1 byte  | time until UP/DOWN can be triggered again
-obSSSonic_ReverseTime:	equ objoff_37		; 1 byte  | time until Reverse can be triggered again
-obSSSonic_RestartTime:	equ objoff_38		; 2 bytes | time until game mode changes after exiting SS (nonfunctional)
-obSSSonic_GhostStatus:	equ objoff_3A		; 1 byte  | status of ghost blocks (0 = ghost; 1 = passed; 2 = solid)
 ; ---------------------------------------------------------------------------
 
 ; Obj0A - LZ Drowning Countdown Numbers

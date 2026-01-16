@@ -2,6 +2,10 @@
 ; Object 03 - Collision plane/layer switcher
 ; Backported from Sonic 2's object for Sonic 1: Two-Eight; rewritten by RetroKoH
 ; ----------------------------------------------------------------------------
+; OST constants
+obPSwap_Radius:			equ objoff_30		; 2 bytes | width/height of the tag
+obPSwap_Flag:			equ objoff_32		; 1 byte  | flag utilized during handling
+; ----------------------------------------------------------------------------
 
 PathSwapper:
 		move.l	#Map_PathSwapper,obMap(a0)
