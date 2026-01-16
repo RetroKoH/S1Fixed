@@ -1,6 +1,11 @@
 ; ----------------------------------------------------------------------------
-; Object - Visual Effects (Spin Dash, Skid Dust, Drop Dash Dust)
+; Dynamic Object - Dust Effects (Skid, Spin/Drop Dash)
 ; ----------------------------------------------------------------------------
+; OST constants
+obEff_DustTimer:		equ objoff_30		; 1 byte  | timer for generating dust
+obEff_PrevFrame:		equ objoff_3F		; 1 byte  | stored frame for DPLC handling
+; ----------------------------------------------------------------------------
+
 Effects:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0 
