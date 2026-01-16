@@ -3511,7 +3511,7 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 		include	"_incObj/48 LZ Rising Platform.asm"		; formerly sub 13
 		include	"_incObj/4A LZ Cork.asm"				; formerly sub 27
 		include	"_incObj/62 Gargoyle.asm"
-		include	"_incObj/63 LZ Conveyor.asm"
+		include	"_incObj/63 Conveyor Spawner.asm"
 		include	"_incObj/64 Bubbles.asm"
 		include	"_anim/Bubbles.asm"
 		include	"_incObj/65 Waterfalls.asm"
@@ -4159,7 +4159,8 @@ locret_15098:
 		include	"_incObj/6E Electrocuter.asm"
 		include	"_anim/Electrocuter.asm"
 
-		include	"_incObj/6F SBZ Spin Platform Conveyor.asm"
+		include	"_incObj/-- LZ Conveyor Platform.asm"
+		include	"_incObj/-- SBZ Conveyor Platform.asm"
 		include	"_anim/SBZ Spin Platform Conveyor.asm"
 
 		include	"_incObj/70 Girder Block.asm"
@@ -6216,16 +6217,6 @@ ObjPos_Index:
 		dc.l ObjPos_End
 		dc.l ObjPos_End
 		; --- Put extra object data here. ---
-ObjPosLZPlatform_Index:
-		dc.l ObjPos_LZ1pf1, ObjPos_LZ1pf2
-		dc.l ObjPos_LZ2pf1, ObjPos_LZ2pf2
-		dc.l ObjPos_LZ3pf1, ObjPos_LZ3pf2
-		dc.l ObjPos_LZ1pf1, ObjPos_LZ1pf2
-ObjPosSBZPlatform_Index:
-		dc.l ObjPos_SBZ1pf1, ObjPos_SBZ1pf2
-		dc.l ObjPos_SBZ1pf3, ObjPos_SBZ1pf4
-		dc.l ObjPos_SBZ1pf5, ObjPos_SBZ1pf6
-		dc.l ObjPos_SBZ1pf1, ObjPos_SBZ1pf2
 
 		dc.b $FF, $FF, 0, 0, 0,	0
 

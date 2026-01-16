@@ -1,5 +1,5 @@
 ; ---------------------------------------------------------------------------
-; Object 6F - spinning platforms that move around a conveyor belt (SBZ)
+; Object - spinning platforms that move around a conveyor belt (SBZ)
 ; ---------------------------------------------------------------------------
 
 SpinConvey:
@@ -10,36 +10,6 @@ SpinConvey:
 ; ---------------------------------------------------------------------------
 
 SpinC_Main:	; Routine 0
-	; Clownacy DisplaySprite Fix (Alt Method by RetroKoH)
-		bsr.s	SpinC_Init
-		offscreen.s	SpinC_ChkDel,SpinCon_CenterX(a0)	; ProjectFM
-
-SpinC_Display:	; Clownacy DisplaySprite Fix (Alt Method by RetroKoH)
-		jmp		(DisplaySprite).l
-; ===========================================================================
-
-SpinC_ChkDel:
-		cmpi.b	#2,(v_act).w				; check if act is 3
-		bne.s	.not_act3					; if not, branch
-		cmpi.w	#-$80,d0					; is object to the right?
-		bhs.s	SpinC_Display				; if yes, branch
-
-	.not_act3:
-		move.b	SpinCon_SpawnerType(a0),d0	; get original subtype
-		bpl.s	SpinC_Delete				; branch if not the parent object
-		andi.w	#$7F,d0
-		lea		(v_conveyactive).w,a2
-		bclr	#0,(a2,d0.w)
-
-SpinC_Delete:
-		jmp		(DeleteObject).l
-; ===========================================================================
-
-SpinC_Init:
-		move.b	obSubtype(a0),d0			; is this the conveyor group spawner?
-		bmi.w	SpinC_Spawner				; if yes (subtype >= $80), branch
-
-	; Continue onward for platforms created by the spawner
 		addq.b	#2,obRoutine(a0)			; -> SpinC_Solid
 		move.l	#Map_Spin,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SBZ_Spinning_Platform,0,0),obGfx(a0)
@@ -100,71 +70,32 @@ SpinC_Init:
 	.not_btm_right:
 ; ---------------------------------------------------------------------------
 		bsr.w	LCon_PlatformMove				; begin platform movement
-		bra.w	SpinC_Solid						; jump down to routine 2
+		bra.w	SpinC_Solid
 ; ===========================================================================
 
-SpinC_Spawner:
-		move.b	d0,SpinCon_SpawnerType(a0)		; move spawner subtype to $2F(a0)
-		andi.w	#$7F,d0							; clear upper-most bit of subtype to isolate platform group ID
+SpinC_ChkDel:
+		cmpi.b	#2,(v_act).w				; check if act is 3
+		bne.s	.not_act3					; if not, branch
+		cmpi.w	#-$80,d0					; is object to the right?
+		bhs.s	SpinC_Display				; if yes, branch
+
+	.not_act3:
+		move.b	SpinCon_SpawnerType(a0),d0	; get original subtype
+		bpl.s	SpinC_Delete				; branch if not the parent object
+		andi.w	#$7F,d0
 		lea		(v_conveyactive).w,a2
-		bset	#0,(a2,d0.w)					; set this group's respective bit
-		beq.s	.not_set
-		jmp		(DeleteObject).l				; if it was already set, delete this spawner object, as it's not needed.
-; ===========================================================================
+		bclr	#0,(a2,d0.w)
 
-	.not_set:
-		add.w	d0,d0							; multiply platform group ID by 2 (use for word AND longword pointers)
-		add.w	d0,d0							; multiply platform group ID by 4 (use only for longword pointers)
-		andi.w	#$1E,d0							; capped at $10 groups of platforms (0-$F)
-
-	; RetroKoH Object Loading Optimization
-		lea		(ObjPosSBZPlatform_Index).l,a2	; Next, we load the first pointer in the object layout list pointer index,
-		movea.l (a2,d0.w),a2					; Changed from adda.w to movea.l for longword object layout pointers
-;		adda.w	(a2,d0.w),a2					; a2 = positioning data for this platform group (use only for word-length pointers)
-
-		move.w	(a2)+,d1						; d1 = number of platforms - 1
-		movea.l	a0,a1
-
-	; RetroKoH Mass Object Load Optimization; Built off of Spirituinsanum's Ring Loss Optimization
-	; Create the first instance, then loop to create the others afterward.
-	.firstPlatform:
-		_move.l	#SpinConvey,obAddr(a1)
-		move.w	(a2)+,obX(a1)					; set x-position
-		move.w	(a2)+,obY(a1)					; set y-position
-		move.w	(a2)+,d0
-		move.b	d0,obSubtype(a1)				; set subtype, discarding upper byte
-		subq	#1,d1							; decrement for the first platform created
-		bmi.s	.endloop						; if, somehow, only one platform is needed, skip
-
-	; Here we begin what's replacing FindFreeObj, in order to avoid resetting its d0 every time an object is created.
-	; Slight improvement by Malachi
-		lea		(v_lvlobjspace-object_size).w,a1
-		move.w	#v_lvlobjcount,d2
-
-	.loop:
-	; REMOVE FindFreeObj. It's the routine that causes such slowdown
-		lea		object_size(a1),a1
-		tst.l	obAddr(a1)						; is object RAM	slot empty?
-		dbeq	d2,.loop						; branch correction again.
-		bne.s	.endloop						; we're moving this line here.
-
-	.makePtfms:
-		_move.l	#SpinConvey,obAddr(a1)
-		move.w	(a2)+,obX(a1)					; set x-position
-		move.w	(a2)+,obY(a1)					; set y-position
-		move.w	(a2)+,d0
-		move.b	d0,obSubtype(a1)				; set subtype, discarding upper byte
-		dbf		d1,.loop						; repeat for number of platforms
-
-	.endloop:
-		addq.l	#4,sp
-		rts	
+SpinC_Delete:
+		jmp		(DeleteObject).l
 ; ===========================================================================
 
 SpinC_Solid:	; Routine 2
 	; Clownacy DisplaySprite Fix (Alt Method by RetroKoH)
 		bsr.s	SpinC_Rout2
-		offscreen.w	SpinC_ChkDel,SpinCon_CenterX(a0)
+		offscreen.s	SpinC_ChkDel,SpinCon_CenterX(a0)
+
+SpinC_Display:	; Clownacy DisplaySprite Fix (Alt Method by RetroKoH)
 		jmp		(DisplaySprite).l
 ; ===========================================================================
 

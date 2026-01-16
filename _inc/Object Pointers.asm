@@ -102,7 +102,7 @@ ptr_Bomb:				dc.l Bomb
 ptr_Orbinaut:			dc.l Orbinaut		; $60
 ptr_LabyrinthBlock:		dc.l LabyrinthBlock
 ptr_Gargoyle:			dc.l Gargoyle
-ptr_LabyrinthConvey:	dc.l LabyrinthConvey
+ptr_ConveyorSpawner:	dc.l ConveyorSpawner
 ptr_Bubbler:			dc.l Bubbler
 ptr_Waterfall:			dc.l Waterfall
 ptr_Junction:			dc.l Junction
@@ -114,7 +114,7 @@ ptr_ScrapStomp:			dc.l ScrapStomp
 ptr_VanishPlatform:		dc.l VanishPlatform
 ptr_Flamethrower:		dc.l Flamethrower
 ptr_Electro:			dc.l Electro
-ptr_SpinConvey:			dc.l SpinConvey
+ptr_Obj6F:				dc.l DeleteObject
 ptr_Girder:				dc.l Girder			; $70
 ptr_Invisibarrier:		dc.l Invisibarrier
 ptr_Teleport:			dc.l Teleport
@@ -234,7 +234,7 @@ id_Bomb:				equ ((ptr_Bomb-Obj_Index)/4)+1
 id_Orbinaut:			equ ((ptr_Orbinaut-Obj_Index)/4)+1			; $60
 id_LabyrinthBlock:		equ ((ptr_LabyrinthBlock-Obj_Index)/4)+1
 id_Gargoyle:			equ ((ptr_Gargoyle-Obj_Index)/4)+1
-id_LabyrinthConvey:		equ ((ptr_LabyrinthConvey-Obj_Index)/4)+1
+id_ConveyorSpawner:		equ ((ptr_ConveyorSpawner-Obj_Index)/4)+1
 id_Bubbler:				equ ((ptr_Bubbler-Obj_Index)/4)+1
 id_Waterfall:			equ ((ptr_Waterfall-Obj_Index)/4)+1
 id_Junction:			equ ((ptr_Junction-Obj_Index)/4)+1
@@ -246,7 +246,7 @@ id_ScrapStomp:			equ ((ptr_ScrapStomp-Obj_Index)/4)+1
 id_VanishPlatform:		equ ((ptr_VanishPlatform-Obj_Index)/4)+1
 id_Flamethrower:		equ ((ptr_Flamethrower-Obj_Index)/4)+1
 id_Electro:				equ ((ptr_Electro-Obj_Index)/4)+1
-id_SpinConvey:			equ ((ptr_SpinConvey-Obj_Index)/4)+1
+id_Obj6F:				equ ((ptr_Obj6F-Obj_Index)/4)+1
 id_Girder:				equ ((ptr_Girder-Obj_Index)/4)+1			; $70
 id_Invisibarrier:		equ ((ptr_Invisibarrier-Obj_Index)/4)+1
 id_Teleport:			equ ((ptr_Teleport-Obj_Index)/4)+1
