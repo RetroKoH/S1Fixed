@@ -100,7 +100,7 @@ standards:	macro
 	dbug	Map_Orb,		id_Orbinaut,		0,		0,		make_art_tile(ArtTile_Orbinaut,0,0)				; LZ Orbinaut
 	dbug	Map_Orb,		id_Orbinaut,		2,		0,		make_art_tile(ArtTile_Orbinaut,1,0)				; SLZ Orbinaut
 	; Level Objects
-	dbug	Map_Bub,		id_Bubble,			$84,	$13,	make_art_tile(ArtTile_LZ_Bubbles,0,1)			; Bubble Spawner
+	dbug	Map_Bub,		id_Bubbler,			$84,	$13,	make_art_tile(ArtTile_LZ_Bubbles,0,1)			; Bubble Spawner
 	dbug	Map_Harp,		id_Harpoon,			$10,	0,		make_art_tile(ArtTile_LZ_Harpoon,0,0)			; Vertical Harpoon
 	dbug	Map_Harp,		id_Harpoon,			$12,	3,		make_art_tile(ArtTile_LZ_Harpoon,0,0)			; Horizontal Harpoon
 	dbug	Map_Gar,		id_Gargoyle,		0,		0,		make_art_tile(ArtTile_LZ_Gargoyle,2,0)			; Gargoyle

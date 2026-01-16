@@ -601,15 +601,15 @@ LCon_Reverse:			equ objoff_3B		; 1 byte  | 1 = conveyors run in reverse
 LCon_DataAddr:			equ objoff_3C		; 4 bytes | address where platform's position data is located
 ; ---------------------------------------------------------------------------
 
-; Obj64 - LZ Bubbles
-obBubble_Inhalable		equ objoff_2E		; 2 bytes | flag set when bubble is collectable
-obBubble_StartX:		equ objoff_30		; 2 bytes | starting X-axis position
-obBubble_WaitTime:		equ objoff_32		; 1 byte  | time until next bubble spawn
-obBubble_WaitMaster:	equ objoff_33		; 1 byte  | time between bubble spawns
+; Obj64 - LZ Bubbler & Bubbles
+obBubble_Inhalable:		equ objoff_2E		; 2 bytes | flag set when bubble is collectable (sub only)
+obBubble_StartX:		equ objoff_30		; 2 bytes | starting X-axis position (sub only)
+obBubble_WaitTime:		equ objoff_32		; 1 byte  | time until next bubble spawn (master only)
+obBubble_WaitMaster:	equ objoff_33		; 1 byte  | time between bubble spawns (master only)
 obBubble_MiniCount:		equ objoff_34		; 1 byte  | number of smaller bubbles to spawn
-obBubble_Flag:			equ objoff_36		; 2 bytes | 1 = bubbles currently spawning; +$4000 = large bubble spawned; +$8000 = allow large bubble
-obBubble_RandomTime:	equ objoff_38		; 2 bytes | randomised time between mini bubble spawns
-obBubble_TypeList:		equ objoff_3C		; 4 bytes | address of bubble type list
+obBubble_Flag:			equ objoff_35		; 1 byte  | 1 = bubbles currently spawning; +$40 = large bubble spawned; +$80 = allow large bubble
+obBubble_RandomTime:	equ objoff_36		; 2 bytes | randomised time between mini bubble spawns
+obBubble_TypeList:		equ objoff_38		; 4 bytes | address of bubble type list
 ; ---------------------------------------------------------------------------
 
 ; Obj66 - SBZ Rotating Junction
