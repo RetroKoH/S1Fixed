@@ -4145,6 +4145,7 @@ locret_15098:
 		include	"_incObj/69 SBZ Spinning Platforms.asm"
 		include	"_anim/SBZ Spinning Platforms.asm"
 		include	"_incObj/73 SBZ Trapdoor.asm"				; split from Obj69
+		include	"_anim/SBZ Trapdoor.asm"
 
 		include	"_incObj/6A Saws and Pizza Cutters.asm"
 

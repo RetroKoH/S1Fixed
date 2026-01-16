@@ -9,7 +9,6 @@ SpinPlatform:
 		ori.b	#4,obRender(a0)
 		move.w	#priority4,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$10,obDispWid(a0)
-		move.b	#2,obAnim(a0)
 
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0			; load subtype for repeated use
