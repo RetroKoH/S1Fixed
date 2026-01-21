@@ -1,8 +1,15 @@
 ; ---------------------------------------------------------------------------
-; Object - drowning countdown numbers and small bubbles that float out of
-; Sonic's mouth (LZ)
-;
-; To-Do: (Does S1Squared change how these are spawned in)?
+; Dynamic Object - drown countdown numbers and tiny bubbles from Sonic's mouth (LZ)
+; ---------------------------------------------------------------------------
+; OST constants
+obDrown_RestartTime:	equ objoff_2C		; 2 bytes | time to restart after Sonic drowns
+obDrown_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
+obDrown_DisplayTime:	equ objoff_32		; 1 byte  | time to display each number
+obDrown_BubbleType:		equ objoff_33		; 1 byte  | bubble type
+obDrown_ExtraBubbles:	equ objoff_34		; 1 byte  | number of extra bubbles to create
+obDrown_ExtraFlag:		equ objoff_36		; 2 bytes | flags for extra bubbles
+obDrown_NumberTime:		equ objoff_38		; 2 bytes | time between each number changes
+obDrown_DelayTime:		equ objoff_3A		; 2 bytes | delay between bubbles
 ; ---------------------------------------------------------------------------
 
 DrownCount:

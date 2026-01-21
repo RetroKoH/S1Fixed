@@ -1,6 +1,13 @@
 ; ---------------------------------------------------------------------------
 ; Object 33 - pushable blocks (MZ, LZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obPushB_LavaSpeed:		equ objoff_30		; 2 bytes | x axis speed when block is on lava
+obPushB_LavaFlag:		equ objoff_32		; 1 byte  | 1 = block is on lava
+obPushB_StartX:			equ objoff_34		; 2 bytes | starting X-axis position
+obPushB_StartY:			equ objoff_36		; 2 bytes | starting Y-axis position
+obPushB_PrevX:			equ objoff_38		; 2 bytes | previous X-axis position (used instead of pushing to the stack)
+; ---------------------------------------------------------------------------
 
 PushBlock:
 		moveq	#0,d0

@@ -2,6 +2,11 @@
 ; Object 14 - swinging ball (GHZ)
 ; Based on Object 15, which was adapted from Sonic Clean Engine
 ; ----------------------------------------------------------------------------
+; OST Constants (Shared with Object 15)
+;obSwing_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
+;obSwing_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position
+;obSwing_Chain:				equ objoff_3E		; 2 bytes | object RAM address of chain
+; ----------------------------------------------------------------------------
 
 WreckingBall:
 		_move.l	#WBall_Action,obAddr(a0)		; initialize to normal swinging platform routine

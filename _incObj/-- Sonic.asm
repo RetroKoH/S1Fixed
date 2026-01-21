@@ -1,6 +1,37 @@
 ; ---------------------------------------------------------------------------
 ; Player Object - Sonic
 ; ---------------------------------------------------------------------------
+; OST Constants
+obInertia:				equ $20				; 2 bytes | ground velocity
+obAutoRollFlag:			equ $2A				; 1 byte  | auto-roll (pinball mode) flag (also obSpinDashFlag)
+obInvuln:				equ $30				; 1 byte  | invulnerablity timer (blinking frames when hurt)
+obInvinc:				equ $31				; 1 byte  | invincibility stars timer
+obShoes:				equ $32				; 1 byte  | speed shoes timer
+obAnimNext:				equ $34				; 1 byte  | next animation
+obCtrlLock:				equ $35				; 1 byte  | formerly f_playerctrl (0, 1, or $81)
+obFrontAngle:			equ $36				; 1 byte  | angle on ground in front of sprite
+obRearAngle:			equ $37				; 1 byte  | angle on ground behind sprite
+obOnWheel:				equ $38				; 1 byte  | on convex wheel flag
+obStatus2nd:			equ $39				; 1 byte  | secondary status counter
+obRestartTimer:			equ $3A				; 2 bytes | level restart timer (Also obSpinDashCounter)
+obJumping:				equ $3C				; 1 byte  | jumping flag
+obLRLock:				equ $3D				; 1 byte  | flag preventing left and right input
+obPlatformAddr:			equ $3E				; 2 bytes | address of object Sonic's on top of
+
+	if (S3KDoubleJump|DropDashEnabled)
+obDoubleJumpFlag:		equ	$2E				; 1 byte  | Double jump status (0 - not triggered; 1 - triggered; 2 - post-instashield/drop dash revving; 3 - Drop Dash Cancelled)
+obDoubleJumpProp:		equ $2F				; 1 byte  | Counter for Sonic's Drop Dash (if enabled). Can also be utilized for remaining frames of flight / 2 for Tails, gliding-related for Knuckles.
+	endif
+
+	if WallJumpEnabled
+obWallJump:				equ $28				; 2 bytes | used for wall jumps
+	endif
+
+	if (SpinDashEnabled|PeeloutEnabled)
+obSpinDashFlag:			equ obAutoRollFlag	; 1 byte  | spin dash/peelout flag
+obSpinDashCounter:		equ obRestartTimer	; 2 bytes | Counter used for the Spin Dash and/or Peelout
+	endif
+; ---------------------------------------------------------------------------
 
 SonicPlayer:
 		tst.w	(v_debuguse).w				; is debug mode	being used?

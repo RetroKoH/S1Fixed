@@ -1,5 +1,12 @@
 ; ---------------------------------------------------------------------------
 ; Object 7F - large sliding platform (LZ/SBZ3)
+; Split from Obj6B by RetroKoH (Special Thanks: Hivebrain)
+; ---------------------------------------------------------------------------
+; OST Constants
+obSlid_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
+obSlid_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position
+obSlid_ButtonFlag:		equ objoff_34		; 1 byte  | flag set when associated button is pressed
+obSlid_ButtonNum:		equ objoff_35		; 1 byte  | button number associated with door
 ; ---------------------------------------------------------------------------
 
 SlidingPlatform:

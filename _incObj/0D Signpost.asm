@@ -1,6 +1,13 @@
 ; ---------------------------------------------------------------------------
 ; Object 0D - signpost at the end of a level
 ; ---------------------------------------------------------------------------
+; OST constants
+obSign_SpinTime:		equ objoff_30		; 2 bytes | time for signpost to spin
+obSign_SparkleTime:		equ objoff_32		; 2 bytes | time between sparkles
+obSign_SparkleCount:	equ objoff_34		; 1 byte  | counter to keep track of sparkles
+obSign_StartY:			equ objoff_36		; 2 bytes | starting Y-axis position (For Floating Signpost mod)
+obSign_PrevFrame:		equ objoff_3F		; 1 byte  | stored frame for DPLC handling
+; ---------------------------------------------------------------------------
 
 Signpost:
 		moveq	#0,d0

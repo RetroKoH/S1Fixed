@@ -1,6 +1,22 @@
 ; ---------------------------------------------------------------------------
 ; Object - ball on a chain that Eggman swings (GHZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obBossBall_Angle:		equ $10				; 2 bytes | precise rotation angle
+	; ^^^ We need this so that obShieldProp isn't overwritten, otherwise
+	; Insta-Shield negates its collision property. Upper byte written to obAngle.
+	; Unlike other similar objects, I set this to $10 because the GHZ boss chain
+	; uses up much of its scratch RAM, and that object uses this object's movement
+	; routines.
+obBossBall_ChainHead:	equ objoff_30		; 2 bytes | chain head address (for swinging ball visual effect)
+obBossBall_BossDist:	equ objoff_32		; 2 bytes | distance of base from boss
+obBossBall_Parent:		equ objoff_34		; 4 bytes | address of OST of parent object (need to truncate to 2 bytes)
+obBossBall_BaseY:		equ objoff_38		; 2 bytes | Y-axis position of base
+obBossBall_BaseX:		equ objoff_3A		; 2 bytes | X-axis position of base
+obBossBall_Radius:		equ objoff_3C		; 1 byte  | distance of ball/link from base
+obBossBall_Side:		equ objoff_3D		; 1 byte  | which side the ball is on - 0 = right; 1 = left
+obBossBall_Speed:		equ objoff_3E		; 2 bytes | rate of change of angle
+; ---------------------------------------------------------------------------
 
 BossBall:
 		moveq	#0,d0
@@ -19,8 +35,8 @@ GBall_Index:	offsetTable
 
 GBall_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)			; -> GBall_Base
-		move.w	#$4080,obSwing_Angle(a0)
-		move.b	obSwing_Angle(a0),obAngle(a0)
+		move.w	#$4080,obBossBall_Angle(a0)
+		move.b	obBossBall_Angle(a0),obAngle(a0)
 		move.w	#-$200,obBossBall_Speed(a0)
 		move.l	#Map_BossItems,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Eggman_Weapons,0,0),obGfx(a0)
@@ -73,7 +89,7 @@ GBall_PosData:	; distances of objects from base
 ; ===========================================================================
 
 GBall_Base:	; Routine 2
-		lea		(GBall_PosData).l,a3
+		lea		GBall_PosData(pc),a3
 		lea		obSubtype(a0),a2
 		moveq	#0,d6
 		move.b	(a2)+,d6					; get number of child objects
@@ -111,7 +127,7 @@ GBall_Base:	; Routine 2
 	.display:
 		bsr.w	GBall_UpdateBase			; update base animation/position
 		move.b	obAngle(a0),d0
-		bsr.w	Swing_MoveAll				; update positions of all chain links & ball
+		bsr.w	BossBall_MoveAll			; update positions of all chain links & ball
 		jmp		(DisplayAndCollision).l		; S3K TouchResponse
 ; ===========================================================================
 
@@ -205,8 +221,8 @@ GBall_Move:
 		move.w	obBossBall_Speed(a0),d0
 		addq.w	#8,d0
 		move.w	d0,obBossBall_Speed(a0)			; increase swing speed
-		add.w	d0,obSwing_Angle(a0)			; update angle
-		move.b	obSwing_Angle(a0),obAngle(a0)
+		add.w	d0,obBossBall_Angle(a0)			; update angle
+		move.b	obBossBall_Angle(a0),obAngle(a0)
 		cmpi.w	#$200,d0						; is speed at max?
 		bne.s	.not_at_highest					; if not, branch
 		move.b	#1,obBossBall_Side(a0)			; switch side flag
@@ -217,8 +233,8 @@ GBall_Move:
 		move.w	obBossBall_Speed(a0),d0
 		subq.w	#8,d0
 		move.w	d0,obBossBall_Speed(a0)			; decrease swing speed
-		add.w	d0,obSwing_Angle(a0)			; update angle
-		move.b	obSwing_Angle(a0),obAngle(a0)
+		add.w	d0,obBossBall_Angle(a0)			; update angle
+		move.b	obBossBall_Angle(a0),obAngle(a0)
 		cmpi.w	#-$200,d0						; is speed at max?
 		bne.s	.not_at_highest					; if not, branch
 		clr.b	obBossBall_Side(a0)				; switch side flag
@@ -235,12 +251,11 @@ GBall_Move:
 ;	d0 = current swing angle
 ; ---------------------------------------------------------------------------
 
-;Swing_Move2:
-Swing_MoveAll:
+BossBall_MoveAll:
 		calcsine_direct							; convert d0 to sine
 
-		move.w	obSwing_StartY(a0),d2
-		move.w	obSwing_StartX(a0),d3
+		move.w	obBossBall_BaseY(a0),d2
+		move.w	obBossBall_BaseX(a0),d3
 		lea		obSubtype(a0),a2				; (a2) = chain length, followed by child OST index list
 		moveq	#0,d6
 		move.b	(a2)+,d6						; get chain length
@@ -252,7 +267,7 @@ Swing_MoveAll:
 		addi.l	#v_objspace&$FFFFFF,d4			; convert to RAM address
 		movea.l	d4,a1
 		moveq	#0,d4
-		move.b	obSwing_Radius(a1),d4			; get distance of object from anchor
+		move.b	obBossBall_Radius(a1),d4		; get distance of object from anchor
 		move.l	d4,d5
 		muls.w	d0,d4
 		asr.l	#8,d4
@@ -265,5 +280,5 @@ Swing_MoveAll:
 		dbf		d6,.loop						; repeat for all chainlinks and platform
 
 		rts	
-; End of function Swing_MoveAll
+; End of function BossBall_MoveAll
 ; ===========================================================================

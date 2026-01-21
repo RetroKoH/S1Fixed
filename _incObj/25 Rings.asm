@@ -1,6 +1,9 @@
 ; ---------------------------------------------------------------------------
 ; Object 25 - Rings (Only seen in Debug Mode)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obRing_MainX:			equ objoff_32		; 2 bytes | stored X-axis position of ring (unnecessary?)
+; ---------------------------------------------------------------------------
 
 Rings:
 		moveq	#0,d0
@@ -127,6 +130,10 @@ CollectRing:
 
 ; ---------------------------------------------------------------------------
 ; Object - Scattered Rings (Lost or Attracted)
+; ---------------------------------------------------------------------------
+; OST Constants
+obRLoss_Timer:			equ objoff_30		; 1 byte  | timer for ring deletion
+obRLoss_BadnikFlag:		equ objoff_3D		; 1 byte  | flag set if the ring was spawned from a badnik
 ; ---------------------------------------------------------------------------
 
 RingLoss:

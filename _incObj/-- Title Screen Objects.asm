@@ -1,6 +1,10 @@
 ; ---------------------------------------------------------------------------
-; Object - Sonic on the title screen
+; Dynamic Object - Sonic on the title screen
 ; ---------------------------------------------------------------------------
+; OST constants
+obTitlSon_DelayTime:	equ objoff_30		; 1 byte  | delay timer (replacing obDelayAni)
+obTitlSon_PrevFrame:	equ objoff_3F		; 1 byte  | stored frame for DPLC handling
+; ----------------------------------------------------------------------------
 
 TitleSonic:
 		_move.l	#TSon_Delay,obAddr(a0)
@@ -84,8 +88,11 @@ TSon_LoadGfx:
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
-; Object - "PRESS START BUTTON" and "TM" from title screen
+; Dynamic Object - "PRESS START BUTTON" and "TM" from title screen
 ; ---------------------------------------------------------------------------
+; OST constants
+obPSB_MenuOption:		equ objoff_30		; 1 byte  | option chosen in the menu (For SaveProgressMod)
+; ----------------------------------------------------------------------------
 
 PSBTM:
 		_move.l	#PSB_PrsStart,obAddr(a0)

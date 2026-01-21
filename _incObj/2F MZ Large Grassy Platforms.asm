@@ -2,6 +2,11 @@
 ; Object 2F - large grass-covered platforms (MZ)
 ; Subtype 1x has been split off into Obj2E by RetroKoH
 ; ---------------------------------------------------------------------------
+; Obj2F - MZ Large Grass-Covered Platform
+obLGrass_StartX:		equ objoff_2A		; 2 bytes | starting X-axis position
+obLGrass_StartY:		equ objoff_2C		; 2 bytes | starting Y-axis position
+obLGrass_ColPtr:		equ objoff_30		; 4 bytes | pointer to collision data
+; ---------------------------------------------------------------------------
 
 LargeGrass:
 		_move.l	#LGrass_Action,obAddr(a0)

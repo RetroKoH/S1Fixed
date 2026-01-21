@@ -1,6 +1,15 @@
 ; ---------------------------------------------------------------------------
 ; Object 72 - teleporter (SBZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obTele_MoveTime:		equ objoff_30		; 2 bytes | travel time between each bend (2 bytes; only high byte is read)
+obTele_DelayTime:		equ objoff_32		; 1 byte  | time to wait before starting teleportation
+obTele_TargetX:			equ objoff_36		; 2 bytes | target X-axis position to send Sonic to
+obTele_TargetY:			equ objoff_38		; 2 bytes | target Y-axis position to send Sonic to
+obTele_PassedCoords:	equ objoff_3A		; 1 byte  | coords Sonic's already passed through, increments by 4
+obTele_TotalCoords:		equ objoff_3B		; 1 byte  | total number of coord pairs in this set (in bytes)
+obTele_CoordPtr:		equ objoff_3C		; 4 bytes | address of coord pairs data
+; ---------------------------------------------------------------------------
 
 Teleport:
 		moveq	#0,d0

@@ -1,6 +1,11 @@
 ; ---------------------------------------------------------------------------
 ; Object 79 - lamppost
 ; ---------------------------------------------------------------------------
+; OST Constants
+obLamp_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
+obLamp_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position
+obLamp_SpinTime:		equ objoff_34		; 2 bytes | length of time to twirl the lamp
+; ---------------------------------------------------------------------------
 
 Lamppost:
 		moveq	#0,d0

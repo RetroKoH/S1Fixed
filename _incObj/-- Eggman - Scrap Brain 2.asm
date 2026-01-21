@@ -1,6 +1,10 @@
 ; ---------------------------------------------------------------------------
 ; Object - Eggman (SBZ2)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obSEgg_Parent:			equ objoff_30		; 2 bytes | object RAM address of parent (switch's parent is Eggman)
+obSEgg_WaitTime:		equ objoff_32		; 1 byte  | time delay between events
+; ---------------------------------------------------------------------------
 
 ScrapEggman:
 		_move.l	#SEgg_Eggman,obAddr(a0)

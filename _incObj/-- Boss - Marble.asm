@@ -1,6 +1,16 @@
 ; ---------------------------------------------------------------------------
 ; Object - Eggman (MZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+;obBoss_3rdRout:		equ obSubtype		; 1 byte  | bosses may use this OST as a tertiary routine counter
+;obBoss_AttackFlag:		equ objoff_2F		; 1 byte  |
+;obBoss_BufferX:		equ objoff_30		; 2 bytes | stored X-axis position
+obMZBoss_FireBallTimer:	equ objoff_34		; 1 byte  | delay timer for random fireball spawning
+;obBoss_BufferY:		equ objoff_38		; 2 bytes | stored Y-axis position
+;obBoss_DelayTime:		equ objoff_3C		; 2 bytes | delay timer
+;obBoss_FlashFrames:	equ objoff_3E		; 1 byte  | # of frames to flash white when hit
+;obBoss_HoverAngle:		equ objoff_3F		; 1 byte  | Used w/ CalcSine for the ship's hover effect
+; ---------------------------------------------------------------------------
 
 BossMarble:
 		moveq	#0,d0

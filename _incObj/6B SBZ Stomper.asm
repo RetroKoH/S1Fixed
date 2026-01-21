@@ -3,6 +3,14 @@
 ;
 ; Subtype xxDDxxxB
 ; ---------------------------------------------------------------------------
+; OST Constants
+obStomp_StartY:			equ objoff_30		; 2 bytes | starting Y-axis position
+obStomp_WaitTime:		equ objoff_32		; 1 byte  | time until next action
+obStomp_MoveFlag:		equ objoff_33		; 1 byte  | flag associated with movement
+obStomp_DistMoved:		equ objoff_34		; 2 bytes | distance moved
+obStomp_DistToMove:		equ objoff_36		; 2 bytes | distance to move
+obStomp_Behavior:		equ objoff_38		; 1 byte  | notes fast or slow behavior
+; ---------------------------------------------------------------------------
 
 ; ===========================================================================
 Sto_MoveDist:

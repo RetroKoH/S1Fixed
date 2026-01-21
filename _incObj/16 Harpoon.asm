@@ -13,6 +13,10 @@
 ; ALSO: Can we fix collision to only run from the base to the point? if placed in air, on on thin ground,
 ; it can hurt Sonic from the opposite end.
 ; ---------------------------------------------------------------------------
+; OST Constants
+obHarp_Time:			equ objoff_30			; 2 bytes | time between stabbing/retracting
+obHarp_TimeMaster:		equ objoff_32			; 2 bytes | stored time when resetting timer
+; ---------------------------------------------------------------------------
 
 Harpoon:
 		moveq	#0,d0
@@ -25,8 +29,8 @@ Harp_Index:	offsetTable
 		offsetTableEntry.w Harp_Main
 		offsetTableEntry.w Harp_Move
 		offsetTableEntry.w Harp_Wait
-		offsetTableEntry.w Harp_Move2	; +++
-		offsetTableEntry.w Harp_Wait2	; +++
+		offsetTableEntry.w Harp_Move2			; +++
+		offsetTableEntry.w Harp_Wait2			; +++
 ; ===========================================================================
 
 Harp_Main:	; Routine 0
@@ -53,10 +57,10 @@ Harp_Main:	; Routine 0
 		addq.b	#1,d1							; (1-4; max duration = 120 fr)
 
 ;		mulu.w	#30,d1 (The below method uses 26(4/0) instead of 50(2/0)
-		add.b    d1,d1    ; multiply by 2
-		move.b   d1,d2    ; d2 = (n << 1)
-		lsl.b    #4,d1    ; d1 = (n << 5; or n * 32)
-		sub.b    d2,d1    ; n*32 - n*2 = n*30
+		add.b    d1,d1							; multiply by 2
+		move.b   d1,d2							; d2 = (n << 1)
+		lsl.b    #4,d1							; d1 = (n << 5; or n * 32)
+		sub.b    d2,d1							; n*32 - n*2 = n*30
 
 		move.w	d1,obHarp_Time(a0)				; set timer dynamically
 		move.w	d1,obHarp_TimeMaster(a0)

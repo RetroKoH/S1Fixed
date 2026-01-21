@@ -1,6 +1,9 @@
 ; ---------------------------------------------------------------------------
 ; Object - Invincibility Stars (Moved from Shield to its own object)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obStars_TrackData:		equ objoff_30		; 4 bytes | tracking data for stars
+; ---------------------------------------------------------------------------
 
 Stars_Delete:
 		jmp		(DeleteObject).l

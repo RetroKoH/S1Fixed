@@ -1,6 +1,15 @@
 ; ---------------------------------------------------------------------------
 ; Object 5B - blocks that form a staircase (SLZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obStair_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
+obStair_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position
+obStair_WaitTime:		equ objoff_34		; 2 bytes | time delay for stairs to move
+obStair_Flag:			equ objoff_36		; 1 byte  | 1 = stood on; $80+ = hit from below
+obStair_ChildID:		equ objoff_37		; 1 byte  | which child the current object is; $38-$3B
+obStair_YDistList:		equ objoff_38		; 4 bytes | distance moved by each child object
+obStair_Parent:			equ objoff_3E		; 2 bytes | address of parent object
+; ---------------------------------------------------------------------------
 
 Staircase:
 		moveq	#0,d0

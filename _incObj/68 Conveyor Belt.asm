@@ -7,6 +7,9 @@
 ;	SSSS - speed/direction (0-7 = positive/right; 8-$F = negative/left)
 ;	000W - width (see Conv_Widths; Only supports 2; but this can be expanded)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obConv_Speed:			equ objoff_30		; 2 bytes | speed - can also be negative
+; ---------------------------------------------------------------------------
 
 ; ===========================================================================
 

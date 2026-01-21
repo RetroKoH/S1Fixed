@@ -1,6 +1,12 @@
 ; ---------------------------------------------------------------------------
 ; Object 66 - rotating disc junction that grabs Sonic (SBZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obJun_GrabFrame:		equ objoff_30		; 1 byte  | which frame the junction grabbed Sonic on
+obJun_Direction:		equ objoff_31		; 1 byte  | direction of rotation: 1 or -1 (added to the frame number)
+obJun_ButtonFlag:		equ objoff_32		; 1 byte  | flag set when button is pressed
+obJun_ButtonNum:		equ objoff_33		; 1 byte  | which button will reverse the disc
+; ---------------------------------------------------------------------------
 
 Junction:
 		moveq	#0,d0

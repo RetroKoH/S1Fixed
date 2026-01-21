@@ -1,6 +1,14 @@
 ; ---------------------------------------------------------------------------
 ; Object - cylinder Eggman hides in (FZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obECyl_ExtendFlag:		equ objoff_29		; 1 byte  | flag set when extending
+obECyl_EggFlag:			equ objoff_30		; 2 bytes | -1 if cylinder contains Eggman
+obECyl_StartY:			equ objoff_34		; 4 bytes | original y position (low word always 0)
+obECyl_MoveY:			equ objoff_38		; 4 bytes | amount the cylinder has moved
+
+obECyl_Parent:			equ objoff_3E		; 2 bytes | address of parent object
+; ---------------------------------------------------------------------------
 
 ECyl_Delete:
 		jmp		(DeleteObject).l

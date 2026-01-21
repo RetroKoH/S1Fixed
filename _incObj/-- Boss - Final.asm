@@ -1,6 +1,16 @@
 ; ---------------------------------------------------------------------------
 ; Object - Final Boss
 ; ---------------------------------------------------------------------------
+; Exclusive OST Constants
+obBFZ_CylFlag:			equ objoff_30		; 2 bytes | -1 when cylinders activate; id of cylinder Eggman is in when crushing
+obBFZ_PhaseState:		equ objoff_32		; 2 bytes | 1 = crushing; 0 = plasma; -1 = crushing/plasma complete
+obBFZ_Mode:				equ objoff_34		; 1 byte  | action being performed, increments of 2
+obBFZ_FlashNum:			equ objoff_35		; 1 byte  | number of times to make boss flash when hit
+obBFZ_ChildPlasma:		equ objoff_36		; 2 bytes | Obj RAM addresses of plasma object
+obBFZ_ChildCylinder:	equ objoff_38		; 8 bytes | Obj RAM addresses of cylinder objects
+
+obBFZ_Parent:			equ objoff_3E		; 2 bytes | address of parent object - children only
+; ---------------------------------------------------------------------------
 
 BossFinal_Delete:
 		jmp	(DeleteObject).l
@@ -412,7 +422,7 @@ BossFinal_EggShip:		; Boss Routine $C
 		bne.s	.keep_rising				; branch if not found
 		_move.l	#BossFlame,obAddr(a1)
 		move.w	#$180,obBossFlame_Escape(a1)	; set speed at which ship escapes
-		move.w	a0,obBoss_Parent(a1)		; save address of OST of parent
+		move.w	a0,obBossFlame_Parent(a1)		; save address of OST of parent
 
 	.keep_rising:
 		bra.w	BFZ_Eggman_AnimScroll		; animate & scroll screen

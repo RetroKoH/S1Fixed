@@ -1,6 +1,11 @@
 ; ---------------------------------------------------------------------------
 ; Object 2C - Jaws enemy (LZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obJaws_TurnTime:		equ objoff_30		; 2 bytes | time until jaws turns
+obJaws_TimeDelay:		equ objoff_32		; 2 bytes | time between turns, copied to ost_jaws_turn_time every turn
+obJaws_BubbleTime:		equ objoff_34		; 2 bytes | time to wait before producing a bubble (Mod-exclusive)
+; ---------------------------------------------------------------------------
 
 Jaws:
 		obj_addr	#Jaws_Move

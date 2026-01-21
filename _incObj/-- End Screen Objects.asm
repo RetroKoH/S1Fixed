@@ -1,6 +1,9 @@
 ; ---------------------------------------------------------------------------
 ; Object - Eggman on "TRY AGAIN" and "END" screens
 ; ---------------------------------------------------------------------------
+; OST Constants
+obEndEgg_WaitTime:		equ objoff_30		; 2 bytes | time to wait between events
+; ---------------------------------------------------------------------------
 
 EndEggman:
 		moveq	#0,d0
@@ -73,7 +76,15 @@ EEgg_Wait:	; Routine 6
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
-; Object 8C - chaos emeralds on	the "TRY AGAIN"	screen
+; Object - chaos emeralds on the "TRY AGAIN" screen
+; ---------------------------------------------------------------------------
+; OST Constants
+obTChaos_Parent:		equ objoff_30		; 2 bytes |
+obTChaos_TimeMaster:	equ objoff_37		; 1 byte  | (replacing obDelayAni)
+obTChaos_StartX:		equ objoff_38		; 2 bytes | x-axis centre of emerald circle
+obTChaos_StartY:		equ objoff_3A		; 2 bytes | y-axis centre of emerald circle
+obTChaos_Radius:		equ objoff_3C		; 1 byte  | radius
+obTChaos_Speed:			equ objoff_3E		; 2 bytes | speed at which emeralds rotate around central point
 ; ---------------------------------------------------------------------------
 
 TryChaos:

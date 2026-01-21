@@ -1,6 +1,17 @@
 ; ---------------------------------------------------------------------------
 ; Object 63 - platforms	on a conveyor belt (LZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+LCon_SpawnerType:		equ objoff_2F		; 1 byte  | saved subtype
+LCon_CenterX:			equ objoff_30		; 2 bytes | approximate x position of center of conveyor
+LCon_TargetX:			equ objoff_34		; 2 bytes | target X-axis position to move platform towards
+LCon_TargetY:			equ objoff_36		; 2 bytes | target Y-axis position to move platform towards
+LCon_CornerNext:		equ objoff_38		; 1 byte  | index of next corner position
+LCon_CornerCount:		equ objoff_39		; 1 byte  | total number of corners +1, times 4
+LCon_CornerInc:			equ objoff_3A		; 1 byte  | amount to add to corner index (4 or -4)
+LCon_Reverse:			equ objoff_3B		; 1 byte  | 1 = conveyors run in reverse
+LCon_DataAddr:			equ objoff_3C		; 4 bytes | address where platform's position data is located
+; ---------------------------------------------------------------------------
 
 LabyrinthConvey:
 		moveq	#0,d0

@@ -2,6 +2,9 @@
 ; Object 1D - switch that activates when Sonic touches it
 ; (this	is not used anywhere in	the game)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obSwi_StartY:			equ objoff_30		; 2 bytes | starting Y-axis position
+; ---------------------------------------------------------------------------
 
 MagicSwitch:
 	; LavaGaming Object Routine Optimization

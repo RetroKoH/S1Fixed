@@ -1,5 +1,10 @@
 ; ---------------------------------------------------------------------------
 ; Object 48 - rising platform (LZ)
+; Split from Obj61 by RetroKoH (Special Thanks: Hivebrain)
+; ---------------------------------------------------------------------------
+; OST Constants (based on Obj61)
+obLRise_WaitTime:		equ objoff_30		; 2 bytes | time delay for block movement
+obLRise_Flag:			equ objoff_32		; 1 byte  | 1 = untouched; 0 = touched
 ; ---------------------------------------------------------------------------
 
 LZRisePlat:
@@ -10,26 +15,25 @@ LZRisePlat:
 		move.w	#priority3,obPriority(a0)				; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$20,obDispWid(a0)						; set width
 		move.b	#$C,obHeight(a0)						; set height
-		move.w	obY(a0),obLBlock_StartY(a0)
-		move.b	#1,obLBlock_Flag(a0)					; set "untouched" flag
+		move.b	#1,obLRise_Flag(a0)						; set "untouched" flag
 ; ---------------------------------------------------------------------------
 
 LRise_Action:	; Routine 2
 		tst.b	obSubtype(a0)							; is it already rising?
 		bne.s	LRise_Rising
-		tst.w	obLBlock_WaitTime(a0)					; does time remain?
+		tst.w	obLRise_WaitTime(a0)					; does time remain?
 		bne.s	.wait									; if yes, branch
 		btst	#staSonicOnObj,obStatus(a0)				; is Sonic standing on the object?
 		beq.s	LRise_Solid								; if not, branch
-		move.w	#30,obLBlock_WaitTime(a0)				; wait for half second
+		move.w	#30,obLRise_WaitTime(a0)				; wait for half second
 		bra.s	LRise_Solid
 ; ===========================================================================
 
 	.wait:
-		subq.w	#1,obLBlock_WaitTime(a0)				; decrement waiting time
+		subq.w	#1,obLRise_WaitTime(a0)					; decrement waiting time
 		bne.s	LRise_Solid								; if time remains, branch
 		addq.b	#1,obSubtype(a0)						; goto LRise_Type_Sinks_Now or LRise_Type_Rises_Now
-		clr.b	obLBlock_Flag(a0)						; flag block as touched
+		clr.b	obLRise_Flag(a0)						; flag block as touched
 		bra.s	LRise_Solid	
 ; ===========================================================================
 
@@ -52,7 +56,7 @@ LRise_Rising:
 		
 		bsr.w	ObjHitCeiling
 		tst.w	d1										; has block hit the ceiling?
-		bpl.w	LRise_Solid								; if not, branch
+		bpl.s	LRise_Solid								; if not, branch
 		sub.w	d1,obY(a0)								; align to ceiling
 		clr.w	obVelY(a0)								; stop when it touches the ceiling
 		clr.b	obSubtype(a0)							; set type to 00 (non-moving type)
@@ -61,6 +65,7 @@ LRise_Rising:
 LRise_Solid:
 		tst.b	obRender(a0)							; is block on-screen?
 		bpl.s	.chkdel									; if not, branch
+
 		moveq	#43,d1									; width; save 8 cycles
 		moveq	#12,d2									; height (jumping)
 		moveq	#13,d3									; height (walking)

@@ -1,10 +1,17 @@
 ; ---------------------------------------------------------------------------
 ; Object 11 - GHZ bridge - Ported from Sonic 2 (Credit: DeltaWooloo)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obBridge_StartY:		equ objoff_30		; 2 bytes | starting Y-axis position
+obBridge_BendPixels:	equ objoff_32		; 1 byte  | number of pixels a log has been depressed
+obBridge_CurrentLog:	equ objoff_33		; 1 byte  | log Sonic is currently standing on (left to right, starts at 0)
+obBridge_ChildObj1:		equ objoff_3C		; 2 bytes | address of the first child object with log subsprites
+obBridge_ChildObj2:		equ objoff_3E		; 2 bytes | address of the second child object with log subsprites
+; ---------------------------------------------------------------------------
 
 Bridge_Sub:		; child sprite objects only need to be drawn
-		move.w	#priority3,d0			; RetroKoH/Devon S3K+ Priority Manager
-		bra.w	DisplaySprite2			; Display sprites
+		move.w	#priority3,d0				; RetroKoH/Devon S3K+ Priority Manager
+		bra.w	DisplaySprite2				; display sprites
 ; ===========================================================================
 
 Bridge:
@@ -52,13 +59,13 @@ Bri_Main:	; Routine 0
 		move.w	a1,obBridge_ChildObj2(a0)	; pointer to second subsprite object
 		move.w	d4,d0
 		add.w	d0,d0
-		add.w	d4,d0	; d0*3
+		add.w	d4,d0						; d0*3
 		move.w	sub2_x_pos(a1,d0.w),d0
 		subq.w	#8,d0
 		move.w	d0,obX(a1)					; center of second subsprite object
 
 .nomore:
-		bra.s	Bri_Action					; Bridge is finished
+		bra.s	Bri_Action					; bridge is finished
 ; ===========================================================================
 
 Bri_MakeSegment:
@@ -144,7 +151,7 @@ Bri_Solid:
 
 	.inX:
 		lsr.w	#4,d0						; get index of log that Sonic is standing on
-		move.b	d0,(a0,d5.w)
+		move.b	d0,(a0,d5.w)				; 	move.b	d0,obBridge_CurrentLog(a0)
 		movea.w	obBridge_ChildObj1(a0),a2	; Get child object
 		cmpi.w	#8,d0						; is Sonic on logs 0-7?
 		blo.s	.firstsubsprite				; if yes, branch
@@ -178,7 +185,7 @@ loc_F8F0:
 		sub.w	obX(a0),d0
 		add.w	d1,d0
 		lsr.w	#4,d0
-		move.b	d0,(a0,d5.w)
+		move.b	d0,(a0,d5.w)				; 	move.b	d0,obBridge_CurrentLog(a0)
 
 .return:
 		rts
@@ -353,11 +360,11 @@ loc_19E30:
 		btst	#staAir,obStatus(a1)	; is Sonic in the air?
 		beq.s	RideObject_NotInAir		; if not, branch
 		move.l	a0,-(sp)
-		movea.l	a1,a0
+		movea.l	a1,a0					; a0=character
 
 RideObject_SetOnFloor:	
 		jsr		(Sonic_ResetOnFloor).l		
-		movea.l	(sp)+,a0 ; a0=character
+		movea.l	(sp)+,a0				; a0=bridge
 
 RideObject_NotInAir:
 		bset	#staOnObj,obStatus(a1)	; set MainCharacter's on object obStatus

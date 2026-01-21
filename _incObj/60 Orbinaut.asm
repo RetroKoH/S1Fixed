@@ -1,6 +1,17 @@
 ; ---------------------------------------------------------------------------
 ; Object 60 - Orbinaut enemy (LZ, SLZ, SBZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+	if SLZOrbinautBehaviourMod	; Mercury SLZ Orbinaut Behaviour Mod
+obOrb_OrbDist:			equ objoff_2A		; 1 byte  | distance of child orbs
+obOrb_OrbTimer:			equ objoff_2E		; 1 byte  | frame timer for child orbs
+	endif
+
+obOrb_Direction:		equ objoff_36		; 1 byte  | direction orbs rotate: 1 = clockwise; -1 = anticlockwise
+obOrb_ObjCount:			equ objoff_37		; 1 byte  | number of child objects
+obOrb_ChildObjs:		equ objoff_38		; 4 bytes | object RAM indices of child objects (4 bytes - 1 byte per ball)
+obOrb_Parent:			equ objoff_3E		; 2 bytes | address of parent object
+; ---------------------------------------------------------------------------
 
 Orbinaut:
 		moveq	#0,d0

@@ -1,6 +1,13 @@
 ; ---------------------------------------------------------------------------
 ; Object 36 - spikes
 ; ---------------------------------------------------------------------------
+; OST Constants
+obSpike_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
+obSpike_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position
+obSpike_MoveDist:		equ objoff_34		; 1 byte  | pixel distance to move object * $100, either direction
+obSpike_MoveFlag:		equ objoff_35		; 1 byte  | 0 = original position; 1 = moved position
+obSpike_MoveTime:		equ objoff_36		; 1 byte  | time until object moves again
+; ---------------------------------------------------------------------------
 
 ; ===========================================================================
 

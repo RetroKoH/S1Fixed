@@ -1,6 +1,12 @@
 ; ---------------------------------------------------------------------------
 ; Object 6C - vanishing	platforms (SBZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obVanPtfm_WaitTime:		equ objoff_30		; 2 bytes | time until change
+obVanPtfm_WaitMaster:	equ objoff_32		; 2 bytes | time between changes
+obVanPtfm_SyncDec:		equ objoff_36		; 2 bytes | value to subtract from framecount for synchronising
+obVanPtfm_SyncBitMask:	equ objoff_38		; 2 bytes | bitmask for synchronising
+; ---------------------------------------------------------------------------
 
 VanishPlatform:
 		moveq	#0,d0
