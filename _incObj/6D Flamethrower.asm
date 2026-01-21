@@ -7,6 +7,11 @@
 ;	FFFF - time flame is on (*32 frames)
 ;	WWWW - wait time between flames (*32 frames)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obFlame_WaitTime:		equ objoff_30		; 2 bytes | time until current action is complete
+obFlame_OnTime:			equ objoff_32		; 2 bytes | time flame is on
+obFlame_OffTime:		equ objoff_34		; 2 bytes | time flame is off
+; ---------------------------------------------------------------------------
 
 Flamethrower:
 		moveq	#0,d0

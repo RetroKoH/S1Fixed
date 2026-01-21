@@ -1,6 +1,18 @@
 ; ---------------------------------------------------------------------------
 ; Object 6F - spinning platforms that move around a conveyor belt (SBZ)
 ; ---------------------------------------------------------------------------
+; OST Constants (Identical to Obj63)
+SpinCon_SpawnerType:	equ objoff_2F		; 1 byte  | saved subtype
+SpinCon_CenterX:		equ objoff_30		; 2 bytes | approximate X-axis position of center of conveyor
+SpinCon_PrevX:			equ objoff_32		; 2 bytes | previous X-axis position (used instead of pushing to the stack)
+SpinCon_TargetX:		equ objoff_34		; 2 bytes | target X-axis position to move platform towards
+SpinCon_TargetY:		equ objoff_36		; 2 bytes | target Y-axis position to move platform towards
+SpinCon_CornerNext:		equ objoff_38		; 1 byte  | index of next corner position
+SpinCon_CornerCount:	equ objoff_39		; 1 byte  | total number of corners +1, times 4
+SpinCon_CornerInc:		equ objoff_3A		; 1 byte  | amount to add to corner index (4 or -4)
+SpinCon_Reverse:		equ objoff_3B		; 1 byte  | 1 = conveyors run in reverse
+SpinCon_DataAddr:		equ objoff_3C		; 4 bytes | address where platform's position data is located
+; ---------------------------------------------------------------------------
 
 SpinConvey:
 	; LavaGaming Object Routine Optimization

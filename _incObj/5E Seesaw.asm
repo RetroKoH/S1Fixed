@@ -1,6 +1,14 @@
 ; ---------------------------------------------------------------------------
 ; Object 5E - seesaws (SLZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obSeesaw_StartX:		equ objoff_30		; 2 bytes | starting X-axis position
+obSeesaw_StartY:		equ objoff_34		; 2 bytes | starting Y-axis position
+obSeesaw_HitSpeed:		equ objoff_38		; 2 bytes | speed Sonic hits the seesaw
+obSeesaw_State:			equ objoff_3A		; 1 byte  | seesaw: 0 = left raised; 2 = right raised; 1 = flat
+										; spikeball: 0 = on/launched from right side; 2 = on/launched from left side
+obSeesaw_Parent:		equ objoff_3E		; 2 bytes | address of parent object
+; ---------------------------------------------------------------------------
 
 Seesaw:
 		moveq	#0,d0

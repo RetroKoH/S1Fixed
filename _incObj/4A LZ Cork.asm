@@ -1,5 +1,6 @@
 ; ---------------------------------------------------------------------------
 ; Object 61 - floating corks (LZ)
+; Split from Obj61 by RetroKoH (Special Thanks: Hivebrain)
 ; ---------------------------------------------------------------------------
 
 LZCork:
@@ -10,29 +11,10 @@ LZCork:
 		move.w	#priority3,obPriority(a0)				; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$10,obDispWid(a0)						; set width
 		move.b	#$10,obHeight(a0)						; set height
-		move.w	obY(a0),obLBlock_StartY(a0)
 ; ---------------------------------------------------------------------------
 
-Cork_Action:	; Routine 2
-		bsr.w	Cork_Type_Floats
-		tst.b	obRender(a0)							; is block on-screen?
-		bpl.s	.chkdel									; if not, branch
-		moveq	#27,d1									; width
-		moveq	#16,d2									; height (jumping)
-		moveq	#17,d3									; height (walking)
-		move.w	obX(a0),d4								; axis position
-		bsr.w	SolidObject
-
-	.chkdel:
-		offscreen.w	DeleteObject						; ProjectFM S3K Object Manager
-		bra.w	DisplaySprite
-; ===========================================================================
-
-; ---------------------------------------------------------------------------
-; Subroutine to make the cork float to the water's surface
-; ---------------------------------------------------------------------------
-
-Cork_Type_Floats:
+Cork_Action:
+	; Make the cork float to the water's surface (run directly instead of calling a subroutine)
 		move.w	(v_waterpos_actual).w,d0
 		sub.w	obY(a0),d0								; is block level with water?
 		beq.s	.stop									; if yes, branch
@@ -45,11 +27,9 @@ Cork_Type_Floats:
 		add.w	d0,obY(a0)								; make the block rise with water level
 		bsr.w	ObjHitCeiling
 		tst.w	d1										; has block hit the ceiling?
-		bpl.w	.noceiling								; if not, branch
+		bpl.s	.stop									; if not, branch
 		sub.w	d1,obY(a0)								; stop block
-
-	.noceiling:
-		rts	
+		bra.s	.stop
 ; ===========================================================================
 
 	.fall:
@@ -61,10 +41,22 @@ Cork_Type_Floats:
 		add.w	d0,obY(a0)								; make the block sink with water level
 		bsr.w	ObjFloorDist
 		tst.w	d1										; has block hit the floor?
-		bpl.w	.stop									; if not, branch
+		bpl.s	.stop									; if not, branch
 		addq.w	#1,d1
 		add.w	d1,obY(a0)								; stop block
 
 	.stop:
-		rts	
+		tst.b	obRender(a0)							; is block on-screen?
+		bpl.s	.chkdel									; if not, branch
+	
+	; make cork solid
+		moveq	#27,d1									; width
+		moveq	#16,d2									; height (jumping)
+		moveq	#17,d3									; height (walking)
+		move.w	obX(a0),d4								; axis position
+		bsr.w	SolidObject
+
+	.chkdel:
+		offscreen.w	DeleteObject						; ProjectFM S3K Object Manager
+		bra.w	DisplaySprite
 ; ===========================================================================

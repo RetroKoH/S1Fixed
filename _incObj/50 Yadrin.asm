@@ -1,6 +1,9 @@
 ; ---------------------------------------------------------------------------
 ; Object 50 - Yadrin enemy (SYZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obYadrin_WaitTime:		equ objoff_30		; 2 bytes | time to wait before changing direction
+; ---------------------------------------------------------------------------
 
 Yadrin:
 		_move.l	#Yad_ChkFloor,obAddr(a0)

@@ -1,6 +1,10 @@
 ; ---------------------------------------------------------------------------
 ; Object - blocks that Eggman picks up (SYZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obBossBlock_Mode:		equ objoff_29		; 1 byte  | if same as subtype = solid; $FF = lifted; $A = breaking
+obBossBlock_Parent:		equ objoff_34		; 2 bytes | object RAM address of main boss object
+; ---------------------------------------------------------------------------
 
 BossBlock:
 	; RetroKoH/LavaGaming Object Routine Optimization

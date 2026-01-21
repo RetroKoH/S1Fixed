@@ -2,6 +2,9 @@
 ; Object 13 - fire ball	spawner (MZ, SLZ)
 ; This will be rewritten later for more functionality
 ; ---------------------------------------------------------------------------
+; OST Constants
+obFireM_SpawnTimer:		equ objoff_30		; 1 byte  | spawn timer (replacing obDelayAni)
+; ---------------------------------------------------------------------------
 
 ; ===========================================================================
 ; Delay between launching fireballs
@@ -49,6 +52,10 @@ FireM_MakeFire:
 
 ; ---------------------------------------------------------------------------
 ; Object 13 (sub) - fire balls (MZ, SLZ)
+; ---------------------------------------------------------------------------
+; OST Constants
+obFBall_StartY:			equ objoff_30		; 2 bytes | starting Y-axis position
+obFBall_Mode:			equ objoff_32		; 2 bytes | saved action mode based on subtype
 ; ---------------------------------------------------------------------------
 
 ; ===========================================================================
@@ -122,7 +129,7 @@ FBall_Action:
 
 FBall_ChkDel:
 		offscreen.w	DeleteObject					; ProjectFM S3K Object Manager
-		jmp	(DisplayAndCollision).l					; Clownacy DisplaySprite Fix; S3K TouchResponse
+		jmp		(DisplayAndCollision).l				; Clownacy DisplaySprite Fix; S3K TouchResponse
 ; ===========================================================================
 
 FBall_TypeIndex:	offsetTable

@@ -1,6 +1,14 @@
 ; ---------------------------------------------------------------------------
 ; Object - plasma ball spawner (FZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obPlasma_TargetX:		equ objoff_30		; 2 bytes | target x-position for the plasma ball to move toward
+obPlasma_Count:			equ objoff_32		; 2 bytes | plasma ball count
+obPlasma_Count2:		equ objoff_34		; 2 bytes | copy of plasma ball count
+obPlasma_Enabled:		equ objoff_36		; 1 byte  | flag noting when to spawn plasma balls
+obPlasma_Timer:			equ objoff_37		; 1 byte  | timer used during movement routines
+obPlasma_Parent:		equ objoff_3E		; 2 bytes | address of parent object
+; ---------------------------------------------------------------------------
 
 BossPlasma:
 		_move.l	#BossPlasma_Generator,obAddr(a0)

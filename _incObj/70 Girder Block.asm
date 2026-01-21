@@ -1,6 +1,14 @@
 ; ---------------------------------------------------------------------------
 ; Object 70 - large girder block (SBZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obGird_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
+obGird_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position
+obGird_PrevX:			equ objoff_34		; 2 bytes | previous X-axis position (used instead of pushing to the stack)
+obGird_MoveTime:		equ objoff_36		; 2 bytes | duration for movement in a direction
+obGird_MoveDelay:		equ objoff_38		; 1 byte  | delay for movement
+obGird_MoveSetting:		equ objoff_39		; 1 byte  | which movement settings to use (0/8/16/24)
+; ---------------------------------------------------------------------------
 
 Girder:
 		obj_addr	#Gird_Action

@@ -1,6 +1,10 @@
 ; ---------------------------------------------------------------------------
 ; Object 4C - lava geyser / lavafall producer (MZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obGMake_Time:			equ objoff_30		; 2 bytes | current time remaining
+obGMake_TimeMaster:		equ objoff_32		; 2 bytes | time delay
+; ---------------------------------------------------------------------------
 
 GeyserMaker:
 		moveq	#0,d0
@@ -26,13 +30,13 @@ GMake_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$38,obDispWid(a0)
-		move.w	#120,obGMake_WaitTotal(a0)	; set time delay to 2 seconds
+		move.w	#120,obGMake_TimeMaster(a0)	; set time delay to 2 seconds
 
 GMake_Wait:	; Routine 2
-		subq.w	#1,obGMake_WaitTime(a0)		; decrement timer
+		subq.w	#1,obGMake_Time(a0)			; decrement timer
 		bpl.s	.cancel						; if time remains, branch
 
-		move.w	obGMake_WaitTotal(a0),obGMake_WaitTime(a0)	; reset timer
+		move.w	obGMake_TimeMaster(a0),obGMake_Time(a0)	; reset timer
 		move.w	(v_player+obY).w,d0
 		move.w	obY(a0),d1
 		cmp.w	d1,d0
@@ -52,7 +56,7 @@ GMake_MakeLava:	; Routine 6
 		addq.b	#2,obRoutine(a0)			; -> GMake_Display
 		bsr.w	FindNextFreeObj
 		bne.s	.fail						; branch if object slot not found
-		_move.l	#LavaGeyser,obAddr(a1)	; load lavafall object
+		_move.l	#LavaGeyser,obAddr(a1)		; load lavafall object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.b	obSubtype(a0),obSubtype(a1)
@@ -101,6 +105,10 @@ GMake_Delete:	; Routine $A
 
 ; ---------------------------------------------------------------------------
 ; Object - lava geyser / lavafall (MZ)
+; ---------------------------------------------------------------------------
+; OST Constants
+obGeyser_StartY:		equ objoff_30		; 2 bytes | starting Y-axis position
+obGeyser_Parent:		equ objoff_3E		; 2 bytes | RAM address of parent object
 ; ---------------------------------------------------------------------------
 
 LavaGeyser:

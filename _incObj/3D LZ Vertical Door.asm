@@ -1,5 +1,14 @@
 ; ---------------------------------------------------------------------------
 ; Object 3D - small vertical door (LZ)
+; Split from Obj56 by RetroKoH (Special Thanks: Hivebrain)
+; ---------------------------------------------------------------------------
+; OST Constants (based on Obj56)
+obDoorV_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
+obDoorV_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position
+obDoorV_PrevX:			equ objoff_34		; 2 bytes | previous X-axis position (used instead of pushing to the stack)
+obDoorV_MoveFlag:		equ objoff_38		; 1 byte  | 1 = block/door is moving
+obDoorV_MoveDist:		equ objoff_3A		; 2 bytes | distance to move
+obDoorV_ButtonNum:		equ objoff_3C		; 1 byte  | which button the block is linked to (2nd digit of subtype)
 ; ---------------------------------------------------------------------------
 
 LZDoorVert:
@@ -11,13 +20,13 @@ LZDoorVert:
 
 		move.b	#8,obDispWid(a0)
 		move.b	#$20,obHeight(a0)
-		move.w	obY(a0),obFBlock_StartY(a0)
+		move.w	obY(a0),obDoorV_StartY(a0)
 
 		moveq	#$F,d0							; read low nybble of subtype
 		and.b	obSubtype(a0),d0				; SCE Optimization
-		move.b	d0,obFBlock_ButtonNum(a0)		; set low nybble of subtype as switch index
+		move.b	d0,obDoorV_ButtonNum(a0)		; set low nybble of subtype as switch index
 		move.b	#1,obSubtype(a0)				; force subtype to 1: moves up when button is pressed
-		move.w	#$40,obFBlock_MoveDist(a0)		; store full height (from top to bottom)
+		move.w	#$40,obDoorV_MoveDist(a0)		; store full height (from top to bottom)
 
 	; ProjectFM S3K Object Manager
 		move.w	obRespawnAddr(a0),d0			; get address in respawn table
@@ -28,7 +37,7 @@ LZDoorVert:
 	; End
 		beq.s	DoorV_Action
 		addq.b	#1,obSubtype(a0)				; increment to $06 (or $0D for long horizontal doors) if previously activated
-		clr.w	obFBlock_MoveDist(a0)
+		clr.w	obDoorV_MoveDist(a0)
 ; ---------------------------------------------------------------------------
 
 DoorV_Action:	; Routine 2
@@ -65,11 +74,11 @@ DoorV_Index:	offsetTable
 
 ; Type 01 - moves up when a button is pressed
 DoorV_UpButton:
-		tst.b	obFBlock_MoveFlag(a0)		; is object moving?
+		tst.b	obDoorV_MoveFlag(a0)		; is object moving?
 		bne.s	.chk_distance				; if yes, branch
 		cmpi.w	#(id_LZ<<8)+0,(v_zone).w	; is level LZ1?
 		bne.s	.not_lz1					; if not, branch
-		cmpi.b	#3,obFBlock_ButtonNum(a0)	; is object linked to button 3?
+		cmpi.b	#3,obDoorV_ButtonNum(a0)	; is object linked to button 3?
 		bne.s	.not_lz1					; if not, branch
 		clr.b	(f_wtunnelallow).w			; enable water tunnels
 		move.w	(v_player+obX).w,d0
@@ -80,7 +89,7 @@ DoorV_UpButton:
 	.not_lz1:
 		lea		(f_switch).w,a2
 		moveq	#0,d0
-		move.b	obFBlock_ButtonNum(a0),d0
+		move.b	obDoorV_ButtonNum(a0),d0
 		btst	#0,(a2,d0.w)				; check status of linked button
 		beq.s	.not_pressed				; branch if not pressed
 		cmpi.w	#(id_LZ<<8)+0,(v_zone).w	; is level LZ1 ?
@@ -90,21 +99,21 @@ DoorV_UpButton:
 		clr.b	(f_wtunnelallow).w			; enable water tunnels
 
 	.set_moveflag:
-		move.b	#1,obFBlock_MoveFlag(a0)	; flag object as moving
+		move.b	#1,obDoorV_MoveFlag(a0)	; flag object as moving
 
 	.chk_distance:
-		tst.w	obFBlock_MoveDist(a0)		; is remaining distance = 0?
+		tst.w	obDoorV_MoveDist(a0)		; is remaining distance = 0?
 		beq.s	.finish						; if yes, branch
-		subq.w	#2,obFBlock_MoveDist(a0)	; decrement distance
+		subq.w	#2,obDoorV_MoveDist(a0)	; decrement distance
 
 	.not_pressed:
-		move.w	obFBlock_MoveDist(a0),d0
+		move.w	obDoorV_MoveDist(a0),d0
 		btst	#staFlipX,obStatus(a0)
 		beq.s	.no_xflip
 		neg.w	d0							; invert if xflipped
 
 	.no_xflip:
-		move.w	obFBlock_StartY(a0),d1
+		move.w	obDoorV_StartY(a0),d1
 		add.w	d0,d1						; add distance to start position
 		move.w	d1,obY(a0)					; update y pos
 		rts	
@@ -112,7 +121,7 @@ DoorV_UpButton:
 
 	.finish:
 		addq.b	#1,obSubtype(a0)			; convert to type 6
-		clr.b	obFBlock_MoveFlag(a0)		; clear movement flag
+		clr.b	obDoorV_MoveFlag(a0)		; clear movement flag
 	; ProjectFM S3K Object Manager
 		move.w	obRespawnAddr(a0),d0		; get address in respawn table
 		beq.s	.not_pressed				; if it's zero, don't remember object
@@ -124,31 +133,31 @@ DoorV_UpButton:
 
 ; Type 02 - moves down when button is pressed
 DoorV_DownButton:
-		tst.b	obFBlock_MoveFlag(a0)		; is object moving?
+		tst.b	obDoorV_MoveFlag(a0)		; is object moving?
 		bne.s	.chk_distance				; if yes, branch
 		lea		(f_switch).w,a2
 		moveq	#0,d0
-		move.b	obFBlock_ButtonNum(a0),d0
+		move.b	obDoorV_ButtonNum(a0),d0
 		tst.b	(a2,d0.w)					; check status of linked button (unused button subtype $4x)
 		bpl.s	.not_pressed				; branch if not pressed
-		move.b	#1,obFBlock_MoveFlag(a0)
+		move.b	#1,obDoorV_MoveFlag(a0)
 
 	.chk_distance:
 		moveq	#0,d0
 		move.b	obHeight(a0),d0
 		add.w	d0,d0
-		cmp.w	obFBlock_MoveDist(a0),d0	; has object moved distance equal to its height?
+		cmp.w	obDoorV_MoveDist(a0),d0	; has object moved distance equal to its height?
 		beq.s	.finish						; if yes, branch
-		addq.w	#2,obFBlock_MoveDist(a0)	; increment distance
+		addq.w	#2,obDoorV_MoveDist(a0)	; increment distance
 
 	.not_pressed:
-		move.w	obFBlock_MoveDist(a0),d0
+		move.w	obDoorV_MoveDist(a0),d0
 		btst	#staFlipX,obStatus(a0)
 		beq.s	.no_xflip
 		neg.w	d0							; invert if xflipped
 
 	.no_xflip:
-		move.w	obFBlock_StartY(a0),d1
+		move.w	obDoorV_StartY(a0),d1
 		add.w	d0,d1						; add distance to start position
 		move.w	d1,obY(a0)					; update y pos
 		rts	
@@ -156,7 +165,7 @@ DoorV_DownButton:
 
 	.finish:
 		subq.b	#1,obSubtype(a0)			; convert to type 5
-		clr.b	obFBlock_MoveFlag(a0)		; clear movement flag
+		clr.b	obDoorV_MoveFlag(a0)		; clear movement flag
 	; ProjectFM S3K Obj Manager
 		move.w	obRespawnAddr(a0),d0		; get address in respawn table
 		beq.s	.not_pressed				; if it's zero, don't remember object

@@ -1,6 +1,11 @@
 ; ---------------------------------------------------------------------------
 ; Object 6A - ground saws and pizza cutters (SBZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obSaw_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
+obSaw_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position
+obSaw_GroundFlag:		equ objoff_34		; 1 byte  | flag set when the ground saw appears
+; ---------------------------------------------------------------------------
 
 Saws:
 		move.l	#Map_Saw,obMap(a0)

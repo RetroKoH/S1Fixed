@@ -7,9 +7,7 @@ MotoSmoke:
 		tst.b	obRoutine(a0)
 		bne.w	DeleteObject
 	; Object Routine Optimization End
-; ---------------------------------------------------------------------------
 
-Moto_Animate:
 		lea		Ani_Moto(pc),a1
 		jsr		(AnimateSprite).w
 		bra.w	DisplaySprite
@@ -17,6 +15,11 @@ Moto_Animate:
 
 ; ---------------------------------------------------------------------------
 ; Object 40 - Moto Bug enemy (GHZ)
+; ---------------------------------------------------------------------------
+; OST Constants
+obMoto_TurnTime:		equ objoff_30		; 2 bytes | time delay before changing direction
+obMoto_SmokeDelay:		equ objoff_32		; 1 byte  | time delay between smoke puffs
+obMoto_SpeedUpFlag:		equ objoff_33		; 1 byte  | flag used with an upcoming behavior mod
 ; ---------------------------------------------------------------------------
 
 MotoBug:

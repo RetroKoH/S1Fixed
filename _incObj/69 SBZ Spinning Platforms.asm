@@ -1,6 +1,12 @@
 ; ---------------------------------------------------------------------------
 ; Object 69 - spinning platforms (SBZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obSpin_WaitTime:		equ objoff_30		; 2 bytes | time until change
+obSpin_WaitMaster:		equ objoff_32		; 2 bytes | time between changes
+obSpin_SpinFlag:		equ objoff_34		; 1 byte  | 1 = switch between animations, spinning platforms only
+obSpin_TimeSync:		equ objoff_36		; 2 bytes | bitmask used to synchronise timing: subtype $8x = $3F; subtype $9x = $7F
+; ---------------------------------------------------------------------------
 
 SpinPlatform:
 		obj_addr	#Spin_Action

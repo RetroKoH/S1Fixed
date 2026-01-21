@@ -1,6 +1,10 @@
 ; ---------------------------------------------------------------------------
 ; Object 22 - Buzz Bomber enemy	(GHZ, MZ, SYZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obBuzz_WaitTime:		equ objoff_30		; 1 byte  | time delay for each action
+obBuzz_Mode:			equ objoff_31		; 1 byte  | current action - 0 = flying; 1 = recently fired; 2 = near Sonic
+; ---------------------------------------------------------------------------
 
 BuzzBomber:
 		_move.l	#Buzz_Move,obAddr(a0)
@@ -104,6 +108,10 @@ Buzz_ChkDist:
 
 ; ---------------------------------------------------------------------------
 ; Object 22 (sub) - missile that Buzz Bomber throws
+; ---------------------------------------------------------------------------
+; OST Constants
+obMissile_WaitTime:		equ objoff_30		; 1 byte  | time delay
+obMissile_Parent:		equ objoff_3E		; 2 bytes | RAM address of parent object
 ; ---------------------------------------------------------------------------
 
 Missile:

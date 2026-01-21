@@ -2,6 +2,10 @@
 ; Object - shields
 ; Invincibility Stars have been removed and moved to their own object ($21)
 ; ---------------------------------------------------------------------------
+; OST Constants (w/ DPLCs and dynamic pointers -- RetroKoH VRAM Overhaul)
+obShield_ArtLoc			equ	objoff_38		; 4 bytes | pointer to art data
+obShield_DPLCLoc		equ	objoff_3C		; 4 bytes | pointer to DPLC data
+; ---------------------------------------------------------------------------
 
 ShieldItem:
 		moveq	#0,d0

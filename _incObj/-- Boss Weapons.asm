@@ -1,6 +1,10 @@
 ; ---------------------------------------------------------------------------
 ; Sub-Object -- Eggman's weapons during boss fights
 ; ---------------------------------------------------------------------------
+; OST Constants
+obBossWeapon_DiffY:		equ objoff_3C		; 2 bytes | escape speed of ship
+obBossWeapon_Parent:	equ objoff_3E		; 2 bytes | parent address (Eggman's ship)
+; ---------------------------------------------------------------------------
 
 BossWeapon:
 		movea.w	obBossWeapon_Parent(a0),a2			; get address of parent object (ship)

@@ -1,6 +1,11 @@
 ; ---------------------------------------------------------------------------
 ; Sub-Object -- Eggman's face during boss fights
 ; ---------------------------------------------------------------------------
+; OST Constants
+obBossFace_Defeat:		equ objoff_3B		; 1 byte  | routine number that boss is defeated on
+obBossFace_Escape:		equ objoff_3C		; 2 bytes | escape speed of ship
+obBossFace_Parent:		equ objoff_3E		; 2 bytes | parent address (Eggman's ship)
+; ---------------------------------------------------------------------------
 
 BossFace:
 		movea.w	obBossFace_Parent(a0),a2			; get address of parent object (ship)

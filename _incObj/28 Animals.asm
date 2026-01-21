@@ -1,6 +1,15 @@
 ; ---------------------------------------------------------------------------
 ; Object 28 - animals
 ; ---------------------------------------------------------------------------
+; OST Constants
+obAnimal_Direction:		equ objoff_29		; 1 byte  | animal goes left/right
+obAnimal_Type:			equ objoff_30		; 1 byte  | type of animal (0-$B)
+obAnimal_VelX:			equ objoff_32		; 2 bytes | horizontal speed
+obAnimal_VelY:			equ objoff_34		; 2 bytes | vertical speed
+obAnimal_PrisonNum:		equ objoff_36		; 2 bytes | id num for animals in prison capsule, lets them jump out 1 at a time
+obAnimal_CapsuleAddr:	equ objoff_3C		; 2 bytes | address of prison capsule that spawned this animal (if applicable)
+;obEnemy_Combo:			equ objoff_3E		; 2 bytes | number of enemies broken in a row (0-$A) (Shared with the ExplosionItem object)
+; ---------------------------------------------------------------------------
 
 Animals:
 		moveq	#0,d0
@@ -252,10 +261,10 @@ Anml_Type5
 ; New deletion routine made to optimize the End-of-Level waiting procedure (RetroKoH)
 
 AnimalDelete:
-		tst.w	obAnimal_CapsuleAddr(a0)			; did this spawn from a capsule?
+		tst.w	obAnimal_CapsuleAddr(a0)	; did this spawn from a capsule?
 		beq.w	DeleteObject				; if not, simply despawn
-		movea.w	obAnimal_CapsuleAddr(a0),a2			; a2=capsule
-		subq.b	#1,pri_animalCt(a2)			; decrement capsule's animal count
+		movea.w	obAnimal_CapsuleAddr(a0),a2	; a2=capsule
+		subq.b	#1,obPrison_AnimalCount(a2)	; decrement capsule's animal count
 		bra.w	DeleteObject				; despawn
 ; ===========================================================================
 

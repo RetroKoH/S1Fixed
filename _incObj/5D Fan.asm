@@ -1,6 +1,10 @@
 ; ---------------------------------------------------------------------------
 ; Object 5D - fans (SLZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obFan_Time:				equ objoff_30		; 2 bytes | time between switching on/off
+obFan_Switch:			equ objoff_32		; 1 byte  | on/off switch
+; ---------------------------------------------------------------------------
 
 Fan:
 		_move.l	#Fan_Action,obRoutine(a0)

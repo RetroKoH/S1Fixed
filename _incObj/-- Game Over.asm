@@ -1,6 +1,9 @@
 ; ---------------------------------------------------------------------------
 ; Object - "GAME OVER" and "TIME OVER"
 ; ---------------------------------------------------------------------------
+; OST Constants
+obOver_Timer			equ	objoff_30		; 2 bytes | delay timer
+; ---------------------------------------------------------------------------
 
 GameOverCard:
 		tst.l	(v_plc_buffer).w			; are the pattern load cues empty?

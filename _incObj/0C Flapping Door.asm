@@ -2,6 +2,10 @@
 ; Object 0C - flapping door (LZ)
 ; Rewritten by Hivebrain to work when x-flipped; now solid from both sides
 ; ---------------------------------------------------------------------------
+; OST constants
+obFlap_Wait:			equ objoff_30		; 2 bytes | time until change
+obFlap_Time:			equ objoff_32		; 2 bytes | time between opening/closing
+; ----------------------------------------------------------------------------
 
 FlapDoor:
 		moveq	#0,d0

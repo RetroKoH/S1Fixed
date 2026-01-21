@@ -2,6 +2,15 @@
 ; Object 61 - blocks (LZ)
 ; rising platforms and corks are split into their own objects
 ; ---------------------------------------------------------------------------
+; OST Constants
+obLBlock_StartX:		equ objoff_30		; 2 bytes | starting X-axis position
+obLBlock_StartY:		equ objoff_32		; 2 bytes | starting Y-axis position
+obLBlock_PrevX:			equ objoff_34		; 2 bytes | previous X-axis position (used instead of pushing to the stack)
+obLBlock_WaitTime:		equ objoff_36		; 2 bytes | time delay for block movement
+obLBlock_Flag:			equ objoff_38		; 1 byte  | 1 = untouched; 0 = touched
+obLBlock_SinkPixels:	equ objoff_3E		; 1 byte  | pixels the platform has sunk when stood on
+obLBlock_ColFlag:		equ objoff_3F		; 1 byte  | 0 = none; 1 = side collision; -1 = top/bottom collision
+; ---------------------------------------------------------------------------
 
 LabyrinthBlock:
 		_move.l	#LBlk_Action,obAddr(a0)

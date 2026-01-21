@@ -2,6 +2,13 @@
 ; Object 35 - fireball that sits on the	floor (MZ)
 ; (appears when	you walk on sinking platforms)
 ; ---------------------------------------------------------------------------
+; Obj35 - MZ Burning Grass (locations align with Obj2F)
+obGFire_StartX:			equ objoff_2A		; 2 bytes | starting X-axis position
+obGFire_StartY:			equ objoff_2C		; 2 bytes | starting Y-axis position
+obGFire_ColPtr:			equ objoff_30		; 4 bytes | pointer to collision data
+obGFire_Parent:			equ objoff_38		; 2 bytes | RAM address of parent object
+obGFire_SinkPixels:		equ objoff_3C		; 2 bytes | pixels the platform has sunk when stood on
+; ---------------------------------------------------------------------------
 
 GrassFire:
 		moveq	#0,d0

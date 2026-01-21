@@ -1,6 +1,10 @@
 ; ---------------------------------------------------------------------------
 ; Object - zone title cards
 ; ---------------------------------------------------------------------------
+; OST Constants
+obTCard_DisplayX:		equ objoff_30		; 2 bytes | position for card to display on
+obTCard_FinalX:			equ objoff_32		; 2 bytes | position for card to finish on
+; ---------------------------------------------------------------------------
 
 TitleCard:
 	; RetroKoH/LavaGaming Object Routine Optimization

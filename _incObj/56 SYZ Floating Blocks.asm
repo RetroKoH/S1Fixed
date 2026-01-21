@@ -1,8 +1,17 @@
 ; ---------------------------------------------------------------------------
 ; Object 56 - floating blocks (SYZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obFBlock_StartX:		equ objoff_30		; 2 bytes | starting X-axis position
+obFBlock_StartY:		equ objoff_32		; 2 bytes | starting Y-axis position
+obFBlock_PrevX:			equ objoff_34		; 2 bytes | previous X-axis position (used instead of pushing to the stack)
+obFBlock_MoveFlag:		equ objoff_38		; 1 byte  | 1 = block/door is moving
+obFBlock_MoveDist:		equ objoff_3A		; 2 bytes | distance to move
+obFBlock_ButtonNum:		equ objoff_3C		; 1 byte  | which button the block is linked to (2nd digit of subtype)
+; ---------------------------------------------------------------------------
 
 ; ===========================================================================
+; I need to rework things to remove the now-unused data
 
 FBlock_Var:	; width/2, height/2
 		dc.b  $10, $10	; subtype 0x/8x ($0) - SYZ small blocks

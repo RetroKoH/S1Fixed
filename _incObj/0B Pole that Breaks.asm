@@ -2,6 +2,9 @@
 ; Object 0B - pole that	breaks (LZ)
 ; Optimized by Hivebrain (S1Squared)
 ; ---------------------------------------------------------------------------
+; OST constants
+obPole_GrabTime:		equ objoff_30		; 2 bytes | time between grabbing the pole & breaking
+; ----------------------------------------------------------------------------
 
 Pole:
 		moveq	#0,d0

@@ -2,6 +2,17 @@
 ; Object 57 - chained spiked balls (LZ)
 ; I split the SYZ Spikebar from this, because this will use subsprites - KoH
 ; ---------------------------------------------------------------------------
+; OST Constants
+obSBall_Chain:			equ objoff_30		; 2 bytes | object RAM address of the chain
+
+obSBall_Angle:			equ objoff_36		; 2 bytes | precise rotation angle
+	; ^^^ We need this so that obShieldProp isn't overwritten, otherwise
+	; Insta-Shield negates its collision property. Upper byte written to obAngle.
+
+obSBall_CenterX:		equ objoff_38		; 2 bytes | center X-axis position
+obSBall_CenterY:		equ objoff_3A		; 2 bytes | center Y-axis position
+obSBall_Speed:			equ objoff_3E		; 2 bytes | rate of spin
+; ---------------------------------------------------------------------------
 
 SBall_Sub:
 		move.w	#priority5,d0	; decreased from 4

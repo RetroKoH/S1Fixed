@@ -1,6 +1,10 @@
 ; ---------------------------------------------------------------------------
 ; Object 5A - platforms	moving in circles (SLZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obCirc_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
+obCirc_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position
+; ---------------------------------------------------------------------------
 
 CirclingPlatform:
 		moveq	#0,d0

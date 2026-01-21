@@ -117,8 +117,130 @@ bitL:		equ 2
 bitDn:		equ 1
 bitUp:		equ 0
 
-; Object variables
-	include "_incObj/00 OST Constants.asm"
+; ---------------------------------------------------------------------------
+; Object Status Table Constants (Rearranged for S3K Priority and Object Managers -- RetroKoH)
+; Nomenclature adopted from s1disasm, Sorting adopted from s2disasm
+;
+; All object-specific OST constants are defined in object files in ../_incObj/..
+; ---------------------------------------------------------------------------
+; Universal OSTs
+obAddr:					equ 0				; 4 bytes | object ID number
+obRender:				equ obAddr			; 1 byte  | bitfield for x/y flip, display mode	(top byte of obAddr)
+obGfx:					equ 4				; 2 bytes | palette line & VRAM setting
+obMap:					equ 6				; 4 bytes | sprite mappings address
+obX:					equ $A				; 2 bytes | x-axis position
+obXSub:					equ obX+2			; 2 bytes | x-axis subpixel position
+obScreenY:				equ obXSub			; 2 bytes | screen-fixed y-axis position
+obY:					equ $E				; 2 bytes | y-axis position
+obYSub:					equ obY+2			; 2 bytes | y-axis subpixel position
+obPriority:				equ $18				; 2 bytes | sprite stack priority
+obFrame:				equ $1C				; 1 byte  | current frame displayed
+obDispWid:				equ $23				; 1 byte  | display width/2
+; ---------------------------------------------------------------------------
+; conventions followed by most objects including Sonic:
+obVelX:					equ $12				; 2 bytes | x-axis velocity
+obVelY:					equ $14				; 2 bytes | y-axis velocity
+obHeight:				equ $1A				; 1 byte  | height/2
+obWidth:				equ $1B				; 1 byte  | width/2
+
+obAnim:					equ $1D				; 1 byte  | current animation
+obAniFrame:				equ $1E				; 1 byte  | current frame in animation script
+obTimeFrame:			equ $1F				; 1 byte  | time to next frame (1 byte) / general timer (2 bytes)
+obStatus:				equ $22				; 1 byte  | orientation or mode
+obRoutine:				equ $24				; 1 byte  | routine number
+obAngle:				equ $26				; 1 byte  | angle
+; ---------------------------------------------------------------------------
+; conventions followed by many objects but NOT Sonic
+obRespawnAddr:			equ $16				; 2 bytes | respawn list address
+obColType:				equ $20				; 1 byte  | collision response type
+obColProp:				equ $21				; 1 byte  | collision extra property
+ob2ndRout:				equ $25				; 1 byte  | secondary routine number
+obShieldProp:			equ $27				; 1 byte  | How object responds to shields {Reflect-Lightning-Bubble-Flame 0-0-0-0}
+obSubtype:				equ $28				; 1 byte  | object subtype
+obParent:				equ $3E				; 2 bytes | parent address
+; ---------------------------------------------------------------------------
+; Boss variables (Any unique variables are found within the object file itself)
+obBoss_3rdRout:			equ obSubtype		; 1 byte  | bosses may use this OST as a tertiary routine counter
+obBoss_AttackFlag:		equ objoff_2F		; 1 byte  |
+obBoss_BufferX:			equ objoff_30		; 2 bytes | stored X-axis position
+obBoss_BufferY:			equ objoff_38		; 2 bytes | stored Y-axis position
+obBoss_DelayTime:		equ objoff_3C		; 2 bytes | delay timer
+obBoss_FlashFrames:		equ objoff_3E		; 1 byte  | # of frames to flash white when hit
+obBoss_HoverAngle:		equ objoff_3F		; 1 byte  | Used w/ CalcSine for the ship's hover effect
+; ---------------------------------------------------------------------------
+
+; ---------------------------------------------------------------------------
+; Miscellaneous object scratch-RAM
+; ---------------------------------------------------------------------------
+
+objoff_25:	equ $25
+objoff_26:	equ $26
+objoff_27:	equ $27	; unused
+objoff_28:	equ $28	; unused
+objoff_29:	equ $29
+objoff_2A:	equ $2A
+objoff_2B:	equ $2B
+objoff_2C:	equ $2C
+objoff_2E:	equ $2E
+objoff_2F:	equ $2F
+objoff_30:	equ $30
+objoff_31:	equ $31	; unused
+objoff_32:	equ $32
+objoff_33:	equ $33
+objoff_34:	equ $34
+objoff_35:	equ $35
+objoff_36:	equ $36
+objoff_37:	equ $37
+objoff_38:	equ $38
+objoff_39:	equ $39
+objoff_3A:	equ $3A
+objoff_3B:	equ $3B
+objoff_3C:	equ $3C
+objoff_3D:	equ $3D
+objoff_3E:	equ $3E
+objoff_3F:	equ $3F
+
+object_size_bits:		equ 6
+object_size:			equ 1<<object_size_bits
+; ---------------------------------------------------------------------------
+
+; Devon/KoH Subsprite OSTs -- Subsprite properties set DO override standard OSTs.
+; What is actually overridden depends on the amount of sub sprites you have set to display.
+mainspr_routine:		equ $13	; added by RetroKoH
+mainspr_mapframe:		equ $14	; last byte of obX (2nd byte of obScreenY)
+mainspr_childsprites:	equ $15	; amount of child sprites
+mainspr_height:			equ $16 ; TO-DO: swap obRespawnAddr with obHeight/Width so we can use those here
+mainspr_width:			equ $17
+
+subspr_posdata:			equ $18
+sub2_x_pos:				equ $18
+sub2_y_pos:				equ $1A
+sub3_x_pos:				equ $1C
+sub3_y_pos:				equ $1E
+sub4_x_pos:				equ $20
+sub4_y_pos:				equ $22
+sub5_x_pos:				equ $24
+sub5_y_pos:				equ $26
+sub6_x_pos:				equ $28
+sub6_y_pos:				equ $2A
+sub7_x_pos:				equ $2C
+sub7_y_pos:				equ $2E
+sub8_x_pos:				equ $30
+sub8_y_pos:				equ $32
+sub9_x_pos:				equ $34
+sub9_y_pos:				equ $36
+next_subspr:			equ 4		; location of the next subspr position
+
+subspr_frames:			equ $38
+sub2_mapframe:			equ $38
+sub3_mapframe:			equ $39
+sub4_mapframe:			equ $3A
+sub5_mapframe:			equ $3B
+sub6_mapframe:			equ $3C
+sub7_mapframe:			equ $3D
+sub8_mapframe:			equ $3E
+sub9_mapframe:			equ $3F
+; ---------------------------------------------------------------------------
 
 ; ---------------------------------------------------------------------------
 ; obRender constants

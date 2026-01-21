@@ -1,6 +1,13 @@
 ; ---------------------------------------------------------------------------
 ; Object 52 - moving platform blocks (MZ, LZ, SBZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obMBlock_StartX:		equ objoff_30		; 2 bytes | starting X-axis position
+obMBlock_StartY:		equ objoff_32		; 2 bytes | starting Y-axis position
+obMBlock_WaitTime:		equ objoff_34		; 2 bytes | time delay before moving platform back - subtype x9/xA only
+obMBlock_MoveFlag:		equ objoff_36		; 2 bytes | 1 = move platform back to its original position - subtype x9/xA only
+obMBlock_PrevX:			equ objoff_38		; 2 bytes | previous X-axis position (used instead of pushing to the stack)
+; ---------------------------------------------------------------------------
 
 ; ===========================================================================
 MBlock_Var:		; object width,	frame number

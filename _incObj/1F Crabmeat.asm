@@ -1,6 +1,10 @@
 ; ---------------------------------------------------------------------------
 ; Object 1F - Crabmeat enemy (GHZ, SYZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obCrab_WaitTime:		equ objoff_30		; 2 bytes | time until crabmeat fires
+obCrab_Mode:			equ objoff_32		; 1 byte  | current action - 0/1 = not firing; 2/3 = firing
+; ---------------------------------------------------------------------------
 
 Crabmeat:
 		move.l	#Crab_ChkFloor,obAddr(a0)

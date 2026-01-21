@@ -1,6 +1,15 @@
 ; ---------------------------------------------------------------------------
 ; Object 31 - stomping metal blocks on chains (MZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obCStom_StartY:			equ objoff_30		; 2 bytes | starting Y-axis position
+obCStom_ChainLength:	equ objoff_32		; 2 bytes | current chain length
+obCStom_ChainMax:		equ objoff_34		; 2 bytes | maximum chain length
+obCStom_RiseFlag:		equ objoff_36		; 2 bytes | 0 = falling; 1 = rising
+obCStom_DelayTime:		equ objoff_38		; 2 bytes | time delay between fully extended and rising again
+obCStom_SwitchID:		equ objoff_3A		; 1 byte  | switch number for the current stomper
+obCStom_Parent:			equ objoff_3E		; 2 bytes | RAM address of parent object
+; ---------------------------------------------------------------------------
 
 ChainStomp:
 		moveq	#0,d0

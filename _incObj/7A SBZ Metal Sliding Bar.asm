@@ -1,5 +1,15 @@
 ; ---------------------------------------------------------------------------
 ; Object 7A - thin metal horizontal sliding bar (SBZ)
+; Split from Obj6B by RetroKoH (Special Thanks: Hivebrain)
+; ---------------------------------------------------------------------------
+; OST Constants
+obMBar_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
+obMBar_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position
+obMBar_WaitTime:		equ objoff_34		; 1 byte  | time until next action
+obMBar_ButtonFlag:		equ objoff_35		; 1 byte  | flag set when associated button is pressed
+obMBar_DistMoved:		equ objoff_36		; 2 bytes | distance moved
+obMBar_DistToMove:		equ objoff_38		; 2 bytes | distance to move
+obMBar_ButtonNum:		equ objoff_3A		; 1 byte  | button number associated with door
 ; ---------------------------------------------------------------------------
 
 MetalBar:

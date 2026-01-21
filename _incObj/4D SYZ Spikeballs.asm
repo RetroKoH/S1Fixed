@@ -1,5 +1,19 @@
 ; ---------------------------------------------------------------------------
 ; Object 4D - bar of spiked balls (SYZ)
+; Split from Obj57 by RetroKoH
+; ---------------------------------------------------------------------------
+; OST Constants
+obSBar_ObjCount:		equ objoff_29		; 1 byte  | number of child objects
+obSBar_ChildObjs:		equ objoff_2A		; 8 bytes | object RAM indices of child objects and parent
+
+obSBar_Angle:			equ objoff_36		; 2 bytes | precise rotation angle
+	; ^^^ We need this so that obShieldProp isn't overwritten, otherwise
+	; Insta-Shield negates its collision property. Upper byte written to obAngle.
+
+obSBar_CenterX:			equ objoff_38		; 2 bytes | center X-axis position
+obSBar_CenterY:			equ objoff_3A		; 2 bytes | center Y-axis position
+obSBar_Radius:			equ objoff_3C		; 1 byte  | radius
+obSBar_Speed:			equ objoff_3E		; 2 bytes | rate of spin
 ; ---------------------------------------------------------------------------
 
 SpikeBar:
@@ -27,7 +41,7 @@ SpikeBar:
 		lea		obSBar_ObjCount(a0),a2					; a2 = (a0)'s child address array
 		move.b	obSubtype(a0),d1						; get object type
 		andi.w	#7,d1									; read only the	2nd digit (max: 7)
-		clr.b	(a2)+
+		clr.b	(a2)+									; a2 now points to obSBar_ChildObjs
 		move.w	d1,d3
 		lsl.w	#4,d3									; multiply type by $10
 		move.b	d3,obSBar_Radius(a0)					; set as radius
@@ -58,7 +72,7 @@ SpikeBar:
 		subi.w	#v_objspace&$FFFF,d5					; subtract base address ($D000)
 		lsr.w	#object_size_bits,d5					; divide by $40
 		andi.w	#$7F,d5									; convert to obj RAM index
-		move.b	d5,(a2)+								; add obj RAM index to list of child objects
+		move.b	d5,(a2)+								; add obj RAM index to the list (obSBar_ChildObjs)
 		_move.l	d2,obAddr(a1)
 		move.l	obMap(a0),obMap(a1)
 		move.w	obGfx(a0),obGfx(a1)
@@ -75,7 +89,7 @@ SpikeBar:
 		subi.w	#v_objspace&$FFFF,d5					; subtract base address ($D000)
 		lsr.w	#object_size_bits,d5					; divide by $40
 		andi.w	#$7F,d5									; convert to obj RAM index
-		move.b	d5,(a2)+								; add to end of list
+		move.b	d5,(a2)+								; add to end of list (obSBar_ChildObjs)
 ; ---------------------------------------------------------------------------
 
 SBar_Move:	; Routine 2

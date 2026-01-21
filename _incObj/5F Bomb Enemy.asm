@@ -1,6 +1,11 @@
 ; ---------------------------------------------------------------------------
 ; Object 5F - walking bomb enemy (SLZ, SBZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obBomb_FuseTime:		equ objoff_30		; 2 bytes | time of fuse
+obBomb_StartY:			equ objoff_34		; 2 bytes | original y-axis position
+obBomb_Parent:			equ objoff_3E		; 2 bytes | address of parent object (unused?)
+; ---------------------------------------------------------------------------
 
 Bomb:
 		obj_addr	#Bom_Wait
