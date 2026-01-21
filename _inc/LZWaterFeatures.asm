@@ -41,9 +41,11 @@ LZWaterFeatures:
 .notlabyrinth:
 		rts	
 ; ===========================================================================
+
 ; ---------------------------------------------------------------------------
 ; Initial water heights
 ; ---------------------------------------------------------------------------
+
 WaterHeight:
 		dc.w $B8	; Labyrinth 1
 		dc.w $328	; Labyrinth 2
@@ -75,8 +77,8 @@ LZDynamicWater:
 
 .exit:
 		rts
-
 ; ===========================================================================
+
 DynWater_Index:	offsetTable
 		offsetTableEntry.w	DynWater_LZ1
 		offsetTableEntry.w	DynWater_LZ2
@@ -269,6 +271,7 @@ DynWater_SBZ3:
 .setwater:
 		move.w	d1,(v_waterpos_target).w
 		rts
+; ===========================================================================
 
 ; ---------------------------------------------------------------------------
 ; Labyrinth Zone "wind tunnels"	subroutine
@@ -372,6 +375,7 @@ LZWindTunnels:
 		beq.s	.quit					; if yes, branch
 		move.b	#aniID_Walk,obAnim(a1)	; use walking animation
 		move.w	#$1309,obHeight(a1)		; set default height -- DeltaW/RetroKoH Wind Tunnel Fix
+		addq.w	#5,obY(a1)				; pop Sonic's position down slightly -- DeltaW/RetroKoH Wind Tunnel Fix
 
 	.leavehurt:
 		clr.b	(f_wtunnelmode).w		; finish tunnel
@@ -379,7 +383,6 @@ LZWindTunnels:
 	.quit:
 		rts	
 ; End of function LZWindTunnels
-
 ; ===========================================================================
 
 		;    left, top,  right, bottom boundaries
@@ -390,13 +393,11 @@ WindTunnelsCoordinates:
 		dc.w $A20, $600, $1610, $6E0 ; act 3 values
 		dc.w $C80, $600, $13D0, $680 ; SBZ act 3 values
 		even
+; ===========================================================================
 
 ; ---------------------------------------------------------------------------
 ; Labyrinth Zone water slide subroutine
 ; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
 
 LZWaterSlides:
 		lea		(v_player).w,a1
@@ -454,8 +455,8 @@ loc_3F9A:
 locret_3FBE:
 		rts	
 ; End of function LZWaterSlides
-
 ; ===========================================================================
+
 ; byte_3FC0:
 Slide_Speeds:
 		dc.b  10,  10,  10,  10				; MJ: Values for speed, format XX00 = Speed in $14(a-)
@@ -463,7 +464,7 @@ Slide_Speeds:
 		dc.b  11,  11,  11,  11
 		dc.b -11, -11, -11, -11
 		dc.b -12, -12, -12, -12
-		dc.b -11,  11
+		dc.b -11
 		even
 
 Slide_Chunks:
@@ -472,14 +473,16 @@ Slide_Chunks:
 		dc.b $0B,$0C,$0D,$0E
 		dc.b $15,$16,$F8,$F9
 		dc.b $19,$1A,$1B,$1C
-		dc.b $17,$36						; KoH: Added Chunk $36 to try to fix a spin bug
+		dc.b $17
 
 ; byte_3FCF:
 Slide_Chunks_End
 		even
+; ===========================================================================
 
 	if S3KUnderwaterPalette
 ; ===========================================================================
+
 LZ_WaterTransition:
 		dc.w $13	; # of entries - 1
 		dc.w $62
@@ -502,4 +505,5 @@ LZ_WaterTransition:
 		dc.w $3A
 		dc.w $2E
 		dc.w $28
+; ===========================================================================
 	endif
