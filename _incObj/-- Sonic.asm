@@ -2303,27 +2303,44 @@ Sonic_JumpCollision:
 	.on_floor:
 		add.w	d1,obY(a0)					; align to floor
 		move.b	d3,obAngle(a0)				; set angle
-		;bsr.w	Sonic_ResetOnFloor			; Moved to .flat -- Fix Bubble Bounce
+		;bsr.w	Sonic_ResetOnFloor			; Moved to .flat_surface -- Fix Bubble Bounce
 		;move.b	#aniID_Walk,obAnim(a0)
-		move.b	d3,d0
-		addi.b	#$20,d0
-		andi.b	#$40,d0
-		bne.s	.steep						; branch if floor is steep slope (over 45 degrees)
-		move.b	d3,d0
-		addi.b	#$10,d0
-		andi.b	#$20,d0
-		beq.s	.flat						; branch if floor is flat (or almost)
-		asr		obVelY(a0)
+
+	; Devon Improved Floor Landing Logic Fix
+		move.b	d3,d0						; get floor angle
+		bpl.s	.check_upper				; if it's in the left half, branch
+		neg.b	d0							; if if's in the right half, mirror it
+ 
+	.check_upper:
+		btst	#6,d0						; is it in the lower half?
+		beq.s	.check_slope				; if so, branch
+		subi.b	#$80,d0						; if it's in the upper half, mirror it
+		neg.b	d0
+ 
+	.check_slope:
+		cmpi.b	#$20,d0						; are we landing on a steep slope?
+		bhs.s	.steep_slope				; if so, branch
+		cmpi.b	#$11,d0						; are we landing on a shallow slope?
+		blo.s	.flat_surface				; if not, branch
+
+		; With this new logic, 0x20 and 0xE0 will be considered a steep slope, while 0x10 and 0xF0 will be considered a nearly flat surface.
+		; If you want the thresholds to be different, just change the values in the cmpi.b instructions to whatever you want.
+		; For example, change $20 to $21 to make angles 0x20 and 0xE0 be considered shallow slopes (and anything above steep),
+		; and change $11 to $10 to make angles 0x10 and 0xF0 also be considered shallow slopes (and anything below nearly flat).
+	; Improved Floor Landing Logic Fix
+
+;	.shallow_slope:
+		asr		obVelY(a0)					; obInertia = (Y speed / 2) when landing on shallow slopes
 		bra.s	.y_to_inertia
 ; ===========================================================================
 
-	.flat:
+	.flat_surface:
 		clr.w	obVelY(a0)					; stop Sonic falling since he hit a floor
 		move.w	obVelX(a0),obInertia(a0)
 		bra.w	Sonic_ResetOnFloor			; Moved from .on_floor -- Fix Bubble Bounce
 ; ===========================================================================
 
-	.steep:
+	.steep_slope:
 		clr.w	obVelX(a0)					; stop Sonic moving left/right since he hit a wall
 		cmpi.w	#$FC0,obVelY(a0)
 		ble.s	.y_to_inertia				; branch if y speed is below max
@@ -2332,9 +2349,9 @@ Sonic_JumpCollision:
 	.y_to_inertia:
 	; This might need to be fixed
 		move.w	obVelY(a0),obInertia(a0)
-		tst.b	d3
-		bpl.w	Sonic_ResetOnFloor
-		neg.w	obInertia(a0)
+		tst.b	d3							; have we landed on a left facing slope?
+		bpl.w	Sonic_ResetOnFloor			; if not, branch
+		neg.w	obInertia(a0)				; if yes, get pushed left instead
 		bra.w	Sonic_ResetOnFloor			; Added -- Fix Bubble Bounce
 
 	.exit:
