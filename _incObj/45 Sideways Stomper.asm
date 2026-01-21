@@ -1,6 +1,15 @@
 ; ---------------------------------------------------------------------------
 ; Object 45 - spiked metal block from beta version (MZ)
 ; ---------------------------------------------------------------------------
+; OST Constants (Similar to Obj31, but not identical)
+obSStom_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
+obSStom_PoleLength:		equ objoff_32		; 2 bytes | current pole length
+obSStom_PoleMax:		equ objoff_34		; 2 bytes | maximum pole length
+obSStom_RetractFlag:	equ objoff_36		; 2 bytes | 1 = retract
+obSStom_DelayTime:		equ objoff_38		; 2 bytes | time to wait while fully extended
+obSStom_StartY:			equ objoff_3A		; 2 bytes | starting Y-axis position
+obSStom_Parent:			equ objoff_3E		; 2 bytes | RAM address of parent object
+; ---------------------------------------------------------------------------
 
 SideStomp:
 		moveq	#0,d0

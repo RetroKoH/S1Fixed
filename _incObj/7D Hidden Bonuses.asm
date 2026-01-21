@@ -2,6 +2,9 @@
 ; Object 7D - hidden points at the end of a level
 ; TO-DO: Give this proper collision
 ; ---------------------------------------------------------------------------
+; OST Constants
+obBonus_WaitTime:		equ objoff_30		; 2 bytes | length of time to display bonus sprites
+; ---------------------------------------------------------------------------
 
 HiddenBonus:
 		moveq	#16,d2						; radius

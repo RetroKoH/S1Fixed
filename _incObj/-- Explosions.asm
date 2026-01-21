@@ -29,6 +29,9 @@ MDis_Animate:
 ; ---------------------------------------------------------------------------
 ; Object - explosion from a destroyed enemy or monitor
 ; ---------------------------------------------------------------------------
+; OST Constants
+obEnemy_Combo:			equ objoff_3E		; 2 bytes | number of enemies broken in a row (0-$A)
+; ---------------------------------------------------------------------------
 
 ExplosionItem:
 		_move.l	#ExItem_Main,obAddr(a0)

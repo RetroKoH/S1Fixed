@@ -1,6 +1,12 @@
 ; ---------------------------------------------------------------------------
 ; Object - chaos emeralds on the ending sequence
 ; ---------------------------------------------------------------------------
+; OST Constants
+obEChaos_StartX:		equ objoff_38		; 2 bytes | x-axis centre of emerald circle
+obEChaos_StartY:		equ objoff_3A		; 2 bytes | y-axis centre of emerald circle
+obEChaos_Radius:		equ objoff_3C		; 2 bytes | radius
+obEChaos_Angle:			equ objoff_3E		; 2 bytes | angle for rotation
+; ---------------------------------------------------------------------------
 
 EndChaos:
 		cmpi.b	#2,(v_player+obFrame).w		; Note: `v_player` is EndSonic, which has its own frames
@@ -71,7 +77,10 @@ ECha_Move:
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
-; Object 89 - "SONIC THE HEDGEHOG" text	on the ending sequence
+; Object - "SONIC THE HEDGEHOG" text on the ending sequence
+; ---------------------------------------------------------------------------
+; OST Constants
+obESTH_WaitTime:		equ objoff_30		; 2 bytes | time to wait between events
 ; ---------------------------------------------------------------------------
 
 EndSTH:

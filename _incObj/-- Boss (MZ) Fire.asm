@@ -1,6 +1,12 @@
 ; ---------------------------------------------------------------------------
 ; Object - lava that Eggman drops (MZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obBossFire_DelayTime:	equ objoff_29		; 1 byte  | delay timer for various actions
+obBossFire_BufferX:		equ objoff_30		; 2 bytes | stored X-position
+obBossFire_BufferX2:	equ objoff_32		; 2 bytes | second stored X-position
+obBossFire_BufferY:		equ objoff_38		; 2 bytes | stored Y-position
+; ---------------------------------------------------------------------------
 
 BossFire:
 		moveq	#0,d0

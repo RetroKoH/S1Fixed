@@ -1,6 +1,9 @@
 ; ---------------------------------------------------------------------------
 ; Object - Goggles
 ; ---------------------------------------------------------------------------
+; OST Constants
+obGoggle_PrevFrame:		equ objoff_3F		; 1 byte  | stored frame for DPLC handling
+; ---------------------------------------------------------------------------
 
 GogglesItem:
 		_move.l	#Goggles_Display,obAddr(a0)

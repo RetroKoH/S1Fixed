@@ -1,6 +1,16 @@
 ; ---------------------------------------------------------------------------
 ; Object 78 - Caterkiller enemy	(MZ, SBZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obCat_Inertia:			equ obVelY			; 2 bytes | formerly obInertia. Needed to change after shifting SSTs for the Priority Manager.
+										; Caterkiller uses obXVel but doesn't use obYVel (unless broken), and this causes no glitches.
+
+obCat_WaitTime:			equ objoff_2A		; 1 byte  | time to wait between actions
+obCat_Mode:				equ objoff_2B		; 1 byte  | bit 4 (+$10) = mouth is open/segment moving up; bit 7 (+$80) = update animation
+obCat_FloorMap:			equ objoff_2C		; 16 bytes| height map of floor beneath caterkiller (16 bytes)
+obCat_SegmentPos:		equ objoff_3C		; 1 byte  | segment position - starts as 0/4/8/$A, increments as it moves
+obCat_Parent:			equ objoff_3E		; 2 bytes | address of OST of parent object (4 bytes - high byte is obCat_segment_pos)
+; ---------------------------------------------------------------------------
 
 Caterkiller:
 		moveq	#0,d0

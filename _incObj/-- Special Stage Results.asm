@@ -1,6 +1,10 @@
 ; ---------------------------------------------------------------------------
 ; Object - special stage results screen
 ; ---------------------------------------------------------------------------
+; OST Constants
+obSSR_DisplayX:			equ objoff_30		; 2 bytes | position for card to display on
+obSSR_Timer:			equ objoff_34		; 2 bytes | delay timer
+; ---------------------------------------------------------------------------
 
 SSResult:
 		moveq	#0,d0

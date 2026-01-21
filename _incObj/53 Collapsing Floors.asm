@@ -1,6 +1,10 @@
 ; ---------------------------------------------------------------------------
 ; Object 53 - collapsing floors	(MZ, SLZ, SBZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obCFloor_WaitTime:		equ objoff_30		; 2 bytes | time delay for collapsing floor
+obCFloor_TouchFlag:		equ objoff_32		; 2 bytes | 1 = Sonic has touched the floor
+; ---------------------------------------------------------------------------
 
 CollapseFloor:
 		moveq	#0,d0

@@ -1,6 +1,18 @@
 ; ---------------------------------------------------------------------------
 ; Object - Eggman (SYZ)
 ; ---------------------------------------------------------------------------
+; Exclusive OST Constants
+;obBoss_3rdRout:		equ obSubtype		; 1 byte  | bosses may use this OST as a tertiary routine counter
+obBossSYZ_Mode:			equ objoff_29		; 1 byte  | $FF = lifting block
+;obBoss_AttackFlag:		equ objoff_2F		; 1 byte  |
+;obBoss_BufferX:			equ objoff_30		; 2 bytes | stored X-axis position
+obBossSYZ_BlockAddr:	equ objoff_34		; 2 bytes | address of block Eggman is above - parent only
+obBossSYZ_BlockNum:		equ	objoff_36		; 1 byte  | number of block Eggman is above (0-9) - parent only
+;obBoss_BufferY:		equ objoff_38		; 2 bytes | stored Y-axis position
+;obBoss_DelayTime:		equ objoff_3C		; 2 bytes | delay timer
+;obBoss_FlashFrames:	equ objoff_3E		; 1 byte  | # of frames to flash white when hit
+;obBoss_HoverAngle:		equ objoff_3F		; 1 byte  | Used w/ CalcSine for the ship's hover effect
+; ---------------------------------------------------------------------------
 
 BossSpringYard:
 		moveq	#0,d0

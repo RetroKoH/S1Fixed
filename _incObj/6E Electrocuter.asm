@@ -2,6 +2,9 @@
 ; Object 6E - electrocution orbs (SBZ)
 ; Rewritten based on S1Squared
 ; ---------------------------------------------------------------------------
+; OST Constants
+obElecOrb_ZapRate:		equ objoff_34		; 2 bytes | zap rate - applies bitmask to frame counter
+; ---------------------------------------------------------------------------
 
 Electro:
 		moveq	#0,d0

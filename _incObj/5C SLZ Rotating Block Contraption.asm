@@ -1,5 +1,14 @@
 ; ---------------------------------------------------------------------------
 ; Object 5C - rotating staircase blocks (SLZ)
+; Split from Obj56 by RetroKoH (Special Thanks: Hivebrain)
+; ---------------------------------------------------------------------------
+; OST Constants (based on Obj56)
+obRBlock_StartX:		equ objoff_30		; 2 bytes | starting X-axis position
+obRBlock_StartY:		equ objoff_32		; 2 bytes | starting Y-axis position
+obRBlock_PrevX:			equ objoff_34		; 2 bytes | previous X-axis position (used instead of pushing to the stack)
+obRBlock_MoveFlag:		equ objoff_38		; 1 byte  | 1 = block/door is moving
+obRBlock_MoveDist:		equ objoff_3A		; 2 bytes | distance to move
+obRBlock_ButtonNum:		equ objoff_3C		; 1 byte  | which button the block is linked to (2nd digit of subtype)
 ; ---------------------------------------------------------------------------
 
 RotatingBlock:
@@ -11,26 +20,24 @@ RotatingBlock:
 
 		move.b	#$10,obDispWid(a0)
 		move.b	#$10,obHeight(a0)
-		move.w	obX(a0),obFBlock_StartX(a0)		; store starting positions
-		move.w	obY(a0),obFBlock_StartY(a0)
+		move.w	obX(a0),obRBlock_StartX(a0)		; store starting positions
+		move.w	obY(a0),obRBlock_StartY(a0)
 
-		move.w	#$20,obFBlock_MoveDist(a0)		; store full height (from top to bottom)
+		move.w	#$20,obRBlock_MoveDist(a0)		; store full height (from top to bottom)
 		moveq	#$F,d0							; read low nybble of subtype
 		and.b	obSubtype(a0),d0				; SCE Optimization
 		subq.w	#8,d0
-		bcs.s	.isLZ							; branch if low nybble was > 8
+		bcs.s	RBlock_Action					; branch if low nybble was > 8
 		lsl.w	#2,d0							; multiply by 4
 		lea		(v_oscillate+$2C).w,a2
 		adda.w	d0,a2							; read oscillating value (HAME: Replace lea instruction)
 		tst.w	(a2)
-		bpl.s	.isLZ							; branch if not negative
+		bpl.s	RBlock_Action					; branch if not negative
 		bchg	#staFlipX,obStatus(a0)			; otherwise, xflip object
-
-	.isLZ:
 ; ---------------------------------------------------------------------------
 
 RBlock_Action:
-		move.w	obX(a0),obFBlock_PrevX(a0)		; store current pre-movement x-position
+		move.w	obX(a0),obRBlock_PrevX(a0)		; store current pre-movement x-position
 		moveq	#$F,d0							; get low nybble of subtype  (changed if original was $80+)
 		and.b	obSubtype(a0),d0				; SCE optimization
 		beq.s	.type00							; skip if subtype 00 (doesn't move)
@@ -44,11 +51,11 @@ RBlock_Action:
 		moveq	#27,d1							; width
 		moveq	#16,d2							; height (jumping)
 		moveq	#17,d3							; height (walking)
-		move.w	obFBlock_PrevX(a0),d4			; pre-movement axis position
+		move.w	obRBlock_PrevX(a0),d4			; pre-movement axis position
 		bsr.w	SolidObject
 
 	.chkdel:
-		offscreen.s	.delete,obFBlock_StartX(a0)	; ProjectFM S3K Object Manager
+		offscreen.s	.delete,obRBlock_StartX(a0)	; ProjectFM S3K Object Manager
 
 	.display:
 		bra.w	DisplaySprite
@@ -111,10 +118,10 @@ RBlock_Square_Move:
 		and.b	obStatus(a0),d2							; read xflip and yflip bits (SCE Optimization)
 		bne.s	.xflip									; branch if either are set
 		sub.w	d1,d0
-		add.w	obFBlock_StartX(a0),d0
+		add.w	obRBlock_StartX(a0),d0
 		move.w	d0,obX(a0)								; update position
 		neg.w	d1
-		add.w	obFBlock_StartY(a0),d1
+		add.w	obRBlock_StartY(a0),d1
 		move.w	d1,obY(a0)
 		rts	
 ; ===========================================================================
@@ -125,10 +132,10 @@ RBlock_Square_Move:
 		subq.w	#1,d1
 		sub.w	d1,d0
 		neg.w	d0
-		add.w	obFBlock_StartY(a0),d0
+		add.w	obRBlock_StartY(a0),d0
 		move.w	d0,obY(a0)								; update position
 		addq.w	#1,d1
-		add.w	obFBlock_StartX(a0),d1
+		add.w	obRBlock_StartX(a0),d1
 		move.w	d1,obX(a0)
 		rts	
 ; ===========================================================================
@@ -139,20 +146,20 @@ RBlock_Square_Move:
 		subq.w	#1,d1
 		sub.w	d1,d0
 		neg.w	d0
-		add.w	obFBlock_StartX(a0),d0
+		add.w	obRBlock_StartX(a0),d0
 		move.w	d0,obX(a0)								; update position
 		addq.w	#1,d1
-		add.w	obFBlock_StartY(a0),d1
+		add.w	obRBlock_StartY(a0),d1
 		move.w	d1,obY(a0)
 		rts	
 ; ===========================================================================
 
 	.xflip_and_yflip:
 		sub.w	d1,d0
-		add.w	obFBlock_StartY(a0),d0
+		add.w	obRBlock_StartY(a0),d0
 		move.w	d0,obY(a0)								; update position
 		neg.w	d1
-		add.w	obFBlock_StartX(a0),d1
+		add.w	obRBlock_StartX(a0),d1
 		move.w	d1,obX(a0)
 		rts	
 ; ===========================================================================

@@ -1,6 +1,15 @@
 ; ---------------------------------------------------------------------------
 ; Object - exploding spikeballs that Eggman drops (SLZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obBossSpike_StartX:		equ objoff_30		; 2 bytes | starting X-axis position
+obBossSpike_StartY:		equ objoff_32		; 2 bytes | starting Y-axis position
+obBossSpike_BoomTime:	equ objoff_38		; 1 byte  | timer for explosion (used instead of obSubtype)
+obBossSpike_State:		equ objoff_3A		; 1 byte  | seesaw state: 0 = left raised; 2 = right raised; 1/3 = flat
+obBossSpike_Time:		equ objoff_3B		; 1 byte  | (replacing obDelayAni)
+obBossSpike_Seesaw:		equ objoff_3C		; 2 bytes | address of corresponding seesaw
+obBossSpike_Parent:		equ objoff_3E		; 2 bytes | address of parent boss object
+; ---------------------------------------------------------------------------
 
 BossSpikeball:
 		moveq	#0,d0

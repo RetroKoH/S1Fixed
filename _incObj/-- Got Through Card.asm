@@ -1,6 +1,11 @@
 ; ---------------------------------------------------------------------------
 ; Object - "SONIC HAS PASSED" title card (Really need to rename all of this)
 ; ---------------------------------------------------------------------------
+; OST Constants (shared offstes with Title Cards)
+obEoLCard_DisplayX:		equ objoff_30		; 2 bytes | position for card to display on
+obEoLCard_FinalX:		equ objoff_32		; 2 bytes | position for card to finish on
+obEoLCard_Timer:		equ objoff_34		; 2 bytes | delay timer
+; ---------------------------------------------------------------------------
 
 	if (~~CoolBonusEnabled)&(PerfectBonusEnabled)
 got_pieces = 5

@@ -1,6 +1,9 @@
 ; ---------------------------------------------------------------------------
 ; Object - special stage entry from beta
 ; ---------------------------------------------------------------------------
+; OST Constants
+obVanish_Timer:			equ objoff_30		; 1 byte  | time for Sonic to disappear
+; ---------------------------------------------------------------------------
 
 VanishSonic:
 		moveq	#0,d0
@@ -25,7 +28,7 @@ Van_Main:	; Routine 0
 		move.w	#priority1,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$38,obDispWid(a0)
 		move.w	#make_art_tile(ArtTile_Warp,0,0),obGfx(a0)
-		move.w	#120,obVanish_Timer(a0)		; set time for Sonic's disappearance to 2 seconds
+		move.b	#120,obVanish_Timer(a0)		; set time for Sonic's disappearance to 2 seconds
 ; ---------------------------------------------------------------------------
 
 Van_RmvSonic:	; Routine 2
@@ -48,7 +51,7 @@ Van_RmvSonic:	; Routine 2
 ; ===========================================================================
 
 Van_LoadSonic:	; Routine 4
-		subq.w	#1,obVanish_Timer(a0)				; subtract 1 from time
+		subq.b	#1,obVanish_Timer(a0)				; subtract 1 from time
 		bne.s	.wait								; if time remains, branch
 		_move.l	#SonicPlayer,(v_player+obAddr).w	; load Sonic object
 		jmp		(DeleteObject).l

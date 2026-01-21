@@ -1,6 +1,9 @@
 ; ---------------------------------------------------------------------------
 ; Object 42 - Newtron enemy (GHZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obNewt_FireFlag:		equ objoff_32		; 1 byte  | set to 1 after newtron fires a missile
+; ---------------------------------------------------------------------------
 
 Newtron:
 	; RetroKoH/LavaGaming Object Routine Optimization

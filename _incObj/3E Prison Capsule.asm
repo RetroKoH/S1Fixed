@@ -1,6 +1,10 @@
 ; ---------------------------------------------------------------------------
 ; Object 3E - prison capsule
 ; ---------------------------------------------------------------------------
+; OST Constants
+obPrison_StartY:		equ objoff_30		; 2 bytes | starting Y-axis position
+obPrison_AnimalCount:	equ objoff_3F		; 1 byte  | number of animals spawned from the prison
+; ---------------------------------------------------------------------------
 
 Prison:
 		moveq	#0,d0
@@ -18,9 +22,6 @@ Pri_Index:	offsetTable
 		offsetTableEntry.w Pri_Animals
 		offsetTableEntry.w Pri_EndAct
 
-pri_origY 		= objoff_30		; original y-axis position
-pri_animalCt	= objoff_3F		; number of animals spawned from the prison
-
 Pri_Var:
 		; 		routine,	width,	frame,	priority
 		dc.b 	2,			$20,	0,0		; 0 (subtype 0: body)
@@ -37,7 +38,7 @@ Pri_Main:	; Routine 0
 		move.l	#Map_Pri,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Prison_Capsule,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
-		move.w	obY(a0),pri_origY(a0)
+		move.w	obY(a0),obPrison_StartY(a0)
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0		; get subtype (0 or 1)
 		move.b	d0,d1
@@ -99,7 +100,7 @@ Pri_Switch:	; Routine 4
 		jsr		(SolidObject).l
 		lea		Ani_Pri(pc),a1
 		jsr		(AnimateSprite).w
-		move.w	pri_origY(a0),obY(a0)
+		move.w	obPrison_StartY(a0),obY(a0)
 		btst	#staSonicOnObj,obStatus(a0)		; is Sonic on top of the switch?
 		beq.s	.not_on_top						; if not, branch
 
@@ -178,7 +179,7 @@ Pri_Explosion:	; Routine $A
 		subq.w	#8,d5						; decrement queue number
 ; RetroKoH End-of-Level optimization
 		move.w	a0,obAnimal_CapsuleAddr(a1)	; set capsule as parent
-		addq.b	#1,pri_animalCt(a0)			; increment animal counter
+		addq.b	#1,obPrison_AnimalCount(a0)			; increment animal counter
 ; End-of-Level optimization end
 		dbf		d6,.loop					; repeat 7 more	times
 
@@ -203,7 +204,7 @@ Pri_Animals:	; Routine $C
 		move.w	obY(a0),obY(a1)
 ; RetroKoH End-of-Level optimization
 		move.w	a0,obAnimal_CapsuleAddr(a1)	; set capsule as parent
-		addq.b	#1,pri_animalCt(a0)			; increment animal counter
+		addq.b	#1,obPrison_AnimalCount(a0)			; increment animal counter
 ; End-of-Level optimization end
 		jsr		(RandomNumber).w
 		andi.w	#$1F,d0
@@ -234,7 +235,7 @@ Pri_Animals:	; Routine $C
 
 Pri_EndAct:	; Routine $E
 ; RetroKoH End-of-Level optimization
-		tst.b	pri_animalCt(a0)			; are any object $28 (animal) loaded?
+		tst.b	obPrison_AnimalCount(a0)			; are any object $28 (animal) loaded?
 		bne.s	.found						; if yes, branch
 ; End-of-Level optimization end
 

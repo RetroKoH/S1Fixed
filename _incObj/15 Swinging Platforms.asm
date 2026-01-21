@@ -3,9 +3,14 @@
 ;			- spiked ball on a chain (SBZ)
 ; Adapted from Sonic Clean Engine
 ; ----------------------------------------------------------------------------
+; OST Constants
+obSwing_StartX:				equ objoff_30		; 2 bytes | starting X-axis position
+obSwing_StartY:				equ objoff_32		; 2 bytes | starting Y-axis position
+obSwing_Chain:				equ objoff_3E		; 2 bytes | object RAM address of chain
+; ----------------------------------------------------------------------------
 
 Swing_Sub:
-		move.w	#priority5,d0	; decreased from 4
+		move.w	#priority5,d0					; decreased from 4
 		bra.w	DisplaySprite2
 ; ===========================================================================
 

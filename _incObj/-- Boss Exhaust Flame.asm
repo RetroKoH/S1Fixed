@@ -1,6 +1,10 @@
 ; ---------------------------------------------------------------------------
 ; Sub-Object -- Boss Exhaust Flame
 ; ---------------------------------------------------------------------------
+; OST Constants
+obBossFlame_Escape:		equ objoff_3C		; 2 bytes | escape speed of ship
+obBossFlame_Parent:		equ objoff_3E		; 2 bytes | parent address (Eggman's ship)
+; ---------------------------------------------------------------------------
 
 BossFlame:
 		movea.w	obBossFlame_Parent(a0),a2			; get address of parent object (ship)

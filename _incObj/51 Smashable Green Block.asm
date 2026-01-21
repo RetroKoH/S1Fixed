@@ -1,6 +1,10 @@
 ; ---------------------------------------------------------------------------
 ; Object 51 - smashable	green block (MZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obSmab_HitCount:		equ objoff_30		; 2 bytes | number of blocks hit + enemies previously hit in a single jump
+obSmab_SonicAnim:		equ objoff_32		; 1 byte  | Sonic's current animation number
+; ---------------------------------------------------------------------------
 
 SmashBlock:
 	; RetroKoH/LavaGaming Object Routine Optimization
@@ -22,7 +26,6 @@ Smab_Main:	; Routine 0
 ; ---------------------------------------------------------------------------
 
 Smab_Solid:	; Routine 2
-
 ; It seems odd to store these at the start, but we need to save these variables for .smash
 		move.w	(v_itembonus).w,obSmab_HitCount(a0)			; load current combo count
 		move.b	(v_player+obAnim).w,obSmab_SonicAnim(a0)	; load Sonic's animation number

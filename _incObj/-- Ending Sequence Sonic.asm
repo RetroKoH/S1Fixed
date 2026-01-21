@@ -1,6 +1,9 @@
 ; ---------------------------------------------------------------------------
 ; Object - Sonic on ending sequence
 ; ---------------------------------------------------------------------------
+; OST Constants
+obESonic_WaitTime:		equ objoff_30		; 1 byte  | time to wait between events (truncated down to 1 byte)
+; ---------------------------------------------------------------------------
 
 EndSonic:
 		moveq	#0,d0

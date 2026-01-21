@@ -1,6 +1,10 @@
 ; ---------------------------------------------------------------------------
 ; Object 4E - advancing	wall of	lava (MZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obLWall_MoveFlag:		equ objoff_36		; 1 byte  | flag to start wall moving
+obLWall_Parent:			equ objoff_3E		; 2 bytes | RAM address of parent object
+; ---------------------------------------------------------------------------
 
 LavaWall:
 		moveq	#0,d0

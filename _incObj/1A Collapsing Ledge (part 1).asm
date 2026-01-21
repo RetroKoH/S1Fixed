@@ -1,6 +1,10 @@
 ; ---------------------------------------------------------------------------
 ; Object 1A - GHZ collapsing ledge
 ; ---------------------------------------------------------------------------
+; Obj1A - GHZ Collapsing Ledge (Shared with Obj53)
+obLedge_WaitTime:		equ objoff_30		; 1 byte  | time between touching the ledge and it collapsing
+obLedge_TouchFlag:		equ objoff_31		; 1 byte  | flag set when ledge is stood on
+; ---------------------------------------------------------------------------
 
 CollapseLedge:
 		moveq	#0,d0

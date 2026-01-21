@@ -1,6 +1,16 @@
 ; ---------------------------------------------------------------------------
 ; Object 58 - giant spiked balls (SYZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obBBall_Angle:			equ objoff_36		; 2 bytes | precise rotation angle
+	; ^^^ We need this so that obShieldProp isn't overwritten, otherwise
+	; Insta-Shield negates its collision property. Upper byte written to obAngle.
+
+obBBall_StartX:			equ objoff_38		; 2 bytes | starting X-axis position
+obBBall_StartY:			equ objoff_3A		; 2 bytes | starting Y-axis position
+obBBall_Radius:			equ objoff_3C		; 1 byte  | radius of circular movement
+obBBall_Speed:			equ objoff_3E		; 2 bytes | speed
+; ---------------------------------------------------------------------------
 
 BigSpikeBall:
 		move.l	#Map_BBall,obMap(a0)

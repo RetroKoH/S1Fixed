@@ -1,6 +1,9 @@
 ; ---------------------------------------------------------------------------
 ; Object 1E - Ball Hog enemy (SBZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obHog_TimeMaster:		equ objoff_30		; 2 bytes | timer applied to the cannonball
+; ---------------------------------------------------------------------------
 
 BallHog:
 		move.l	#Hog_ChkFloor,obAddr(a0)
@@ -65,6 +68,9 @@ Hog_Action:
 
 ; ---------------------------------------------------------------------------
 ; Object 1E (sub) - cannonball that Ball Hog throws (SBZ)
+; ---------------------------------------------------------------------------
+; OST Constants
+obCBall_Time:			equ objoff_30		; 2 bytes | (sub only) time until the cannonball explodes
 ; ---------------------------------------------------------------------------
 
 Cannonball:

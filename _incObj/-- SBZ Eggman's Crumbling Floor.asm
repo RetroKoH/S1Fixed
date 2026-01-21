@@ -1,6 +1,9 @@
 ; ---------------------------------------------------------------------------
 ; Object - blocks that disintegrate when Eggman presses a switch (SBZ2)
 ; ---------------------------------------------------------------------------
+; Obj83 - SBZ2 Eggman's Floor
+obFFloor_Children:		equ objoff_30		; 16 bytes| addresses of child objects
+; ---------------------------------------------------------------------------
 
 FalseFloor:
 		moveq	#0,d0

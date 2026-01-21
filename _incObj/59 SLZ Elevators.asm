@@ -1,6 +1,16 @@
 ; ---------------------------------------------------------------------------
 ; Object 59 - platforms	that move when you stand on them (SLZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obElev_DecelFlag:		equ objoff_2F		; 1 byte  | 1 = decelerate
+obElev_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
+obElev_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position
+obElev_PrevX:			equ objoff_34		; 2 bytes | previous X-axis position (used instead of pushing to the stack)
+obElev_DistMoved:		equ objoff_36		; 4 bytes | distance moved
+obElev_AccelRate:		equ objoff_3A		; 2 bytes | acceleration - i.e. its movement is not linear
+obElev_Dist:			equ objoff_3C		; 2 bytes | half distance to move
+obElev_DistCopy:		equ objoff_3E		; 2 bytes | master copy of obElev_Dist
+; ---------------------------------------------------------------------------
 
 Elevator:
 		moveq	#0,d0

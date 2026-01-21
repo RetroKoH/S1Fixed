@@ -1,6 +1,14 @@
 ; ---------------------------------------------------------------------------
 ; Object 18 - platforms	(GHZ, SYZ, SLZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obPlat_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
+obPlat_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position
+obPlat_PrevX:			equ objoff_34		; 2 bytes | previous X-axis position (used instead of pushing to the stack)
+obPlat_BaseY:			equ objoff_36		; 2 bytes | y position ignoring dip when Sonic is on the platform
+obPlat_WaitTime:		equ objoff_38		; 2 bytes | time delay for platform moving when stood on
+obPlat_DipPixels:		equ objoff_3A		; 1 byte  | amount of dip when Sonic is on the platform
+; ---------------------------------------------------------------------------
 
 BasicPlatform:
 		moveq	#0,d0
@@ -58,9 +66,9 @@ Plat_Main:	; Routine 0
 ; ---------------------------------------------------------------------------
 
 Plat_Solid:	; Routine 2
-		tst.b	obPlat_NudgeY(a0)				; has platform dipped from being stood on?
+		tst.b	obPlat_DipPixels(a0)				; has platform dipped from being stood on?
 		beq.s	.no_dip							; if not, branch
-		subq.b	#4,obPlat_NudgeY(a0)			; decrement dip amount
+		subq.b	#4,obPlat_DipPixels(a0)			; decrement dip amount
 
 	.no_dip:
 		moveq	#0,d1
@@ -75,9 +83,9 @@ Plat_Action:	; Routine 8
 ; ===========================================================================
 
 Plat_StoodOn:	; Routine 4
-		cmpi.b	#$40,obPlat_NudgeY(a0)			; is platform at max dip?
+		cmpi.b	#$40,obPlat_DipPixels(a0)			; is platform at max dip?
 		beq.s	.max_dip						; if yes, branch
-		addq.b	#4,obPlat_NudgeY(a0)			; increment dip
+		addq.b	#4,obPlat_DipPixels(a0)			; increment dip
 
 	.max_dip:
 		moveq	#0,d1
@@ -96,8 +104,8 @@ Plat_StoodOn:	; Routine 4
 ; ---------------------------------------------------------------------------
 
 Plat_Nudge:
-		move.b	obPlat_NudgeY(a0),d0			; get nudge value
-		bsr.w	CalcSine						; convert to sine/cosine
+		move.b	obPlat_DipPixels(a0),d0			; get nudge value
+		calcsine_direct							; convert to sine/cosine
 		move.w	#$400,d1
 		muls.w	d1,d0
 		swap	d0
@@ -238,7 +246,6 @@ PlatMove_Type_FallsNow:
 		bclr	#staOnObj,obStatus(a1)
 		move.b	#2,obRoutine(a1)
 		bclr	#staSonicOnObj,obStatus(a0)
-		clr.b	ob2ndRout(a0)				; unused???
 		move.w	obVelY(a0),obVelY(a1)		; pull Sonic down with platform
 
 	.skip_sonic:

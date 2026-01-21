@@ -2,6 +2,14 @@
 ; Object 2E - grass-covered platform that sinks into lava (MZ)
 ; Split from Obj2F by RetroKoH
 ; ---------------------------------------------------------------------------
+; Obj2F - MZ Large Grass-Covered Platform
+obSGrass_StartX:		equ objoff_2A		; 2 bytes | starting X-axis position
+obSGrass_StartY:		equ objoff_2C		; 2 bytes | starting Y-axis position
+obSGrass_ColPtr:		equ objoff_30		; 4 bytes | pointer to collision data
+obSGrass_SinkPixels:	equ objoff_34		; 1 byte  | pixels the platform has sunk when stood on
+obSGrass_BurnFlag:		equ objoff_35		; 1 byte  | 0 = not burning; 1 = burning
+obSGrass_Children:		equ objoff_36		; 8 bytes | OST indices of child objects
+; ---------------------------------------------------------------------------
 
 SinkingGrass:
 		_move.l	#SGrass_Action,obAddr(a0)
@@ -9,11 +17,11 @@ SinkingGrass:
 		move.w	#make_art_tile(ArtTile_Level,2,1),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.w	#priority5,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
-		move.w	obY(a0),obLGrass_StartY(a0)
-		move.w	obX(a0),obLGrass_StartX(a0)
+		move.w	obY(a0),obSGrass_StartY(a0)
+		move.w	obX(a0),obSGrass_StartX(a0)
 
 ; Removed... use this if you want different heightmaps for different subtypes of this object
-;		move.l	#SGrass_Collision,obLGrass_ColPtr(a0)	; get pointer to heightmap data
+;		move.l	#SGrass_Collision,obSGrass_ColPtr(a0)	; get pointer to heightmap data
 
 		move.b	#1,obFrame(a0)				; sinking platform frame
 		move.b	#$40,obDispWid(a0)
@@ -58,7 +66,7 @@ SGrass_Solid:
 ; ---------------------------------------------------------------------------
 
 SGrass_Sinking:
-		move.b	obLGrass_SinkPixels(a0),d0	; get current sink distance
+		move.b	obSGrass_SinkPixels(a0),d0	; get current sink distance
 		btst	#staSonicOnObj,obStatus(a0)	; is platform being stood on? (removed obSolid)
 		bne.s	.stood_on					; if yes, branch
 		subq.b	#2,d0						; decrement sink distance
@@ -74,23 +82,23 @@ SGrass_Sinking:
 		move.b	#64,d0						; max = 64px
 
 	.update_sink:
-		move.b	d0,obLGrass_SinkPixels(a0)	; update sink distance
+		move.b	d0,obSGrass_SinkPixels(a0)	; update sink distance
 		jsr		(CalcSine).w
 		lsr.w	#4,d0
 		move.w	d0,d1
-		add.w	obLGrass_StartY(a0),d0
+		add.w	obSGrass_StartY(a0),d0
 		move.w	d0,obY(a0)					; update position
-		cmpi.b	#32,obLGrass_SinkPixels(a0)
+		cmpi.b	#32,obSGrass_SinkPixels(a0)
 		bne.s	.skip_fire					; branch if not at 32px
-		tst.b	obLGrass_BurnFlag(a0)
+		tst.b	obSGrass_BurnFlag(a0)
 		bne.s	.skip_fire					; branch if already burning
-		move.b	#1,obLGrass_BurnFlag(a0)	; set burning flag
+		move.b	#1,obSGrass_BurnFlag(a0)	; set burning flag
 		bsr.w	FindNextFreeObj
 		bne.s	.skip_fire					; branch if object slot not found
 
 		_move.l	#GrassFire,obAddr(a1)	; load sitting flame object (this spreads itself)
 		move.w	obX(a0),obX(a1)
-		move.w	obLGrass_StartY(a0),obGFire_StartY(a1)
+		move.w	obSGrass_StartY(a0),obGFire_StartY(a1)
 		addq.w	#8,obGFire_StartY(a1)
 		subq.w	#3,obGFire_StartY(a1)
 		subi.w	#$40,obX(a1)				; start at left side of platform
@@ -100,7 +108,7 @@ SGrass_Sinking:
 
 	.skip_fire:
 		moveq	#0,d2
-		lea		obLGrass_Children(a0),a2	; get address of child list
+		lea		obSGrass_Children(a0),a2	; get address of child list
 		move.b	(a2)+,d2					; get quantity
 		subq.b	#1,d2
 		bcs.s	.skip_fire_sink				; branch if 0
@@ -127,7 +135,7 @@ SGrass_Sinking:
 ; ---------------------------------------------------------------------------
 
 SGrass_AddChildToList:
-		lea		obLGrass_Children(a2),a2	; load list of child objects
+		lea		obSGrass_Children(a2),a2	; load list of child objects
 		moveq	#0,d0
 		move.b	(a2),d0						; get child count
 		addq.b	#1,(a2)						; increment child counter
@@ -142,19 +150,19 @@ SGrass_AddChildToList:
 ; ===========================================================================
 
 SGrass_ChkDel:
-		tst.b	obLGrass_BurnFlag(a0)		; is platform burning?
+		tst.b	obSGrass_BurnFlag(a0)		; is platform burning?
 		beq.s	.not_burning				; if not, branch
 		tst.b	obRender(a0)				; is platform off screen?
 		bpl.s	SGrass_DelFlames			; if yes, branch
 
 	.not_burning:
-		offscreen.w	DeleteObject,obLGrass_StartX(a0)	; ProjectFM S3K Objects Manager
+		offscreen.w	DeleteObject,obSGrass_StartX(a0)	; ProjectFM S3K Objects Manager
 		bra.w	DisplaySprite						; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 SGrass_DelFlames:
 		moveq	#0,d2
-		lea		obLGrass_Children(a0),a2	; load list of child objects
+		lea		obSGrass_Children(a0),a2	; load list of child objects
 		move.b	(a2),d2						; get quantity
 		clr.b	(a2)+						; clear quantity
 		subq.b	#1,d2
@@ -169,8 +177,8 @@ SGrass_DelFlames:
 		movea.w	d0,a1
 		bsr.w	DeleteChild					; delete child object
 		dbf		d2,.loop_del				; repeat for all children
-		clr.b	obLGrass_BurnFlag(a0)
-		clr.b	obLGrass_SinkPixels(a0)
+		clr.b	obSGrass_BurnFlag(a0)
+		clr.b	obSGrass_SinkPixels(a0)
 
 	.no_fire:
 		bra.w	DisplaySprite				; Clownacy DisplaySprite Fix

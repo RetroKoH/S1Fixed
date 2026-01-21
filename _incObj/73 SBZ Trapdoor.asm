@@ -1,5 +1,10 @@
 ; ---------------------------------------------------------------------------
 ; Object 73 - trapdoors (SBZ)
+; Split from Obj69 by RetroKoH (Special Thanks: Hivebrain)
+; ---------------------------------------------------------------------------
+; OST Constants
+obTrap_WaitTime:		equ objoff_30		; 2 bytes | time until change
+obTrap_WaitMaster:		equ objoff_32		; 2 bytes | time between changes
 ; ---------------------------------------------------------------------------
 
 Trapdoor:
@@ -17,11 +22,11 @@ Trapdoor:
 		move.w	d0,d1
 		lsl.w	#4,d0
 		sub.w	d1,d0
-		move.w	d0,obSpin_WaitMaster(a0)
-		move.w	obSpin_WaitMaster(a0),obSpin_WaitTime(a0)
+		move.w	d0,obTrap_WaitMaster(a0)
+		move.w	obTrap_WaitMaster(a0),obTrap_WaitTime(a0)
 
 Trap_Wait:
-		subq.w	#1,obSpin_WaitTime(a0)		; decrement timer
+		subq.w	#1,obTrap_WaitTime(a0)		; decrement timer
 		bmi.s	.open						; branch if time is up
 		moveq	#75,d1						; width; save 4 cycles - Filter
 		moveq	#12,d2						; height (jumping); save 4 cycles - Filter
@@ -50,12 +55,12 @@ Trap_Open:
 		cmpi.b	#2,obFrame(a0)
 		bne.w	RememberState				; branch if animation isn't finished
 		obj_addr	#Trap_Wait2
-		move.w	obSpin_WaitMaster(a0),obSpin_WaitTime(a0) ; reset timer
+		move.w	obTrap_WaitMaster(a0),obTrap_WaitTime(a0) ; reset timer
 		bra.w	RememberState
 ; ===========================================================================
 
 Trap_Wait2:
-		subq.w	#1,obSpin_WaitTime(a0)		; decrement timer
+		subq.w	#1,obTrap_WaitTime(a0)		; decrement timer
 		bmi.s	.close						; branch if time is up
 		bra.w	RememberState
 		
@@ -77,7 +82,7 @@ Trap_Close:
 		tst.b	obFrame(a0)					; is frame number 0 displayed?
 		bne.w	RememberState				; branch if animation isn't finished
 		obj_addr	#Trap_Wait
-		move.w	obSpin_WaitMaster(a0),obSpin_WaitTime(a0) ; reset timer
+		move.w	obTrap_WaitMaster(a0),obTrap_WaitTime(a0) ; reset timer
 		bra.w	RememberState
 ; ===========================================================================
 

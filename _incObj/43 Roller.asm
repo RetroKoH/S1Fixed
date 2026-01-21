@@ -1,6 +1,10 @@
 ; ---------------------------------------------------------------------------
 ; Object 43 - Roller enemy (SYZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obRoller_OpenTime:		equ objoff_30		; 2 bytes | time roller stays open for
+obRoller_Mode:			equ objoff_32		; 1 byte  | +1 = roller has jumped; +$80 = roller has stopped
+; ---------------------------------------------------------------------------
 
 Roller:
 		_move.l	#Roll_ChkFloor,obAddr(a0)

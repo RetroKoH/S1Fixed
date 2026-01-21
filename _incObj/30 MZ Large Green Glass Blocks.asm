@@ -1,6 +1,15 @@
 ; ---------------------------------------------------------------------------
 ; Object 30 - large green glass blocks (MZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obGlass_StartY:			equ objoff_30		; 2 bytes | starting Y-axis position
+obGlass_DistY:			equ objoff_32		; 2 bytes | distance block moves when switch is pressed
+obGlass_MoveMode:		equ objoff_34		; 1 byte  | 1 when block moves after switch is pressed
+obGlass_JumpInit:		equ objoff_35		; 1 byte  | 1 when block has been jumped on at least once
+obGlass_SinkDist:		equ objoff_36		; 2 bytes | distance to make block sink when jumped on (unused type 3 block)
+obGlass_SinkDelay:		equ objoff_38		; 1 byte  | time to delay block sinking
+obGlass_Parent:			equ objoff_3E		; 2 bytes | RAM address of parent object
+; ---------------------------------------------------------------------------
 
 GlassBlock:
 		moveq	#0,d0

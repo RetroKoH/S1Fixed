@@ -1,6 +1,10 @@
 ; ---------------------------------------------------------------------------
 ; Object 46 - solid blocks and blocks that fall	from the ceiling (MZ)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obBrick_StartY:			equ objoff_30		; 2 bytes | starting Y-axis position
+;objoff_32 was assigned a word-length value, but never used.
+; ---------------------------------------------------------------------------
 
 MarbleBrick:
 		_move.l	#Brick_Action,obAddr(a0)

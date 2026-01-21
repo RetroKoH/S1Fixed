@@ -2,10 +2,15 @@
 ; Object 17 - helix of spikes on a pole	(GHZ)
 ; Adapted an optimized version from S1: Sonic Clean Engine
 ; ---------------------------------------------------------------------------
+; OST Constants
+obHel_OffsetX:			equ objoff_30		; 2 bytes | x-offset amount to ensure proper rendering
+obHel_StartX:			equ objoff_32		; 2 bytes | starting X-axis offset position (obX+OffsetX)
+obHel_ChildObj:			equ objoff_3E		; 2 bytes | pointer to the helix subsprite object
+; ---------------------------------------------------------------------------
 
 Helix_Sub:		; child sprite objects only need to be drawn
-		move.w	#priority3,d0			; RetroKoH/Devon S3K+ Priority Manager
-		bra.w	DisplaySprite2			; Display sprites
+		move.w	#priority3,d0				; RetroKoH/Devon S3K+ Priority Manager
+		bra.w	DisplaySprite2				; Display sprites
 ; ===========================================================================
 
 Helix:
@@ -34,18 +39,19 @@ Hel_Main:	; Routine 0
 		move.b	#4,obRender(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#(colHarmful|colSz_4x16),obColType(a0)	; make object harmful
-		move.w	obX(a0),obHel_StartX(a0)		; save xpos
+		move.w	obX(a0),obHel_StartX(a0)	; save xpos
 		andi.b	#7,obSubtype(a0)			; cap at 8 spikes
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
 		move.b	Hel_XOffsets(pc,d0.w),d0	; number of spikes determines the x-offset applied
 		move.w	d0,obHel_OffsetX(a0)
 		addi.w	d0,obHel_StartX(a0)
-		
+; ---------------------------------------------------------------------------
+
 Hel_MakeSubsprite:
 		bsr.w	FindFreeObj
 		bne.w	.done
-		_move.l	#Helix_Sub,obAddr(a1)		; load obj17
+		_move.l	#Helix_Sub,obAddr(a1)		; load sub-sprite object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.l	obMap(a0),obMap(a1)
@@ -65,13 +71,13 @@ Hel_MakeSubsprite:
 		move.w	obX(a1),d2
 		move.w	obY(a1),d3
 
-.loop:
+	.loop:
 		move.w	d2,(a2)+					; sub?_x_pos
 		move.w	d3,(a2)+					; sub?_y_pos
 		addi.w	#$10,d2						; width of a spike, x_pos for next spike
 		dbf		d4,.loop					; repeat for d4 spikes
 
-.done:
+	.done:
 		move.b	#-1,mainspr_mapframe(a1)	; don't render the "main frame"
 		move.w	obHel_OffsetX(a0),d0
 		addi.w	d0,obX(a1)					; x-offset from above (still in d0)
@@ -80,7 +86,7 @@ Hel_MakeSubsprite:
 ; ---------------------------------------------------------------------------
 
 Hel_Action:	; Routine 2
-		movea.w	obHel_ChildObj(a0),a1 ; a1=object
+		movea.w	obHel_ChildObj(a0),a1		; a1=object
 		moveq	#0,d0
 		move.b	(v_ani0_frame).w,d0
 		moveq	#7,d1						; max spikes frames
@@ -124,7 +130,7 @@ Hel_Action:	; Routine 2
 ; ===========================================================================
 
 Hel_Delete:	; Routine 4
-		movea.w	obHel_ChildObj(a0),a1			; a1=object
+		movea.w	obHel_ChildObj(a0),a1		; a1=object
 		bsr.w	DeleteChild
 		bra.w	DeleteObject
 ; ===========================================================================

@@ -7,6 +7,14 @@
 ;	SSSS - rotation speed (1-7 = clockwise; 8-$F = anticlockwise)
 ;	RRRR - radius (see Disc_Radii)
 ; ---------------------------------------------------------------------------
+; OST Constants
+obDisc_StartY:			equ objoff_30		; 2 bytes | starting Y-axis position
+obDisc_StartX:			equ objoff_32		; 2 bytes | starting X-axis position
+obDisc_Rotation:		equ objoff_34		; 2 bytes | rate/direction of small circle rotation
+obDisc_RadiusInner:		equ objoff_36		; 1 byte  | distance of small circle from centre
+obDisc_RadiusOuter:		equ objoff_37		; 1 byte  | distance of Sonic from centre
+obDisc_SonicAttached:	equ objoff_38		; 1 byte  | flag set when Sonic lands on the disc
+; ---------------------------------------------------------------------------
 
 ; ===========================================================================
 
