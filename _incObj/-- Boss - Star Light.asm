@@ -34,7 +34,6 @@ BossSLZ_Main:
 		move.b	#8,obColProp(a0)				; set number of hits to 8
 		bclr	#staFlipX,obStatus(a0)
 		clr.b	ob2ndRout(a0)
-		move.b	#aniID_Ship,obAnim(a0)
 		move.w	#priority4,obPriority(a0)
 		move.l	#Map_Eggman,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
@@ -85,8 +84,6 @@ BossSLZ_Ship:	; Routine 2
 		move.b	ob2ndRout(a0),d0
 		move.w	BossSLZ_ShipIndex(pc,d0.w),d0
 		jsr		BossSLZ_ShipIndex(pc,d0.w)
-		lea		Ani_Eggman(pc),a1
-		jsr		(AnimateSprite).w
 		moveq	#(maskFlipX+maskFlipY),d0
 		and.b	obStatus(a0),d0
 		andi.b	#$FC,obRender(a0)

@@ -73,7 +73,6 @@ PLC_GameOverend:
 PLC_Boss:	dc.w ((PLC_Bossend-PLC_Boss-2)/6)-1
 		plcm	Nem_Eggman,			ArtTile_Eggman					; Eggman main patterns
 		plcm	Nem_Prison,			ArtTile_Prison_Capsule			; prison capsule
-		plcm	Nem_Exhaust,		ArtTile_Eggman_Exhaust			; exhaust flame
 PLC_Bossend:
 
 ; ---------------------------------------------------------------------------
@@ -83,7 +82,6 @@ PLC_Boss_GHZ:	dc.w ((PLC_Boss_GHZend-PLC_Boss_GHZ-2)/6)-1
 		plcm	Nem_Eggman,			ArtTile_Eggman					; Eggman main patterns
 		plcm	Nem_Weapons_GHZ,	ArtTile_Eggman_Weapons			; Eggman's chain base (6 tiles)
 		plcm	Nem_Prison,			ArtTile_Prison_Capsule			; prison capsule
-		plcm	Nem_Exhaust,		ArtTile_Eggman_Exhaust			; exhaust flame
 PLC_Boss_GHZend:
 
 ; ---------------------------------------------------------------------------
@@ -93,7 +91,6 @@ PLC_Boss_MZ:	dc.w ((PLC_Boss_MZend-PLC_Boss_MZ-2)/6)-1
 		plcm	Nem_Eggman,			ArtTile_Eggman					; Eggman main patterns
 		plcm	Nem_Weapons_MZ,		ArtTile_Eggman_Weapons			; Eggman's lava cannon (4 tiles)
 		plcm	Nem_Prison,			ArtTile_Prison_Capsule			; prison capsule
-		plcm	Nem_Exhaust,		ArtTile_Eggman_Exhaust			; exhaust flame
 PLC_Boss_MZend:
 
 ; ---------------------------------------------------------------------------
@@ -103,7 +100,6 @@ PLC_Boss_SYZ:	dc.w ((PLC_Boss_SYZend-PLC_Boss_SYZ-2)/6)-1
 		plcm	Nem_Eggman,			ArtTile_Eggman					; Eggman main patterns
 		plcm	Nem_Weapons_SYZ,	ArtTile_Eggman_Weapons			; Eggman's spiker (5 tiles)
 		plcm	Nem_Prison,			ArtTile_Prison_Capsule			; prison capsule
-		plcm	Nem_Exhaust,		ArtTile_Eggman_Exhaust			; exhaust flame
 PLC_Boss_SYZend:
 
 ; ---------------------------------------------------------------------------
@@ -113,7 +109,6 @@ PLC_Boss_SLZ:	dc.w ((PLC_Boss_SLZend-PLC_Boss_SLZ-2)/6)-1
 		plcm	Nem_Eggman,			ArtTile_Eggman					; Eggman main patterns
 		plcm	Nem_Weapons_SLZ,	ArtTile_Eggman_Weapons			; Eggman's weapons (6 tiles)
 		plcm	Nem_Prison,			ArtTile_Prison_Capsule			; prison capsule
-		plcm	Nem_Exhaust,		ArtTile_Eggman_Exhaust			; exhaust flame
 PLC_Boss_SLZend:
 
 ; ---------------------------------------------------------------------------
@@ -254,7 +249,6 @@ PLC_FZBoss:	dc.w ((PLC_FZBossend-PLC_FZBoss-2)/6)-1
 		plcm	Nem_FzBoss,     ArtTile_FZ_Boss              ; FZ boss
 		plcm	Nem_Eggman,     ArtTile_Eggman               ; Eggman main patterns
 		plcm	Nem_Sbz2Eggman, ArtTile_FZ_Eggman_No_Vehicle ; Eggman without ship
-		plcm	Nem_Exhaust,    ArtTile_Eggman_Exhaust       ; exhaust flame
 PLC_FZBossend:
 
 ; ---------------------------------------------------------------------------

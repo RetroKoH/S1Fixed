@@ -1144,7 +1144,7 @@
                 }
             ],
             "isDirectory": true,
-            "expanded": true,
+            "expanded": false,
             "uuid": "353e0542-f3ce-4bf7-bb7f-5d19313b45e5"
         },
         {
@@ -3015,7 +3015,7 @@
                 }
             ],
             "isDirectory": true,
-            "expanded": true,
+            "expanded": false,
             "uuid": "59c71df9-6d67-4a04-a38a-0756b3511a57"
         },
         {
