@@ -521,6 +521,7 @@ ArtTile_Lives_Counter:			equ $7D4				; ✓
 
 ; Eggman
 ArtTile_Eggman:					equ $3F0				; ✓
+ArtTile_Eggman_Face:			equ $413				;
 ArtTile_Eggman_Weapons:			equ $45C				; ✓
 ArtTile_Eggman_Spikeball:		equ $504				; Test this
 ArtTile_Eggman_Exhaust:			equ $51A				; ?
