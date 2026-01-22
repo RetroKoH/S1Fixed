@@ -467,10 +467,10 @@ CheckSumError:
 ; ===========================================================================
 
 ; Soulless Sentinel Level Select ASCII Mod
-Art_Text:		binclude	"artunc/Menu Text.bin" ; text used in level select and debug mode
+Art_Text:		binclude	"artunc/Menu Text.unc" ; text used in level select and debug mode
 Art_Text_End:	even
-
 ; ===========================================================================
+
 ; ---------------------------------------------------------------------------
 ; Vertical interrupt
 ; ---------------------------------------------------------------------------
@@ -4243,9 +4243,11 @@ BossFlash:
 		include	"_incObj/-- Boss (SLZ) Spikeball.asm"
 
 	; Sub-Objects
-		include	"_anim/Eggman.asm"
+		include "_maps/Boss Face - DPLCs.asm"
 		include "_incObj/-- Boss Face.asm"
+		include	"_anim/Eggman.asm"
 		include "_incObj/-- Boss Exhaust Flame.asm"
+		include "_maps/Boss Flames - DPLCs.asm"
 		include "_incObj/-- Boss Weapons.asm"
 
 	; Cutscene boss
@@ -5061,15 +5063,15 @@ loc_1C962:
 		include	"_inc/HUD (part 2).asm"
 
 	if HUDCentiseconds=1	; Mercury HUD Centiseconds
-Art_Hud:	binclude	"artunc/HUD Numbers (centiseconds).bin" ; 8x16 pixel numbers on HUD
+Art_Hud:	binclude	"artunc/HUD Numbers (centiseconds).unc" ; 8x16 pixel numbers on HUD
 		even
 	else
-Art_Hud:	binclude	"artunc/HUD Numbers.bin" ; 8x16 pixel numbers on HUD
+Art_Hud:	binclude	"artunc/HUD Numbers.unc" ; 8x16 pixel numbers on HUD
 		even
 	endif	; HUD Centiseconds End
 
 
-Art_LivesNums:	binclude	"artunc/Lives Counter Numbers.bin" ; 8x8 pixel numbers on lives counter
+Art_LivesNums:	binclude	"artunc/Lives Counter Numbers.unc" ; 8x8 pixel numbers on lives counter
 		even
 
 		include	"_incObj/DebugMode.asm"
@@ -5121,7 +5123,7 @@ Nem_JapNames:	binclude	"artnem/Hidden Japanese Credits.nem"
 
 Eni_MenuBack:		binclude	"tilemaps/SONIC MILES background.eni"
 		even
-Art_MenuBack:		binclude	"artunc/SONIC MILES background art.bin"
+Art_MenuBack:		binclude	"artunc/SONIC MILES background art.unc"
 		even
 Nem_MenuStuff:		binclude	"artnem/S2 Level Select Font.nem"
 		even
@@ -5170,7 +5172,7 @@ Nem_LevSelIcons:	binclude	"artnem/S2 Level Select Icons.nem"
 
 	if DynamicSpecialStageWalls	; Mercury Dynamic Special Stage Walls
 
-Nem_SSWalls:	binclude	"artunc/Special Walls (dynamic).bin"
+Nem_SSWalls:	binclude	"artunc/Special Walls (dynamic).unc"
 		even
 
 				include	"_maps/SS Walls - Dynamic.asm"	; Mercury Dynamic Special Stage Walls
@@ -5417,7 +5419,7 @@ Nem_Hud:		binclude	"artnem/HUD.nem"	; HUD (rings, time, score)
 Nem_Lives:		binclude	"artnem/HUD - Life Counter Icon.nem"
 		even
 
-Art_Ring:		binclude	"artunc/Rings.bin"
+Art_Ring:		binclude	"artunc/Rings.unc"
 		even
 Nem_Sparkles:	binclude	"artnem/Ring Sparkles.nem"
 		even
@@ -5563,39 +5565,38 @@ ArtKos_SBZ3:	binclude	"artkos/8x8 - SBZ3.kos"		; SBZ3 primary patterns -- Clowna
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - bosses and ending sequence
 ; ---------------------------------------------------------------------------
-Nem_Eggman:	binclude	"artnem/Boss - Main.nem"
+Nem_Eggman:			binclude	"artnem/Boss - Ship.nem"
 		even
 Nem_Weapons_GHZ:	binclude	"artnem/Boss - Weapons - GHZ.nem"
 		even
-Nem_Weapons_MZ:	binclude	"artnem/Boss - Weapons - MZ.nem"
+Nem_Weapons_MZ:		binclude	"artnem/Boss - Weapons - MZ.nem"
 		even
 Nem_Weapons_SYZ:	binclude	"artnem/Boss - Weapons - SYZ.nem"	; Removed 1 unneeded tile
 		even
 Nem_Weapons_SLZ:	binclude	"artnem/Boss - Weapons - SLZ.nem"	; Add Spikeball to this set
 		even
-Nem_Prison:	binclude	"artnem/Prison Capsule.nem"
+Nem_Prison:			binclude	"artnem/Prison Capsule.nem"
 		even
-Nem_Sbz2Eggman:	binclude	"artnem/Boss - Eggman in SBZ2 & FZ.nem"
+Nem_Sbz2Eggman:		binclude	"artnem/Boss - Eggman in SBZ2 & FZ.nem"
 		even
-Nem_FzBoss:	binclude	"artnem/Boss - Final Zone.nem"
+Nem_FzBoss:			binclude	"artnem/Boss - Final Zone.nem"
 		even
-Nem_FzEggman:	binclude	"artnem/Boss - Eggman after FZ Fight.nem"
+Nem_FzEggman:		binclude	"artnem/Boss - Eggman after FZ Fight.nem"
 		even
-Nem_Exhaust:	binclude	"artnem/Boss - Exhaust Flame.nem"
+
+Nem_EndEm:			binclude	"artnem/Ending - Emeralds.nem"
 		even
-Nem_EndEm:	binclude	"artnem/Ending - Emeralds.nem"
+Nem_EndSonic:		binclude	"artnem/Ending - Sonic.nem"
 		even
-Nem_EndSonic:	binclude	"artnem/Ending - Sonic.nem"
+Nem_TryAgain:		binclude	"artnem/Ending - Try Again.nem"
 		even
-Nem_TryAgain:	binclude	"artnem/Ending - Try Again.nem"
+Kos_EndFlowers:		binclude	"artkos/Flowers at Ending.kos" ; ending sequence animated flowers
 		even
-Kos_EndFlowers:	binclude	"artkos/Flowers at Ending.kos" ; ending sequence animated flowers
+Nem_EndFlower:		binclude	"artnem/Ending - Flowers.nem"
 		even
-Nem_EndFlower:	binclude	"artnem/Ending - Flowers.nem"
+Nem_CreditText:		binclude	"artnem/Ending - Credits.nem"
 		even
-Nem_CreditText:	binclude	"artnem/Ending - Credits.nem"
-		even
-Nem_EndStH:	binclude	"artnem/Ending - StH Logo.nem"
+Nem_EndStH:			binclude	"artnem/Ending - StH Logo.nem"
 		even
 
 		rept $40
@@ -5744,24 +5745,25 @@ SS_5:		binclude	"sslayout/5.eni"
 SS_6:		binclude	"sslayout/6.eni"
 		even
 	endif
+
 ; ---------------------------------------------------------------------------
 ; Animated uncompressed graphics
 ; ---------------------------------------------------------------------------
-Art_GhzWater:	binclude	"artunc/GHZ Waterfall.bin"
+Art_GhzWater:	binclude	"artunc/GHZ Waterfall.unc"
 		even
-Art_GhzFlower1:	binclude	"artunc/GHZ Flower Large.bin"
+Art_GhzFlower1:	binclude	"artunc/GHZ Flower Large.unc"
 		even
-Art_GhzFlower2:	binclude	"artunc/GHZ Flower Small.bin"
+Art_GhzFlower2:	binclude	"artunc/GHZ Flower Small.unc"
 		even
-Art_MzLava1:	binclude	"artunc/MZ Lava Surface.bin"
+Art_MzLava1:	binclude	"artunc/MZ Lava Surface.unc"
 		even
-Art_MzLava2:	binclude	"artunc/MZ Lava.bin"
+Art_MzLava2:	binclude	"artunc/MZ Lava.unc"
 		even
-Art_MzTorch:	binclude	"artunc/MZ Background Torch.bin"
+Art_MzTorch:	binclude	"artunc/MZ Background Torch.unc"
 		even
-Art_LzWheel:	binclude	"artunc/LZ Wheel.bin"				; Formerly compressed art as part of the Conveyor object (63).
+Art_LzWheel:	binclude	"artunc/LZ Wheel.unc"				; Formerly compressed art as part of the Conveyor object (63).
 		even
-Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.bin"
+Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.unc"
 		even
 
 
@@ -5942,7 +5944,9 @@ Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.bin"
 		include	"_maps/Lamppost.asm"
 		include	"_maps/Hidden Bonuses.asm"
 		include	"_maps/Credits.asm"
-		include	"_maps/Eggman.asm"
+		include	"_maps/Boss Ship.asm"
+		include "_maps/Boss Face.asm"
+		include "_maps/Boss Flames.asm"
 		include	"_maps/Boss Items.asm"
 		include	"_maps/SLZ Boss Spikeball.asm"
 		include	"_maps/SYZ Boss Blocks.asm"
@@ -5996,72 +6000,78 @@ Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.bin"
 ; We only need to add an 'align $20000' at any point where art that is used by DPLCs crosses a 128k boundary
 	align $20000
 
-Art_Sonic:		binclude	"artunc/Sonic.bin"					; Sonic
+Art_Sonic:		binclude	"artunc/Sonic.unc"					; Sonic
 		even
-Art_Shield:		binclude	"artunc/Shield - Blue.bin"			; Blue Shield -- RetroKoH VRAM Overhaul
+Art_Shield:		binclude	"artunc/Shield - Blue.unc"			; Blue Shield -- RetroKoH VRAM Overhaul
 		even
-Art_Stars:		binclude	"artunc/Invincibility Stars.bin"	; Invincibility Stars -- RetroKoH VRAM Overhaul
+Art_Stars:		binclude	"artunc/Invincibility Stars.unc"	; Invincibility Stars -- RetroKoH VRAM Overhaul
 		even
-Art_Goggles:	binclude	"artunc/Goggles.bin"				; Goggles
+Art_Goggles:	binclude	"artunc/Goggles.unc"				; Goggles
 		even
 
 	if InstashieldEnabled
-Art_Insta:		binclude	"artunc/Shield - Insta.bin"
+Art_Insta:		binclude	"artunc/Shield - Insta.unc"
 		even
 	endif
 
 	if ShieldsMode
-Art_Shield_F:	binclude	"artunc/Shield - Flame.bin"
+Art_Shield_F:	binclude	"artunc/Shield - Flame.unc"
 		even
-Art_Shield_B:	binclude	"artunc/Shield - Bubble.bin"
+Art_Shield_B:	binclude	"artunc/Shield - Bubble.unc"
 		even
-Art_Shield_L:	binclude	"artunc/Shield - Lightning.bin"
+Art_Shield_L:	binclude	"artunc/Shield - Lightning.unc"
 		even
-Art_Shield_L2:	binclude	"artunc/Shield - Lightning Sparks.bin"
+Art_Shield_L2:	binclude	"artunc/Shield - Lightning Sparks.unc"
 		even
 	endif
 
 	switch UpdatedSignposts
 	case 2
-Art_Signpost:	binclude	"artunc/Signpost - Hybrid.bin"		; End-of-level Signpost -- RetroKoH VRAM Overhaul
+Art_Signpost:	binclude	"artunc/Signpost - Hybrid.unc"		; End-of-level Signpost -- RetroKoH VRAM Overhaul
 	case 1
-Art_Signpost:	binclude	"artunc/Signpost - CD.bin"			; End-of-level Signpost -- RetroKoH VRAM Overhaul
+Art_Signpost:	binclude	"artunc/Signpost - CD.unc"			; End-of-level Signpost -- RetroKoH VRAM Overhaul
 	elsecase
-Art_Signpost:	binclude	"artunc/Signpost.bin"				; End-of-level Signpost -- RetroKoH VRAM Overhaul
+Art_Signpost:	binclude	"artunc/Signpost.unc"				; End-of-level Signpost -- RetroKoH VRAM Overhaul
 	endcase
 		even
 
-Art_BigRing:	binclude	"artunc/Giant Ring.bin"				; Giant Ring -- RetroKoH VRAM Overhaul
+Art_BigRing:	binclude	"artunc/Giant Ring.unc"				; Giant Ring -- RetroKoH VRAM Overhaul
 		even
 
 	if (SpinDashEnabled|SkidDustEnabled)
-Art_Effects:	binclude	"artunc/Dust Effects.bin"			; Spindash/Skid Dust
+Art_Effects:	binclude	"artunc/Dust Effects.unc"			; Spindash/Skid Dust
 		even
 				include "_maps/Effects.asm"
 	endif
 
 	if RandomMonitors
-Art_Mon_Rand:	binclude	"artunc/Monitors - Random.bin"		; Monitor Art Mod
+Art_Mon_Rand:	binclude	"artunc/Monitors - Random.unc"		; Monitor Art Mod
 		even
 	endif
 
 	; RetroKoH Optimal Title Cards for VRAM/SpritePiece Reduction
 	include "artunc/Title and End Cards/Art Includes.asm"
 
-Art_TimeOver:	binclude	"artunc/Time Over.bin"				; time over (TI) -- RetroKoH VRAM Overhaul
+Art_TimeOver:	binclude	"artunc/Time Over.unc"				; time over (TI) -- RetroKoH VRAM Overhaul
 Art_TimeOver_End:	even
 
 ; We only need to add an 'align $20000' at any point where art that is used by DPLCs crosses a 128k boundary
 	align $20000
 	if SuperMod
-Art_SuperSonic:		binclude	"artunc/Super Sonic.bin"		; Sonic
+Art_SuperSonic:		binclude	"artunc/Super Sonic.unc"		; Sonic
 		even
 
-Art_SuperStars:	binclude	"artunc/Super Sonic Stars.bin"
+Art_SuperStars:	binclude	"artunc/Super Sonic Stars.unc"
 Art_SuperStars_End:	even
 	endif
 
-Art_TitleSonic:	binclude	"artunc/Title Screen Sonic.bin"		; Title Sonic -- RetroKoH VRAM Overhaul
+Art_TitleSonic:	binclude	"artunc/Title Screen Sonic.unc"		; Title Sonic -- RetroKoH VRAM Overhaul
+		even
+
+Art_BossFace:	binclude	"artunc/Boss - Face.unc"
+		even
+
+Art_BossFlame:	binclude	"artunc/Boss - Exhaust Flame.unc"
 		even
 
 ; ---------------------------------------------------------------------------

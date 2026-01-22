@@ -32,8 +32,7 @@ BossGHZ_Main:	; Routine 0
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.b	#$20,obDispWid(a0)
-		move.w	#priority3,obPriority(a0)
-		move.b	#aniID_Ship,obAnim(a0)
+		move.w	#priority4,obPriority(a0)
 		move.w	#$400,d1
 
 		jsr		(FindNextFreeObj).l
@@ -62,8 +61,6 @@ BossGHZ_Ship:	; Routine 2
 		move.b	ob2ndRout(a0),d0
 		move.w	BossGHZ_ShipIndex(pc,d0.w),d1
 		jsr		BossGHZ_ShipIndex(pc,d1.w)
-		lea		Ani_Eggman(pc),a1
-		jsr		(AnimateSprite).w
 		moveq	#(maskFlipX+maskFlipY),d0
 		and.b	obStatus(a0),d0
 		andi.b	#$FC,obRender(a0)				; ignore x/y flip bits
