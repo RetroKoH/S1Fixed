@@ -13,34 +13,32 @@ obBossGHZ_Active:		equ objoff_34		; 1 byte  | flag noting that the boss can be h
 
 BossGreenHill:
 		_move.l	#BossGHZ_Ship,obAddr(a0)
-		move.w	obX(a0),obX(a1)
-		move.w	obY(a0),obY(a1)
 		move.l	#Map_Eggman,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.b	#$20,obDispWid(a0)
 		move.w	#priority4,obPriority(a0)
-		move.w	#$400,d1
+		move.w	obX(a0),obBoss_BufferX(a0)
+		move.w	obY(a0),obBoss_BufferY(a0)
+		move.b	#(colEnemy|colSz_24x24),obColType(a0)
+		move.b	#8,obColProp(a0)				; set number of hits to 8
+		move.w	#$100,obVelY(a0)				; start moving ship down -- movement applied here, instead of EVERY frame in Routine 0
+		move.w	#$400,d1						; set escape speed
 
 		jsr		(FindNextFreeObj).l
-		bne.s	.notfound
+		bne.s	BossGHZ_Ship
 		_move.l	#BossFace,obAddr(a1)
 		move.b	#8,obBossFace_Defeat(a1)		; boss defeat routine number
 		move.w	d1,obBossFace_Escape(a1)		; set speed at which ship escapes
 		move.w	a0,obBossFace_Parent(a1)		; save address of parent
 
 		jsr		(FindNextFreeObj).l
-		bne.s	.notfound
+		bne.s	BossGHZ_Ship
 		_move.l	#BossFlame,obAddr(a1)
 		move.w	d1,obBossFlame_Escape(a1)		; set speed at which ship escapes
 		move.w	a0,obBossFlame_Parent(a1)		; save address of parent
 
-	.notfound:
-		move.w	obX(a0),obBoss_BufferX(a0)
-		move.w	obY(a0),obBoss_BufferY(a0)
-		move.b	#(colEnemy|colSz_24x24),obColType(a0)
-		move.b	#8,obColProp(a0)				; set number of hits to 8
-		move.w	#$100,obVelY(a0)				; start moving ship down -- movement applied here, instead of EVERY frame in 2ndRout 0
+;		no weapon object (wrecking ball is a different object)
 ; ---------------------------------------------------------------------------
 
 BossGHZ_Ship:

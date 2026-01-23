@@ -227,9 +227,9 @@ loc_6F28:
 		tst.b	(f_switch+8).w				; has switch 8 been triggered? (At the start, next to the endless slide)
 		bne.s	DLE_LZ3_BossChk				; if yes, branch
 		cmpi.w	#$1BE8,(v_screenposx).w
-		blo.s	locret_6F8C
+		blo.w	locret_6F8C
 		cmpi.w	#$598,(v_screenposy).w
-		bhs.s	locret_6F8C
+		bhs.w	locret_6F8C
 		move.b	#1,(f_switch+8).w			; trigger the door
 		move.w	#sfx_Rumbling,d0
 		bsr.w	QueueSound2					; play rumbling sound
@@ -244,6 +244,8 @@ DLE_LZ3_BossChk:
 		bsr.w	FindFreeObj
 		bne.s	loc_6F4A
 		_move.l	#BossLabyrinth,obAddr(a1)	; load LZ boss object
+		move.w	#boss_lz_x+$30,obX(a1)
+		move.w	#boss_lz_y+$500,obY(a1)
 
 loc_6F4A:
 
@@ -458,6 +460,8 @@ DLE_SLZ3boss:
 		bsr.w	FindFreeObj
 		bne.s	loc_7144
 		_move.l	#BossStarLight,obAddr(a1)	; load SLZ boss object
+		move.w	#boss_slz_x+$188,obX(a1)
+		move.w	#boss_slz_y+$18,obY(a1)
 
 loc_7144:
 
@@ -527,6 +531,8 @@ DLE_SYZ3boss:
 		bsr.w	FindFreeObj
 		bne.s	loc_71EC
 		_move.l	#BossSpringYard,obAddr(a1)	; load SYZ boss object
+		move.w	#boss_syz_x+$1B0,obX(a1)
+		move.w	#boss_syz_y+$E,obY(a1)
 		addq.w	#2,(v_dle_routine).w		; Now word-length so we don't need to clear d0 -- Filter Optimized DLE Manager
 
 loc_71EC:

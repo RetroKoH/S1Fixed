@@ -13,18 +13,17 @@ obMZBoss_FireBallTimer:	equ objoff_34		; 1 byte  | delay timer for random fireba
 
 BossMarble:
 		_move.l	#BossMZ_Ship,obAddr(a0)
-		move.w	obX(a0),obBoss_BufferX(a0)
-		move.w	obY(a0),obBoss_BufferY(a0)
-		move.b	#(colEnemy|colSz_24x24),obColType(a0)
-		move.b	#8,obColProp(a0) 				; set number of hits to 8
-		bclr	#staFlipX,obStatus(a0)
-		clr.b	obRoutine(a0)
-		move.w	#priority4,obPriority(a0)
 		move.l	#Map_Eggman,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.b	#$20,obDispWid(a0)
-		move.w	#$500,d1
+		move.w	#priority4,obPriority(a0)
+		move.w	obX(a0),obBoss_BufferX(a0)
+		move.w	obY(a0),obBoss_BufferY(a0)
+		move.b	#(colEnemy|colSz_24x24),obColType(a0)
+		move.b	#8,obColProp(a0) 				; set number of hits to 8
+		move.w	#-$100,obVelX(a0)				; move ship left -- movement applied here, instead of EVERY frame in Routine 0
+		move.w	#$500,d1						; set escape speed
 
 		jsr		(FindNextFreeObj).l
 		bne.s	BossMZ_Ship
@@ -78,7 +77,6 @@ BossMZ_ShipStart:		; Secondary Routine 0
 		jsr		(CalcSine).w						; convert to sine
 		asr.w	#2,d0								; divide by 4
 		move.w	d0,obVelY(a0)						; set as y speed
-		move.w	#-$100,obVelX(a0)					; move ship left
 		bsr.w	BossMove							; update parent position
 		cmpi.w	#boss_mz_x+$110,obBoss_BufferX(a0)	; has boss reached target position?
 		bne.s	.not_at_pos							; if not, branch
