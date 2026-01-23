@@ -13,20 +13,16 @@ obBossLZ_Defeated:		equ objoff_34		; 1 byte  | $FF = boss is defeated
 
 BossLabyrinth:
 		_move.l	#BossLZ_Ship,obAddr(a0)
-		move.w	#boss_lz_x+$30,obX(a0)
-		move.w	#boss_lz_y+$500,obY(a0)
-		move.w	obX(a0),obBoss_BufferX(a0)
-		move.w	obY(a0),obBoss_BufferY(a0)
-		move.b	#(colEnemy|colSz_24x24),obColType(a0)
-		move.b	#8,obColProp(a0)				; set number of hits to 8
-		move.w	#priority4,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
-		bclr	#staFlipX,obStatus(a0)
-		clr.b	obRoutine(a0)
 		move.l	#Map_Eggman,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.b	#$20,obDispWid(a0)
-		move.w	#$400,d1
+		move.w	#priority4,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
+		move.w	obX(a0),obBoss_BufferX(a0)
+		move.w	obY(a0),obBoss_BufferY(a0)
+		move.b	#(colEnemy|colSz_24x24),obColType(a0)
+		move.b	#8,obColProp(a0)				; set number of hits to 8
+		move.w	#$400,d1						; set escape speed
 
 		jsr		(FindNextFreeObj).l
 		bne.s	BossLZ_Ship
@@ -40,10 +36,11 @@ BossLabyrinth:
 		_move.l	#BossFlame,obAddr(a1)
 		move.w	d1,obBossFlame_Escape(a1)			; set speed at which ship escapes
 		move.w	a0,obBossFlame_Parent(a1)			; save address of parent
+
+;		no weapon object
 ; ---------------------------------------------------------------------------
 
 BossLZ_Ship:
-		lea		(v_player).w,a1
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	BossLZ_ShipIndex(pc,d0.w),d1
@@ -67,7 +64,7 @@ BossLZ_ShipIndex:	offsetTable
 ; ===========================================================================
 
 BossLZ_ShipStart:
-		move.w	obX(a1),d0
+		move.w	(v_player+obX).w,d0
 		cmpi.w	#boss_lz_x-$40,d0				; has Sonic passed $1DA0 on x axis?
 		blo.s	BossLZ_Update					; if not, branch
 		move.w	#-$180,obVelY(a0)				; move ship up
@@ -234,9 +231,9 @@ BossLZ_ShipAtTop:
 BossLZ_ShipWaitAtTop:
 		tst.b	obBossLZ_Defeated(a0)				; has boss been beaten?
 		bne.s	.beaten								; if yes, branch
-		cmpi.w	#boss_lz_x+$E8,obX(a1)				; has Sonic passed x pos?
+		cmpi.w	#boss_lz_x+$E8,(v_player+obX).w		; has Sonic passed x pos?
 		blt.w	BossLZ_Update						; if not, branch
-		cmpi.w	#boss_lz_y+$30,obY(a1)
+		cmpi.w	#boss_lz_y+$30,(v_player+obY).w
 		bgt.w	BossLZ_Update
 		move.b	#50,obBoss_DelayTime(a0)			; set timer for 50 frames
 
