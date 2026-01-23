@@ -67,9 +67,10 @@ Weapon_Done:	; Routine 2
 ; ===========================================================================
 
 Weapon_Spike:	; Routine 4
-		cmpi.b	#4,ob2ndRout(a2)				; BossSYZ_ShipSpike?
+		cmpi.b	#4,obRoutine(a2)				; BossSYZ_ShipSpike?
+		bhi.s	.force_retract					; if boss has been defeated, retract the spike
 		bne.s	.exit							; branch if boss isn't attacking
-		cmpi.b	#6,obBoss_3rdRout(a2)			; BSYZSpike_BreakingBlock?
+		cmpi.b	#6,ob2ndRout(a2)				; BSYZSpike_BreakingBlock?
 		beq.s	.retract						; branch if boss is breaking block
 		move.b	#(colHarmful|colSz_4x16),obColType(a0)	; make spike harmful
 		cmp.w	#$94,obBossWeapon_DiffY(a0)
@@ -82,6 +83,8 @@ Weapon_Spike:	; Routine 4
 	.retract:
 		tst.w	obBoss_DelayTime(a2)
 		bpl.s	.exit							; branch if boss is shaking
+
+	.force_retract:
 		tst.w	obBossWeapon_DiffY(a0)
 		bmi.s	.gone							; branch if spike is fully retracted
 		sub.w	#5,obBossWeapon_DiffY(a0)

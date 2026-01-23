@@ -111,7 +111,7 @@ GBall_Base:	; Routine 2
 		cmp.b	obBossBall_Radius(a1),d0	; has final object (ball) reached target?
 		bne.s	.not_finished				; if not, branch
 		movea.w	obBossBall_Parent(a0),a1	; a1 = Eggman
-		cmpi.b	#6,ob2ndRout(a1)			; is boss in back-and-forth phase?
+		cmpi.b	#6,obRoutine(a1)			; is boss in back-and-forth phase?
 		bne.s	.not_finished				; if not, branch
 		addq.b	#2,obRoutine(a0)
 

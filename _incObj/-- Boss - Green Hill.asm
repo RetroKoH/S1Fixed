@@ -2,9 +2,8 @@
 ; Object - Eggman (GHZ)
 ; ---------------------------------------------------------------------------
 ; Exclusive OST Constants
-;obBoss_3rdRout:		equ obSubtype		; 1 byte  | bosses may use this OST as a tertiary routine counter
-;obBoss_BufferX:		equ objoff_30		; 2 bytes | stored X-axis position
-;obBoss_BufferY:		equ objoff_32		; 2 bytes | stored Y-axis position
+;obBoss_BufferX:		equ objoff_2C		; 4 bytes | stored X-axis position
+;obBoss_BufferY:		equ objoff_30		; 4 bytes | stored Y-axis position
 obBossGHZ_Active:		equ objoff_34		; 1 byte  | flag noting that the boss can be hit (GHZBossDelay mod)
 ;obBoss_AttackFlag:		equ objoff_3B		; 1 byte  |
 ;obBoss_DelayTime:		equ objoff_3C		; 2 bytes | delay timer
@@ -13,19 +12,7 @@ obBossGHZ_Active:		equ objoff_34		; 1 byte  | flag noting that the boss can be h
 ; ---------------------------------------------------------------------------
 
 BossGreenHill:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	BossGHZ_Index(pc,d0.w),d1
-		jmp		BossGHZ_Index(pc,d1.w)
-; ===========================================================================
-
-BossGHZ_Index:		offsetTable
-		offsetTableEntry.w BossGHZ_Main
-		offsetTableEntry.w BossGHZ_Ship
-; ===========================================================================
-
-BossGHZ_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)				; -> BossGHZ_Ship
+		_move.l	#BossGHZ_Ship,obAddr(a0)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.l	#Map_Eggman,obMap(a0)
@@ -56,9 +43,9 @@ BossGHZ_Main:	; Routine 0
 		move.w	#$100,obVelY(a0)				; start moving ship down -- movement applied here, instead of EVERY frame in 2ndRout 0
 ; ---------------------------------------------------------------------------
 
-BossGHZ_Ship:	; Routine 2
+BossGHZ_Ship:
 		moveq	#0,d0
-		move.b	ob2ndRout(a0),d0
+		move.b	obRoutine(a0),d0
 		move.w	BossGHZ_ShipIndex(pc,d0.w),d1
 		jsr		BossGHZ_ShipIndex(pc,d1.w)
 		moveq	#(maskFlipX+maskFlipY),d0
@@ -102,7 +89,7 @@ BossGHZ_ShipDropDown:	; Secondary Routine 0
 		bne.s	BossGHZ_ChkHit						; if not, branch ahead
 	; movement applied here, instead of EVERY frame in 2ndRout 2
 		move.l	#$FF00FFC0,obVelX(a0)				; (xVel: -$100, yVel: -$40); move ship to the left, and upward slightly
-		addq.b	#2,ob2ndRout(a0)					; go to next routine
+		addq.b	#2,obRoutine(a0)					; go to next routine
 
 BossGHZ_ChkHit:
 		move.b	obBoss_HoverAngle(a0),d0			; get wobble byte
@@ -118,7 +105,7 @@ BossGHZ_ChkHit:
 		beq.s	.exit								; skip hit check if boss isn't ready
 	endif
 
-		cmpi.b	#id_ghzb_explode,ob2ndRout(a0)
+		cmpi.b	#id_ghzb_explode,obRoutine(a0)
 		bhs.s	.exit								; skip hit check if boss has been defeated
 		tst.b	obStatus(a0)
 		bmi.s	.defeated							; if bit 7 is set, branch
@@ -138,7 +125,7 @@ BossGHZ_ChkHit:
 	.defeated:
 		moveq	#100,d0
 		bsr.w	AddPoints							; give Sonic 1000 points
-		move.b	#id_ghzb_explode,ob2ndRout(a0)
+		move.b	#id_ghzb_explode,obRoutine(a0)
 		move.w	#179,obBoss_DelayTime(a0)			; set timer to 3 seconds
 		rts
 ; ===========================================================================
@@ -148,7 +135,7 @@ BossGHZ_MakeBall:	; Secondary Routine 2
 		cmpi.w	#boss_ghz_x+$A0,obBoss_BufferX(a0)	; has Eggman reached the center of the field?
 		bne.w	BossGHZ_ChkHit						; if not, branch
 		clr.l	obVelX(a0)							; stop ship movement (clear both X and Y velocities)
-		addq.b	#2,ob2ndRout(a0)					; go to next routine
+		addq.b	#2,obRoutine(a0)					; go to next routine
 		jsr		(FindNextFreeObj).l
 		bne.s	.notfound
 		_move.l	#BossBall,obAddr(a1)				; load swinging ball object
@@ -166,7 +153,7 @@ BossGHZ_ShipWait:	; Secondary Routine 4
 		subq.w	#1,obBoss_DelayTime(a0)
 		bpl.s	.reverse
 		clr.b	obBoss_AttackFlag(a0)				; stop Eggman laughing
-		addq.b	#2,ob2ndRout(a0)
+		addq.b	#2,obRoutine(a0)
 		move.w	#$40-1,obBoss_DelayTime(a0)
 		move.w	#$100,obVelX(a0)					; move the ship sideways
 		cmpi.w	#boss_ghz_x+$A0,obBoss_BufferX(a0)
@@ -191,7 +178,7 @@ BossGHZ_ShipMove:	; Secondary Routine 6
 	.timeup:
 		bchg	#staFlipX,obStatus(a0)
 		move.w	#$40-1,obBoss_DelayTime(a0)
-		subq.b	#2,ob2ndRout(a0)
+		subq.b	#2,obRoutine(a0)
 		clr.w	obVelX(a0)
 		bra.w	BossGHZ_ChkHit
 ; ===========================================================================
@@ -206,7 +193,7 @@ BossGHZ_ShipExplode:	; Secondary Routine 8
 		bset	#staFlipX,obStatus(a0)
 		bclr	#7,obStatus(a0)
 		clr.w	obVelX(a0)
-		addq.b	#2,ob2ndRout(a0)
+		addq.b	#2,obRoutine(a0)
 		move.w	#-$26,obBoss_DelayTime(a0)
 		tst.b	(v_bossstatus).w
 		bne.s	.end
@@ -235,7 +222,7 @@ BossGHZ_ShipDestroyed:	; Secondary Routine $A
 		beq.s	.resetmusic				; if timer == $30, the ship stops rising and music resets
 		cmpi.w	#$38,obBoss_DelayTime(a0)
 		blo.s	.applymovement
-		addq.b	#2,ob2ndRout(a0)
+		addq.b	#2,obRoutine(a0)
 	; movement applied here, instead of EVERY frame in 2ndRout $C
 		move.l	#$0400FFC0,obVelX(a0)	; (xVel: $400, yVel: -$40); move ship to the right, and upward slightly
 

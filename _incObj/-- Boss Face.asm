@@ -71,11 +71,11 @@ Face_Chk:	; Routine 2
 		beq.s	Face_Goto_Panic					; branch if ship is escaping
 		move.b	obBossFace_Defeat(a0),d0
 		beq.s	.exit							; branch if no defeat routine is specified
-		cmp.b	ob2ndRout(a3),d0
+		cmp.b	obRoutine(a3),d0
 		bls.s	Face_Goto_Defeat				; branch if boss is on specified routine
 		tst.b	obSubtype(a0)
 		beq.s	.exit							; branch if not in Spring Yard
-		cmp.b	#2,obBoss_3rdRout(a3)
+		cmp.b	#2,ob2ndRout(a3)
 		beq.s	Face_Goto_Lift					; branch if boss is lifting a block (SYZ only)
 
 	.exit:
@@ -156,7 +156,7 @@ Face_Panic:	; Routine $C
 Face_Lift:	; Routine $E
 		tst.b	obBoss_FlashFrames(a3)
 		bne.w	Face_Goto_Hit				; branch if boss is flashing
-		cmp.b	#2,obBoss_3rdRout(a3)
+		cmp.b	#2,obRoutine(a3)
 		bne.w	Face_Goto_Default			; branch if boss isn't lifting a block
 		rts
 ; ===========================================================================

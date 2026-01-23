@@ -2,9 +2,8 @@
 ; Object - Eggman (SLZ)
 ; ---------------------------------------------------------------------------
 ; Exclusive OST Constants
-;obBoss_3rdRout:		equ obSubtype		; 1 byte  | bosses may use this OST as a tertiary routine counter
-;obBoss_BufferX:		equ objoff_30		; 2 bytes | stored X-axis position
-;obBoss_BufferY:		equ objoff_32		; 2 bytes | stored Y-axis position
+;obBoss_BufferX:		equ objoff_2C		; 4 bytes | stored X-axis position
+;obBoss_BufferY:		equ objoff_30		; 4 bytes | stored Y-axis position
 obBossSLZ_Seesaws:		equ objoff_34		; 6 bytes | addresses of boss' seesaws (2 bytes * 3 seesaws)
 ;obBoss_AttackFlag:		equ objoff_3B		; 1 byte  |
 ;obBoss_DelayTime:		equ objoff_3C		; 2 bytes | delay timer
@@ -13,19 +12,7 @@ obBossSLZ_Seesaws:		equ objoff_34		; 6 bytes | addresses of boss' seesaws (2 byt
 ; ---------------------------------------------------------------------------
 
 BossStarLight:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	BossSLZ_Index(pc,d0.w),d1
-		jmp		BossSLZ_Index(pc,d1.w)
-; ===========================================================================
-
-BossSLZ_Index:	offsetTable
-		offsetTableEntry.w BossSLZ_Main
-		offsetTableEntry.w BossSLZ_Ship
-; ===========================================================================
-
-BossSLZ_Main:
-		addq.b	#2,obRoutine(a0)				; goto BossSLZ_Ship next
+		_move.l	#BossSLZ_Ship,obAddr(a0)
 		move.w	#boss_slz_x+$188,obX(a0)
 		move.w	#boss_slz_y+$18,obY(a0)
 		move.w	obX(a0),obBoss_BufferX(a0)
@@ -33,7 +20,7 @@ BossSLZ_Main:
 		move.b	#(colEnemy|colSz_24x24),obColType(a0)
 		move.b	#8,obColProp(a0)				; set number of hits to 8
 		bclr	#staFlipX,obStatus(a0)
-		clr.b	ob2ndRout(a0)
+		clr.b	obRoutine(a0)
 		move.w	#priority4,obPriority(a0)
 		move.l	#Map_Eggman,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
@@ -79,9 +66,9 @@ BossSLZ_Main:
 		dbf		d0,.seesaw_loop					; repeat for remaining slots
 ; ---------------------------------------------------------------------------
 
-BossSLZ_Ship:	; Routine 2
+BossSLZ_Ship:
 		moveq	#0,d0
-		move.b	ob2ndRout(a0),d0
+		move.b	obRoutine(a0),d0
 		move.w	BossSLZ_ShipIndex(pc,d0.w),d0
 		jsr		BossSLZ_ShipIndex(pc,d0.w)
 		moveq	#(maskFlipX+maskFlipY),d0
@@ -103,7 +90,7 @@ BossSLZ_ShipStart:		; Secondary Routine 0
 		move.w	#-$100,obVelX(a0)					; move ship left
 		cmpi.w	#boss_slz_x+$120,obBoss_BufferX(a0)	; has ship reached right side of screen?
 		bhs.s	BossSLZ_Update						; if not, branch
-		addq.b	#2,ob2ndRout(a0)
+		addq.b	#2,obRoutine(a0)
 
 BossSLZ_Update:
 		bsr.w	BossMove							; update parent position
@@ -123,7 +110,7 @@ BossSLZ_ApplyMovement:
 		move.w	obBoss_BufferX(a0),obX(a0)
 
 BossSLZ_ChkHit:
-		cmpi.b	#6,ob2ndRout(a0)
+		cmpi.b	#6,obRoutine(a0)
 		bhs.s	.exit
 		tst.b	obStatus(a0)						; has boss been beaten (bit 7 is set)?
 		bmi.s	.defeated							; if yes, branch
@@ -143,7 +130,7 @@ BossSLZ_ChkHit:
 	.defeated:
 		moveq	#100,d0
 		bsr.w	AddPoints							; award 1000 points
-		move.b	#6,ob2ndRout(a0)					; set ship to exploding routine
+		move.b	#6,obRoutine(a0)					; set ship to exploding routine
 		move.b	#120,obBoss_DelayTime(a0)			; set timer to 2 seconds
 		clr.w	obVelX(a0)
 		rts	
@@ -196,7 +183,7 @@ BossSLZ_ShipMove:		; Secondary Routine 2
 
 	.seesaw_found:
 		move.b	d2,obSubtype(a0)			; number of seesaw the ship is above (0/1/2)
-		addq.b	#2,ob2ndRout(a0)			; goto BSLZ_MakeBall next
+		addq.b	#2,obRoutine(a0)			; goto BSLZ_MakeBall next
 		move.b	#$28,obBoss_DelayTime(a0)	; set timer to 40 frames
 		bra.w	BossSLZ_Update				; update position, check for hit
 ; ===========================================================================
@@ -245,7 +232,7 @@ BossSLZ_ShipMakeBall:		; Secondary Routine 4
 ; ===========================================================================
 
 	.exit:
-		subq.b	#2,ob2ndRout(a0)			; -> BossSLZ_ShipMove
+		subq.b	#2,obRoutine(a0)			; -> BossSLZ_ShipMove
 		bra.w	BossSLZ_Update				; update position, check for hit
 ; ===========================================================================
 
@@ -256,7 +243,7 @@ BossSLZ_ShipExplode:		; Secondary Routine 6
 ; ===========================================================================
 
 	.stop_exploding:
-		addq.b	#2,ob2ndRout(a0)			; -> BossSLZ_ShipDestroyed
+		addq.b	#2,obRoutine(a0)			; -> BossSLZ_ShipDestroyed
 		clr.w	obVelY(a0)					; stop moving
 		bset	#staFlipX,obStatus(a0)		; ship face right
 		bclr	#7,obStatus(a0)
@@ -289,7 +276,7 @@ BossSLZ_ShipDestroyed:		; Secondary Routine 8
 		beq.s	.ship_rising				; if timer == $30, the ship stops rising and music resets
 		cmpi.b	#42,obBoss_DelayTime(a0)
 		bcs.w	BossSLZ_ApplyMovement
-		addq.b	#2,ob2ndRout(a0)			; -> BossSLZ_ShipFlee
+		addq.b	#2,obRoutine(a0)			; -> BossSLZ_ShipFlee
 		move.l	#$0400FFC0,obVelX(a0)		; (xVel: $400, yVel: -$40); move ship to the right, and upward slightly
 
 	if PostBossScreenUnlock
