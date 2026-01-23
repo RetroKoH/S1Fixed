@@ -160,10 +160,9 @@ obSubtype:				equ $28				; 1 byte  | object subtype
 obParent:				equ $3E				; 2 bytes | parent address
 ; ---------------------------------------------------------------------------
 ; Boss variables (Any unique variables are found within the object file itself)
-obBoss_3rdRout:			equ obSubtype		; 1 byte  | bosses may use this OST as a tertiary routine counter
-obBoss_BufferX:			equ objoff_2A		; 2 bytes | stored X-axis position
-obBoss_BufferY:			equ objoff_2E		; 2 bytes | stored Y-axis position
-; 8 bytes of scratch RAM
+obBoss_BufferX:			equ objoff_2C		; 4 bytes | stored X-axis position
+obBoss_BufferY:			equ objoff_30		; 4 bytes | stored Y-axis position
+; 7 bytes of scratch RAM
 obBoss_AttackFlag:		equ objoff_3B		; 1 byte  |
 obBoss_DelayTime:		equ objoff_3C		; 2 bytes | delay timer
 obBoss_FlashFrames:		equ objoff_3E		; 1 byte  | # of frames to flash white when hit
