@@ -2,9 +2,8 @@
 ; Object - Eggman (SYZ)
 ; ---------------------------------------------------------------------------
 ; Exclusive OST Constants
-;obBoss_3rdRout:		equ obSubtype		; 1 byte  | bosses may use this OST as a tertiary routine counter
-;obBoss_BufferX:		equ objoff_30		; 2 bytes | stored X-axis position
-;obBoss_BufferY:		equ objoff_32		; 2 bytes | stored Y-axis position
+;obBoss_BufferX:		equ objoff_2C		; 4 bytes | stored X-axis position
+;obBoss_BufferY:		equ objoff_30		; 4 bytes | stored Y-axis position
 obBossSYZ_BlockAddr:	equ objoff_34		; 2 bytes | address of block Eggman is above - parent only
 obBossSYZ_BlockNum:		equ	objoff_36		; 1 byte  | number of block Eggman is above (0-9) - parent only
 obBossSYZ_Mode:			equ objoff_37		; 1 byte  | $FF = lifting block
@@ -15,19 +14,7 @@ obBossSYZ_Mode:			equ objoff_37		; 1 byte  | $FF = lifting block
 ; ---------------------------------------------------------------------------
 
 BossSpringYard:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	BossSYZ_Index(pc,d0.w),d1
-		jmp		BossSYZ_Index(pc,d1.w)
-; ===========================================================================
-
-BossSYZ_Index:	offsetTable
-		offsetTableEntry.w BossSYZ_Main
-		offsetTableEntry.w BossSYZ_Ship
-; ===========================================================================
-
-BossSYZ_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)					; goto BossSYZ_Ship next
+		_move.l	#BossSYZ_Ship,obAddr(a0)
 		move.w	#boss_syz_x+$1B0,obX(a0)
 		move.w	#boss_syz_y+$E,obY(a0)
 		move.w	obX(a0),obBoss_BufferX(a0)
@@ -35,7 +22,7 @@ BossSYZ_Main:	; Routine 0
 		move.b	#(colEnemy|colSz_24x24),obColType(a0)
 		move.b	#8,obColProp(a0)					; set number of hits to 8
 		bclr	#staFlipX,obStatus(a0)
-		clr.b	ob2ndRout(a0)
+		clr.b	obRoutine(a0)
 		move.w	#priority5,obPriority(a0)
 		move.l	#Map_Eggman,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
@@ -66,9 +53,9 @@ BossSYZ_Main:	; Routine 0
 		move.w	a0,obBossWeapon_Parent(a1)			; save address of parent
 ; ---------------------------------------------------------------------------
 
-BossSYZ_Ship:	; Routine 2
+BossSYZ_Ship:
 		moveq	#0,d0
-		move.b	ob2ndRout(a0),d0
+		move.b	obRoutine(a0),d0
 		move.w	BossSYZ_ShipIndex(pc,d0.w),d1
 		jsr		BossSYZ_ShipIndex(pc,d1.w)
 		moveq	#(maskFlipX+maskFlipY),d0
@@ -90,7 +77,7 @@ BossSYZ_ShipStart:	; Secondary Routine 0
 		move.w	#-$100,obVelX(a0)					; move ship left
 		cmpi.w	#boss_syz_x+$138,obBoss_BufferX(a0)	; has ship appeared from the right yet?
 		bhs.s	BossSYZ_ShipHover			; if not, branch
-		addq.b	#2,ob2ndRout(a0)					; -> BossSYZ_ShipMove
+		addq.b	#2,obRoutine(a0)					; -> BossSYZ_ShipMove
 
 BossSYZ_ShipHover:
 		move.b	obBoss_HoverAngle(a0),d0			; get wobble byte
@@ -109,7 +96,7 @@ BossSYZ_ChkHit:
 		subi.w	#boss_syz_x,d0						; subtract x pos of first block
 		lsr.w	#5,d0								; divide by 32
 		move.b	d0,obBossSYZ_BlockNum(a0)			; id of block the ship is above
-		cmpi.b	#6,ob2ndRout(a0)					; Exploding, Destroyed, or Fleeing?
+		cmpi.b	#6,obRoutine(a0)					; Exploding, Destroyed, or Fleeing?
 		bcc.s	.exit								; if yes, branch
 		tst.b	obStatus(a0)						; has boss been beaten (bit 7 is set)?
 		bmi.s	.defeated							; if yes, branch
@@ -130,7 +117,7 @@ BossSYZ_ChkHit:
 	.defeated:
 		moveq	#100,d0
 		bsr.w	AddPoints							; award 1000 points
-		move.b	#6,ob2ndRout(a0)					; set ship to exploding routine
+		move.b	#6,obRoutine(a0)					; set ship to exploding routine
 		move.w	#180,obBoss_DelayTime(a0)			; set timer to 3 seconds
 		clr.w	obVelX(a0)							; stop boss moving
 		rts	
@@ -179,15 +166,15 @@ BossSYZ_ShipMove:	; Secondary Routine 2
 		addi.w	#boss_syz_x+$10,d0					; get x pos of block below ship
 		move.w	d0,obBoss_BufferX(a0)				; align ship to block
 		bsr.w	BossSYZ_FindBlocks			; save obj address of block to obBossSYZ_BlockAddr
-		addq.b	#2,ob2ndRout(a0)					; -> BSYZ_Attack
-		clr.w	obBoss_3rdRout(a0)					; -> BSYZ_Descend
+		addq.b	#2,obRoutine(a0)					; -> BSYZ_Attack
+		clr.b	ob2ndRout(a0)					; -> BSYZ_Descend (This previously cleared $28 and $29)
 		clr.w	obVelX(a0)							; stop moving horizontally
 		bra.w	BossSYZ_ShipHover
 ; ===========================================================================
 
 BossSYZ_ShipSpike:	; Secondary Routine 4
 		moveq	#0,d0
-		move.b	obBoss_3rdRout(a0),d0
+		move.b	ob2ndRout(a0),d0
 		move.w	BSYZSpike_Index(pc,d0.w),d0
 		jmp		BSYZSpike_Index(pc,d0.w)
 ; ===========================================================================
@@ -216,14 +203,14 @@ BSYZSpike_Descending:		; Tertiary Routine 0
 
 	.no_block:
 		clr.w	obVelY(a0)
-		addq.b	#2,obBoss_3rdRout(a0)				; advance to next tertiary routine (_CaughtBlock)
+		addq.b	#2,ob2ndRout(a0)				; advance to next tertiary routine (_CaughtBlock)
 		bra.w	BossSYZ_ApplyMovement
 ; ===========================================================================
 
 BSYZSpike_CaughtBlock:		; Tertiary Routine 2
 		subq.w	#1,obBoss_DelayTime(a0)			; is delay timer expired?
 		bpl.s	.shake							; if not, branch and wait
-		addq.b	#2,obBoss_3rdRout(a0)			; advance to next tertiary routine (_LiftingBlock)
+		addq.b	#2,ob2ndRout(a0)			; advance to next tertiary routine (_LiftingBlock)
 		move.w	#-$800,obVelY(a0)				; rise at a speed of -8
 		tst.w	obBossSYZ_BlockAddr(a0)			; is Eggman carrying a block?
 		bne.s	.lifting						; if yes, branch
@@ -265,7 +252,7 @@ BSYZSpike_LiftingBlock:		; Tertiary Routine 4
 		move.w	#45,obBoss_DelayTime(a0)
 
 	.no_block2:
-		addq.b	#2,obBoss_3rdRout(a0)			; goto BSYZ_BreakBlock
+		addq.b	#2,ob2ndRout(a0)			; goto BSYZ_BreakBlock
 		clr.w	obVelY(a0)						; stop moving up
 		bra.w	BossSYZ_ApplyMovement
 ; ===========================================================================
@@ -296,7 +283,7 @@ BSYZSpike_BreakingBlock:		; Tertiary Routine 6
 		cmpi.w	#-$1E,obBoss_DelayTime(a0)
 		bne.s	.shake
 		clr.b	obBossSYZ_Mode(a0)
-		subq.b	#2,ob2ndRout(a0)				; -> BSYZ_ShipMove
+		subq.b	#2,obRoutine(a0)				; -> BSYZ_ShipMove
 		move.b	#-1,obBoss_DelayTime+1(a0)
 		bra.w	BossSYZ_ChkHit
 ; ===========================================================================
@@ -372,7 +359,7 @@ BossSYZ_ShipExplode:		; Secondary Routine 6
 ; ===========================================================================
 
 	.stop_exploding:
-		addq.b	#2,ob2ndRout(a0)						; -> BossSYZ_ShipDestroyed
+		addq.b	#2,obRoutine(a0)						; -> BossSYZ_ShipDestroyed
 		clr.w	obVelY(a0)								; stop moving
 		bset	#staFlipX,obStatus(a0)					; ship face right
 		bclr	#7,obStatus(a0)
@@ -403,7 +390,7 @@ BossSYZ_ShipDestroyed:		; Secondary Routine 8
 		beq.s	.stop_rising							; if exactly 32, branch
 		cmpi.w	#42,obBoss_DelayTime(a0)				; have 42 frames passed since ship stopped falling?
 		blo.w	BossSYZ_ApplyMovement					; if not, branch
-		addq.b	#2,ob2ndRout(a0)						; -> BossSYZ_ShipFlee
+		addq.b	#2,obRoutine(a0)						; -> BossSYZ_ShipFlee
 ;		move.l	#$0400FFC0,obVelX(a0)					; (xVel: $400, yVel: -$40); move ship to the right, and upward slightly
 
 	if PostBossScreenUnlock

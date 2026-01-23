@@ -2,9 +2,8 @@
 ; Object - Eggman (LZ)
 ; ---------------------------------------------------------------------------
 ; Exclusive OST Constants
-;obBoss_3rdRout:		equ obSubtype		; 1 byte  | bosses may use this OST as a tertiary routine counter
-;obBoss_BufferX:		equ objoff_30		; 2 bytes | stored X-axis position
-;obBoss_BufferY:		equ objoff_32		; 2 bytes | stored Y-axis position
+;obBoss_BufferX:		equ objoff_2C		; 4 bytes | stored X-axis position
+;obBoss_BufferY:		equ objoff_30		; 4 bytes | stored Y-axis position
 obBossLZ_Defeated:		equ objoff_34		; 1 byte  | $FF = boss is defeated
 ;obBoss_AttackFlag:		equ objoff_3B		; 1 byte  |
 ;obBoss_DelayTime:		equ objoff_3C		; 2 bytes | delay timer
@@ -13,19 +12,7 @@ obBossLZ_Defeated:		equ objoff_34		; 1 byte  | $FF = boss is defeated
 ; ---------------------------------------------------------------------------
 
 BossLabyrinth:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	BossLZ_Index(pc,d0.w),d1
-		jmp		BossLZ_Index(pc,d1.w)
-; ===========================================================================
-
-BossLZ_Index:	offsetTable
-		offsetTableEntry.w BossLZ_Main
-		offsetTableEntry.w BossLZ_Ship
-; ===========================================================================
-
-BossLZ_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)				; goto BossLZ_Ship
+		_move.l	#BossLZ_Ship,obAddr(a0)
 		move.w	#boss_lz_x+$30,obX(a0)
 		move.w	#boss_lz_y+$500,obY(a0)
 		move.w	obX(a0),obBoss_BufferX(a0)
@@ -34,7 +21,7 @@ BossLZ_Main:	; Routine 0
 		move.b	#8,obColProp(a0)				; set number of hits to 8
 		move.w	#priority4,obPriority(a0)		; RetroKoH/Devon S3K+ Priority Manager
 		bclr	#staFlipX,obStatus(a0)
-		clr.b	ob2ndRout(a0)
+		clr.b	obRoutine(a0)
 		move.l	#Map_Eggman,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
@@ -55,10 +42,10 @@ BossLZ_Main:	; Routine 0
 		move.w	a0,obBossFlame_Parent(a1)			; save address of parent
 ; ---------------------------------------------------------------------------
 
-BossLZ_Ship:	; Routine 2
+BossLZ_Ship:
 		lea		(v_player).w,a1
 		moveq	#0,d0
-		move.b	ob2ndRout(a0),d0
+		move.b	obRoutine(a0),d0
 		move.w	BossLZ_ShipIndex(pc,d0.w),d1
 		jsr		BossLZ_ShipIndex(pc,d1.w)
 		moveq	#(maskFlipX+maskFlipY),d0
@@ -85,7 +72,7 @@ BossLZ_ShipStart:
 		blo.s	BossLZ_Update					; if not, branch
 		move.w	#-$180,obVelY(a0)				; move ship up
 		move.w	#$60,obVelX(a0)					; move ship right
-		addq.b	#2,ob2ndRout(a0)				; -> BossLZ_ShipMove
+		addq.b	#2,obRoutine(a0)				; -> BossLZ_ShipMove
 
 BossLZ_Update:
 		bsr.w	BossMove						; update parent position
@@ -136,7 +123,7 @@ BossLZ_ShipMove:
 		bne.w	BossLZ_Update						; branch if ship is still moving
 		move.w	#$140,obVelX(a0)					; move ship right
 		move.w	#-$200,obVelY(a0)					; move ship up
-		addq.b	#2,ob2ndRout(a0)					; -> BossLZ_ShipMove2 
+		addq.b	#2,obRoutine(a0)					; -> BossLZ_ShipMove2 
 		bra.w	BossLZ_Update
 ; ===========================================================================
 
@@ -158,7 +145,7 @@ BossLZ_ShipMove2:
 	.continue_up:
 		bne.w	BossLZ_Update						; branch if ship is still moving
 		move.w	#-$180,obVelY(a0)					; move ship up
-		addq.b	#2,ob2ndRout(a0)					; -> BossLZ_ShipMove3
+		addq.b	#2,obRoutine(a0)					; -> BossLZ_ShipMove3
 		clr.b	obBoss_HoverAngle(a0)
 		bra.w	BossLZ_Update
 ; ===========================================================================
@@ -175,7 +162,7 @@ BossLZ_ShipMove3:
 		asl		obVelY(a0)
 
 	.not_beaten:
-		addq.b	#2,ob2ndRout(a0)
+		addq.b	#2,obRoutine(a0)
 		bra.w	BossLZ_Update
 ; ===========================================================================
 
@@ -239,7 +226,7 @@ BossLZ_ShipAtTop:
 
 	.continue_up:
 		bne.w	BossLZ_Update						; branch if ship is still moving
-		addq.b	#2,ob2ndRout(a0)					; goto BossLZ_ShipWaitAtTop
+		addq.b	#2,obRoutine(a0)					; goto BossLZ_ShipWaitAtTop
 		bclr	#staFlipX,obStatus(a0)				; ship face left
 		bra.w	BossLZ_Update						; update position, check for hit
 ; ===========================================================================
@@ -268,7 +255,7 @@ BossLZ_ShipWaitAtTop:
 
 		clr.b	(f_lockscreen).w
 		bset	#staFlipX,obStatus(a0)				; ship face right
-		addq.b	#2,ob2ndRout(a0)					; goto BossLZ_ShipTurnToFlee
+		addq.b	#2,obRoutine(a0)					; goto BossLZ_ShipTurnToFlee
 		bra.w	BossLZ_Update						; update position, check for hit
 ; ===========================================================================
 
@@ -282,7 +269,7 @@ BossLZ_ShipTurnToFlee:
 		clr.b	obBoss_DelayTime(a0)
 		move.l	#$0400FFC0,obVelX(a0)				; (xVel: $400, yVel: -$40); move ship to the right, and upward slightly
 		clr.b	obBossLZ_Defeated(a0)
-		addq.b	#2,ob2ndRout(a0)					; goto BossLZ_ShipFlee
+		addq.b	#2,obRoutine(a0)					; goto BossLZ_ShipFlee
 
 	if PostBossScreenUnlock
 		move.w	#boss_lz_end,(v_limitright).w
