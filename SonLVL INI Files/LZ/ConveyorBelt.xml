@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ObjDef xmlns="http://www.sonicretro.org" Name="Conveyor Belt" Image="wheel">
+<ObjDef xmlns="http://www.sonicretro.org" Name="Conveyor Belt" Image="platform">
   <Images>
     <ImageFromMappings id="platform">
       <ArtFile filename="../artnem/LZ Conveyor Platform.nem"/>

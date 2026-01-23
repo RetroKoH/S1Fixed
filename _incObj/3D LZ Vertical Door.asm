@@ -36,7 +36,7 @@ LZDoorVert:
 		btst	#0,(a2)
 	; End
 		beq.s	DoorV_Action
-		addq.b	#1,obSubtype(a0)				; increment to $06 (or $0D for long horizontal doors) if previously activated
+		addq.b	#1,obSubtype(a0)				; increment to 2 if previously activated
 		clr.w	obDoorV_MoveDist(a0)
 ; ---------------------------------------------------------------------------
 

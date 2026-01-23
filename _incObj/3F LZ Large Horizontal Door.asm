@@ -26,7 +26,7 @@ LZDoorHoriz:
 		moveq	#$F,d0							; read low nybble of subtype
 		and.b	obSubtype(a0),d0				; SCE Optimization
 		move.b	d0,obDoorH_ButtonNum(a0)		; set low nybble of subtype as switch index
-		move.b	#$C,obSubtype(a0)				; force subtype to $C: moves left when button is pressed
+		move.b	#1,obSubtype(a0)				; force subtype to 1: moves left when button is pressed
 		move.w	#128,obDoorH_MoveDist(a0)		; store full width (from side to side)
 
 	; ProjectFM S3K Object Manager
@@ -37,7 +37,7 @@ LZDoorHoriz:
 		btst	#0,(a2)
 	; End
 		beq.s	DoorH_Action
-		addq.b	#1,obSubtype(a0)				; increment to $06 (or $0D for long horizontal doors) if previously activated
+		addq.b	#1,obSubtype(a0)				; increment to 2 if previously activated
 		clr.w	obDoorH_MoveDist(a0)
 ; ---------------------------------------------------------------------------
 
