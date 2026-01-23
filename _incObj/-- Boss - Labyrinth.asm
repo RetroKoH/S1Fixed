@@ -1,13 +1,13 @@
 ; ---------------------------------------------------------------------------
 ; Object - Eggman (LZ)
 ; ---------------------------------------------------------------------------
-; OST Constants
+; Exclusive OST Constants
 ;obBoss_3rdRout:		equ obSubtype		; 1 byte  | bosses may use this OST as a tertiary routine counter
-;obBoss_AttackFlag:		equ objoff_2F		; 1 byte  |
 ;obBoss_BufferX:		equ objoff_30		; 2 bytes | stored X-axis position
-;obBoss_BufferY:		equ objoff_38		; 2 bytes | stored Y-axis position
-;obBoss_DelayTime:		equ objoff_3C		; 1 byte  | delay timer
-obBossLZ_Defeated:		equ objoff_3D		; 1 byte  | $FF = boss is defeated
+;obBoss_BufferY:		equ objoff_32		; 2 bytes | stored Y-axis position
+obBossLZ_Defeated:		equ objoff_34		; 1 byte  | $FF = boss is defeated
+;obBoss_AttackFlag:		equ objoff_3B		; 1 byte  |
+;obBoss_DelayTime:		equ objoff_3C		; 2 bytes | delay timer
 ;obBoss_FlashFrames:	equ objoff_3E		; 1 byte  | # of frames to flash white when hit
 ;obBoss_HoverAngle:		equ objoff_3F		; 1 byte  | Used w/ CalcSine for the ship's hover effect
 ; ---------------------------------------------------------------------------
