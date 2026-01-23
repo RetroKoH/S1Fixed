@@ -13,42 +13,39 @@ obBossSLZ_Seesaws:		equ objoff_34		; 6 bytes | addresses of boss' seesaws (2 byt
 
 BossStarLight:
 		_move.l	#BossSLZ_Ship,obAddr(a0)
-		move.w	#boss_slz_x+$188,obX(a0)
-		move.w	#boss_slz_y+$18,obY(a0)
-		move.w	obX(a0),obBoss_BufferX(a0)
-		move.w	obY(a0),obBoss_BufferY(a0)
-		move.b	#(colEnemy|colSz_24x24),obColType(a0)
-		move.b	#8,obColProp(a0)				; set number of hits to 8
-		bclr	#staFlipX,obStatus(a0)
-		clr.b	obRoutine(a0)
-		move.w	#priority4,obPriority(a0)
 		move.l	#Map_Eggman,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
 		move.b	#4,obRender(a0)
 		move.b	#$20,obDispWid(a0)
-		move.w	#$400,d1
+		move.w	#priority4,obPriority(a0)
+		move.w	obX(a0),obBoss_BufferX(a0)
+		move.w	obY(a0),obBoss_BufferY(a0)
+		move.b	#(colEnemy|colSz_24x24),obColType(a0)
+		move.b	#8,obColProp(a0)				; set number of hits to 8
+		move.w	#-$100,obVelX(a0)				; move ship left -- movement applied here, instead of EVERY frame in Routine 0
+		move.w	#$400,d1						; set escape speed
 
 		jsr		(FindNextFreeObj).l
-		bne.s	.fail
+		bne.s	.find_seesaws
 		move.l	#BossFace,obAddr(a1)
 		move.b	#6,obBossFace_Defeat(a1)		; boss defeat routine number
 		move.w	d1,obBossFace_Escape(a1)		; set speed at which ship escapes
 		move.w	a0,obBossFace_Parent(a1)		; save address of parent
 
 		jsr		(FindNextFreeObj).l
-		bne.s	.fail
+		bne.s	.find_seesaws
 		_move.l	#BossFlame,obAddr(a1)
 		move.w	d1,obBossFlame_Escape(a1)		; set speed at which ship escapes
 		move.w	a0,obBossFlame_Parent(a1)		; save address of parent
 
 		jsr		(FindNextFreeObj).l
-		bne.s	.fail
+		bne.s	.find_seesaws
 		move.l	#BossWeapon,obAddr(a1)
 		move.w	#priority3,obPriority(a1)
 		move.b	#3,obFrame(a1)					; Wide pipe frame
 		move.w	a0,obBossWeapon_Parent(a1)		; save address of parent
 
-	.fail:
+	.find_seesaws:
 		lea		(v_lvlobjspace).w,a1			; FixBugs -- Formerly (v_objspace+object_size*1)
 		lea		obBossSLZ_Seesaws(a0),a2		; pointers to Eggman's seesaws
 		moveq	#v_lvlobjcount,d0				; FixBugs: Normally only covered the first half of object RAM.
@@ -87,7 +84,6 @@ BossSLZ_ShipIndex:	offsetTable
 ; ===========================================================================
 
 BossSLZ_ShipStart:		; Secondary Routine 0
-		move.w	#-$100,obVelX(a0)					; move ship left
 		cmpi.w	#boss_slz_x+$120,obBoss_BufferX(a0)	; has ship reached right side of screen?
 		bhs.s	BossSLZ_Update						; if not, branch
 		addq.b	#2,obRoutine(a0)
