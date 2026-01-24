@@ -28,7 +28,7 @@ BossStarLight:
 		jsr		(FindNextFreeObj).l
 		bne.s	.find_seesaws
 		move.l	#BossFace,obAddr(a1)
-		move.b	#6,obBossFace_Defeat(a1)		; boss defeat routine number
+		move.b	#id_slzb_explode,obBossFace_Defeat(a1)	; boss defeat routine number
 		move.w	d1,obBossFace_Escape(a1)		; set speed at which ship escapes
 		move.w	a0,obBossFace_Parent(a1)		; save address of parent
 
@@ -74,16 +74,24 @@ BossSLZ_Ship:
 		or.b	d0,obRender(a0)
 		jmp		(DisplayAndCollision).l		; S3K TouchResponse
 ; ===========================================================================
+
 BossSLZ_ShipIndex:	offsetTable
-		offsetTableEntry.w BossSLZ_ShipStart
-		offsetTableEntry.w BossSLZ_ShipMove
-		offsetTableEntry.w BossSLZ_ShipMakeBall
-		offsetTableEntry.w BossSLZ_ShipExplode
-		offsetTableEntry.w BossSLZ_ShipDestroyed
-		offsetTableEntry.w BossSLZ_ShipFlee
+ptr_SLZB_Start:		offsetTableEntry.w BossSLZ_ShipStart
+ptr_SLZB_Move:		offsetTableEntry.w BossSLZ_ShipMove
+ptr_SLZB_MakeBall:	offsetTableEntry.w BossSLZ_ShipMakeBall
+ptr_SLZB_Explode:	offsetTableEntry.w BossSLZ_ShipExplode
+ptr_SLZB_Destroyed:	offsetTableEntry.w BossSLZ_ShipDestroyed
+ptr_SLZB_Flee:		offsetTableEntry.w BossSLZ_ShipFlee
+
+id_slzb_start = ptr_SLZB_Start-BossSLZ_ShipIndex			; 0
+id_slzb_move = ptr_SLZB_Move-BossSLZ_ShipIndex				; 2
+id_slzb_makeball = ptr_SLZB_MakeBall-BossSLZ_ShipIndex		; 4
+id_slzb_explode = ptr_SLZB_Explode-BossSLZ_ShipIndex		; 6
+id_slzb_destroyed = ptr_SLZB_Destroyed-BossSLZ_ShipIndex	; 8
+id_slzb_flee = ptr_SLZB_Flee-BossSLZ_ShipIndex				; $A
 ; ===========================================================================
 
-BossSLZ_ShipStart:		; Secondary Routine 0
+BossSLZ_ShipStart:		; Routine 0
 		cmpi.w	#boss_slz_x+$120,obBoss_BufferX(a0)	; has ship reached right side of screen?
 		bhs.s	BossSLZ_Update						; if not, branch
 		addq.b	#2,obRoutine(a0)
@@ -106,7 +114,7 @@ BossSLZ_ApplyMovement:
 		move.w	obBoss_BufferX(a0),obX(a0)
 
 BossSLZ_ChkHit:
-		cmpi.b	#6,obRoutine(a0)
+		cmpi.b	#id_slzb_explode,obRoutine(a0)
 		bhs.s	.exit
 		tst.b	obStatus(a0)						; has boss been beaten (bit 7 is set)?
 		bmi.s	.defeated							; if yes, branch
@@ -126,13 +134,13 @@ BossSLZ_ChkHit:
 	.defeated:
 		moveq	#100,d0
 		bsr.w	AddPoints							; award 1000 points
-		move.b	#6,obRoutine(a0)					; set ship to exploding routine
+		move.b	#id_slzb_explode,obRoutine(a0)		; set ship to exploding routine
 		move.b	#120,obBoss_DelayTime(a0)			; set timer to 2 seconds
 		clr.w	obVelX(a0)
 		rts	
 ; ===========================================================================
 
-BossSLZ_ShipMove:		; Secondary Routine 2
+BossSLZ_ShipMove:		; Routine 2
 		move.w	obBoss_BufferX(a0),d0
 		move.w	#$200,obVelX(a0)			; move ship right
 		btst	#staFlipX,obStatus(a0)
@@ -184,7 +192,7 @@ BossSLZ_ShipMove:		; Secondary Routine 2
 		bra.w	BossSLZ_Update				; update position, check for hit
 ; ===========================================================================
 
-BossSLZ_ShipMakeBall:		; Secondary Routine 4
+BossSLZ_ShipMakeBall:	; Routine 4
 		cmpi.b	#$28,obBoss_DelayTime(a0)	; has timer started counting down yet?
 		bne.s	.wait_next					; if yes, branch
 		moveq	#-1,d0
@@ -232,7 +240,7 @@ BossSLZ_ShipMakeBall:		; Secondary Routine 4
 		bra.w	BossSLZ_Update				; update position, check for hit
 ; ===========================================================================
 
-BossSLZ_ShipExplode:		; Secondary Routine 6
+BossSLZ_ShipExplode:	; Routine 6
 		subq.b	#1,obBoss_DelayTime(a0)		; decrement timer
 		bmi.s	.stop_exploding				; branch if below 0
 		bra.w	BossDefeated				; spawn explosions on the ship
@@ -253,7 +261,7 @@ BossSLZ_ShipExplode:		; Secondary Routine 6
 		bra.w	BossSLZ_ChkHit
 ; ===========================================================================
 
-BossSLZ_ShipDestroyed:		; Secondary Routine 8
+BossSLZ_ShipDestroyed:	; Routine 8
 		addq.b	#1,obBoss_DelayTime(a0)		; increment timer
 		beq.s	.stop_falling				; branch if 0
 		bpl.s	.ship_recovers				; branch if 1 or more
@@ -304,7 +312,7 @@ BossSLZ_ShipDestroyed:		; Secondary Routine 8
 		bra.w	BossSLZ_ApplyMovement		; update position
 ; ===========================================================================
 
-BossSLZ_ShipFlee:		; Secondary Routine $A
+BossSLZ_ShipFlee:		; Routine $A
 	if ~~PostBossScreenUnlock
 		cmpi.w	#boss_slz_end,(v_limitright).w	; check for new boundary
 		bhs.s	.chkdel

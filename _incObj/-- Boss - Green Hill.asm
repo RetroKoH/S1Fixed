@@ -28,7 +28,7 @@ BossGreenHill:
 		jsr		(FindNextFreeObj).l
 		bne.s	BossGHZ_Ship
 		_move.l	#BossFace,obAddr(a1)
-		move.b	#8,obBossFace_Defeat(a1)		; boss defeat routine number
+		move.b	#id_ghzb_explode,obBossFace_Defeat(a1)	; boss defeat routine number
 		move.w	d1,obBossFace_Escape(a1)		; set speed at which ship escapes
 		move.w	a0,obBossFace_Parent(a1)		; save address of parent
 
@@ -63,7 +63,7 @@ BossGHZ_Ship:
 	endif
 ; ===========================================================================
 
-BossGHZ_ShipIndex:		offsetTable
+BossGHZ_ShipIndex:	offsetTable
 ptr_GHZB_DropDown:	offsetTableEntry.w BossGHZ_ShipDropDown
 ptr_GHZB_MakeBall:	offsetTableEntry.w BossGHZ_MakeBall
 ptr_GHZB_Wait:		offsetTableEntry.w BossGHZ_ShipWait
@@ -72,16 +72,16 @@ ptr_GHZB_Explode:	offsetTableEntry.w BossGHZ_ShipExplode
 ptr_GHZB_Destroyed:	offsetTableEntry.w BossGHZ_ShipDestroyed
 ptr_GHZB_Flee:		offsetTableEntry.w BossGHZ_ShipFlee
 
-id_ghzb_drop = ptr_GHZB_DropDown-BossGHZ_ShipIndex		; 0
-id_ghzb_makeball = ptr_GHZB_MakeBall-BossGHZ_ShipIndex	; 2
-id_ghzb_wait = ptr_GHZB_Wait-BossGHZ_ShipIndex			; 4
-id_ghzb_move = ptr_GHZB_Move-BossGHZ_ShipIndex			; 6
+id_ghzb_drop = ptr_GHZB_DropDown-BossGHZ_ShipIndex			; 0
+id_ghzb_makeball = ptr_GHZB_MakeBall-BossGHZ_ShipIndex		; 2
+id_ghzb_wait = ptr_GHZB_Wait-BossGHZ_ShipIndex				; 4
+id_ghzb_move = ptr_GHZB_Move-BossGHZ_ShipIndex				; 6
 id_ghzb_explode = ptr_GHZB_Explode-BossGHZ_ShipIndex		; 8
 id_ghzb_destroyed = ptr_GHZB_Destroyed-BossGHZ_ShipIndex	; $A
-id_ghzb_flee = ptr_GHZB_Flee-BossGHZ_ShipIndex			; $C
+id_ghzb_flee = ptr_GHZB_Flee-BossGHZ_ShipIndex				; $C
 ; ===========================================================================
 
-BossGHZ_ShipDropDown:	; Secondary Routine 0
+BossGHZ_ShipDropDown:	; Routine 0
 		bsr.w	BossMove
 		cmpi.w	#boss_ghz_y+$38,obBoss_BufferY(a0)	; has Eggman finished lowering down?
 		bne.s	BossGHZ_ChkHit						; if not, branch ahead
@@ -128,7 +128,7 @@ BossGHZ_ChkHit:
 		rts
 ; ===========================================================================
 
-BossGHZ_MakeBall:	; Secondary Routine 2
+BossGHZ_MakeBall:	; Routine 2
 		bsr.w	BossMove
 		cmpi.w	#boss_ghz_x+$A0,obBoss_BufferX(a0)	; has Eggman reached the center of the field?
 		bne.w	BossGHZ_ChkHit						; if not, branch
@@ -147,7 +147,7 @@ BossGHZ_MakeBall:	; Secondary Routine 2
 		bra.w	BossGHZ_ChkHit
 ; ===========================================================================
 
-BossGHZ_ShipWait:	; Secondary Routine 4
+BossGHZ_ShipWait:	; Routine 4
 		subq.w	#1,obBoss_DelayTime(a0)
 		bpl.s	.reverse
 		clr.b	obBoss_AttackFlag(a0)				; stop Eggman laughing
@@ -166,7 +166,7 @@ BossGHZ_ShipWait:	; Secondary Routine 4
 		bra.w	BossGHZ_ChkHit
 ; ===========================================================================
 
-BossGHZ_ShipMove:	; Secondary Routine 6
+BossGHZ_ShipMove:	; Routine 6
 		subq.w	#1,obBoss_DelayTime(a0)
 		bmi.s	.timeup
 		bsr.w	BossMove
@@ -181,7 +181,7 @@ BossGHZ_ShipMove:	; Secondary Routine 6
 		bra.w	BossGHZ_ChkHit
 ; ===========================================================================
 
-BossGHZ_ShipExplode:	; Secondary Routine 8
+BossGHZ_ShipExplode:	; Routine 8
 		subq.w	#1,obBoss_DelayTime(a0)
 		bmi.s	.timeup
 		bra.w	BossDefeated			; Make explosion in a random spot on the ship
@@ -201,7 +201,7 @@ BossGHZ_ShipExplode:	; Secondary Routine 8
 		rts	
 ; ===========================================================================
 
-BossGHZ_ShipDestroyed:	; Secondary Routine $A
+BossGHZ_ShipDestroyed:	; Routine $A
 		addq.w	#1,obBoss_DelayTime(a0)
 		beq.s	.stopsinking			; if timer has ticked up to 0, branch
 		bpl.s	.checkrising			; if timer is greater than zero, branch
@@ -255,7 +255,7 @@ BossGHZ_ShipDestroyed:	; Secondary Routine $A
 		bra.w	BossGHZ_ChkHit						; we call this solely for the hover effect
 ; ===========================================================================
 
-BossGHZ_ShipFlee:	; Secondary Routine $C
+BossGHZ_ShipFlee:	; Routine $C
 	if ~~PostBossScreenUnlock
 		cmpi.w	#boss_ghz_end,(v_limitright).w
 		beq.s	.limitreached
@@ -266,14 +266,14 @@ BossGHZ_ShipFlee:	; Secondary Routine $C
 
 	.limitreached:
 		tst.b	obRender(a0)
-		bpl.s	BossGHZ_ShipDel
+		bpl.s	.delete
 
 	.moveboss:
 		bsr.w	BossMove
 		bra.w	BossGHZ_ChkHit						; we call this solely for the hover effect
 ; ===========================================================================
 
-BossGHZ_ShipDel:
+	.delete:
 		; We do not want to return to BossGHZ_Ship, as objects
 		; should not queue themselves for display while also being
 		; deleted.

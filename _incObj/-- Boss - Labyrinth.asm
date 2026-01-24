@@ -53,17 +53,26 @@ BossLZ_Ship:
 ; ===========================================================================
 
 BossLZ_ShipIndex:	offsetTable
-		offsetTableEntry.w BossLZ_ShipStart
-		offsetTableEntry.w BossLZ_ShipMove
-		offsetTableEntry.w BossLZ_ShipMove2
-		offsetTableEntry.w BossLZ_ShipMove3
-		offsetTableEntry.w BossLZ_ShipAtTop
-		offsetTableEntry.w BossLZ_ShipWaitAtTop
-		offsetTableEntry.w BossLZ_ShipTurnToFlee
-		offsetTableEntry.w BossLZ_ShipFlee
+ptr_LZB_Start:		offsetTableEntry.w BossLZ_ShipStart
+ptr_LZB_Move1:		offsetTableEntry.w BossLZ_ShipMove
+ptr_LZB_Move2:		offsetTableEntry.w BossLZ_ShipMove2
+ptr_LZB_Move3:		offsetTableEntry.w BossLZ_ShipMove3
+ptr_LZB_AtTop:		offsetTableEntry.w BossLZ_ShipAtTop
+ptr_LZB_Wait:		offsetTableEntry.w BossLZ_ShipWaitAtTop
+ptr_LZB_TurnAway:	offsetTableEntry.w BossLZ_ShipTurnToFlee
+ptr_LZB_Flee:		offsetTableEntry.w BossLZ_ShipFlee
+
+id_lzb_start = ptr_LZB_Start-BossLZ_ShipIndex		; 0
+id_lzb_move1 = ptr_LZB_Move1-BossLZ_ShipIndex		; 2
+id_lzb_move2 = ptr_LZB_Move2-BossLZ_ShipIndex		; 4
+id_lzb_move3 = ptr_LZB_Move3-BossLZ_ShipIndex		; 6
+id_lzb_attop = ptr_LZB_AtTop-BossLZ_ShipIndex		; 8
+id_lzb_wait = ptr_LZB_Wait-BossLZ_ShipIndex			; $A
+id_lzb_turn = ptr_LZB_TurnAway-BossLZ_ShipIndex		; $C
+id_lzb_flee = ptr_LZB_Flee-BossLZ_ShipIndex			; $E
 ; ===========================================================================
 
-BossLZ_ShipStart:
+BossLZ_ShipStart:		; Routine 0
 		move.w	(v_player+obX).w,d0
 		cmpi.w	#boss_lz_x-$40,d0				; has Sonic passed $1DA0 on x axis?
 		blo.s	BossLZ_Update					; if not, branch
@@ -101,7 +110,7 @@ BossLZ_Update_SkipPos:
 		rts	
 ; ===========================================================================
 
-BossLZ_ShipMove:
+BossLZ_ShipMove:		; Routine 2
 		moveq	#-2,d0
 		cmpi.w	#boss_lz_x+$68,obBoss_BufferX(a0)	; has ship reached x pos?
 		bcs.s	.continue_right						; if not, branch
@@ -124,7 +133,7 @@ BossLZ_ShipMove:
 		bra.w	BossLZ_Update
 ; ===========================================================================
 
-BossLZ_ShipMove2:
+BossLZ_ShipMove2:		; Routine 4
 		moveq	#-2,d0
 		cmpi.w	#boss_lz_x+$90,obBoss_BufferX(a0)	; has ship reached x pos?
 		bcs.s	.continue_right						; if not, branch
@@ -147,7 +156,7 @@ BossLZ_ShipMove2:
 		bra.w	BossLZ_Update
 ; ===========================================================================
 
-BossLZ_ShipMove3:
+BossLZ_ShipMove3:		; Routine 6
 		cmpi.w	#boss_lz_y+$40,obBoss_BufferY(a0)	; has ship reached y pos?
 		bgt.s	BossLZ_ShipWobble					; if not, branch
 		move.w	#boss_lz_y+$40,obBoss_BufferY(a0)	; align to y pos
@@ -206,7 +215,7 @@ BossLZ_ShipWobble:
 		bra.w	BossLZ_Update_SkipPos				; check for hit
 ; ===========================================================================
 
-BossLZ_ShipAtTop:
+BossLZ_ShipAtTop:		; Routine 8
 		moveq	#-2,d0
 		cmpi.w	#boss_lz_x+$16C,obBoss_BufferX(a0)	; has ship reached x pos?
 		blo.s	.continue_right						; if not, branch
@@ -228,7 +237,7 @@ BossLZ_ShipAtTop:
 		bra.w	BossLZ_Update						; update position, check for hit
 ; ===========================================================================
 
-BossLZ_ShipWaitAtTop:
+BossLZ_ShipWaitAtTop:	; Routine $A
 		tst.b	obBossLZ_Defeated(a0)				; has boss been beaten?
 		bne.s	.beaten								; if yes, branch
 		cmpi.w	#boss_lz_x+$E8,(v_player+obX).w		; has Sonic passed x pos?
@@ -256,7 +265,7 @@ BossLZ_ShipWaitAtTop:
 		bra.w	BossLZ_Update						; update position, check for hit
 ; ===========================================================================
 
-BossLZ_ShipTurnToFlee:
+BossLZ_ShipTurnToFlee:	; Routine $C
 		tst.b	obBossLZ_Defeated(a0)				; has boss been beaten?
 		bne.s	.beaten								; if yes, branch
 		subq.b	#1,obBoss_DelayTime(a0)				; decrement timer
@@ -275,7 +284,7 @@ BossLZ_ShipTurnToFlee:
 		bra.w	BossLZ_Update						; update position
 ; ===========================================================================
 
-BossLZ_ShipFlee:
+BossLZ_ShipFlee:	; Routine $E
 	if ~~PostBossScreenUnlock
 		cmpi.w	#boss_lz_end,(v_limitright).w		; check for new boundary
 		bhs.s	.chkdel
@@ -287,11 +296,11 @@ BossLZ_ShipFlee:
 	endif
 
 		tst.b	obRender(a0)						; is ship on-screen?
-		bpl.s	BossLZ_ShipDel						; if not, branch
+		bpl.s	.delete								; if not, branch
 		bra.w	BossLZ_Update						; update position
 ; ===========================================================================
 
-BossLZ_ShipDel:
+	.delete:
 		; Avoid returning to BossLZ_Ship to prevent a
 		; display-and-delete bug.
 		addq.l	#4,sp			; Clownacy DisplaySprite Fix

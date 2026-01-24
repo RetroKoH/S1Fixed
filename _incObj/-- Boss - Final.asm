@@ -1,7 +1,7 @@
 ; ---------------------------------------------------------------------------
 ; Object - Final Boss
 ; ---------------------------------------------------------------------------
-; Exclusive OST Constants
+; OST Constants
 obBFZ_CylFlag:			equ objoff_30		; 2 bytes | -1 when cylinders activate; id of cylinder Eggman is in when crushing
 obBFZ_PhaseState:		equ objoff_32		; 2 bytes | 1 = crushing; 0 = plasma; -1 = crushing/plasma complete
 obBFZ_Mode:				equ objoff_34		; 1 byte  | action being performed, increments of 2
@@ -17,16 +17,20 @@ BossFinal_Delete:
 ; ===========================================================================
 
 BossFinal_ObjData:
-		dc.w $100, $100, make_art_tile(ArtTile_FZ_Eggman_No_Vehicle,0,0)	; X pos, Y pos,	VRAM setting
 		dc.l BossFinal_Eggman, Map_SEgg										; object address, mappings pointer
-		dc.w boss_fz_x+$160, boss_fz_y+$80, make_art_tile(ArtTile_FZ_Boss,0,0)
+		dc.w $100, $100, make_art_tile(ArtTile_FZ_Eggman_No_Vehicle,0,0)	; X pos, Y pos,	VRAM setting
+
 		dc.l BossFinal_Panel, Map_EggCyl
-		dc.w boss_fz_x+$290, boss_fz_y+$86, make_art_tile(ArtTile_FZ_Eggman_Fleeing,0,0)
+		dc.w boss_fz_x+$160, boss_fz_y+$80, make_art_tile(ArtTile_FZ_Boss,0,0)
+
 		dc.l BossFinal_Legs, Map_FZLegs
-		dc.w boss_fz_x+$290, boss_fz_y+$86, make_art_tile(ArtTile_FZ_Eggman_No_Vehicle,0,0)
+		dc.w boss_fz_x+$290, boss_fz_y+$86, make_art_tile(ArtTile_FZ_Eggman_Fleeing,0,0)
+
 		dc.l BossFinal_Cockpit, Map_SEgg
-		dc.w boss_fz_x+$290, boss_fz_y+$86, make_art_tile(ArtTile_Eggman,0,0)
+		dc.w boss_fz_x+$290, boss_fz_y+$86, make_art_tile(ArtTile_FZ_Eggman_No_Vehicle,0,0)
+
 		dc.l BossFinal_EmptyShip, Map_Eggman
+		dc.w boss_fz_x+$290, boss_fz_y+$86, make_art_tile(ArtTile_Eggman,0,0)
 
 BossFinal_ObjData2:
 	; 			width,
@@ -56,11 +60,11 @@ BossFinal:
 		bne.s	.fail						; branch if not found
 
 	.load_boss:
+		_move.l	(a2)+,obAddr(a1)
+		move.l	(a2)+,obMap(a1)
 		move.w	(a2)+,obX(a1)
 		move.w	(a2)+,obY(a1)
 		move.w	(a2)+,obGfx(a1)
-		_move.l	(a2)+,obAddr(a1)
-		move.l	(a2)+,obMap(a1)
 		move.b	(a3)+,obDispWid(a1)
 		move.b	(a3)+,obHeight(a1)
 		move.w	(a3)+,obPriority(a1)		; RetroKoH/Devon S3K+ Priority Manager
@@ -219,6 +223,10 @@ BossFinal_EggCrush:		; Boss Routine 2
 ; ===========================================================================
 
 	.missed:
+        ; If eggman is defeated, don't display the "laughing" animation and branch -- Jeor489 fix
+        tst.b   obColProp(a0)
+        beq.w   .animate
+
 		moveq	#1,d0						; laugh animation
 
 	.new_anim:
@@ -405,14 +413,14 @@ BFZ_Eggman_Scroll:
 ; ===========================================================================
 
 BossFinal_EggShip:		; Boss Routine $C
-		move.l	#Map_Eggman,obMap(a0)		; use standard boss mappings
+		move.l	#Map_Eggman,obMap(a0)		; use standard boss ship mappings
+		; the cockpit will now utilize the Map_BossFace mappings
+		clr.b	obFrame(a0)
 		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
-		moveq	#0,d0						; boss ship
-		jsr		(NewAnim).w
 		bset	#staFlipX,obStatus(a0)		; ship faces right
 		jsr		(SpeedToPos).l
 		cmpi.w	#boss_fz_y+$34,obY(a0)		; has ship reached a certain height?
-		bhs.w	BFZ_Eggman_AnimScroll		; if not, branch
+		bhs.w	BFZ_Eggman_Scroll			; if not, branch
 		move.w	#$180,obVelX(a0)			; move right
 		move.w	#-$18,obVelY(a0)			; move up slowly
 		move.b	#(colEnemy|colSz_24x24),obColType(a0)	; enable collision
@@ -425,7 +433,7 @@ BossFinal_EggShip:		; Boss Routine $C
 		move.w	a0,obBossFlame_Parent(a1)		; save address of OST of parent
 
 	.keep_rising:
-		bra.w	BFZ_Eggman_AnimScroll		; animate & scroll screen
+		bra.w	BFZ_Eggman_Scroll			; scroll screen
 ; ===========================================================================
 
 BossFinal_EggEscape:		; Boss Routine $E
@@ -468,9 +476,9 @@ BossFinal_EggEscape:		; Boss Routine $E
 
 	.chk_ship:
 		cmpi.w	#boss_fz_end+$200,obX(a0)			; has ship moved off the screen?
-		blo.w	BFZ_Eggman_AnimScroll				; if not, branch
+		blo.w	BFZ_Eggman_Scroll					; if not, branch
 		tst.b	obRender(a0)						; is ship on-screen?
-		bmi.w	BFZ_Eggman_AnimScroll				; if not, branch
+		bmi.w	BFZ_Eggman_Scroll					; if not, branch
 		move.b	#id_Ending,(v_gamemode).w			; goto ending sequence
 		addq.l	#4,sp								; Clownacy DisplaySprite Fix
 		bra.w	BossFinal_Delete					; delete ship
@@ -507,15 +515,15 @@ BossFinal_Cockpit:
 ; ===========================================================================
 
 	.chk_hit:
-		moveq	#1,d0
 		tst.b	obColProp(a1)						; has ship been hit?
 		ble.s	.explode							; if yes, branch
-		moveq	#6,d0								; use sweating animation
-		move.l	#Map_Eggman,obMap(a0)				; use standard boss mappings
-		move.w	#make_art_tile(ArtTile_Eggman,0,0),obGfx(a0)
+		moveq	#aniID_PanicFace,d0					; sweating panicked expression
 		jsr		(NewAnim).w
+		move.l	#Map_BossFace,obMap(a0)				; use boss face mappings
+		move.w	#make_art_tile(ArtTile_Eggman_Face,0,0),obGfx(a0)
 		lea		Ani_Eggman(pc),a1
 		jsr		(AnimateSprite).w
+		bsr.w	BossFace_LoadGfx
 		bra.w	BossFinal_Update
 ; ===========================================================================
 
@@ -524,9 +532,9 @@ BossFinal_Cockpit:
 		bpl.w	BossFinal_Delete					; if not, branch
 		bsr.w	BossDefeated						; spawn explosions
 		move.w	#priority2,obPriority(a0)			; RetroKoH/Devon S3K+ Priority Manager
-		moveq	#0,d0
 		move.l	#Map_FZDamaged,obMap(a0)			; use mappings for damaged ship
 		move.w	#make_art_tile(ArtTile_FZ_Eggman_Fleeing,0,0),obGfx(a0)
+		moveq	#0,d0
 		jsr		(NewAnim).w
 		lea		Ani_FZEgg(pc),a1
 		jsr		(AnimateSprite).w
@@ -566,7 +574,7 @@ BossFinal_Legs:
 ; ---------------------------------------------------------------------------
 
 BossFinal_Panel:
-		move.b	#$B,obFrame(a0)
+		move.b	#$B,obFrame(a0)						; control panel frame
 		move.w	(v_player+obX).w,d0
 		sub.w	obX(a0),d0
 		bcs.s	.display							; branch if Sonic is left of the panel
@@ -574,7 +582,7 @@ BossFinal_Panel:
 		bpl.w	BossFinal_Delete					; if not, branch
 
 	.display:
-		jmp		(DisplayAndCollision).l				; S3K TouchResponse
+		jmp		(DisplaySprite).l					; S3K TouchResponse
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
@@ -582,10 +590,10 @@ BossFinal_Panel:
 ; ---------------------------------------------------------------------------
 
 BossFinal_EmptyShip:
-		clr.b	obFrame(a0)
+		clr.b	obFrame(a0)							; empty boss ship frame
 		bset	#staFlipX,obStatus(a0)				; face right
 		movea.w	obBFZ_Parent(a0),a1					; get address of parent object (BossFinal_Eggman)
-		cmpi.b	#$C,obBFZ_Mode(a1)					; is Eggman in his ship? (pre-escaping)
+		cmpi.b	#$C,obBFZ_Mode(a1)					; is Eggman in his ship? (pre-escaping state: BossFinal_EggShip)
 		bne.w	BossFinal_Update_SkipPos			; if not, branch
 		cmpi.l	#Map_Eggman,obMap(a1)				; is Eggman in his ship at all?
 		beq.w	BossFinal_Delete					; if yes, branch

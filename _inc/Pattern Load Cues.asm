@@ -233,7 +233,7 @@ PLC_TryAgain:	dc.w ((PLC_TryAgainend-PLC_TryAgain-2)/6)-1
 PLC_TryAgainend:
 
 ; ---------------------------------------------------------------------------
-; Pattern load cues - Eggman on SBZ 2
+; Pattern load cues - Eggman in SBZ2
 ; ---------------------------------------------------------------------------
 PLC_EggmanSBZ2:	dc.w ((PLC_EggmanSBZ2end-PLC_EggmanSBZ2-2)/6)-1
 		plcm	Nem_SbzBlock,   ArtTile_Eggman_Trap_Floor	; block
