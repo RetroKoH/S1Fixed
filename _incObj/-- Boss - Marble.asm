@@ -28,7 +28,7 @@ BossMarble:
 		jsr		(FindNextFreeObj).l
 		bne.s	BossMZ_Ship
 		move.l	#BossFace,obAddr(a1)
-		move.b	#4,obBossFace_Defeat(a1)		; boss defeat routine number
+		move.b	#id_mzb_explode,obBossFace_Defeat(a1)	; boss defeat routine number
 		move.w	d1,obBossFace_Escape(a1)		; set speed at which ship escapes
 		move.w	a0,obBossFace_Parent(a1)		; save address of parent
 
@@ -57,6 +57,7 @@ BossMZ_Ship:
 		or.b	d0,obRender(a0)				; combine x/yflip bits from status instead
 		jmp		(DisplayAndCollision).l		; S3K TouchResponse
 ; ===========================================================================
+
 BossMZ_ShipIndex:	offsetTable
 ptr_MZB_Start:		offsetTableEntry.w BossMZ_ShipStart
 ptr_MZB_Move:		offsetTableEntry.w BossMZ_ShipMove
@@ -71,7 +72,7 @@ id_mzb_destroyed = ptr_MZB_Destroyed-BossMZ_ShipIndex	; 6
 id_mzb_flee = ptr_MZB_Flee-BossMZ_ShipIndex				; 8
 ; ===========================================================================
 
-BossMZ_ShipStart:		; Secondary Routine 0
+BossMZ_ShipStart:		; Routine 0
 		move.b	obBoss_HoverAngle(a0),d0			; get wobble byte
 		addq.b	#2,obBoss_HoverAngle(a0)			; increment wobble (wraps to 0 after $FE)
 		jsr		(CalcSine).w						; convert to sine
@@ -92,7 +93,7 @@ BossMZ_ShipStart:		; Secondary Routine 0
 BossMZ_Update:
 		move.w	obBoss_BufferY(a0),obY(a0)			; update actual position
 		move.w	obBoss_BufferX(a0),obX(a0)
-		cmpi.b	#4,obRoutine(a0)
+		cmpi.b	#id_mzb_explode,obRoutine(a0)
 		bhs.s	.exit								; skip hit check if boss has been defeated
 		tst.b	obStatus(a0)
 		bmi.s	.defeated							; if bit 7 is set, branch
@@ -112,29 +113,29 @@ BossMZ_Update:
 	.defeated:
 		moveq	#100,d0
 		bsr.w	AddPoints							; award 1000 points
-		move.b	#4,obRoutine(a0)					; set ship to exploding routine
+		move.b	#id_mzb_explode,obRoutine(a0)		; set ship to exploding routine
 		move.w	#180,obBoss_DelayTime(a0)			; set timer to 3 seconds
 		clr.w	obVelX(a0)							; stop boss moving
 		rts
 ; ===========================================================================
 
-BossMZ_ShipMove:		; Secondary Routine 2
+BossMZ_ShipMove:			; Routine 2
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
 		move.w	BMZShip_MoveIndex(pc,d0.w),d0
 		jsr		BMZShip_MoveIndex(pc,d0.w)
-		andi.b	#6,ob2ndRout(a0)				; clamp tertiary routine value to a range of 0-6
+		andi.b	#6,ob2ndRout(a0)					; clamp secondary routine value to a range of 0-6
 		bra.w	BossMZ_Update						; update actual position, check for hits
 ; ===========================================================================
 
 BMZShip_MoveIndex:	offsetTable
-		offsetTableEntry.w BossMZ_MoveAcross	; Move from right to left
-		offsetTableEntry.w BossMZ_DropFire		; Drop fire onto the left side
-		offsetTableEntry.w BossMZ_MoveAcross	; Move from left to right
-		offsetTableEntry.w BossMZ_DropFire		; Drop fire onto the right side
+		offsetTableEntry.w BossMZMove_MoveAcross	; Move from right to left
+		offsetTableEntry.w BossMZMove_DropFire		; Drop fire onto the left side
+		offsetTableEntry.w BossMZMove_MoveAcross	; Move from left to right
+		offsetTableEntry.w BossMZMove_DropFire		; Drop fire onto the right side
 ; ===========================================================================
 
-BossMZ_MoveAcross:		; Tertiary Routine 0/4
+BossMZMove_MoveAcross:		; Secondary Routine 0/4
 		tst.w	obVelX(a0)							; is Eggman currently moving horizontally?
 		bne.s	.ismoving							; if yes, branch
 
@@ -209,13 +210,13 @@ BossMZ_MoveAcross:		; Tertiary Routine 0/4
 		neg.w	obVelY(a0)							; if yes, negate his Y-speed to lower him down slightly.
 
 	.dontnegate:
-		addq.b	#2,ob2ndRout(a0)				; Advance to fire-dropping tertiary routine
+		addq.b	#2,ob2ndRout(a0)					; Advance to fire-dropping secondary routine
 
 	.end:
 		rts	
 ; ===========================================================================
 
-BossMZ_DropFire:		; Tertiary Routine 2/6
+BossMZMove_DropFire:		; Secondary Routine 2/6
 		bsr.w	BossMove
 		move.w	obBoss_BufferY(a0),d0
 		subi.w	#boss_mz_y+$1C,d0					; Is Eggman in position to drop fire?
@@ -238,14 +239,14 @@ BossMZ_DropFire:		; Tertiary Routine 2/6
 	.countdown:
 		subq.w	#1,obBoss_DelayTime(a0)
 		bne.s	.end
-		addq.b	#2,ob2ndRout(a0)				; Advance to movement tertiary routine
+		addq.b	#2,ob2ndRout(a0)					; Advance to movement tertiary routine
 		clr.b	obBoss_AttackFlag(a0)				; stop Eggman laughing
 
 	.end:
 		rts	
 ; ===========================================================================
 
-BossMZ_ShipExplode:			; Secondary Routine 4
+BossMZ_ShipExplode:			; Routine 4
 		subq.w	#1,obBoss_DelayTime(a0)				; decrement timer
 		bmi.s	.stop_exploding						; branch if below 0
 		bra.w	BossDefeated						; Make explosion in a random spot on the ship
@@ -266,7 +267,7 @@ BossMZ_ShipExplode:			; Secondary Routine 4
 		rts	
 ; ===========================================================================
 
-BossMZ_ShipDestroyed:		; Secondary Routine 6
+BossMZ_ShipDestroyed:		; Routine 6
 		addq.w	#1,obBoss_DelayTime(a0)				; increment timer
 		beq.s	.stop_falling						; branch if 0
 		bpl.s	.ship_recovers						; branch if 1 or more
@@ -324,7 +325,7 @@ BossMZ_ShipDestroyed:		; Secondary Routine 6
 		bra.w	BossMZ_Update						; we call this solely for the hover effect
 ; ===========================================================================
 
-BossMZ_ShipFlee:			; Secondary Routine 8
+BossMZ_ShipFlee:			; Routine 8
 	if ~~PostBossScreenUnlock
 		cmpi.w	#boss_mz_end,(v_limitright).w
 		bhs.s	.chkdel
