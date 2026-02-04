@@ -2,8 +2,7 @@
 ; Object - water surface (LZ)
 ; ---------------------------------------------------------------------------
 ; OST Constants
-obSurf_StartX:			equ objoff_30		; 2 bytes | starting X-axis position
-obSurf_Freeze:			equ objoff_32		; 1 byte  | flag to freeze animation
+obSurf_Freeze:			equ objoff_30				; 1 byte  | flag to freeze animation
 ; ---------------------------------------------------------------------------
 
 WaterSurface:

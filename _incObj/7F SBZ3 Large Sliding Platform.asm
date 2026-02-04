@@ -73,10 +73,9 @@ Slid_Action:	; Routine 2
 
 		; solid
 		moveq	#0,d1
-		move.b	obDispWid(a0),d1
-		addi.w	#$B,d1
-		moveq	#$40,d2						; height (jumping)
-		moveq	#$41,d3						; height (walking)
+		move.b	#139,d1						; width
+		moveq	#64,d2						; height (jumping)
+		moveq	#65,d3						; height (walking)
 		jsr		(SolidObject).l
 
 	.chkdel:
