@@ -121,7 +121,7 @@ Bri_Action:	; Routine 2
 		move.w	d1,d2
 		addq.w	#8,d1						; d1 = (half-width of bridge) + 8
 		add.w	d2,d2						; d2 = (full width of bridge)
-		moveq	#8,d3						; is this used???
+		moveq	#8,d3						; d3 = half-height of bridge
 		move.w	obX(a0),d4
 		bsr.s	Bri_Solid
 		bra.w	Bri_ChkDel					; Clownacy DisplaySprite Fix

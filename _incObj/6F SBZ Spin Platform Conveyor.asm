@@ -187,7 +187,7 @@ SpinC_Rout2:
 		bne.s	.spinning					; if yes, branch
 		move.w	obX(a0),SpinCon_PrevX(a0)	; store pre-movement axis position
 		bsr.w	SpinC_PlatformUpdate
-		moveq	#$1B,d1						; width; save 4 cycles -- Filter
+		moveq	#27,d1						; width; save 4 cycles -- Filter
 		moveq	#7,d2						; height (jumping); save 4 cycles -- Filter
 		moveq	#8,d3						; height (walking); save 4 cycles -- Filter
 		move.w	SpinCon_PrevX(a0),d4		; pre-movement axis position

@@ -103,8 +103,8 @@ Mon_Solid:	; Routine 2
 ; ===========================================================================
 
 .normal:	; 2nd Routine 0
-		moveq	#$1A,d1
-		moveq	#$F,d2
+		moveq	#$26,d1					; width
+		moveq	#15,d2					; height
 		bsr.w	Mon_SolidSides
 		beq.w	loc_A25C
 		tst.w	obVelY(a1)

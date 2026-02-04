@@ -81,8 +81,7 @@ Stair_Solid:	; Routine 4
 		move.b	(a2,d0.w),d0				; get y distance moved for current stair
 		add.w	obStair_StartY(a0),d0		; add to initial y position
 		move.w	d0,obY(a0)					; update position
-		moveq	#11,d1
-		add.b	obDispWid(a0),d1			; width; save 8 cycles
+		moveq	#27,d1						; width; save 4 cycles - Filter
 		moveq	#16,d2						; height (jumping); save 4 cycles - Filter
 		moveq	#17,d3						; height (walking); save 4 cycles - Filter
 		move.w	obX(a0),d4					; axis position

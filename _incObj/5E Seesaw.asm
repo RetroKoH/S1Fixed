@@ -76,7 +76,7 @@ See_Slope:	; Routine 2
 	.notflat:
 		lea		(v_player).w,a1
 		move.w	obVelY(a1),obSeesaw_HitSpeed(a0)	; save speed at which Sonic landed on the seesaw
-		moveq	#$30,d1						; moveq saves 4 cycles
+		moveq	#48,d1						; width -- moveq saves 4 cycles
 		jmp		(SlopeObject).l				; detect collision and goto See_StoodOn next if true
 ; ===========================================================================
 
@@ -88,9 +88,9 @@ See_StoodOn:	; Routine 4
 		lea		(See_DataFlat).l,a2
 
 	.notflat:
-		moveq	#$30,d1						; moveq saves 4 cycles
+		moveq	#48,d1						; width -- moveq saves 4 cycles
 		jsr		(ExitPlatform).l			; goto See_Slope next if Sonic leaves seesaw
-		moveq	#$30,d1						; moveq saves 4 cycles
+		moveq	#48,d1						; width -- moveq saves 4 cycles
 		move.w	obX(a0),d2
 		jmp		(SlopeObject2).l
 ; ===========================================================================

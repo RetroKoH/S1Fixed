@@ -34,8 +34,7 @@ SGrass_Action:	; Routine 2
 		bsr.w	SGrass_Sinking
 		btst	#staSonicOnObj,obStatus(a0)	; is platform being stood on? removed obSolid
 		beq.s	SGrass_Solid				; if not, branch
-		moveq	#11,d1
-		add.b	obDispWid(a0),d1			; width; save 8 cycles
+		moveq	#75,d1						; width
 		bsr.w	ExitPlatform				; update flags if Sonic leaves plaform
 		btst	#staOnObj,obStatus(a1)		; is Sonic still on the platform?
 		bne.w	SGrass_Slope				; if yes, branch
@@ -44,8 +43,7 @@ SGrass_Action:	; Routine 2
 ; ===========================================================================
 
 SGrass_Slope:
-		moveq	#11,d1
-		add.b	obDispWid(a0),d1		; width; save 8 cycles
+		moveq	#75,d1					; width
 		lea		SGrass_Collision(pc),a2	; pointer to heightmap
 		move.w	obX(a0),d2				; axis position
 		bsr.w	SlopeObject2
@@ -53,8 +51,7 @@ SGrass_Slope:
 ; ===========================================================================
 
 SGrass_Solid:
-		moveq	#11,d1
-		add.b	obDispWid(a0),d1		; width; save 8 cycles
+		moveq	#75,d1					; width
 		moveq	#32,d2					; height
 		lea		SGrass_Collision(pc),a2	; pointer to heightmap
 		bsr.w	SolidObject2F			; SolidObject_Heightmap
