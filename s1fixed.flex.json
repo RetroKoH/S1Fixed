@@ -1,7 +1,7 @@
 {
     "Flex": 2,
     "name": "S1 Fixed",
-    "node": "d0ec660f-ab3a-4399-b9a1-309db16a7c58",
+    "node": "0d6d9cd8-865f-4147-9299-99eaa239c304",
     "objects": [
         {
             "name": "Common",
@@ -1181,7 +1181,8 @@
                 }
             ],
             "isDirectory": true,
-            "expanded": true
+            "expanded": false,
+            "uuid": "ed1cf0e8-0d9e-44cf-b341-09ed442a064d"
         },
         {
             "name": "GHZ",
@@ -1469,7 +1470,7 @@
                 }
             ],
             "isDirectory": true,
-            "expanded": false,
+            "expanded": true,
             "uuid": "d70d6d9c-d886-4fb1-8792-9999eaa239c3"
         },
         {

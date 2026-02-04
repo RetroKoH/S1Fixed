@@ -49,13 +49,9 @@ MBar_Action:	; Routine 2
 		bpl.s	.chkdel
 
 		; solid
-		moveq	#0,d1
-		move.b	obDispWid(a0),d1
-		addi.w	#$B,d1
-		moveq	#0,d2
-		move.b	obHeight(a0),d2
-		move.w	d2,d3
-		addq.w	#1,d3
+		moveq	#75,d1						; width; save 4 cycles - Filter
+		moveq	#12,d2						; height (jumping); save 4 cycles - Filter
+		moveq	#13,d3						; height (walking); save 4 cycles - Filter
 		jsr		(SolidObject).l
 
 	.chkdel:

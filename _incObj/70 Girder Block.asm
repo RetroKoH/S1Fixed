@@ -40,13 +40,9 @@ Gird_Action:
 		move.w	obGird_PrevX(a0),d4
 		tst.b	obRender(a0)				; is object on-screen?
 		bpl.s	.chkdel						; if not, branch
-		moveq	#0,d1
-		move.b	obDispWid(a0),d1
-		addi.w	#$B,d1
-		moveq	#0,d2
-		move.b	obHeight(a0),d2
-		move.w	d2,d3
-		addq.w	#1,d3
+		moveq	#107,d1
+		moveq	#24,d2
+		moveq	#25,d3
 		jsr		(SolidObject).l
 
 	.chkdel:
