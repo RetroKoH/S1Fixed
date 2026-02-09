@@ -81,8 +81,18 @@ SonAni_Float3:	dc.b 3,	fr_SonFloat1, fr_SonFloat2, fr_SonFloat5, fr_SonFloat3, f
 		even
 SonAni_Float4:	dc.b 3,	fr_SonFloat1, afChange, aniID_Walk
 		even
+
+	if CDSpringTwirl
+SonAni_Spring:	dc.b 3, fr_SonSpringTwirl1, fr_SonSpringTwirl2, fr_SonSpringTwirl3, fr_SonSpringTwirl4, fr_SonSpringTwirl5
+				dc.b 	fr_SonSpringTwirl1, fr_SonSpringTwirl2, fr_SonSpringTwirl3, fr_SonSpringTwirl4, fr_SonSpringTwirl5
+				dc.b 	fr_SonSpringTwirl1, fr_SonSpringTwirl2, fr_SonSpringTwirl3, fr_SonSpringTwirl4, fr_SonSpringTwirl5
+				dc.b	afChange, aniID_Walk
+		even
+	else
 SonAni_Spring:	dc.b $2F, fr_SonSpring, afChange, aniID_Walk
 		even
+	endif
+
 SonAni_Hang:	dc.b 4,	fr_SonHang1, fr_SonHang2, afEnd
 		even
 SonAni_GetAir:	dc.b $B, fr_SonGetAir, fr_SonGetAir, fr_SonWalk15, fr_SonWalk16, afChange, aniID_Walk
