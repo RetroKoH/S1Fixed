@@ -2,9 +2,6 @@
 ; Subroutine to	make the sides of a monitor solid
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
 Mon_SolidSides:
 		lea		(v_player).w,a1
 		move.w	obX(a1),d0
@@ -69,3 +66,4 @@ loc_A4EA:
 		moveq	#-1,d1
 		rts	
 ; End of function Mon_SolidSides
+; ===========================================================================

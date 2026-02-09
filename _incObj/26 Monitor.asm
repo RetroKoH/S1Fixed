@@ -103,14 +103,14 @@ Mon_Solid:	; Routine 2
 ; ===========================================================================
 
 .normal:	; 2nd Routine 0
-		moveq	#$26,d1					; width
-		moveq	#15,d2					; height
+		moveq	#26,d1						; width
+		moveq	#15,d2						; height
 		bsr.w	Mon_SolidSides
 		beq.w	loc_A25C
 		tst.w	obVelY(a1)
 		bmi.s	loc_A20A
-		cmpi.b	#aniID_Roll,obAnim(a1)	; is Sonic rolling?
-		beq.s	loc_A25C				; if yes, branch
+		cmpi.b	#aniID_Roll,obAnim(a1)		; is Sonic rolling?
+		beq.s	loc_A25C					; if yes, branch
 
 	if DropDashEnabled	; RetroKoH Drop Dash
 		cmpi.b	#aniID_DropDash,obAnim(a1)	; is Sonic Drop Dashing? -- Fix to allow rebounding

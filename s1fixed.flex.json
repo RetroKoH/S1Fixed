@@ -1,7 +1,7 @@
 {
     "Flex": 2,
     "name": "S1 Fixed",
-    "node": "0d6d9cd8-865f-4147-9299-99eaa239c304",
+    "node": "da472ab9-f363-45e6-8ee3-a83fd70d6d9c",
     "objects": [
         {
             "name": "Common",
@@ -321,7 +321,7 @@
                     ],
                     "format": "Sonic 2.js",
                     "art": {
-                        "path": "artunc\\Sonic.bin",
+                        "path": "artunc\\Sonic.unc",
                         "compression": "Uncompressed",
                         "offset": 0
                     },
@@ -416,7 +416,7 @@
                 }
             ],
             "isDirectory": true,
-            "expanded": false,
+            "expanded": true,
             "uuid": "14da472a-b9f3-4355-a6ce-e3a83fd70d6d"
         },
         {
@@ -1470,7 +1470,7 @@
                 }
             ],
             "isDirectory": true,
-            "expanded": true,
+            "expanded": false,
             "uuid": "d70d6d9c-d886-4fb1-8792-9999eaa239c3"
         },
         {
