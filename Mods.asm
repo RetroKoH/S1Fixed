@@ -99,6 +99,11 @@ S2BossRebound: = 0
 ; Function: Uses the Sonic CD balancing sprites (forward and back) instead of Sonic 1's.
 CDBalancing: = 0
 
+; Name: CD Spring Twirl Mod
+; Credit: RetroKoH
+; Function: Uses the Sonic CD spring sprites (twirling) instead of Sonic 1's.
+CDSpringTwirl: = 0
+
 ; Name: CD Camera Panning
 ; Credit: Naoto
 ; Function: Applies a panning effect to the screen when moving quickly, a la Sonic CD

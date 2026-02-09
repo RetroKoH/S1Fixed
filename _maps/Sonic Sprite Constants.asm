@@ -23,7 +23,7 @@ aniID_Float1:			ds.b 1		; Floating animation #1
 aniID_Float2:			ds.b 1		; Floating animation #2
 aniID_Float3:			ds.b 1		; Floating animation #3
 aniID_Float4:			ds.b 1		; Floating animation #4
-aniID_Spring:			ds.b 1		; Spring animation
+aniID_Spring:			ds.b 1		; Spring animation (Changes with the CDSpringTwirl Mod)
 aniID_Hang:				ds.b 1		; Hanging animation (LZ Vertical Pole)
 aniID_Fall:				ds.b 1		; Falling animation (Unused atm)
 aniID_GetAir:			ds.b 1		; Getting Air Bubble animation
@@ -178,6 +178,11 @@ fr_SonTransform3:		ds.b 1
 fr_SonTransform4:		ds.b 1
 fr_SonTransform5:		ds.b 1
 fr_SonWallJump:			ds.b 1
+fr_SonSpringTwirl1:		ds.b 1
+fr_SonSpringTwirl2:		ds.b 1
+fr_SonSpringTwirl3:		ds.b 1
+fr_SonSpringTwirl4:		ds.b 1
+fr_SonSpringTwirl5:		ds.b 1
 	dephase
 
 	if SuperMod

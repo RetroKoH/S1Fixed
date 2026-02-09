@@ -1,4 +1,4 @@
-Map_Sonic:	mappingsTable
+Map_Sonic: mappingsTable
 		mappingsTableEntry.w	SonMap_Null
 		mappingsTableEntry.w	SonMap_Stand
 		mappingsTableEntry.w	SonMap_Wait
@@ -135,6 +135,11 @@ Map_Sonic:	mappingsTable
 		mappingsTableEntry.w	SonMap_Transform4
 		mappingsTableEntry.w	SonMap_Transform5
 		mappingsTableEntry.w	SonMap_WallJump
+		mappingsTableEntry.w	SonMap_SpringTwirl1
+		mappingsTableEntry.w	SonMap_SpringTwirl2
+		mappingsTableEntry.w	SonMap_SpringTwirl3
+		mappingsTableEntry.w	SonMap_SpringTwirl4
+		mappingsTableEntry.w	SonMap_SpringTwirl5
 
 SonMap_Null:	spriteHeader
 SonMap_Null_End
@@ -760,5 +765,33 @@ SonMap_WallJump:	spriteHeader
 	spritePiece -$12, -$14, 3, 2, 0, 0, 0, 0, 0
 	spritePiece -$12, -4, 4, 3, 6, 0, 0, 0, 0
 SonMap_WallJump_End
+
+SonMap_SpringTwirl1:	spriteHeader
+	spritePiece -9, -$18, 2, 2, 0, 0, 0, 0, 0
+	spritePiece -$11, -8, 4, 2, 4, 0, 0, 0, 0
+	spritePiece -9, 8, 2, 2, $C, 0, 0, 0, 0
+SonMap_SpringTwirl1_End
+
+SonMap_SpringTwirl2:	spriteHeader
+	spritePiece -$11, -$18, 3, 3, 0, 0, 0, 0, 0
+	spritePiece -9, 0, 2, 3, 9, 0, 0, 0, 0
+SonMap_SpringTwirl2_End
+
+SonMap_SpringTwirl3:	spriteHeader
+	spritePiece -$11, -$18, 3, 3, 0, 0, 0, 0, 0
+	spritePiece -$11, 0, 4, 1, 9, 0, 0, 0, 0
+	spritePiece -$11, 8, 3, 2, $D, 0, 0, 0, 0
+SonMap_SpringTwirl3_End
+
+SonMap_SpringTwirl4:	spriteHeader
+	spritePiece -$A, -$18, 3, 3, 0, 1, 0, 0, 0
+	spritePiece -$12, 0, 4, 1, 9, 1, 0, 0, 0
+	spritePiece -$A, 8, 3, 2, $D, 1, 0, 0, 0
+SonMap_SpringTwirl4_End
+
+SonMap_SpringTwirl5:	spriteHeader
+	spritePiece -$A, -$18, 3, 3, 0, 1, 0, 0, 0
+	spritePiece -$A, 0, 2, 3, 9, 1, 0, 0, 0
+SonMap_SpringTwirl5_End
 
 	even
