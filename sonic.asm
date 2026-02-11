@@ -5292,11 +5292,17 @@ Nem_GhzWall1:	binclude	"artnem/GHZ Breakable Wall.nem"
 		even
 Nem_GhzWall2:	binclude	"artnem/GHZ Edge Wall.nem"
 		even
+
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - LZ stuff
 ; ---------------------------------------------------------------------------
+	if AltWaterSurface
+Nem_Water:		binclude	"artnem/LZ Water Surface Alt.nem"
+		even
+	else
 Nem_Water:		binclude	"artnem/LZ Water Surface.nem"
 		even
+	endif
 Nem_Waterfall:	binclude	"artnem/LZ Waterfall.nem"	; Split Waterfall and Splash -- RetroKoH VRAM Reshuffle
 		even
 Nem_Splash:		binclude	"artnem/Water Splash.nem"	; To-Do: Make uncompressed and load in dash dust spot -- RetroKoH VRAM Reshuffle
@@ -5947,7 +5953,13 @@ Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.unc"
 		include	"_maps/SLZ Circling Platform.asm"
 		include	"_maps/Staircase.asm"
 		include	"_maps/Pylon.asm"
+
+	if AltWaterSurface
+		include "_maps/Water Surface Alt.asm"
+	else
 		include	"_maps/Water Surface.asm"
+	endif
+
 		include	"_maps/Pole that Breaks.asm"
 		include	"_maps/Flapping Door.asm"
 		include	"_maps/Invisible Barriers.asm"
