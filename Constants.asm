@@ -96,18 +96,7 @@ cYellow:	equ cGreen+cRed		; colour yellow
 cAqua:		equ cGreen+cBlue	; colour aqua
 cMagenta:	equ cBlue+cRed		; colour magenta
 
-; Joypad input
-btnStart:	equ %10000000 ; Start button	($80)
-btnA:		equ %01000000 ; A				($40)
-btnC:		equ %00100000 ; C				($20)
-btnB:		equ %00010000 ; B				($10)
-btnR:		equ %00001000 ; Right			($08)
-btnL:		equ %00000100 ; Left			($04)
-btnDn:		equ %00000010 ; Down			($02)
-btnUp:		equ %00000001 ; Up				($01)
-btnDir:		equ %00001111 ; Any direction	($0F)
-btnBC:		equ %00110000 ; B or C			($30)
-btnABC:		equ %01110000 ; A, B or C		($70)
+; Joypad input (standard)
 bitStart:	equ 7
 bitA:		equ 6
 bitC:		equ 5
@@ -116,6 +105,30 @@ bitR:		equ 3
 bitL:		equ 2
 bitDn:		equ 1
 bitUp:		equ 0
+
+btnStart:	equ 1<<bitStart				; Start 		($80)
+btnA:		equ 1<<bitA					; A				($40)
+btnC:		equ 1<<bitC					; C				($20)
+btnB:		equ 1<<bitB					; B				($10)
+btnR:		equ 1<<bitR					; Right			($08)
+btnL:		equ 1<<bitL					; Left			($04)
+btnDn:		equ 1<<bitDn				; Down			($02)
+btnUp:		equ 1<<bitUp				; Up			($01)
+btnDir:		equ btnL+btnR+btnDn+btnUp	; Directionals	($0F)
+btnBC:		equ btnB+btnC				; B or C		($30)
+btnABC:		equ btnA+btnB+btnC			; A, B or C		($70)
+btnABCSt:	equ btnA+btnB+btnC+btnStart	; A/B/C/Start	($F0)
+
+; Joypad input (6-button support)
+bitM:		equ 3
+bitX:		equ 2
+bitY:		equ 1
+bitZ:		equ 0
+btnM:		equ 1<<bitM					; Mode			($08)
+btnX:		equ 1<<bitX					; X				($04)
+btnY:		equ 1<<bitY					; Y				($02)
+btnZ:		equ 1<<bitZ					; Z				($01)
+btnXYZ:		equ btnX+btnY+btnZ			; X, Y, or Z	($07)
 
 ; ---------------------------------------------------------------------------
 ; Object Status Table Constants (Rearranged for S3K Priority and Object Managers -- RetroKoH)

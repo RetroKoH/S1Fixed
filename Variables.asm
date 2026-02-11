@@ -181,6 +181,11 @@ v_jpadpressed_dup:	ds.b	1		; joypad input - pressed, duplicate (can be overridde
 v_jpadheld_actual:	ds.b	1		; joypad input - held, actual
 v_jpadpressed_actual:	ds.b	1	; joypad input - pressed, actual
 
+v_jpadheld_dup_xyz:			ds.b	1	; joypad input - held, duplicate (Hivebrain 6-button support)
+v_jpadpressed_dup_xyz:		ds.b	1	; joypad input - pressed, duplicate (Hivebrain 6-button support)
+v_jpadheld_actual_xyz:		ds.b	1	; joypad input - held, actual (Hivebrain 6-button support)
+v_jpadpressed_actual_xyz:	ds.b	1	; joypad input - pressed, actual (Hivebrain 6-button support)
+
 	if S3KUnderwaterPalette
 v_watertranstable:	ds.l	1		; address of the water transition table
 	else
@@ -195,7 +200,7 @@ v_countdown:		ds.w	1		; decrements every time VBlank runs, used as a general pur
 v_scrposy_vdp:		ds.w	1		; foreground y position, sent to VSRAM during VBlank
 v_bgscrposy_vdp:	ds.w	1		; background y position, sent to VSRAM during VBlank
 				
-				ds.b	$A		; unused
+				ds.b	6		; unused
 
 v_hbla_hreg:		ds.w	1		; VDP H.interrupt register buffer (8Axx)
 v_hbla_line = v_hbla_hreg+1			; screen line where water starts and palette is changed by HBlank
