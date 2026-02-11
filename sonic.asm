@@ -909,13 +909,11 @@ HBlank:
 		movem.l	(sp)+,d0-a6
 		rte	
 ; End of function HBlank
+; ===========================================================================
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	initialise joypads
 ; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
 
 JoypadInit:
 		stopZ80		; removed Z80 macro
@@ -927,29 +925,49 @@ JoypadInit:
 		startZ80	; removed Z80 macro
 		rts	
 ; End of function JoypadInit
+; ===========================================================================
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	read joypad input, and send it to the RAM
 ; ---------------------------------------------------------------------------
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
 
 ReadJoypads:
-		lea		(v_jpadheld_actual).w,a0			; address where joypad states are written
+		lea		(v_jpadheld_actual).w,a0	; address where joypad states are written
 		lea		(z80_port_1_data+1).l,a1	; first	joypad port
 		bsr.s	.read						; do the first joypad
 		addq.w	#2,a1						; do the second	joypad
 
-.read:
+	.read:
+		move.b	#0,(a1)						; poll joypad data port (00SA 00DU)
+		nop	
+		nop	
+		move.b	(a1),d0						; get joypad port data (d0 = 00SA 00DU)
+		add.b	d0,d0
+		add.b	d0,d0						; d0 = SA00DU00
+		andi.b	#$C0,d0						; d0 = SA000000
+		move.b	#$40,(a1)					; poll joypad data port again (00CB RLDU)
+		nop	
+		nop	
+		move.b	(a1),d1						; get joypad port data (d1 = 00CB RLDU)
+
+	; Hivebrain 6-button support
 		move.b	#0,(a1)						; poll joypad data port
 		nop	
 		nop	
-		move.b	(a1),d0						; get joypad port data (start/A)
-		asl.b	#2,d0
-		move.b	#$40,(a1)					; poll joypad data port again
-		andi.w	#$C0,d0
-		move.b	(a1),d1						; get joypad port data (B/C/Dpad)
-		andi.w	#$3F,d1
+		move.b	#$40,(a1)
+		nop	
+		nop	
+		move.b	#0,(a1)
+		nop	
+		nop	
+		move.b	#$40,(a1)					; set port to read 00CBMXYZ
+		nop	
+		nop	
+		move.b	(a1),d2						; d2 = 00CBMXYZ
+		
+		andi.b	#%00111111,d1				; d1 = 00CBRLDU
+	; 6-button support end
+
 		or.b	d1,d0						; fuse together into one joypad bit array
 		not.b	d0
 		move.b	(a0),d1						; get press button data
@@ -957,9 +975,20 @@ ReadJoypads:
 		move.b	d0,(a0)+					; put raw joypad input (for held buttons) in F604/F606
 		and.b	d0,d1
 		move.b	d1,(a0)+					; put pressed controller input in F605/F607
+
+	; Hivebrain 6-button support
+		not.b	d2							; invert bits, so that 1 = pressed
+		andi.b	#%00001111,d2				; d2 = 0000MXYZ
+		move.b	(a0),d1						; d1 = previous joypad state
+		eor.b	d2,d1
+		move.b	d2,(a0)+					; v_joypad_hold_actual_xyz = 0000MXYZ
+		and.b	d2,d1						; d1 = new joypad inputs only
+		move.b	d1,(a0)+					; v_joypad_press_actual_xyz = 0000MXYZ (new only)
+	; 6-button support end
+
 		rts	
 ; End of function ReadJoypads
-
+; ===========================================================================
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
@@ -990,8 +1019,8 @@ VDPSetupGame:
 		move.l	(sp)+,d1
 		rts	
 ; End of function VDPSetupGame
-
 ; ===========================================================================
+
 VDPSetupArray:
 		dc.w $8004		; 8-colour mode
 		dc.w $8134		; enable V.interrupts, enable DMA
