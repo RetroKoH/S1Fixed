@@ -3,12 +3,6 @@
 ; ---------------------------------------------------------------------------
 ; OST Constants
 obSurf_Freeze:			equ objoff_30				; 1 byte  | flag to freeze animation
-
-	if AltWaterSurface
-surf_frames:			equ 2
-	else
-surf_frames:			equ 3
-	endif
 ; ---------------------------------------------------------------------------
 
 WaterSurface:
@@ -57,7 +51,7 @@ Surf_Action:
 		bne.s	.stopped
 		btst	#bitStart,(v_jpadpressed_actual).w	; is Start button pressed?
 		beq.s	.animate							; if not, branch
-		addq.b	#surf_frames,d2						; use different	frames
+		addq.b	#3,d2								; use different	frames
 		move.b	#1,obSurf_Freeze(a0)				; stop animation
 		bra.s	.display
 ; ===========================================================================
@@ -66,16 +60,25 @@ Surf_Action:
 		tst.b	(f_pause).w							; is the game paused?
 		bne.s	.display							; if yes, branch
 		clr.b	obSurf_Freeze(a0)					; resume animation
-		subq.b	#surf_frames,d2						; use normal frames
+		subq.b	#3,d2								; use normal frames
 
 	.animate:
+	if AltWaterSurface
+		lea		AnimAlt_WaterSurface(pc),a1
+		moveq	#0,d1
+		move.b	obAniFrame(a0),d1
+		move.b	(a1,d1.w),d2
+		addq.b	#1,obAniFrame(a0)
+		andi.b	#$3F,obAniFrame(a0)
+	else
 		subq.b	#1,obTimeFrame(a0)					; decrement animation timer
 		bpl.s	.display							; branch if time remains
 		move.b	#7,obTimeFrame(a0)					; reset timer
 		addq.b	#1,d2								; next frame
-		cmpi.b	#surf_frames,d2
+		cmpi.b	#3,d2
 		blo.s	.display
-		clr.b	d2									; reset to frame 0 when animation finishes
+		clr.b	d2									; reset to frame 0 when animation finishes	
+	endif
 
 	.display:
 		move.b	d2,mainspr_mapframe(a0)
@@ -83,3 +86,13 @@ Surf_Action:
 		move.w	#priority0,d0
 		bra.w	DisplaySprite2
 ; ===========================================================================
+	if AltWaterSurface
+; water sprite animation 'script' (custom format for this version of the object)
+AnimAlt_WaterSurface: ;Anim_obj04:
+		dc.b 0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1
+		dc.b 1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2
+		dc.b 2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1
+		dc.b 1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0
+		even
+; ===========================================================================
+	endif

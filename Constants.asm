@@ -586,7 +586,6 @@ ArtTile_LZ_Block_1:				equ $1C6				; ✓
 ArtTile_LZ_Block_2:				equ $1D6				; ✓
 ArtTile_LZ_Waterfall:			equ $23E				; ✓
 ArtTile_LZ_Gargoyle:			equ $2AB				; ✓
-ArtTile_LZ_Water_Surface:		equ $2BC				; ✓
 ArtTile_LZ_Spikeball_Chain:		equ $2CC				; ✓
 ArtTile_LZ_Flapping_Door:		equ $2E4				; ✓
 ArtTile_LZ_Bubbles:				equ $304				; ✓
@@ -597,6 +596,7 @@ ArtTile_LZ_Push_Block:			equ $392				; ✓ -- Appears to be correct
 ArtTile_LZ_Blocks:				equ $39A				; ✓
 ArtTile_LZ_Conveyor_Wheel:		equ $3AA				; ✓ (Now only $10 tiles here)
 ArtTile_LZ_Conveyor_Ptfm:		equ $3BA				; ✓ (Only 8 tiles here)
+ArtTile_LZ_Water_Surface:		equ $3C2				; ✓ (Moved down; might make dynamic)
 ArtTile_LZ_Rising_Platform:		equ $3F2				; ✓
 ArtTile_LZ_Cork:				equ $429				; ✓
 ArtTile_LZ_Sonic_Drowning:		equ $440				; For now, leave this alone.

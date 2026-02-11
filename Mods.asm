@@ -423,7 +423,7 @@ ChunksInROM: = 1						; if set to 1, frees RAM ($B000-$C7FF)
 ; Name: Water Surface Sprite Mod (Incomplete)
 ; Credit: RetroKoH
 ; If enabled, LZ uses Water Surface sprites from Sonic 2's Aquatic Ruins Zone (albeit recolored to match LZ)
-AltWaterSurface: = 0
+AltWaterSurface: = 1
 ; Note that this mod is moot if the mod below is enabled
 
 ; Name: S3K Underwater Palette Handling
