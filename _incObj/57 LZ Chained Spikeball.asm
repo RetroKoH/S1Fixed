@@ -1,6 +1,6 @@
 ; ---------------------------------------------------------------------------
 ; Object 57 - chained spiked balls (LZ)
-; I split the SYZ Spikebar from this, because this will use subsprites - KoH
+; I split the SYZ Spikebar from this, because this now uses subsprites - KoH
 ; ---------------------------------------------------------------------------
 ; OST Constants
 obSBall_Chain:			equ objoff_30		; 2 bytes | object RAM address of the chain
@@ -94,7 +94,7 @@ SBall_Move:
 		movea.w	obSBall_Chain(a0),a1					; load chain address into a1
 		moveq	#0,d6
 		move.b	mainspr_childsprites(a1),d6				; get number of chain links
-		subq.w	#1,d6
+		subq.b	#1,d6
 		blo.s	.display
 		swap	d0
 		clr.w	d0
@@ -119,13 +119,6 @@ SBall_Move:
 		add.l	d1,d5
 		dbf		d6,.loop								; repeat for all subsprites
 
-	; sonic 1 fix pos
-		asr.l	d0
-		asr.l	d1
-		sub.l	d0,d4
-		sub.l	d1,d5
-
-	; TO-DO: Positioning is half a chainlink inaccurate
 		swap	d4
 		swap	d5
 		add.w	d2,d4
