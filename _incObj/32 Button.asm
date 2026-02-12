@@ -1,5 +1,6 @@
 ; ---------------------------------------------------------------------------
 ; Object 32 - buttons (MZ, SYZ, LZ, SBZ)
+; Partially adapted the switch system from Sonic 1 Co-Op (Malachi)
 ; ---------------------------------------------------------------------------
 
 Button:
@@ -26,20 +27,22 @@ But_Pressed:	; Routine 2
 		move.w	obX(a0),d4						; axis position
 		bsr.w	SolidObject
 		bclr	#0,obFrame(a0)					; use "unpressed" frame
-		moveq	#$F,d0
-		and.b	obSubtype(a0),d0				; get low nybble of subtype; SCE Optimization
+
+	; Malachi Improved Switch System
+	.bitcheck:
+		moveq	#$7F,d3							; d3 = bit number of the switch byte (n << 4)
+		and.b	obSubtype(a0),d3
+		moveq	#$F,d0							; d0 = switch number
+		and.b	d3,d0
+		lsr.b	#4,d3							; d3 = bit to set/clear in button status
 		lea		(f_switch).w,a3
 		lea		(a3,d0.w),a3					; (a3) = button status
-		moveq	#0,d3
-		btst	#6,obSubtype(a0)				; is subtype $4x or $Cx? (unused)
-		beq.s	.not_secondary					; if not, branch
-		moveq	#7,d3							; d3 = bit to set/clear in button status
+	; Switch System end
 
-	.not_secondary:
-		tst.b	obSubtype(a0)					; is subtype +$80?
+		tst.b	obSubtype(a0)					; is subtype +$80? (special button for MZ blocks?)
 		bpl.s	.subtype_0x						; if not, branch
 		bsr.w	But_MZPushBlock					; check collision with MZ pushable block
-		bne.s	But_Press						; branch if found
+		bne.s	But_Press						; branch if special block button is pressed
 
 	.subtype_0x:
 		btst	#staSonicOnObj,obStatus(a0)		; is Sonic standing on the button? (removed obSolid)
