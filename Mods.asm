@@ -420,7 +420,7 @@ NewLevelSelect:	= 1
 BlocksInROM: = 1						; if set to 1, frees RAM ($0000-$A3FF)
 ChunksInROM: = 1						; if set to 1, frees RAM ($B000-$C7FF)
 
-; Name: Water Surface Sprite Mod (Incomplete)
+; Name: Water Surface Sprite Mod
 ; Credit: RetroKoH
 ; If enabled, LZ uses Water Surface sprites from Sonic 2's Aquatic Ruins Zone (albeit recolored to match LZ)
 AltWaterSurface: = 1
