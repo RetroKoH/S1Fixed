@@ -220,7 +220,7 @@ v_pcyc_num:			ds.w	1		; palette cycling - current reference number
 v_pcyc_time:		ds.w	1		; palette cycling - time until the next change
 v_random:			ds.l	1		; pseudo random number buffer
 f_pause:			ds.b	1		; flag set to pause the game
-				ds.b	1		; unused
+v_palmuscounter:	ds.b	1		; counter used to fix tempo for music in PAL regions
 
 v_palette_frame:	ds.w	1
 v_palette_timer:	ds.b	1

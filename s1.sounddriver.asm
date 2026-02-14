@@ -292,8 +292,16 @@ UpdateMusic:
 		jsr	PSGUpdateTrack(pc)
 ; loc_71C44:
 DoStartZ80:
-		startZ80
-		rts	
+		startZ80			; start the Z80
+		btst	#6,(v_megadrive).w	; is Mega Drive set to PAL region?
+		beq.s	.end			; if not, branch
+		subq.b	#1,(v_palmuscounter).w	; decrement PAL frame counter
+		bhi.s	.end			; is this the 6th frame? if not, branch
+		move.b	#6,(v_palmuscounter).w	; reset PAL frame counter
+		bra.w	UpdateMusic		; run sound driver a second time this frame
+
+	.end:
+		rts
 ; End of function UpdateMusic
 
 
