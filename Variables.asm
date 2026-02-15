@@ -220,7 +220,7 @@ v_pcyc_num:			ds.w	1		; palette cycling - current reference number
 v_pcyc_time:		ds.w	1		; palette cycling - time until the next change
 v_random:			ds.l	1		; pseudo random number buffer
 f_pause:			ds.b	1		; flag set to pause the game
-v_palmuscounter:	ds.b	1		; counter used to fix tempo for music in PAL regions
+				ds.b	1		; unused
 
 v_palette_frame:	ds.w	1
 v_palette_timer:	ds.b	1
@@ -471,15 +471,7 @@ v_oscillate:		ds.w	1		; oscillation bitfield
 v_timingandscreenvariables:
 v_timingvariables:	ds.b	$40		; values which oscillate - for swinging platforms, et al
 
-				ds.b	$1A		; unused
-
-	if SpinDashEnabled==1
-v_spindashsfx1:		ds.b	1
-v_spindashsfx2:		ds.b	1
-v_spindashsfx3:		ds.b	1
-	else
-				ds.b	3		; unused
-	endif
+				ds.b	$1D		; unused
 
 	if CameraDashLag
 v_cameralag:		ds.b	1		; camera lag after launching Spin Dash, Drop Dash, Flame Dash, or Drop Dash (1 byte)

@@ -62,7 +62,16 @@ v_speeduptempo:			ds.b	1	; music - tempo modifier with speed shoes
 f_speedup:				ds.b	1	; flag indicating whether speed shoes tempo is on ($80) or off ($00)
 v_ring_speaker:			ds.b	1	; which speaker the "ring" sound is played in (00 = right; 01 = left)
 f_push_playing:			ds.b	1	; if set, prevents further push sounds from playing
-					ds.b	$13	; unused
+v_palmuscounter:		ds.b	1	; counter used to fix tempo for music in PAL regions
+
+	if SpinDashEnabled==1
+v_spindashsfx1:			ds.b	1
+v_spindashsfx2:			ds.b	1
+v_spindashsfx3:			ds.b	1
+				ds.b	$F	; unused
+	else
+				ds.b	$12	; unused
+	endif				
 
 v_track_ram:
 v_music_track_ram:			; Start of music RAM
