@@ -220,9 +220,9 @@ UpdateMusic:
 .nonewsound:
 	if SpinDashEnabled==1
 	; Spin Dash SFX
-		tst.b	(v_spindashsfx2).w
+		tst.b	SMPS_RAM.v_spindashsfx2(a6)
 		beq.s	.cont
-		subq.b	#1,(v_spindashsfx2).w
+		subq.b	#1,SMPS_RAM.v_spindashsfx2(a6)
 
 .cont:
 	; Spin Dash SFX end
@@ -295,9 +295,9 @@ DoStartZ80:
 		startZ80			; start the Z80
 		btst	#6,(v_megadrive).w	; is Mega Drive set to PAL region?
 		beq.s	.end			; if not, branch
-		subq.b	#1,(v_palmuscounter).w	; decrement PAL frame counter
+		subq.b	#1,SMPS_RAM.v_palmuscounter(a6)	; decrement PAL frame counter
 		bhi.s	.end			; is this the 6th frame? if not, branch
-		move.b	#6,(v_palmuscounter).w	; reset PAL frame counter
+		move.b	#6,SMPS_RAM.v_palmuscounter(a6)	; reset PAL frame counter
 		bra.w	UpdateMusic		; run sound driver a second time this frame
 
 	.end:
@@ -1049,12 +1049,12 @@ Sound_SpecialSFX:
 		tst.b	SMPS_RAM.f_fadein_flag(a6)
 		bne.w	Sound_ClearPriority
 	if SpinDashEnabled==1
-		clr.b	(v_spindashsfx1).w
+		clr.b	SMPS_RAM.v_spindashsfx1(a6)
 		cmp.b	#sfx_SpinDash,d7		; is this the Spin Dash sound?
 		bne.s	.cont3	; if not, branch
 		move.w	d0,-(sp)
-		move.b	(v_spindashsfx3).w,d0	; store extra frequency
-		tst.b	(v_spindashsfx2).w	; is the Spin Dash timer active?
+		move.b	SMPS_RAM.v_spindashsfx3(a6),d0	; store extra frequency
+		tst.b	SMPS_RAM.v_spindashsfx2(a6)	; is the Spin Dash timer active?
 		bne.s	.cont1		; if it is, branch
 		move.b	#-1,d0		; otherwise, reset frequency (becomes 0 on next line)
 
@@ -1062,11 +1062,11 @@ Sound_SpecialSFX:
 		addq.b	#1,d0
 		cmp.b	#$C,d0		; has the limit been reached?
 		bcc.s	.cont2		; if it has, branch
-		move.b	d0,(v_spindashsfx3).w	; otherwise, set new frequency
+		move.b	d0,SMPS_RAM.v_spindashsfx3(a6)	; otherwise, set new frequency
 
 .cont2:
-		move.b	#1,(v_spindashsfx1).w	; set flag
-		move.b	#60,(v_spindashsfx2).w	; set timer
+		move.b	#1,SMPS_RAM.v_spindashsfx1(a6)	; set flag
+		move.b	#60,SMPS_RAM.v_spindashsfx2(a6)	; set timer
 		move.w	(sp)+,d0
 
 .cont3:
@@ -1086,7 +1086,7 @@ Sound_PlaySFX:
 		tst.b	SMPS_RAM.f_fadein_flag(a6)		; Is music being faded in?
 		bne.w	Sound_ClearPriority		; Exit if it is
 	if SpinDashEnabled==1
-		clr.b	(v_spindashsfx1).w		; Spin Dash SFX
+		clr.b	SMPS_RAM.v_spindashsfx1(a6)	; Spin Dash SFX
 	endif
 		cmpi.b	#sfx_Ring,d7			; is ring sound	effect played?
 		bne.s	.sfx_notRing			; if not, branch
@@ -1110,8 +1110,8 @@ Sound_PlaySFX:
 		cmp.b	#sfx_SpinDash,d7		; is this the Spin Dash sound?
 		bne.s	.cont3					; if not, branch
 		move.w	d0,-(sp)
-		move.b	(v_spindashsfx3).w,d0	; store extra frequency
-		tst.b	(v_spindashsfx2).w		; is the Spin Dash timer active?
+		move.b	SMPS_RAM.v_spindashsfx3(a6),d0		; store extra frequency
+		tst.b	SMPS_RAM.v_spindashsfx2(a6)		; is the Spin Dash timer active?
 		bne.s	.cont1					; if it is, branch
 		move.b	#-1,d0					; otherwise, reset frequency (becomes 0 on next line)
 
@@ -1119,11 +1119,11 @@ Sound_PlaySFX:
 		addq.b	#1,d0
 		cmp.b	#$C,d0					; has the limit been reached?
 		bcc.s	.cont2					; if it has, branch
-		move.b	d0,(v_spindashsfx3).w	; otherwise, set new frequency
+		move.b	d0,SMPS_RAM.v_spindashsfx3(a6)		; otherwise, set new frequency
 
 .cont2:
-		move.b	#1,(v_spindashsfx1).w	; set flag
-		move.b	#60,(v_spindashsfx2).w	; set timer
+		move.b	#1,SMPS_RAM.v_spindashsfx1(a6)	; set flag
+		move.b	#60,SMPS_RAM.v_spindashsfx2(a6)	; set timer
 		move.w	(sp)+,d0
 
 .cont3:
@@ -1190,10 +1190,10 @@ SoundEffects_Common:
 		move.w	(a1)+,SMPS_Track.Transpose(a5)	; load FM/PSG channel modifier
 	if SpinDashEnabled==1
 	; Spin Dash SFX
-		tst.b	(v_spindashsfx1).w	; is the Spin Dash sound playing?
+		tst.b	SMPS_RAM.v_spindashsfx1(a6)	; is the Spin Dash sound playing?
 		beq.s	.cont		; if not, branch
 		move.w	d0,-(sp)
-		move.b	(v_spindashsfx3).w,d0
+		move.b	SMPS_RAM.v_spindashsfx3(a6),d0
 		add.b	d0,8(a5)
 		move.w	(sp)+,d0
 
