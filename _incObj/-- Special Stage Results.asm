@@ -318,22 +318,39 @@ SSRC_PosData:
 SSRChaos:
 		movea.l	a0,a1						; replace current object with 1st emerald
 		lea		SSRC_PosData(pc),a2
+
+	if SSResultsSlots
+		moveq	#emldCount-1,d1				; 5 (or 6 if SuperMod is on).
+	else
 		moveq	#0,d1
-		moveq	#0,d2
 		move.b	(v_emeralds).w,d1			; d1 is number of emeralds
 		subq.b	#1,d1						; subtract 1 from d1
 		bcs.w	DeleteObject				; if you have 0	emeralds, branch
+	endif
+
+		moveq	#0,d2						; bit in emerald array to check
 		lea		(v_emldlist).w,a3			; a3 = bitfield that tells which emeralds we do/don't have (loading to a3 instead of dx saves 4 cycles)
 
 	.loop:
+	if ~~SSResultsSlots
 		btst	d2,(a3)						; did you get the emerald? (Using a bitfield saves 8 cycles here)
-		beq.s   .noemerald					; if not, skip and check for the next emerald
+		beq.s   .next_emerald				; if not, skip and check for the next emerald
+	endif
 
 		_move.l	#SSRChaos,obAddr(a1)
 		move.w	(a2)+,obX(a1)				; set x-position
 		move.w	#$F0,obScreenY(a1)			; set y-position
-		move.b	d2,obFrame(a1)				; get list of individual emeralds (numbered 0 to 5/6)
-		move.b	d2,obAnim(a1)				; read value of current emerald
+
+		move.b	d2,obFrame(a1)				; set frame
+
+	if SSResultsSlots
+		btst	d2,(a3)						; did you get the emerald? (Using a bitfield saves 8 cycles here)
+		bne.s   .have_emerald				; if not, skip and check for the next emerald
+		addq.b	#emldCount,obFrame(a1)		; set to one of the new empty frames
+
+	.have_emerald:
+	endif
+
 		_move.l	#SSRC_Flash,obAddr(a1)
 		move.l	#Map_SSRC,obMap(a1)
 		move.w	#make_art_tile(ArtTile_SS_Results_Emeralds,0,1),obGfx(a1)
@@ -346,17 +363,20 @@ SSRChaos:
 		bra.s	SSRC_Flash
 ; ===========================================================================
 
-	.noemerald:
+	.next_emerald:
 		addq.b	#1,d2						; check for the next emerald
 		addq.b  #1,d1						; +1 to the loop, to continue checking for the rest of the emeralds
 		dbf		d1,.loop					; loop for d1 number of	emeralds
 ; ---------------------------------------------------------------------------
 
 SSRC_Flash:
-		move.b	obFrame(a0),d0				; get previous frame
-		move.b	#emldCount,obFrame(a0)		; load 6th/7th frame (blank)
-		cmpi.b	#emldCount,d0				; was previous frame blank?
-		bne.w	DisplaySprite				; if not, branch
-		move.b	obAnim(a0),obFrame(a0)		; load visible frame
-		bra.w	DisplaySprite
+	if SSResultsSlots
+		moveq	#emldCount,d0
+		cmp.b	obFrame(a0),d0
+		bcs.w	DisplaySprite
+	endif
+
+		btst	#0,(v_framebyte).w			; Odd frame? (Think of it as 'every other number' logic)
+		bne.w	DisplaySprite				; if yes, display
+		rts									; if not, flicker
 ; ===========================================================================

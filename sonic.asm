@@ -5264,8 +5264,14 @@ Nem_SSCursor:	binclude	"artnem/Special Cursor.nem" ; special stage debug cursor 
 		even
 Nem_SSDelete:	binclude	"artnem/Special Delete.nem" ; special stage debug delete icon (RetroKoH: imported from Sonic 1 (2013))
 		even
+
+	if SSResultsSlots
+Nem_ResultEm:	binclude	"artnem/Special Result Emeralds and Frames.nem" ; chaos emeralds on special stage results screen
+		even
+	else
 Nem_ResultEm:	binclude	"artnem/Special Result Emeralds.nem" ; chaos emeralds on special stage results screen
 		even
+	endif
 
 ; ---------------------------------------------------------------------------
 ; Compressed graphics - GHZ stuff
@@ -5910,7 +5916,12 @@ Art_SbzSmoke:	binclude	"artunc/SBZ Background Smoke.unc"
 		endif
 	; Optimal Title Card Art end
 
+	if SSResultsSlots
+		include	"_maps/SS Result Chaos Emeralds and Frames.asm"
+	else
 		include	"_maps/SS Result Chaos Emeralds.asm"
+	endif
+
 		include	"_maps/Spikes.asm"
 		include	"_maps/Purple Rock.asm"
 		include	"_maps/Smashable Walls.asm"
