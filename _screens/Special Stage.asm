@@ -281,6 +281,7 @@ SS_NormalExit:
 		bsr.w	PauseGame
 		move.b	#$C,(v_vbla_routine).w
 		bsr.w	WaitForVBla
+		addq.w	#1,(v_framecount).w					; add 1 to level timer (now used for emerald flickering)
 		jsr		(ExecuteObjects).l
 		jsr		(BuildSprites).l
 		bsr.w	RunPLC

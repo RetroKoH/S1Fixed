@@ -1,7 +1,7 @@
 {
     "Flex": 2,
     "name": "S1 Fixed",
-    "node": "da472ab9-f363-45e6-8ee3-a83fd70d6d9c",
+    "node": "d45e9a3c-2993-4fde-bf39-34729aaf507d",
     "objects": [
         {
             "name": "Common",
@@ -4005,31 +4005,6 @@
                         "label": ""
                     },
                     "uuid": "5dfffa32-6847-4f96-9c7c-78ce7e722599"
-                },
-                {
-                    "format": "Sonic 2.js",
-                    "name": "Ring Barrier",
-                    "palettes": [
-                        {
-                            "path": "palette\\Special Stage.bin",
-                            "length": 4
-                        }
-                    ],
-                    "art": {
-                        "path": "artnem\\Special Ring Barrier.nem",
-                        "compression": "Nemesis",
-                        "offset": 0
-                    },
-                    "mappings": {
-                        "path": "_maps\\SS Ring Barrier.asm",
-                        "label": "Map_RingBar"
-                    },
-                    "dplcs": {
-                        "enabled": false,
-                        "path": "",
-                        "label": ""
-                    },
-                    "uuid": "dc5be3a3-e368-4bdd-a984-43c4e79e685f"
                 }
             ],
             "isDirectory": true,
@@ -4108,10 +4083,60 @@
                         "label": ""
                     },
                     "uuid": "abf68e71-637d-43fa-9ab2-4579a55a89ff"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "SSR Emeralds",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage Results.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special Result Emeralds.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS Result Chaos Emeralds.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "19d45e9a-3c29-43cf-9eff-3934729aaf50"
+                },
+                {
+                    "format": "Sonic 2.js",
+                    "name": "SSR Emeralds & Frames",
+                    "palettes": [
+                        {
+                            "path": "palette\\Special Stage Results.bin",
+                            "length": 4
+                        }
+                    ],
+                    "art": {
+                        "path": "artnem\\Special Result Emeralds and Frames.nem",
+                        "compression": "Nemesis",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "_maps\\SS Result Chaos Emeralds and Frames.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": false,
+                        "path": "",
+                        "label": ""
+                    },
+                    "uuid": "d45e9a3c-2993-4fde-bf39-34729aaf507d"
                 }
             ],
             "isDirectory": true,
-            "expanded": false,
+            "expanded": true,
             "uuid": "f55ff5d9-a798-4791-b8ad-16c3137528bb"
         }
     ]

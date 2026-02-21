@@ -614,7 +614,7 @@ ArtTile_SS_Cursor:				equ $790				; ✓
 ArtTile_SS_Delete:				equ $7B0				; Check this
 
 ; Special Stage Results
-ArtTile_SS_Results_Emeralds:	equ $541
+ArtTile_SS_Results_Emeralds:	equ $140
 
 ; Font
 ArtTile_Sonic_Team_Font:		equ $0A6

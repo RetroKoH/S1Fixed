@@ -316,6 +316,11 @@ NewSBZ3LevelArt: = 0
 ; Function: Disables playing music tracks, allowing only sfx to play
 AmbienceMode: = 0
 
+; Name: Empty Emerald Slots
+; Credit: RetroKoH
+; Function: Displays slots for the missing emeralds in the SS Results Screen
+SSResultsSlots: = 0
+
 ; ----- SPECIAL STAGES -----------------------------------------------------------
 
 ; Name: Dynamic Special Stage Walls
@@ -358,8 +363,6 @@ S4SpecialStages: = 0	; (Removes UP/DOWN, and R Blocks)
 ; Credit: Mercury
 ; Function: Makes the Special Stages still accessible even once all emeralds are collected.
 SpecialStagesWithAllEmeralds: = 0		; (Replaces Emeralds w/ 1-Ups if Emeralds are obtained)
-
-; To-Do: Add Special Stages to SBZ 1 and 2 Toggle from ReadySonic
 
 ; Perfect Bonuses are included here because it helps keep SS_Load efficient.
 AlteredSpecialStages: = (S4SpecialStages+SpecialStagesWithAllEmeralds+PerfectBonusEnabled)
