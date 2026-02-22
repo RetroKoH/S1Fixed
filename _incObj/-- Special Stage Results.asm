@@ -371,7 +371,7 @@ SSRChaos:
 
 SSRC_Flash:
 	if SSResultsSlots
-		moveq	#emldCount,d0
+		moveq	#emldCount-1,d0
 		cmp.b	obFrame(a0),d0
 		bcs.w	DisplaySprite
 	endif
