@@ -46,8 +46,14 @@ loc_6DAC:
 		addq.w	#8,d0
 		cmp.w	(v_limitbtm).w,d0
 		blo.s	loc_6DC4
-		btst	#staAir,(v_player+obStatus).w
-		beq.s	loc_6DC4
+	; KoH Debug Screen Movement Fix
+		tst.b	(v_debuguse).w					; is Debug Mode enabled?
+		bne.s	loc_6DAC_debug					; if yes, branch
+	; Debug Screen Movement Fix end
+		btst	#staAir,(v_player+obStatus).w	; is Sonic in the air?
+		beq.s	loc_6DC4						; if not, branch
+
+loc_6DAC_debug:
 		add.w	d1,d1
 		add.w	d1,d1
 
