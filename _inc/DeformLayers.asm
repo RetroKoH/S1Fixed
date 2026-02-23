@@ -876,9 +876,14 @@ ScrollVertical:
 		subq.w	#5,d0
 
 SV_NotRolling:
+	; KoH Debug Screen Movement Fix
+		tst.b	(v_debuguse).w					; is Debug Mode enabled?
+		bne.s	SVNoRoll_debug					; if yes, branch
+	; Debug Screen Movement Fix end
 		btst	#staAir,(v_player+obStatus).w	; is Sonic in the air?
 		beq.s	loc_664A						; if not, branch
 
+SVNoRoll_debug:
 		addi.w	#32,d0
 		sub.w	(v_lookshift).w,d0
 		bcs.s	loc_6696

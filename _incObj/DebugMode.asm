@@ -7,19 +7,20 @@ DebugMode:
 		tst.b	(v_debuguse).w
 		bne.w	Debug_Action
 	; Object Routine Optimization End
+; ---------------------------------------------------------------------------
 
 Debug_Main:	; Routine 0
 		addq.b	#2,(v_debuguse).w
 		clr.b	(v_sonicbubbles+objoff_2C).w
-		jsr		(ResumeMusic).l						; cancel countdown music
-		move.w	(v_limittop).w,(v_limittopdb).w	; buffer level x-boundary
+		jsr		(ResumeMusic).l							; cancel countdown music
+		move.w	(v_limittop).w,(v_limittopdb).w			; buffer level x-boundary
 		move.w	(v_limitbtm_target).w,(v_limitbtmdb).w	; buffer level y-boundary
 		clr.w	(v_limittop).w
 		move.w	#$720,(v_limitbtm_target).w
 		andi.w	#$7FF,(v_player+obY).w
 		andi.w	#$7FF,(v_screenposy).w
 		andi.w	#$3FF,(v_bgscreenposy).w
-		move.b	#2,obRoutine(a0)					; get Sonic OUT of death routine to stop freezing effect (if active)
+		move.b	#2,obRoutine(a0)			; get Sonic OUT of death routine to stop freezing effect (if active)
 		clr.b	obFrame(a0)
 		move.b	#aniID_Walk,obAnim(a0)
 
@@ -40,7 +41,7 @@ Debug_Main:	; Routine 0
 	; obPlatform SST mod end
 		bclr	#staSonicOnObj,obStatus(a2)	; clear object's standing flag -- Removed obSolid
 
-.setpos:
+	.setpos:
 	; Debug Improvements end
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
@@ -52,88 +53,98 @@ Debug_Main:	; Routine 0
 		bhi.s	.noreset					; if not, branch
 		clr.b	(v_debugitem).w				; back to start of list
 
-.noreset:
-		bsr.w	Debug_ShowItem
+	.noreset:
+		bsr.w	Debug_ShowItem				; get mappings, VRAM & frame id from debug list
 		move.b	#12,(v_debugxspeed).w
 		move.b	#1,(v_debugyspeed).w
+; ---------------------------------------------------------------------------
 
 Debug_Action:	; Routine 2
 		moveq	#0,d0
 		move.b	(v_zone).w,d0
 		lea		(DebugList).l,a2
 		add.w	d0,d0
-		adda.w	(a2,d0.w),a2
-		move.w	(a2)+,d6
+		adda.w	(a2,d0.w),a2				; get address of debug list
+		move.w	(a2)+,d6					; get number of items in list
 		bsr.s	Debug_Control
 		jmp		(DisplaySprite).l
+; ===========================================================================
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
+; ---------------------------------------------------------------------------
+; Subroutine for controls while debug is in use
+;
+; input:
+;	d6.w = number of items in debug list
+;	a2 = address of first item in debug list
+;
+;	uses d0.l, d1.l, d2.l, d3.l, d4.l
+; ---------------------------------------------------------------------------
 
 Debug_Control:
 		moveq	#0,d4
 		move.w	#1,d1
 		move.b	(v_jpadpressed_actual).w,d4
-		andi.w	#btnDir,d4	; is up/down/left/right	pressed?
-		bne.s	.dirpressed	; if yes, branch
+		andi.w	#btnDir,d4					; is up/down/left/right	pressed?
+		bne.s	.dirpressed					; if yes, branch
 
 		move.b	(v_jpadheld_actual).w,d0
-		andi.w	#btnDir,d0	; is up/down/left/right	held?
-		bne.s	.dirheld	; if yes, branch
+		andi.w	#btnDir,d0					; is up/down/left/right	held?
+		bne.s	.dirheld					; if yes, branch
 
-		move.b	#12,(v_debugxspeed).w
-		move.b	#15,(v_debugyspeed).w
+		move.b	#12,(v_debugxspeed).w		; set move delay (misnomered)
+		move.b	#15,(v_debugyspeed).w		; set move speed (misnomered)
 		bra.w	Debug_ChgItem
 ; ===========================================================================
 
-.dirheld:
-		subq.b	#1,(v_debugxspeed).w
-		bne.s	loc_1D01C
-		move.b	#1,(v_debugxspeed).w
-		addq.b	#1,(v_debugyspeed).w
-		bne.s	.dirpressed
+	.dirheld:
+		subq.b	#1,(v_debugxspeed).w		; decrement timer
+		bne.s	.chk_up						; if not 0, branch
+		move.b	#1,(v_debugxspeed).w		; set delay timer to 1 frame
+		addq.b	#1,(v_debugyspeed).w		; increment speed
+		bne.s	.dirpressed					; if not 0, branch
 		move.b	#-1,(v_debugyspeed).w
 
-.dirpressed:
+	.dirpressed:
 		move.b	(v_jpadheld_actual).w,d4
 
-loc_1D01C:
+	.chk_up:
 		moveq	#0,d1
 		move.b	(v_debugyspeed).w,d1
 		addq.w	#1,d1
 		swap	d1
-		asr.l	#4,d1
+		asr.l	#4,d1						; d1 = speed * $1000
 		move.l	obY(a0),d2
 		move.l	obX(a0),d3
-		btst	#bitUp,d4	; is up	being pressed?
-		beq.s	loc_1D03C	; if not, branch
-		sub.l	d1,d2
-		bcc.s	loc_1D03C
-		moveq	#0,d2
+		btst	#bitUp,d4					; is up	being held?
+		beq.s	.chk_down					; if not, branch
+		sub.l	d1,d2						; move Sonic up
+		bcc.s	.chk_down
+		moveq	#0,d2						; keep Sonic within top boundary
 
-loc_1D03C:
-		btst	#bitDn,d4	; is down being	pressed?
-		beq.s	loc_1D052	; if not, branch
-		add.l	d1,d2
-		cmpi.l	#$7FF0000,d2
-		blo.s	loc_1D052
-		move.l	#$7FF0000,d2
+	.chk_down:
+		btst	#bitDn,d4					; is down being	pressed?
+		beq.s	.chk_left					; if not, branch
+		add.l	d1,d2						; move Sonic down
+		cmpi.l	#$7FF0000,d2				; is Sonic above $7FF? (bottom boundary)
+		blo.s	.chk_left					; if yes, branch
+		move.l	#$7FF0000,d2				; keep Sonic within bottom boundary
 
-loc_1D052:
-		btst	#bitL,d4
-		beq.s	loc_1D05E
-		sub.l	d1,d3
-		bcc.s	loc_1D05E
-		moveq	#0,d3
+	.chk_left:
+		btst	#bitL,d4					; is left being held?
+		beq.s	.chk_right					; if not, branch
+		sub.l	d1,d3						; move Sonic left
+		bcc.s	.chk_right
+		moveq	#0,d3						; keep Sonic within left boundary
 
-loc_1D05E:
-		btst	#bitR,d4
-		beq.s	loc_1D066
-		add.l	d1,d3
+	.chk_right:
+		btst	#bitR,d4					; is right being held?
+		beq.s	.update_pos					; if not, branch
+		add.l	d1,d3						; move Sonic right (no boundary check for right side)
 
-loc_1D066:
+	.update_pos:
 		move.l	d2,obY(a0)
 		move.l	d3,obX(a0)
+; ---------------------------------------------------------------------------
 
 Debug_ChgItem:
 		btst	#bitA,(v_jpadheld_actual).w			; is button A pressed?
