@@ -30,7 +30,32 @@ Tit_MainLoop:
 		bsr.w	PalCycle_Title
 		bsr.w	RunPLC
 		move.w	(v_player+obX).w,d0
+		if	~~MoveInteractTitle
+		move.b	(v_jpadhold1).w,d1    ; Lê os botões pressionados
+
+		btst	#4,d1                ; Botão B pressionado? (bit 4)
+		bne.s	.applyMove           ; Se sim, pula o movimento (para o Sonic)
+
+		btst	#3,d1                ; Direita segurada? (bit 3)
+		bne.s	.fastRight           ; Se sim, vai para +4
+		addq.w	#2,d0                ; Padrão: +2
+		bra.s	.checkLeft
+.fastRight:
+		addq.w	#4,d0                ; Rápido: +4
+
+.checkLeft:
+		btst	#2,d1                ; Esquerda segurada? (bit 2)
+		beq.s	.applyMove           ; Se não, segue em frente
+		subq.w	#4,d0                ; Se sim, subtrai 4 (move para trás)
+
+.applyMove:
+		move.w	d0,(v_objspace+obX).w ; Salva a nova posição
+		cmpi.w	#$1C00,d0            ; Checa o limite de X
+		blo.s	Tit_ChkRegion        ; Se menor que $1C00, continua
+.saveX:
+		else
 		addq.w	#2,d0
+		endif
 		move.w	d0,(v_player+obX).w			; move Sonic to the right
 		cmpi.w	#$1C00,d0					; has Sonic object passed $1C00 on x-axis?
 		blo.s	Tit_EnterCheat				; if not, branch
