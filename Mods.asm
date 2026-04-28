@@ -254,6 +254,10 @@ QuickRestart: = 1
 ; Perhaps rearrange PLCs so that Cue 1 loads art that'd overwrite EoL stuff (Signpost, Giant Ring, Hidden Points)
 
 ; ----- FLAIR MODS ---------------------------------------------------------------
+; Name: Title Screen Interactive Button
+; Credit: Mildanner
+; Function: Makes the Title Screen interactive for pressing L/R buttons.
+MoveInteractTitle:	= 0					; if set to 1, makes the title motion.
 
 ; Name: Fade-In SEGA Screen
 ; Credit: RetroKoH
