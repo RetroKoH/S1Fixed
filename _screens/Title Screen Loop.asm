@@ -30,9 +30,35 @@ Tit_MainLoop:
 		bsr.w	PalCycle_Title
 		bsr.w	RunPLC
 		move.w	(v_player+obX).w,d0
+		if	~~MoveInteractTitle
+		move.b	(v_jpadhold1).w,d1    ; Is it pressing?
+
+		btst	#btnB,d1                ; Button B pressed?
+		bne.s	.applyMove           ; If yes, branch
+
+		btst	#btnR,d1                ; Right pressed?
+		bne.s	.fastRight          	; If done, branch
+		addq.w	#2,d0                	; Default is 2
+		bra.s	.checkLeft				; branch
+.fastRight:
+		addq.w	#4,d0                	; Makes even faster
+
+.checkLeft:
+		btst	#btnL,d1         	        ; Holding left?
+		beq.s	.applyMove     	     	   ; If not, go front
+		subq.w	#4,d0           	       ; If yes, branch
+
+.applyMove:
+		move.w	d0,(v_player+obX).w ; Save new position
+		cmpi.w	#$1C00,d0            ; Check the X limit
+		blo.s	Tit_ChkRegion        ; If less than $1C00, continues
+.saveX:
+		else
 		addq.w	#2,d0
+
 		move.w	d0,(v_player+obX).w			; move Sonic to the right
 		cmpi.w	#$1C00,d0					; has Sonic object passed $1C00 on x-axis?
+		endif
 		blo.s	Tit_EnterCheat				; if not, branch
 
 		move.b	#id_Sega,(v_gamemode).w		; go to Sega screen
