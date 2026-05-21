@@ -100,7 +100,7 @@ OPL_ClrList:
 ; ---------------------------------------------------------------------------
 
 OPL_Next:
-		tst.w	(v_limitbtm_target).w			; does this level y-wrap?
+		tst.w	(v_limittop).w			; does this level y-wrap? Was v_limitbtm_target; I think I bugged things
 		bpl.s	ObjMan_Main_NoYWrap		; if not, branch
 		lea		(ChkLoadObj_YWrap).l,a6	; set object loading routine
 		move.w	(v_screenposy).w,d3
