@@ -1,0 +1,236 @@
+{
+  "project_name": "S1 Fixed",
+  "rom_path": "s1Fixed.bin",
+  "palettes": [
+    "palette\\Cycle - GHZ.bin",
+	"palette\\Cycle - LZ Conveyor Belt Underwater.bin",
+	"palette\\Cycle - LZ Conveyor Belt.bin",
+	"palette\\Cycle - LZ UW Super Sonic.bin",
+	"palette\\Cycle - LZ Waterfall.bin",
+	"palette\\Cycle - MZ (Unused).bin",
+	"palette\\Cycle - SBZ 1.bin",
+	"palette\\Cycle - SBZ 2.bin",
+	"palette\\Cycle - SBZ 3.bin",
+	"palette\\Cycle - SBZ 4.bin",
+	"palette\\Cycle - SBZ 5.bin",
+	"palette\\Cycle - SBZ 6.bin",
+	"palette\\Cycle - SBZ 7.bin",
+	"palette\\Cycle - SBZ 8.bin",
+	"palette\\Cycle - SBZ 9.bin",
+	"palette\\Cycle - SBZ 10.bin",
+	"palette\\Cycle - SBZ3 UW Super Sonic.bin",
+    "palette\\Cycle - SBZ3 Waterfall.bin",
+	"palette\\Cycle - SLZ.bin",
+	"palette\\Cycle - Special Stage 1.bin",
+	"palette\\Cycle - Special Stage 2.bin",
+	"palette\\Cycle - Super Sonic - Proto.bin",
+	"palette\\Cycle - Super Sonic.bin",
+	"palette\\Cycle - SYZ1.bin",
+	"palette\\Cycle - SYZ2.bin",
+	"palette\\Ending - Forever.bin",
+	"palette\\Ending - Original.bin",
+	"palette\\Ending - SuperMod - Flowers.bin",
+	"palette\\Ending - SuperMod - Forever.bin",
+	"palette\\Ending - SuperMod - Original.bin",
+	"palette\\Level Select.bin",
+	"palette\\Level Select (S2).bin",
+	"palette\\Green Hill Zone - Forever.bin",
+    "palette\\Marble Zone.bin",
+    "palette\\Spring Yard Zone.bin",
+    "palette\\Labyrinth Zone.bin",
+    "palette\\Star Light Zone.bin",
+    "palette\\SBZ Act 1.bin",
+	"palette\\SBZ Act 2.bin",
+	"palette\\SBZ Act 3.bin",
+	"palette\\SBZ Act 3 - New.bin",
+	"palette\\SBZ Act 3 Underwater.bin",
+	"palette\\SBZ Act 3 Underwater - New.bin"
+  ],
+  "sprites": {
+    "Badnik - Ball Hog": {
+      "format": 2,
+      "vram_index": 0,
+      "palette_line": 0,
+      "palettes": [
+        {
+          "path": "palette\\Sonic.bin",
+          "length": 1
+        },
+        {
+          "path": "palette\\SBZ Act 1.bin",
+          "length": 3
+        }
+      ],
+      "art": [
+        {
+          "path": "artnem\\Enemy Ball Hog.nem",
+          "compression": "Nemesis",
+          "offset": 0,
+          "count": 0
+        }
+      ],
+      "mappings": {
+        "path": "_maps\\Ball Hog.asm",
+        "label": "Map_Hog"
+      },
+      "dplcs": {
+        "enabled": false,
+        "path": "",
+        "label": ""
+      }
+    },
+    "Badnik - Moto Bug": {
+      "format": 2,
+      "vram_index": 0,
+      "palette_line": 0,
+      "palettes": [
+        {
+          "path": "palette\\Sonic.bin",
+          "length": 1
+        },
+        {
+          "path": "palette\\Green Hill Zone - Forever.bin",
+          "length": 3
+        }
+      ],
+      "art": [
+        {
+          "path": "artnem\\Enemy Motobug.nem",
+          "compression": "Nemesis",
+          "offset": 0,
+          "count": 0
+        }
+      ],
+      "mappings": {
+        "path": "_maps\\Moto Bug.asm",
+        "label": "Map_Moto"
+      },
+      "dplcs": {
+        "enabled": false,
+        "path": "",
+        "label": ""
+      }
+    },
+    "Giant Ring": {
+      "format": 2,
+      "vram_index": 0,
+      "palette_line": 1,
+      "palettes": [
+        {
+          "path": "palette\\Sonic.bin",
+          "length": 1
+        },
+        {
+          "path": "palette\\Green Hill Zone - Forever.bin",
+          "length": 3
+        }
+      ],
+      "art": [
+        {
+          "path": "artunc\\Giant Ring.unc",
+          "compression": "Uncompressed",
+          "offset": 0,
+          "count": 0
+        }
+      ],
+      "mappings": {
+        "path": "_maps\\Giant Ring.asm",
+        "label": "Map_GRing"
+      },
+      "dplcs": {
+        "enabled": true,
+        "path": "_maps\\Giant Ring - DPLCs.asm",
+        "label": "GRingDynPLC"
+      }
+    },
+    "Lamppost": {
+      "format": 1,
+      "vram_index": 0,
+      "palettes": [
+        {
+          "path": "palette\\Sonic.bin",
+          "length": 1
+        },
+        {
+          "path": "palette\\Green Hill Zone - Forever.bin",
+          "length": 3
+        }
+      ],
+      "art": [
+        {
+          "path": "artnem\\Lamppost.nem",
+          "compression": "Nemesis",
+          "offset": 0,
+          "count": 0
+        }
+      ],
+      "mappings": {
+        "path": "_maps\\Lamppost.asm",
+        "label": "Map_Lamp"
+      },
+      "dplcs": {
+        "enabled": false,
+        "path": "",
+        "label": ""
+      },
+      "palette_line": 0
+    },
+    "Signpost": {
+      "format": 2,
+      "vram_index": 0,
+      "palette_line": 0,
+      "palettes": [
+        {
+          "path": "palette\\Sonic.bin",
+          "length": 1
+        }
+      ],
+      "art": [
+        {
+          "path": "artunc\\Signpost.unc",
+          "compression": "Uncompressed",
+          "offset": 0
+        }
+      ],
+      "mappings": {
+        "path": "_maps\\Signpost.asm",
+        "label": "Map_Sign"
+      },
+      "dplcs": {
+        "enabled": true,
+        "path": "_maps\\Signpost - DPLCs.asm",
+        "label": "SignpostDynPLC"
+      }
+    },
+    "Sonic": {
+      "format": 2,
+      "vram_index": 0,
+      "palette_line": 0,
+     "palettes": [
+        {
+          "path": "palette\\Sonic.bin",
+          "length": 1
+        }
+      ],
+      "art": [
+        {
+          "path": "artunc\\Sonic.unc",
+          "compression": "Uncompressed",
+          "offset": 0
+        }
+      ],
+      "mappings": {
+        "path": "_maps\\Sonic.asm",
+        "label": "Map_Sonic"
+      },
+      "dplcs": {
+        "enabled": true,
+        "path": "_maps\\Sonic - DPLCs.asm",
+        "label": "SonicDynPLC"
+      }
+    }
+  },
+  "settings": {
+    "assembler": "build.bat"
+  }
+}
