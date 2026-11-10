@@ -1,5 +1,5 @@
 ; ---------------------------------------------------------------------------
-; Object 11 - GHZ bridge - Ported from Sonic 2 (Credit: DeltaWooloo)
+; Object 11 - GHZ bridge - Ported from Sonic 2 (Credit: DeltaW)
 ; ---------------------------------------------------------------------------
 ; OST Constants
 obBridge_StartY:		equ objoff_30		; 2 bytes | starting Y-axis position
@@ -87,7 +87,7 @@ Bri_MakeSegment:
 	.loop:
 		move.w	d3,(a2)+					; sub?_x_pos
 		move.w	d2,(a2)+					; sub?_y_pos
-		move.w	#0,(a3)+					; sub?_mapframe
+		move.b	#0,(a3)+					; sub?_mapframe
 		addi.w	#$10,d3						; width of a log, x_pos for next log
 		dbf		d1,.loop					; repeat for d1 logs
 
