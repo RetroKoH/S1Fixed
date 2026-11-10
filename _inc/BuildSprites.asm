@@ -239,8 +239,9 @@ BuildSprites_MultiDraw:
 		move.b	(a5)+,d1						; get mapping frame
 		
 	; KoH workaround for the child sprite edge-wrapping glitch
-		cmpi.w	#$200,d3						; is the child sprite within X-range?
-		bhs.s	.nochildleft					; if not, advance to the next child
+	; We no longer need this, but I'll keep it here just in case... ;)
+;		cmpi.w	#$200,d3						; is the child sprite within X-range (512 px)?
+;		bhs.s	.nochildleft					; if not, advance to the next child
 	; workaround end
 		
 		add.w	d1,d1							; S2 BuildSprites Change .b > .w.
