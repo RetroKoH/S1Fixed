@@ -237,6 +237,12 @@ BuildSprites_MultiDraw:
 	; took out S2 hard-coded y-wrap check
 		moveq	#0,d1
 		move.b	(a5)+,d1						; get mapping frame
+		
+	; KoH workaround for the child sprite edge-wrapping glitch
+		cmpi.w	#$200,d3						; is the child sprite within X-range?
+		bhs.s	.nochildleft					; if not, advance to the next child
+	; workaround end
+		
 		add.w	d1,d1							; S2 BuildSprites Change .b > .w.
 		movea.l	obMap(a0),a1					; load mappings directly
 		adda.w	(a1,d1.w),a1
