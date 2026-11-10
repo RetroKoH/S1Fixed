@@ -102,7 +102,19 @@ Swing_Main:
         move.b	#1,(a3)+                        ; sub?_mapframe
         dbf		d1,.loop
 
-		move.b	#2,mainspr_mapframe(a1)			; set frame for anchor
+		move.b	#2,mainspr_mapframe(a1)			; short chains draw the anchor at the group center
+	; Slight adaptation to work more like Sonic 2 (I already fixed the wrap issue in BuildSprites).
+	; We can undo that workaround with the fixes to the swing here, and below.
+		cmpi.b	#5,mainspr_childsprites(a1)		; is the chain fewer than 5 links?
+		blo.s	.return							; if yes, stop here
+
+		; The fifth link is up to $50 pixels from the pivot (Include the SBZ anchor art).
+		move.b	#$60,mainspr_width(a1)
+		move.b	#$68,mainspr_height(a1)
+		move.b	#1,mainspr_mapframe(a1)			; draw the fifth link at the group center
+		move.b	#2,sub2_mapframe(a1)			; draw the anchor at the first child position
+
+	.return:
 		rts
 ; ===========================================================================
 
@@ -223,6 +235,24 @@ Swing_Move:
 		add.l	d1,d5
 		dbf		d6,.loop
 
+	; Slight adaptation to work more like Sonic 2 (I already fixed the wrap issue in BuildSprites).
+	; We can undo that workaround with the fixes to the swing here, and above.
+		cmpi.b	#5,mainspr_childsprites(a1)		; is the chain fewer than 5 links?
+		blo.s	.movePlatform					; if yes, skip this part
+
+		; sub6 is the fifth link. Draw it at the group center
+		move.w	sub6_x_pos(a1),obX(a1)
+		move.w	sub6_y_pos(a1),obY(a1)
+
+		; Shift links 1-4 into the vacated slot to make room for the anchor
+		move.l	sub5_x_pos(a1),sub6_x_pos(a1)
+		move.l	sub4_x_pos(a1),sub5_x_pos(a1)
+		move.l	sub3_x_pos(a1),sub4_x_pos(a1)
+		move.l	sub2_x_pos(a1),sub3_x_pos(a1)
+		move.w	d3,sub2_x_pos(a1)
+		move.w	d2,sub2_y_pos(a1)
+
+	.movePlatform:
 		; sonic 1 fix pos
 		asr.l	d0
 		asr.l	d1
