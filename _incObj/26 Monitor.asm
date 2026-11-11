@@ -60,12 +60,15 @@ Mon_Solid:	; Routine 2
 		cmpi.b	#9,d0					; is this a lightning shield?
 		bgt.s	.skipcheck
 	; if we reached this point, this is an elemental shield...
-		move.b	obSubtype(a0),obAnim(a0)
+		move.b	obSubtype(a0),d0
 		btst	#sta2ndShield,(v_player+obStatus2nd).w	; does Sonic have a shield?
-		bne.s	.skipcheck								; if yes, don't change it.
-		move.b	#4,obAnim(a0)							; reset to blue shield.
+		bne.s	.setAnim								; if yes, don't change it.
+		move.b	#4,d0									; reset to blue shield.
+	
+	.setAnim:
+		bsr.w	NewAnim
 
-.skipcheck:
+	.skipcheck:
 	endif	; Scaling Shields End
 
 		move.b	ob2ndRout(a0),d0		; is monitor set to fall?

@@ -29,7 +29,7 @@ Roll_ChkFloor:
 		rts	
 ; ===========================================================================
 
-Roll_Action:	; Routine 2
+Roll_Action:
 		moveq	#0,d0
 		move.b	ob2ndRout(a0),d0
 		move.w	RollAct_Index(pc,d0.w),d1

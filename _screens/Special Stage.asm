@@ -192,10 +192,12 @@ SS_FinishLoop:
 
 		lea		Art_TitCardSpecStage,a0												; load title card patterns
 		move.l	#((Art_TitCardSpecStage_End-Art_TitCardSpecStage)/tile_size)-1,d0	; # of tiles
+		
 		move.b	(v_emeralds).w,d2	; do you have ANY chaos emeralds?
 		beq.s	.load				; if not, branch
 		lea		Art_TitCardChaosEmlds,a0											; load title card patterns
 		move.l	#((Art_TitCardChaosEmlds_End-Art_TitCardChaosEmlds)/tile_size)-1,d0	; # of tiles
+		
 		cmpi.b	#emldCount,d2		; do you have all chaos	emeralds?
 		bne.s	.load				; if not, branch
 		lea		Art_TitCardSonic,a0													; load title card patterns
