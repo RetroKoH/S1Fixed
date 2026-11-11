@@ -190,7 +190,8 @@ Msl_FromBuzz:	; Routine 4
 		btst	#7,obStatus(a0)		; is high bit of status set? (it never is)
 		bne.s	.explode			; if yes, branch
 		move.b	#(colHarmful|colSz_6x6),obColType(a0)
-		move.b	#1,obAnim(a0)
+		moveq	#1,d0
+		bsr.w	NewAnim
 		bsr.w	SpeedToPos
 		move.w	(v_limitbtm).w,d0
 		addi.w	#$E0,d0
