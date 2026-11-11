@@ -3297,7 +3297,6 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 
 
 		include	"_incObj/2F MZ Large Grassy Platforms.asm"
-		; 35 will be the sinking platform
 		include	"_incObj/-- Burning Grass.asm"
 		include	"_anim/Burning Grass.asm"
 		include	"_incObj/2E MZ Sinking Grassy Platforms.asm"
