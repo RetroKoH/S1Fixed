@@ -6,6 +6,9 @@ obSpin_WaitTime:		equ objoff_30		; 2 bytes | time until change
 obSpin_WaitMaster:		equ objoff_32		; 2 bytes | time between changes
 obSpin_SpinFlag:		equ objoff_34		; 1 byte  | 1 = switch between animations, spinning platforms only
 obSpin_TimeSync:		equ objoff_36		; 2 bytes | bitmask used to synchronise timing: subtype $8x = $3F; subtype $9x = $7F
+
+; $10 and above should spin every 128 frames, and everything below $10 should spin every 64 frames.
+; The lower nybble (0-F) dictates the timing delay.
 ; ---------------------------------------------------------------------------
 
 SpinPlatform:
@@ -18,7 +21,16 @@ SpinPlatform:
 
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0			; load subtype for repeated use
-		move.w	d0,d1
+		move.w	d0,d1						; save the full subtype in d1
+		
+	; Set the time sync from the high nybble
+		andi.w	#$70,d1						; read high nybble (e.g. $80/$90), ignore high bit ($00/$10)
+		addi.w	#$10,d1						; add $10 ($10/$20)
+		lsl.w	#2,d1						; multiply by 4 ($40/$80)
+		subq.w	#1,d1						; subtract 1 ($3F/$7F)
+		move.w	d1,obSpin_TimeSync(a0)
+
+	; Set wait time to 6 frames * low nybble value
 		andi.w	#$F,d0						; read only the	low nybble
 		add.w	d0,d0						; multiply by 6
 		move.w	d0,d1						; Optimization from S1 in S.C.E.
@@ -26,11 +38,6 @@ SpinPlatform:
 		add.w	d1,d0
 		move.w	d0,obSpin_WaitTime(a0)
 		move.w	d0,obSpin_WaitMaster(a0)	; set time delay
-		andi.w	#$70,d1						; read high nybble (e.g. $80/$90), ignore high bit ($00/$10)
-		addi.w	#$10,d1						; add $10 ($10/$20)
-		lsl.w	#2,d1						; multiply by 4 ($40/$80)
-		subq.w	#1,d1						; subtract 1 ($3F/$7F)
-		move.w	d1,obSpin_TimeSync(a0)
 ; ---------------------------------------------------------------------------
 
 Spin_Action:

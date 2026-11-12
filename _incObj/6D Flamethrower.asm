@@ -78,7 +78,7 @@ Flame_Off:		; Routine 4
 Flame_Off2:		; Routine 6
 		subq.w	#1,obFlame_WaitTime(a0)			; decrement timer
 		bpl.w	RememberState					; if time remains, branch
-		move.w	obFlame_OffTime(a0),obFlame_WaitTime(a0)	; begin pause time
+		move.w	obFlame_OnTime(a0),obFlame_WaitTime(a0)	; begin pause time
 		bchg	#0,obAnim(a0)					; switch between on/off animations
 		subq.b	#4,obRoutine(a0)				; -> Flame_On
 		tst.b	obRender(a0)
