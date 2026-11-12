@@ -104,7 +104,6 @@ standards:	macro
 	dbug	Map_Harp,		id_Harpoon,			$10,	0,		make_art_tile(ArtTile_LZ_Harpoon,0,0)			; Vertical Harpoon
 	dbug	Map_Harp,		id_Harpoon,			$12,	3,		make_art_tile(ArtTile_LZ_Harpoon,0,0)			; Horizontal Harpoon
 	dbug	Map_Gar,		id_Gargoyle,		0,		0,		make_art_tile(ArtTile_LZ_Gargoyle,2,0)			; Gargoyle
-	dbug	Map_LConv,		id_LabyrinthConvey,	$7F,	0,		make_art_tile(ArtTile_LZ_Conveyor_Wheel,0,0)	; Conveyor Belt Wheel
 	dbug	Map_SBall,		id_SpikeBall,		$D5,	0,		make_art_tile(ArtTile_SYZ_Spikeball_Chain,0,0)	; Chained Spikeball (5 links, speed: 3, counter-clockwise)
 	dbug	Map_Flap,		id_FlapDoor,		2,		0,		make_art_tile(ArtTile_LZ_Flapping_Door,2,0)		; Flapping Door
 	dbug	Map_But,		id_Button,			0,		0,		make_art_tile(ArtTile_Button,0,0)				; Button
@@ -233,9 +232,9 @@ standards:	macro
 	dbug	Map_MBlock,		id_MovingBlock,		$39,	3,		make_art_tile(ArtTile_SBZ_Moving_Block_Long,2,0)	; Red Sideways Moving Platform (Moves into the wall when stood upon)
 	dbug	Map_ADoor,		id_AutoDoor,		0,		0,		make_art_tile(ArtTile_SBZ_Door,2,0)					; One Way Door
 ; New Holowall object?
-	dbug	Map_Spin,		id_SpinPlatform,	$83,	0,		make_art_tile(ArtTile_SBZ_Spinning_Platform,0,0)	; Spinning Solid Platform
+	dbug	Map_Spin,		id_SpinPlatform,	3,		0,		make_art_tile(ArtTile_SBZ_Spinning_Platform,0,0)	; Spinning Solid Platform
 	dbug	Map_VanP,		id_VanishPlatform,	0,		0,		make_art_tile(ArtTile_SBZ_Vanishing_Block,2,0)		; Vanishing Platform
-	dbug	Map_Trap,		id_SpinPlatform,	3,		0,		make_art_tile(ArtTile_SBZ_Trap_Door,2,0)			; Flapping Trap Door
+	dbug	Map_Trap,		id_Trapdoor,		3,		0,		make_art_tile(ArtTile_SBZ_Trap_Door,2,0)			; Flapping Trap Door
 	dbug	Map_Flame,		id_Flamethrower,	$64,	0,		make_art_tile(ArtTile_SBZ_Flamethrower,0,1)			; Flamethrower (Broken Pipe)
 	dbug	Map_Flame,		id_Flamethrower,	$64,	$B,		make_art_tile(ArtTile_SBZ_Flamethrower,0,1)			; Flamethrower (Proper)
 	dbug	Map_BBall,		id_SwingingPlatform, 7,		2,		make_art_tile(ArtTile_SYZ_Big_Spikeball,2,0)		; Swinging Spikeball
