@@ -26,15 +26,21 @@ Bom_Wait:
 		bchg	#0,obFrame(a0)					; swap frames to animate
 
 	.wait:
-		bsr.w	Bom_ChkDistToSonic
 		subq.w	#1,obBomb_FuseTime(a0)			; subtract 1 from time delay
 		bpl.s	Bom_ChkDistToSonic				; if time remains, branch
+		
+		bsr.w	Bom_ChkDistToSonic
+		cmp_addr	#Bom_Wait,obAddr(a0),d0
+		bne.s	.done							; the bomb armed itself or was culled
+		
 		obj_addr	#Bom_Walk
 		clr.w	obAniFrame(a0)					; reset animation
 		move.w	#1535,obBomb_FuseTime(a0)		; set time delay to 25.5 seconds
 		bchg	#staFlipX,obStatus(a0)
 		neg.w	obVelX(a0)						; change direction
-		bra.s	Bom_ChkDistToSonic
+
+	.done:
+		rts
 ; ===========================================================================
 
 Bom_Walk:
