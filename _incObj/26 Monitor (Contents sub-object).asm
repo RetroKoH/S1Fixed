@@ -7,20 +7,7 @@
 ; ---------------------------------------------------------------------------
 
 PowerUp:
-	; RetroKoH Object Routine Optimization
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		jmp		Pow_Index(pc,d0.w)
-; ===========================================================================
-Pow_Index:
-		bra.s	Pow_Main
-		bra.s	Pow_Move
-		bra.s	Pow_Delete
-	; Object Routine Optimization End
-; ===========================================================================
-
-Pow_Main:	; Routine 0
-		addq.b	#2,obRoutine(a0)
+		_move.l	#Pow_Move,obAddr(a0)
 		move.w	#make_art_tile(ArtTile_Monitor,0,0),obGfx(a0)
 		move.b	#$24,obRender(a0)
 		move.w	#priority3,obPriority(a0)	; RetroKoH/Devon S3K+ Priority Manager
@@ -41,7 +28,7 @@ Pow_Main:	; Routine 0
 		addq.w	#2,a1			; S2 BuildSprites Change 1 > 2
 		move.l	a1,obMap(a0)
 
-Pow_Move:	; Routine 2
+Pow_Move:
 		tst.w	obVelY(a0)		; is object moving?
 		bpl.w	Pow_Checks		; if not, branch
 		bsr.w	SpeedToPos_YOnly
@@ -49,14 +36,14 @@ Pow_Move:	; Routine 2
 		bra.w	DisplaySprite	; Clownacy DisplaySprite Fix (Alt method by RetroKoH based on S2)
 ; ===========================================================================
 
-Pow_Delete:	; Routine 4
+Pow_Delete:
 		subq.b	#1,obTimeFrame(a0)
 		bmi.w	DeleteObject	; delete after half a second
 		bra.w	DisplaySprite	; Clownacy DisplaySprite Fix (Alt method by RetroKoH based on S2)
 ; ===========================================================================
 
 Pow_Checks:
-		addq.b	#2,obRoutine(a0)
+		obj_addr	#Pow_Delete
 		move.b	#29,obTimeFrame(a0) ; display icon for half a second
 
 	; RetroKoH Powerup Optimization
