@@ -322,13 +322,16 @@ BuildRings_QuickExit:
 
 BuildRings:
 		movea.l	(v_ringstart_addr_ROM).w,a0
-		move.l	(v_ringend_addr_ROM).w,d7
-		sub.l	a0,d7							; are there any rings on-screen?
+		move.l	(v_ringend_addr_ROM).w,d4
+		sub.l	a0,d4							; are there any rings on-screen?
 		beq.s	BuildRings_QuickExit			; if there aren't, branch and return
 		movea.w	(v_ringstart_addr_RAM).w,a4		; load ring status start address
 		lea		(v_screenposx).w,a3				; load camera x position
 
 	.loop:
+		tst.w	d7
+		bmi.s	BuildRings_QuickExit
+
 		move.w	(a4)+,d1			; has this ring been consumed? (Store frame value)
 		bmi.s	.noren				; if it has, branch
 		move.w	(a0),d3				; get ring X pos
@@ -356,20 +359,20 @@ BuildRings:
 ; you can just directly subtract 8 from them and you won't get any problems.
 
 		subq.w	#8,d2				; get Y pos - Y offset (Optimized by Devon)
-		move.w	d2,(a2)+			; set Y pos
+		move.w	d2,(a6)+			; set Y pos
 
-		move.b	#5,(a2)+			; set size (2x2)
-		addq.b	#1,d5
-		move.b	d5,(a2)+			; set link field
+		move.b	#5,(a6)+			; set size (2x2)
+		addq.w	#1,a6
+		subq.w	#1,d7
 
-		move.w	CMap_Ring(pc,d1.w),(a2)+	; set art tile and flags
+		move.w	CMap_Ring(pc,d1.w),(a6)+	; set art tile and flags
 
 		subq.w	#8,d3				; get X pos - X offset (Optimized by Devon)
-		move.w	d3,(a2)+			; set X pos
+		move.w	d3,(a6)+			; set X pos
 
 	.noren:
 		addq.w	#4,a0				; load next ring from ROM
-		subq.w	#4,d7				; are there any rings left?
+		subq.w	#4,d4				; are there any rings left?
 		bne.w	.loop				; if there are, loop
 		rts
 ; ===========================================================================

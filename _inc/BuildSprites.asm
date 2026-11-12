@@ -1,448 +1,615 @@
 ; ---------------------------------------------------------------------------
 ; Subroutine to	convert	mappings (etc) to proper Megadrive sprites
+; Ported from S3K by DeltaW
 ; ---------------------------------------------------------------------------
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
+Init_SpriteTable:
+		lea		(v_spritetablebuffer).w,a1
+		moveq	#0,d0
+		moveq	#1,d1
+		moveq	#$4F,d2
+
+.loop:
+		move.w	d0,(a1)
+		move.b	d1,3(a1)
+		addq.w	#1,d1
+		addq.w	#8,a1
+		dbf		d2,.loop
+		move.b	d0,-5(a1)
+		rts
+
+; ---------------------------------------------------------------------------
+
+
 BuildSprites:
-		lea		(v_spritetablebuffer).w,a2	; set address for sprite table
-		moveq	#0,d5
-		moveq	#0,d4						; RetroKoH S3K Rings Manager
+		bsr.s	BuildSprites_Objects
+
+BuildSprites_Finish:
+		move.w	d7,d6
+		bmi.s	loc_1AE18
+		moveq	#0,d0
+
+loc_1AE10:
+		move.w	d0,(a6)
+		addq.w	#8,a6
+		dbf		d7,loc_1AE10
+
+loc_1AE18:
+		subi.w	#$4F,d6
+		neg.w	d6
+		move.b	d6,(v_spritecount).w
+		rts
+
+BuildSprites_Objects:
+		moveq	#$4F,d7
+		moveq	#0,d6
+		lea		(v_spritetablebuffer).w,a6
+		lea		(v_screenposx).w,a3
 	; RetroKoH S2 HUD Manager
 		tst.b	(f_levelstarted).w
 		ble.s	.noHUD						; value is negative during the credits sequence
 		bsr.w	BuildHUD					; build during gameplay and demos, not during the credits
-
-	.noHUD:
 	; S2 HUD Manager End
-		lea		(v_spritequeue).w,a4
-		moveq	#7,d7
 
-	.priorityLoop:
+.noHUD:
+		lea		(v_spritequeue).w,a5
+
+loc_1AD4A:
 	; RetroKoH S3K Rings Manager
-		cmpi.b	#$07-$02,d7				; Only draw rings at a specific priority.
+		cmpa.l	#priority2,a5				; Only draw rings at a specific priority.
 		bne.s	.cont
-		tst.b	(f_levelstarted).w		; Skip drawing rings if flag is not set.
+		tst.b	(f_levelstarted).w			; Skip drawing rings if flag is not set.
 		beq.s	.cont
-		movem.l	d7/a4,-(sp)
-		jsr		BuildRings
-		movem.l	(sp)+,d7/a4
+		bsr.w	BuildRings
 
-	.cont:
+.cont:
 	; S3K Rings Manager End
-		tst.w	(a4)					; are there objects left to draw?
-		beq.w	.nextPriority			; if not, branch
-		moveq	#2,d6
+		tst.w	(a5)
+		beq.w	BuildSprites_NextLevel
+		lea		2(a5),a4
 
-	.objectLoop:
-		movea.w	(a4,d6.w),a0			; load object ID
+loc_1AD54:
+		movea.w	(a4)+,a0	; a0=object
+		tst.l	obAddr(a0)			; is this object slot occupied?
+		beq.w	BuildSprites_NextObj	; if not, check next one
+		andi.b	#$7F,obRender(a0)	; clear on-screen flag
+		move.b	obRender(a0),d6
+		move.w	obX(a0),d0
+		move.w	obY(a0),d1
+		btst	#renMultiDraw,d6		; is the multi-draw flag set?
+		bne.w	loc_1AE58	; if it is, branch
+		btst	#renRelative,d6		; is this to be positioned by screen coordinates?
+		beq.s	BuildDrawScreenY	; if it is, branch
+		moveq	#0,d2
+		move.b	obDispWid(a0),d2
+		sub.w	(a3),d0
+		move.w	d0,d3
+		add.w	d2,d3		; is the object right edge to the left of the screen?
+		bmi.w	BuildSprites_NextObj	; if it is, branch
+		move.w	d0,d3
+		sub.w	d2,d3
+		cmpi.w	#320,d3
+		bge.s	BuildSprites_NextObj	; right edge out of bounds
+		addi.w	#128,d0		; VDP sprites start at 128px
+		sub.w	4(a3),d1
+		btst	#renUseHeight,d6
+		beq.s	BuildAssumeHeight
+		move.b	obHeight(a0),d2
+		add.w	d2,d1
+		move.w	d2,d3
+		add.w	d2,d2
+		addi.w	#224,d2
+		cmp.w	d2,d1
+		bhs.s	BuildSprites_NextObj	; if the object is below the screen
+		addi.w	#128,d1
+		sub.w	d3,d1
+		bra.s	loc_1ADB2
 
-	; These are sanity checks to detect invalid objects which should not
-	; have been queued for display. They deliberately crash the console
-	; if they detect an invalid object.
-		tst.l	obAddr(a0)				; if null, branch
-		beq.w	.skipObject				; was .crash
+BuildDrawScreenY:
+		move.w	obScreenY(a0),d1
+		bra.s	loc_1ADB2
+
+BuildAssumeHeight:
+		addi.w	#$80,d1
+		cmpi.w	#$60,d1
+		blo.s	BuildSprites_NextObj
+		cmpi.w	#$180,d1
+		bhs.s	BuildSprites_NextObj
+
+loc_1ADB2:
+		ori.b	#$80,obRender(a0)	; set on-screen flag
+		tst.w	d7
+		bmi.s	BuildSprites_NextObj
 		tst.l	obMap(a0)
-		beq.w	.skipObject				; (to be removed) jump to crash if loading a null pointer
-
-		bclr	#renVisible,obRender(a0)	; set as not visible
-		move.b	obRender(a0),d0
-		move.b	d0,d4
-	; Devon Subsprites
-		btst	#renMultiDraw,d0		; is the multi-draw flag set?
-		bne.w	BuildSprites_MultiDraw	; if it is, branch
-	; Devon Subsprites End
-		andi.w	#$C,d0 					; is this to be positioned by screen coordinates (checks renRelative and renBGAlign)?
-		beq.s	.screenCoords			; if yes, branch
-
-		lea		(v_screenposx).w,a1
-	; check object bounds
-		moveq	#0,d0
-		move.b	obDispWid(a0),d0
-		move.w	obX(a0),d3
-		sub.w	(a1),d3				; d3 = screen x-pos
-		move.w	d3,d1
-		add.w	d0,d1				; is the object right edge to the left of the screen?
-		bmi.w	.skipObject			; if it is, branch
-		move.w	d3,d1
-		sub.w	d0,d1
-		cmpi.w	#320,d1				; is the object left edge to the right of the screen?
-		bge.s	.skipObject			; if it is, branch
-		addi.w	#128,d3				; VDP sprites start at 128px
-		btst	#renUseHeight,d4	; is height flag set?
-		beq.s	.assumeHeight		; if not, branch and assume object's height
-		moveq	#0,d0
-		move.b	obHeight(a0),d0
-		move.w	obY(a0),d2
-		sub.w	4(a1),d2			; d2 = screen y-pos
-		move.w	d2,d1
-		add.w	d0,d1
-		bmi.s	.skipObject			; if the object is above the screen
-		move.w	d2,d1
-		sub.w	d0,d1
-		cmpi.w	#224,d1
-		bge.s	.skipObject
-		addi.w	#128,d2				; if the object is below the screen
-		bra.s	.drawObject
-; ===========================================================================
-
-	.screenCoords:
-		move.w	obScreenY(a0),d2	; special variable for screen Y
-		move.w	obX(a0),d3			; x-pos, without sub-pixels
-		bra.s	.drawObject
-; ===========================================================================
-
-	.assumeHeight:
-		move.w	obY(a0),d2
-		sub.w	4(a1),d2			; subtract screen y-pos
-		addi.w	#128,d2
-	; took out S2 hard-coded y-wrap check
-		cmpi.w	#-32+128,d2			; assume height to be 32 pixels
-		blo.s	.skipObject
-		cmpi.w	#32+128+224,d2
-		bhs.s	.skipObject
-
-	.drawObject:
+		beq.w	BuildSprites_NextObj
 		movea.l	obMap(a0),a1
-		moveq	#0,d1
-		btst	#renRawMap,d4		; is raw mappings flag on?
-		bne.s	.drawFrame			; if yes, branch to draw a single piece (most likely used for fragments)
-		move.b	obFrame(a0),d1
-		add.w	d1,d1				; changed to .w (we want more than 7F sprites) -- MarkeyJester Art Limit Extensions
-		adda.w	(a1,d1.w),a1		; get mappings frame address
-		move.w	(a1)+,d1			; number of sprite pieces (S2 BuildSprites: loading .w, so no need to clear d1)
-		subq.w	#1,d1				; S2 BuildSprites Change .b > .w.
-		bmi.s	.setVisible			; if there are 0 pieces, branch
+		moveq	#0,d4
+		btst	#renRawMap,d6		; is the static mappings flag set?
+		bne.s	loc_1ADD8	; if it is, branch
+		move.b	obFrame(a0),d4
+		add.w	d4,d4
+		adda.w	(a1,d4.w),a1
+		move.w	(a1)+,d4
+		subq.w	#1,d4		; get number of pieces
+		bmi.s	BuildSprites_NextObj	; if there are 0 pieces, branch
+; ===========================================================================
+loc_1ADD8:
+		move.w	obGfx(a0),d5
+		jsr		sub_1AF6C(pc)
 
-	.drawFrame:
-		bsr.w	BuildSpr_Draw		; write data from sprite pieces to buffer
+BuildSprites_NextObj:
+		subq.w	#2,(a5)		; decrement object count
+		bne.w	loc_1AD54	; if there are objects left, repeat
 
-	.setVisible:
-		bset	#renVisible,obRender(a0)	; set object as visible
-
-	.skipObject:
-		addq.w	#2,d6				; load next object
-		subq.w	#2,(a4)				; decrement object count
-		bne.w	.objectLoop			; if there are objects left, repeat
-
-	.nextPriority:
-		lea		$80(a4),a4				; load next priority level
-		dbf		d7,.priorityLoop		; loop
-		move.b	d5,(v_spritecount).w	; Terminate the sprite list.
-	; If the sprite list is full, then set the link field of the last
-	; entry to 0. Otherwise, push the next sprite offscreen and set its
-	; link field to 0. You might be thinking why this doesn't just do the
-	; first one no matter what. Well, think about what if the sprite list
-	; was empty: then it would access data before the start of the list.
-		cmpi.b	#80,d5			; was the sprite limit reached (80 sprites)?
-		beq.s	.spriteLimit	; if it was, branch
-		clr.l	(a2)			; set link field to 0
+BuildSprites_NextLevel:
+		lea		$80(a5),a5	; load next priority level
+		cmpa.l	#v_spritequeue+(8*$80),a5
+		blo.w	loc_1AD4A
 		rts
+; ---------------------------------------------------------------------------
 
-	.spriteLimit:
-		clr.b	-5(a2)			; set last sprite link
-		rts	
-; End of function BuildSprites
-; ===========================================================================
-; To be removed
-;.crash:
-	; For helping detect when an object tries to display with a blank ID
-	; or mappings pointer. The latter is an issue that plagues Sonic 1.
-	; Can remove once all delete-and-display bugs are taken care of.
-;	move.w	(1).w,d0	; causes a crash because of the word operation at an odd address
-;	bra.s	.skipObject
-; ===========================================================================
-
-; Devon Subsprites
-BuildSprites_MultiDraw:
-		move.l	a4,-(sp)
-		lea		(v_screenposx).w,a4
-		movea.w	obGfx(a0),a3
-		moveq	#0,d0
+loc_1AE58:
+		btst	#renRelative,d6		; is this to be positioned by screen coordinates?
+		bne.s	loc_1AEA2	; if it is, branch
+		moveq	#0,d2
 
 		; check if object is within X bounds
-		move.b	mainspr_width(a0),d0			; load pixel width
-		move.w	obX(a0),d3
-		sub.w	(a4),d3
-		move.w	d3,d1
-		add.w	d0,d1							; is the object's right edge to the left of the screen?
-		bmi.w	.skipObject	; if yes, branch
-		move.w	d3,d1
-		sub.w	d0,d1
-		cmpi.w	#320,d1							; is the object's left edge to the right of the screen?
-		bge.w	.skipObject	; if yes, branch
-		addi.w	#128,d3
+		move.b	mainspr_width(a0),d2
+		subi.w	#128,d0
+		move.w	d0,d3
+		add.w	d2,d3
+		bmi.w	BuildSprites_NextObj
+		move.w	d0,d3
+		sub.w	d2,d3
+		cmpi.w	#320,d3
+		bge.w	BuildSprites_NextObj
+		addi.w	#128,d0
 
 		; check if object is within Y bounds
-		btst	#renUseHeight,d4				; is the accurate Y check flag set?
-		beq.s	.assumeHeight					; if not, branch
-		moveq	#0,d0
-		move.b	mainspr_height(a0),d0			; load pixel height
-		move.w	obY(a0),d2
-		sub.w	4(a4),d2						; subtract screen y-pos
-		move.w	d2,d1
-		add.w	d0,d1							; is the object above the screen?
-		bmi.w	.skipObject	; if yes, branch
-		move.w	d2,d1
-		sub.w	d0,d1
-		cmpi.w	#224,d1							; is the object below the screen?
-		bge.w	.skipObject	; if yes, branch
-		addi.w	#128,d2
-		bra.s	.drawSprite
+		move.b	mainspr_height(a0),d2
+		subi.w	#128,d1
+		move.w	d1,d3
+		add.w	d2,d3
+		bmi.w	BuildSprites_NextObj
+		move.w	d1,d3
+		sub.w	d2,d3
+		cmpi.w	#224,d3
+		bge.w	BuildSprites_NextObj
+		addi.w	#128,d1
+		bra.s	loc_1AEE4
+; ---------------------------------------------------------------------------
 
-	.assumeHeight:
-	; this doesn't take into account the height of the sprite/object when checking
-	; if it's onscreen vertically or not.
-		move.w	obY(a0),d2
-		sub.w	4(a4),d2						; subtract screen y-pos
-		addi.w	#128,d2
-	; took out S2 hard-coded y-wrap check
-		cmpi.w	#-32+128,d2						; assume height to be 32 pixels
-		blo.s	.skipObject
-		cmpi.w	#32+128+224,d2
-		bhs.s	.skipObject
+loc_1AEA2:
+		moveq	#0,d2
+		move.b	mainspr_width(a0),d2
+		sub.w	(a3),d0
+		move.w	d0,d3
+		add.w	d2,d3
+		bmi.w	BuildSprites_NextObj
+		move.w	d0,d3
+		sub.w	d2,d3
+		cmpi.w	#$140,d3
+		bge.w	BuildSprites_NextObj
+		addi.w	#$80,d0
+		sub.w	4(a3),d1
+		btst	#renUseHeight,d6
+		beq.s	BuildMultiAssumeHeight
+		moveq	#0,d2
+		move.b	mainspr_height(a0),d2
+		add.w	d2,d1
+		move.w	d2,d3
+		add.w	d2,d2
+		addi.w	#$E0,d2
+		cmp.w	d2,d1
+		bhs.w	BuildSprites_NextObj
+		addi.w	#$80,d1
+		sub.w	d3,d1
+		bra.s	loc_1AEE4
 
-	.drawSprite:
-		moveq	#0,d1
-		move.b	mainspr_mapframe(a0),d1			; get current frame
-		bmi.s	.noparenttodraw					; certain objects do NOT want the main frame to render (KoH Edit)
-		add.w	d1,d1							; S2 BuildSprites Change .b > .w.
-		movea.l	obMap(a0),a1					; load mappings directly
-		adda.w	(a1,d1.w),a1
-		move.w	(a1)+,d1						; S2 BuildSprites Change .b > .w.
-		subq.w	#1,d1							; get number of pieces ; S2 BuildSprites Change .b > .w.
-		bmi.s	.noparenttodraw					; if there are 0 pieces, branch
-		move.w	d4,-(sp)
-		bsr.w	ChkDrawSprite					; draw the sprite
-		move.w	(sp)+,d4
+BuildMultiAssumeHeight:
+		addi.w	#$80,d1
+		cmpi.w	#$60,d1
+		blo.w	BuildSprites_NextObj
+		cmpi.w	#$180,d1
+		bhs.w	BuildSprites_NextObj
 
-	.noparenttodraw:
-		bset	#renVisible,obRender(a0)		; set onscreen flag
-		lea		subspr_frames(a0),a5
-		lea		subspr_posdata(a0),a6			; address of first child sprite info
-		moveq	#0,d0
-		move.b	mainspr_childsprites(a0),d0		; get child sprite count
-		subq.w	#1,d0							; if there are 0, go to next object
-		bcs.s	.skipObject
+loc_1AEE4:
+		ori.b	#$80,obRender(a0)
+		tst.w	d7
+		bmi.w	BuildSprites_NextObj
+		move.w	obGfx(a0),d5
+		tst.l	obMap(a0)
+		beq.w	BuildSprites_NextObj
+		movea.l	obMap(a0),a2
+		moveq	#0,d4
+		move.b	mainspr_mapframe(a0),d4
+		bmi.s	loc_1AF1C
+		add.w	d4,d4
+		lea		(a2),a1
+		adda.w	(a1,d4.w),a1
+		move.w	(a1)+,d4
+		subq.w	#1,d4
+		bmi.s	loc_1AF1C
+		move.w	d6,d3
+		jsr		sub_1B070(pc)
+		move.w	d3,d6
+		tst.w	d7
+		bmi.w	BuildSprites_NextObj
 
-	.drawchildloop:
-		swap	d0
-		move.w	(a6)+,d3						; get X pos
-		sub.w	(a4),d3							; subtract the screen's x position
-		addi.w	#128,d3
-		move.w	(a6)+,d2						; get Y pos
-		sub.w	4(a4),d2						; subtract the screen's y position
-		addi.w	#128,d2
-	; took out S2 hard-coded y-wrap check
-		moveq	#0,d1
-		move.b	(a5)+,d1						; get mapping frame
-		
-	; KoH workaround for the child sprite edge-wrapping glitch
-	; We no longer need this, but I'll keep it here just in case... ;)
-;		cmpi.w	#$200,d3						; is the child sprite within X-range (512 px)?
-;		bhs.s	.nochildleft					; if not, advance to the next child
-	; workaround end
-		
-		add.w	d1,d1							; S2 BuildSprites Change .b > .w.
-		movea.l	obMap(a0),a1					; load mappings directly
-		adda.w	(a1,d1.w),a1
-		move.w	(a1)+,d1						; S2 BuildSprites Change .b > .w.
-		subq.w	#1,d1							; get number of pieces ; S2 BuildSprites Change .b > .w.
-		bmi.s	.nochildleft					; if there are 0 pieces, branch
-		move.w	d4,-(sp)
-		bsr.s	ChkDrawSprite					; BuildSpr_Draw
-		move.w	(sp)+,d4
+loc_1AF1C:
+		moveq	#0,d3
+		move.b	mainspr_childsprites(a0),d3
+		subq.w	#1,d3
+		bcs.w	BuildSprites_NextObj
+		move.l	a4,-(sp)
+		lea		subspr_frames(a0),a4
+		lea		subspr_posdata(a0),a0
 
-.nochildleft:
-		swap	d0
-		dbf		d0,.drawchildloop				; repeat for number of child sprites
+loc_1AF2A:
+		move.w	(a0)+,d0
+		move.w	(a0)+,d1
+		btst	#renRelative,d6
+		beq.s	loc_1AF46
+		sub.w	(a3),d0
+		addi.w	#128,d0
+		sub.w	4(a3),d1
+		addi.w	#128,d1
 
-; loc_16804:
-.skipObject:
+loc_1AF46:
+		moveq	#0,d4
+		move.b	(a4)+,d4
+		add.w	d4,d4
+		lea		(a2),a1
+		adda.w	(a1,d4.w),a1
+		move.w	(a1)+,d4
+		subq.w	#1,d4
+		bmi.s	loc_1AF62
+		move.w	d6,-(sp)
+		jsr		sub_1B070(pc)
+
+		move.w	(sp)+,d6
+
+loc_1AF62:
+		tst.w	d7
+		dbmi	d3,loc_1AF2A
 		movea.l	(sp)+,a4
-		bra.w	BuildSprites.skipObject
-; End of function BuildSprites_MultiDraw
+		bra.w	BuildSprites_NextObj
+; End of function BuildSprites
 
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+; =============== S U B R O U T I N E =======================================
 
 
-BuildSpr_Draw: ; sub_D750
-		movea.w	obGfx(a0),a3
-
-ChkDrawSprite:		; New label -- Devon Subsprites
-		btst	#renXFlip,d4	; is the sprite to be X-flipped?
-		bne.s	BuildSpr_FlipX	; if yes, branch
-		btst	#renYFlip,d4	; is the sprite to be Y-flipped?
-		bne.w	BuildSpr_FlipY	; if yes, branch
-; End of function BuildSpr_Draw
-
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
+sub_1AF6C:
+		lsr.b	#1,d6
+		blo.s	loc_1AF9E
+		lsr.b	#1,d6
+		blo.w	loc_1B038
 
 BuildSpr_Normal:
-		cmpi.b	#80,d5		; has the sprite limit been reached?
-		bhs.s	.return		; if yes, branch
-		move.b	(a1)+,d0	; get y-offset
-		ext.w	d0
-		add.w	d2,d0		; add y-position
-		move.w	d0,(a2)+	; write to buffer
-		move.b	(a1)+,(a2)+	; write sprite size
-		addq.b	#1,d5		; increase sprite counter
-		move.b	d5,(a2)+	; set as sprite link
-		move.w	(a1)+,d0	; get art tile ; S2 BuildSprites .b > .w
-		add.w	a3,d0		; add art tile offset
-		move.w	d0,(a2)+	; set art tile and flags
-		addq.w	#2,a1		; S2 BuildSprites Addition
-		move.w	(a1)+,d0	; get x-offset ; S2 BuildSprites .b > .w
-		add.w	d3,d0		; add x-position
-		andi.w	#$1FF,d0	; keep within 512px
-		bne.s	.writeX
-		addq.w	#1,d0		; avoid activating sprite masking
+		move.b	(a1)+,d2
+		ext.w	d2
+		add.w	d1,d2
+		move.w	d2,(a6)+
+		move.b	(a1)+,(a6)+
+		addq.w	#1,a6
+		move.w	(a1)+,d2
+		add.w	d5,d2
+		move.w	d2,(a6)+
+		move.w	(a1)+,d2
+		add.w	d0,d2
+		andi.w	#$1FF,d2
+		bne.s	loc_1AF94
+		addq.w	#1,d2
 
-	.writeX:
-		move.w	d0,(a2)+			; write to buffer
-		dbf		d1,BuildSpr_Normal	; process next sprite piece
-
-	.return:
-		rts	
-; End of function BuildSpr_Normal
-
-; ===========================================================================
-
-BuildSpr_FlipX:
-		btst	#renYFlip,d4		; is object also y-flipped?
-		bne.w	BuildSpr_FlipXY	; if yes, branch
-
-	.loop:
-		cmpi.b	#80,d5		; check sprite limit
-		bhs.s	.return
-		move.b	(a1)+,d0	; y position
-		ext.w	d0
-		add.w	d2,d0
-		move.w	d0,(a2)+
-		move.b	(a1)+,d4	; size
-		move.b	d4,(a2)+	
-		addq.b	#1,d5		; link
-		move.b	d5,(a2)+
-		move.w	(a1)+,d0	; art tile ; S2 BuildSprites .b > .w
-		add.w	a3,d0
-		eori.w	#$800,d0	; toggle flip-x in VDP
-		move.w	d0,(a2)+	; write to buffer
-		addq.w	#2,a1
-		move.w	(a1)+,d0	; get x-offset ; S2 BuildSprites .b > .w
-		neg.w	d0			; negate it
-		move.b	CellOffsets_XFlip(pc,d4.w),d4	; Get precooked flipped pos instead of calculating
-		sub.w	d4,d0		; subtract sprite size
-		add.w	d3,d0
-		andi.w	#$1FF,d0	; keep within 512px
-		bne.s	.writeX
-		addq.w	#1,d0
-
-	.writeX:
-		move.w	d0,(a2)+	; write to buffer
-		dbf	d1,.loop		; process next sprite piece
-
-	.return:
-		rts	
-; ===========================================================================
-; S2 BuildSprites Addition (Precooked position values instead of calculating on the fly)
-; offsets for horizontally mirrored sprite pieces
-CellOffsets_XFlip:
-	dc.b   8,  8,  8,  8	; 4
-	dc.b $10,$10,$10,$10	; 8
-	dc.b $18,$18,$18,$18	; 12
-	dc.b $20,$20,$20,$20	; 16
-; offsets for vertically mirrored sprite pieces
-CellOffsets_YFlip:
-	dc.b   8,$10,$18,$20	; 4
-	dc.b   8,$10,$18,$20	; 8
-	dc.b   8,$10,$18,$20	; 12
-	dc.b   8,$10,$18,$20	; 16
-; ===========================================================================
-BuildSpr_FlipY:
-		cmpi.b	#80,d5		; check sprite limit
-		bhs.s	.return
-		move.b	(a1)+,d0	; get y-offset
-		move.b	(a1),d4		; get size
-		ext.w	d0
-		neg.w	d0			; negate y-offset
-		move.b	CellOffsets_YFlip(pc,d4.w),d4	; Get precooked flipped pos instead of calculating
-		sub.w	d4,d0
-		add.w	d2,d0		; add y-position
-		move.w	d0,(a2)+	; write to buffer
-		move.b	(a1)+,(a2)+	; size
-		addq.b	#1,d5
-		move.b	d5,(a2)+	; link
-		move.w	(a1)+,d0	; art tile S2 BuildSprites Change .b > .w
-		add.w	a3,d0
-		eori.w	#$1000,d0	; toggle flip-y in VDP
-		move.w	d0,(a2)+
-		addq.w	#2,a1		; S2 BuildSprites Addition
-		move.w	(a1)+,d0	; x-position S2 BuildSprites Change .b > .w
-		add.w	d3,d0
-		andi.w	#$1FF,d0
-		bne.s	.writeX
-		addq.w	#1,d0
-
-	.writeX:
-		move.w	d0,(a2)+			; write to buffer
-		dbf		d1,BuildSpr_FlipY	; process next sprite piece
-
-	.return:
-		rts	
-; ===========================================================================
-; offsets for vertically mirrored sprite pieces
-CellOffsets_YFlip2:
-	dc.b   8,$10,$18,$20	; 4
-	dc.b   8,$10,$18,$20	; 8
-	dc.b   8,$10,$18,$20	; 12
-	dc.b   8,$10,$18,$20	; 16
-; ===========================================================================
-BuildSpr_FlipXY:
-		cmpi.b	#80,d5		; check sprite limit
-		bhs.s	.return
-		move.b	(a1)+,d0	; calculated flipped y
-		move.b	(a1),d4
-		ext.w	d0
-		neg.w	d0
-		move.b	CellOffsets_YFlip2(pc,d4.w),d4
-		sub.w	d4,d0
-		add.w	d2,d0
-		move.w	d0,(a2)+	; write to buffer
-		move.b	(a1)+,d4	; size
-		move.b	d4,(a2)+	; link
-		addq.b	#1,d5
-		move.b	d5,(a2)+	; art tile
-		move.w	(a1)+,d0	; S2 BuildSprites Change .b > .w
-		add.w	a3,d0
-		eori.w	#$1800,d0	; toggle flip-x/y in VDP
-		move.w	d0,(a2)+
-		addq.w	#2,a1
-		move.w	(a1)+,d0	; calculate flipped x ; S2 BuildSprites Change .b > .w
-		neg.w	d0
-		move.b	CellOffsets_XFlip2(pc,d4.w),d4
-		sub.w	d4,d0
-		add.w	d3,d0
-		andi.w	#$1FF,d0
-		bne.s	.writeX
-		addq.w	#1,d0
-
-	.writeX:
-		move.w	d0,(a2)+			; write to buffer
-		dbf		d1,BuildSpr_FlipXY	; process next sprite piece
-
-	.return:
+loc_1AF94:
+		move.w	d2,(a6)+
+		subq.w	#1,d7
+		dbmi	d4,BuildSpr_Normal
 		rts
-; End of function DrawSprite
+; ---------------------------------------------------------------------------
 
-; ===========================================================================
-; offsets for horizontally mirrored sprite pieces
-CellOffsets_XFlip2:
-	dc.b   8,  8,  8,  8	; 4
-	dc.b $10,$10,$10,$10	; 8
-	dc.b $18,$18,$18,$18	; 12
-	dc.b $20,$20,$20,$20	; 16
+loc_1AF9E:
+		lsr.b	#1,d6
+		blo.s	loc_1AFE8
+
+loc_1AFA2:
+		move.b	(a1)+,d2
+		ext.w	d2
+		add.w	d1,d2
+		move.w	d2,(a6)+
+		move.b	(a1)+,d6
+		move.b	d6,(a6)+
+		addq.w	#1,a6
+		move.w	(a1)+,d2
+		add.w	d5,d2
+		eori.w	#$800,d2
+		move.w	d2,(a6)+
+		move.w	(a1)+,d2
+		neg.w	d2
+		move.b	byte_1AFD8(pc,d6.w),d6
+		sub.w	d6,d2
+		add.w	d0,d2
+		andi.w	#$1FF,d2
+		bne.s	loc_1AFCE
+		addq.w	#1,d2
+
+loc_1AFCE:
+		move.w	d2,(a6)+
+		subq.w	#1,d7
+		dbmi	d4,loc_1AFA2
+		rts
+; ---------------------------------------------------------------------------
+byte_1AFD8:
+		dc.b 8, 8, 8, 8
+		dc.b 16, 16, 16, 16
+		dc.b 24, 24, 24, 24
+		dc.b 32, 32, 32, 32
+; ---------------------------------------------------------------------------
+
+loc_1AFE8:
+		move.b	(a1)+,d2
+		ext.w	d2
+		neg.w	d2
+		move.b	(a1),d6
+		move.b	byte_1B028(pc,d6.w),d6
+		sub.w	d6,d2
+		add.w	d1,d2
+		move.w	d2,(a6)+
+		move.b	(a1)+,d6
+		move.b	d6,(a6)+
+		addq.w	#1,a6
+		move.w	(a1)+,d2
+		add.w	d5,d2
+		eori.w	#$1800,d2
+		move.w	d2,(a6)+
+		move.w	(a1)+,d2
+		neg.w	d2
+		move.b	byte_1AFD8(pc,d6.w),d6
+		sub.w	d6,d2
+		add.w	d0,d2
+		andi.w	#$1FF,d2
+		bne.s	loc_1B01E
+		addq.w	#1,d2
+
+loc_1B01E:
+		move.w	d2,(a6)+
+		subq.w	#1,d7
+		dbmi	d4,loc_1AFE8
+		rts
+; ---------------------------------------------------------------------------
+byte_1B028:
+		dc.b 8, 16, 24, 32
+		dc.b 8, 16, 24, 32
+		dc.b 8, 16, 24, 32
+		dc.b 8, 16, 24, 32
+; ---------------------------------------------------------------------------
+
+loc_1B038:
+		move.b	(a1)+,d2
+		ext.w	d2
+		neg.w	d2
+		move.b	(a1)+,d6
+		move.b	d6,2(a6)
+		move.b	byte_1B028(pc,d6.w),d6
+		sub.w	d6,d2
+		add.w	d1,d2
+		move.w	d2,(a6)+
+		addq.w	#2,a6
+		move.w	(a1)+,d2
+		add.w	d5,d2
+		eori.w	#$1000,d2
+		move.w	d2,(a6)+
+		move.w	(a1)+,d2
+		add.w	d0,d2
+		andi.w	#$1FF,d2
+		bne.s	loc_1B066
+		addq.w	#1,d2
+
+loc_1B066:
+		move.w	d2,(a6)+
+		subq.w	#1,d7
+		dbmi	d4,loc_1B038
+		rts
+; End of function sub_1AF6C
+
+
+; =============== S U B R O U T I N E =======================================
+
+
+sub_1B070:
+		lsr.b	#1,d6
+		blo.s	loc_1B0C2
+		lsr.b	#1,d6
+		blo.w	loc_1B19C
+
+loc_1B07A:
+		move.b	(a1)+,d2
+		ext.w	d2
+		add.w	d1,d2
+		cmpi.w	#-32+128,d2
+		bls.s	loc_1B0BA
+		cmpi.w	#224+128,d2
+		bhs.s	loc_1B0BA
+		move.w	d2,(a6)+
+		move.b	(a1)+,(a6)+
+		addq.w	#1,a6
+		move.w	(a1)+,d2
+		add.w	d5,d2
+		move.w	d2,(a6)+
+		move.w	(a1)+,d2
+		add.w	d0,d2
+		cmpi.w	#-32+128,d2
+		bls.s	loc_1B0B2
+		cmpi.w	#320+128,d2
+		bhs.s	loc_1B0B2
+		move.w	d2,(a6)+
+		subq.w	#1,d7
+		dbmi	d4,loc_1B07A
+		rts
+; ---------------------------------------------------------------------------
+
+loc_1B0B2:
+		subq.w	#6,a6
+		dbf		d4,loc_1B07A
+		rts
+; ---------------------------------------------------------------------------
+
+loc_1B0BA:
+		addq.w	#5,a1
+		dbf		d4,loc_1B07A
+		rts
+; ---------------------------------------------------------------------------
+
+loc_1B0C2:
+		lsr.b	#1,d6
+		blo.s	loc_1B12C
+
+loc_1B0C6:
+		move.b	(a1)+,d2
+		ext.w	d2
+		add.w	d1,d2
+		cmpi.w	#-32+128,d2
+		bls.s	loc_1B114
+		cmpi.w	#224+128,d2
+		bhs.s	loc_1B114
+		move.w	d2,(a6)+
+		move.b	(a1)+,d6
+		move.b	d6,(a6)+
+		addq.w	#1,a6
+		move.w	(a1)+,d2
+		add.w	d5,d2
+		eori.w	#$800,d2
+		move.w	d2,(a6)+
+		move.w	(a1)+,d2
+		neg.w	d2
+		move.b	byte_1B11C(pc,d6.w),d6
+		sub.w	d6,d2
+		add.w	d0,d2
+		cmpi.w	#-32+128,d2
+		bls.s	loc_1B10C
+		cmpi.w	#320+128,d2
+		bhs.s	loc_1B10C
+		move.w	d2,(a6)+
+		subq.w	#1,d7
+		dbmi	d4,loc_1B0C6
+		rts
+; ---------------------------------------------------------------------------
+
+loc_1B10C:
+		subq.w	#6,a6
+		dbf		d4,loc_1B0C6
+		rts
+; ---------------------------------------------------------------------------
+
+loc_1B114:
+		addq.w	#5,a1
+		dbf		d4,loc_1B0C6
+		rts
+; ---------------------------------------------------------------------------
+byte_1B11C:
+		dc.b 8, 8, 8, 8
+		dc.b 16, 16, 16, 16
+		dc.b 24, 24, 24, 24
+		dc.b 32, 32, 32, 32
+; ---------------------------------------------------------------------------
+
+loc_1B12C:
+		move.b	(a1)+,d2
+		ext.w	d2
+		neg.w	d2
+		move.b	(a1),d6
+		move.b	byte_1B18C(pc,d6.w),d6
+		sub.w	d6,d2
+		add.w	d1,d2
+		cmpi.w	#-32+128,d2
+		bls.s	loc_1B184
+		cmpi.w	#224+128,d2
+		bhs.s	loc_1B184
+		move.w	d2,(a6)+
+		move.b	(a1)+,d6
+		move.b	d6,(a6)+
+		addq.w	#1,a6
+		move.w	(a1)+,d2
+		add.w	d5,d2
+		eori.w	#$1800,d2
+		move.w	d2,(a6)+
+		move.w	(a1)+,d2
+		neg.w	d2
+		move.b	byte_1B11C(pc,d6.w),d6
+		sub.w	d6,d2
+		add.w	d0,d2
+		cmpi.w	#-32+128,d2
+		bls.s	loc_1B17C
+		cmpi.w	#320+128,d2
+		bhs.s	loc_1B17C
+		move.w	d2,(a6)+
+		subq.w	#1,d7
+		dbmi	d4,loc_1B12C
+		rts
+; ---------------------------------------------------------------------------
+
+loc_1B17C:
+		subq.w	#6,a6
+		dbf		d4,loc_1B12C
+		rts
+; ---------------------------------------------------------------------------
+
+loc_1B184:
+		addq.w	#5,a1
+		dbf		d4,loc_1B12C
+		rts
+; ---------------------------------------------------------------------------
+byte_1B18C:
+		dc.b 8, 16, 24, 32
+		dc.b 8, 16, 24, 32
+		dc.b 8, 16, 24, 32
+		dc.b 8, 16, 24, 32
+; ---------------------------------------------------------------------------
+
+loc_1B19C:
+		move.b	(a1)+,d2
+		ext.w	d2
+		neg.w	d2
+		move.b	(a1)+,d6
+		move.b	d6,2(a6)
+		move.b	byte_1B18C(pc,d6.w),d6
+		sub.w	d6,d2
+		add.w	d1,d2
+		cmpi.w	#-32+128,d2
+		bls.s	loc_1B1EC
+		cmpi.w	#224+128,d2
+		bhs.s	loc_1B1EC
+		move.w	d2,(a6)+
+		addq.w	#2,a6
+		move.w	(a1)+,d2
+		add.w	d5,d2
+		eori.w	#$1000,d2
+		move.w	d2,(a6)+
+		move.w	(a1)+,d2
+		add.w	d0,d2
+		cmpi.w	#-32+128,d2
+		bls.s	loc_1B1E4
+		cmpi.w	#320+128,d2
+		bhs.s	loc_1B1E4
+		move.w	d2,(a6)+
+		subq.w	#1,d7
+		dbmi	d4,loc_1B19C
+		rts
+; ---------------------------------------------------------------------------
+
+loc_1B1E4:
+		subq.w	#6,a6
+		dbf		d4,loc_1B19C
+		rts
+; ---------------------------------------------------------------------------
+
+loc_1B1EC:
+		addq.w	#4,a1
+		dbf		d4,loc_1B19C
+		rts
+; End of function sub_1B070
 ; ===========================================================================

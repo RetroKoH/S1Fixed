@@ -40,7 +40,7 @@ SmashObject:
 	.loadfrag:
 		move.b	#4,obRoutine(a1)
 		_move.l	d4,obAddr(a1)					; Obj3C or Obj51
-		addq.w	#8,a3							; S2 BuildSprites Change: 5 > 8
+		addq.w	#6,a3							; S3K BuildSprites Change: 5 > 6
 		move.l	a3,obMap(a1)					; Set appropriate mapping
 		move.b	d5,obRender(a1)					; Set render flags accordingly
 		move.w	obX(a0),obX(a1)					; match position
