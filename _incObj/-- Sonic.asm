@@ -3338,7 +3338,6 @@ Sonic_LoadGfx:
 		adda.w	(a2,d0.w),a2			; a2 = corresponding PLC
 		moveq	#0,d5
 		move.w	(a2)+,d5				; read "number of PLC entries" value -- S3K Changed from .b to .w
-		subq.w	#1,d5					; decrement for .readentry loop
 		bmi.s	.nochange				; if there are no entries, branch and exit
 		move.w	#ArtTile_Sonic*tile_size,d4	; load Sonic's VRAM location
 
@@ -3346,10 +3345,10 @@ Sonic_LoadGfx:
 		moveq	#0,d1
 		move.w	(a2)+,d1				; d1 = (number of tiles to load - 1)*$10; aka "tile count"	; S3K Changed from .b to .w
 		move.w	d1,d3
-		lsr.w	#8,d3					; d3 = (tile count-1)*$10
+		lsl.w	#4,d3					; d3 = (tile count-1)*$10
 		andi.w	#$F0,d3
 		addi.w	#$10,d3					; get actual tile count*$10				-- DMATransfer Length
-		andi.w	#$FFF,d1				; clear the counter to remove tile count from the far left nybble
+		lsr.w	#4,d1					; clear the counter to remove tile count from the far left nybble
 		lsl.l	#5,d1					; changed to .l (allows for more than $FFFF bytes)
 
 	if SuperMod

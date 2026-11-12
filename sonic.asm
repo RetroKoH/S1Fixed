@@ -1042,7 +1042,7 @@ ClearScreen:
 		clr.l	(v_scrposy_vdp).w
 
 		; Fixed
-		clearRAM v_spritetablebuffer
+		jsr		(Init_SpriteTable).l
 		clearRAM v_hscrolltablebuffer,v_hscrolltablebuffer_end_padded
 
 		rts	
@@ -3189,7 +3189,7 @@ CollapseObject:
 	; Create fragment object
 		move.b	#6,obRoutine(a1)
 		_move.l	d2,obAddr(a1)						; Obj1A or Obj53
-		addq.w	#8,a3							; Set to next mapping. ; S2 BuildSprites Change 5 -> 8
+		addq.w	#6,a3							; Set to next mapping.
 		move.l	a3,obMap(a1)					; Set appropriate mapping
 		move.b	d3,obRender(a1)					; Set render flags accordingly
 		move.w	obX(a0),obX(a1)					; match position
@@ -4321,11 +4321,11 @@ BossFlash:
 ; ---------------------------------------------------------------------------
 
 SS_ShowLayout:
+		move.w	d7,-(sp)
 		bsr.w	SS_AniWallsRings
 		bsr.w	SS_AniItems
 
 ; Calculate x/y positions of each cell in a 16x16 grid when rotated
-		move.w	d5,-(sp)						; save sprite count to stack
 		lea		(v_ssbuffer3&$FFFFFF).l,a1		; address to write grid coords
 		move.b	(v_ssangle).w,d0
 
@@ -4383,7 +4383,7 @@ SS_ShowLayout:
 		dbf		d7,.loop_gridrow				; repeat for all rows
 
 ; Populate the 16x16 grid with sprites based on the level layout
-		move.w	(sp)+,d5
+		move.w	(sp)+,d7
 		lea		(v_ssbuffer1&$FFFFFF).l,a0		; v_ss_layout
 		moveq	#0,d0
 		move.w	(v_screenposy).w,d0				; get camera y pos
@@ -4395,42 +4395,44 @@ SS_ShowLayout:
 		divu.w	#$18,d0							; divide by size of wall sprite (24 pixels)
 		adda.w	d0,a0							; jump to correct block in level
 		lea		(v_ssbuffer3&$FFFFFF).l,a4		; transformation grid (v_ss_sprite_grid_plot)
-		move.w	#$F,d7							; ss_visible_height-1
+		move.w	#$F,d3							; ss_visible_height-1
 
 	.loop_spriterow:
 		move.w	#$F,d6							; ss_visible_width-1
 
 	.loop_sprite:
-		moveq	#0,d0
-		move.b	(a0)+,d0						; load block to d0
+		moveq	#0,d2
+		move.b	(a0)+,d2						; load block to d2
 		beq.s	.nextblock						; if there is no block here, branch
-		cmpi.b	#SSBlock_GlassAni4,d0			; is the block ID higher than the last valid ID?
+		cmpi.b	#SSBlock_GlassAni4,d2			; is the block ID higher than the last valid ID?
 		bhi.s	.nextblock						; if ID is invalid, branch
-		move.w	(a4),d3							; d3 = block's x-position
-		addi.w	#$120,d3
-		cmpi.w	#$70,d3							; is the block to the left of the screen?
+		move.w	(a4),d0							; d0 = block's x-position
+		addi.w	#$120,d0
+		cmpi.w	#$70,d0							; is the block to the left of the screen?
 		blo.s	.nextblock						; if it is, branch
-		cmpi.w	#$1D0,d3						; is the block to the right of the screen?
+		cmpi.w	#$1D0,d0						; is the block to the right of the screen?
 		bhs.s	.nextblock						; if it is, branch
-		move.w	2(a4),d2						; d3 = block's y-position
-		addi.w	#$F0,d2
-		cmpi.w	#$70,d2
+		move.w	2(a4),d1						; d1 = block's y-position
+		addi.w	#$F0,d1
+		cmpi.w	#$70,d1
 		blo.s	.nextblock						; if the block is above the screen, branch
-		cmpi.w	#$170,d2
+		cmpi.w	#$170,d1
 		bhs.s	.nextblock						; if the block is below the screen, branch
 
 ; .drawBlock:
+		tst.w	d7
+		bmi.s	.nextblock
 		lea		(v_ssblocktypes&$FFFFFF).l,a5	; v_ss_sprite_info
-		lsl.w	#3,d0
-		lea		(a5,d0.w),a5
+		lsl.w	#3,d2
+		lea		(a5,d2.w),a5
 		movea.l	(a5)+,a1						; load mappings (the block's equivalent of an object's obMap)
-		move.w	(a5)+,d1						; get mapping frame ID (the block's equivalent of an object's obFrame)
-		add.w	d1,d1
-		adda.w	(a1,d1.w),a1					; apply frame ID to mappings pointer
-		movea.w	(a5)+,a3						; get tile ID
+		move.w	(a5)+,d4						; get mapping frame ID (the block's equivalent of an object's obFrame)
+		add.w	d4,d4
+		adda.w	(a1,d4.w),a1					; apply frame ID to mappings pointer
+		move.w	(a5)+,d5						; get tile ID
 		; S2 BuildSprites Change
-		move.w	(a1)+,d1						; number of sprite pieces (S2 BuildSprites: loading .w, so no need to clear d1)
-		subq.w	#1,d1							; S2 BuildSprites Change .b > .w.
+		move.w	(a1)+,d4						; number of sprite pieces (S3K BuildSprites: loading .w, so no need to clear d4)
+		subq.w	#1,d4							; S2 BuildSprites Change .b > .w.
 		; S2 BuildSprites End
 		bmi.s	.nextblock						; if there are 0 pieces, branch
 		jsr		(BuildSpr_Normal).l				; build sprites from mappings
@@ -4440,23 +4442,9 @@ SS_ShowLayout:
 		dbf		d6,.loop_sprite					; repeat
 
 		lea		$70(a0),a0						; advance to the next row in the layout
-		dbf		d7,.loop_spriterow				; repeat
+		dbf		d3,.loop_spriterow				; repeat
 
-		move.b	d5,(v_spritecount).w
-	; If the sprite list is full, then set the link field of the last
-	; entry to 0. Otherwise, push the next sprite offscreen and set its
-	; link field to 0. You might be thinking why this doesn't just do the
-	; first one no matter what. Well, think about what if the sprite list
-	; was empty: then it would access data before the start of the list.
-		cmpi.b	#80,d5							; has the sprite limit been reached?
-		beq.s	.spriteLimit					; if yes, branch
-		clr.l	(a2)							; set link field to 0
-		rts	
-; ===========================================================================
-
-	.spriteLimit:
-		clr.b	-5(a2)							; set last sprite link
-		rts	
+		jmp		(BuildSprites_Finish).l
 ; End of function SS_ShowLayout
 ; ===========================================================================
 

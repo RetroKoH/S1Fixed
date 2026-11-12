@@ -138,7 +138,7 @@ SS_MainLoop:
 SS_SkipHUDScroll:
 	endif
 
-		jsr		(BuildSprites).l
+		jsr		(BuildSprites_Objects).l
 		jsr		(SS_ShowLayout).l					; display layout
 		bsr.w	SS_BGAnimate						; animate background
 		tst.w	(f_demo).w							; is demo mode on?
@@ -168,7 +168,7 @@ SS_FinishLoop:
 		bsr.w	MoveSonicInDemo
 		move.w	(v_jpadheld_actual).w,(v_jpadheld_dup).w
 		jsr		(SpecialObjects).l
-		jsr		(BuildSprites).l
+		jsr		(BuildSprites_Objects).l
 		jsr		(SS_ShowLayout).l
 		bsr.w	SS_BGAnimate
 		subq.w	#1,(v_palchgspeed).w

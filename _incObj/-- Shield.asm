@@ -600,7 +600,6 @@ Shield_LoadGfx:
 		adda.w	(a2,d0.w),a2
 		moveq	#0,d5
 		move.w	(a2)+,d5					; read "number of entries" value -- S3k: .b to .w
-		subq.w	#1,d5
 		bmi.s	.nochange					; if zero, branch
 		move.w	#(ArtTile_Shield*tile_size),d4
 
@@ -608,10 +607,10 @@ Shield_LoadGfx:
 		moveq	#0,d1
 		move.w	(a2)+,d1					; S3K .b to .w
 		move.w	d1,d3						; S3K
-		lsr.w	#8,d3						; S3K
+		lsl.w	#4,d3						; S3K
 		andi.w	#$F0,d3
 		addi.w	#$10,d3
-		andi.w	#$FFF,d1
+		lsr.w	#4,d1
 		lsl.l	#5,d1
 		add.l	obShield_ArtLoc(a0),d1
 		move.w	d4,d2

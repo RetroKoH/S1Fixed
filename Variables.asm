@@ -51,7 +51,8 @@ v_objstate_end:
 
 v_col_response_list		ds.b	$70				; $9C0C
 
-						ds.b	$B84			; unused -- $9C7C
+						ds.b	$B04			; unused -- $9C7C
+v_palette_water_fading:	ds.b	$80				; duplicate underwater palette, used for transitions ($80 bytes)
 
 v_bgscroll_buffer:		ds.b	$200			; $A800 - background scroll buffer
 v_ngfx_buffer:			ds.b	$200			; Nemesis graphics decompression buffer
@@ -379,10 +380,9 @@ v_scroll_block_4_size:	ds.w	1		; unused
 v_levelvariables_end:
 ; =====================================================================================
 
-v_spritetablebuffer:	ds.b	$280	; sprite table (last $80 bytes are overwritten by v_palette_water_fading)
+v_spritetablebuffer:	ds.b	$280	; sprite table
 v_spritetablebuffer_end:
 
-v_palette_water_fading = v_spritetablebuffer_end-$80	; duplicate underwater palette, used for transitions ($80 bytes)
 v_palette_water:		ds.b	$80						; main underwater palette
 v_palette_water_end:
 v_palette:				ds.b	$80						; main palette
