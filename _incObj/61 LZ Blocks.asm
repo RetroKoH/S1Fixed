@@ -129,12 +129,12 @@ LBlk_Sink:
 		addq.b	#4,obLBlock_SinkPixels(a0)				; keep sinking
 
 	.update_y:
-		move.b	obLBlock_SinkPixels(a0),d0
-		jsr		(CalcSine).w							; convert sink value to sine
-		move.w	#$400,d1
-		muls.w	d1,d0
-		swap	d0
-		add.w	obLBlock_StartY(a0),d0
+		moveq	#0,d0
+		move.b	obLBlock_SinkPixels(a0),d0				; get sink value
+		lsr.w	#2,d0									; phase / 4 gives the table index
+		lea		(Plat_SinkOffsets).l,a2
+		move.b	(a2,d0.w),d0
+		add.w	obLBlock_StartY(a0),d0					; add to base Y-axis position (sans nudge)
 		move.w	d0,obY(a0)								; update position
 
 	.exit:

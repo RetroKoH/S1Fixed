@@ -7,7 +7,7 @@ obPlat_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position
 obPlat_PrevX:			equ objoff_34		; 2 bytes | previous X-axis position (used instead of pushing to the stack)
 obPlat_BaseY:			equ objoff_36		; 2 bytes | y position ignoring dip when Sonic is on the platform
 obPlat_WaitTime:		equ objoff_38		; 2 bytes | time delay for platform moving when stood on
-obPlat_DipPixels:		equ objoff_3A		; 1 byte  | amount of dip when Sonic is on the platform
+obPlat_SinkPixels:		equ objoff_3A		; 1 byte  | pixels the platform has sunk when stood on
 ; ---------------------------------------------------------------------------
 
 BasicPlatform:
@@ -66,9 +66,9 @@ Plat_Main:	; Routine 0
 ; ---------------------------------------------------------------------------
 
 Plat_Solid:	; Routine 2
-		tst.b	obPlat_DipPixels(a0)				; has platform dipped from being stood on?
+		tst.b	obPlat_SinkPixels(a0)				; has platform dipped from being stood on?
 		beq.s	.no_dip							; if not, branch
-		subq.b	#4,obPlat_DipPixels(a0)			; decrement dip amount
+		subq.b	#4,obPlat_SinkPixels(a0)			; decrement dip amount
 
 	.no_dip:
 		moveq	#0,d1
@@ -78,22 +78,22 @@ Plat_Solid:	; Routine 2
 
 Plat_Action:	; Routine 8
 		bsr.w	Plat_Move						; move platform
-		bsr.w	Plat_Nudge						; apply nudge
+		bsr.w	Plat_Sink						; apply sinking
 		bra.w	Plat_ChkDel						; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 Plat_StoodOn:	; Routine 4
-		cmpi.b	#$40,obPlat_DipPixels(a0)			; is platform at max dip?
+		cmpi.b	#$40,obPlat_SinkPixels(a0)			; is platform at max dip?
 		beq.s	.max_dip						; if yes, branch
-		addq.b	#4,obPlat_DipPixels(a0)			; increment dip
+		addq.b	#4,obPlat_SinkPixels(a0)			; increment dip
 
 	.max_dip:
 		moveq	#0,d1
 		move.b	obDispWid(a0),d1
 		bsr.w	ExitPlatform					; detect Sonic leaving platform, goto Plat_Solid next if he does
 		move.w	obX(a0),obPlat_PrevX(a0)
-		bsr.w	Plat_Move
-		bsr.w	Plat_Nudge
+		bsr.w	Plat_Move						; move platform
+		bsr.w	Plat_Sink						; apply sinking
 		move.w	obPlat_PrevX(a0),d2
 		bsr.w	MvSonicOnPtfm2
 		bra.w	Plat_ChkDel						; Clownacy DisplaySprite Fix
@@ -103,17 +103,22 @@ Plat_StoodOn:	; Routine 4
 ; Subroutine to	move platform slightly when you	stand on it
 ; ---------------------------------------------------------------------------
 
-Plat_Nudge:
-		move.b	obPlat_DipPixels(a0),d0			; get nudge value
-		calcsine_direct							; convert to sine/cosine
-		move.w	#$400,d1
-		muls.w	d1,d0
-		swap	d0
+Plat_Sink:
+		moveq	#0,d0
+		move.b	obPlat_SinkPixels(a0),d0		; get sink value
+		lsr.w	#2,d0							; phase / 4 gives the table index
+		move.b	Plat_SinkOffsets(pc,d0.w),d0
 		add.w	obPlat_BaseY(a0),d0				; add to base Y-axis position (sans nudge)
 		move.w	d0,obY(a0)						; update position
 		rts	
 ; End of function Plat_Nudge
 ; ===========================================================================
+
+Plat_SinkOffsets:
+		dc.b	0,0,0,1,1,1,2,2		; phases $00-$1C
+		dc.b	2,3,3,3,3,3,3,3		; phases $20-$3C
+		dc.b	4					; phase $40
+		even
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	move platforms
