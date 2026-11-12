@@ -15,7 +15,6 @@
  Additional Credits for Mods/Fixes to be noted
 
 # To-Do for Feature Release
- S3KBuildSprites (DeltaW)  
  Super Sonic Sprites (RetroKoH)  
  Toggleable: SBZ3 Level Art (Rohan)  
  Badniks auto-destroy at End-of-level; no points. (RetroKoH)  
