@@ -5,6 +5,7 @@
 ; OST Constants
 obHel_OffsetX:			equ objoff_30		; 2 bytes | x-offset amount to ensure proper rendering
 obHel_StartX:			equ objoff_32		; 2 bytes | starting X-axis offset position (obX+OffsetX)
+obHel_Frame:			equ objoff_34		; 1 byte  | animation frame; synced to v_ani0_frame
 obHel_ChildObj:			equ objoff_3E		; 2 bytes | pointer to the helix subsprite object
 ; ---------------------------------------------------------------------------
 
@@ -50,7 +51,7 @@ Hel_Main:	; Routine 0
 
 Hel_MakeSubsprite:
 		bsr.w	FindFreeObj
-		bne.w	.done
+		bne.w	State_OffScreen
 		_move.l	#Helix_Sub,obAddr(a1)		; load sub-sprite object
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
@@ -79,6 +80,8 @@ Hel_MakeSubsprite:
 
 	.done:
 		move.b	#-1,mainspr_mapframe(a1)	; don't render the "main frame"
+		move.b	#$FF,obHel_Frame(a0)		; force frame refresh on init
+		
 		move.w	obHel_OffsetX(a0),d0
 		addi.w	d0,obX(a1)					; x-offset from above (still in d0)
 		move.w	a1,obHel_ChildObj(a0)		; pointer to subsprite object
@@ -86,21 +89,20 @@ Hel_MakeSubsprite:
 ; ---------------------------------------------------------------------------
 
 Hel_Action:	; Routine 2
-		movea.w	obHel_ChildObj(a0),a1		; a1=object
 		moveq	#0,d0
 		move.b	(v_ani0_frame).w,d0
+		cmp.b	obHel_Frame(a0),d0			; has sync animation changed?
+		beq.s	.collisioncheck				; if not, branch
+
+		move.b	d0,obHel_Frame(a0)			; update log frame
+		movea.w	obHel_ChildObj(a0),a1		; a1=object
+		lsl.w	#3,d0
+		lea		Hel_SpikeFrames(pc,d0.w),a2
+		move.l	(a2)+,subspr_frames(a1)
+		move.l	(a2),subspr_frames+4(a1)
 		moveq	#7,d1						; max spikes frames
 
-		moveq	#0,d2
-		move.b	obSubtype(a0),d2			; get number of spikes
-		lea		subspr_frames(a1),a2		; address for subsprite frames	
-
-	.loop:
-		move.b	d0,(a2)+					; set frame & go to next frame address
-		addq.b	#1,d0						; next frame
-		and.b	d1,d0						; max spikes frames
-		dbf		d2,.loop					; repeat for d2 spikes
-
+	.collisioncheck:
 		; collision move
 		move.b	(v_ani0_frame).w,d3			; spike frame
 		neg.b	d3							; change direction of movement
@@ -111,7 +113,6 @@ Hel_Action:	; Routine 2
 		add.w	d3,d0						; "
 		move.w	d0,obX(a0)					; set collision xpos
 
-	.framecheck:
 		move.b	obSubtype(a0),d2			; get number of spikes
 		cmp.b	d4,d2						; is the spike log to short to display a "high frame" right now?
 		bcs.s	.chkdel						; if yes, branch and don't register any collision
@@ -127,6 +128,17 @@ Hel_Action:	; Routine 2
 	.chkdel:
 		offscreen.s	Hel_Delete,obHel_StartX(a0)	; ProjectFM S3K Objects Manager
 		rts
+; ===========================================================================
+
+Hel_SpikeFrames:
+		dc.b	0, 1, 2, 3, 4, 5, 6, 7
+		dc.b	1, 2, 3, 4, 5, 6, 7, 0
+		dc.b	2, 3, 4, 5, 6, 7, 0, 1
+		dc.b	3, 4, 5, 6, 7, 0, 1, 2
+		dc.b	4, 5, 6, 7, 0, 1, 2, 3
+		dc.b	5, 6, 7, 0, 1, 2, 3, 4
+		dc.b	6, 7, 0, 1, 2, 3, 4, 5
+		dc.b	7, 0, 1, 2, 3, 4, 5, 6
 ; ===========================================================================
 
 Hel_Delete:	; Routine 4
