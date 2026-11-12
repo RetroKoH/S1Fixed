@@ -507,6 +507,8 @@ HurtSonic:
 		and.l	obAddr(a2),d1					; isolate the code address
 		_cmpi.l	#Spik_Solid,d1					; check	if you were killed by spikes
 		beq.s	.sound
+		_cmpi.l	#Spik_MoveAndSolid,d1			; check	if you were killed by moving spikes
+		beq.s	.sound
 		_cmpi.l	#Harpoon,d1						; check	if you were killed by a harpoon
 		beq.s	.sound
 		move.w	#sfx_Death,d0					; play normal death sound
@@ -578,6 +580,8 @@ KillSonic:
 		move.l	#$FFFFFF,d1
 		and.l	obAddr(a2),d1					; isolate the code address
 		_cmpi.l	#Spik_Solid,d1					; check	if you were killed by spikes
+		beq.s	.sound
+		_cmpi.l	#Spik_MoveAndSolid,d1			; check	if you were killed by moving spikes
 		beq.s	.sound
 		_cmpi.l	#Harpoon,d1						; check	if you were killed by a harpoon
 		beq.s	.sound

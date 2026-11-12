@@ -37,10 +37,23 @@ Spikes:
 		move.b	(a1)+,obDispWid(a0)
 		move.w	obX(a0),obSpike_StartX(a0)
 		move.w	obY(a0),obSpike_StartY(a0)
+
+	; Optimization: Only run Spike_Move if spikes are supposed to move
+		lea		Spik_Solid(pc),a1			; stationary spikes go straight to collision
+		tst.b	obSubtype(a0)				; test the movement nybble
+		beq.s	.set_addr
+		lea		Spik_MoveAndSolid(pc),a1
+
+	.set_addr:
+		obj_addr	a1
+		jmp		(a1)						; run the chosen update on the load frame
 ; ---------------------------------------------------------------------------
 
-Spik_Solid:
+; To-Do: Add this entry to the spike SFX checks in HurtSonic and KillSonic
+Spik_MoveAndSolid:
 		bsr.w	Spike_Move					; update position
+
+Spik_Solid:
 		moveq	#4,d2						; height for type $5x (jumping); save 4 cycles - Filter
 		cmpi.b	#5,obFrame(a0)				; is object type $5x ?
 		beq.s	Spik_SideWays				; if yes, branch
@@ -110,19 +123,8 @@ Spik_Display:
 ; ---------------------------------------------------------------------------
 
 Spike_Move:
-	; LavaGaming Object Routine Optimization
-		moveq	#0,d0
-		move.b	obSubtype(a0),d0			; get subtype (only low nybble remains)
-		subq.b	#1,d0
-		tst.b	d0
-		beq.s	Spike_UpDown
-		bpl.s	Spike_LeftRight
-
-; Type 0 - doesn't move
-Spik_Type00:
-		rts
-	; Object Routine Optimization End
-; ===========================================================================
+		cmpi.b	#1,obSubtype(a0)			; subtype 1 moves vertically
+		bne.s	Spike_LeftRight				; other moving subtypes use X
 
 ; Type 1 - moves up and down
 Spike_UpDown:
