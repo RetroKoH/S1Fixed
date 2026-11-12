@@ -336,8 +336,8 @@ make_art_tile function addr,pal,pri,((pri&1)<<15)|((pal&3)<<13)|addr
 ; sprite mappings and DPLCs macros
 ; ---------------------------------------------------------------------------
 
-SonicMappingsVer = 2
-SonicDplcVer = 2
+SonicMappingsVer = 3
+SonicDplcVer = 3
 		include	"_maps/MapMacros.asm"
 
 ; ---------------------------------------------------------------------------
