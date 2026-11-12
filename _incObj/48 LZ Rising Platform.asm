@@ -4,7 +4,8 @@
 ; ---------------------------------------------------------------------------
 ; OST Constants (based on Obj61)
 obLRise_WaitTime:		equ objoff_30		; 2 bytes | time delay for block movement
-obLRise_Flag:			equ objoff_32		; 1 byte  | 1 = untouched; 0 = touched
+obLRise_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position (used by LBlk_Sink)
+obLRise_Flag:			equ objoff_38		; 1 byte  | 1 = untouched; 0 = touched (used by LBlk_Sink)
 ; ---------------------------------------------------------------------------
 
 LZRisePlat:
@@ -15,6 +16,7 @@ LZRisePlat:
 		move.w	#priority3,obPriority(a0)				; RetroKoH/Devon S3K+ Priority Manager
 		move.b	#$20,obDispWid(a0)						; set width
 		move.b	#$C,obHeight(a0)						; set height
+		move.w	obY(a0),obLRise_StartY(a0)				; set base Y for LBlk_Sink
 		move.b	#1,obLRise_Flag(a0)						; set "untouched" flag
 ; ---------------------------------------------------------------------------
 
