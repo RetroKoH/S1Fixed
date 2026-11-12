@@ -6,6 +6,7 @@
 obLRise_WaitTime:		equ objoff_30		; 2 bytes | time delay for block movement
 obLRise_StartY:			equ objoff_32		; 2 bytes | starting Y-axis position (used by LBlk_Sink)
 obLRise_Flag:			equ objoff_38		; 1 byte  | 1 = untouched; 0 = touched (used by LBlk_Sink)
+obLRise_SinkPixels:		equ objoff_3E		; 1 byte  | pixels the platform has sunk when stood on (used by LBlk_Sink)
 ; ---------------------------------------------------------------------------
 
 LZRisePlat:
