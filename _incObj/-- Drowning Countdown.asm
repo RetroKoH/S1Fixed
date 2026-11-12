@@ -78,6 +78,7 @@ Drown_ChkWater:	; Routine 4
 		beq.s	Drown_Display				; if yes, branch
 		blt.s	Drown_Display
 		moveq	#$D,d0						; if higher than the last animation, hard-set it to blank
+											; ^^ A safeguard to prevent crashes from invalid animations
 		jsr		(NewAnim).w
 		bra.s	Drown_Display
 ; ===========================================================================
@@ -401,8 +402,9 @@ ResumeMusic:
 	.over12:
 	endif
 
-		move.b	#30,(v_air).w				; reset air to 30 seconds
-		clr.b	(v_sonicbubbles+$32).w
+		move.b	#30,(v_air).w					; reset air to 30 seconds
+		bclr    #7,(v_sonicbubbles+obDrown_ExtraFlag).w
+		clr.b	(v_sonicbubbles+obDrown_DisplayTime).w
 		rts	
 ; End of function ResumeMusic
 ; ===========================================================================
