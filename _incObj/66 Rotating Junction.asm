@@ -105,7 +105,7 @@ Jun_Action:	; Routine 2
 ; ---------------------------------------------------------------------------
 
 Jun_Display:	; Routine 4
-		bra.w	RememberState
+		bra.w	RememberState_DisplayOnly
 ; ===========================================================================
 
 Jun_Release:	; Routine 6
@@ -133,7 +133,7 @@ Jun_Release:	; Routine 6
 .dontrelease:
 		bsr.s	Jun_Update				; check if button is pressed and animate the junction
 		bsr.s	Jun_MoveSonic			; update Sonic's position within the junction
-		bra.w	RememberState
+		bra.w	RememberState_DisplayOnly
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------

@@ -23,7 +23,7 @@ Seesaw:
 		sub.w	d1,d0
 		; Deleted first call to DeleteObject
 		cmpi.w	#$280,d0
-		bls.w	RememberState				; branch to display and remember this object
+		bls.w	RememberState_DisplayOnly	; branch to display and remember this object
 		move.w	obRespawnAddr(a0),d0		; get address in respawn table
 		beq.w	DeleteObject				; if it's zero, don't remember object
 		movea.w	d0,a2						; load address into a2
@@ -275,7 +275,7 @@ See_SpikeFall:	; Routine $A
 		bmi.s	.moving_left				; if yes, branch
 		moveq	#0,d1
 
-.moving_left:
+	.moving_left:
 		move.b	d1,obSeesaw_State(a1)		; update state for seesaw and spikeball
 		move.b	d1,obSeesaw_State(a0)
 		cmp.b	obFrame(a1),d1				; get seesaw frame

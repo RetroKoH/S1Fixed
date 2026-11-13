@@ -6,7 +6,7 @@ SmashWall:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		jsr		Smash_Index(pc,d0.w)
-		bra.w	RememberState
+		bra.w	RememberState_DisplayOnly
 ; ===========================================================================
 Smash_Index:
 		bra.s	Smash_Main

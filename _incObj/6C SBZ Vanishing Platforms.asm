@@ -60,7 +60,7 @@ VanP_Sync:	; Routine 6
 	.animate:
 		lea		Ani_Van(pc),a1
 		jsr		(AnimateSprite).w
-		jmp		(RememberState).l
+		jmp		(RememberState_DisplayOnly).l
 ; ===========================================================================
 
 VanP_Detect:	; Routine 2
@@ -86,7 +86,7 @@ VanP_StoodOn:	; Routine 4
 		moveq	#0,d1
 		move.b	obDispWid(a0),d1			; width
 		jsr		(PlatformObject).l			; detect collision and goto VanP_StoodOn next if true
-		jmp		(RememberState).l
+		jmp		(RememberState_DisplayOnly).l
 ; ===========================================================================
 
 	.stood_on:
@@ -95,7 +95,7 @@ VanP_StoodOn:	; Routine 4
 		jsr		(ExitPlatform).l			; goto VanP_Detect next if Sonic leaves platform
 		move.w	obX(a0),d2
 		jsr		(MvSonicOnPtfm2).l
-		jmp		(RememberState).l
+		jmp		(RememberState_DisplayOnly).l
 ; ===========================================================================
 
 	.notsolid:
@@ -107,5 +107,5 @@ VanP_StoodOn:	; Routine 4
 		move.b	#2,obRoutine(a0)			; -> VanP_Detect
 
 	.display:
-		jmp		(RememberState).l
+		jmp		(RememberState_DisplayOnly).l
 ; ===========================================================================

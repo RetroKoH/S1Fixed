@@ -53,7 +53,7 @@ WFall_Animate:	; Routine 2
 ; ---------------------------------------------------------------------------
 
 WFall_ChkDel:	; Routine 4
-		bra.w	RememberState
+		bra.w	RememberState_DisplayOnly
 ; ===========================================================================
 
 WFall_OnWater:	; Routine 6
@@ -62,7 +62,7 @@ WFall_OnWater:	; Routine 6
 		move.w	d0,obY(a0)					; match	object position	to water height
 		lea		Ani_WFall(pc),a1
 		jsr		(AnimateSprite).w
-		bra.w	RememberState
+		bra.w	RememberState_DisplayOnly
 ; ===========================================================================
 
 WFall_Priority:	; Routine 8
@@ -74,5 +74,5 @@ WFall_Priority:	; Routine 8
 	.animate:
 		lea		Ani_WFall(pc),a1
 		jsr		(AnimateSprite).w
-		bra.w	RememberState
+		bra.w	RememberState_DisplayOnly
 ; ===========================================================================

@@ -55,9 +55,9 @@ Flap_Closing:	; Routine 8
 		bsr.w	SolidObject
 		move.w	obX(a0),d0
 		sub.w	obX(a1),d0
-		bmi.w	RememberState				; branch if Sonic is to the right
+		bmi.w	RememberState_DisplayOnly	; branch if Sonic is to the right
 		move.b	#1,(f_wtunnelallow).w		; disable water tunnel
-		bra.w	RememberState
+		bra.w	RememberState_DisplayOnly
 ; ===========================================================================
 
 	.open:
@@ -69,9 +69,9 @@ Flap_Closing:	; Routine 8
 
 	.skip_top:
 		bclr	#staSonicPush,obStatus(a0)
-		beq.w	RememberState				; branch if Sonic isn't pushing the object
+		beq.w	RememberState_DisplayOnly	; branch if Sonic isn't pushing the object
 		bclr	#staPush,obStatus(a1)		; remove pushing effect
-		bra.w	RememberState
+		bra.w	RememberState_DisplayOnly
 ; ===========================================================================
 
 Flap_Open:	; Routine 4
@@ -80,14 +80,14 @@ Flap_Open:	; Routine 4
 
 Flap_Open2:	; Routine 6
 		subq.w	#1,obFlap_Wait(a0)				; decrement time delay
-		bpl.w	RememberState					; branch if time remains
+		bpl.w	RememberState_DisplayOnly		; branch if time remains
 		move.b	#1,obAnim(a0)					; closing animation
 		addq.b	#2,obRoutine(a0)				; -> Flap_Closing
 		tst.b	obRender(a0)
-		bpl.w	RememberState					; branch if not on screen
+		bpl.w	RememberState_DisplayOnly		; branch if not on screen
 		move.w	#sfx_Door,d0
 		jsr		(QueueSound2).w					; play door sound
-		bra.w	RememberState
+		bra.w	RememberState_DisplayOnly
 ; ===========================================================================
 
 Flap_Closed:	; Routine $A
@@ -101,12 +101,12 @@ Flap_Closed2:	; Routine $C
 		move.w	obX(a0),d4						; axis position
 		bsr.w	SolidObject
 		subq.w	#1,obFlap_Wait(a0)				; decrement time delay
-		bpl.w	RememberState					; branch if time remains
+		bpl.w	RememberState_DisplayOnly		; branch if time remains
 		move.b	#0,obAnim(a0)
 		move.b	#2,obRoutine(a0)				; -> Flap_Opening
 		tst.b	obRender(a0)
-		bpl.w	RememberState					; branch if not on screen
+		bpl.w	RememberState_DisplayOnly		; branch if not on screen
 		move.w	#sfx_Door,d0
 		jsr		(QueueSound2).w					; play door sound
-		bra.w	RememberState
+		bra.w	RememberState_DisplayOnly
 ; ===========================================================================
