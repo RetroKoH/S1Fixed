@@ -104,35 +104,40 @@ SBall_Move:
 		asr.l	#4,d1
 		move.l	d0,d4
 		move.l	d1,d5
+	; KoH Swing Movement optimization
+	; These were moved from within the loop to BEFORE the loop
+		swap	d4								; swap for the addition
+		swap	d5
+		add.w	d2,d4							; add base positions to the integer halves
+		add.w	d3,d5
+		swap	d4								; swap back
+		swap	d5
+	; Now continue to the loop
 		lea		subspr_posdata(a1),a2
 
 	.loop:
-		movem.l	d4-d5,-(sp)
-		swap	d4
+		swap	d4								; swap
 		swap	d5
-		add.w	d2,d4
-		add.w	d3,d5
-		move.w	d5,(a2)+								; x_pos
-		move.w	d4,(a2)+								; y_pos
-		movem.l	(sp)+,d4-d5
-		add.l	d0,d4
-		add.l	d1,d5
-		dbf		d6,.loop								; repeat for all subsprites
+		move.w	d5,(a2)+						; child x_pos
+		move.w	d4,(a2)+						; child y_pos
+		swap	d4								; swap back
+		swap	d5
+		add.l	d0,d4							; this last part remains the same
+		add.l	d1,d5							; (Adding the full steps)
+		dbf		d6,.loop						; repeat for all subsprites
 
 		swap	d4
 		swap	d5
-		add.w	d2,d4
-		add.w	d3,d5
-		move.w	d5,obX(a0)								; update position
+		move.w	d5,obX(a0)						; update position
 		move.w	d4,obY(a0)
 
 	.display:
-        move.w	obSBall_CenterX(a0),d0					; get object position
-        andi.w	#$FF80,d0								; round down to nearest $80
-        move.w	(v_screenposx).w,d1						; get screen position
+        move.w	obSBall_CenterX(a0),d0			; get object position
+        andi.w	#$FF80,d0						; round down to nearest $80
+        move.w	(v_screenposx).w,d1				; get screen position
         subi.w	#$80,d1
         andi.w	#$FF80,d1
-        sub.w	d1,d0									; approx distance between object and screen
+        sub.w	d1,d0							; approx distance between object and screen
         cmpi.w	#$280,d0
         bhi.w	SBall_OffScreen
 

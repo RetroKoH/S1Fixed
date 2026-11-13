@@ -222,6 +222,7 @@ Swing_Move:
 		asr.l	#4,d1							; d1 = x step
 		move.l	d0,d4
 		move.l	d1,d5
+	; KoH Swing Movement optimization
 	; These were moved from within the loop to BEFORE the loop
 		swap	d4								; swap for the addition
 		swap	d5
