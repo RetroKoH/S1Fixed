@@ -203,6 +203,8 @@ SS_FinishLoop:
 		lea		Art_TitCardSonic,a0													; load title card patterns
 		move.l	#((Art_TitCardSonic_End-Art_TitCardSonic)/tile_size)-1,d0			; # of tiles
 		jsr		(LoadUncArt).w
+		
+		locVRAM	(ArtTile_Title_Card+$12)*tile_size,d1
 		lea		Art_TitCardGotThemAll,a0											; load title card patterns
 		move.l	#((Art_TitCardGotThemAll_End-Art_TitCardGotThemAll)/tile_size)-1,d0	; # of tiles
 		
