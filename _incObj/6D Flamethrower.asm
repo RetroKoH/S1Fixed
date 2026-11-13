@@ -77,13 +77,13 @@ Flame_Off:		; Routine 4
 
 Flame_Off2:		; Routine 6
 		subq.w	#1,obFlame_WaitTime(a0)			; decrement timer
-		bpl.w	RememberState					; if time remains, branch
+		bpl.w	RememberState_DisplayOnly		; if time remains, branch
 		move.w	obFlame_OnTime(a0),obFlame_WaitTime(a0)	; begin pause time
 		bchg	#0,obAnim(a0)					; switch between on/off animations
 		subq.b	#4,obRoutine(a0)				; -> Flame_On
 		tst.b	obRender(a0)
-		bpl.w	RememberState					; branch if off screen
+		bpl.w	RememberState_DisplayOnly		; branch if off screen
 		move.w	#sfx_Flamethrower,d0
 		jsr		(QueueSound2).w					; play flame sound
-		bra.w	RememberState
+		bra.w	RememberState_DisplayOnly
 ; ===========================================================================

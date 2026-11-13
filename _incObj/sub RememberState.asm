@@ -1,4 +1,14 @@
 ; ---------------------------------------------------------------------------
+; Subroutine to remember an object's state (no collision)
+; ---------------------------------------------------------------------------
+
+RememberState_DisplayOnly:
+		out_of_range.s	State_OffScreen
+		bra.w	DisplaySprite
+; End of function RememberState_DisplayOnly
+; ===========================================================================
+
+; ---------------------------------------------------------------------------
 ; Subroutine to remember whether an object is destroyed/collected
 ; ---------------------------------------------------------------------------
 

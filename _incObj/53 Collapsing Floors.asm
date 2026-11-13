@@ -60,15 +60,15 @@ CFlo_Touch:	; Routine 2
 		moveq	#32,d1						; width; save 4 cycles -- Filter
 		bsr.w	PlatformObject				; detect collision & goto CFlo_Collapse next if stood on
 		tst.b	obSubtype(a0)				; is subtype over $80?
-		bpl.w	RememberState				; if not, branch
+		bpl.w	RememberState_DisplayOnly	; if not, branch
 		btst	#staOnObj,obStatus(a1)
-		beq.w	RememberState
+		beq.w	RememberState_DisplayOnly
 		bclr	#renXFlip,obRender(a0)
 		move.w	obX(a1),d0
 		sub.w	obX(a0),d0
-		bcc.w	RememberState				; branch if Sonic is left of the platform
+		bcc.w	RememberState_DisplayOnly	; branch if Sonic is left of the platform
 		bset	#renXFlip,obRender(a0)
-		bra.w	RememberState
+		bra.w	RememberState_DisplayOnly
 ; ===========================================================================
 
 CFlo_Collapse:	; Routine 4
@@ -83,7 +83,7 @@ CFlo_WalkOff:	; Routine $A
 		bsr.w	ExitPlatform				; goto CFlo_Touch next if Sonic leaves platform
 		move.w	obX(a0),d2
 		bsr.w	MvSonicOnPtfm2
-		bra.w	RememberState
+		bra.w	RememberState_DisplayOnly
 ; End of function CFlo_WalkOff
 ; ===========================================================================
 

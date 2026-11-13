@@ -38,12 +38,12 @@ Smab_Solid:	; Routine 2
 		bsr.w	SolidObject
 		btst	#staSonicOnObj,obStatus(a0)		; has Sonic landed on the block?
 		bne.s	.smash							; if yes, branch
-		bra.w	RememberState	
+		bra.w	RememberState_DisplayOnly	
 ; ===========================================================================
 
 	.smash:
 		cmpi.b	#aniID_Roll,obSmab_SonicAnim(a0)	; is Sonic rolling/jumping?
-		bne.w	RememberState					; if not, branch
+		bne.w	RememberState_DisplayOnly			; if not, branch
 		move.w	obSmab_HitCount(a0),(v_itembonus).w
 		bset	#staSpin,obStatus(a1)
 		move.w	#$E07,obHeight(a1)				; Height and Width
@@ -99,8 +99,7 @@ Smab_Points:	; Routine 4
 		addi.w	#$38,obVelY(a0)					; apply gravity
 		tst.b	obRender(a0)
 		bpl.w	DeleteObject
-		bsr.w	DisplaySprite					; Clownacy DisplaySprite Fix
-		bra.w	RememberState
+		bra.w	RememberState_DisplayOnly		; Clownacy DisplaySprite Fix
 ; ===========================================================================
 
 Smab_Speeds:

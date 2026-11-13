@@ -34,13 +34,13 @@ Gargoyle:
 
 Gar_MakeFire:
 		subq.b	#1,obTimeFrame(a0)						; decrement timer
-		bne.w	RememberState							; if time remains, branch
+		bne.w	RememberState_DisplayOnly				; if time remains, branch
 
 		move.b	obGar_SpawnTime(a0),obTimeFrame(a0)		; reset timer
 		bsr.w	ChkObjectVisible
-		bne.w	RememberState							; branch if off screen
+		bne.w	RememberState_DisplayOnly				; branch if off screen
 		bsr.w	FindFreeObj								; find free object slot
-		bne.w	RememberState							; branch if not found
+		bne.w	RememberState_DisplayOnly				; branch if not found
 
 		_move.l	#Gar_FireBall,obAddr(a1)				; load fireball object
 		move.l	#Map_Gar,obMap(a1)
@@ -69,7 +69,7 @@ Gar_MakeFire:
 		move.w	#sfx_Fireball,d0
 		jsr		(QueueSound2).w							; play fireball sound
 
-		bra.w	RememberState	
+		bra.w	RememberState_DisplayOnly	
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------

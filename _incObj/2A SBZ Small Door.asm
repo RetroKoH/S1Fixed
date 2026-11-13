@@ -49,11 +49,11 @@ ADoor_OpenShut:
 		lea		Ani_ADoor(pc),a1
 		bsr.w	AnimateSprite
 		tst.b	obFrame(a0)				; is the door open?
-		bne.w	RememberState			; if yes, branch
+		bne.w	RememberState_DisplayOnly	; if yes, branch
 		moveq	#17,d1					; width; save 4 cycles - Filter
 		moveq	#32,d2					; height (jumping); save 4 cycles - Filter
 		moveq	#33,d3					; height (walking); save 4 cycles - Filter
 		move.w	obX(a0),d4				; axis position
 		bsr.w	SolidObject
-		bra.w	RememberState
+		bra.w	RememberState_DisplayOnly
 ; ===========================================================================

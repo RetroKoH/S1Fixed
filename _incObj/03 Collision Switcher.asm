@@ -79,7 +79,7 @@ PSwapper_Handle:
 PSwapper_ChkDel:
 	if DebugPathSwappers
 		tst.w	(f_debugcheat).w
-		bne.w	RememberState
+		bne.w	RememberState_DisplayOnly
 	endif
 
 		; like RememberState, but doesn't display (Sonic 2's MarkObjGone3)
