@@ -64,7 +64,7 @@ Bri_Main:	; Routine 0
 		subq.w	#8,d0
 		move.w	d0,obX(a1)					; center of second subsprite object
 
-.nomore:
+	.nomore:
 		bra.s	Bri_Action					; bridge is finished
 ; ===========================================================================
 
@@ -106,15 +106,16 @@ Bri_Action:	; Routine 2
 		subq.b	#4,obBridge_BendPixels(a0)
 		bra.s	.bend
 		
-.standing:
+	.standing:
 		cmpi.b	#$40,obBridge_BendPixels(a0)
 		beq.s	.bend
 		addq.b	#4,obBridge_BendPixels(a0)
 
-.bend:
+	.bend:
 		bsr.w	Bri_Bend
 
-.solid:	; Similar to the start of the old Bri_Solid.
+	.solid:
+	; Similar to the start of the old Bri_Solid.
 		moveq	#0,d1
 		move.b	obSubtype(a0),d1
 		lsl.w	#3,d1
@@ -187,7 +188,7 @@ loc_F8F0:
 		lsr.w	#4,d0
 		move.b	d0,(a0,d5.w)				; 	move.b	d0,obBridge_CurrentLog(a0)
 
-.return:
+	.return:
 		rts
 ; End of function Bri_Solid
 ; ===========================================================================
@@ -207,18 +208,24 @@ PlatformBridge_cont:
 Bri_Bend:
 		move.b	obBridge_BendPixels(a0),d0
 		bsr.w	CalcSine
-		move.w	d0,d4
+		move.w	d0,d4							; d4 = sin(_BendPixels)
 		lea		Obj11_BendData2(pc),a4
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
 		lsl.w	#4,d0
 		moveq	#0,d3
-		move.b	obBridge_CurrentLog(a0),d3
+		move.b	obBridge_CurrentLog(a0),d3		; d3 = log that Sonic is currently standing on
 		move.w	d3,d2
 		add.w	d0,d3
 		moveq	#0,d5
 		lea		Obj11_BendData(pc),a5
-		move.b	(a5,d3.w),d5
+		move.b	(a5,d3.w),d5					; d5 = amplitude of bend (based on length, and log Sonic is currently on)
+	
+	; We add this multiply here, so that we can remove a multiply from the before and after loops.
+	; For 12 logs, that cuts down 24 multiplies to only 13. Loading StartY once instead of in the loops also saves 84 cycles
+		mulu.w	d4,d5							; scale shared by every log
+		move.w	obBridge_StartY(a0),d4			; base Y for both loops
+
 		andi.w	#$F,d3
 		lsl.w	#4,d3
 		lea		(a4,d3.w),a3
@@ -226,22 +233,21 @@ Bri_Bend:
 		lea		sub9_y_pos+next_subspr(a1),a2	;$42
 		lea		sub2_y_pos(a1),a1				;$10
 
-.loopafter:
+	.loopafter:
 		moveq	#0,d0
 		move.b	(a3)+,d0
-		addq.w	#1,d0
-		mulu.w	d5,d0
-		mulu.w	d4,d0
-		swap	d0
-		add.w	obBridge_StartY(a0),d0
+		addq.w	#1,d0							; bias the shape sample
+		mulu.w	d5,d0							; apply the shared bend scale
+		swap	d0								; high word is the pixel offset
+		add.w	d4,d0							; add the bridge's base Y
 		move.w	d0,(a1)
 		addq.w	#next_subspr,a1
 		cmpa.w	a2,a1
 		bne.s	.skiploopafter
-		movea.w	obBridge_ChildObj2(a0),a1 ; a1=object
+		movea.w	obBridge_ChildObj2(a0),a1		; a1=object
 		lea		sub2_y_pos(a1),a1
 
-.skiploopafter:
+	.skiploopafter:
 		dbf		d2,.loopafter
 
 		moveq	#0,d0
@@ -259,25 +265,24 @@ Bri_Bend:
 		subq.w	#1,d2
 		bcs.s	.ret
 
-.loopbefore:
+	.loopbefore:
 		moveq	#0,d0
 		move.b	-(a3),d0
-		addq.w	#1,d0
-		mulu.w	d5,d0
-		mulu.w	d4,d0
-		swap	d0
-		add.w	obBridge_StartY(a0),d0
+		addq.w	#1,d0							; bias the shape sample
+		mulu.w	d5,d0							; apply the shared bend scale
+		swap	d0								; high word is the pixel offset
+		add.w	d4,d0							; add the bridge's base Y
 		move.w	d0,(a1)
 		addq.w	#next_subspr,a1
 		cmpa.w	a2,a1
 		bne.s	.skiploopbefore
-		movea.w	obBridge_ChildObj2(a0),a1 ; a1=object
+		movea.w	obBridge_ChildObj2(a0),a1		; a1=object
 		lea		sub2_y_pos(a1),a1
 
-.skiploopbefore:
+	.skiploopbefore:
 		dbf		d2,.loopbefore
 
-.ret:
+	.ret:
 		rts	
 ; End of function Bri_Bend
 ; ===========================================================================
