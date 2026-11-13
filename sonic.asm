@@ -3393,18 +3393,23 @@ ObjectsDisplayOnly:
 	.display:
 		move.l	#$FFFFFF,d0					; load bitmask for object addresses to remove obRender
 		and.l	obAddr(a0),d0				; load object address from RAM
-		beq.s	RunObject.next_object		; if there's no object, branch
+		beq.s	.next_object				; if there's no object, branch
 		tst.b	obRender(a0)				; was the object displayed on the previous frame?
-		bpl.s	RunObject.next_object		; if not, skip it
+		bpl.s	.next_object				; if not, skip it
 
 	; If this is a multi-sprite object, then we cannot use its 'priority'
 	; value to display it as it's being used for coordinate data.
 	; This fix is applied from s2disasm.
-		pea		RunObject.next_object(pc)	; This is an optimisation to avoid the need for extra branches: it makes it so .next_object will be executed after a return
-		btst	#renMultiDraw,obRender(a0)	; Is this a multi-sprite object?
-		beq.w	DisplaySprite				; If not, display using the object's 'priority' value.
-		move.w	#priority4,d0				; If not, display using a hardcoded priority of 4.
+		pea		.next_object(pc)			; continue the display-only loop after queuing the sprite
+		btst	#renMultiDraw,obRender(a0)	; is this a multi-sprite object?
+		beq.w	DisplaySprite				; if not, display using the object's 'priority' value.
+		move.w	#priority4,d0				; use priority 4 for multi-sprite objects
 		bra.w	DisplaySprite2
+
+	.next_object:
+		lea		object_size(a0),a0			; next level object
+		dbf		d7,.display
+		rts
 	endif
 ; End of function ExecuteObjects
 ; ===========================================================================
