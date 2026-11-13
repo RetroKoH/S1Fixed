@@ -33,7 +33,7 @@ Trap_Wait:
 		moveq	#13,d3						; height (walking); save 4 cycles - Filter
 		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject
-		bra.w	RememberState
+		bra.w	RememberState_DisplayOnly
 ; ===========================================================================
 
 	.open:
@@ -53,16 +53,16 @@ Trap_Open:
 		lea		Ani_Trap(pc),a1
 		jsr		(AnimateSprite).w
 		cmpi.b	#2,obFrame(a0)
-		bne.w	RememberState				; branch if animation isn't finished
+		bne.w	RememberState_DisplayOnly	; branch if animation isn't finished
 		obj_addr	#Trap_Wait2
 		move.w	obTrap_WaitMaster(a0),obTrap_WaitTime(a0) ; reset timer
-		bra.w	RememberState
+		bra.w	RememberState_DisplayOnly
 ; ===========================================================================
 
 Trap_Wait2:
 		subq.w	#1,obTrap_WaitTime(a0)		; decrement timer
 		bmi.s	.close						; branch if time is up
-		bra.w	RememberState
+		bra.w	RememberState_DisplayOnly
 		
 	.close:
 		obj_addr	#Trap_Close
@@ -80,16 +80,16 @@ Trap_Close:
 		lea		Ani_Trap(pc),a1
 		jsr		(AnimateSprite).w
 		tst.b	obFrame(a0)					; is frame number 0 displayed?
-		bne.w	RememberState				; branch if animation isn't finished
+		bne.w	RememberState_DisplayOnly	; branch if animation isn't finished
 		obj_addr	#Trap_Wait
 		move.w	obTrap_WaitMaster(a0),obTrap_WaitTime(a0) ; reset timer
-		bra.w	RememberState
+		bra.w	RememberState_DisplayOnly
 ; ===========================================================================
 
 Trap_NotSolid:
 		btst	#staSonicOnObj,obStatus(a0)	; is Sonic standing on the trapdoor?
-		beq.w	RememberState				; if not, branch
+		beq.w	RememberState_DisplayOnly	; if not, branch
 		bclr	#staOnObj,(v_player+obStatus).w
 		bclr	#staSonicOnObj,obStatus(a0)	; removed obSolid
-		bra.w	RememberState
+		bra.w	RememberState_DisplayOnly
 ; ===========================================================================

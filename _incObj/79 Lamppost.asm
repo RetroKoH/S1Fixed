@@ -44,7 +44,7 @@ Lamp_Main:	; Routine 0
 		bset	#0,(a2)						; remember lamppost as red - ProjectFM S3K Object Manager
 		move.b	#4,obRoutine(a0)			; -> Lamp_Red
 		move.b	#3,obFrame(a0)				; use red lamppost frame
-		jmp		(RememberState).l
+		jmp		(RememberState_DisplayOnly).l
 ; ===========================================================================
 
 Lamp_Blue:	; Routine 2
@@ -65,7 +65,7 @@ Lamp_Blue:	; Routine 2
 		bset	#0,(a2)						; remember lamppost as red - ProjectFM
 		move.b	#4,obRoutine(a0)			; -> Lamp_Red
 		move.b	#3,obFrame(a0)				; use red lamppost frame
-		jmp		(RememberState).l
+		jmp		(RememberState_DisplayOnly).l
 ; ===========================================================================
 
 	.chkhit:
@@ -110,7 +110,7 @@ Lamp_Blue:	; Routine 2
 
 ;Lamp_Finish:
 Lamp_Red:	; Routine 4
-		jmp		(RememberState).l	
+		jmp		(RememberState_DisplayOnly).l	
 ; ===========================================================================
 
 Lamp_Twirl:	; Routine 6
@@ -131,7 +131,7 @@ Lamp_Twirl:	; Routine 6
 		swap	d0
 		add.w	obLamp_StartY(a0),d0
 		move.w	d0,obY(a0)
-		jmp		(RememberState).l
+		jmp		(RememberState_DisplayOnly).l
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------

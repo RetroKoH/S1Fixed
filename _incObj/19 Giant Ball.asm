@@ -35,7 +35,7 @@ GHZBall_Main:
 		move.b	#$18,obDispWid(a0)
 		move.b	#1,obGBall_TimeMaster(a0)
 		bsr.w	GHZBall_SetFrame
-		bra.w	RememberState
+		bra.w	RememberState_DisplayOnly
 
 	.no_floor:
 		rts
@@ -60,7 +60,7 @@ GHZBall_Idle:		; Routine 2
 
 	.animate:
 		bsr.w	GHZBall_SetFrame
-		bsr.w	RememberState
+		bsr.w	RememberState_DisplayOnly
 		bra.w	GHZBall_ChkDelete
 ; ===========================================================================
 
@@ -103,7 +103,7 @@ GHZBall_Rolling:	; Routine 4
 	.ismoving:
 	;	bsr.w	MvSonicOnPtfm2
 		bsr.s	GHZBall_SetFrame
-		bsr.w	RememberState
+		bsr.w	RememberState_DisplayOnly
 		bra.w	GHZBall_ChkDelete
 ; ===========================================================================
 
@@ -130,7 +130,7 @@ GHZBall_InAir:		; Routine 6
 		move.w	d0,obVelY(a0)				; apply gravity (slightly less than ObjectFall)
 	;	bsr.w	MvSonicOnPtfm2
 		bsr.s	GHZBall_SetFrame
-		bsr.w	RememberState
+		bsr.w	RememberState_DisplayOnly
 		bra.w	GHZBall_ChkDelete
 ; ===========================================================================
 

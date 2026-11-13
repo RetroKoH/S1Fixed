@@ -66,13 +66,13 @@ Spin_Action:
 		moveq	#8,d3						; height (walking); save 4 cycles - Filter
 		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject
-		bra.w	RememberState
+		bra.w	RememberState_DisplayOnly
 ; ===========================================================================
 
 	.notsolid2:
 		btst	#staSonicOnObj,obStatus(a0)
-		beq.w	RememberState
+		beq.w	RememberState_DisplayOnly
 		bclr	#staOnObj,(v_player+obStatus).w
 		bclr	#staSonicOnObj,obStatus(a0)	; removed obSolid
-		bra.w	RememberState
+		bra.w	RememberState_DisplayOnly
 ; ===========================================================================
