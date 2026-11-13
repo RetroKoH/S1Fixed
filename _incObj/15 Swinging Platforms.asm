@@ -192,6 +192,7 @@ Swing_Action2:	; Routine 4
 Swing_Move:
 		moveq	#0,d0
 		move.b	(v_oscillate+$1A).w,d0
+
 		btst	#0,obStatus(a0)
 		beq.s	.notflipx
 		neg.b	d0
@@ -207,32 +208,39 @@ Swing_Move:
 
 		move.w	obSwing_StartY(a0),d2
 		move.w	obSwing_StartX(a0),d3
-		movea.w	obSwing_Chain(a0),a1				; load chain address
+		movea.w	obSwing_Chain(a0),a1			; load chain address
 		moveq	#0,d6
 		move.b	mainspr_childsprites(a1),d6
 		subq.b	#1,d6
-		blo.s	.return
+		blo.w	.return							; stop if no chain
+
 		swap	d0
 		clr.w	d0
 		swap	d1
 		clr.w	d1
-		asr.l	#4,d0
-		asr.l	#4,d1
+		asr.l	#4,d0							; d0 = y step
+		asr.l	#4,d1							; d1 = x step
 		move.l	d0,d4
 		move.l	d1,d5
+	; These were moved from within the loop to BEFORE the loop
+		swap	d4								; swap for the addition
+		swap	d5
+		add.w	d2,d4							; add base positions to the integer halves
+		add.w	d3,d5
+		swap	d4								; swap back
+		swap	d5
+	; Now continue to the loop
 		lea		subspr_posdata(a1),a2
 
 	.loop:
-		movem.l	d4-d5,-(sp)
-		swap	d4
+		swap	d4								; swap
 		swap	d5
-		add.w	d2,d4
-		add.w	d3,d5
-		move.w	d5,(a2)+						; x_pos
-		move.w	d4,(a2)+						; y_pos
-		movem.l	(sp)+,d4-d5
-		add.l	d0,d4
-		add.l	d1,d5
+		move.w	d5,(a2)+						; child x_pos
+		move.w	d4,(a2)+						; child y_pos
+		swap	d4								; swap back
+		swap	d5
+		add.l	d0,d4							; this last part remains the same
+		add.l	d1,d5							; (Adding the full steps)
 		dbf		d6,.loop
 
 	; Slight adaptation to work more like Sonic 2 (I already fixed the wrap issue in BuildSprites).
@@ -261,8 +269,6 @@ Swing_Move:
 
 		swap	d4
 		swap	d5
-		add.w	d2,d4
-		add.w	d3,d5
 		move.w	d5,obX(a0)
 		move.w	d4,obY(a0)
 
