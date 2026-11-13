@@ -5,9 +5,9 @@
 SmashWall:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
-		jsr		Smash_Index(pc,d0.w)
-		bra.w	RememberState_DisplayOnly
+		jmp		Smash_Index(pc,d0.w)
 ; ===========================================================================
+
 Smash_Index:
 		bra.s	Smash_Main
 		bra.s	Smash_Solid
@@ -22,7 +22,7 @@ Smash_Main:	; Routine 0
 		beq.s	.isGHZ
 		move.w	#make_art_tile(ArtTile_SLZ_Smashable_Wall,2,0),obGfx(a0)
 
-.isGHZ:
+	.isGHZ:
 		move.b	#4,obRender(a0)
 		move.b	#$10,obDispWid(a0)
 		move.w	#priority4,obPriority(a0)			; RetroKoH/Devon S3K+ Priority Manager
@@ -53,11 +53,11 @@ Smash_Solid:	; Routine 2
 		btst	#staSonicPush,obStatus(a0)			; is Sonic pushing against the wall?
 		bne.s	.chkroll							; if yes, branch
 
-.donothing:
-		rts	
+	.donothing:
+		bra.w	RememberState_DisplayOnly			; Display here, so that fragments don't double display
 ; ===========================================================================
 
-.chkroll:
+	.chkroll:
 
 	if SuperMod
 		btst	#sta2ndSuper,obStatus2nd(a1)	; is Sonic Super?
@@ -70,11 +70,11 @@ Smash_Solid:	; Routine 2
 		bpl.s	.chkspeed
 		neg.w	d0								; get absolute value if Sonic was moving left
 
-.chkspeed:
+	.chkspeed:
 		cmpi.w	#$480,d0						; is Sonic's speed 4.5 or higher?
 		blo.s	.donothing						; if not, branch
 
-.cont:
+	.cont:
 		move.w	d6,obVelX(a1)					; restore Sonic's x-speed to what it was prior to colliding with the wall
 		addq.w	#4,obX(a1)
 		lea		Smash_FragSpd1(pc),a4			; use fragments that move right -- save 4 cycles - Filter
@@ -84,7 +84,7 @@ Smash_Solid:	; Routine 2
 		subq.w	#8,obX(a1)
 		lea		Smash_FragSpd2(pc),a4			; use fragments that move left -- save 4 cycles - Filter
 
-.smash:
+	.smash:
 		move.w	obVelX(a1),obInertia(a1)
 		bclr	#staSonicPush,obStatus(a0)
 		bclr	#staPush,obStatus(a1)
