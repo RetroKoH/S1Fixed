@@ -108,7 +108,7 @@ Level_NoMusicFade:
 
 	; TheBlad768/RetroKoH Title Card Optimization
         lea    TitleCard_UncList(pc),a1
-        locVRAM	(ArtTile_Title_Card+$22)*tile_size,d1	; if we don't call this, locVRAM will pick up where left off.
+        locVRAM	(ArtTile_Title_Card+$22)*tile_size,d1
         jsr    (LoadUncArt2).w
 	; Optimal Title Cards End
 
