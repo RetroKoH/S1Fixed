@@ -47,9 +47,9 @@ SpikeBar:
 		move.b	d3,obSBar_Radius(a0)					; set as radius
 		subq.w	#1,d1									; set chain length (type-1)
 		bcs.w	.fail									; if length of 0, branch ahead (invalid)
-		btst	#3,obSubtype(a0)
-		beq.s	.startmaking							; branch if bit 3 of subtype isn't set (+8)
-		subq.w	#1,d1
+		btst	#3,obSubtype(a0)						; does this spikebar get a center piece?
+		beq.s	.startmaking							; if yes, branch
+		subq.w	#1,d1									; reduce spike count, omitting center piece
 		bcs.s	.fail
 
 	; RetroKoH Object Load Optimization -- Based on Spirituinsanum Guides
@@ -82,6 +82,12 @@ SpikeBar:
 		move.b	obColType(a0),obColType(a1)
 		subi.b	#$10,d3									; subtract $10 for radius, each object closer to centre
 		move.b	d3,obSBar_Radius(a1)
+		bne.s	.nextChild								; skip pivot setup for moving children
+	; If we don't set up the pivot, its position will stay (0,0) w/ the new optimization
+		move.w	obSBar_CenterX(a0),obX(a1)				; place the center child at the pivot
+		move.w	obSBar_CenterY(a0),obY(a1)
+
+	.nextChild:
 		dbf		d1,.loop 								; repeat for length of chain
 
 	.fail:
@@ -100,31 +106,48 @@ SBar_Move:	; Routine 2
 		move.b	obAngle(a0),d0							; get updated angle
 
 	; convert to sine/cosine
-		calcsine_direct
+		calcsine_direct									; d0 = sine (Y), d1 = cosine (X)
 
-		move.w	obSBar_CenterY(a0),d2					; get position of chain base
-		move.w	obSBar_CenterX(a0),d3
+	; calculate the outermost ball’s offset
+		moveq	#0,d4		
+		move.b	obSBar_Radius(a0),d4					; get radius for the parent
+		lsr.w	#4,d4									; radius in 16-pixel steps
+
+	; set the parent's position first, then do so for each child
 		lea		obSBar_ObjCount(a0),a2
 		moveq	#0,d6
-		move.b	(a2)+,d6								; get number of objects
+		move.b	(a2)+,d6								; get number of objects, advance to first index
+		beq.s	.countReady								; no children, write only the one spikeball
+		cmp.w	d4,d6									; was the center piece allocated?
+		bne.s	.countReady								; if not, branch ahead
+		subq.b	#1,d6									; skip the stationary center child
+
+	.countReady:
+		move.l	d4,d5
+		muls.w	d0,d4									; outermost Y offset
+		muls.w	d1,d5									; outermost X offset
+		movea.l	a0,a1									; start with the end object first
+		bra.s	.store									; start with the parent
 
 	.loop:
-		moveq	#0,d4
-		move.b	(a2)+,d4								; get obj RAM index of object
-		lsl.w	#object_size_bits,d4
-		addi.l	#v_objspace&$FFFFFF,d4					; convert to RAM address
-		movea.l	d4,a1									; point a1 to address
-		moveq	#0,d4
-		move.b	obSBar_Radius(a1),d4					; get radius for that object
-		move.l	d4,d5
-		muls.w	d0,d4
-		asr.l	#8,d4
-		muls.w	d1,d5
-		asr.l	#8,d5
-		add.w	d2,d4
-		add.w	d3,d5
-		move.w	d4,obY(a1)								; update position
-		move.w	d5,obX(a1)
+		moveq	#0,d2
+		move.b	(a2)+,d2								; get obj RAM index of object		
+		lsl.w	#object_size_bits,d2
+		addi.l	#v_objspace&$FFFFFF,d2					; convert to RAM address
+		movea.l	d2,a1									; point a1 to address of next child
+	; each child is 16px closer to the center
+		sub.w	d0,d4									; one step inward on Y
+		sub.w	d1,d5									; one step inward on X
+
+	.store:
+		move.w	d4,d2
+		move.w	d5,d3
+		asr.w	#4,d2
+		asr.w	#4,d3
+		add.w	obSBar_CenterY(a0),d2					; add position of chain base
+		add.w	obSBar_CenterX(a0),d3
+		move.w	d2,obY(a1)								; update position
+		move.w	d3,obX(a1)
 		dbf		d6,.loop								; repeat for all objects
 
 		offscreen.s	.delete,obSBar_CenterX(a0)			; ProjectFM S3K Object Manager
