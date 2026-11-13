@@ -46,7 +46,6 @@ Trap_Wait:
 		
 	.no_sound:
 		move.b	#0,obAnim(a0)				; opening animation
-		bclr	#7,obAnim(a0)				; clear restart flag
 ; ---------------------------------------------------------------------------
 
 Trap_Open:
@@ -73,7 +72,6 @@ Trap_Wait2:
 		
 	.no_sound:
 		move.b	#1,obAnim(a0)				; closing animation
-		bclr	#7,obAnim(a0)				; clear restart flag
 ; ---------------------------------------------------------------------------
 
 Trap_Close:
@@ -88,8 +86,10 @@ Trap_Close:
 
 Trap_NotSolid:
 		btst	#staSonicOnObj,obStatus(a0)	; is Sonic standing on the trapdoor?
-		beq.w	RememberState_DisplayOnly	; if not, branch
+		beq.w	.return						; if not, branch
 		bclr	#staOnObj,(v_player+obStatus).w
 		bclr	#staSonicOnObj,obStatus(a0)	; removed obSolid
-		bra.w	RememberState_DisplayOnly
+
+	.return:
+		rts
 ; ===========================================================================
