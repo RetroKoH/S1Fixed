@@ -296,7 +296,7 @@ RLoss_Bounce:	; Routine 2
 		beq.w	DeleteObject				; If 0, delete
 		; Ring Timers Fix End
 		; RHS Accidental Ring Deletion Fix
-		cmpi.w	#$FF00,(v_limittop).w		; is vertical wrapping enabled?
+		cmpi.w	#LevelYWrapTop,(v_limittop).w	; is vertical wrapping enabled?
 		beq.w	.chkflash					; if so, branch
 		; Accidental Ring Deletion Fix End
 		move.w	(v_limitbtm).w,d0
@@ -412,7 +412,7 @@ RAttract_Main:
 
 .hasshield:
 		; Fix accidental deletion of scattered rings - REV C EDIT
-		cmpi.w  #$FF00,(v_limittop).w	; is vertical wrapping enabled?
+		cmpi.w  #LevelYWrapTop,(v_limittop).w	; is vertical wrapping enabled?
 		beq.s   .display				; if so, branch
 		; End of fix
 
