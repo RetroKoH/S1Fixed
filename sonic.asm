@@ -3265,7 +3265,6 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 
 		include	"_incObj/26 Monitor.asm"
 		include	"_incObj/26 Monitor (Contents sub-object).asm"
-		include	"_incObj/26 Monitor (SolidSides subroutine).asm"
 		include	"_anim/Monitor.asm"
 
 dplcTiles := Art_TitleSonic		; MainMemory 128k Boundary Check for DPLCs
