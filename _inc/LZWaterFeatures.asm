@@ -21,8 +21,10 @@ LZWaterFeatures:
 		lsr.w	#1,d0
 		add.w	(v_waterpos_base).w,d0
 		move.w	d0,(v_waterpos_actual).w
-		move.w	(v_waterpos_actual).w,d0
-		sub.w	(v_screenposy).w,d0
+	; LZ3 Palette Split fix
+		bsr.w	LZWaterCameraY
+		sub.w	d1,d0
+	; LZ3 Palette Split Fix end
 		bcc.s	.isbelow
 		tst.w	d0
 		bpl.s	.isbelow	; if water is below top of screen, branch
