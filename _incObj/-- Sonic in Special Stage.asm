@@ -6,7 +6,7 @@ obSSSonic_UpDownTime:	equ objoff_30		; 1 byte  | time until UP/DOWN can be trigg
 obSSSonic_ReverseTime:	equ objoff_31		; 1 byte  | time until Reverse can be triggered again
 obSSSonic_GhostStatus:	equ objoff_32		; 1 byte  | status of ghost blocks (0 = ghost; 1 = passed; 2 = solid)
 obSSSonic_SSItemID:		equ objoff_33		; 1 byte  | item id Sonic is touching
-obSSSonic_SSItemAddr:	equ objoff_34		; 4 bytes | RAM address of item in layout Sonic is touching
+obSSSonic_SSItemAddr:	equ objoff_3A		; 2 bytes | RAM address of item in layout Sonic is touching
 ; ---------------------------------------------------------------------------
 
 SonicSpecial:
