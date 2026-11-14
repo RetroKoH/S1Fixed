@@ -1,6 +1,8 @@
 ; ---------------------------------------------------------------------------
 ; Object 17 - helix of spikes on a pole	(GHZ)
 ; Adapted an optimized version from S1: Sonic Clean Engine
+;
+; Plans to add future functionality (Top AND Bottom collision, Frame Offsets, Aligned Frames)
 ; ---------------------------------------------------------------------------
 ; OST Constants
 obHel_OffsetX:			equ objoff_30		; 2 bytes | x-offset amount to ensure proper rendering

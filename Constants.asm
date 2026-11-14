@@ -86,6 +86,11 @@ id_SBZ:		equ 5
 id_EndZ:	equ 6
 id_SS:		equ 7
 
+; Vertical level wrapping
+LevelYWrapSize:	equ $800
+LevelYWrapMask:	equ LevelYWrapSize-1
+LevelYWrapTop:	equ -$100			; upper camera limit in vertically-wrapping acts
+
 ; Colours
 cBlack:		equ $000			; colour black
 cWhite:		equ $EEE			; colour white
