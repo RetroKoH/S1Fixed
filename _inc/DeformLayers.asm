@@ -871,141 +871,155 @@ ScrollVertical:
 		moveq	#0,d1
 		move.w	(v_player+obY).w,d0
 		sub.w	(v_screenposy).w,d0				; Sonic's distance from top of screen
-		btst	#staSpin,(v_player+obStatus).w	; is Sonic rolling?
-		beq.s	SV_NotRolling					; if not, branch
-		subq.w	#5,d0
+        cmpi.w  #LevelYWrapTop,(v_limittop).w
+        bne.s   .noWrap
+        wrap_y_distance d0						; properly wrap that distance
 
-SV_NotRolling:
+	.noWrap:
+		btst	#staSpin,(v_player+obStatus).w	; is Sonic rolling?
+		beq.s	.notRolling						; if not, branch
+		subq.w	#5,d0							; subtract difference between standing and rolling heights
+
+	.notRolling:
 	; KoH Debug Screen Movement Fix
 		tst.b	(v_debuguse).w					; is Debug Mode enabled?
-		bne.s	SVNoRoll_debug					; if yes, branch
+		bne.s	.skipRollCheck					; if yes, branch
 	; Debug Screen Movement Fix end
 		btst	#staAir,(v_player+obStatus).w	; is Sonic in the air?
-		beq.s	loc_664A						; if not, branch
+		beq.s	.checkBoundaryCrossed_onGround	; if not, branch
 
-SVNoRoll_debug:
+	.skipRollCheck:
+	; If Sonic's in the air, he has $20 pixels above and below him to move without disturbing the camera.
+	; The camera movement is also only capped at $10 pixels.
 		addi.w	#32,d0
 		sub.w	(v_lookshift).w,d0
-		bcs.s	loc_6696
+		bcs.s	.doScroll_fast				; If Sonic is above the boundary, scroll to catch up to him
 		subi.w	#64,d0
-		bcc.s	loc_6696
-		tst.b	(f_bgscrollvert).w
-		bne.s	loc_66A8
-		bra.s	loc_6656
+		bcc.s	.doScroll_fast				; If Sonic is below the boundary, scroll to catch up to him
+		tst.b	(f_bgscrollvert).w			; is the max Y pos changing?
+		bne.s	.scrollUpOrDown_maxYPosChanging	; if it is, branch
+		bra.s	.doNotScroll
 ; ===========================================================================
 
-loc_664A:
-		sub.w	(v_lookshift).w,d0
-		bne.s	loc_665C
-		tst.b	(f_bgscrollvert).w
-		bne.s	loc_66A8
+	.checkBoundaryCrossed_onGround:
+		sub.w	(v_lookshift).w,d0		; subtract camera bias
+		bne.s	.decideScrollType		; If Sonic has moved, scroll to catch up to him
+		tst.b	(f_bgscrollvert).w		; is the max Y pos changing?
+		bne.s	.scrollUpOrDown_maxYPosChanging	; if it is, branch
 
-loc_6656:
-		clr.w	(v_scrshifty).w
+	.doNotScroll:
+		clr.w	(v_scrshifty).w			; clear Y position difference (Camera_Y_pos_diff)
 		rts	
 ; ===========================================================================
 
-loc_665C:
-		cmpi.w	#$60,(v_lookshift).w
-		bne.s	loc_6684
+	.decideScrollType:
+		cmpi.w	#$60,(v_lookshift).w	; is the camera bias normal?
+		bne.s	.doScroll_slow			; if not, branch
 		move.w	(v_player+obInertia).w,d1
-		bpl.s	loc_666C
-		neg.w	d1
+		bpl.s	.positiveSpeed
+		neg.w	d1				; get absolute value of player ground velocity
 
-loc_666C:
-		cmpi.w	#$800,d1
-		bhs.s	loc_6696
-		move.w	#$600,d1
-		cmpi.w	#6,d0
-		bgt.s	loc_66F6
-		cmpi.w	#-6,d0
-		blt.s	loc_66C0
-		bra.s	loc_66AE
+	.positiveSpeed:
+		cmpi.w	#$800,d1		; is the player travelling very fast?
+		bhs.s	.doScroll_fast	; if he is, branch
+;	.doScroll_medium:
+		move.w	#$600,d1		; If player is going too fast, cap camera movement to 6 pixels per frame
+		cmpi.w	#6,d0			; is player going down too fast?
+		bgt.s	.scrollDown_max	; if so, move camera at capped speed
+		cmpi.w	#-6,d0			; is player going up too fast?
+		blt.s	.scrollUp_max	; if so, move camera at capped speed
+		bra.s	.scrollUpOrDown	; otherwise, move camera at player's speed
 ; ===========================================================================
 
-loc_6684:
-		move.w	#$200,d1
-		cmpi.w	#2,d0
-		bgt.s	loc_66F6
-		cmpi.w	#-2,d0
-		blt.s	loc_66C0
-		bra.s	loc_66AE
+.doScroll_slow:
+		move.w	#$200,d1		; If player is going too fast, cap camera movement to 2 pixels per frame
+		cmpi.w	#2,d0			; is player going down too fast?
+		bgt.s	.scrollDown_max	; if so, move camera at capped speed
+		cmpi.w	#-2,d0			; is player going up too fast?
+		blt.s	.scrollUp_max	; if so, move camera at capped speed
+		bra.s	.scrollUpOrDown	; otherwise, move camera at player's speed
 ; ===========================================================================
 
-loc_6696:
-		move.w	#$1000,d1
-		cmpi.w	#$10,d0
-		bgt.s	loc_66F6
-		cmpi.w	#-$10,d0
-		blt.s	loc_66C0
-		bra.s	loc_66AE
+.doScroll_fast:
+	; related code appears in ScrollBG
+	; S3K uses 24 instead of 16
+		move.w	#$1000,d1		; If player is going too fast, cap camera movement to 16 pixels per frame
+		cmpi.w	#16,d0			; is player going down too fast?
+		bgt.s	.scrollDown_max	; if so, move camera at capped speed
+		cmpi.w	#-16,d0			; is player going up too fast?
+		blt.s	.scrollUp_max	; if so, move camera at capped speed
+		bra.s	.scrollUpOrDown	; otherwise, move camera at player's speed
 ; ===========================================================================
 
-loc_66A8:
-		moveq	#0,d0
-		move.b	d0,(f_bgscrollvert).w
+	.scrollUpOrDown_maxYPosChanging:
+		moveq	#0,d0			; Distance for camera to move = 0
+		move.b	d0,(f_bgscrollvert).w	; clear camera max Y pos changing flag
 
-loc_66AE:
+	.scrollUpOrDown:
 		moveq	#0,d1
-		move.w	d0,d1
-		add.w	(v_screenposy).w,d1
-		tst.w	d0
-		bpl.w	loc_6700
-		bra.w	loc_66CC
+		move.w	d0,d1			; get position difference
+		add.w	(v_screenposy).w,d1	; add old camera Y position
+		tst.w	d0				; is the camera to scroll down?
+		bpl.w	.scrollDown	; if it is, branch
+		bra.w	.scrollUp
 ; ===========================================================================
 
-loc_66C0:
-		neg.w	d1
+	.scrollUp_max:
+		neg.w	d1				; make the value negative (since we're going backwards)
 		ext.l	d1
-		asl.l	#8,d1
-		add.l	(v_screenposy).w,d1
-		swap	d1
+		asl.l	#8,d1			; move this into the upper word, so it lines up with the actual y_pos value in Camera_Y_pos
+		add.l	(v_screenposy).w,d1	; add the two, getting the new Camera_Y_pos value
+		swap	d1				; actual Y-coordinate is now the low word
 
-loc_66CC:
-		cmp.w	(v_limittop).w,d1
-		bgt.s	loc_6724
-		cmpi.w	#-$100,d1
-		bgt.s	loc_66F0
-		andi.w	#$7FF,d1
-		andi.w	#$7FF,(v_player+obY).w
-		andi.w	#$7FF,(v_screenposy).w
-		andi.w	#$3FF,(v_bgscreenposy).w
-		bra.s	loc_6724
+	; Upward wrap
+	.scrollUp:
+		cmp.w	(v_limittop).w,d1	; is the new position less than the minimum Y pos?
+		bgt.s	.doScroll			; if not, branch
+		cmpi.w	#LevelYWrapTop,(v_limittop).w
+		bne.s	.minYPosReached
+		addi.w	#LevelYWrapSize,d1
+		addi.w	#LevelYWrapSize,(v_screenposy).w
+		bra.s	.doScroll
 ; ===========================================================================
 
-loc_66F0:
-		move.w	(v_limittop).w,d1
-		bra.s	loc_6724
+	.minYPosReached:
+		move.w	(v_limittop).w,d1	; prevent camera from going any further up
+		bra.s	.doScroll
 ; ===========================================================================
 
-loc_66F6:
+	.scrollDown_max:
 		ext.l	d1
-		asl.l	#8,d1
-		add.l	(v_screenposy).w,d1
-		swap	d1
+		asl.l	#8,d1		; move this into the upper word, so it lines up with the actual y_pos value in Camera_Y_pos
+		add.l	(v_screenposy).w,d1	; add the two, getting the new Camera_Y_pos value
+		swap	d1			; actual Y-coordinate is now the low word
 
-loc_6700:
-		cmp.w	(v_limitbtm).w,d1
-		blt.s	loc_6724
-		subi.w	#$800,d1
-		bcs.s	loc_6720
-		andi.w	#$7FF,(v_player+obY).w
-		subi.w	#$800,(v_screenposy).w
-		andi.w	#$3FF,(v_bgscreenposy).w
-		bra.s	loc_6724
+	; Downward wrap
+	.scrollDown:
+		cmp.w	(v_limitbtm).w,d1	; is the new position greater than the maximum Y pos?
+		blt.s	.doScroll			; if not, branch
+		cmpi.w	#LevelYWrapTop,(v_limittop).w	; does the level wrap vertically?
+		bne.s	.maxYPosReached					; if not, branch
+		cmpi.w	#LevelYWrapSize,d1
+		blt.s	.maxYPosReached
+		subi.w	#LevelYWrapSize,d1
+		subi.w	#LevelYWrapSize,(v_screenposy).w
+		bra.s	.doScroll
 ; ===========================================================================
 
-loc_6720:
-		move.w	(v_limitbtm).w,d1
+	.maxYPosReached:
+		move.w	(v_limitbtm).w,d1		; prevent camera from going any further down
 
-loc_6724:
-		move.w	(v_screenposy).w,d4
-		swap	d1
+	.doScroll:
+		move.w	(v_screenposy).w,d4		; get old pos (used by SetVertiScrollFlags)
+		swap	d1						; actual Y-coordinate is now the high word, as Camera_Y_pos expects it
 		move.l	d1,d3
 		sub.l	(v_screenposy).w,d3
 		ror.l	#8,d3
-		move.w	d3,(v_scrshifty).w
-		move.l	d1,(v_screenposy).w
+		move.w	d3,(v_scrshifty).w		; set difference between old and new positions
+		move.l	d1,(v_screenposy).w		; set new camera Y pos
+
+	; To-Do: Sonic 2 stops here...
+	; It also uses registers. I need to look into what else is different.
 		move.w	(v_screenposy).w,d0
 		andi.w	#$10,d0
 		move.b	(v_fg_yblock).w,d1

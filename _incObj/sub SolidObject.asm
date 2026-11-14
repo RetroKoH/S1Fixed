@@ -103,18 +103,19 @@ SolidObject2F:
 		sub.w	d5,d3
 		addq.w	#4,d3
 		add.w	d2,d3
-		bmi.w	Solid_Ignore
-		move.w	d2,d4
-		add.w	d4,d4
-		cmp.w	d4,d3
-		bhs.w	Solid_Ignore
-		bra.w	loc_FB0E
+		; Removed bmi branch to Solid_Ignore
+		bra.s   Solid_CheckYBounds
 ; ===========================================================================
 
 Solid_ChkEnter:
+	; If the object is not on-screen, then don't try to collide with it.
+	; This is presumably an optimisation, but this means that if Sonic
+	; outruns the screen then he can phase through solid objects.
 		tst.b	obRender(a0)
 		bpl.w	Solid_Ignore
 
+; Similar to what the monitor runs
+;SolidObject_cont
 loc_FAD0:
 		lea		(v_player).w,a1
 		move.w	obX(a1),d0
@@ -131,7 +132,7 @@ loc_FAD0:
 		move.w	obY(a1),d3
 
 	; Mercury Ducking Size Fix
-	if SpinDashEnabled==1		; Mercury Spin Dash
+	if SpinDashEnabled		; Mercury Spin Dash
 		cmpi.b	#aniID_SpinDash,obAnim(a1)
 		beq.s	.short
 	endif	; Spin Dash End
@@ -149,10 +150,17 @@ loc_FAD0:
 		sub.w	obY(a0),d3
 		addq.w	#4,d3
 		add.w	d2,d3
-		bmi.w	Solid_Ignore		; if Sonic moves above, branch
+		; Removed bmi branch to Solid_Ignore
+
+Solid_CheckYBounds:
+		cmpi.w	#LevelYWrapTop,(v_limittop).w
+		bne.s	.checkYBounds
+		andi.w	#LevelYWrapMask,d3
+
+	.checkYBounds:
 		move.w	d2,d4
 		add.w	d4,d4
-		cmp.w	d4,d3				; has Sonic moved below?
+		cmp.w	d4,d3				; has Sonic moved above or below?
 		bhs.w	Solid_Ignore		; if yes, branch
 
 loc_FB0E:

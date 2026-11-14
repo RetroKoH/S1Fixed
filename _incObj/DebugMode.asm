@@ -13,13 +13,20 @@ Debug_Main:	; Routine 0
 		addq.b	#2,(v_debuguse).w
 		clr.b	(v_sonicbubbles+objoff_2C).w
 		jsr		(ResumeMusic).l							; cancel countdown music
-		move.w	(v_limittop).w,(v_limittopdb).w			; buffer level x-boundary
-		move.w	(v_limitbtm_target).w,(v_limitbtmdb).w	; buffer level y-boundary
+
+		move.w	(v_limittop).w,d0						; store top boundary
+		move.w	d0,(v_limittopdb).w						; buffer top boundary
+		move.w	(v_limitbtm_target).w,(v_limitbtmdb).w	; buffer bottom y-boundary
+		cmpi.w	#LevelYWrapTop,d0
+		beq.s	.wrapPlayer
 		clr.w	(v_limittop).w
 		move.w	#$720,(v_limitbtm_target).w
-		andi.w	#$7FF,(v_player+obY).w
-		andi.w	#$7FF,(v_screenposy).w
+		andi.w	#LevelYWrapMask,(v_screenposy).w
 		andi.w	#$3FF,(v_bgscreenposy).w
+
+	.wrapPlayer:
+		andi.w	#LevelYWrapMask,(v_player+obY).w
+
 		move.b	#2,obRoutine(a0)			; get Sonic OUT of death routine to stop freezing effect (if active)
 		clr.b	obFrame(a0)
 		move.b	#aniID_Walk,obAnim(a0)
@@ -115,19 +122,33 @@ Debug_Control:
 		asr.l	#4,d1						; d1 = speed * $1000
 		move.l	obY(a0),d2
 		move.l	obX(a0),d3
+
+	; Proper y-wrap handling in Debug mode
+		move.w	(v_limittop).w,d0
 		btst	#bitUp,d4					; is up	being held?
 		beq.s	.chk_down					; if not, branch
 		sub.l	d1,d2						; move Sonic up
-		bcc.s	.chk_down
+		bpl.s	.chk_down
 		moveq	#0,d2						; keep Sonic within top boundary
 
 	.chk_down:
 		btst	#bitDn,d4					; is down being	pressed?
-		beq.s	.chk_left					; if not, branch
+		beq.s	.check_y					; if not, branch
 		add.l	d1,d2						; move Sonic down
+
+	.check_y:
+		cmpi.w	#LevelYWrapTop,d0
+		beq.s	.wrap_y
+		btst	#bitDn,d4
+		beq.s	.chk_left
 		cmpi.l	#$7FF0000,d2				; is Sonic above $7FF? (bottom boundary)
 		blo.s	.chk_left					; if yes, branch
 		move.l	#$7FF0000,d2				; keep Sonic within bottom boundary
+		bra.s	.chk_left
+
+	.wrap_y:
+		andi.l	#(LevelYWrapSize<<16)-1,d2
+	; Proper y-wrap handling end
 
 	.chk_left:
 		btst	#bitL,d4					; is left being held?
@@ -234,9 +255,12 @@ Debug_ChgItem:
 
 		lea     (v_sonspeedmax).w,a2				; Load Sonic_top_speed into a2
 		jsr		(ApplySpeedSettings).l				; Fetch Speed settings
+		cmpi.w	#LevelYWrapTop,(v_limittopdb).w		; is the level supposed to y-wrap?
+		beq.s	.update_HUD							; if yes, branch
 		move.w	(v_limittopdb).w,(v_limittop).w		; restore level boundaries
 		move.w	(v_limitbtmdb).w,(v_limitbtm_target).w
 
+	.update_HUD:
 	; HUD resets
 		jsr		(Hud_Base).l						; reload basic HUD gfx	-- RetroKoH Debug Mode Improvement
 		move.b	#1,(f_ringcount).w					; update ring counter
@@ -286,7 +310,7 @@ Debug_RestartMusic:
 		cmpi.w	#(id_LZ<<8)+3,(v_zone).w		; check if level is SBZ3
 		bne.s	.music
 		move.b	#id_SBZ,d0						; play SBZ music instead
-.music:
+	.music:
 		lea		(MusicList).l,a1
 		move.b	(a1,d0.w),d0
 ; ------------------------------------------------------------------------
@@ -300,32 +324,32 @@ Debug_RestartMusic:
 		btst	#sta2ndInvinc,(v_player+obStatus2nd).w	; is Sonic invincible?
 		beq.s	.notinvinc								; if not, branch
 
-.playinvinc:
+	.playinvinc:
 		move.w	#bgm_Invincible,d0
 
-.notinvinc:
+	.notinvinc:
 		cmpi.w	#(id_SBZ<<8)+2,(v_zone).w		; check if level is FZ
 		bne.s	.notfinalzone
 		move.w	#bgm_FZ,d0						; play FZ music instead
 		bra.s	.playselected
 
-.notfinalzone:
+	.notfinalzone:
 		tst.b	(f_lockscreen).w				; is Sonic at a boss?
 		beq.s	.finalcheck						; if not, branch
 		move.w	#bgm_Boss,d0
 
-.finalcheck:
+	.finalcheck:
 		cmpi.b	#bgm_FZ,(v_lastbgmplayed).w		; were we playing Final Zone music in SBZ2?
 		beq.s	.dontrestart					; if yes, branch
 
-.playselected:
+	.playselected:
 		cmp.b	(v_lastbgmplayed).w,d0			; was this music already playing?
 		beq.s	.dontrestart
 		move.b	d0,(v_lastbgmplayed).w			; store last played music
 		jmp		(QueueSound1).w					; restart last played music
 	endif
 
-.dontrestart:
+	.dontrestart:
 		rts
 ; End of function Debug_RestartMusic
 
@@ -349,7 +373,7 @@ Debug_SS_Main:	; Routine 0
 		bhi.s	.noreset					; if not, branch
 		move.b	d0,(v_debugitem).w			; back to start of list
 
-.noreset:
+	.noreset:
 		bsr.w	Debug_ShowItem
 		move.b	#12,(v_debugxspeed).w
 		move.b	#1,(v_debugyspeed).w
@@ -379,7 +403,7 @@ Debug_SpecialControl:
 		bra.w	.chgitem
 ; ===========================================================================
 
-.dirheld:
+	.dirheld:
 		subq.b	#1,(v_debugxspeed).w
 		bne.s	.skipdir
 		move.b	#1,(v_debugxspeed).w
@@ -387,10 +411,10 @@ Debug_SpecialControl:
 		bne.s	.dirpressed
 		move.b	#-1,(v_debugyspeed).w
 
-.dirpressed:
+	.dirpressed:
 		move.b	(v_jpadheld_actual).w,d4
 
-.skipdir:
+	.skipdir:
 		moveq	#0,d1
 		move.b	(v_debugyspeed).w,d1
 		addq.w	#1,d1
@@ -404,7 +428,7 @@ Debug_SpecialControl:
 		bcc.s	.notup
 		moveq	#0,d2
 
-.notup:
+	.notup:
 		btst	#bitDn,d4			; is down being	pressed?
 		beq.s	.notdown			; if not, branch
 		add.l	d1,d2
@@ -412,23 +436,23 @@ Debug_SpecialControl:
 		blo.s	.notdown
 		move.l	#$7FF0000,d2
 
-.notdown:
+	.notdown:
 		btst	#bitL,d4
 		beq.s	.notleft
 		sub.l	d1,d3
 		bcc.s	.notleft
 		moveq	#0,d3
 
-.notleft:
+	.notleft:
 		btst	#bitR,d4
 		beq.s	.notright
 		add.l	d1,d3
 
-.notright:
+	.notright:
 		move.l	d2,obY(a0)
 		move.l	d3,obX(a0)
 
-.chgitem:
+	.chgitem:
 		btst	#bitA,(v_jpadheld_actual).w	; is button A pressed?
 		beq.s	.createitem				; if not, branch
 		btst	#bitC,(v_jpadpressed_actual).w	; is button C pressed?
@@ -439,7 +463,7 @@ Debug_SpecialControl:
 		bra.s	.display
 ; ===========================================================================
 
-.nextitem:
+	.nextitem:
 		btst	#bitA,(v_jpadpressed_actual).w	; is button A pressed?
 		beq.s	.createitem				; if not, branch
 		addq.b	#1,(v_debugitem).w		; go forwards 1 item
@@ -447,11 +471,11 @@ Debug_SpecialControl:
 		bhi.s	.display
 		clr.b	(v_debugitem).w			; loop back to first item
 
-.display:
+	.display:
 		bra.w	Debug_ShowItem
 ; ===========================================================================
 
-.createitem:
+	.createitem:
 		btst	#bitC,(v_jpadpressed_actual).w		; is button C pressed?
 		beq.s	.backtonormal				; if not, branch
 
@@ -474,10 +498,10 @@ Debug_SpecialControl:
 	; If last entry, instead set (a1) to 00
 		move.b	(a2,d0.w),(a1)				; Place block
 
-.stayindebug:
+	.stayindebug:
 		rts
 
-.backtonormal:
+	.backtonormal:
 	; RetroKoH Debug Mode Fix
 		btst	#bitB,(v_jpadpressed_actual).w				; is button B pressed?
 		beq.s	.stayindebug						; if not, branch

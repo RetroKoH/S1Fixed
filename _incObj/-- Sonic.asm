@@ -166,6 +166,12 @@ Sonic_Control:	; Routine 2
 		move.w	Sonic_Modes(pc,d0.w),d1
 		jsr		Sonic_Modes(pc,d1.w)			; handle player control, physics, etc.
 
+		; S2 and S3K perform this under .player_locked, but we won't (for now).
+		; Objects such as the SBZ pipes manage Sonic's Y while he's locked.
+		cmpi.w	#LevelYWrapTop,(v_limittop).w	; does the level wrap vertically?
+		bne.s	.player_locked					; if not, branch
+		andi.w	#LevelYWrapMask,obY(a0)			; wrap Sonic's position
+
 	.player_locked:
 		bsr		Sonic_Display					; display sprite, update invincibility/speed shoes
 
@@ -2886,6 +2892,11 @@ Sonic_Hurt_Normal:
 		subi.w	#$20,obVelY(a0)			; apply less gravity
 
 	.not_underwater:
+		cmpi.w	#LevelYWrapTop,(v_limittop).w	; does the level wrap vertically?
+		bne.s	.noYWrap						; if not, branch
+		andi.w	#LevelYWrapMask,obY(a0)			; wrap Sonic's position
+	
+	.noYWrap:
 		bsr.w	Sonic_HurtStop
 		bsr.w	Sonic_LevelBound
 		bsr.w	Sonic_RecordPosition
