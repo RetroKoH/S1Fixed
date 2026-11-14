@@ -17,10 +17,9 @@
 # To-Do for Feature Release
  Super Sonic Sprites (RetroKoH)  
  Toggleable: SBZ3 Level Art (Rohan)  
- Badniks auto-destroy at End-of-level; no points. (RetroKoH)  
+ Toggleable: Badniks auto-destroy at End-of-level; no points. (RetroKoH)  
  Sonic doesn't take damage once he is sent to the right at EoL (RetroKoH)  
  Add Goggle sprites; Let them extend underwater time (RetroKoH)  
  Add Title Card file w/ missing letters for users  
- Proper Y-Wrapping (RetroKoH)  
  Subsprites for additional objects  
  Certain Beta Zone elements  
