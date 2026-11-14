@@ -391,3 +391,15 @@ cmp_addr macro addr,src,dest
 		and.l	src,dest			; isolate the code address
 		_cmpi.l	addr,dest
 		endm
+
+; ---------------------------------------------------------------------------
+; macro for folding a Y distance in vertically-wrapped levels
+;
+; This helps prevent camera bugs seen in Sonic 2 and 3K, where looking up/down
+; then moving beyond screen bounds causes the screen to lose the player
+; ---------------------------------------------------------------------------
+wrap_y_distance: macro distance
+        addi.w  #LevelYWrapSize/2,distance
+        andi.w  #LevelYWrapMask,distance
+        subi.w  #LevelYWrapSize/2,distance
+        endm

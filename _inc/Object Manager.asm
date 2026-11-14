@@ -100,25 +100,23 @@ OPL_ClrList:
 ; ---------------------------------------------------------------------------
 
 OPL_Next:
-		tst.w	(v_limittop).w			; does this level y-wrap? Was v_limitbtm_target; I think I bugged things
-		bpl.s	ObjMan_Main_NoYWrap		; if not, branch
-		lea		(ChkLoadObj_YWrap).l,a6	; set object loading routine
+		cmpi.w	#LevelYWrapTop,(v_limittop).w	; does this level y-wrap?
+		bne.s	ObjMan_Main_NoYWrap				; if not, branch
+		lea		(ChkLoadObj_YWrap).l,a6			; set object loading routine
 		move.w	(v_screenposy).w,d3
-		andi.w	#$FF80,d3				; get coarse value
+		andi.w	#LevelYWrapSize-$80,d3			; get coarse value
 		move.w	d3,d4
-		addi.w	#$200,d4				; set lower boundary
-		subi.w	#$80,d3					; set upper boundary
-		bpl.s	OPL4					; branch, if upper boundary > 0
-		andi.w	#$7FF,d3				; wrap value
+		addi.w	#$200,d4						; set lower end of load window
+		subi.w	#$80,d3							; set upper end of load window
+		bpl.s	OPL4							; branch, if upper boundary > 0
+		andi.w	#LevelYWrapMask,d3				; wrap value
 		bra.s	ObjMan_Next_Cont
 ; ---------------------------------------------------------------------------
 
 OPL4:	
-		move.w	#$7FF,d0
-		addq.w	#1,d0
-		cmp.w	d0,d4
-		bls.s	OPL5					; branch, if lower boundary < $7FF
-		andi.w	#$7FF,d4				; wrap value
+		cmpi.w	#LevelYWrapSize,d0
+		blo.s	OPL5							; branch, if lower boundary < $7FF
+		andi.w	#LevelYWrapMask,d4				; wrap value
 		bra.s	ObjMan_Next_Cont
 ; ---------------------------------------------------------------------------
 
@@ -237,43 +235,32 @@ ObjPosLoad_SameXRange:
 		move.w	d6,d3
 		cmp.w	(v_screenposy_last).w,d6	; is the y range the same as last time?
 		beq.w	ObjPosLoad_SameYRange		; if yes, branch
-		bge.s	ObjPosLoad_GoingDown		; if the player is moving down
- 
+		
 	; if the player is moving up
-		tst.w	(v_limittop).w	; does the level y-wrap?
-		bpl.s	ObjMan_GoingUp_NoYWrap	; if not, branch
-		tst.w	d6
-		bne.s	ObjMan_GoingUp_YWrap
-		cmpi.w	#$80,(v_screenposy_last).w
-		bne.s	ObjMan_GoingDown_YWrap
+		cmpi.w	#LevelYWrapTop,(v_limittop).w	; does the level y-wrap?
+		bne.s	ObjMan_GoingUp_NoYWrap		; if not, branch
+		move.w	d6,d0
+		sub.w	(v_screenposy_last).w,d0
+		wrap_y_distance d0 
+		bpl.s	ObjMan_GoingDown_YWrap		; if the player is moving down
  
 ObjMan_GoingUp_YWrap:
-		subi.w	#$80,d3				; look one chunk up
-		bpl.s	ObjPosLoad_YCheck	; go to y check, if camera y position >= $80
-		andi.w	#$7FF,d3			; else, wrap value
+		subi.w	#$80,d3						; look one chunk up
+		andi.w	#LevelYWrapMask,d3			; wrap value
 		bra.s	ObjPosLoad_YCheck
- 
 ; ---------------------------------------------------------------------------
  
 ObjMan_GoingUp_NoYWrap:
-		subi.w	#$80,d3					; look one chunk up
-		bmi.w	ObjPosLoad_SameYRange	; don't do anything if camera y position is < $80
+		cmp.w	(v_screenposy_last).w,d6
+		bge.s	ObjMan_GoingDown_NoYWrap
+		subi.w	#$80,d3						; look one chunk up
+		bmi.w	ObjPosLoad_SameYRange		; don't do anything if camera y position is < $80
 		bra.s	ObjPosLoad_YCheck
 ; ---------------------------------------------------------------------------
  
-ObjPosLoad_GoingDown:
-		tst.w	(v_limittop).w				; does the level y-wrap?
-		bpl.s	ObjMan_GoingDown_NoYWrap	; if not, branch
-		tst.w	(v_screenposy_last).w
-		bne.s	ObjMan_GoingDown_YWrap
-		cmpi.w	#$80,d6
-		bne.s	ObjMan_GoingUp_YWrap
- 
 ObjMan_GoingDown_YWrap:
-		addi.w	#$180,d3			; look one chunk down
-		cmpi.w	#$7FF,d3
-		bcs.s	ObjPosLoad_YCheck	; go to  check, if camera y position < $7FF
-		andi.w	#$7FF,d3			; else, wrap value
+		addi.w	#$180,d3					; look one chunk down
+		andi.w	#LevelYWrapMask,d3			; wrap value
 		bra.s	ObjPosLoad_YCheck
 ; ---------------------------------------------------------------------------
  

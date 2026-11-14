@@ -20,7 +20,6 @@ Init_SpriteTable:
 		dbf		d2,.loop
 		move.b	d0,-5(a1)
 		rts
-
 ; ---------------------------------------------------------------------------
 
 
@@ -102,6 +101,7 @@ loc_1AD54:
 		move.w	d2,d3
 		add.w	d2,d2
 		addi.w	#224,d2
+		andi.w	#LevelYWrapMask,d1		; wrap vertically (should I use wrap_y_distance macro?)
 		cmp.w	d2,d1
 		bhs.s	BuildSprites_NextObj	; if the object is below the screen
 		addi.w	#128,d1
@@ -114,6 +114,7 @@ BuildDrawScreenY:
 
 BuildAssumeHeight:
 		addi.w	#$80,d1
+		andi.w	#LevelYWrapMask,d1		; wrap vertically
 		cmpi.w	#$60,d1
 		blo.s	BuildSprites_NextObj
 		cmpi.w	#$180,d1
@@ -203,6 +204,7 @@ loc_1AEA2:
 		move.w	d2,d3
 		add.w	d2,d2
 		addi.w	#$E0,d2
+		andi.w	#LevelYWrapMask,d1		; wrap vertically
 		cmp.w	d2,d1
 		bhs.w	BuildSprites_NextObj
 		addi.w	#$80,d1
@@ -211,6 +213,7 @@ loc_1AEA2:
 
 BuildMultiAssumeHeight:
 		addi.w	#$80,d1
+		andi.w	#LevelYWrapMask,d1		; wrap vertically
 		cmpi.w	#$60,d1
 		blo.w	BuildSprites_NextObj
 		cmpi.w	#$180,d1
@@ -257,6 +260,7 @@ loc_1AF2A:
 		addi.w	#128,d0
 		sub.w	4(a3),d1
 		addi.w	#128,d1
+		andi.w	#LevelYWrapMask,d1		; wrap vertically
 
 loc_1AF46:
 		moveq	#0,d4
