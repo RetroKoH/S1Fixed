@@ -129,6 +129,8 @@ Debug_Control:
 		beq.s	.chk_down					; if not, branch
 		sub.l	d1,d2						; move Sonic up
 		bpl.s	.chk_down
+		cmpi.w	#LevelYWrapTop,d0			; is level vertically wrapped?
+		beq.s	.chk_down					; if yes, don't clamp
 		moveq	#0,d2						; keep Sonic within top boundary
 
 	.chk_down:
@@ -137,8 +139,8 @@ Debug_Control:
 		add.l	d1,d2						; move Sonic down
 
 	.check_y:
-		cmpi.w	#LevelYWrapTop,d0
-		beq.s	.wrap_y
+		cmpi.w	#LevelYWrapTop,d0			; is level vertically wrapped?
+		beq.s	.wrap_y						; if yes, don't clamp
 		btst	#bitDn,d4
 		beq.s	.chk_left
 		cmpi.l	#$7FF0000,d2				; is Sonic above $7FF? (bottom boundary)

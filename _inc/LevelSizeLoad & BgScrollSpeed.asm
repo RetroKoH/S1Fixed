@@ -46,7 +46,7 @@ LevelSizeArray:
 		; LZ
 		dc.w $0000, $19BF, $0000, $0530
 		dc.w $0000, $10AF, $0000, $0720
-		dc.w $0000, $202F, $FF00, $0800
+		dc.w $0000, $202F, LevelYWrapTop, LevelYWrapSize
 		dc.w $0000, $20BF, $0000, $0720
 		; MZ
 		dc.w $0000, $17BF, $0000, $01D0
@@ -65,7 +65,7 @@ LevelSizeArray:
 		dc.w $0000, $2EC0, $0000, $0620
 		; SBZ
 		dc.w $0000, $21C0, $0000, $0720
-		dc.w $0000, $1E40, $FF00, $0800
+		dc.w $0000, $1E40, LevelYWrapTop, LevelYWrapSize
 		dc.w $2080, $2460, $0510, $0510
 		dc.w $0000, $3EC0, $0000, $0720
 		zonewarning LevelSizeArray,$20
