@@ -242,6 +242,8 @@ Touch_Rings:
 
 	.chktopedge:
 		move.w	2(a1),d0						; get ring Y pos
+		cmpi.w	#LevelYWrapTop,(v_limittop).w
+		beq.s	.wrap_y
 		sub.w	d1,d0							; get ring top edge pos
 		sub.w	d3,d0							; subtract Sonic's top edge pos
 		bhs.s	.above							; if Sonic's above the ring, branch
@@ -253,6 +255,14 @@ Touch_Rings:
 	.above:
 		cmp.w	d5,d0							; has Sonic crossed the ring?
 		bhi.s	.nextring						; if he has, branch
+		bra.s	.chkshield
+
+	.wrap_y:
+		sub.w	d3,d0
+		add.w	d1,d0							; ring's bottom relative to Sonic's top
+		andi.w	#LevelYWrapMask,d0
+		sub.w	d6,d0							; subtract the ring's full height
+		bhs.s	.above
 
 	.chkshield:
 	if ShieldsMode

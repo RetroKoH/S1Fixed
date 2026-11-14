@@ -49,7 +49,7 @@ ReactToItem:
 		sub.w	d5,d3							; d3 = y pos of Sonic's top edge
 
 	; Mercury Ducking Size Fix
-	if SpinDashEnabled==1	; Mercury Spin Dash
+	if SpinDashEnabled	; Mercury Spin Dash
 		cmpi.b	#aniID_SpinDash,obAnim(a0)		; is player spindashing?
 		beq.s	.short							; if not, branch
 	endif	; Spin Dash End
@@ -110,6 +110,10 @@ ReactToItem:
 		moveq	#0,d1
 		move.b	(a2)+,d1						; get height value from Touch_Sizes
 		move.w	obY(a1),d0						; get object's y_pos
+
+		cmpi.w	#LevelYWrapTop,(v_limittop).w
+		beq.s	.wrap_y
+
 		sub.w	d1,d0							; subtract object's height
 		sub.w	d3,d0							; subtract player's bottom collision boundary
 		bcc.s	.sonic_above					; if bottom of player is under the object, branch
@@ -122,6 +126,17 @@ ReactToItem:
 	.sonic_above:
 		cmp.w	d5,d0							; is top of player under the object?
 		bhi.s	.next							; if so, loop and check next object
+		bra.s	Touch_ChkValue
+; ===========================================================================
+
+	.wrap_y:
+		sub.w	d3,d0
+		add.w	d1,d0							; object's bottom relative to Sonic's top
+		andi.w	#LevelYWrapMask,d0
+		add.w	d1,d1							; full object height
+		sub.w	d1,d0							; object's top relative to Sonic's top
+		bhs.s	.sonic_above					; test against Sonic's bottom
+		add.w	d1,d0							; restore the bottom-edge offset
 		bra.s	Touch_ChkValue
 ; ===========================================================================
 

@@ -49,6 +49,10 @@ Surf_Action:
 
 		tst.b	obSurf_Freeze(a0)
 		bne.s	.stopped
+	; S1SC Water Surface Fix
+	;	cmpi.w	#LevelYWrapSize,obY(a0)				; is water surface above max level height?
+	;	bgt.s	.norender							; if not, branch (Should prevent y-wrap issue)
+	; S1SC Water Surface Fix end
 		btst	#bitStart,(v_jpadpressed_actual).w	; is Start button pressed?
 		beq.s	.animate							; if not, branch
 		addq.b	#3,d2								; use different	frames
