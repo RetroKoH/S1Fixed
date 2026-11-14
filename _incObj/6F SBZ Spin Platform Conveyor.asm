@@ -145,6 +145,14 @@ SpinC_Spawner:
 		move.w	(a2)+,obY(a1)					; set y-position
 		move.w	(a2)+,d0
 		move.b	d0,obSubtype(a1)				; set subtype, discarding upper byte
+	; Selbi Spinning Platform init fix
+        andi.b	#3,d0							; subtype 0-2 is not spinny state, 3 is spinny
+        cmpi.b	#3,d0							; is this a lower path platform?
+        beq.s	.notLower						; if yes, branch (keep spinning)
+        move.b	#1,obAnim(a1)					; set to not spinny
+	; Spinning Platform init fix end
+
+	.notLower:
 		subq	#1,d1							; decrement for the first platform created
 		bmi.s	.endloop						; if, somehow, only one platform is needed, skip
 
@@ -166,6 +174,14 @@ SpinC_Spawner:
 		move.w	(a2)+,obY(a1)					; set y-position
 		move.w	(a2)+,d0
 		move.b	d0,obSubtype(a1)				; set subtype, discarding upper byte
+	; Selbi Spinning Platform init fix
+        andi.b	#3,d0							; subtype 0-2 is not spinny state, 3 is spinny
+        cmpi.b	#3,d0							; is this a lower path platform?
+        beq.s	.notLower						; if yes, branch (keep spinning)
+        move.b	#1,obAnim(a1)					; set to not spinny
+	; Spinning Platform init fix end
+
+	.notLower:
 		dbf		d1,.loop						; repeat for number of platforms
 
 	.endloop:
