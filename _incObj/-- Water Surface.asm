@@ -38,6 +38,10 @@ Surf_Action:
 		move.w	d1,obX(a0)							; match	obj x-position to screen position
 		move.w	(v_waterpos_actual).w,d1
 		move.w	d1,obY(a0)							; match	obj y-position to water	height
+	; S1SC LZ3 Water Surface Fix
+		cmpi.w	#LevelYWrapSize,d1					; is water surface above max level height?
+		bgt.s	.norender							; if not, branch (Should prevent y-wrap issue)
+	; S1SC LZ3 Water Surface Fix end
 	; TomatoWave Subsprite Mod
 		lea		subspr_posdata(a0),a2				; starting address for subsprite position data
 		move.w	obX(a0),(a2)
@@ -49,15 +53,15 @@ Surf_Action:
 
 		tst.b	obSurf_Freeze(a0)
 		bne.s	.stopped
-	; S1SC Water Surface Fix
-	;	cmpi.w	#LevelYWrapSize,obY(a0)				; is water surface above max level height?
-	;	bgt.s	.norender							; if not, branch (Should prevent y-wrap issue)
-	; S1SC Water Surface Fix end
 		btst	#bitStart,(v_jpadpressed_actual).w	; is Start button pressed?
 		beq.s	.animate							; if not, branch
 		addq.b	#3,d2								; use different	frames
 		move.b	#1,obSurf_Freeze(a0)				; stop animation
 		bra.s	.display
+
+	.norender:
+		bclr	#renVisible,obRender(a0)			; sprite not visible
+		rts
 ; ===========================================================================
 
 	.stopped:

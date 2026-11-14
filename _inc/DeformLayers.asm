@@ -196,8 +196,11 @@ Deform_LZ:
 		move.b	(v_lz_deform).w,d3						; load wave-scroll timer
 		addi.w	#$80,(v_lz_deform).w					; increase wave-scroll timer
 		move.w	#224,d2									; prepare water-line count
-		move.w	(v_waterpos_actual).w,d1						; load water line position
-		sub.w	(v_screenposy).w,d1						; minus FG Y position
+	; LZ3 Palette Split fix
+		bsr.s	LZWaterCameraY
+		neg.w	d1
+		add.w	(v_waterpos_actual).w,d1				; water Y minus camera Y
+	; LZ Palette Split fix end
 		bmi.s	.water									; if the screen is already underwater, branch
 		cmp.w	d2,d1									; is the water line below the screen?
 		ble.s	.nowater								; if not, branch
@@ -246,6 +249,20 @@ Deform_LZ:
 
 .finish:
 		rts												; return
+; ===========================================================================
+
+; ---------------------------------------------------------------------------
+; Return the camera's Y position (wrapped)
+; ---------------------------------------------------------------------------
+
+LZWaterCameraY:
+		move.w	(v_screenposy).w,d1
+		cmpi.w	#LevelYWrapTop,(v_limittop).w			; is level vertically wrapped?
+		bne.s	.done									; if not, branch
+		andi.w	#LevelYWrapMask,d1						; wrap screen Y-pos
+
+	.done:
+		rts
 ; ---------------------------------------------------------------------------
 ; Deformation conversion documentation and macro
 ; IIII IIAA AAAA AAAA
