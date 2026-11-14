@@ -6,7 +6,10 @@ obSSSonic_UpDownTime:	equ objoff_30		; 1 byte  | time until UP/DOWN can be trigg
 obSSSonic_ReverseTime:	equ objoff_31		; 1 byte  | time until Reverse can be triggered again
 obSSSonic_GhostStatus:	equ objoff_32		; 1 byte  | status of ghost blocks (0 = ghost; 1 = passed; 2 = solid)
 obSSSonic_SSItemID:		equ objoff_33		; 1 byte  | item id Sonic is touching
+; objoff_34 is reserved
 obSSSonic_SSItemAddr:	equ objoff_3A		; 2 bytes | RAM address of item in layout Sonic is touching
+
+SpSon_ItemAddrBase:	equ (v_ssbuffer1&$FF0000)-1
 ; ---------------------------------------------------------------------------
 
 SonicSpecial:
@@ -486,7 +489,7 @@ SpSon_ChkForSolids: ;sub_1BD30:
 
 	.solidFound:
 		move.b	d4,obSSSonic_SSItemID(a0)		; get id of wall item
-		move.l	a1,obSSSonic_SSItemAddr(a0)		; get address within layout
+		move.w	a1,obSSSonic_SSItemAddr(a0)		; get address within layout
 		moveq	#-1,d5							; set collision flag
 		rts	
 ; End of function SpSon_ChkForSolids
@@ -706,8 +709,8 @@ SpSon_ChkItems_Solid:
 SpSon_ChkBumper:
 		cmpi.b	#SSBlock_Bumper,d0				; is the item a	bumper?
 		bne.s	SpSon_GOAL						; if not, branch
-		move.l	obSSSonic_SSItemAddr(a0),d1		; get address of bumper within layout
-		subi.l	#$FF0001,d1
+		move.w	obSSSonic_SSItemAddr(a0),d1		; get address of bumper within layout
+		subq.w	#1,d1
 		move.w	d1,d2
 		andi.w	#$7F,d1
 		mulu.w	#$18,d1
@@ -731,9 +734,9 @@ SpSon_ChkBumper:
 		bsr.w	SS_RemoveCollectedItem
 		bne.s	.no_slot						; branch if not found
 		move.b	#2,(a2)							; set update type
-		move.l	obSSSonic_SSItemAddr(a0),d0
-		subq.l	#1,d0
-		move.l	d0,4(a2)						; set address within layout to update
+		lea		(SpSon_ItemAddrBase).l,a1
+		adda.w	obSSSonic_SSItemAddr(a0),a1
+		move.l	a1,4(a2)						; set address within layout to update
 
 	.no_slot:
 		move.w	#sfx_Bumper,d0
@@ -762,8 +765,8 @@ SpSon_UPblock:
 		btst	#6,(v_ssrotate+1).w				; is SS rotation speed $40? (minimum)
 		beq.s	.keep_speed						; if not, branch
 		asl		(v_ssrotate).w					; increase stage rotation speed
-		movea.l	obSSSonic_SSItemAddr(a0),a1
-		subq.l	#1,a1
+		lea		(SpSon_ItemAddrBase).l,a1
+		adda.w	obSSSonic_SSItemAddr(a0),a1
 		move.b	#SSBlock_DOWN,(a1)				; change item to a "DOWN" block
 
 	.keep_speed:
@@ -780,8 +783,8 @@ SpSon_DOWNblock:
 		btst	#6,(v_ssrotate+1).w				; is SS rotation speed $40? (minimum)
 		bne.s	.keep_speed						; if not, branch
 		asr		(v_ssrotate).w					; reduce stage rotation speed
-		movea.l	obSSSonic_SSItemAddr(a0),a1
-		subq.l	#1,a1
+		lea		(SpSon_ItemAddrBase).l,a1
+		adda.w	obSSSonic_SSItemAddr(a0),a1
 		move.b	#SSBlock_UP,(a1)				; change item to an "UP" block
 
 	.keep_speed:
@@ -798,9 +801,9 @@ SpSon_Rblock:
 		bsr.w	SS_RemoveCollectedItem
 		bne.s	.no_slot						; branch if not found
 		move.b	#4,(a2)
-		move.l	obSSSonic_SSItemAddr(a0),d0
-		subq.l	#1,d0
-		move.l	d0,4(a2)						; update the stage layout
+		lea		(SpSon_ItemAddrBase).l,a1
+		adda.w	obSSSonic_SSItemAddr(a0),a1
+		move.l	a1,4(a2)						; update the stage layout
 
 	.no_slot:
 		neg.w	(v_ssrotate).w					; reverse stage rotation
@@ -819,8 +822,8 @@ SpSon_ChkGlass:
 		bsr.w	SS_RemoveCollectedItem
 		bne.s	.no_slot
 		move.b	#6,(a2)
-		movea.l	obSSSonic_SSItemAddr(a0),a1
-		subq.l	#1,a1
+		lea		(SpSon_ItemAddrBase).l,a1
+		adda.w	obSSSonic_SSItemAddr(a0),a1
 		move.l	a1,4(a2)
 		move.b	(a1),d0
 		addq.b	#1,d0							; change glass type when touched
