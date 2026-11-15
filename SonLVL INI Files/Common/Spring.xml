@@ -19,26 +19,45 @@
     </ImageFromMappings>
   </Images>
   <Subtypes>
-    <Subtype id="00" name="Red Up" image="redvert" />
-    <Subtype id="02" name="Yellow Up" image="yelvert" />
+    <Subtype id="00" name="Red Vertical" image="redvert" />
+    <Subtype id="02" name="Yellow Vertical" image="yelvert" />
     <Subtype id="10" name="Red Horizontal" image="redhorz" />
     <Subtype id="12" name="Yellow Horizontal" image="yelhorz" />
-    <Subtype id="20" name="Red Down" image="redvert" />
-    <Subtype id="22" name="Yellow Down" image="yelvert" />
   </Subtypes>
   <Properties>
-    <BitsProperty name="Direction" type="SpringDirection" startbit="4" length="2" />
+    <BitsProperty name="Axis" type="SpringAxis" startbit="4" length="1" />
     <BitsProperty name="Color" type="SpringColor" startbit="1" length="1" />
   </Properties>
   <Enums>
-    <Enum name="SpringDirection">
-      <EnumMember name="Up" />
+    <Enum name="SpringAxis">
+      <EnumMember name="Vertical" />
       <EnumMember name="Horizontal" />
-      <EnumMember name="Down" />
     </Enum>
     <Enum name="SpringColor">
       <EnumMember name="Red" />
       <EnumMember name="Yellow" />
     </Enum>
   </Enums>
+  <Display>
+    <DisplayOption>
+      <Condition property="Axis" value="Vertical" />
+      <Condition property="Color" value="Red" />
+      <ImageRef image="redvert" />
+    </DisplayOption>
+    <DisplayOption>
+      <Condition property="Axis" value="Vertical" />
+      <Condition property="Color" value="Yellow" />
+      <ImageRef image="yelvert" />
+    </DisplayOption>
+    <DisplayOption>
+      <Condition property="Axis" value="Horizontal" />
+      <Condition property="Color" value="Red" />
+      <ImageRef image="redhorz" />
+    </DisplayOption>
+    <DisplayOption>
+      <Condition property="Axis" value="Horizontal" />
+      <Condition property="Color" value="Yellow" />
+      <ImageRef image="yelhorz" />
+    </DisplayOption>
+  </Display>
 </ObjDef>
