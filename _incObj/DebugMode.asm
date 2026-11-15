@@ -197,8 +197,7 @@ Debug_ChgItem:
 		beq.s	.backtonormal						; if not, branch
 		jsr		(FindFreeObj).l
 		bne.s	.backtonormal
-		clr.b	(v_objstate+2).w					; Mercury Debug Improvements -- Allows us to place more rings/boxes, etc.
-		; The above line causes an issue with certain in-level objects. Check S3K code to fix this.
+		; Mercury's fix is not needed with the S3K Objects Manager
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.b	obRender(a0),obStatus(a1)
