@@ -36,8 +36,8 @@ Mon_Main:	; Routine 0
 
 	; ProjectFM S3K Objects Manager
 		move.w	obRespawnAddr(a0),d0		; get address in respawn table
+		beq.s	.notbroken					; a debug-placed monitor starts intact
 		movea.w	d0,a2						; load address into a2
-		;bclr	#7,(a2)						; clear respawn table entry, so object can be loaded again
 		btst	#0,(a2)						; has monitor been broken?
 	; S3K Objects Manager End
 
@@ -310,10 +310,12 @@ Mon_BreakOpen:	; Routine 4
 	.fail:
 	; ProjectFM S3K Objects Manager
 		move.w	obRespawnAddr(a0),d0		; get address in respawn table
+		beq.s	.setbroken					; skip for debug monitors
 		movea.w	d0,a2						; load address into a2
 		bset	#0,(a2)
 	; S3K Objects Manager End
 
+	.setbroken:
 		move.b	#monLastID,obAnim(a0)		; set monitor type to broken
 		bra.w	DisplaySprite
 ; ===========================================================================
