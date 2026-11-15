@@ -28,14 +28,14 @@ SolidObject:
 		cmp.w	d2,d0						; has Sonic moved off the right?
 		blo.s	.stand						; if not, branch
 
-.leave:
+	.leave:
 		bclr	#staOnObj,obStatus(a1)		; clear Sonic's standing flag
 		; Sonic 2 sets Sonic's in-air flag here
 		bclr	#staSonicOnObj,obStatus(a0)	; clear object's standing flag -- Removed obSolid
 		moveq	#0,d4
 		rts	
 
-.stand:
+	.stand:
 		move.w	d4,d2
 		jsr		(MvSonicOnPtfm).l
 		moveq	#0,d4
@@ -178,7 +178,7 @@ loc_FB0E:
 		move.w	d0,d5
 		neg.w	d5
 
-.isright:
+	.isright:
 		move.w	d3,d1
 		cmp.w	d3,d2		; is Sonic below centre of object?
 		bhs.s	.isbelow	; if yes, branch
@@ -188,7 +188,7 @@ loc_FB0E:
 		move.w	d3,d1
 		neg.w	d1
 
-.isbelow:
+	.isbelow:
 		cmp.w	d1,d5
 		bhi.w	Solid_TopBottom	; if Sonic hits top or bottom, branch
 		cmpi.w	#4,d1
@@ -238,6 +238,22 @@ Solid_Centre:
 Solid_SideAir:
 
 	if WallJumpEnabled	; Mercury Wall Jump
+	; KoH Mid-air horizontal spring fix
+		cmp_addr #Springs,obAddr(a0),d0	; is Sonic wall-jumping on a spring?
+		bne.s	.wall_jump				; if not, branch
+		cmpi.b	#4,obRoutine(a0)		; check for Spring_LR routine
+		bne.s	.wall_jump				; if not, branch
+		moveq	#btnL,d0				; approach a right-facing spring
+		btst	#staFlipX,obStatus(a0)
+		beq.s	.check_spring_face		; if right-facing, branch
+		moveq	#btnR,d0				; approach a left-facing spring
+
+	.check_spring_face:
+		cmp.b	d0,d1
+		beq.s	Solid_SideAir2			; don't latch on the cap of the spring
+	; Mid-air horizontal spring fix
+
+	.wall_jump:
 		move.l	a0,-(sp)
 		movea.l	a1,a0
 		bsr.w	Sonic_WallJump
