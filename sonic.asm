@@ -4319,6 +4319,8 @@ BossFlash:
 		include	"_anim/Prison Capsule.asm"
 
 		include	"_incObj/sub ReactToItem.asm"
+		
+		include	"_incObj/sub ReactToHazardTiles.asm"		; Used for MZ Lava
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	show the special stage layout
