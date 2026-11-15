@@ -556,10 +556,10 @@ HurtSonic:
 ; ---------------------------------------------------------------------------
 
 KillSonic:
-		tst.w	(v_debuguse).w					; is debug mode	active?
-		bne.s	.dontdie						; if yes, branch
-
 	if HUDInSpecialStage	; Mercury Time Limit In Special Stage
+		tst.w	(v_debuguse).w					; is debug mode	active?
+		bne.w	.dontdie						; if yes, branch
+
 		; test if it's Special Stage Sonic that's trying to die (d1 = obAddr)?
 		cmp_addr	#SonicSpecial,obAddr(a0),d1
 		bne.s	.normal							; if not, branch
@@ -577,6 +577,9 @@ KillSonic:
 		rts	
 
 	.normal:
+	else
+		tst.w	(v_debuguse).w					; is debug mode	active?
+		bne.s	.dontdie						; if yes, branch
 	endif	; Time Limit In Special Stage End
 
 	if CoolBonusEnabled
