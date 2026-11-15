@@ -5,7 +5,7 @@
 obSpring_Power:			equ objoff_30		; 2 bytes | power of current spring
 ; ---------------------------------------------------------------------------
 
-obSpring_Powerers:
+obSpring_Powers:
 		dc.w -$1000		; power	of red spring
 		dc.w -$A00		; power	of yellow spring
 ; ===========================================================================
@@ -31,21 +31,18 @@ Spring:
 ; ---------------------------------------------------------------------------
 
 	.not_horizontal:
-		btst	#5,d0						; does the spring face downwards?
+		btst	#staFlipY,obStatus(a0)		; does the spring face downwards?
 		beq.s	.got_orientation			; if not, branch
-
 		lea		Spring_Dwn(pc),a1
-		bset	#staFlipY,obStatus(a0)
 ; ---------------------------------------------------------------------------
 
 	.got_orientation:
-		btst	#1,d0						; is spring subtype $x2?
-		beq.s	.not_yellow					; if not, branch
-		bset	#5,obGfx(a0)				; use 2nd palette (yellow spring)
+		andi.w	#2,d0						; bit 1 selects color and strength
+		beq.s	.not_yellow					; if not yellow spring, branch for red spring
+		bset	#5,obGfx(a0)				; use yellow spring palette
 
 	.not_yellow:
-		andi.w	#$F,d0						; read only low nybble of subtype (0 or 2)
-		move.w	obSpring_Powerers(pc,d0.w),obSpring_Power(a0) ; get power level
+		move.w	obSpring_Powers(pc,d0.w),obSpring_Power(a0)	; get spring power
 
 		obj_addr a1
 		jmp		(a1)	
@@ -137,7 +134,7 @@ Spring_LR:
 Spring_Dwn:
 		moveq	#27,d1						; width; save 4 cycles - Filter
 		moveq	#8,d2						; height (jumping); save 4 cycles - Filter
-		moveq	#16,d3						; height (walking); save 4 cycles - Filter
+		moveq	#9,d3						; height (walking); save 4 cycles - Filter (Corrected standing height)
 		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject
 		btst	#staSonicOnObj,obStatus(a0)	; is Sonic on top of the spring? (removed obSolid)
