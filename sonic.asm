@@ -3534,7 +3534,7 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 		include	"_anim/Waterfalls.asm"
 
 	if SuperMod
-		include "_incObj/8D Super Sonic Stars.asm"
+		include "_incObj/-- Super Sonic Stars.asm"
 	endif
 
 	if (SpinDashEnabled|SkidDustEnabled)
