@@ -239,9 +239,7 @@ Solid_SideAir:
 
 	if WallJumpEnabled	; Mercury Wall Jump
 	; KoH Mid-air horizontal spring fix
-		cmp_addr #Springs,obAddr(a0),d0	; is Sonic wall-jumping on a spring?
-		bne.s	.wall_jump				; if not, branch
-		cmpi.b	#4,obRoutine(a0)		; check for Spring_LR routine
+		cmp_addr #Spring_LR,obAddr(a0),d0	; is Sonic wall-jumping on a sideways spring?
 		bne.s	.wall_jump				; if not, branch
 		moveq	#btnL,d0				; approach a right-facing spring
 		btst	#staFlipX,obStatus(a0)
