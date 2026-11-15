@@ -68,7 +68,7 @@ ptr_LZDoorVert:			dc.l LZDoorVert
 ptr_Prison:				dc.l Prison
 ptr_LZDoorHoriz:		dc.l LZDoorHoriz
 ptr_MotoBug:			dc.l MotoBug		; $40
-ptr_Springs:			dc.l Springs
+ptr_Spring:				dc.l Spring
 ptr_Newtron:			dc.l Newtron
 ptr_Roller:				dc.l Roller
 ptr_EdgeWalls:			dc.l EdgeWalls
@@ -200,7 +200,7 @@ id_LZDoorVert:			equ ((ptr_LZDoorVert-Obj_Index)/4)+1
 id_Prison:				equ ((ptr_Prison-Obj_Index)/4)+1
 id_LZDoorHoriz:			equ ((ptr_LZDoorHoriz-Obj_Index)/4)+1
 id_MotoBug:				equ ((ptr_MotoBug-Obj_Index)/4)+1			; $40
-id_Springs:				equ ((ptr_Springs-Obj_Index)/4)+1
+id_Spring:				equ ((ptr_Spring-Obj_Index)/4)+1
 id_Newtron:				equ ((ptr_Newtron-Obj_Index)/4)+1
 id_Roller:				equ ((ptr_Roller-Obj_Index)/4)+1
 id_EdgeWalls:			equ ((ptr_EdgeWalls-Obj_Index)/4)+1
