@@ -257,7 +257,9 @@ React_Monitor:
 		tst.b	obJumping(a0)
 		bne.s	.isjumping
 		move.b	#1,obJumping(a0)
-		move.b	#3,obDoubleJumpFlag(a0)		; disable double jumps if we didn't jump
+		if (S3KDoubleJump|DropDashEnabled)
+			move.b	#3,obDoubleJumpFlag(a0)		; disable double jumps if we didn't jump
+		endif
 
 	.isjumping:
 	endif	; end Rebound Mod
@@ -337,7 +339,9 @@ React_Enemy:
 		tst.b	obJumping(a0)
 		bne.s	.isjumping
 		move.b	#1,obJumping(a0)
-		move.b	#3,obDoubleJumpFlag(a0)		; disable double jumps if we didn't jump
+		if (S3KDoubleJump|DropDashEnabled)
+			move.b	#3,obDoubleJumpFlag(a0)		; disable double jumps if we didn't jump
+		endif
 
 	.isjumping:
 	endif	; end Rebound Mod
