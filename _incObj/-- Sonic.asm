@@ -193,6 +193,7 @@ Sonic_Control:	; Routine 2
 		tst.b	obCtrlLock(a0)					; is object collision disabled?
 		bmi.w	Sonic_LoadGfx					; if yes, branch
 		jsr		(ReactToItem).l					; run collisions with other objects
+		jsr		(ReactToHazardTiles).l			; check for interactions with hazard tiles
 	; removed old loop/tunnel handlers
 		bra.w	Sonic_LoadGfx					; load new gfx when Sonic's frame changes
 ; ===========================================================================
