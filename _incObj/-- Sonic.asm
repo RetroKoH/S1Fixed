@@ -106,7 +106,6 @@ Sonic_Control:	; Routine 2
 		endif		; fall from wall into drop dash end
 		
 		if WallDustEnabled	; Mercury Wall Jump Smoke Puff
-			bra.s	.nodec						; skip dust generation
 
 		.skip:
 			move.b	(v_framebyte).w,d0
@@ -134,6 +133,7 @@ Sonic_Control:	; Routine 2
 			move.w	#priority1,obPriority(a1)	; RetroKoH/Devon S3K+ Priority Manager
 			move.b	#4,obDispWid(a1)
 			move.w	#ArtTile_Dust,obGfx(a1)
+		
 		else
 
 		.skip:
@@ -2532,7 +2532,7 @@ Sonic_WallJump:
 		clr.b	obJumping(a0)				; clear jumping flag
 		move.b	#aniID_WallJump,obAnim(a0)	; set animation
 
-	if ~~ReusableDropDash
+	if (DropDashEnabled & ~~ReusableDropDash)
 		move.b	#3,obDoubleJumpFlag(a0)		; cancel out Drop Dash
 		clr.b	obDoubleJumpProp(a0)
 	endif
