@@ -37,10 +37,10 @@ standards:	macro
 	dbug	Map_Monitor,	id_Monitor,			7,		9,		make_art_tile(ArtTile_Monitor,0,0)				; Test the NEW "S" Monitor
 	dbug	Map_Monitor,	id_Monitor,			8,		$A,		make_art_tile(ArtTile_Monitor,0,0)				; Test the NEW Goggles Monitor
 	endif
-	dbug	Map_Spring,		id_Springs,			2,		0,		make_art_tile(ArtTile_Spring_Horizontal,1,0)	; Yellow Horizontal Spring
-	dbug	Map_Spring,		id_Springs,			$12,	3,		make_art_tile(ArtTile_Spring_Vertical,1,0)		; Yellow Vertical Spring
-	dbug	Map_Spring,		id_Springs,			0,		0,		make_art_tile(ArtTile_Spring_Horizontal,0,0)	; Red Horizontal Spring
-	dbug	Map_Spring,		id_Springs,			$10,	3,		make_art_tile(ArtTile_Spring_Vertical,0,0)		; Red Vertical Spring
+	dbug	Map_Spring,		id_Spring,			2,		0,		make_art_tile(ArtTile_Spring_Horizontal,1,0)	; Yellow Horizontal Spring
+	dbug	Map_Spring,		id_Spring,			$12,	3,		make_art_tile(ArtTile_Spring_Vertical,1,0)		; Yellow Vertical Spring
+	dbug	Map_Spring,		id_Spring,			0,		0,		make_art_tile(ArtTile_Spring_Horizontal,0,0)	; Red Horizontal Spring
+	dbug	Map_Spring,		id_Spring,			$10,	3,		make_art_tile(ArtTile_Spring_Vertical,0,0)		; Red Vertical Spring
 	dbug	Map_Lamp,		id_Lamppost,		1,		0,		make_art_tile(ArtTile_Lamppost,0,0)				; Lamppost
 	dbug	Map_Spike,		id_Spikes,			0,		0,		make_art_tile(ArtTile_Spikes,0,0)				; Upward static spikes
 	dbug	Map_Spike,		id_Spikes,			1,		0,		make_art_tile(ArtTile_Spikes,0,0)				; Upward moving spikes
