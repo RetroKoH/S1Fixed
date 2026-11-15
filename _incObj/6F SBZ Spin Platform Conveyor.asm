@@ -177,11 +177,11 @@ SpinC_Spawner:
 	; Selbi Spinning Platform init fix
         andi.b	#3,d0							; subtype 0-2 is not spinny state, 3 is spinny
         cmpi.b	#3,d0							; is this a lower path platform?
-        beq.s	.notLower						; if yes, branch (keep spinning)
+        beq.s	.notLower2						; if yes, branch (keep spinning)
         move.b	#1,obAnim(a1)					; set to not spinny
 	; Spinning Platform init fix end
 
-	.notLower:
+	.notLower2:
 		dbf		d1,.loop						; repeat for number of platforms
 
 	.endloop:
