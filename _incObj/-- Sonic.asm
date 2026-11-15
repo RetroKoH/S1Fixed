@@ -1616,7 +1616,7 @@ Sonic_TurnSuper:
 		move.l	#Map_SuperSonic,obMap(a0)			; change mappings
 		move.b	#$81,obCtrlLock(a0)
 		move.b	#aniID_Transform,obAnim(a0)
-		_move.b	#SuperStars,(v_sstarsobj+obAddr).w	; load super sonic stars object
+		_move.l	#SuperStars,(v_sstarsobj+obAddr).w	; load super sonic stars object
 		lea		(v_sonspeedmax).w,a2				; Load Sonic_top_speed into a2
 		jsr		(ApplySpeedSettings).l
 		clr.b	obInvinc(a0)
