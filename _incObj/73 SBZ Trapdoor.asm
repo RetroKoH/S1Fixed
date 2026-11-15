@@ -33,12 +33,12 @@ Trap_Wait:
 		moveq	#13,d3						; height (walking); save 4 cycles - Filter
 		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject
-		bra.w	RememberState_DisplayOnly
+		jmp		(RememberState_DisplayOnly).l
 ; ===========================================================================
 
 	.open:
 		obj_addr	#Trap_Open
-		bsr.w	Trap_NotSolid
+		bsr.s	Trap_NotSolid
 		tst.b	obRender(a0)
 		bpl.s	.no_sound					; branch if off screen
 		move.w	#sfx_Door,d0
@@ -52,16 +52,28 @@ Trap_Open:
 		lea		Ani_Trap(pc),a1
 		jsr		(AnimateSprite).w
 		cmpi.b	#2,obFrame(a0)
-		bne.w	RememberState_DisplayOnly	; branch if animation isn't finished
+		bne.s	.display					; branch if animation isn't finished
 		obj_addr	#Trap_Wait2
 		move.w	obTrap_WaitMaster(a0),obTrap_WaitTime(a0) ; reset timer
-		bra.w	RememberState_DisplayOnly
+
+	.display:
+		jmp		(RememberState_DisplayOnly).l
+; ===========================================================================
+
+Trap_NotSolid:
+		btst	#staSonicOnObj,obStatus(a0)	; is Sonic standing on the trapdoor?
+		beq.w	.return						; if not, branch
+		bclr	#staOnObj,(v_player+obStatus).w
+		bclr	#staSonicOnObj,obStatus(a0)	; removed obSolid
+
+	.return:
+		rts
 ; ===========================================================================
 
 Trap_Wait2:
 		subq.w	#1,obTrap_WaitTime(a0)		; decrement timer
 		bmi.s	.close						; branch if time is up
-		bra.w	RememberState_DisplayOnly
+		jmp		(RememberState_DisplayOnly).l
 		
 	.close:
 		obj_addr	#Trap_Close
@@ -78,18 +90,10 @@ Trap_Close:
 		lea		Ani_Trap(pc),a1
 		jsr		(AnimateSprite).w
 		tst.b	obFrame(a0)					; is frame number 0 displayed?
-		bne.w	RememberState_DisplayOnly	; branch if animation isn't finished
+		bne.s	.display					; branch if animation isn't finished
 		obj_addr	#Trap_Wait
 		move.w	obTrap_WaitMaster(a0),obTrap_WaitTime(a0) ; reset timer
-		bra.w	RememberState_DisplayOnly
-; ===========================================================================
 
-Trap_NotSolid:
-		btst	#staSonicOnObj,obStatus(a0)	; is Sonic standing on the trapdoor?
-		beq.w	.return						; if not, branch
-		bclr	#staOnObj,(v_player+obStatus).w
-		bclr	#staSonicOnObj,obStatus(a0)	; removed obSolid
-
-	.return:
-		rts
+	.display:
+		jmp		(RememberState_DisplayOnly).l
 ; ===========================================================================
