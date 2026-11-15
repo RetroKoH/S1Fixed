@@ -35,11 +35,11 @@ Sonic_DoubleJump:
 ; Check for elemental shields first, as we cannot turn super or insta-shield with these.
 	if ShieldsMode
 		btst	#sta2ndFShield,d0				; does Sonic have a Flame Shield?
-		bne.s	Sonic_FlameShieldAttack			; if yes, branch
+		bne		Sonic_FlameShieldAttack			; if yes, branch
 		btst	#sta2ndBShield,d0				; does Sonic have a Bubble Shield?
-		bne.s	Sonic_BubbleShieldAttack		; if yes, branch
+		bne		Sonic_BubbleShieldAttack		; if yes, branch
 		btst	#sta2ndLShield,d0				; does Sonic have a Lightning Shield?
-		bne.w	Sonic_LightningShieldAttack		; if yes, branch
+		bne		Sonic_LightningShieldAttack		; if yes, branch
 	endif
 
 ; if we don't have elementals, start checking for Super, then insta-shield.
