@@ -200,10 +200,13 @@ Orb_Spikeball:
 	if SLZOrbinautBehaviourMod	; Mercury SLZ Orbinaut Behaviour Mod
 		cmpi.b	#2,obSubtype(a1)
 		beq.s	.fire2
-	endif	; end SLZ Orbinaut Behaviour Mod
 
 		cmpi.b	#$40,obAngle(a0)			; is spikeorb directly under the orbinaut?
+		bne.w	.circle						; if not, branch
+	else
+		cmpi.b	#$40,obAngle(a0)			; is spikeorb directly under the orbinaut?
 		bne.s	.circle						; if not, branch
+	endif	; end SLZ Orbinaut Behaviour Mod
 		obj_addr	#OrbSBall_FireOrb
 		subq.b	#1,obOrb_ObjCount(a1)		; decrement orb count
 		bne.s	.fire						; branch if not 0
