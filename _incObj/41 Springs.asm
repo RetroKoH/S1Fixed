@@ -10,20 +10,22 @@ Springs:
 		move.b	obRoutine(a0),d0
 		move.w	Spring_Index(pc,d0.w),d1
 		jsr		Spring_Index(pc,d1.w)
+	; KoH Animated Spring Solidity fix
+		tst.b	ob2ndRout(a0)
+		beq.s	.display
+		lea		Ani_Spring(pc),a1
+		jsr		(AnimateSprite).w
+
+	.display:
+	; Animated Spring Solidity fix end
 		offscreen.w	DeleteObject
 		bra.w	DisplaySprite		; Clownacy DisplaySprite Fix	
 ; ===========================================================================
 Spring_Index:	offsetTable
 		offsetTableEntry.w Spring_Main
 		offsetTableEntry.w Spring_Up
-		offsetTableEntry.w Spring_AniUp
-		offsetTableEntry.w Spring_ResetUp
 		offsetTableEntry.w Spring_LR
-		offsetTableEntry.w Spring_AniLR
-		offsetTableEntry.w Spring_ResetLR
 		offsetTableEntry.w Spring_Dwn
-		offsetTableEntry.w Spring_AniDwn
-		offsetTableEntry.w Spring_ResetDwn
 
 obSpring_Powerers:
 		dc.w -$1000		; power	of red spring
@@ -32,6 +34,7 @@ obSpring_Powerers:
 
 Spring_Main:	; Routine 0
 		addq.b	#2,obRoutine(a0)			; -> Spring_Up
+		clr.b	ob2ndRout(a0)
 		move.l	#Map_Spring,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Spring_Horizontal,0,0),obGfx(a0)
 		ori.b	#4,obRender(a0)
@@ -41,17 +44,18 @@ Spring_Main:	; Routine 0
 		btst	#4,d0						; is spring type $1x? (horizontal)
 		beq.s	.not_horizontal				; if not, branch
 
-		move.b	#8,obRoutine(a0)			; -> Spring_LR
+		addq.b	#2,obRoutine(a0)			; -> #4: Spring_LR
 		move.b	#1,obAnim(a0)
 		move.b	#3,obFrame(a0)
 		move.w	#make_art_tile(ArtTile_Spring_Vertical,0,0),obGfx(a0)
 		move.b	#8,obDispWid(a0)
+		bra.s	.not_down
 
 	.not_horizontal:
 		btst	#5,d0						; does the spring face downwards?
 		beq.s	.not_down					; if not, branch
 
-		move.b	#$E,obRoutine(a0)			; use "Spring_Dwn" routine
+		addq.b	#4,obRoutine(a0)			; -> #6: "Spring_Dwn" routine
 		bset	#staFlipY,obStatus(a0)
 
 	.not_down:
@@ -77,7 +81,6 @@ Spring_Up:	; Routine 2
 ; ===========================================================================
 
 Spring_BounceUp:
-		addq.b	#2,obRoutine(a0)			; -> Spring_AniUp
 		addq.w	#8,obY(a1)
 		move.w	obSpring_Power(a0),obVelY(a1)	; move Sonic upwards
 		bset	#staAir,obStatus(a1)
@@ -92,19 +95,7 @@ Spring_BounceUp:
 		move.b	#aniID_Spring,obAnim(a1)	; use "bouncing" animation
 		move.b	#2,obRoutine(a1)
 		bclr	#staSonicOnObj,obStatus(a0)	; removed obSolid
-		move.w	#sfx_Spring,d0
-		jsr		(QueueSound2).w				; play spring sound
-; ---------------------------------------------------------------------------
-
-Spring_AniUp:	; Routine 4
-		lea		Ani_Spring(pc),a1
-		jmp		(AnimateSprite).w			; animate and goto Spring_ResetUp next
-; ===========================================================================
-
-Spring_ResetUp:	; Routine 6
-		clr.w	obAniFrame(a0)				; reset animation and frame duration
-		subq.b	#4,obRoutine(a0)			; -> Spring_Up
-		rts	
+		bra.w	Spring_StartBounce			; perform bounce and play spring sound
 ; ===========================================================================
 
 Spring_LR:	; Routine 8
@@ -112,15 +103,29 @@ Spring_LR:	; Routine 8
 		moveq	#14,d2						; height (jumping); save 4 cycles - Filter
 		moveq	#15,d3						; height (walking); save 4 cycles - Filter
 		move.w	obX(a0),d4					; axis position
+
 		bsr.w	SolidObject
-		move.b	#8,obRoutine(a0)
-		btst	#staSonicPush,obStatus(a0)
-		bne.s	Spring_BounceLR
-		rts	
+	; KoH Horizontal Springs fix
+		cmpi.w  #1,d4						; is Sonic making side contact (grounded or mid-air)?
+		bne.s	.return						; if not, branch
+		
+		move.w	obX(a1),d0
+		cmp.w	obX(a0),d0
+		bls.s	.left_side					; if Sonic is on the left side of the spring, branch
+		btst	#staFlipX,obStatus(a0)
+		beq.s	Spring_BounceLR				; bounce off the right side of a right-facing spring
+		rts									; don't bounce off the right side of a left-facing spring
+
+	.left_side:
+		btst	#staFlipX,obStatus(a0)
+		bne.s	Spring_BounceLR				; bounce off the left side of a left-facing spring
+	
+	.return:
+		rts									; don't bounce off the left side of a right-facing spring
+	; Horizontal Springs fix end
 ; ===========================================================================
 
 Spring_BounceLR:
-		addq.b	#2,obRoutine(a0)
 		move.w	obSpring_Power(a0),obVelX(a1)	; move Sonic to the left
 		addq.w	#8,obX(a1)
 		bset	#staFacing,obStatus(a1)		; set Sonic facing to the left: RetroKoH Spring Direction Fix
@@ -146,19 +151,7 @@ Spring_Flipped:
 		clr.b	(v_cameralag).w 			; clear camera lag
 	endif
 
-		move.w	#sfx_Spring,d0
-		jsr		(QueueSound2).w				; play spring sound
-; ---------------------------------------------------------------------------
-
-Spring_AniLR:	; Routine $A
-		lea		Ani_Spring(pc),a1
-		jmp		(AnimateSprite).w			; animate and goto Spring_ResetLR next
-; ===========================================================================
-
-Spring_ResetLR:	; Routine $C
-		clr.w	obAniFrame(a0)				; reset animation and frame duration
-		subq.b	#4,obRoutine(a0)			; goto "Spring_LR" routine
-		rts	
+		bra.w	Spring_StartBounce			; perform bounce and play spring sound
 ; ===========================================================================
 
 Spring_Dwn:	; Routine $E
@@ -167,7 +160,6 @@ Spring_Dwn:	; Routine $E
 		moveq	#16,d3						; height (walking); save 4 cycles - Filter
 		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject
-		move.b	#$E,obRoutine(a0)
 		btst	#staSonicOnObj,obStatus(a0)	; is Sonic on top of the spring? (removed obSolid)
 		bne.s	.on_top						; if yes, branch
 		tst.w	d4
@@ -178,7 +170,6 @@ Spring_Dwn:	; Routine $E
 ; ===========================================================================
 
 Spring_BounceDwn:
-		addq.b	#2,obRoutine(a0)			; -> Spring_AniDwn
 		subq.w	#8,obY(a1)
 		move.w	obSpring_Power(a0),obVelY(a1)
 		neg.w	obVelY(a1)					; move Sonic downwards
@@ -186,18 +177,11 @@ Spring_BounceDwn:
 		bclr	#staOnObj,obStatus(a1)
 		move.b	#2,obRoutine(a1)
 		bclr	#staSonicOnObj,obStatus(a0)	; removed obSolid
-		move.w	#sfx_Spring,d0
-		jsr		(QueueSound2).w				; play spring sound
 ; ---------------------------------------------------------------------------
 
-Spring_AniDwn:	; Routine $10
-		lea		Ani_Spring(pc),a1
-		jmp		(AnimateSprite).w			; animate and goto Spring_ResetDwn next
-; ===========================================================================
-
-Spring_ResetDwn:
-		; Routine $12
-		clr.w	obAniFrame(a0)				; reset animation and frame duration
-		subq.b	#4,obRoutine(a0)			; goto "Spring_Dwn" routine
-		rts	
+Spring_StartBounce:
+		move.b	#2,ob2ndRout(a0)			; enable spring animation
+		bclr	#7,obAnim(a0)				; restart from the first frame
+		move.w	#sfx_Spring,d0
+		jmp		(QueueSound2).w				; play spring sound
 ; ===========================================================================
