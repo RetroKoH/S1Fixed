@@ -58,6 +58,18 @@ WreckingBall:
         dbf		d1,.loop
 
 		move.b	#2,mainspr_mapframe(a1)			; set frame for anchor
+	; Slight adaptation to work more like Sonic 2 (I already fixed the wrap issue in BuildSprites).
+	; We can undo that workaround with the fixes to the swing here, and below.
+		cmpi.b	#5,mainspr_childsprites(a1)		; is the chain fewer than 5 links?
+		blo.s	.return							; if yes, stop here
+
+		; The fifth link is up to $50 pixels from the pivot (Include the SBZ anchor art).
+		move.b	#$60,mainspr_width(a1)
+		move.b	#$68,mainspr_height(a1)
+		move.b	#1,mainspr_mapframe(a1)			; draw the fifth link at the group center
+		move.b	#2,sub2_mapframe(a1)			; draw the anchor at the first child position
+
+	.return:
 		rts
 ; ===========================================================================
 
