@@ -26,8 +26,8 @@ RotatingBlock:
 		move.w	#$20,obRBlock_MoveDist(a0)		; store full height (from top to bottom)
 		moveq	#$F,d0							; read low nybble of subtype
 		and.b	obSubtype(a0),d0				; SCE Optimization
-		subq.w	#8,d0
-		bcs.s	RBlock_Action					; branch if low nybble was > 8
+		subq.w	#1,d0
+		bcs.s	RBlock_Action					; branch if low nybble was > 1
 		lsl.w	#2,d0							; multiply by 4
 		lea		(v_oscillate+$2C).w,a2
 		adda.w	d0,a2							; read oscillating value (HAME: Replace lea instruction)
