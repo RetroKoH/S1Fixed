@@ -438,3 +438,6 @@ LoadObj:
 		bra.w	FindFreeObj				; find new object slot
 ; End of function ChkLoadObj
 ; ===========================================================================
+
+Obj_Index:	; Object pointers
+		include	"_inc/Object Pointers.asm"
