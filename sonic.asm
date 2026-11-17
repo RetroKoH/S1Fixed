@@ -3414,9 +3414,6 @@ ObjectsDisplayOnly:
 
 		include "_inc/Object Manager.asm"
 
-Obj_Index:	; Object pointers
-		include	"_inc/Object Pointers.asm"
-
 		include	"_incObj/sub FindFreeObj.asm"
 		include	"_incObj/41 Springs.asm"
 		include	"_anim/Springs.asm"
