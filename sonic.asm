@@ -1992,6 +1992,9 @@ Demo_EndGHZ2:	binclude	"demodata/Ending - GHZ2.bin"
 
 		include	"_inc/LevelSizeLoad & BgScrollSpeed.asm"
 		include	"_inc/DeformLayers.asm"
+		include "_inc/ProcessBGScroll.asm"
+		include "_inc/BGScrollSizes.asm"
+
 
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
