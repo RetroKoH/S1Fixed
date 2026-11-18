@@ -32,13 +32,12 @@ DeformLayers:
 		move.w	Deform_Index(pc,d0.w),d0
 		jmp		Deform_Index(pc,d0.w)
 ; End of function DeformLayers
-
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
 ; Offset index for background layer deformation	code
 ; ---------------------------------------------------------------------------
-; ===========================================================================
+
 Deform_Index:	offsetTable
 		offsetTableEntry.w	Deform_GHZ
 		offsetTableEntry.w	Deform_LZ
@@ -54,9 +53,6 @@ Deform_Index:	offsetTable
 ; Green	Hill Zone background layer deformation code
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
 Deform_GHZ:
 	; block 3 - distant mountains
 		move.w	(v_scrshiftx).w,d4
@@ -64,112 +60,96 @@ Deform_GHZ:
 		asl.l	#5,d4
 		move.l	d4,d1
 		asl.l	#1,d4
-		add.l	d1,d4
+		add.l	d1,d4					; 13.28% scrolling
 		moveq	#0,d6
 		bsr.w	BGScroll_Block3
+
 	; block 2 - hills & waterfalls
 		move.w	(v_scrshiftx).w,d4
 		ext.l	d4
 		asl.l	#7,d4
 		moveq	#0,d6
 		bsr.w	BGScroll_Block2
+
 	; calculate Y position
-		lea	(v_hscrolltablebuffer).w,a1
-		move.w	(v_screenposy).w,d0			; get screen pos
-		andi.w	#$7FF,d0					; maximum $7FF
-		lsr.w	#5,d0						; divide by $20
+		move.w	(v_screenposy).w,d0		; get screen pos
+		andi.w	#$7FF,d0				; maximum $7FF
+		lsr.w	#5,d0					; divide by $20
 	; OrionNavattan GHZ VScroll Fix
 		cmpi.w	#$20,d0
-		bls.s	.limitY						; branch if v_screenposy is between 0 and $400
-		moveq	#$20,d0						; use $20 if greater
+		bls.s	.limitY					; branch if v_screenposy is between 0 and $400
+		moveq	#$20,d0					; use $20 if greater
 	; GHZ VScroll Fix End
-.limitY:
-		move.w	d0,d4
+
+	.limitY:
 		move.w	d0,(v_bgscrposy_vdp).w
-		move.w	(v_screenposx).w,d0
-		cmpi.b	#id_Title,(v_gamemode).w
-		bne.s	.notTitle
-		moveq	#0,d0	; reset foreground position in title screen
-.notTitle:
-		neg.w	d0
-		swap	d0
-	; auto-scroll clouds
-		lea	(v_bgscroll_buffer).w,a2
-		addi.l	#$10000,(a2)+
-		addi.l	#$C000,(a2)+
-		addi.l	#$8000,(a2)+
-	; calculate background scroll	
-		move.w	(v_bgscroll_buffer).w,d0
-		add.w	(v_bg3screenposx).w,d0
-		neg.w	d0
-		move.w	#$1F,d1
-		sub.w	d4,d1
-		bcs.s	.gotoCloud2
-.cloudLoop1:		; upper cloud (32px)
-		move.l	d0,(a1)+
-		dbf	d1,.cloudLoop1
 
-.gotoCloud2:
-		move.w	(v_bgscroll_buffer+4).w,d0
-		add.w	(v_bg3screenposx).w,d0
-		neg.w	d0
-		move.w	#$F,d1
-.cloudLoop2:		; middle cloud (16px)
-		move.l	d0,(a1)+
-		dbf	d1,.cloudLoop2
+		; Advance the three fixed-point cloud movement accumulators
+		lea		(v_bgscroll_buffer).w,a2
+		addi.l	#$10000,(a2)+			; upper clouds, 1 pixel per frame
+		addi.l	#$C000,(a2)+			; middle clouds, 0.75 pixels per frame
+		addi.l	#$8000,(a2)+			; lower clouds, 0.5 pixels per frame
 
-		move.w	(v_bgscroll_buffer+8).w,d0
-		add.w	(v_bg3screenposx).w,d0
-		neg.w	d0
-		move.w	#$F,d1
-.cloudLoop3:		; lower cloud (16px)
-		move.l	d0,(a1)+
-		dbf	d1,.cloudLoop3
+		; Store band positions after the cloud accumulators
+		lea		(v_bgscroll_buffer+$10).w,a1
 
-		move.w	#$2F,d1
 		move.w	(v_bg3screenposx).w,d0
-		neg.w	d0
-.mountainLoop:		; distant mountains (48px)
-		move.l	d0,(a1)+
-		dbf	d1,.mountainLoop
+		add.w	(v_bgscroll_buffer).w,d0
+		move.w	d0,(a1)+				; upper clouds
 
-		move.w	#$27,d1
-		move.w	(v_bg2screenposx).w,d0
-		neg.w	d0
-.hillLoop:			; hills & waterfalls (40px)
-		move.l	d0,(a1)+
-		dbf	d1,.hillLoop
+		move.w	(v_bg3screenposx).w,d0
+		add.w	(v_bgscroll_buffer+4).w,d0
+		move.w	d0,(a1)+				; middle clouds
+
+		move.w	(v_bg3screenposx).w,d0
+		add.w	(v_bgscroll_buffer+8).w,d0
+		move.w	d0,(a1)+				; lower clouds
+
+		move.w	(v_bg3screenposx).w,d0
+		move.w	d0,(a1)+				; distant mountains
 
 		move.w	(v_bg2screenposx).w,d0
+		move.w	d0,(a1)+				; hills and waterfalls
+
+; Calculate the water perspective step from the hills' X position
 		move.w	(v_screenposx).w,d2
 		sub.w	d0,d2
 		ext.l	d2
 		asl.l	#8,d2
 		divs.w	#$68,d2
 		ext.l	d2
-		asl.l	#8,d2
+		asl.l	#8,d2					; fixed-point change per water line
+
 		moveq	#0,d3
-		move.w	d0,d3
-		move.w	#$47,d1
-		add.w	d4,d1
-.waterLoop:			; water deformation
-		move.w	d3,d0
-		neg.w	d0
-		move.l	d0,(a1)+
+		move.w	d0,d3					; begin at the hills' X position
+		moveq	#$67,d1					; generate 104 water-line positions
+
+	.waterLoop:
+		move.w	d3,(a1)+				; pixelwise water scroll
 		swap	d3
 		add.l	d2,d3
 		swap	d3
-		dbf	d1,.waterLoop
-		rts
+		dbf		d1,.waterLoop
+
+		; Select the band table and generated positions
+		lea		(BGScrollSize_GHZ).l,a4
+		lea		(v_bgscroll_buffer+$10).w,a5
+		move.w	#224-1,d1
+
+		; Choose the foreground position for this screen
+		move.w	(v_screenposx).w,d3
+		cmpi.b	#id_Title,(v_gamemode).w
+		bne.s	.draw
+		moveq	#0,d3					; hold the title banner in place
+
+	.draw:
+		jmp		(ProcessBGScroll_CustomFG).l
 ; End of function Deform_GHZ
 
 ; ---------------------------------------------------------------------------
 ; Labyrinth Zone background layer deformation code
 ; Optimised by MarkeyJester; Adapted to the modern disassembly by Malachi
 ; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
 
 Deform_LZ:
 	; plain background scroll
@@ -184,7 +164,7 @@ Deform_LZ:
 		bsr.w	BGScroll_XY								; rev01 scrolling	; ''
 
 		move.w	(v_bgscreenposy).w,(v_bgscrposy_vdp).w	; set BG V-scroll position
-		lea	(v_hscrolltablebuffer).w,a1					; load H-scroll buffer
+		lea		(v_hscrolltablebuffer).w,a1				; load H-scroll buffer
 		move.w	(v_screenposx).w,d0						; load FG X position
 		add.w	d7,d0
 		neg.w	d0										; reverse
@@ -197,7 +177,7 @@ Deform_LZ:
 		addi.w	#$80,(v_lz_deform).w					; increase wave-scroll timer
 		move.w	#224,d2									; prepare water-line count
 	; LZ3 Palette Split fix
-		bsr.s	LZWaterCameraY
+		bsr.w	LZWaterCameraY
 		neg.w	d1
 		add.w	(v_waterpos_actual).w,d1				; water Y minus camera Y
 	; LZ Palette Split fix end
@@ -206,19 +186,32 @@ Deform_LZ:
 		ble.s	.nowater								; if not, branch
 		move.w	d2,d1									; set at maximum
 
-.nowater:
+	.nowater:
 		sub.w	d1,d2									; subtract from water-line count
 		add.b	d1,d3									; advance scroll wave timer to correct amount
 		subq.b	#1,d1									; decrease above water count
 		bcs.s	.water									; if finished, branch
+		
+		move.w	d1,d4
+		lsr.w	#3,d1									; additional passes of eight lines
+		andi.w	#7,d4									; first pass: 1-8 lines
+		neg.w	d4
+		add.w	d4,d4									; each move.l instruction is 2 bytes
+		jmp		.abovewater_last(pc,d4.w)
 
-.abovewater:
+	.abovewater:
+		rept 7
 		move.l	d0,(a1)+								; save scroll position to buffer
-		dbf	d1,.abovewater								; repeat for all above water lines
+		endr
 
-.water:
+	.abovewater_last:
+		move.l	d0,(a1)+								; save scroll position to buffer
+		dbf		d1,.abovewater							; repeat for all above water lines
+
+	.water:
 		subq.b	#1,d2									; decrease below water count
-		bcs.s	.finish									; if finished, branch
+		bcs.w	.finish									; if finished, branch
+
 		move.w	d0,d1									; copy BG position back to d1
 		swap	d0										; move FG position back to lower word in d0
 		move.w	d3,d4									; copy sroll timer for BG use
@@ -227,27 +220,42 @@ Deform_LZ:
 		add.w	d3,d3									; multiply by word size (2)
 		add.w	d4,d4									; ''
 
-		lea	DLZ_WaveBG(pc),a3							; load beginning of BG wave data
+		lea		DLZ_WaveBG(pc),a3						; load beginning of BG wave data
 		adda.w	d4,a3									; advance to correct starting point
 		move.b	(a3),d4									; get current position byte
 		asr.b	#2,d4									; get only the position bits
 		ext.w	d4										; extend to word
 		add.w	d4,d1									; adjust BG's current position
 
-		lea	DLZ_WaveFG(pc,d3.w),a2						; load correct starting point of FG wave data
+		lea		DLZ_WaveFG(pc,d3.w),a2					; load correct starting point of FG wave data
 		move.b	(a2),d4									; get current position byte
 		asr.b	#2,d4									; get only the position bits
 		ext.w	d4										; extend to word
 		add.w	d4,d0									; adjust FG's current position
 
-.belowwater:
-		add.w	(a2)+,d0								; alter FG horizontal position
-		move.w	d0,(a1)+								; save to scroll buffer
-		add.w	(a3)+,d1								; alter BG horizontal position
-		move.w	d1,(a1)+								; save to scroll buffer
-		dbf		d2,.belowwater							; repeat for all below water lines
+		move.w	d2,d4
+		lsr.w	#3,d2									; additional passes of eight lines
+		andi.w	#7,d4									; first pass contains 1–8 lines
+		neg.w	d4
+		lsl.w	#3,d4									; each scanline's code is 8 bytes
+		jmp		.belowwater_last(pc,d4.w)
 
-.finish:
+	.belowwater:
+		rept 7
+		add.w	(a2)+,d0								; advance FG distortion
+		move.w	d0,(a1)+								; save to FG scroll buffer
+		add.w	(a3)+,d1								; advance BG distortion
+		move.w	d1,(a1)+								; save to BG scroll buffer
+		endr
+
+	.belowwater_last:
+		add.w	(a2)+,d0								; advance FG distortion
+		move.w	d0,(a1)+								; save to FG scroll buffer
+		add.w	(a3)+,d1								; advance BG distortion
+		move.w	d1,(a1)+								; save to BG scroll buffer
+		dbf		d2,.belowwater
+
+	.finish:
 		rts												; return
 ; ===========================================================================
 
@@ -319,9 +327,6 @@ DLZ_WaveBG:
 ; Marble Zone background layer deformation code
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
 Deform_MZ:
 	; block 1 - dungeon interior
 		move.w	(v_scrshiftx).w,d4
@@ -329,31 +334,35 @@ Deform_MZ:
 		asl.l	#6,d4
 		move.l	d4,d1
 		asl.l	#1,d4
-		add.l	d1,d4
+		add.l	d1,d4			; 25.78% scrolling
 		moveq	#2,d6
 		bsr.w	BGScroll_Block1
+
 	; block 3 - mountains
 		move.w	(v_scrshiftx).w,d4
 		ext.l	d4
-		asl.l	#6,d4
+		asl.l	#6,d4			; 25% scrolling
 		moveq	#6,d6
 		bsr.w	BGScroll_Block3
+
 	; block 2 - bushes & antique buildings
 		move.w	(v_scrshiftx).w,d4
 		ext.l	d4
-		asl.l	#7,d4
+		asl.l	#7,d4			; 50% scrolling
 		moveq	#4,d6
 		bsr.w	BGScroll_Block2
+
 	; calculate y-position of background
 		move.w	#$200,d0	; start with 512px, ignoring 2 chunks
 		move.w	(v_screenposy).w,d1
-		subi.w	#$1C8,d1	; 0% scrolling when y <= 56px 
-		bcs.s	.noYscroll
+		subi.w	#$1C8,d1	; 56px before inner sections
+		bcs.s	.noYscroll	; 0% scrolling when y <= 56px
 		move.w	d1,d2
 		add.w	d1,d1
-		add.w	d2,d1
+		add.w	d2,d1		; y * 3
 		asr.w	#2,d1
-		add.w	d1,d0
+		add.w	d1,d0		; 75% scrolling
+
 	.noYscroll:
 		move.w	d0,(v_bg2screenposy).w
 		move.w	d0,(v_bg3screenposy).w
@@ -365,11 +374,16 @@ Deform_MZ:
 		or.b	d0,(v_bg3_scroll_flags).w
 		clr.b	(v_bg1_scroll_flags).w
 		clr.b	(v_bg2_scroll_flags).w
+
+	; Build one X-position entry for each background band
+		lea		(v_bgscroll_buffer).w,a1
+		clr.w	(a1)+		; unused 2 chunks
+
 	; calculate background scroll buffer
-		lea	(v_bgscroll_buffer).w,a1
 		move.w	(v_screenposx).w,d2
 		neg.w	d2
-		move.w	d2,d0
+
+		move.w	d2,d0		; clouds
 		asr.w	#2,d0
 		sub.w	d2,d0
 		ext.l	d0
@@ -377,71 +391,57 @@ Deform_MZ:
 		divs.w	#5,d0
 		ext.l	d0
 		asl.l	#4,d0
-		asl.l	#8,d0
+		asl.l	#6,d0		; fixed-point step between cloud bands
+
 		moveq	#0,d3
 		move.w	d2,d3
 		asr.w	#1,d3
-		move.w	#4,d1
-	.cloudLoop:		
-		move.w	d3,(a1)+
-		swap	d3
-		add.l	d0,d3
-		swap	d3
-		dbf	d1,.cloudLoop
+		neg.w	d3			; first band uses half the camera X
+		moveq	#9,d1		; ten cloud bands
 
+	.cloudLoop:
+		move.w	d3,(a1)+	; clouds (8px instead of 16px)
+		swap	d3
+		sub.l	d0,d3		; advance to the next band's position
+		swap	d3
+		dbf		d1,.cloudLoop
+
+		; Each remaining region needs one X-position entry
 		move.w	(v_bg3screenposx).w,d0
-		neg.w	d0
-		move.w	#1,d1
-	.mountainLoop:		
-		move.w	d0,(a1)+
-		dbf	d1,.mountainLoop
+		move.w	d0,(a1)+				; mountains
 
 		move.w	(v_bg2screenposx).w,d0
-		neg.w	d0
-		move.w	#8,d1
-	.bushLoop:		
-		move.w	d0,(a1)+
-		dbf	d1,.bushLoop
+		move.w	d0,(a1)+				; bushes and buildings
 
 		move.w	(v_bgscreenposx).w,d0
-		neg.w	d0
-		move.w	#$F,d1
-	.interiorLoop:		
-		move.w	d0,(a1)+
-		dbf	d1,.interiorLoop
+		move.w	d0,(a1)+				; dungeon interior
 
-		lea	(v_bgscroll_buffer).w,a2
-		move.w	(v_bgscreenposy).w,d0
-		subi.w	#$200,d0	; subtract 512px (unused 2 chunks)
-		move.w	d0,d2
-		cmpi.w	#$100,d0
-		blo.s	.limitY
-		move.w	#$100,d0
-	.limitY:
-		andi.w	#$1F0,d0
-		lsr.w	#3,d0
-		lea	(a2,d0.w),a2
-		bra.w	Bg_Scroll_X
+	; process SLZ scroll
+		lea		(BGScrollSize_MZ).l,a4
+		lea		(v_bgscroll_buffer).w,a5
+		jmp		(ProcessBGScroll).l
 ; End of function Deform_MZ
 
 ; ---------------------------------------------------------------------------
 ; Star Light Zone background layer deformation code
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
 Deform_SLZ:
-	; vertical scrolling
+	; move the background vertically at half the camera's speed
 		move.w	(v_scrshifty).w,d5
 		ext.l	d5
 		asl.l	#7,d5
 		bsr.w	Bg_Scroll_Y
 		move.w	(v_bgscreenposy).w,(v_bgscrposy_vdp).w
+	
+	; Build one X-position entry for each background band
+		lea		(v_bgscroll_buffer).w,a1
+		clr.w	(a1)+		; unused $C0 pixels
+
 	; calculate background scroll buffer
-		lea	(v_bgscroll_buffer).w,a1
 		move.w	(v_screenposx).w,d2
 		neg.w	d2
+
 		move.w	d2,d0
 		asr.w	#3,d0
 		sub.w	d2,d0
@@ -450,91 +450,59 @@ Deform_SLZ:
 		divs.w	#$1C,d0
 		ext.l	d0
 		asl.l	#4,d0
-		asl.l	#8,d0
+		asl.l	#8,d0					; fixed-point step between star bands
+
 		moveq	#0,d3
 		move.w	d2,d3
-		move.w	#$1B,d1
-	.starLoop:		
-		move.w	d3,(a1)+
-		swap	d3
-		add.l	d0,d3
-		swap	d3
-		dbf	d1,.starLoop
+		neg.w	d3						; start with 100% scrolling
+		moveq	#$1B,d1					; 28 star bands
 
+	.starLoop:
+		move.w	d3,(a1)+				; stars
+		swap	d3
+		sub.l	d0,d3					; advance to the next band's position
+		swap	d3
+		dbf		d1,.starLoop
+
+	; Upper buildings
 		move.w	d2,d0
 		asr.w	#3,d0
 		move.w	d0,d1
 		asr.w	#1,d1
-		add.w	d1,d0
-		move.w	#4,d1
-	.buildingLoop1:		; distant black buildings
-		move.w	d0,(a1)+
-		dbf	d1,.buildingLoop1
-
-		move.w	d2,d0
-		asr.w	#2,d0
-		move.w	#4,d1
-	.buildingLoop2:		; closer buildings
-		move.w	d0,(a1)+
-		dbf	d1,.buildingLoop2
-
-		move.w	d2,d0
-		asr.w	#1,d0
-		move.w	#$1D,d1
-	.bottomLoop:		; bottom part of background
-		move.w	d0,(a1)+
-		dbf	d1,.bottomLoop
-
-		lea	(v_bgscroll_buffer).w,a2
-		move.w	(v_bgscreenposy).w,d0
-		move.w	d0,d2
-		subi.w	#$C0,d0
-		andi.w	#$3F0,d0
-		lsr.w	#3,d0
-		lea	(a2,d0.w),a2
-;-------------------------------------------------------------------------------
-;-------------------------------------------------------------------------------
-Bg_Scroll_X:
-		lea	(v_hscrolltablebuffer).w,a1
-		move.w	#$E,d1
-		move.w	(v_screenposx).w,d0
+		add.w	d1,d0		; 18.75% horizontal scrolling
 		neg.w	d0
-		swap	d0
-		andi.w	#$F,d2
-		add.w	d2,d2
-		move.w	(a2)+,d0
-		jmp	.pixelJump(pc,d2.w)		; skip pixels for first row
-	.blockLoop:
-		move.w	(a2)+,d0
-	.pixelJump:		
-		move.l	d0,(a1)+
-		move.l	d0,(a1)+
-		move.l	d0,(a1)+
-		move.l	d0,(a1)+
-		move.l	d0,(a1)+
-		move.l	d0,(a1)+
-		move.l	d0,(a1)+
-		move.l	d0,(a1)+
-		move.l	d0,(a1)+
-		move.l	d0,(a1)+
-		move.l	d0,(a1)+
-		move.l	d0,(a1)+
-		move.l	d0,(a1)+
-		move.l	d0,(a1)+
-		move.l	d0,(a1)+
-		move.l	d0,(a1)+
-		dbf	d1,.blockLoop
-		rts
+		move.w	d0,(a1)+
+
+	; Lower buildings
+		move.w	d2,d0
+		asr.w	#2,d0		; 25% scrolling
+		neg.w	d0
+		move.w	d0,(a1)+
+
+	; Lowest large buildings
+		move.w	d2,d0
+		asr.w	#1,d0		; 50% scrolling
+		neg.w	d0
+		move.w	d0,(a1)+
+
+	; process SLZ scroll
+		lea		(BGScrollSize_SLZ).l,a4
+		lea		(v_bgscroll_buffer).w,a5
+		jmp		(ProcessBGScroll).l
+; ===========================================================================
+
+;----------------------------------------------------------------------------
+; S1 Legacy 16px deformation - removed
+;----------------------------------------------------------------------------
+;Bg_Scroll_X:
+
 
 ; ---------------------------------------------------------------------------
 ; Spring Yard Zone background layer deformation	code
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
 Deform_SYZ:
-	; vertical scrolling
+	; Move the background vertically at 3/16 of the camera's speed
 		move.w	(v_scrshifty).w,d5
 		ext.l	d5
 		asl.l	#4,d5
@@ -543,43 +511,46 @@ Deform_SYZ:
 		add.l	d1,d5
 		bsr.w	Bg_Scroll_Y
 		move.w	(v_bgscreenposy).w,(v_bgscrposy_vdp).w
+
 	; calculate background scroll buffer
 		lea	(v_bgscroll_buffer).w,a1
 		move.w	(v_screenposx).w,d2
 		neg.w	d2
-		move.w	d2,d0
+
+	; Calculate the gradient across the eight cloud bands
+		move.w	d2,d0		; clouds
 		asr.w	#3,d0
 		sub.w	d2,d0
 		ext.l	d0
 		asl.l	#3,d0
-		divs.w	#8,d0
+		;asr.w	#3,d0		; incorrect
+		divs.w	#8,d0		; retain Fixed's division
 		ext.l	d0
 		asl.l	#4,d0
-		asl.l	#8,d0
+		asl.l	#8,d0		; fixed-point step between cloud bands
+
 		moveq	#0,d3
 		move.w	d2,d3
-		asr.w	#1,d3
-		move.w	#7,d1
+		asr.w	#1,d3		; start with 50% scrolling
+		moveq	#7,d1		; eight cloud bands
+		neg.w	d3
+
 	.cloudLoop:		
-		move.w	d3,(a1)+
+		move.w	d3,(a1)+	; clouds
 		swap	d3
-		add.l	d0,d3
+		sub.l	d0,d3
 		swap	d3
-		dbf	d1,.cloudLoop
+		dbf		d1,.cloudLoop
+		
+		move.w	d2,d0
+		asr.w	#3,d0		; 12.5% scrolling
+		neg.w	d0		; mountains
+		move.w	d0,(a1)+
 
 		move.w	d2,d0
-		asr.w	#3,d0
-		move.w	#4,d1
-	.mountainLoop:		
+		asr.w	#2,d0		; 25% scrolling
+		neg.w	d0		; buildings
 		move.w	d0,(a1)+
-		dbf	d1,.mountainLoop
-
-		move.w	d2,d0
-		asr.w	#2,d0
-		move.w	#5,d1
-	.buildingLoop:		
-		move.w	d0,(a1)+
-		dbf	d1,.buildingLoop
 
 		move.w	d2,d0
 		move.w	d2,d1
@@ -590,63 +561,68 @@ Deform_SYZ:
 		divs.w	#$E,d0
 		ext.l	d0
 		asl.l	#4,d0
-		asl.l	#8,d0
+		asl.l	#8,d0		; fixed-point step between bush bands
+
 		moveq	#0,d3
 		move.w	d2,d3
-		asr.w	#1,d3
-		move.w	#$D,d1
-	.bushLoop:		
-		move.w	d3,(a1)+
-		swap	d3
-		add.l	d0,d3
-		swap	d3
-		dbf	d1,.bushLoop
+		asr.w	#1,d3		; start with 50% scrolling
+		moveq	#$D,d1		; fourteen bush bands
+		neg.w	d3
 
-		lea	(v_bgscroll_buffer).w,a2
-		move.w	(v_bgscreenposy).w,d0
-		move.w	d0,d2
-		andi.w	#$1F0,d0
-		lsr.w	#3,d0
-		lea	(a2,d0.w),a2
-		bra.w	Bg_Scroll_X
+	.bushLoop:		
+		move.w	d3,(a1)+	; bushes
+		swap	d3
+		sub.l	d0,d3
+		swap	d3
+		dbf		d1,.bushLoop
+
+	; Extend the lowest bush band's scrolling over the final region
+		move.w	-2(a1),d0				; reload the last position written
+		move.w	d0,(a1)+				; position for the $7FFF band
+
+	; process SYZ scroll
+		lea		(BGScrollSize_SYZ).l,a4
+		lea		(v_bgscroll_buffer).w,a5
+		jmp		ProcessBGScroll
 ; End of function Deform_SYZ
 
 ; ---------------------------------------------------------------------------
 ; Scrap	Brain Zone background layer deformation	code
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
 Deform_SBZ:
-		tst.b	(v_act).w
-		bne.w	Deform_SBZ2
+		tst.b	(v_act).w				; is it act 1?
+		bne.w	Deform_SBZ2				; if not, branch
+
 	; block 1 - lower black buildings
 		move.w	(v_scrshiftx).w,d4
 		ext.l	d4
-		asl.l	#7,d4
+		asl.l	#7,d4					; 50% scrolling
 		moveq	#2,d6
 		bsr.w	BGScroll_Block1
+
 	; block 3 - distant brown buildings
 		move.w	(v_scrshiftx).w,d4
 		ext.l	d4
-		asl.l	#6,d4
+		asl.l	#6,d4					; 25% scrolling
 		moveq	#6,d6
 		bsr.w	BGScroll_Block3
+
 	; block 2 - upper black buildings
 		move.w	(v_scrshiftx).w,d4
 		ext.l	d4
 		asl.l	#5,d4
 		move.l	d4,d1
 		asl.l	#1,d4
-		add.l	d1,d4
+		add.l	d1,d4					; 13.28% scrolling
 		moveq	#4,d6
 		bsr.w	BGScroll_Block2
+
 	; vertical scrolling
 		moveq	#0,d4
 		move.w	(v_scrshifty).w,d5
 		ext.l	d5
-		asl.l	#5,d5
+		asl.l	#5,d5					; 12.5% vertical scrolling
 		bsr.w	BGScroll_YRelative
 
 		move.w	(v_bgscreenposy).w,d0
@@ -658,79 +634,75 @@ Deform_SBZ:
 		or.b	d0,(v_bg2_scroll_flags).w
 		clr.b	(v_bg1_scroll_flags).w
 		clr.b	(v_bg3_scroll_flags).w
-	; calculate background scroll buffer
-		lea	(v_bgscroll_buffer).w,a1
+
+	; Build one X-position entry for each background band
+		lea		(v_bgscroll_buffer).w,a1
 		move.w	(v_screenposx).w,d2
 		neg.w	d2
 		asr.w	#2,d2
+
+	; Calculate the gradient across the four cloud bands
 		move.w	d2,d0
 		asr.w	#1,d0
 		sub.w	d2,d0
 		ext.l	d0
 		asl.l	#3,d0
-		divs.w	#4,d0
+		divs.w	#4,d0					; retain Fixed's cloud division
 		ext.l	d0
 		asl.l	#4,d0
-		asl.l	#8,d0
+		asl.l	#8,d0					; fixed-point step between cloud bands
+
 		moveq	#0,d3
 		move.w	d2,d3
-		move.w	#3,d1
-	.cloudLoop:		
+		neg.w	d3						; first band uses one quarter of camera X
+		moveq	#3,d1					; four cloud bands
+
+	.cloudLoop:
 		move.w	d3,(a1)+
 		swap	d3
-		add.l	d0,d3
+		sub.l	d0,d3
 		swap	d3
-		dbf	d1,.cloudLoop
+		dbf		d1,.cloudLoop
 
+ ; Each building region needs one X-position entry
 		move.w	(v_bg3screenposx).w,d0
-		neg.w	d0
-		move.w	#9,d1
-	.buildingLoop1:		; distant brown buildings
-		move.w	d0,(a1)+
-		dbf	d1,.buildingLoop1
+		move.w	d0,(a1)+				; distant brown buildings
 
 		move.w	(v_bg2screenposx).w,d0
-		neg.w	d0
-		move.w	#6,d1
-	.buildingLoop2:		; upper black buildings
-		move.w	d0,(a1)+
-		dbf	d1,.buildingLoop2
+		move.w	d0,(a1)+				; upper black buildings
 
 		move.w	(v_bgscreenposx).w,d0
-		neg.w	d0
-		move.w	#$A,d1
-	.buildingLoop3:		; lower black buildings
-		move.w	d0,(a1)+
-		dbf	d1,.buildingLoop3
-		lea	(v_bgscroll_buffer).w,a2
-		move.w	(v_bgscreenposy).w,d0
-		move.w	d0,d2
-		andi.w	#$1F0,d0
-		lsr.w	#3,d0
-		lea	(a2,d0.w),a2
-		bra.w	Bg_Scroll_X
+		move.w	d0,(a1)+				; lower black buildings
+
+ ; Expand the band positions into the 224-line scroll table
+		lea		(BGScrollSize_SBZ1).l,a4
+		lea		(v_bgscroll_buffer).w,a5
+		jmp		(ProcessBGScroll).l
 ;-------------------------------------------------------------------------------
-Deform_SBZ2:;loc_68A2:
+
+Deform_SBZ2:
 	; plain background deformation
 		move.w	(v_scrshiftx).w,d4
 		ext.l	d4		
-		asl.l	#6,d4
+		asl.l	#6,d4		; 25% horizontal scrolling
 		move.w	(v_scrshifty).w,d5
 		ext.l	d5
-		asl.l	#5,d5
+		asl.l	#5,d5		; 12.5% vertical scrolling
 		bsr.w	BGScroll_XY
 		move.w	(v_bgscreenposy).w,(v_bgscrposy_vdp).w
+
 	; copy fg & bg x-position to hscroll table
-		lea	(v_hscrolltablebuffer).w,a1
+		lea	(v_hscrolltablebuffer).w,a1	; copy fg and bg positions to hscroll
 		move.w	#223,d1
 		move.w	(v_screenposx).w,d0
 		neg.w	d0
 		swap	d0
 		move.w	(v_bgscreenposx).w,d0
 		neg.w	d0
+
 	.loop:		
 		move.l	d0,(a1)+
-		dbf	d1,.loop
+		dbf		d1,.loop
 		rts
 ; End of function Deform_SBZ
 
