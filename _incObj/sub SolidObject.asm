@@ -307,7 +307,8 @@ Solid_Squash:
 		btst	#staAir,obStatus(a1)	; is Sonic in the air?
 		bne.s	Solid_TopBtmAir			; if yes, branch
 		move.l	a0,-(sp)
-		movea.l	a1,a0
+		movea.l	a0,a2					; a2 is the object crushing Sonic
+		movea.l	a1,a0					; a0 now points to Sonic
 		jsr		(KillSonic).l			; kill Sonic
 		movea.l	(sp)+,a0
 		moveq	#-1,d4
