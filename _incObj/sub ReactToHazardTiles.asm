@@ -38,9 +38,9 @@ ReactToHazardTiles:
 		move.w	#(MarbleZone_LavaBlk_end-MarbleZone_LavaBlk)/2-1,d4	; checks 6 words
 
 	.loop:
-		cmp.w	(a3)+,d0		; does the block ID match anything in the table?
+		cmp.w	(a3)+,d0		; does the block ID match the table entry in (a3)?
 		beq.s	.hurt			; if so, branch
-		dbf	d4,.loop
+		dbf	d4,.loop		; if not, check the next one
 	
 	.gotoNextColumn:
 		addi.w	#$10,d3			; advance one block column to the right
@@ -65,8 +65,6 @@ ReactToHazardTiles:
 		add.b	d0,d1			; add heightmpa value (d0) to Sonic's row (collision check)
 		cmpi.b	#$10,d1
 		blo.s	.gotoNextColumn		; if Sonic is above the "surface", check next block column
-
-		addq.w	#8,d3			; use the block center for knockback
 		jmp	(HurtSonic_FromTerrain).l
 ; ===========================================================================
 
