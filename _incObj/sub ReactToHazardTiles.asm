@@ -37,7 +37,9 @@ ReactToHazardTiles:
 		rts
 
 	.hurt:
-		jmp	(React_ChkHurt).l
+		andi.w	#$FFF0,d3		; align X to the block's left edge
+		addq.w	#8,d3			; use the block center for knockback
+		jmp	(HurtSonic_FromTerrain).l
 
 MarbleZone_LavaBlk:	; These are the same in stock S1
 			; $16E and $16F are the surface
