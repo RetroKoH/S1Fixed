@@ -19,11 +19,11 @@ ReactToHazardTiles:
 	; Check three points at Sonic's base (left, middle, right)
 	; a0 is always Sonic... easy
 		moveq	#0,d0			; clear. No need to extend
-		move.b	obHeight(a0),d0		; Get Sonic's height
+		move.b	obHeight(a0),d0		; get Sonic's height
 		move.w	obY(a0),d2
 		add.w	d0,d2			; d2 = y pos. of Sonic's bottom edge (all sensors)
 		
-		move.b	obWidth(a0),d0		; Get Sonic's width
+		move.b	obWidth(a0),d0		; get Sonic's width
 		move.w	obX(a0),d3
 		move.w	d3,d5
 		sub.w	d0,d3			; left edge
@@ -33,15 +33,16 @@ ReactToHazardTiles:
 	.column:
 		bsr.w	FindNearestTile
 		move.w	(a1),d0			; get value for solidness, orientation and 16x16 tile number (we only need the 16x16 tile)
-		andi.w	#$3FF,d0		; Extract the 16x16 tile number from it
+		andi.w	#$3FF,d0		; extract the 16x16 tile number from it
 		lea	MarbleZone_LavaBlk(pc),a3
-		move.w	#(MarbleZone_LavaBlk_end-MarbleZone_LavaBlk)/2-1,d4	; Checks 6 words
+		move.w	#(MarbleZone_LavaBlk_end-MarbleZone_LavaBlk)/2-1,d4	; checks 6 words
 
 	.loop:
-		cmp.w	(a3)+,d0		; Does the object ID match the table?
-		beq.s	.hurt			; If so, branch
+		cmp.w	(a3)+,d0		; does the block ID match anything in the table?
+		beq.s	.hurt			; if so, branch
 		dbf	d4,.loop
-		
+	
+	.gotoNextColumn:
 		addi.w	#$10,d3			; advance one block column to the right
 		cmp.w	d5,d3
 		ble.s	.column			; check block
@@ -49,7 +50,22 @@ ReactToHazardTiles:
 	.nolava:
 		rts
 
+	; check tile height and hurt Sonic
 	.hurt:
+		movea.l	(v_collindex).w,a2
+		move.b	(a2,d0.w),d0		; get collision for the block ID in d0
+		andi.w	#$FF,d0			; we only want the lower byte (Clears 1 from the old block ID)
+		lsl.w	#4,d0			; ID * 16
+		lea	(CollArray1).l,a2	; a2 = heightmaps (normal)
+		move.b	(a2,d0.w),d0		; since lava blocks are flat, just get the first heightmap value
+		ble.s	.gotoNextColumn		; if heightmap value is 0 or negative, check next block column
+		
+		move.w	d2,d1			; d1 = y-position of Sonic's base
+		andi.w	#$F,d1			; get the row within the current block (0-F)
+		add.b	d0,d1			; add heightmpa value (d0) to Sonic's row (collision check)
+		cmpi.b	#$10,d1
+		blo.s	.gotoNextColumn		; if Sonic is above the "surface", check next block column
+
 		addq.w	#8,d3			; use the block center for knockback
 		jmp	(HurtSonic_FromTerrain).l
 ; ===========================================================================
