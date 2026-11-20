@@ -10,7 +10,7 @@
 ; ---------------------------------------------------------------------------
 
 ReactToItem:
-		jsr		(Touch_Rings).l					; RetroKoH S3K Rings Manager
+		jsr	(Touch_Rings).l					; RetroKoH S3K Rings Manager
 
 	if S3KDoubleJump
 		move.b	obStatus2nd(a0),d0				; does the player have a Shield or Invincibility?
@@ -473,6 +473,10 @@ React_ChkHurt:
 ; ---------------------------------------------------------------------------
 
 HurtSonic:
+		move.w	obX(a2),-(sp)			; save source X in the stack
+
+	; Terrain skips the above line, saving the block's center X in the stack instead.
+	.fromTerrain:
 	if CoolBonusEnabled
 		move.b	(v_hitscount).w,d0
 		tst.b	d0								; does Sonic still have a cool bonus?
@@ -507,9 +511,9 @@ HurtSonic:
 
 	.isdry:
 		move.w	obX(a0),d0
-		cmp.w	obX(a2),d0
-		blo.s	.isleft							; if Sonic is left of the object, branch
-		neg.w	obVelX(a0)						; if Sonic is right of the object, reverse
+		cmp.w	(sp)+,d0				; compare Sonic's X to the saved source X (object or terrain)
+		blo.s	.isleft					; if Sonic is left of the source, branch
+		neg.w	obVelX(a0)				; if Sonic is right of the source, reverse
 
 	.isleft:
 	if SpinDashEnabled
@@ -517,31 +521,17 @@ HurtSonic:
 	endif
 		clr.w	obInertia(a0)
 		move.b	#aniID_Hurt,obAnim(a0)
-		move.b	#120,obInvuln(a0)				; set temp invincible time to 2 seconds -- RetroKoH Sonic SST Compaction
+		move.b	#120,obInvuln(a0)			; set temp invincible time to 2 seconds -- RetroKoH Sonic SST Compaction
 
-	; Mercury Spike SFX Fix
-		move.w	#sfx_HitSpikes,d0				; play spikes death sound
-	; using cmp_addr macro code directly here
-		move.l	#$FFFFFF,d1
-		and.l	obAddr(a2),d1					; isolate the code address
-		_cmpi.l	#Spik_Solid,d1					; check	if you were killed by spikes
-		beq.s	.sound
-		_cmpi.l	#Spik_MoveAndSolid,d1			; check	if you were killed by moving spikes
-		beq.s	.sound
-		_cmpi.l	#Harpoon,d1						; check	if you were killed by a harpoon
-		beq.s	.sound
-		move.w	#sfx_Death,d0					; play normal death sound
-	; Spike SFX Fix End
-
-	.sound:
-		jsr		(QueueSound2).w
+		bsr.w	Sonic_DamageSound
 		moveq	#-1,d0
 		rts	
 ; ===========================================================================
 
 	.norings:
-		tst.w	(f_debugmode).w					; is debug mode	cheat on?
-		bne.w	.hasshield						; if yes, branch
+		tst.w	(f_debugmode).w				; is debug mode	cheat on?
+		bne.w	.hasshield				; if yes, branch
+		addq.l	#2,sp					; discard the saved source X
 	; otherwise, fall through to kill Sonic
 
 ; ---------------------------------------------------------------------------
@@ -549,7 +539,7 @@ HurtSonic:
 ;
 ; input:
 ;	a0 = address of OST of Sonic
-;	a2 = address of OST of object killing Sonic
+;	a2 = address of OST of object killing Sonic ($0000 if terrain)
 ;
 ; output:
 ;	d0 = -1 (for ReactToItem)
@@ -572,7 +562,7 @@ KillSonic:
 		move.b	#aniID_Shrink,obAnim(a0)
 		bset	#gfxPriority,obGfx(a0)
 		move.w	#sfx_Death,d0					; play normal death sound
-		jsr		(QueueSound2).w
+		jsr	(QueueSound2).w
 		moveq	#-1,d0
 		rts	
 
@@ -588,30 +578,14 @@ KillSonic:
 
 		bclr	#sta2ndInvinc,obStatus2nd(a0)	; remove invincibility
 		move.b	#6,obRoutine(a0)				; run death routine
-		jsr		(Sonic_ResetOnFloor).l
+		jsr	(Sonic_ResetOnFloor).l
 		bset	#staAir,obStatus(a0)
 		move.w	#-$700,obVelY(a0)				; move Sonic up
 		clr.w	obVelX(a0)
 		clr.w	obInertia(a0)
 		move.b	#aniID_Death,obAnim(a0)
 		bset	#gfxPriority,obGfx(a0)
-
-	; Mercury Spike SFX Fix
-		move.w	#sfx_HitSpikes,d0				; play spikes death sound
-	; using cmp_addr macro code directly here
-		move.l	#$FFFFFF,d1
-		and.l	obAddr(a2),d1					; isolate the code address
-		_cmpi.l	#Spik_Solid,d1					; check	if you were killed by spikes
-		beq.s	.sound
-		_cmpi.l	#Spik_MoveAndSolid,d1			; check	if you were killed by moving spikes
-		beq.s	.sound
-		_cmpi.l	#Harpoon,d1						; check	if you were killed by a harpoon
-		beq.s	.sound
-		move.w	#sfx_Death,d0					; play normal death sound
-	; Spike SFX Fix End
-
-	.sound:
-		jsr		(QueueSound2).w
+		bsr.w	Sonic_DamageSound
 
 	.dontdie:
 		moveq	#-1,d0
@@ -666,4 +640,41 @@ React_Special:
 		addq.b	#2,obRoutine(a1)				; increment routine counter when touching the LZ pole
 		rts
 ; End of function React_Special
+; ===========================================================================
+
+Sonic_DamageSound:
+		move.w	#sfx_Death,d0					; default hurt/death sound
+		cmpa.w	#0,a2						; hurt by terrain?
+		beq.s	.play						; if yes, branch
+		move.l	#$FFFFFF,d1
+		and.l	obAddr(a2),d1					; isolate the object's code address
+		_cmpi.l	#Spik_Solid,d1					; hurt by spikes?
+		beq.s	.spikes						; if yes, change sound
+		_cmpi.l	#Spik_MoveAndSolid,d1				; hurt by moving spikes?
+		beq.s	.spikes						; if yes, change sound
+		_cmpi.l	#Harpoon,d1					; hurt by Harpoon?
+		bne.s	.play						; if yes, change sound
+
+	.spikes:
+		move.w	#sfx_HitSpikes,d0
+
+	.play:
+		jmp	(QueueSound2).w
+; ===========================================================================
+
+HurtSonic_FromTerrain:
+		cmpi.b	#4,obRoutine(a0)		; is Sonic hurt or dying?
+		bhs.s	.nohurt				; if yes, branch
+		btst	#sta2ndInvinc,obStatus2nd(a0)	; is Sonic invincible?
+		bne.s	.nohurt				; if yes, branch
+		tst.b	obInvuln(a0)			; is Sonic invulnerable (hurt frames)?
+		bne.s	.nohurt				; if yes, branch
+
+		movea.w	#0,a2				; terrain is not an object (no OST)
+		move.w	d3,-(sp)			; save stored X to the stack (used for knockback)
+		bra.w	HurtSonic.fromTerrain
+
+	.nohurt:
+		moveq	#-1,d0
+		rts
 ; ===========================================================================
