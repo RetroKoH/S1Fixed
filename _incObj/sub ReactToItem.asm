@@ -473,7 +473,7 @@ React_ChkHurt:
 ; ---------------------------------------------------------------------------
 
 HurtSonic:
-		move.w	obX(a2),-(sp)			; save source X in the stack
+		move.w	obX(a2),d5			; save harmful object's X-position
 
 	; Terrain skips the above line, saving the block's center X in the stack instead.
 	.fromTerrain:
@@ -499,9 +499,9 @@ HurtSonic:
 		move.w	obY(a0),obY(a1)
 
 	.hasshield:
-		bclr	#sta2ndShield,obStatus2nd(a0)	; remove shield
-		move.b	#4,obRoutine(a0)				; run hurt routine
-		jsr		(Sonic_ResetOnFloor).l
+		bclr	#sta2ndShield,obStatus2nd(a0)		; remove shield
+		move.b	#4,obRoutine(a0)			; run hurt routine
+		jsr	(Sonic_ResetOnFloor).l
 		bset	#staAir,obStatus(a0)
 		move.l	#$FE00FC00,obVelX(a0)			; bounce player away (obVelX = -$200, obVelY = -$400)
 		btst	#staWater,obStatus(a0)			; is Sonic underwater?
@@ -511,7 +511,7 @@ HurtSonic:
 
 	.isdry:
 		move.w	obX(a0),d0
-		cmp.w	(sp)+,d0				; compare Sonic's X to the saved source X (object or terrain)
+		cmp.w	d5,d0					; compare Sonic's X to the saved source X (object or terrain)
 		blo.s	.isleft					; if Sonic is left of the source, branch
 		neg.w	obVelX(a0)				; if Sonic is right of the source, reverse
 
@@ -531,7 +531,6 @@ HurtSonic:
 	.norings:
 		tst.w	(f_debugmode).w				; is debug mode	cheat on?
 		bne.w	.hasshield				; if yes, branch
-		addq.l	#2,sp					; discard the saved source X
 	; otherwise, fall through to kill Sonic
 
 ; ---------------------------------------------------------------------------
@@ -671,8 +670,28 @@ HurtSonic_FromTerrain:
 		bne.s	.nohurt				; if yes, branch
 
 		movea.w	#0,a2				; terrain is not an object (no OST)
-		move.w	d3,-(sp)			; save stored X to the stack (used for knockback)
-		bra.w	HurtSonic.fromTerrain
+	
+	; Determine the direction of knockback
+	; We can't simply use the center of the tile, because Sonic always checks hazards
+	; from left to right, therefore will always knockback to the right, unless hitting a
+	; hazard wall to his right, in which case he goes left.
+		move.w	obX(a0),d5			; equal X gives rightward knockback
+		tst.w	obVelX(a0)			; is Sonic moving?
+		bne.s	.moving				; if yes, we use movement to determine knockback
+
+	; if not moving, facing direction determines knockback
+		btst	#staFacing,obStatus(a0)		; is Sonic facing left?
+		bne.w	HurtSonic.fromTerrain		; if yes, branch (knockback right)
+		bra.s	.knockleft			; if not, knockback left instead
+; ---------------------------------------------------------------------------
+
+	.moving:
+		bmi.w	HurtSonic.fromTerrain		; moving left -> knock right
+
+	.knockleft:
+		addq.w	#1,d5				; reference X = 1px to Sonic's right: knockback left
+		bra.w	HurtSonic.fromTerrain		; carry reference in d5 for knockback
+; ---------------------------------------------------------------------------
 
 	.nohurt:
 		moveq	#-1,d0
