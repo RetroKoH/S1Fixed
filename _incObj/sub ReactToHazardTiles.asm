@@ -5,8 +5,16 @@
 ; ---------------------------------------------------------------------------
 
 ReactToHazardTiles:
-		cmpi.b	#id_MZ,(v_zone).w
+		cmpi.b	#id_MZ,(v_zone).w	; Only apply this in Marble Zone
+		bne.s	.nolava			; branch if not in Marble
+	
+	; If multiple Zones and tiles are accounted for, it's better to
+	; check after tile is found, or in HurtSonic_FromTerrain.
+	; for now, it's easier to call it here.
+	if ShieldsMode
+		btst	#sta2ndFShield,obStatus2nd(a0)
 		bne.s	.nolava
+	endif
 
 	; Get Sonic's Bottom-Right Edge
 		move.w	obY(a0),d2		; this is only called from Sonic, using a0 is fine
@@ -40,8 +48,10 @@ ReactToHazardTiles:
 		andi.w	#$FFF0,d3		; align X to the block's left edge
 		addq.w	#8,d3			; use the block center for knockback
 		jmp	(HurtSonic_FromTerrain).l
+; ===========================================================================
 
 MarbleZone_LavaBlk:	; These are the same in stock S1
 			; $16E and $16F are the surface
 		dc.w	$16A, $16B, $16C, $16D, $16E, $16F
 MarbleZone_LavaBlk_end:
+; ===========================================================================
