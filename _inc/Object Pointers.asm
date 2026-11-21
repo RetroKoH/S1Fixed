@@ -87,7 +87,7 @@ ptr_Yadrin:				dc.l Yadrin			; $50
 ptr_SmashBlock:			dc.l SmashBlock
 ptr_MovingBlock:		dc.l MovingBlock
 ptr_CollapseFloor:		dc.l CollapseFloor
-ptr_LavaTag:			dc.l LavaTag
+ptr_Obj54:			dc.l DeleteObject
 ptr_Basaran:			dc.l Basaran
 ptr_FloatingBlock:		dc.l FloatingBlock	; SYZ Floating Blocks
 ptr_SpikeBall:			dc.l SpikeBall
@@ -219,7 +219,7 @@ id_Yadrin:				equ ((ptr_Yadrin-Obj_Index)/4)+1			; $50
 id_SmashBlock:			equ ((ptr_SmashBlock-Obj_Index)/4)+1
 id_MovingBlock:			equ ((ptr_MovingBlock-Obj_Index)/4)+1
 id_CollapseFloor:		equ ((ptr_CollapseFloor-Obj_Index)/4)+1
-id_LavaTag:				equ ((ptr_LavaTag-Obj_Index)/4)+1
+id_Obj54:				equ ((ptr_Obj54-Obj_Index)/4)+1
 id_Basaran:				equ ((ptr_Basaran-Obj_Index)/4)+1
 id_FloatingBlock:		equ ((ptr_FloatingBlock-Obj_Index)/4)+1
 id_SpikeBall:			equ ((ptr_SpikeBall-Obj_Index)/4)+1

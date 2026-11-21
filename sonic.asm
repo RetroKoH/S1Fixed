@@ -3475,7 +3475,6 @@ dplcTiles := 0					; 128k Boundary Check for DPLCs End
 
 		include	"_incObj/4C Lava Geyser Maker.asm"
 		include	"_incObj/4E Wall of Lava.asm"
-		include	"_incObj/54 Lava Tag.asm"
 
 		include	"_anim/Lava Geyser.asm"
 		include	"_anim/Wall of Lava.asm"
