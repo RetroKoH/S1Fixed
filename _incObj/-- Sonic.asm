@@ -43,7 +43,7 @@ Sonic_Normal:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Sonic_Index(pc,d0.w),d1
-		jsr		Sonic_Index(pc,d1.w)
+		jsr	Sonic_Index(pc,d1.w)
 		clr.w	(v_col_response_list).w		; reset collsion response list
 		rts
 ; ===========================================================================
@@ -158,13 +158,15 @@ Sonic_Control:	; Routine 2
 		move.w	(v_jpadheld_actual).w,(v_jpadheld_dup).w	; enable joypad control
 
 	.locked:
+		move.w	#-1,(v_lava_contact_x).w		; no lava contact this update
+
 		btst	#0,obCtrlLock(a0)				; are controls and position locked?
 		bne.s	.player_locked					; if yes, branch
 		moveq	#0,d0
 		move.b	obStatus(a0),d0
 		andi.w	#maskAir+maskSpin,d0			; player's air and spin states determine Control Mode
 		move.w	Sonic_Modes(pc,d0.w),d1
-		jsr		Sonic_Modes(pc,d1.w)			; handle player control, physics, etc.
+		jsr	Sonic_Modes(pc,d1.w)			; handle player control, physics, etc.
 
 		; S2 and S3K perform this under .player_locked, but we won't (for now).
 		; Objects such as the SBZ pipes manage Sonic's Y while he's locked.
@@ -173,7 +175,7 @@ Sonic_Control:	; Routine 2
 		andi.w	#LevelYWrapMask,obY(a0)			; wrap Sonic's position
 
 	.player_locked:
-		bsr		Sonic_Display					; display sprite, update invincibility/speed shoes
+		bsr	Sonic_Display					; display sprite, update invincibility/speed shoes
 
 	if SuperMod
 		bsr.s	Sonic_Super						; handle Super Sonic logic
@@ -192,8 +194,15 @@ Sonic_Control:	; Routine 2
 		bsr.w	Sonic_Animate					; handle Sonic's animations
 		tst.b	obCtrlLock(a0)					; is object collision disabled?
 		bmi.w	Sonic_LoadGfx					; if yes, branch
-		jsr		(ReactToItem).l					; run collisions with other objects
-		jsr		(ReactToHazardTiles).l			; check for interactions with hazard tiles
+		jsr	(ReactToItem).l					; run collisions with other objects
+
+	; This replaces ReactToHazardTiles
+		move.w	(v_lava_contact_x).w,d3		; recorded lava block center
+		bmi.w	Sonic_LoadGfx			; -1 means no contact was recorded
+		btst	#sta2ndFShield,obStatus2nd(a0)
+		bne.w	Sonic_LoadGfx			; Flame Shield protects Sonic from lava
+		jsr	(HurtSonic_FromTerrain).l	; check for interactions with hazard tiles
+
 	; removed old loop/tunnel handlers
 		bra.w	Sonic_LoadGfx					; load new gfx when Sonic's frame changes
 ; ===========================================================================

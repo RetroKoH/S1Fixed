@@ -281,7 +281,7 @@ v_screenposy_last:	ds.w	1		; ProjectFM S3K Object Manager
 v_scrshiftx:		ds.w	1		; camera x position change since last frame * $100
 v_scrshifty:		ds.w	1		; camera y position change since last frame * $100
 v_lookshift:		ds.w	1		; screen shift when Sonic looks up/down - $60 = default; $C8 = look up; 8 = look down
-				ds.b	2		; unused
+v_lava_contact_x:	ds.w	1		; block center x for knockback from hazard tiles
 v_dle_routine:		ds.w	1		; dynamic level event - routine counter (2 bytes) -- Filter Optimized DLE Manager
 f_nobgscroll:		ds.b	1		; flag set to disable all scrolling and LZ water features
 				ds.b	4		; unused

@@ -116,8 +116,8 @@ GHZBall_InAir:		; Routine 6
 		moveq	#24,d3						; height (walking); save 4 cycles - Filter
 		move.w	obX(a0),d4					; axis position
 		bsr.w	SolidObject					; make the ball solid
-		jsr		(ObjFloorDist).l
-		tst.w	d1							; is the ball STILL in the air?
+		jsr	(ObjFloorDist).l
+		tst.w	d1						; is the ball STILL in the air?
 		bpl.s	.inair						; if yes, branch
 		add.w	d1,obY(a0)					; latch to the floor
 		move.b	d3,obAngle(a0)				; set angle
