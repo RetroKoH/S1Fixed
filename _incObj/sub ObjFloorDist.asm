@@ -12,12 +12,8 @@
 ;	(a4) = floor angle
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
 ObjFloorDist:
 		move.w	obX(a0),d3
-
 
 ObjFloorDist2:
 		move.w	obY(a0),d2
@@ -27,26 +23,41 @@ ObjFloorDist2:
 		add.w	d0,d2
 		moveq	#$C,d5									; MJ: set solid type to check
 		; MJ: is the parent object Sonic? (d1 = obAddr)?
-		cmp_addr	#SonicPlayer,obAddr(a0),d1
+		cmp_addr #SonicPlayer,obAddr(a0),d1
 		bne.s	.notsonic								; MJ: if not, branch and only use first collision set
 		move.b	(v_top_solid_bit).w,d5					; MJ: load solid type to check
 		move.l	#v_collision1&$FFFFFF,(v_collindex).w	; MJ: load first collision data location
 		cmpi.b	#$C,d5									; MJ: is second collision set to be used?
 		beq.s	.first									; MJ: if not, branch
 		move.l	#v_collision2&$FFFFFF,(v_collindex).w	; MJ: load second collision data location
-.first:
-.notsonic:
-		lea		(v_anglebuffer_right).w,a4
+
+	.first:
+		lea	(v_anglebuffer_right).w,a4
 		clr.b	(a4)
-		movea.w	#$10,a3									; height of a 16x16 tile
+		movea.w	#$10,a3				; height of a 16x16 tile
 		clr.w	d6
-		bsr.w	FindFloor								; MJ: check solidity
+		bsr.w	FindFloor_Player		; MJ: check solidity
 		move.b	(v_anglebuffer_right).w,d3
 		btst	#0,d3
-		beq.s	locret_14E4E
+		beq.s	.exit_sonic
 		clr.b	d3
 
-locret_14E4E:
+	.exit_sonic:
+		rts
+; ===========================================================================
+
+	.notsonic:
+		lea	(v_anglebuffer_right).w,a4
+		clr.b	(a4)
+		movea.w	#$10,a3				; height of a 16x16 tile
+		clr.w	d6
+		bsr.w	FindFloor			; MJ: check solidity
+		move.b	(v_anglebuffer_right).w,d3
+		btst	#0,d3
+		beq.s	.exit
+		clr.b	d3
+
+	.exit:
 		rts
 ; End of function ObjFloorDist2
 ; ===========================================================================
@@ -59,7 +70,7 @@ RingFloorDist:
 		ext.w	d0
 		add.w	d0,d2
 		moveq	#$C,d5
-		lea		(v_anglebuffer_right).w,a4
+		lea	(v_anglebuffer_right).w,a4
 		clr.b	(a4)
 		movea.w	#$10,a3									; height of a 16x16 tile
 		clr.w	d6
