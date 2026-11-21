@@ -1,9 +1,8 @@
 ; ---------------------------------------------------------------------------
 ; Subroutine to	change Sonic's angle & position as he walks along the floor
+; GHZ Giant Ball shares this with Sonic, so precautions are taken w/ the new
+; hazard tile checker
 ; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
 
 Sonic_AnglePos:
 		move.l	#v_collision1&$FFFFFF,(v_collindex).w	; MJ: load first collision data location
@@ -73,10 +72,10 @@ loc_14630:
 		move.b	obWidth(a0),d0
 		ext.w	d0
 		add.w	d0,d3
-		lea		(v_anglebuffer_right).w,a4
+		lea	(v_anglebuffer_right).w,a4
 		movea.w	#$10,a3
 		moveq	#0,d6
-		bsr.w	FindFloor					; MJ: check solidity
+		bsr.w	FindFloor_Player	; MJ: check solidity
 		move.w	d1,-(sp)
 		move.w	obY(a0),d2
 		move.w	obX(a0),d3
@@ -88,10 +87,10 @@ loc_14630:
 		ext.w	d0
 		neg.w	d0
 		add.w	d0,d3
-		lea		(v_anglebuffer_left).w,a4
+		lea	(v_anglebuffer_left).w,a4
 		movea.w	#$10,a3
 		moveq	#0,d6
-		bsr.w	FindFloor					; MJ: check solidity
+		bsr.w	FindFloor_Player	; MJ: check solidity
 		move.w	(sp)+,d0
 		bsr.w	Sonic_Angle
 		tst.w	d1
@@ -287,10 +286,10 @@ Sonic_WalkCeiling:
 		move.b	obWidth(a0),d0
 		ext.w	d0
 		add.w	d0,d3
-		lea		(v_anglebuffer_right).w,a4
+		lea	(v_anglebuffer_right).w,a4
 		movea.w	#-$10,a3
-		move.w	#$800,d6					; MJ: $1000/2
-		bsr.w	FindFloor					; MJ: check solidity
+		move.w	#$800,d6		; MJ: $1000/2
+		bsr.w	FindFloor_Player	; MJ: check solidity
 		move.w	d1,-(sp)
 		move.w	obY(a0),d2
 		move.w	obX(a0),d3
@@ -302,10 +301,10 @@ Sonic_WalkCeiling:
 		move.b	obWidth(a0),d0
 		ext.w	d0
 		sub.w	d0,d3
-		lea		(v_anglebuffer_left).w,a4
+		lea	(v_anglebuffer_left).w,a4
 		movea.w	#-$10,a3
-		move.w	#$800,d6					; MJ: $1000/2
-		bsr.w	FindFloor					; MJ: check solidity
+		move.w	#$800,d6		; MJ: $1000/2
+		bsr.w	FindFloor_Player	; MJ: check solidity
 		move.w	(sp)+,d0
 		bsr.w	Sonic_Angle
 		tst.w	d1

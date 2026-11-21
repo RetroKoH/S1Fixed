@@ -3839,15 +3839,13 @@ Sonic_CalcHeadRoom:
 ; Subroutine to	make Sonic land	on the floor after jumping
 ; ---------------------------------------------------------------------------
 
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-
 Sonic_HitFloor:
 		move.l	#v_collision1&$FFFFFF,(v_collindex).w	; MJ: load first collision data location
 		cmpi.b	#$C,(v_top_solid_bit).w					; MJ: is second collision set to be used?
 		beq.s	.first									; MJ: if not, branch
 		move.l	#v_collision2&$FFFFFF,(v_collindex).w	; MJ: load second collision data location
-.first:
+
+	.first:
 		move.b	(v_top_solid_bit).w,d5					; MJ: load L/R/B soldity bit
 		move.w	obY(a0),d2
 		move.w	obX(a0),d3
@@ -3858,10 +3856,10 @@ Sonic_HitFloor:
 		move.b	obWidth(a0),d0
 		ext.w	d0
 		add.w	d0,d3
-		lea		(v_anglebuffer_right).w,a4
+		lea	(v_anglebuffer_right).w,a4
 		movea.w	#$10,a3
 		clr.w	d6
-		bsr.w	FindFloor	; MJ: check solidity
+		bsr.w	FindFloor_Player	; MJ: check solidity
 		move.w	d1,-(sp)
 		move.w	obY(a0),d2
 		move.w	obX(a0),d3
@@ -3872,10 +3870,10 @@ Sonic_HitFloor:
 		move.b	obWidth(a0),d0
 		ext.w	d0
 		sub.w	d0,d3
-		lea		(v_anglebuffer_left).w,a4
+		lea	(v_anglebuffer_left).w,a4
 		movea.w	#$10,a3
 		clr.w	d6
-		bsr.w	FindFloor	; MJ: check solidity
+		bsr.w	FindFloor_Player	; MJ: check solidity
 		move.w	(sp)+,d0
 		clr.b	d2
 
@@ -3884,7 +3882,7 @@ loc_14DD0:
 		cmp.w	d0,d1
 		ble.s	loc_14DDE
 		move.b	(v_anglebuffer_right).w,d3
-		exg		d0,d1
+		exg	d0,d1
 
 loc_14DDE:
 		btst	#0,d3
@@ -3900,10 +3898,10 @@ locret_14DE6:
 
 loc_14DF0:
 		addi.w	#$A,d2
-		lea		(v_anglebuffer_right).w,a4
+		lea	(v_anglebuffer_right).w,a4
 		movea.w	#$10,a3
 		clr.w	d6
-		bsr.w	FindFloor	; MJ: check solidity
+		bsr.w	FindFloor_Player	; MJ: check solidity
 		clr.b	d2
 
 loc_14E0A:
@@ -4022,10 +4020,10 @@ Sonic_CheckCeilingDist: ;Sonic_DontRunOnWalls:
 		move.b	obWidth(a0),d0
 		ext.w	d0
 		add.w	d0,d3
-		lea		(v_anglebuffer_right).w,a4
+		lea	(v_anglebuffer_right).w,a4
 		movea.w	#-$10,a3
 		move.w	#$800,d6	; MJ: $1000/2
-		bsr.w	FindFloor	; MJ: check solidity
+		bsr.w	FindFloor_Player	; MJ: check solidity
 		move.w	d1,-(sp)
 		move.w	obY(a0),d2
 		move.w	obX(a0),d3
@@ -4037,10 +4035,10 @@ Sonic_CheckCeilingDist: ;Sonic_DontRunOnWalls:
 		move.b	obWidth(a0),d0
 		ext.w	d0
 		sub.w	d0,d3
-		lea		(v_anglebuffer_left).w,a4
+		lea	(v_anglebuffer_left).w,a4
 		movea.w	#-$10,a3
 		move.w	#$800,d6	; MJ: $1000/2
-		bsr.w	FindFloor	; MJ: check solidity
+		bsr.w	FindFloor_Player	; MJ: check solidity
 		move.w	(sp)+,d0
 		move.b	#-$80,d2
 		bra.w	loc_14DD0
@@ -4048,13 +4046,14 @@ Sonic_CheckCeilingDist: ;Sonic_DontRunOnWalls:
 
 ; ===========================================================================
 
+; Called by Sonic_WalkSpeed
 loc_14F7C:
 		subi.w	#$A,d2
 		eori.w	#$F,d2
-		lea		(v_anglebuffer_right).w,a4
+		lea	(v_anglebuffer_right).w,a4
 		movea.w	#-$10,a3
 		move.w	#$800,d6	; MJ: $1000/2
-		bsr.w	FindFloor	; MJ: check solidity
+		bsr.w	FindFloor_Player	; MJ: check solidity
 		move.b	#-$80,d2
 		bra.w	loc_14E0A
 
@@ -4069,7 +4068,7 @@ ObjHitCeiling:
 		ext.w	d0
 		sub.w	d0,d2
 		eori.w	#$F,d2
-		lea		(v_anglebuffer_right).w,a4
+		lea	(v_anglebuffer_right).w,a4
 		movea.w	#-$10,a3
 		move.w	#$800,d6	; MJ: $1000/2
 		moveq	#$D,d5		; MJ: set solid type to check
@@ -4319,8 +4318,6 @@ BossFlash:
 		include	"_anim/Prison Capsule.asm"
 
 		include	"_incObj/sub ReactToItem.asm"
-		
-		include	"_incObj/sub ReactToHazardTiles.asm"		; Used for MZ Lava
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to	show the special stage layout
