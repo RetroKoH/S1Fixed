@@ -193,7 +193,6 @@ PushB_OnLava_Solid:
 ; ===========================================================================
 
 PushB_OnLava_Sunk:
-		move.w	(sp)+,d4
 		lea		(v_player).w,a1
 		bclr	#staOnObj,obStatus(a1)
 		bclr	#staSonicOnObj,obStatus(a0)
